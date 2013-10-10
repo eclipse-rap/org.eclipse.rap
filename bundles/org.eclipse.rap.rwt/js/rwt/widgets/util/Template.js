@@ -18,7 +18,6 @@ rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._parseCells();
   this._item = null;
-  this._bounds = null;
 };
 
 rwt.widgets.util.Template.prototype = {
@@ -40,39 +39,12 @@ rwt.widgets.util.Template.prototype = {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
     this._item = options.item;
-    this._bounds = options.bounds;
+    this._createElements( options ); // TODO [tb] : create lazy while rendering content
+    this._renderAllBounds( options );
   },
 
   getCellCount : function() {
     return this._cells.length;
-  },
-
-  getCellLeft : function( cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.left !== undefined
-           ? cellData.left
-           : this._bounds[ 2 ] - cellData.width - cellData.right;
-  },
-
-  getCellTop : function( cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.top !== undefined
-           ? cellData.top
-           : this._bounds[ 3 ] - cellData.height - cellData.bottom;
-  },
-
-  getCellWidth : function( cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.width !== undefined
-           ? cellData.width
-           : this._bounds[ 2 ] - cellData.left - cellData.right;
-  },
-
-  getCellHeight : function( cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.height !== undefined
-           ? cellData.height
-           : this._bounds[ 3 ] - cellData.top - cellData.bottom;
   },
 
   getCellType : function( cell ) {
@@ -125,7 +97,6 @@ rwt.widgets.util.Template.prototype = {
     return result;
   },
 
-
   getCellFont : function( cell ){
     var result = null;
     if( this._isBound( cell ) ) {
@@ -135,6 +106,55 @@ rwt.widgets.util.Template.prototype = {
       result = this._cells[ cell ].font;
     }
     return result;
+  },
+
+  _createElements : function( options ) {
+    if( !options.container.cellElements ) {
+      options.container.cellElements = [];
+      for( var i = 0; i < this._cells.length; i++ ) {
+        var element = document.createElement( "div" );
+        options.container.element.appendChild( element );
+        options.container.cellElements[ i ] = element;
+      }
+    }
+  },
+
+  _renderAllBounds : function( options ) {
+    for( var i = 0; i < this._cells.length; i++ ) {
+      var element = options.container.cellElements[ i ];
+      element.style.left = this._getCellLeft( options, i ) + "px";
+      element.style.top = this._getCellTop( options, i ) + "px";
+      element.style.width = this._getCellWidth( options, i ) + "px";
+      element.style.height = this._getCellHeight( options, i ) + "px";
+    }
+  },
+
+  _getCellLeft : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    return   cellData.left !== undefined
+           ? cellData.left
+           : options.bounds[ 2 ] - cellData.width - cellData.right;
+  },
+
+  _getCellTop : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    return   cellData.top !== undefined
+           ? cellData.top
+           : options.bounds[ 3 ] - cellData.height - cellData.bottom;
+  },
+
+  _getCellWidth : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    return   cellData.width !== undefined
+           ? cellData.width
+           : options.bounds[ 2 ] - cellData.left - cellData.right;
+  },
+
+  _getCellHeight : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    return   cellData.height !== undefined
+           ? cellData.height
+           : options.bounds[ 3 ] - cellData.top - cellData.bottom;
   },
 
   _isBound : function( cell ) {
