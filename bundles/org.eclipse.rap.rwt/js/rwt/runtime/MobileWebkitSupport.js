@@ -108,7 +108,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
         if( type === "mousedown" ) {
           this._handleMouseOver( event );
         } else if ( type === "mouseup" ) {
-          this.setCurrentToolTip( null );
+          this.setCurrentToolTipTarget( null );
         }
       };
     },
@@ -545,7 +545,7 @@ rwt.qx.Class.define( "rwt.runtime.MobileWebkitSupport", {
 
     _postMouseEvent : function( type ) {
       if( type === "mouseup" ) {
-        rwt.widgets.util.ToolTipManager.getInstance().setCurrentToolTip( null );
+        rwt.widgets.util.ToolTipManager.getInstance().setCurrentToolTipTarget( null );
       }
     }
 
