@@ -203,8 +203,7 @@ public class TextInputExamplePage implements IExamplePage {
 
   private DateTime createDateField( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Date:" );
-    int dateTimeStyle = SWT.READ_ONLY | SWT.BORDER;
-    DateTime dateTime = new DateTime( formComp, dateTimeStyle );
+    DateTime dateTime = new DateTime( formComp, SWT.DATE | SWT.BORDER );
     dateTime.setLayoutData( ExampleUtil.createHorzFillData() );
     return dateTime;
   }

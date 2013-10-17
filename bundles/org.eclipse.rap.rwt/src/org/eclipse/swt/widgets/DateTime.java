@@ -635,12 +635,12 @@ public class DateTime extends Composite {
     // [if] Recalculate the sub widgets bounds
     // important for using it in FillLayout where the
     // DateTime#computeSize() is not call.
-    Point size = computeSubWidgetsBounds();
+    Point computedSize = computeSubWidgetsBounds();
     // [ad] Fix for bug 284409
-    Point computedSize = this.getSize();
+    Point size = this.getSize();
     if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
       if( computedSize.x != size.x || computedSize.y != size.y ) {
-        recalculateButtonsBounds( computedSize );
+        recalculateButtonsBounds( size );
       }
     }
   }
