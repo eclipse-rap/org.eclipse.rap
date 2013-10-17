@@ -19,6 +19,7 @@ import org.eclipse.jface.bindings.keys.KeyLookupFactory;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
 
 /**
  * <p>
@@ -30,6 +31,10 @@ import org.eclipse.jface.util.Util;
  * @since 1.4
  */
 public final class NativeKeyFormatter extends AbstractKeyFormatter {
+
+    //RAP [if]
+    private static final String RAP_PLATFORM = "rap"; //$NON-NLS-1$
+    // RAPEND [if]
 
 	/**
 	 * The key into the internationalization resource bundle for the delimiter
@@ -55,14 +60,12 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 	private final static String WIN32_KEY_STROKE_DELIMITER_KEY = "WIN32_KEY_STROKE_DELIMITER"; //$NON-NLS-1$
 
 	static {
-		RESOURCE_BUNDLE = ResourceBundle.getBundle(NativeKeyFormatter.class
-				.getName());
+		RESOURCE_BUNDLE = ResourceBundle.getBundle(NativeKeyFormatter.class.getName());
 
 		final String carbonBackspace = "\u232B"; //$NON-NLS-1$
 		CARBON_KEY_LOOK_UP.put(IKeyLookup.BS_NAME, carbonBackspace);
 		CARBON_KEY_LOOK_UP.put(IKeyLookup.BACKSPACE_NAME, carbonBackspace);
-		CARBON_KEY_LOOK_UP
-				.put(IKeyLookup.CR_NAME, "\u21A9"); //$NON-NLS-1$
+		CARBON_KEY_LOOK_UP.put(IKeyLookup.CR_NAME, "\u21A9"); //$NON-NLS-1$
 		final String carbonDelete = "\u2326"; //$NON-NLS-1$
 		CARBON_KEY_LOOK_UP.put(IKeyLookup.DEL_NAME, carbonDelete);
 		CARBON_KEY_LOOK_UP.put(IKeyLookup.DELETE_NAME, carbonDelete);
@@ -113,12 +116,14 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 	protected String getKeyDelimiter() {
 		// We must do the look up every time, as our locale might change.
 		if (Util.isMac()) {
-			return Util.translateString(RESOURCE_BUNDLE,
+//			return Util.translateString(RESOURCE_BUNDLE,
+			return Util.translateString(getResourceBundle( NativeKeyFormatter.class ),
 					CARBON_KEY_DELIMITER_KEY, Util.ZERO_LENGTH_STRING);
 		}
 
-		return Util.translateString(RESOURCE_BUNDLE, KEY_DELIMITER_KEY,
-				KeyStroke.KEY_DELIMITER);
+//		return Util.translateString(RESOURCE_BUNDLE,
+		return Util.translateString(getResourceBundle( NativeKeyFormatter.class ), 
+		        KEY_DELIMITER_KEY, KeyStroke.KEY_DELIMITER);
 	}
 
 	/*
@@ -129,13 +134,14 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 	protected String getKeyStrokeDelimiter() {
 		// We must do the look up every time, as our locale might change.
 		if (Util.isWindows()) {
-			return Util.translateString(RESOURCE_BUNDLE,
-					WIN32_KEY_STROKE_DELIMITER_KEY,
-					KeySequence.KEY_STROKE_DELIMITER);
+//			return Util.translateString(RESOURCE_BUNDLE,
+	        return Util.translateString(getResourceBundle( NativeKeyFormatter.class ),
+					WIN32_KEY_STROKE_DELIMITER_KEY, KeySequence.KEY_STROKE_DELIMITER);
 		}
 
-		return Util.translateString(RESOURCE_BUNDLE, KEY_STROKE_DELIMITER_KEY,
-				KeySequence.KEY_STROKE_DELIMITER);
+//		return Util.translateString(RESOURCE_BUNDLE,
+	    return Util.translateString(getResourceBundle( NativeKeyFormatter.class ), 
+	            KEY_STROKE_DELIMITER_KEY, KeySequence.KEY_STROKE_DELIMITER);
 	}
 
 	/*
@@ -148,7 +154,8 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 		final int[] sortedKeys = new int[4];
 		int index = 0;
 
-		if (Util.isWindows()) {
+		// RAP [if] Sort modifiers in RAP as in Windows - see bug 410319
+		if (Util.isWindows() || SWT.getPlatform().equals(RAP_PLATFORM)) {
 			if ((modifierKeys & lookup.getCtrl()) != 0) {
 				sortedKeys[index++] = lookup.getCtrl();
 			}
@@ -184,18 +191,6 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 				sortedKeys[index++] = lookup.getCommand();
 			}
 
-// RAP [if] Add default modifiers sort with windows behavior - see bug 410319
-		} else {
-		    if ((modifierKeys & lookup.getCtrl()) != 0) {
-		        sortedKeys[index++] = lookup.getCtrl();
-  		    }
-  		    if ((modifierKeys & lookup.getAlt()) != 0) {
-  		        sortedKeys[index++] = lookup.getAlt();
-  		    }
-  		    if ((modifierKeys & lookup.getShift()) != 0) {
-  		        sortedKeys[index++] = lookup.getShift();
-  		    }
-// ENDRAP [if]
 		}
 
 		return sortedKeys;

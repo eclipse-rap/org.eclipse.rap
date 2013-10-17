@@ -21,6 +21,7 @@ import org.eclipse.jface.bindings.keys.KeyLookupFactory;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.util.Util;
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * <p>
@@ -85,11 +86,19 @@ public abstract class AbstractKeyFormatter implements IKeyFormatter {
 		final String name = lookup.formalNameLookup(key);
 
 		if (resourceBundleKeys.contains(name)) {
-			return Util.translateString(RESOURCE_BUNDLE, name, name);
+//			return Util.translateString(RESOURCE_BUNDLE, name, name);
+			return Util.translateString(getResourceBundle(AbstractKeyFormatter.class), name, name);
 		}
 		
 		return name;
 	}
+
+// RAP [if] respect client locale - see bug 419659
+	@SuppressWarnings("javadoc")
+    protected ResourceBundle getResourceBundle( Class<?> clazz ) {
+	  return ResourceBundle.getBundle( clazz.getName(), RWT.getLocale(), clazz.getClassLoader() );
+	}
+// RAPEND [if]
 
 	/*
 	 * (non-Javadoc)
