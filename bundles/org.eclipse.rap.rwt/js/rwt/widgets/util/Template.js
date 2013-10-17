@@ -22,7 +22,7 @@ rwt.widgets.util.Template = function( cells ) {
 
 rwt.widgets.util.Template.prototype = {
 
-  hasCellLayout : rwt.util.Functions.returnTrue,
+  hasCellLayout : true,
 
   createContainer : function( element ) {
     if( !element || typeof element.nodeName !== "string" ) {
@@ -30,8 +30,13 @@ rwt.widgets.util.Template.prototype = {
     }
     return {
       "element" : element,
-      "template" : this
+      "template" : this,
+      "cellElements" : []
     };
+  },
+
+  getCellElement : function( container, cell ) {
+    return container.cellElements[ cell ] || null;
   },
 
   render : function( options ) {
@@ -109,23 +114,39 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _createElements : function( options ) {
-    if( !options.container.cellElements ) {
-      options.container.cellElements = [];
-      for( var i = 0; i < this._cells.length; i++ ) {
+    var elements = options.container.cellElements;
+    for( var i = 0; i < this._cells.length; i++ ) {
+      if( elements[ i ] == null && this._hasContent( options.item, i ) ) {
         var element = document.createElement( "div" );
+        element.style.overflow = "hidden";
+        element.style.position = "absolute";
         options.container.element.appendChild( element );
         options.container.cellElements[ i ] = element;
       }
     }
   },
 
+  _hasContent : function( item, cell ) {
+    var index = this._cells[ cell ].bindingIndex;
+    switch( this._cells[ cell ].type ) {
+      case "text":
+        return this.hasText( cell );
+      case "image":
+        return item.getImage( index ) !== null;
+      default:
+        return false;
+    }
+  },
+
   _renderAllBounds : function( options ) {
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = options.container.cellElements[ i ];
-      element.style.left = this._getCellLeft( options, i ) + "px";
-      element.style.top = this._getCellTop( options, i ) + "px";
-      element.style.width = this._getCellWidth( options, i ) + "px";
-      element.style.height = this._getCellHeight( options, i ) + "px";
+      if( element ) {
+        element.style.left = this._getCellLeft( options, i ) + "px";
+        element.style.top = this._getCellTop( options, i ) + "px";
+        element.style.width = this._getCellWidth( options, i ) + "px";
+        element.style.height = this._getCellHeight( options, i ) + "px";
+      }
     }
   },
 

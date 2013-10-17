@@ -154,7 +154,7 @@ namespace( "rwt.client" );
     _rowConfig : {
       "position" : "align-left",
       "appearOn" : "rest",
-      "disappearOn" : "move",
+      "disappearOn" : "move", // TODO : should be "exitTargetBounds"
       "appearDelay" : 500,
       "disappearDelay" : 200,
       "autoHide" : true

@@ -148,12 +148,14 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var background = this._getCellBackgroundColor( template, i, config );
         switch( template.getCellType( i ) ) {
           case "text":
+            this._cellLabels[ i ] = template.getCellElement( this._templateContainer, i );
             this._renderCellLabel( template, i, config, false, false );
             if( background || this._cellLabels[ i ] ) {
               this._getTextElement( i ).style.backgroundColor = background;
             }
           break;
           case "image":
+            this._cellImages[ i ] = template.getCellElement( this._templateContainer, i );
             this._renderCellImage( template, i, config, false, false );
           break;
         }
@@ -540,9 +542,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellImageBounds : function( item, cell, config ) {
       var element = this._cellImages[ cell ];
       if( element ) {
-        if( item && item.hasCellLayout() ) {
-          this._renderCellLayout( element, item, cell );
-        } else {
+        if( item == null || !item.hasCellLayout ) {
           var left = this._getItemImageLeft( item, cell, config );
           var width = this._getItemImageWidth( item, cell, config );
           this._setBounds( element, left, 0, width, this.getHeight() );
@@ -578,9 +578,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
-        if( item && item.hasCellLayout() ) {
-          this._renderCellLayout( element, item, cell );
-        } else {
+        if( item == null || !item.hasCellLayout ) {
           var left = this._getItemTextLeft( item, cell, config );
           var width = this._getItemTextWidth( item, cell, config );
           var top = this._getCellPadding( config )[ 0 ];
@@ -589,14 +587,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this._setBounds( element, left, top, width, this.getHeight() - top );
         }
       }
-    },
-
-    _renderCellLayout : function( element, template, cell ) {
-      this._setBounds( element,
-                       template.getCellLeft( cell ),
-                       template.getCellTop( cell ),
-                       template.getCellWidth( cell ),
-                       template.getCellHeight( cell ) );
     },
 
     _renderElementContent : Variant.select( "qx.client", {
