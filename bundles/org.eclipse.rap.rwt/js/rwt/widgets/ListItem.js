@@ -67,6 +67,11 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
     // overwritten:
     getCellHeight : function( cell ) {
       return this.getHeight() - this.getPaddingTop();
+    },
+
+    // overwritten:
+    getCellWidth : function( cell ) {
+      return this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
     }
 
   }

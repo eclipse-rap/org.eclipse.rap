@@ -208,9 +208,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
           // TODO [rh] optimize this: context menu should be handled by the List
           //      itself for all its ListItems
           var item = new rwt.widgets.ListItem();
-          if( this._markupEnabled ) {
-            item.setFlexibleCell( 0 );
-          }
           item.addEventListener( "mouseover", this._onListItemMouseOver, this );
           item.addEventListener( "mouseout", this._onListItemMouseOut, this );
           // prevent items from being drawn outside the list
