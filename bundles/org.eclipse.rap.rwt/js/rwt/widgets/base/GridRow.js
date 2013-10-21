@@ -148,18 +148,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ]
       } );
       for( var i = 0; i < template.getCellCount(); i++ ) {
-        var background = this._getCellBackgroundColor( template, i, config );
+        //var background = this._getCellBackgroundColor( template, i, config );
         switch( template.getCellType( i ) ) {
           case "text":
             this._cellLabels[ i ] = template.getCellElement( this._templateContainer, i );
-            this._renderCellLabel( template, i, config, false, false );
-            if( background || this._cellLabels[ i ] ) {
-              this._getTextElement( i ).style.backgroundColor = background;
-            }
+//            this._renderCellLabel( template, i, config, false, false );
+//            if( background || this._cellLabels[ i ] ) {
+//              this._getTextElement( i ).style.backgroundColor = background;
+//            }
           break;
           case "image":
             this._cellImages[ i ] = template.getCellElement( this._templateContainer, i );
-            this._renderCellImage( template, i, config, false, false );
+//            this._renderCellImage( template, i, config, false, false );
           break;
         }
       }
@@ -592,6 +592,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
+    // element -> element
+    // item -> content
+    // cell -> cell (template object)
+    // markupEnabled/isSeeable -> options
     _renderElementContent : Variant.select( "qx.client", {
       "mshtml|newmshtml" : function( element, item, cell, markupEnabled ) {
         if( markupEnabled ) {
@@ -601,7 +605,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
             element.rap_Markup = html;
           }
         } else {
-          // innerText is faster, but works correctly onlw when seeable
+          // innerText is faster, but works correctly only when seeable
           if( this.isSeeable() ) {
             element.innerText = item ? item.getText( cell, false ) : "";
           } else {

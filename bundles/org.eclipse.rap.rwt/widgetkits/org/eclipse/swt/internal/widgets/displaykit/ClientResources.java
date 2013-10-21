@@ -147,6 +147,7 @@ public final class ClientResources {
     "rwt/widgets/base/TabFolderPage.js",
     "rwt/widgets/TabItem.js",
     "rwt/runtime/ErrorHandler.js",
+    "rwt/widgets/util/CellRendererRegistry.js",
     "rwt/widgets/base/GridRowContainer.js",
     "rwt/widgets/util/GridRowContainerWrapper.js",
     "rwt/widgets/util/GridUtil.js",

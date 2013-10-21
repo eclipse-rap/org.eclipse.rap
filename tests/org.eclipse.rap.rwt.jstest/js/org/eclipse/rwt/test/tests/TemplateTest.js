@@ -14,6 +14,8 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Template = rwt.widgets.util.Template;
 
+var renderer = rwt.widgets.util.CellRendererRegistry.getInstance();
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
   extend : rwt.qx.Object,
@@ -232,7 +234,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
 
-    testgetCellContent_TextFromGridItem : function() {
+    testGetCellContent_TextFromGridItem : function() {
       var template = new Template( [ { "type" : "text", "bindingIndex" : 1 }, { "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
@@ -426,6 +428,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       assertEquals( "rgb(255,0,0)", template.getCellBackground( item, 0 ) );
+    },
+
+    testCustomRenderer_CalledWithArguments : function() {
+      var cellData = { "type" : "fooType", "bindingIndex" : 1 };
+      var template = new Template( [ cellData ] );
+      var container = createContainer( template );
+      var myContent = {};
+      var options = {
+        "container" : container,
+        "item" : { "content" : [ myContent ] },
+        "bounds" : [ 0, 0, 100, 100 ]
+      };
+      var content = 123;
+      var renderArgs;
+      renderer.add( "fooType", {
+        "renderContent" : function() {
+          renderArgs = rwt.util.Arrays.fromArguments( arguments );
+        },
+        "getContent" : function( item, index ) {
+          return item.content[ index ];
+        }
+      } );
+
+      template.render( options );
+
+      var element = template.getCellElement( container, 0 );
+      var expected = [ element, myContent, cellData, options ];
+      assertEquals( expected, renderArgs );
     }
 
   }
