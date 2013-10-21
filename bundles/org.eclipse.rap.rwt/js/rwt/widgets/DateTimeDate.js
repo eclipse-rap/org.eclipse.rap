@@ -123,7 +123,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     this._spinner.set({
       wrap: true,
       border: null,
-      backgroundColor: null
+      backgroundColor: null,
+      selectTextOnInteract : false
     });
     this._spinner.setMin( 1 );
     this._spinner.setMax( 12 );
@@ -133,14 +134,14 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     // Hack to prevent the spinner text field to request the focus
     this._spinner._textfield.setFocused = function() {};
     // Solution for Bug 284021
-    this._spinner._textfield.setVisibility( false );
+    this._spinner._textfield.setDisplay( false );
     this._spinner._upbutton.setAppearance("datetime-button-up");
     this._spinner._downbutton.setAppearance("datetime-button-down");
     this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
     this._spinner.removeEventListener("keydown", this._spinner._onkeydown, this._spinner);
     this._spinner.removeEventListener("keyup", this._spinner._onkeyup, this._spinner);
     this._spinner.removeEventListener("mousewheel", this._spinner._onmousewheel, this._spinner);
-    this._spinner.setVisibility( !this._drop_down );
+    this._spinner.setDisplay( !this._drop_down );
     this.add( this._spinner );
     // Drop-down button and calendar
     this._dropped = false;

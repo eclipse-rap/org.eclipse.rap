@@ -658,7 +658,9 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
         value = this.getManager().limit(value);
         this.getManager().setValue(value);
       }
-      this._textfield.selectAll();
+      if( this.getSelectTextOnInteract() ) {
+        this._textfield.selectAll();
+      }
       // RAP [rst] See https://bugs.eclipse.org/bugs/show_bug.cgi?id=283546
       e.preventDefault();
       e.stopPropagation();

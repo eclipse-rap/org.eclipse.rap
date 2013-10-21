@@ -129,6 +129,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       var dateTime = this._createDefaultDateTime();
       assertTrue( dateTime instanceof rwt.widgets.DateTimeDate );
       assertEquals( "datetime-date", dateTime.getAppearance() );
+      assertFalse( dateTime._spinner.getSelectTextOnInteract() );
       dateTime.destroy();
     },
 

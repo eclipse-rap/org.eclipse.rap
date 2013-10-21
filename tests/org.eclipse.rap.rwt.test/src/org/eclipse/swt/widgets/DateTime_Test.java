@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.DROP_DOWN_BUTTON;
+import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.SPINNER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,8 +26,10 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -213,31 +217,31 @@ public class DateTime_Test {
     RWT.setLocale( Locale.US );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT );
-    Point expected = new Point( 145, 28 );
+    Point expected = new Point( 144, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.BORDER );
-    expected = new Point( 147, 30 );
+    expected = new Point( 146, 30 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    expected = new Point( 122, 28 );
+    expected = new Point( 121, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.LONG );
-    expected = new Point( 239, 28 );
+    expected = new Point( 238, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.SHORT );
-    expected = new Point( 82, 28 );
+    expected = new Point( 81, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    expected = new Point( 108, 28 );
+    expected = new Point( 107, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.LONG );
-    expected = new Point( 108, 28 );
+    expected = new Point( 107, 28 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.CALENDAR );
@@ -246,6 +250,39 @@ public class DateTime_Test {
 
     expected = new Point( 100, 100 );
     assertEquals( expected, dateTime.computeSize( 100, 100 ) );
+  }
+
+  @Test
+  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_time() {
+    dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
+    dateTime.setSize( 208, 28 );
+
+    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    Rectangle expected = new Rectangle( 178, 0, 30, 28 );
+    assertEquals( expected, getAdapter( dateTime ).getBounds( SPINNER ) );
+  }
+
+  @Test
+  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_date() {
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    dateTime.setSize( 208, 28 );
+
+    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    Rectangle expected = new Rectangle( 178, 0, 30, 28 );
+    assertEquals( expected, getAdapter( dateTime ).getBounds( SPINNER ) );
+  }
+
+  @Test
+  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_dropDown() {
+    dateTime = new DateTime( shell, SWT.DATE | SWT.DROP_DOWN );
+    dateTime.setSize( 208, 28 );
+
+    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    Rectangle expected = new Rectangle( 178, 0, 30, 28 );
+    assertEquals( expected, getAdapter( dateTime ).getBounds( DROP_DOWN_BUTTON ) );
   }
 
   @Test
@@ -326,6 +363,10 @@ public class DateTime_Test {
     shell.setBackgroundMode( SWT.INHERIT_FORCE );
 
     assertTrue( adapter.getBackgroundTransparency() );
+  }
+
+  private IDateTimeAdapter getAdapter( DateTime dateTime ) {
+    return dateTime.getAdapter( IDateTimeAdapter.class );
   }
 
 }
