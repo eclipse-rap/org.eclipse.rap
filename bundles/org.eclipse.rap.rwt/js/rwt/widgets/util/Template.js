@@ -17,20 +17,23 @@ namespace( "rwt.widgets.util" );
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._parseCells();
-  this._item = null;
 };
 
 rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : true,
 
-  createContainer : function( element ) {
-    if( !element || typeof element.nodeName !== "string" ) {
-      throw new Error( "Not a valid target for TemplateContainer:" + element );
+  createContainer : function( options ) {
+    if( !options.element || typeof options.element.nodeName !== "string" ) {
+      throw new Error( "Not a valid target for TemplateContainer:" + options.element );
+    }
+    if( typeof options.zIndexOffset !== "number" ) {
+      throw new Error( "Not a valid target for TemplateContainer:" + options.element );
     }
     return {
-      "element" : element,
+      "element" : options.element,
       "template" : this,
+      "zIndexOffset" : options.zIndexOffset,
       "cellElements" : []
     };
   },
@@ -43,7 +46,6 @@ rwt.widgets.util.Template.prototype = {
     if( !options.container || options.container.template !== this ) {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
-    this._item = options.item;
     this._createElements( options ); // TODO [tb] : create lazy while rendering content
     this._renderAllBounds( options );
   },
@@ -56,34 +58,48 @@ rwt.widgets.util.Template.prototype = {
     return this._cells[ cell ].type;
   },
 
-  hasText : function( cell ) {
-    if( this._isBound( cell ) ) {
-      return this._item.hasText( this._getIndex( cell ) );
-    } else {
-      return false;
+  hasContent : function( item, cell ) {
+    switch( this._cells[ cell ].type ) {
+      case "text":
+        return this._hasText( item, cell );
+      case "image":
+        return this._hasImage( item, cell );
+      default:
+        return false;
     }
   },
 
-  getText : function( cell, arg ) {
+  getCellContent : function( item, cell, arg ) {
+    switch( this._cells[ cell ].type ) {
+      case "text":
+        return this._getText( item, cell, arg );
+      case "image":
+        return this._getImage( item, cell, arg );
+      default:
+        return null;
+    }
+  },
+
+  _getText : function( item, cell, arg ) {
     if( this._isBound( cell ) ) {
-      return this._item.getText( this._getIndex( cell ), arg );
+      return item.getText( this._getIndex( cell ), arg );
     } else {
       return "";
     }
   },
 
-  getImage : function( cell, arg ) {
+  _getImage : function( item, cell, arg ) {
     if( this._isBound( cell ) ) {
-      return this._item.getImage( this._getIndex( cell ), arg );
+      return item.getImage( this._getIndex( cell ), arg );
     } else {
       return null;
     }
   },
 
-  getCellForeground : function( cell ) {
+  getCellForeground : function( item, cell ) {
     var result = null;
     if( this._isBound( cell ) ) {
-      result = this._item.getCellForeground( this._getIndex( cell ) );
+      result = item.getCellForeground( this._getIndex( cell ) );
     }
     if( ( result === null || result === "" ) && this._cells[ cell ].foreground ) {
       result = this._cells[ cell ].foreground;
@@ -91,10 +107,10 @@ rwt.widgets.util.Template.prototype = {
     return result;
   },
 
-  getCellBackground : function( cell ) {
+  getCellBackground : function( item, cell ) {
     var result = null;
     if( this._isBound( cell ) ) {
-      result = this._item.getCellBackground( this._getIndex( cell ) );
+      result = item.getCellBackground( this._getIndex( cell ) );
     }
     if( ( result === null || result === "" ) && this._cells[ cell ].background ) {
       result = this._cells[ cell ].background;
@@ -102,10 +118,10 @@ rwt.widgets.util.Template.prototype = {
     return result;
   },
 
-  getCellFont : function( cell ){
+  getCellFont : function( item, cell ){
     var result = null;
     if( this._isBound( cell ) ) {
-      result = this._item.getCellFont( this._getIndex( cell ) );
+      result = item.getCellFont( this._getIndex( cell ) );
     }
     if( ( result === null || result === "" ) && this._cells[ cell ].font ) {
       result = this._cells[ cell ].font;
@@ -116,25 +132,30 @@ rwt.widgets.util.Template.prototype = {
   _createElements : function( options ) {
     var elements = options.container.cellElements;
     for( var i = 0; i < this._cells.length; i++ ) {
-      if( elements[ i ] == null && this._hasContent( options.item, i ) ) {
+      if( elements[ i ] == null && this.hasContent( options.item, i ) ) {
         var element = document.createElement( "div" );
         element.style.overflow = "hidden";
         element.style.position = "absolute";
+        element.style.zIndex = options.container.zIndexOffset + i;
         options.container.element.appendChild( element );
         options.container.cellElements[ i ] = element;
       }
     }
   },
 
-  _hasContent : function( item, cell ) {
-    var index = this._cells[ cell ].bindingIndex;
-    switch( this._cells[ cell ].type ) {
-      case "text":
-        return this.hasText( cell );
-      case "image":
-        return item.getImage( index ) !== null;
-      default:
-        return false;
+  _hasText : function( item, cell ) {
+    if( this._isBound( cell ) ) {
+      return item.hasText( this._getIndex( cell ) );
+    } else {
+      return false;
+    }
+  },
+
+  _hasImage : function( item, cell ) {
+    if( this._isBound( cell ) ) {
+      return item.getImage( this._getIndex( cell ) ) !== null;
+    } else {
+      return false;
     }
   },
 

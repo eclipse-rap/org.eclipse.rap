@@ -36,17 +36,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       try {
-        template.createContainer( null );
+        template.createContainer( {
+          "element" : null,
+          "zIndexOffset" : 100
+        } );
         fail();
       } catch( ex ) {
         //expected
       }
     },
 
-    testCreateContainerDoesNotFailWithHtmlElement : function() {
+    testCreateContainerFailsWithoutZIndex : function() {
       var template = createTemplate( [ "text", "text", "text" ] );
 
-      var container = template.createContainer( document.createElement( "div" ) );
+      try {
+        template.createContainer( {
+          "element" : document.createElement( "div" ),
+          "zIndexOffset" : null
+        } );
+        fail();
+      } catch( ex ) {
+        //expected
+      }
+    },
+
+    testCreateContainerDoesNotFailWithMinimalArguments : function() {
+      var template = createTemplate( [ "text", "text", "text" ] );
+
+      var container = template.createContainer( {
+        "element" : document.createElement( "div" ),
+        "zIndexOffset" : 100
+      } );
       assertTrue( container instanceof Object );
     },
 
@@ -92,6 +112,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var element = render( template, createGridItem( [ "foo", "foo", "foo" ] ) );
 
       assertEquals( 3, element.children.length );
+    },
+
+    testRenderCreatesElements_ApplyZIndex : function() {
+      var template = createTemplate( [ "text", "text", "text" ] );
+
+      var element = render( template, createGridItem( [ "foo", null, "foo" ] ) );
+
+      assertEquals( 100, element.children[ 0 ].style.zIndex );
+      assertEquals( 102, element.children[ 1 ].style.zIndex );
     },
 
     testRenderCreatesElements_ReUsesElements : function() {
@@ -203,57 +232,73 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
 
-    testGetText_FromGridItem : function() {
-      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+    testgetCellContent_TextFromGridItem : function() {
+      var template = new Template( [ { "type" : "text", "bindingIndex" : 1 }, { "type" : "text" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
-      assertEquals( "bar", template.getText( 0 ) );
-      assertEquals( "", template.getText( 1 ) );
+      assertEquals( "bar", template.getCellContent( item, 0 ) );
+      assertEquals( "", template.getCellContent( item, 1 ) );
     },
 
-    testGetText_ForwardArgument : function() {
-      var template = new Template( [ { "bindingIndex" : 0 } ] );
+    testGetTextContent_TextForwardArgument : function() {
+      var template = new Template( [ { "type" : "text", "bindingIndex" : 0 } ] );
       var item = createGridItem( [ "foo", "bar" ] );
       var arg;
       item.getText = function() { arg = arguments; };
 
-      render( template, item );
-      template.getText( 0, 33 );
+      template.getCellContent( item, 0, 33 );
 
       assertEquals( [ 0, 33 ], rwt.util.Arrays.fromArguments( arg ) );
     },
 
-    testHasText_NoBindingOrDefault : function() {
-      var template = new Template( [ { } ] );
+    testHasContent_TextWithNoBindingOrDefault : function() {
+      var template = new Template( [ { "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
-      render( template, item );
 
-      assertFalse( template.hasText( 0 ) );
+      assertFalse( template.hasContent( item, 0 ) );
     },
 
-    testHasText_BoundToEmptyAndNoDefault : function() {
-      var template = new Template( [ { "bindingIndex" : 0 } ] );
+    testHasContent_TextBoundToEmptyAndNoDefault : function() {
+      var template = new Template( [ { "type" : "text", "bindingIndex" : 0 } ] );
       var item = createGridItem( [ "", "bar" ] );
-      render( template, item );
 
-      assertFalse( template.hasText( 0 ) );
+      assertFalse( template.hasContent( item, 0 ) );
     },
 
-    testHasText_BoundToValue : function() {
-      var template = new Template( [ { "bindingIndex" : 0 } ] );
+    testHasContent_TextBoundToValue : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
-      render( template, item );
 
-      assertTrue( template.hasText( 0 ) );
+      assertTrue( template.hasContent( item, 0 ) );
     },
 
-    testGetImage_FromGridItem : function() {
-      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+    testHasContent_ImageWithNoBindingOrDefault : function() {
+      var template = new Template( [ { "type" : "image" } ] );
+      var item = createGridItem( [], [ "foo", "bar" ] );
 
-      render( template, createGridItem( [], [ "foo.png", "bar.png" ] ) );
+      assertFalse( template.hasContent( item, 0 ) );
+    },
 
-      assertEquals( "bar.png", template.getImage( 0 ) );
-      assertNull( template.getImage( 1 ) );
+    testHasContent_ImageBoundToEmptyAndNoDefault : function() {
+      var template = new Template( [ { "type" : "image", "bindingIndex" : 0 } ] );
+      var item = createGridItem( [], [ null, "bar" ] );
+
+      assertFalse( template.hasContent( item, 0 ) );
+    },
+
+    testHasContent_ImageBoundToValue : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+      var item = createGridItem( [], [ "foo", "bar" ] );
+
+      assertTrue( template.hasContent( item, 0 ) );
+    },
+
+    testgetCellContent_ImageFromGridItem : function() {
+      var template = new Template( [ { "type" : "image", "bindingIndex" : 1 }, {} ] );
+      var item = createGridItem( [], [ "foo.png", "bar.png" ] );
+
+      assertEquals( "bar.png", template.getCellContent( item, 0 ) );
+      assertNull( template.getCellContent( item, 1 ) );
     },
 
     testGetCellFont_NotBoundIsNull : function() {
@@ -261,9 +306,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellFonts( [ "14px Arial", "14px Arial" ] );
 
       var template = new Template( [ {}, {} ] );
-      render( template, item );
 
-      assertNull( template.getCellFont( 0 ) );
+      assertNull( template.getCellFont( item, 0 ) );
     },
 
     testGetCellFont_FromGridItem : function() {
@@ -271,9 +315,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellFonts( [ null, "14px Arial" ] );
-      render( template, item );
 
-      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+      assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
     },
 
     testGetCellFont_FromGridItemDoesOverwriteDefault : function() {
@@ -281,25 +324,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellFonts( [ null, "14px Arial" ] );
-      render( template, item );
 
-      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+      assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
     },
 
     testGetCellFont_FromDefaultUnbound : function() {
       var template = new Template( [ { "font" : [ [ "Arial" ], 14, false, false ] }, {} ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+      assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
     },
 
     testGetCellFont_FromDefaultItemNotSet : function() {
       var template = new Template( [ { "bindingIndex" : 1, "font" : [ [ "Arial" ], 14, false, false ] }, {} ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      assertEquals( "14px Arial", template.getCellFont( 0 ) );
+      assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
     },
 
     testGetCellForeground_NotBoundIsNull : function() {
@@ -307,9 +349,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellForegrounds( [ "rgb( 0, 1, 2 )", "rgb( 3, 4, 5 )" ] );
 
       var template = new Template( [ {}, {} ] );
-      render( template, item );
 
-      assertNull( template.getCellForeground( 0 ) );
+      assertNull( template.getCellForeground( item, 0 ) );
     },
 
     testGetCellForeground_FromGridItem : function() {
@@ -317,9 +358,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellForegrounds( [ null, "rgb( 3, 4, 5 )" ] );
-      render( template, item );
 
-      assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( 0 ) );
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( item, 0 ) );
     },
 
     testGetCellForeground_FromGridItemDoesOverwriteDefault : function() {
@@ -327,25 +367,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellForegrounds( [ null, "rgb( 3, 4, 5 )" ] );
-      render( template, item );
 
-      assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( 0 ) );
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( item, 0 ) );
     },
 
     testGetCellForeground_FromDefaultUnbound : function() {
       var template = new Template( [ { "foreground" : [ 255, 0, 0, 255 ] } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
-
-      assertEquals( "rgb(255,0,0)", template.getCellForeground( 0 ) );
+      assertEquals( "rgb(255,0,0)", template.getCellForeground( item, 0 ) );
     },
 
     testGetCellForeground_FromDefaultItemValueNotSet : function() {
       var template = new Template( [ { "bindingIndex" : 1, "foreground" : [ 255, 0, 0, 255 ] } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
-
-      assertEquals( "rgb(255,0,0)", template.getCellForeground( 0 ) );
+      assertEquals( "rgb(255,0,0)", template.getCellForeground( item, 0 ) );
     },
 
     testGetCellBackground_NotBoundIsNull : function() {
@@ -353,9 +390,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellBackgrounds( [ "rgb( 0, 1, 2 )", "rgb( 3, 4, 5 )" ] );
 
       var template = new Template( [ {}, {} ] );
-      render( template, item );
 
-      assertNull( template.getCellBackground( 0 ) );
+      assertNull( template.getCellBackground( item, 0 ) );
     },
 
     testGetCellBackground_FromGridItem : function() {
@@ -363,9 +399,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )" ] );
-      render( template, item );
 
-      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( 0 ) );
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( item, 0 ) );
     },
 
     testGetCellBackground_FromGridItemDoesOverwriteDefault : function() {
@@ -373,25 +408,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )" ] );
-      render( template, item );
 
-      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( 0 ) );
+      assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( item, 0 ) );
     },
 
     testGetCellBackground_FromDefaultUnbound : function() {
       var template = new Template( [ { "background" : [ 255, 0, 0, 255 ] } ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      assertEquals( "rgb(255,0,0)", template.getCellBackground( 0 ) );
+      assertEquals( "rgb(255,0,0)", template.getCellBackground( item, 0 ) );
     },
 
     testGetCellBackground_FromDefaultItemValueNotSet : function() {
       var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
 
-      render( template, createGridItem( [ "foo", "bar" ] ) );
+      var item = createGridItem( [ "foo", "bar" ] );
 
-      assertEquals( "rgb(255,0,0)", template.getCellBackground( 0 ) );
+      assertEquals( "rgb(255,0,0)", template.getCellBackground( item, 0 ) );
     }
 
   }
@@ -429,7 +463,10 @@ var render = function( template, item, dimension ) {
 };
 
 var createContainer = function( template ) {
-  return template.createContainer( document.createElement( "div" ) );
+  return template.createContainer( {
+    "element" : document.createElement( "div" ),
+    "zIndexOffset" : 100
+  } );
 };
 
 var getLeft = function( element ) {

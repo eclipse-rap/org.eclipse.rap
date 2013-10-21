@@ -137,7 +137,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
       var template = config.rowTemplate;
       if( this._templateContainer == null ) {
-        this._templateContainer = template.createContainer( this._getTargetNode() );
+        this._templateContainer = template.createContainer( {
+          "element" : this._getTargetNode(),
+          "zIndexOffset" : 100
+        } );
       }
       template.render( {
         "container" : this._templateContainer,
