@@ -72,6 +72,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/MobileWebkitSupportTest.js",
     "tests/IFrameTest.js",
     "tests/DNDTest.js",
+    "tests/CellRendererRegistryTest.js",
     "tests/TemplateTest.js",
     "tests/GridItemTest.js",
     "tests/GridColumnTest.js",

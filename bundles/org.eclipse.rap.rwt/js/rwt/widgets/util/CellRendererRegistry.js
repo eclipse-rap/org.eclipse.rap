@@ -16,14 +16,33 @@ namespace( "rwt.widgets.util" );
 
 rwt.widgets.util.CellRendererRegistry = function() {
 
-  var renderer = {};
+  var rendererMap = {};
+  var Wrapper = function() {};
 
-  this.add = function( type, rendererMap ) {
-    renderer[ type ] = rendererMap;
+  this.add = function( renderer ) {
+    if(    renderer == null
+        || typeof renderer.contentType !== "string"
+        || typeof renderer.cellType !== "string" )
+    {
+      throw new Error( "Can not register invalid renderer" );
+    }
+    if( rendererMap[ renderer.cellType ] != null ) {
+      throw new Error( "Renderer for cellType " + renderer.cellType + " already registered" );
+    }
+    rendererMap[ renderer.cellType ] = renderer;
   };
 
-  this.get = function( type ) {
-    return renderer[ type ];
+  this.getRendererFor = function( type ) {
+    return rendererMap[ type ] || null;
+  };
+
+  this.removeRendererFor = function( type ) {
+    delete rendererMap[ type ];
+  };
+
+  this.getAll = function( type ) {
+    Wrapper.prototype = rendererMap;
+    return new Wrapper();
   };
 
 };
@@ -39,7 +58,16 @@ rwt.widgets.util.CellRendererRegistry.getInstance = function() {
 ///////////////////
 // default renderer
 
-rwt.widgets.util.CellRendererRegistry.getInstance().add( "text", {
+rwt.widgets.util.CellRendererRegistry.getInstance().add( {
+  "cellType" : "text",
+  "contentType" : "text",
+  "renderContent" : function(){}
+} );
+
+rwt.widgets.util.CellRendererRegistry.getInstance().add( {
+  "cellType" : "image",
+  "contentType" : "image",
+  "renderContent" : function(){}
 } );
 
 }());

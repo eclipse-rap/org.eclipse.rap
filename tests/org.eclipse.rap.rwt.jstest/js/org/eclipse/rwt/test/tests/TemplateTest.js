@@ -296,11 +296,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testgetCellContent_ImageFromGridItem : function() {
-      var template = new Template( [ { "type" : "image", "bindingIndex" : 1 }, {} ] );
+      var template = new Template( [ { "type" : "image", "bindingIndex" : 1 } ] );
       var item = createGridItem( [], [ "foo.png", "bar.png" ] );
 
       assertEquals( "bar.png", template.getCellContent( item, 0 ) );
-      assertNull( template.getCellContent( item, 1 ) );
     },
 
     testGetCellFont_NotBoundIsNull : function() {
@@ -430,32 +429,60 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "rgb(255,0,0)", template.getCellBackground( item, 0 ) );
     },
 
-    testCustomRenderer_CalledWithArguments : function() {
+    testCustomRenderer_hasContent : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {}
+      } );
+
+      assertTrue( template.hasContent( item, 0 ) );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_getContent : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {}
+      } );
+
+      assertEquals( "foo", template.getCellContent( item, 0 ) );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_CellRenderContentForText : function() {
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
-      var myContent = {};
+      var item = createGridItem( [ "foo", "bar" ] );
       var options = {
         "container" : container,
-        "item" : { "content" : [ myContent ] },
+        "item" : item,
         "bounds" : [ 0, 0, 100, 100 ]
       };
       var content = 123;
       var renderArgs;
-      renderer.add( "fooType", {
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
         "renderContent" : function() {
           renderArgs = rwt.util.Arrays.fromArguments( arguments );
-        },
-        "getContent" : function( item, index ) {
-          return item.content[ index ];
         }
       } );
 
       template.render( options );
 
       var element = template.getCellElement( container, 0 );
-      var expected = [ element, myContent, cellData, options ];
+      var expected = [ element, "bar", cellData, options ];
       assertEquals( expected, renderArgs );
+      renderer.removeRendererFor( "fooType" );
     }
 
   }

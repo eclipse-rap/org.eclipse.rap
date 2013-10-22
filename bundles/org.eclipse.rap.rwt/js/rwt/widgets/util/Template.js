@@ -14,6 +14,8 @@ namespace( "rwt.widgets.util" );
 
 (function(){
 
+var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
+
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._parseCells();
@@ -47,6 +49,7 @@ rwt.widgets.util.Template.prototype = {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
     this._createElements( options ); // TODO [tb] : create lazy while rendering content
+    this._renderAllContent( options );
     this._renderAllBounds( options );
   },
 
@@ -59,7 +62,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   hasContent : function( item, cell ) {
-    switch( this._cells[ cell ].type ) {
+    switch( renderer[ this._cells[ cell ].type ].contentType ) {
       case "text":
         return this._hasText( item, cell );
       case "image":
@@ -70,7 +73,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   getCellContent : function( item, cell, arg ) {
-    switch( this._cells[ cell ].type ) {
+    switch( renderer[ this._cells[ cell ].type ].contentType ) {
       case "text":
         return this._getText( item, cell, arg );
       case "image":
@@ -156,6 +159,19 @@ rwt.widgets.util.Template.prototype = {
       return item.getImage( this._getIndex( cell ) ) !== null;
     } else {
       return false;
+    }
+  },
+
+  _renderAllContent : function( options ) {
+    for( var i = 0; i < this._cells.length; i++ ) {
+      var element = options.container.cellElements[ i ];
+      if( element ) {
+        var renderContent = renderer[ this._cells[ i ].type ].renderContent;
+        renderContent( element,
+                      this.getCellContent( options.item, i ),
+                      this._cells[ i ],
+                      options );
+      }
     }
   },
 
