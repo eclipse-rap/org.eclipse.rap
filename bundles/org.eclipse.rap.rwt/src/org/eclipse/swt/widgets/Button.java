@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -377,43 +378,46 @@ public class Button extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    boolean hasImage = image != null;
-    boolean hasText = text.length() > 0;
-    if( hasImage ) {
-      Rectangle imageBounds = image.getBounds ();
-      width = imageBounds.width;
-      height = imageBounds.height;
-    }
-    if( hasText ) {
-      Point extent;
-      if( ( style & SWT.WRAP ) != 0 ) {
-        extent = TextSizeUtil.textExtent( getFont(), text, wHint );
-      } else {
-        extent = TextSizeUtil.stringExtent( getFont(), text );
-      }
-      width += extent.x;
-      height = Math.max( height, extent.y );
-    }
-    if( height == 0 ) {
-      height = 10;
-    }
-    ButtonThemeAdapter themeAdapter = ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
-    if( hasText && hasImage ) {
-      int spacing = themeAdapter.getSpacing( this );
-      width += spacing;
-    }
-    if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      Point checkSize = themeAdapter.getCheckSize( this );
-      width += checkSize.x;
-      if( hasText || hasImage ) {
-        width += themeAdapter.getCheckSpacing( this );
-      }
-      height = Math.max( height, checkSize.y );
-    } else if( ( style & SWT.ARROW ) != 0 ) {
+    ButtonThemeAdapter themeAdapter = getThemeAdapter();
+    Rectangle padding = themeAdapter.getPadding( this );
+    if( ( style & SWT.ARROW ) != 0 ) {
       width = themeAdapter.getArrowSize( this ).x;
       height = themeAdapter.getArrowSize( this ).y;
+    } else {
+      boolean hasImage = image != null;
+      boolean hasText = text.length() > 0;
+      Font font = getFont();
+      if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
+        Point checkSize = themeAdapter.getCheckSize( this );
+        width += checkSize.x;
+        if( hasText || hasImage ) {
+          width += themeAdapter.getCheckSpacing( this );
+        }
+        height = Math.max( height, checkSize.y );
+      }
+      if( hasImage ) {
+        Rectangle imageBounds = image.getBounds();
+        width += imageBounds.width;
+        height = Math.max( height, imageBounds.height );
+      }
+      if( hasText && hasImage ) {
+        width += themeAdapter.getSpacing( this );
+      }
+      if( hasText ) {
+        Point extent;
+        if( ( style & SWT.WRAP ) != 0 ) {
+          int wrapWidth = wHint == SWT.DEFAULT ? wHint : wHint - width - padding.width;
+          extent = TextSizeUtil.textExtent( font, text, wrapWidth );
+        } else {
+          extent = TextSizeUtil.stringExtent( font, text );
+        }
+        width += extent.x;
+        height = Math.max( height, extent.y );
+      }
+      if( height == 0 ) {
+        height = TextSizeUtil.getCharHeight( font );
+      }
     }
-    Rectangle padding = themeAdapter.getPadding( this );
     width += padding.width;
     height += padding.height;
     if( wHint != SWT.DEFAULT ) {
@@ -536,4 +540,9 @@ public class Button extends Control {
     }
     return result;
   }
+
+  private ButtonThemeAdapter getThemeAdapter() {
+    return ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
+  }
+
 }

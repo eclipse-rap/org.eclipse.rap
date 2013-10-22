@@ -202,7 +202,7 @@ public class Button_Test {
 
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
-    Point expected = new Point( 32, 24 );
+    Point expected = new Point( 32, 28 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     expected = new Point( 92, 30 );
@@ -216,7 +216,7 @@ public class Button_Test {
 
     // PUSH button with BORDER
     button = new Button( shell, SWT.PUSH | SWT.BORDER );
-    expected = new Point( 32, 24 );
+    expected = new Point( 32, 28 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     button.setImage( image );
@@ -234,7 +234,7 @@ public class Button_Test {
 
     // TOGGLE button with border
     button = new Button( shell, SWT.TOGGLE | SWT.BORDER );
-    expected = new Point( 32, 24 );
+    expected = new Point( 32, 28 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     button.setImage( image );
@@ -291,7 +291,7 @@ public class Button_Test {
   }
 
   @Test
-  public void testComputeSizeWithCustomTheme() throws IOException {
+  public void testComputeSize_withCustomTheme() throws IOException {
     String css = "Button {\nspacing: 10px;\n}";
     ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeTestUtil.setCurrentThemeId( "custom" );
@@ -320,24 +320,43 @@ public class Button_Test {
   }
 
   @Test
-  public void testComputeSizeWithWrap() {
+  public void testComputeSize_withWrap_onPush() {
     String text = "Click me!";
     String textWithBreak = "Click\nme!";
     Button buttonNoWrap = new Button( shell, SWT.NONE );
     Button buttonWrap = new Button( shell, SWT.WRAP );
+
     buttonWrap.setText( text );
     buttonNoWrap.setText( text );
     assertEquals( new Point( 92, 30 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // NOTE : Different calculation due to WRAP flag causes slightly different result in height:
     assertEquals( new Point( 92, 32 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
     buttonWrap.setText( textWithBreak );
     buttonNoWrap.setText( textWithBreak );
     assertEquals( new Point( 92, 30 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 66, 49 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
     buttonWrap.setText( text );
     buttonNoWrap.setText( text );
-    assertEquals( new Point( 47, 30 ), buttonNoWrap.computeSize( 45, SWT.DEFAULT ) );
-    assertEquals( new Point( 47, 49 ), buttonWrap.computeSize( 45, SWT.DEFAULT ) );
+    assertEquals( new Point( 77, 30 ), buttonNoWrap.computeSize( 75, SWT.DEFAULT ) );
+    assertEquals( new Point( 77, 49 ), buttonWrap.computeSize( 75, SWT.DEFAULT ) );
+  }
+
+  @Test
+  public void testComputeSize_withWrap_onCheck() {
+    String text = "Click me!";
+    String textWithBreak = "Click\nme!";
+    Button check = new Button( shell, SWT.WRAP | SWT.CHECK );
+
+    check.setText( text );
+    assertEquals( new Point( 94, 24 ), check.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    check.setText( textWithBreak );
+    assertEquals( new Point( 68, 41 ), check.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    check.setText( text );
+    assertEquals( new Point( 75, 41 ), check.computeSize( 75, SWT.DEFAULT ) );
   }
 
   @Test
