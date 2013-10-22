@@ -592,30 +592,51 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    // element -> element
-    // item -> content
-    // cell -> cell (template object)
-    // markupEnabled/isSeeable -> options
-    _renderElementContent : Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function( element, item, cell, markupEnabled ) {
-        if( markupEnabled ) {
-          var html = item ? item.getText( cell, false ) : "";
+    _renderElementContent : function( element, item, cell, markupEnabled ) {
+      var options = {
+        "markupEnabled" : markupEnabled,
+        "seeable" : this.isSeeable()
+      };
+      options.escaped = this._shouldEscapeText( options );
+      this._renderText( element,
+                        item ? item.getText( cell, options.escaped ) : null,
+                        null,
+                        options );
+    },
+
+    _shouldEscapeText : Variant.select( "qx.client", {
+      "mshtml|newmshtml" : function( options ) {
+        if( options.markupEnabled ) {
+          return false;
+        } else {
+          // IE can not escape propperly if element is not in DOM, escape this once
+          return options.seeable ? false : undefined;
+        }
+      },
+      "default" : function( options ) {
+        return !options.markupEnabled;
+      }
+    } ),
+
+    _renderText : Variant.select( "qx.client", {
+      "mshtml|newmshtml" : function( element, content, cellData, options ) {
+        var html = content || "";
+        if( options.markupEnabled ) {
           if( element.rap_Markup !== html ) {
             element.innerHTML = html;
             element.rap_Markup = html;
           }
         } else {
-          // innerText is faster, but works correctly only when seeable
-          if( this.isSeeable() ) {
-            element.innerText = item ? item.getText( cell, false ) : "";
+          if( options.escaped ) {
+            element.innerHTML = html;
           } else {
-            element.innerHTML = item ? item.getText( cell ) : "";
+            element.innerText = html;
           }
         }
       },
-      "default" : function( element, item, cell, markupEnabled ) {
-        var html = item ? item.getText( cell, !markupEnabled ) : "";
-        if( markupEnabled ) {
+      "default" : function( element, content, cellData, options ) {
+        var html = content || "";
+        if( options.markupEnabled ) {
           if( html !== element.rap_Markup ) {
             element.innerHTML = html;
             element.rap_Markup = html;
