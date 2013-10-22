@@ -459,14 +459,13 @@ public class Tree extends Composite {
       }
       int flatIndex = item.getFlatIndex();
       int topIndex = getTopItemIndex();
-      if( flatIndex <= topIndex ) {
+      int visibleRows = getVisibleRowCount( false );
+      if( flatIndex < topIndex ) {
+        // Show item as top item
         setTopItemIndex( flatIndex );
-      } else {
-        int itemsAreaHeight = getClientArea().height - getHeaderHeight();
-        int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-        if( flatIndex >= topIndex + rows ) {
-          setTopItemIndex( flatIndex - rows + 1 );
-        }
+      } else if( visibleRows > 0 && flatIndex >= topIndex + visibleRows ) {
+        // Show item as last item
+        setTopItemIndex( flatIndex - visibleRows + 1 );
       }
     }
   }
