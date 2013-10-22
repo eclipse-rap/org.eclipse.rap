@@ -851,14 +851,18 @@ public class Shell extends Decorations {
   }
 
   void updateDefaultButton( final Control focusControl, final boolean set ) {
-    if( focusControl instanceof Button ) {
+    if( isPushButton( focusControl ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          Button defaultButton = set ? ( Button )focusControl : null;
-          setDefaultButton( defaultButton, false );
+          Button defaultButton = ( Button )focusControl;
+          setDefaultButton( set ? defaultButton : null, false );
         }
       } );
     }
+  }
+
+  private static boolean isPushButton( Control control ) {
+    return control instanceof Button && ( control.style & SWT.PUSH ) != 0 ;
   }
 
   /**
