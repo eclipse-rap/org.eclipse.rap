@@ -166,14 +166,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "width" : 10,
         "right" : 15
       } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 75, getLeft( element.firstChild ) );
     },
 
     testGetCellTop_TopIsOffset : function() {
       var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "top" : 12 } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 12, getTop( element.firstChild ) );
     },
@@ -185,14 +189,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "height" : 10,
         "bottom" : 15
       } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 5, getTop( element.firstChild ) );
     },
 
     testGetCellWidth_WidthIsSet : function() {
       var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "width" : 17 } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 17, getWidth( element.firstChild ) );
     },
@@ -211,7 +219,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testGetCellHeight_HeightIsSet : function() {
       var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "height" : 12 } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 12, getHeight( element.firstChild ) );
     },
@@ -223,7 +233,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "top" : 10,
         "bottom" : 15
       } ] );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 5, getHeight( element.firstChild ) );
     },
@@ -240,17 +252,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       assertEquals( "bar", template.getCellContent( item, 0 ) );
       assertEquals( "", template.getCellContent( item, 1 ) );
-    },
-
-    testGetTextContent_TextForwardArgument : function() {
-      var template = new Template( [ { "type" : "text", "bindingIndex" : 0 } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
-      var arg;
-      item.getText = function() { arg = arguments; };
-
-      template.getCellContent( item, 0, 33 );
-
-      assertEquals( [ 0, 33 ], rwt.util.Arrays.fromArguments( arg ) );
     },
 
     testHasContent_TextWithNoBindingOrDefault : function() {
@@ -457,7 +458,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       renderer.removeRendererFor( "fooType" );
     },
 
-    testCustomRenderer_CellRenderContentForText : function() {
+    testCustomRenderer_ArgumentsForRenderContent : function() {
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
@@ -465,9 +466,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var options = {
         "container" : container,
         "item" : item,
-        "bounds" : [ 0, 0, 100, 100 ]
+        "bounds" : [ 0, 0, 100, 100 ],
+        "markupEnabled" : false
       };
-      var content = 123;
       var renderArgs;
       renderer.add( {
         "cellType" : "fooType",
@@ -479,9 +480,94 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       template.render( options );
 
-      var element = template.getCellElement( container, 0 );
-      var expected = [ element, "bar", cellData, options ];
-      assertEquals( expected, renderArgs );
+      var cellRenderOptions = {
+        "markupEnabled" : false,
+        "escaped" : false
+      };
+      assertIdentical( template.getCellElement( container, 0 ), renderArgs[ 0 ] );
+      assertIdentical( "bar", renderArgs[ 1 ] );
+      assertIdentical( cellData, renderArgs[ 2 ] );
+      assertEquals( cellRenderOptions, renderArgs[ 3 ] );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_ArgumentsForShouldEscapeText : function() {
+      var cellData = { "type" : "fooType", "bindingIndex" : 1 };
+      var template = new Template( [ cellData ] );
+      var container = createContainer( template );
+      var item = createGridItem( [ "foo", "bar" ] );
+      var options = {
+        "container" : container,
+        "item" : item,
+        "bounds" : [ 0, 0, 100, 100 ],
+        "markupEnabled" : false
+      };
+      var renderArgs;
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {},
+        "shouldEscapeText" : function() {
+          renderArgs = rwt.util.Arrays.fromArguments( arguments );
+        }
+      } );
+
+      template.render( options );
+
+      assertEquals( [ options ], renderArgs );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_CellRenderOptionMarkupEnabled : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+      var options;
+
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() { options = arguments[ 3 ]; }
+      } );
+
+      render( template, item, { "markupEnabled" : true } );
+
+      assertTrue( options.markupEnabled );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_CellRenderOptionEscaped : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+      var options;
+
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() { options = arguments[ 3 ]; },
+        "shouldEscapeText" : function() { return true; }
+      } );
+
+      render( template, item );
+
+      assertTrue( options.escaped );
+      renderer.removeRendererFor( "fooType" );
+    },
+
+    testCustomRenderer_ForwardShouldEscapeTextReturnValueToItemGetText : function() {
+      var template = new Template( [ { "type" : "fooType", "bindingIndex" : 0 } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {},
+        "shouldEscapeText" : function() { return 123; }
+      } );
+      var arg;
+      item.getText = function() { arg = arguments; };
+
+      render( template, item );
+
+      assertEquals( [ 0, 123 ], rwt.util.Arrays.fromArguments( arg ) );
       renderer.removeRendererFor( "fooType" );
     }
 
@@ -509,13 +595,16 @@ var createGridItem = function( texts, images ) {
   return result;
 };
 
-var render = function( template, item, dimension ) {
+var render = function( template, item, options ) {
   var container = createContainer( template );
-  template.render( {
+  var renderOptions = {
     "container" : container,
     "item" : item,
-    "bounds" : dimension ? [ 0, 0 ].concat( dimension ) : [ 0, 0, 100, 100 ]
-  } );
+    "bounds" : [ 0, 0, 100, 100 ],
+    "markupEnabled" : false
+  };
+  rwt.util.Objects.mergeWith( renderOptions, options, true );
+  template.render( renderOptions );
   return container.element;
 };
 

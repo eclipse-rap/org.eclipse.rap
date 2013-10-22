@@ -104,6 +104,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       assertIdentical( renderer, registry.getRendererFor( "foo" ) );
     },
 
+    testAddFunctionShouldEscapeText : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+      registry.add(  {
+        "cellType" : "foo2",
+        "contentType" : "bar",
+        "renderContent" : function(){},
+        "shouldEscapeText" : rwt.util.Functions.returnTrue
+      } );
+
+      assertFalse( registry.getRendererFor( "foo" ).shouldEscapeText() );
+      assertTrue( registry.getRendererFor( "foo2" ).shouldEscapeText() );
+    },
+
     testGetAll : function() {
       registry.add( {
         "cellType" : "bar1",

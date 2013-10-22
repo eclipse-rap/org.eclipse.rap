@@ -29,6 +29,9 @@ rwt.widgets.util.CellRendererRegistry = function() {
     if( rendererMap[ renderer.cellType ] != null ) {
       throw new Error( "Renderer for cellType " + renderer.cellType + " already registered" );
     }
+    if( !renderer.shouldEscapeText ) {
+      renderer.shouldEscapeText = rwt.util.Functions.returnFalse;
+    }
     rendererMap[ renderer.cellType ] = renderer;
   };
 

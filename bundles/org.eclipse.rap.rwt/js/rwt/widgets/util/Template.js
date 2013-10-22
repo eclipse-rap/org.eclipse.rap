@@ -72,28 +72,30 @@ rwt.widgets.util.Template.prototype = {
     }
   },
 
-  getCellContent : function( item, cell, arg ) {
-    switch( renderer[ this._cells[ cell ].type ].contentType ) {
+  getCellContent : function( item, cell, cellRenderOptions ) {
+    // TODO : assign cellRenderer in parseCells
+    var cellRenderer = renderer[ this._cells[ cell ].type ];
+    switch( cellRenderer.contentType ) {
       case "text":
-        return this._getText( item, cell, arg );
+        return this._getText( item, cell, cellRenderOptions || {} );
       case "image":
-        return this._getImage( item, cell, arg );
+        return this._getImage( item, cell, cellRenderOptions || {} );
       default:
         return null;
     }
   },
 
-  _getText : function( item, cell, arg ) {
+  _getText : function( item, cell, cellRenderOptions ) {
     if( this._isBound( cell ) ) {
-      return item.getText( this._getIndex( cell ), arg );
+      return item.getText( this._getIndex( cell ), cellRenderOptions.escaped );
     } else {
       return "";
     }
   },
 
-  _getImage : function( item, cell, arg ) {
+  _getImage : function( item, cell ) {
     if( this._isBound( cell ) ) {
-      return item.getImage( this._getIndex( cell ), arg );
+      return item.getImage( this._getIndex( cell ) );
     } else {
       return null;
     }
@@ -163,14 +165,19 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _renderAllContent : function( options ) {
+    var cellRenderOptions = {
+      "markupEnabled" : options.markupEnabled
+    };
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = options.container.cellElements[ i ];
       if( element ) {
-        var renderContent = renderer[ this._cells[ i ].type ].renderContent;
+        var cellRenderer = renderer[ this._cells[ i ].type ];
+        var renderContent = cellRenderer.renderContent;
+        cellRenderOptions.escaped = cellRenderer.shouldEscapeText( options );
         renderContent( element,
-                      this.getCellContent( options.item, i ),
-                      this._cells[ i ],
-                      options );
+                       this.getCellContent( options.item, i, cellRenderOptions ),
+                       this._cells[ i ],
+                       cellRenderOptions );
       }
     }
   },
