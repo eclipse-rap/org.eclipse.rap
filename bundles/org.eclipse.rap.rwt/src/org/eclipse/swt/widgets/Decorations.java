@@ -407,13 +407,35 @@ public class Decorations extends Canvas {
   }
 
   @Override
+  String getNameText() {
+    return getText();
+  }
+
+  static int checkStyle( int style ) {
+    int result = style;
+    if( ( result & SWT.NO_TRIM ) != 0 ) {
+      int trim = ( SWT.CLOSE
+                 | SWT.TITLE
+                 | SWT.MIN
+                 | SWT.MAX
+                 | SWT.RESIZE
+                 | SWT.BORDER );
+      result &= ~trim;
+    }
+    if( ( result & ( /* SWT.MENU | */ SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0 ) {
+      result |= SWT.TITLE;
+    }
+    if( ( result & ( SWT.MIN | SWT.MAX ) ) != 0 ) {
+      result |= SWT.CLOSE;
+    }
+    return result;
+  }
+
+  @Override
   final void releaseWidget() {
     removeMenuBarDisposeListener();
     super.releaseWidget();
   }
-
-  //////////////////////////////////////////////////////////
-  // Helping methods to observe the disposal of the menuBar
 
   private void addMenuBarDisposeListener() {
     if( menuBar != null ) {
@@ -455,4 +477,5 @@ public class Decorations extends Canvas {
     }
     super.reskinChildren( flags );
   }
+
 }

@@ -451,8 +451,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!--@see Decorations#setDefaultButton-->
-   * @see Shell#setDefaultButton(Button)
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -479,7 +478,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!--@see Decorations#setDefaultButton-->
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -675,8 +674,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!-- @see Decorations#setDefaultButton -->
-   * @see Shell#setDefaultButton(Button)
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#setActive
    * @see Shell#forceActive
    */
@@ -1282,43 +1280,6 @@ public class Shell extends Decorations {
       }
     }
     return result;
-  }
-
-  ///////////////////
-  // Widget overrides
-
-  // TODO [rh] move to class Decorations as soon as it exists
-  @Override
-  String getNameText() {
-    return getText();
-  }
-
-  ///////////////////
-  // check... methods
-
-  // TODO [rh] move to class Decorations as soon as it exists
-  static int Decorations_checkStyle( int style ) {
-    int result = style;
-    if( ( result & SWT.NO_TRIM ) != 0 ) {
-      int trim = ( SWT.CLOSE
-                 | SWT.TITLE
-                 | SWT.MIN
-                 | SWT.MAX
-                 | SWT.RESIZE
-                 | SWT.BORDER );
-      result &= ~trim;
-    }
-    if( ( result & ( /* SWT.MENU | */ SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0 ) {
-      result |= SWT.TITLE;
-    }
-    if( ( result & ( SWT.MIN | SWT.MAX ) ) != 0 ) {
-      result |= SWT.CLOSE;
-    }
-    return result;
-  }
-
-  private static int checkStyle( int style ) {
-    return Decorations_checkStyle( style );
   }
 
   private static Shell checkParent( Shell parent ) {
