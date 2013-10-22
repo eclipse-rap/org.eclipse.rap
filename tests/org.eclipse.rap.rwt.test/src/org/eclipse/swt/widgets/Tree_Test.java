@@ -596,15 +596,20 @@ public class Tree_Test {
   @Test
   public void testShowItemFlat() {
     tree.setBounds( 0, 0, 200, 200 );
-    for( int i = 0; i < 100; i++ ) {
-      new TreeItem( tree, SWT.None );
-    }
-    ITreeAdapter adapter = getTreeAdapter( tree );
-
-    assertEquals( 0, adapter.getTopItemIndex() );
+    createTreeItems( tree, 100 );
 
     tree.showItem( tree.getItem( 70 ) );
-    assertEquals( 64, adapter.getTopItemIndex() );
+
+    assertEquals( 64, getTreeAdapter( tree ).getTopItemIndex() );
+  }
+
+  @Test
+  public void testShowItemOnZeroBounds() {
+    createTreeItems( tree, 100 );
+
+    tree.showItem( tree.getItem( 70 ) );
+
+    assertEquals( 0, getTreeAdapter( tree ).getTopItemIndex() );
   }
 
   @Test
