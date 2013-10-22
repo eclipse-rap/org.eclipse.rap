@@ -18,6 +18,7 @@ var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
+  this._cellRenderer = [];
   this._parseCells();
 };
 
@@ -62,7 +63,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   hasContent : function( item, cell ) {
-    switch( renderer[ this._cells[ cell ].type ].contentType ) {
+    switch( this._getContentType( cell ) ) {
       case "text":
         return this._hasText( item, cell );
       case "image":
@@ -74,8 +75,7 @@ rwt.widgets.util.Template.prototype = {
 
   getCellContent : function( item, cell, cellRenderOptions ) {
     // TODO : assign cellRenderer in parseCells
-    var cellRenderer = renderer[ this._cells[ cell ].type ];
-    switch( cellRenderer.contentType ) {
+    switch( this._getContentType( cell ) ) {
       case "text":
         return this._getText( item, cell, cellRenderOptions || {} );
       case "image":
@@ -137,7 +137,7 @@ rwt.widgets.util.Template.prototype = {
   _createElements : function( options ) {
     var elements = options.container.cellElements;
     for( var i = 0; i < this._cells.length; i++ ) {
-      if( elements[ i ] == null && this.hasContent( options.item, i ) ) {
+      if( !elements[ i ] && this._cellRenderer[ i ] && this.hasContent( options.item, i ) ) {
         var element = document.createElement( "div" );
         element.style.overflow = "hidden";
         element.style.position = "absolute";
@@ -194,6 +194,13 @@ rwt.widgets.util.Template.prototype = {
     }
   },
 
+  /**
+   * The type of content "text/image" the renderer expects
+   */
+  _getContentType : function( cell ) {
+    return this._cellRenderer[ cell ].contentType;
+  },
+
   _getCellLeft : function( options, cell ) {
     var cellData = this._cells[ cell ];
     return   cellData.left !== undefined
@@ -232,6 +239,7 @@ rwt.widgets.util.Template.prototype = {
 
   _parseCells : function() {
     for( var i = 0; i < this._cells.length; i++ ) {
+      this._cellRenderer[ i ] = renderer[ this._cells[ i ].type ];
       if( this._cells[ i ].font ) {
         var font = this._cells[ i ].font;
         this._cells[ i ].font = rwt.html.Font.fromArray( font ).toCss();

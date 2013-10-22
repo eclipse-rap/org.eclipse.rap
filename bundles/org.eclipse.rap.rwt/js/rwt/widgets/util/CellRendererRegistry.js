@@ -14,10 +14,12 @@ namespace( "rwt.widgets.util" );
 
 (function(){
 
+var Variant = rwt.util.Variant;
+
 rwt.widgets.util.CellRendererRegistry = function() {
 
-  var rendererMap = {};
   var Wrapper = function() {};
+  var rendererMap = {};
 
   this.add = function( renderer ) {
     if(    renderer == null
@@ -64,7 +66,47 @@ rwt.widgets.util.CellRendererRegistry.getInstance = function() {
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "text",
   "contentType" : "text",
-  "renderContent" : function(){}
+  "shouldEscapeText" : Variant.select( "qx.client", {
+    "mshtml|newmshtml" : function( options ) {
+      if( options.markupEnabled ) {
+        return false;
+      } else {
+        // IE can not escape propperly if element is not in DOM, escape this once
+        return options.seeable ? false : undefined;
+      }
+    },
+    "default" : function( options ) {
+      return !options.markupEnabled;
+    }
+  } ),
+  "renderContent" : Variant.select( "qx.client", {
+    "mshtml|newmshtml" : function( element, content, cellData, options ) {
+      var html = content || "";
+      if( options.markupEnabled ) {
+        if( element.rap_Markup !== html ) {
+          element.innerHTML = html;
+          element.rap_Markup = html;
+        }
+      } else {
+        if( options.escaped ) {
+          element.innerHTML = html;
+        } else {
+          element.innerText = html;
+        }
+      }
+    },
+    "default" : function( element, content, cellData, options ) {
+      var html = content || "";
+      if( options.markupEnabled ) {
+        if( html !== element.rap_Markup ) {
+          element.innerHTML = html;
+          element.rap_Markup = html;
+        }
+      } else {
+        element.innerHTML = html;
+      }
+    }
+  } )
 } );
 
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {

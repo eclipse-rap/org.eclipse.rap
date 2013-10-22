@@ -2682,7 +2682,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         "type" : "text",
         "background" : [ 255, 0, 0 ]
       } );
-
       row.renderItem( item, tree._config, false, null );
 
       var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;

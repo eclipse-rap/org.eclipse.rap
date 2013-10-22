@@ -19,6 +19,8 @@
 var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
+var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
+
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   extend : rwt.widgets.base.Terminator,
@@ -598,10 +600,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "seeable" : this.isSeeable()
       };
       options.escaped = this._shouldEscapeText( options );
-      this._renderText( element,
-                        item ? item.getText( cell, options.escaped ) : null,
-                        null,
-                        options );
+      renderer.text.renderContent( element,
+                                   item ? item.getText( cell, options.escaped ) : null,
+                                   null,
+                                   options );
     },
 
     _shouldEscapeText : Variant.select( "qx.client", {
@@ -615,35 +617,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       },
       "default" : function( options ) {
         return !options.markupEnabled;
-      }
-    } ),
-
-    _renderText : Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function( element, content, cellData, options ) {
-        var html = content || "";
-        if( options.markupEnabled ) {
-          if( element.rap_Markup !== html ) {
-            element.innerHTML = html;
-            element.rap_Markup = html;
-          }
-        } else {
-          if( options.escaped ) {
-            element.innerHTML = html;
-          } else {
-            element.innerText = html;
-          }
-        }
-      },
-      "default" : function( element, content, cellData, options ) {
-        var html = content || "";
-        if( options.markupEnabled ) {
-          if( html !== element.rap_Markup ) {
-            element.innerHTML = html;
-            element.rap_Markup = html;
-          }
-        } else {
-          element.innerHTML = html;
-        }
       }
     } ),
 
