@@ -121,6 +121,38 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       assertTrue( registry.getRendererFor( "foo2" ).shouldEscapeText() );
     },
 
+    testAddFunctionCreateElement : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement();
+      assertEquals( "div", element.tagName.toLowerCase() );
+      assertEquals( "absolute", element.style.position );
+      assertEquals( "hidden", element.style.overflow );
+    },
+
+    testWrapFunctionCreateElement : function() {
+      var arg;
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){},
+        "createElement" : function() {
+          arg = arguments[ 0 ];
+          return document.createElement( "input" );
+        }
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement( 123 );
+      assertEquals( 123, arg );
+      assertEquals( "input", element.tagName.toLowerCase() );
+      assertEquals( "absolute", element.style.position );
+      assertEquals( "hidden", element.style.overflow );
+    },
+
     testGetAll : function() {
       registry.add( {
         "cellType" : "bar1",

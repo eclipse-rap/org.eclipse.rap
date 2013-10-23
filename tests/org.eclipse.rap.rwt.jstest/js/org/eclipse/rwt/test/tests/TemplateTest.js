@@ -465,6 +465,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "foo", template.getCellContent( item, 0 ) );
     },
 
+    testCustomRenderer_ArgumentsForCreateElement : function() {
+      var renderArgs;
+      renderer.add( createCellRenderer( {
+        "createElement" : function() {
+          renderArgs = rwt.util.Arrays.fromArguments( arguments );
+          return document.createElement( "div" );
+        }
+      } ) );
+      var cellData = { "type" : "fooType", "bindingIndex" : 1 };
+      var template = new Template( [ cellData ] );
+
+      render( template, createGridItem( [ "foo", "bar" ] ) );
+
+      assertEquals( 1, renderArgs.length );
+      assertIdentical( cellData, renderArgs[ 0 ] );
+    },
+
     testCustomRenderer_ArgumentsForRenderContent : function() {
       var renderArgs;
       renderer.add( createCellRenderer( {
@@ -561,13 +578,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       renderer.removeRendererFor( "fooType" );
     },
 
+    testDefaultTextRenderer_DefaultTextStyles : function() {
+      var template = createTemplate( [ "text" ] );
+
+      var element = render( template, createGridItem( [ "bar" ] ) );
+
+      assertEquals( "nowrap", element.firstChild.style.whiteSpace );
+    },
+
     testDefaultImageRenderer_RenderImageCentered : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+      var template = createTemplate( [ "image" ] );
 
       var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ) );
 
       var image = TestUtil.getCssBackgroundImage( element.firstChild );
       assertTrue( image.indexOf( "foo.jpg" ) != -1 );
+      var position = element.firstChild.style.backgroundPosition;
+      assertTrue( position == "center" || position == "center center" || position == "50% 50%" );
+      assertEquals( "no-repeat", element.firstChild.style.backgroundRepeat );
       if( !rwt.client.Client.isMshtml() ) {
         var opacity = element.firstChild.style.opacity;
         assertTrue( opacity === "1" || opacity === "" );

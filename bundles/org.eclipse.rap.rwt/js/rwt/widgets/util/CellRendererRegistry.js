@@ -22,18 +22,8 @@ rwt.widgets.util.CellRendererRegistry = function() {
   var rendererMap = {};
 
   this.add = function( renderer ) {
-    if(    renderer == null
-        || typeof renderer.contentType !== "string"
-        || typeof renderer.cellType !== "string" )
-    {
-      throw new Error( "Can not register invalid renderer" );
-    }
-    if( rendererMap[ renderer.cellType ] != null ) {
-      throw new Error( "Renderer for cellType " + renderer.cellType + " already registered" );
-    }
-    if( !renderer.shouldEscapeText ) {
-      renderer.shouldEscapeText = rwt.util.Functions.returnFalse;
-    }
+    checkRenderer( renderer );
+    extendRenderer( renderer );
     rendererMap[ renderer.cellType ] = renderer;
   };
 
@@ -50,7 +40,37 @@ rwt.widgets.util.CellRendererRegistry = function() {
     return new Wrapper();
   };
 
+  var checkRenderer = function( renderer ) {
+    if(    renderer == null
+        || typeof renderer.contentType !== "string"
+        || typeof renderer.cellType !== "string" )
+    {
+      throw new Error( "Can not register invalid renderer" );
+    }
+    if( rendererMap[ renderer.cellType ] != null ) {
+      throw new Error( "Renderer for cellType " + renderer.cellType + " already registered" );
+    }
+  };
+
+  var extendRenderer = function( renderer ) {
+    if( !renderer.shouldEscapeText ) {
+      renderer.shouldEscapeText = rwt.util.Functions.returnFalse;
+    }
+    var innerCreateElement = renderer.createElement || defaultCreateElement;
+    renderer.createElement = function( cellData ) {
+      var result = innerCreateElement( cellData );
+      result.style.position = "absolute";
+      result.style.overflow = "hidden";
+      return result;
+    };
+  };
+
+  var defaultCreateElement = function() {
+    return document.createElement( "div" );
+  };
+
 };
+
 
 rwt.widgets.util.CellRendererRegistry.getInstance = function() {
   if( !rwt.widgets.util.CellRendererRegistry._instance ) {
@@ -66,6 +86,11 @@ rwt.widgets.util.CellRendererRegistry.getInstance = function() {
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "text",
   "contentType" : "text",
+  "createElement" : function( cellData ) {
+    var result = document.createElement( "div" );
+    result.style.whiteSpace = "nowrap";
+    return result;
+  },
   "shouldEscapeText" : Variant.select( "qx.client", {
     "mshtml|newmshtml" : function( options ) {
       if( options.markupEnabled ) {
@@ -115,6 +140,12 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "renderContent" : function( element, content, cellData, options ) {
     var opacity = options.enabled ? 1 : 0.3;
     rwt.html.Style.setBackgroundImage( element, content, opacity );
+  },
+  "createElement" : function( cellData ) {
+    var result = document.createElement( "div" );
+    result.style.backgroundRepeat = "no-repeat";
+    result.style.backgroundPosition = "center";
+    return result;
   }
 } );
 

@@ -142,9 +142,7 @@ rwt.widgets.util.Template.prototype = {
           && this._cellRenderer[ i ]
           && ( this.hasContent( item, i ) || ( this.getCellBackground( item, i ) != null ) )
       ) {
-        var element = document.createElement( "div" );
-        element.style.overflow = "hidden";
-        element.style.position = "absolute";
+        var element = this._cellRenderer[ i ].createElement( this._cells[ i ] );
         element.style.zIndex = options.container.zIndexOffset + i;
         options.container.element.appendChild( element );
         options.container.cellElements[ i ] = element;
