@@ -580,6 +580,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       assertEquals( [ 0, 123 ], rwt.util.Arrays.fromArguments( arg ) );
       renderer.removeRendererFor( "fooType" );
+    },
+
+    testDefaultImageRenderer_RenderImageCentered : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+
+      var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ) );
+
+      var image = TestUtil.getCssBackgroundImage( element.firstChild );
+      assertTrue( image.indexOf( "foo.jpg" ) != -1 );
+      if( !rwt.client.Client.isMshtml() ) {
+        var opacity = element.firstChild.style.opacity;
+        assertTrue( opacity === "1" || opacity === "" );
+      }
+    },
+
+    testDefaultImageRenderer_RenderImageDisabled : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+      var options = { "enabled" : false };
+
+      var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ), options );
+
+      var image = TestUtil.getCssBackgroundImage( element.firstChild );
+      assertTrue( image.indexOf( "foo.jpg" ) != -1 );
+      if( !rwt.client.Client.isMshtml() ) {
+        var opacity = element.firstChild.style.opacity;
+        assertTrue( opacity === "0.3" );
+      }
     }
 
   }
@@ -612,7 +639,8 @@ var render = function( template, item, options ) {
     "container" : container,
     "item" : item,
     "bounds" : [ 0, 0, 100, 100 ],
-    "markupEnabled" : false
+    "markupEnabled" : false,
+    "enabled" : true
   };
   rwt.util.Objects.mergeWith( renderOptions, options, true );
   template.render( renderOptions );

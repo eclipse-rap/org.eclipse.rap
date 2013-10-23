@@ -112,7 +112,10 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "image",
   "contentType" : "image",
-  "renderContent" : function(){}
+  "renderContent" : function( element, content, cellData, options ) {
+    var opacity = options.enabled ? 1 : 0.3;
+    rwt.html.Style.setBackgroundImage( element, content, opacity );
+  }
 } );
 
 }());

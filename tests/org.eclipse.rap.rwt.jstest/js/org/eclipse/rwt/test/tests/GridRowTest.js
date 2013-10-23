@@ -2520,8 +2520,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       assertEquals( 1, log.length );
       assertEquals( 1, log[ 0 ].length );
-      assertIdentical( item, log[ 0 ][ 0 ].item );
-      assertEquals( [ 0, 0, 400, 15 ], log[ 0 ][ 0 ].bounds );
+      var options = log[ 0 ][ 0 ];
+      assertIdentical( item, options.item );
+      assertEquals( [ 0, 0, 400, 15 ], options.bounds );
+      assertTrue( options.enabled );
       assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
       assertIdentical( template, log[ 0 ][ 0 ].container.template );
       assertEquals( 100, log[ 0 ][ 0 ].container.zIndexOffset );
