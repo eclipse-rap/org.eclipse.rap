@@ -150,14 +150,14 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ]
       } );
       for( var i = 0; i < template.getCellCount(); i++ ) {
-        //var background = this._getCellBackgroundColor( template, i, config );
+        var background = template.getCellBackground( item, i );
         switch( template.getCellType( i ) ) {
           case "text":
             this._cellLabels[ i ] = template.getCellElement( this._templateContainer, i );
 //            this._renderCellLabel( template, i, config, false, false );
-//            if( background || this._cellLabels[ i ] ) {
-//              this._getTextElement( i ).style.backgroundColor = background;
-//            }
+            if( background || this._cellLabels[ i ] ) { // TODO : reset/optimize
+              this._cellLabels[ i ].style.backgroundColor = background;
+            }
           break;
           case "image":
             this._cellImages[ i ] = template.getCellElement( this._templateContainer, i );

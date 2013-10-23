@@ -136,8 +136,12 @@ rwt.widgets.util.Template.prototype = {
 
   _createElements : function( options ) {
     var elements = options.container.cellElements;
+    var item = options.item;
     for( var i = 0; i < this._cells.length; i++ ) {
-      if( !elements[ i ] && this._cellRenderer[ i ] && this.hasContent( options.item, i ) ) {
+      if(    !elements[ i ]
+          && this._cellRenderer[ i ]
+          && ( this.hasContent( item, i ) || ( this.getCellBackground( item, i ) != null ) )
+      ) {
         var element = document.createElement( "div" );
         element.style.overflow = "hidden";
         element.style.position = "absolute";
@@ -147,23 +151,6 @@ rwt.widgets.util.Template.prototype = {
       }
     }
   },
-
-  _hasText : function( item, cell ) {
-    if( this._isBound( cell ) ) {
-      return item.hasText( this._getIndex( cell ) );
-    } else {
-      return false;
-    }
-  },
-
-  _hasImage : function( item, cell ) {
-    if( this._isBound( cell ) ) {
-      return item.getImage( this._getIndex( cell ) ) !== null;
-    } else {
-      return false;
-    }
-  },
-
   _renderAllContent : function( options ) {
     var cellRenderOptions = {
       "markupEnabled" : options.markupEnabled
@@ -198,7 +185,8 @@ rwt.widgets.util.Template.prototype = {
    * The type of content "text/image" the renderer expects
    */
   _getContentType : function( cell ) {
-    return this._cellRenderer[ cell ].contentType;
+    var cellRenderer = this._cellRenderer[ cell ];
+    return cellRenderer ? cellRenderer.contentType : null;
   },
 
   _getCellLeft : function( options, cell ) {
@@ -227,6 +215,22 @@ rwt.widgets.util.Template.prototype = {
     return   cellData.height !== undefined
            ? cellData.height
            : options.bounds[ 3 ] - cellData.top - cellData.bottom;
+  },
+
+  _hasText : function( item, cell ) {
+    if( this._isBound( cell ) ) {
+      return item.hasText( this._getIndex( cell ) );
+    } else {
+      return false;
+    }
+  },
+
+  _hasImage : function( item, cell ) {
+    if( this._isBound( cell ) ) {
+      return item.getImage( this._getIndex( cell ) ) !== null;
+    } else {
+      return false;
+    }
   },
 
   _isBound : function( cell ) {
@@ -258,3 +262,4 @@ rwt.widgets.util.Template.prototype = {
 };
 
 }());
+

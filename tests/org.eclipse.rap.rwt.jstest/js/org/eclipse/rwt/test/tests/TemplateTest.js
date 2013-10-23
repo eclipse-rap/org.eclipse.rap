@@ -143,12 +143,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 3, container.element.children.length );
     },
 
-    testRenderCreatesElements_CreateNoTextElementWithoutText : function() {
+    testRenderCreatesElements_CreateNoTextElementWithoutTextOrBackground : function() {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       var element = render( template, createGridItem( [ "foo", "", "foo" ] ) );
 
       assertEquals( 2, element.children.length );
+    },
+
+    testRenderCreatesElements_CreateTextElementWithOnlyBackground : function() {
+      var template = createTemplate( [ "text", "text", "text" ] );
+      var item = createGridItem( [ "", "", "" ] );
+
+      item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )", null ] );
+
+      var element = render( template, item );
+
+      assertEquals( 1, element.children.length );
     },
 
     testRenderCellLeft_LeftIsOffset : function() {
@@ -423,7 +434,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellBackground_FromDefaultItemValueNotSet : function() {
-      var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
+      var template = new Template( [ {
+        "type" : "text",
+        "bindingIndex" : 1,
+        "background" : [ 255, 0, 0, 255 ]
+      } ] );
 
       var item = createGridItem( [ "foo", "bar" ] );
 
@@ -431,34 +446,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_hasContent : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
-
       renderer.add( {
         "cellType" : "fooType",
         "contentType" : "text",
         "renderContent" : function() {}
       } );
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
       assertTrue( template.hasContent( item, 0 ) );
       renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_getContent : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
-
       renderer.add( {
         "cellType" : "fooType",
         "contentType" : "text",
         "renderContent" : function() {}
       } );
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
       assertEquals( "foo", template.getCellContent( item, 0 ) );
       renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_ArgumentsForRenderContent : function() {
+      var renderArgs;
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {
+          renderArgs = rwt.util.Arrays.fromArguments( arguments );
+        }
+      } );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
@@ -469,14 +490,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "bounds" : [ 0, 0, 100, 100 ],
         "markupEnabled" : false
       };
-      var renderArgs;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {
-          renderArgs = rwt.util.Arrays.fromArguments( arguments );
-        }
-      } );
 
       template.render( options );
 
@@ -492,6 +505,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_ArgumentsForShouldEscapeText : function() {
+      var renderArgs;
+      renderer.add( {
+        "cellType" : "fooType",
+        "contentType" : "text",
+        "renderContent" : function() {},
+        "shouldEscapeText" : function() {
+          renderArgs = rwt.util.Arrays.fromArguments( arguments );
+        }
+      } );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
@@ -502,15 +524,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "bounds" : [ 0, 0, 100, 100 ],
         "markupEnabled" : false
       };
-      var renderArgs;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {},
-        "shouldEscapeText" : function() {
-          renderArgs = rwt.util.Arrays.fromArguments( arguments );
-        }
-      } );
 
       template.render( options );
 
@@ -519,15 +532,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_CellRenderOptionMarkupEnabled : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
       var options;
-
       renderer.add( {
         "cellType" : "fooType",
         "contentType" : "text",
         "renderContent" : function() { options = arguments[ 3 ]; }
       } );
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item, { "markupEnabled" : true } );
 
@@ -536,16 +548,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_CellRenderOptionEscaped : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
       var options;
-
       renderer.add( {
         "cellType" : "fooType",
         "contentType" : "text",
         "renderContent" : function() { options = arguments[ 3 ]; },
         "shouldEscapeText" : function() { return true; }
       } );
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item );
 
@@ -554,14 +565,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_ForwardShouldEscapeTextReturnValueToItemGetText : function() {
-      var template = new Template( [ { "type" : "fooType", "bindingIndex" : 0 } ] );
-      var item = createGridItem( [ "foo", "bar" ] );
       renderer.add( {
         "cellType" : "fooType",
         "contentType" : "text",
         "renderContent" : function() {},
         "shouldEscapeText" : function() { return 123; }
       } );
+      var template = new Template( [ { "type" : "fooType", "bindingIndex" : 0 } ] );
+      var item = createGridItem( [ "foo", "bar" ] );
       var arg;
       item.getText = function() { arg = arguments; };
 
