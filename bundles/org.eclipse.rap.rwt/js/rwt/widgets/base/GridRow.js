@@ -155,14 +155,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         switch( template.getCellType( i ) ) {
           case "text":
             this._cellLabels[ i ] = template.getCellElement( this._templateContainer, i );
-//            this._renderCellLabel( template, i, config, false, false );
-            if( background || this._cellLabels[ i ] ) { // TODO : reset/optimize
-              this._cellLabels[ i ].style.backgroundColor = background;
-            }
           break;
           case "image":
             this._cellImages[ i ] = template.getCellElement( this._templateContainer, i );
-//            this._renderCellImage( template, i, config, false, false );
           break;
         }
       }

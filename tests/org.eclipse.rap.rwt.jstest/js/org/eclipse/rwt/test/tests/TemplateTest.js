@@ -22,6 +22,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
   members : {
 
+    tearDown : function() {
+      renderer.removeRendererFor( "fooType" );
+    },
+
     testCreateWithEmptyTemplate : function() {
       var cells = [];
       var template = new Template( cells );
@@ -446,40 +450,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testCustomRenderer_hasContent : function() {
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {}
-      } );
+      renderer.add( createCellRenderer() );
       var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
       assertTrue( template.hasContent( item, 0 ) );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_getContent : function() {
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {}
-      } );
+      renderer.add( createCellRenderer() );
       var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
       assertEquals( "foo", template.getCellContent( item, 0 ) );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_ArgumentsForRenderContent : function() {
       var renderArgs;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
+      renderer.add( createCellRenderer( {
         "renderContent" : function() {
           renderArgs = rwt.util.Arrays.fromArguments( arguments );
         }
-      } );
+      } ) );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
@@ -501,19 +493,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertIdentical( "bar", renderArgs[ 1 ] );
       assertIdentical( cellData, renderArgs[ 2 ] );
       assertEquals( cellRenderOptions, renderArgs[ 3 ] );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_ArgumentsForShouldEscapeText : function() {
       var renderArgs;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {},
+      renderer.add( createCellRenderer( {
         "shouldEscapeText" : function() {
           renderArgs = rwt.util.Arrays.fromArguments( arguments );
         }
-      } );
+      } ) );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
       var template = new Template( [ cellData ] );
       var container = createContainer( template );
@@ -533,44 +521,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testCustomRenderer_CellRenderOptionMarkupEnabled : function() {
       var options;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
+      renderer.add( createCellRenderer( {
         "renderContent" : function() { options = arguments[ 3 ]; }
-      } );
+      } ) );
       var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item, { "markupEnabled" : true } );
 
       assertTrue( options.markupEnabled );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_CellRenderOptionEscaped : function() {
       var options;
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
+      renderer.add( createCellRenderer( {
         "renderContent" : function() { options = arguments[ 3 ]; },
         "shouldEscapeText" : function() { return true; }
-      } );
+      } ) );
       var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item );
 
       assertTrue( options.escaped );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_ForwardShouldEscapeTextReturnValueToItemGetText : function() {
-      renderer.add( {
-        "cellType" : "fooType",
-        "contentType" : "text",
-        "renderContent" : function() {},
+      renderer.add( createCellRenderer( {
         "shouldEscapeText" : function() { return 123; }
-      } );
+      } ) );
       var template = new Template( [ { "type" : "fooType", "bindingIndex" : 0 } ] );
       var item = createGridItem( [ "foo", "bar" ] );
       var arg;
@@ -607,11 +586,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         var opacity = element.firstChild.style.opacity;
         assertTrue( opacity === "0.3" );
       }
+    },
+
+    testRenderBackgroundColor : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [] );
+      item.setCellBackgrounds( [ "#ff00ff" ] );
+
+      var element = render( template, item );
+
+      var color = rwt.util.Colors.stringToRgb( element.firstChild.style.backgroundColor );
+      assertEquals( [ 255, 0, 255 ], color );
+    },
+
+    testResetBackgroundColor : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [] );
+      item.setCellBackgrounds( [ "#ff00ff" ] );
+      var container = createContainer( template );
+      var renderOptions = createRenderOptions( container, item );
+      template.render( renderOptions );
+
+      item.setCellBackgrounds( [ null ] );
+      template.render( renderOptions );
+
+      var color = container.element.firstChild.style.backgroundColor.toLowerCase();
+      assertTrue( color === "" || color === "transparent" );
     }
 
   }
 
 } );
+
+var createCellRenderer = function( map ) {
+  var renderer =  {
+    "cellType" : "fooType",
+    "contentType" : "text",
+    "renderContent" : function() {}
+  };
+  return rwt.util.Objects.mergeWith( renderer, map, true );
+};
 
 var createTemplate = function( cellTypes ) {
   var cells = [];
@@ -635,17 +651,22 @@ var createGridItem = function( texts, images ) {
 
 var render = function( template, item, options ) {
   var container = createContainer( template );
-  var renderOptions = {
+  var renderOptions = createRenderOptions( container, item );
+  rwt.util.Objects.mergeWith( renderOptions, options, true );
+  template.render( renderOptions );
+  return container.element;
+};
+
+var createRenderOptions = function( container, item ) {
+  return {
     "container" : container,
     "item" : item,
     "bounds" : [ 0, 0, 100, 100 ],
     "markupEnabled" : false,
     "enabled" : true
   };
-  rwt.util.Objects.mergeWith( renderOptions, options, true );
-  template.render( renderOptions );
-  return container.element;
 };
+
 
 var createContainer = function( template ) {
   return template.createContainer( {

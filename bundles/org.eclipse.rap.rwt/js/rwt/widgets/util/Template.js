@@ -49,7 +49,7 @@ rwt.widgets.util.Template.prototype = {
     if( !options.container || options.container.template !== this ) {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
-    this._createElements( options ); // TODO [tb] : create lazy while rendering content
+    this._createElements( options );
     this._renderAllContent( options );
     this._renderAllBounds( options );
   },
@@ -134,7 +134,7 @@ rwt.widgets.util.Template.prototype = {
     return result;
   },
 
-  _createElements : function( options ) {
+  _createElements : function( options ) { // TODO [tb] : do during renderContent
     var elements = options.container.cellElements;
     var item = options.item;
     for( var i = 0; i < this._cells.length; i++ ) {
@@ -162,6 +162,7 @@ rwt.widgets.util.Template.prototype = {
         var cellRenderer = renderer[ this._cells[ i ].type ];
         var renderContent = cellRenderer.renderContent;
         cellRenderOptions.escaped = cellRenderer.shouldEscapeText( options );
+        this._renderBackground( element, this.getCellBackground( options.item, i ) );
         renderContent( element,
                        this.getCellContent( options.item, i, cellRenderOptions ),
                        this._cells[ i ],
@@ -181,6 +182,10 @@ rwt.widgets.util.Template.prototype = {
         element.style.height = this._getCellHeight( options, i ) + "px";
       }
     }
+  },
+
+  _renderBackground : function( element, color ) {
+    element.style.backgroundColor = color || "transparent";
   },
 
   /**
