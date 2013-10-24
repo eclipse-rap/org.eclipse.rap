@@ -670,6 +670,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       var color = container.element.firstChild.style.color;
       assertTrue( color === "" || color === "inherit" );
+    },
+
+    testRenderFont : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [ "text" ] );
+      item.setCellFonts( [ "14px Arial", "14px Arial" ] );
+
+      var element = render( template, item );
+
+      var font = TestUtil.getElementFont( element.firstChild );
+      assertTrue( font.indexOf( "Arial" ) != -1 );
+      assertTrue( font.indexOf( "14px" ) != -1 );
+    },
+
+    testResetFont : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [ "text" ] );
+      item.setCellFonts( [ "14px Arial", "14px Arial" ] );
+      var container = createContainer( template );
+      var renderOptions = createRenderOptions( container, item );
+      template.render( renderOptions );
+
+      item.setCellFonts( [ null, "14px Arial" ] );
+      template.render( renderOptions );
+
+      var style = container.element.firstChild.style;
+      assertTrue( style.font === "" || style.font === "inherit" );
+      assertTrue( style.fontSize === "" || style.fontSize === "inherit" );
+      assertTrue( style.fontFamily === "" || style.fontFamily === "inherit" );
     }
 
   }

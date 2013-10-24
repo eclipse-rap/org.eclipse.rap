@@ -261,7 +261,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
-      assertEquals( "bold 20px Arial", item._font.toCss() );
+      assertEquals( "bold 20px Arial", item._font );
       shell.destroy();
       tree.destroy();
     },

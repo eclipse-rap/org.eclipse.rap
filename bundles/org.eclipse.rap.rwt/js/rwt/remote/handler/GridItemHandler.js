@@ -82,7 +82,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
       if( value === null ) {
         widget.setFont( null );
       } else {
-        var font = rwt.html.Font.fromArray( value );
+        var font = rwt.html.Font.fromArray( value ).toCss();
         widget.setFont( font );
       }
     },

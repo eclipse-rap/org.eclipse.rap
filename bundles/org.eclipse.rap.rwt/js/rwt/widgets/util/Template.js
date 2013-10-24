@@ -163,6 +163,7 @@ rwt.widgets.util.Template.prototype = {
         // TODO : render styles only if changing
         this._renderBackground( element, this.getCellBackground( options.item, i ) );
         this._renderForeground( element, this.getCellForeground( options.item, i ) );
+        this._renderFont( element, this.getCellFont( options.item, i ) );
         renderContent( element,
                        this.getCellContent( options.item, i, cellRenderOptions ),
                        this._cells[ i ],
@@ -188,8 +189,16 @@ rwt.widgets.util.Template.prototype = {
     element.style.backgroundColor = color || "transparent";
   },
 
-  _renderForeground: function( element, color ) {
+  _renderForeground : function( element, color ) {
     element.style.color = color || "inherit";
+  },
+
+  _renderFont : function( element, font ) {
+    if( font ) {
+      element.style.font = font;
+    } else {
+      rwt.html.Font.resetElement( element );
+    }
   },
 
   /**
