@@ -176,6 +176,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       }
     },
 
+    testSetBackgroundImage_externalImage : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var el = document.createElement( "div" );
+
+      rwt.html.Style.setBackgroundImage( el, "http://foo.org/bar.png" );
+
+      var actual = TestUtil.getCssBackgroundImage( el );
+      assertEquals( "http://foo.org/bar.png", actual );
+    },
 
     /////////
    // Helper

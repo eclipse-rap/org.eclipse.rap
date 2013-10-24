@@ -11,16 +11,11 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -67,31 +62,6 @@ public final class EventLCAUtil {
       break;
     }
     return result;
-  }
-
-  public static boolean hasScrollBarsSelectionListener( Scrollable scrollable ) {
-    boolean result = false;
-    ScrollBar horizontalBar = scrollable.getHorizontalBar();
-    if( horizontalBar != null ) {
-      result = result || isListening( horizontalBar, SWT.Selection );
-    }
-    ScrollBar verticalBar = scrollable.getVerticalBar();
-    if( verticalBar != null ) {
-      result = result || isListening( verticalBar, SWT.Selection );
-    }
-    return result;
-  }
-
-  public static void processRadioSelection( Widget widget, boolean isWidgetSelected ) {
-    String eventName = ClientMessageConst.EVENT_SELECTION;
-    if( wasEventSent( widget, eventName ) ) {
-      Event event = new Event();
-      if( !isWidgetSelected ) {
-        event.time = -1;
-      }
-      event.stateMask = readStateMask( widget, eventName );
-      widget.notifyListeners( SWT.Selection, event );
-    }
   }
 
   public static boolean isListening( Widget widget, int eventType ) {

@@ -26,8 +26,9 @@ public final class InternalImage implements SerializableCompatibility {
   private final String resourceName;
   private final int width;
   private final int height;
+  private final boolean external;
 
-  InternalImage( String resourceName, int width, int height ) {
+  InternalImage( String resourceName, int width, int height, boolean external ) {
     ParamCheck.notNull( resourceName, "resourceName" );
     if( width <= 0 || height <= 0 ) {
       throw new IllegalArgumentException( "Illegal size" );
@@ -35,6 +36,7 @@ public final class InternalImage implements SerializableCompatibility {
     this.resourceName = resourceName;
     this.width = width;
     this.height = height;
+    this.external = external;
   }
 
   public Rectangle getBounds() {
@@ -47,6 +49,10 @@ public final class InternalImage implements SerializableCompatibility {
 
   public String getResourceName() {
     return resourceName;
+  }
+
+  public boolean isExternal() {
+    return external;
   }
 
 }

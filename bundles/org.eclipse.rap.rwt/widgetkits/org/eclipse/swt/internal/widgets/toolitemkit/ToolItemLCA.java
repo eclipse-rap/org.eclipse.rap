@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,54 +11,136 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.IToolItemAdapter;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class ToolItemLCA extends AbstractWidgetLCA {
 
-  private final static ToolItemDelegateLCA PUSH = new PushToolItemLCA();
-  private final static ToolItemDelegateLCA CHECK = new CheckToolItemLCA();
-  private final static ToolItemDelegateLCA RADIO = new RadioToolItemLCA();
-  private final static ToolItemDelegateLCA SEPERATOR = new SeparatorToolItemLCA();
-  private final static ToolItemDelegateLCA DROP_DOWN = new DropDownToolItemLCA();
+  private static final String TYPE = "rwt.widgets.ToolItem";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN"
+  };
 
+  private static final String PROP_VISIBLE = "visible";
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
+  private static final String PROP_IMAGE = "image";
+  private static final String PROP_HOT_IMAGE = "hotImage";
+  private static final String PROP_CONTROL = "control";
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+
+  @Override
   public void preserveValues( Widget widget ) {
-    getLCADelegate( widget ).preserveValues( ( ToolItem )widget );
+    ToolItem item = ( ToolItem )widget;
+    WidgetLCAUtil.preserveBounds( item, item.getBounds() );
+    WidgetLCAUtil.preserveEnabled( item, item.getEnabled() );
+    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
+    WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveData( item );
+    preserveProperty( item, PROP_VISIBLE, isVisible( item ) );
+    preserveProperty( item, PROP_TEXT, item.getText() );
+    preserveProperty( item, PROP_IMAGE, getImage( item ) );
+    preserveProperty( item, PROP_HOT_IMAGE, item.getHotImage() );
+    preserveProperty( item, PROP_CONTROL, item.getControl() );
+    preserveProperty( item, PROP_SELECTION, item.getSelection() );
+    preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
   }
 
-  public void readData( Widget widget ) {
-    getLCADelegate( widget ).readData( ( ToolItem )widget );
-  }
-
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderInitialization( ( ToolItem )widget );
+    ToolItem item = ( ToolItem )widget;
+    ToolBar toolBar = item.getParent();
+    // TODO [tb] For the index, it is currently ignored that controls
+    //           attached to a ToolItem use an index-slot of their own on
+    //           the client, while they don't on the server. In theory,
+    //           this could lead to an incorrect order of the items on the
+    //           client, which is problematic with the keyboard-control
+    //           and radio-groups.
+    RemoteObject remoteObject = createRemoteObject( item, TYPE );
+    remoteObject.setHandler( new ToolItemOperationHandler( item ) );
+    remoteObject.set( "parent", getId( toolBar ) );
+    remoteObject.set( "style", createJsonArray( getStyles( item, ALLOWED_STYLES ) ) );
+    remoteObject.set( "index", toolBar.indexOf( item ) );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderChanges( ( ToolItem )widget );
+    ToolItem item = ( ToolItem )widget;
+    WidgetLCAUtil.renderBounds( item, item.getBounds() );
+    WidgetLCAUtil.renderEnabled( item, item.getEnabled() );
+    WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );
+    WidgetLCAUtil.renderCustomVariant( item );
+    WidgetLCAUtil.renderData( item );
+    renderText( item );
+    renderMnemonicIndex( item );
+    renderProperty( item, PROP_VISIBLE, isVisible( item ), true );
+    renderProperty( item, PROP_IMAGE, getImage( item ), null );
+    renderProperty( item, PROP_HOT_IMAGE, item.getHotImage(), null );
+    renderProperty( item, PROP_CONTROL, item.getControl(), null );
+    renderProperty( item, PROP_SELECTION, item.getSelection(), false );
+    renderListener( item,
+                    PROP_SELECTION_LISTENER,
+                    isListening( item, SWT.Selection ),
+                    false );
   }
 
-  private static ToolItemDelegateLCA getLCADelegate( Widget widget ) {
-    ToolItemDelegateLCA result;
-    int style = ( ( ToolItem )widget ).getStyle();
-    if( ( style & SWT.CHECK ) != 0 ) {
-      result = CHECK;
-    } else if( ( style & SWT.PUSH ) != 0 ) {
-      result = PUSH;
-    } else if( ( style & SWT.SEPARATOR ) != 0 ) {
-      result = SEPERATOR;
-    } else if( ( style & SWT.DROP_DOWN ) != 0 ) {
-      result = DROP_DOWN;
-    } else if( ( style & SWT.RADIO ) != 0 ) {
-      result = RADIO;
+  private static void renderText( ToolItem item ) {
+    String newValue = item.getText();
+    if( hasChanged( item, PROP_TEXT, newValue, "" ) ) {
+      String text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
+      getRemoteObject( item ).set( PROP_TEXT, text );
+    }
+  }
+
+  private static void renderMnemonicIndex( ToolItem item ) {
+    String text = item.getText();
+    if( hasChanged( item, PROP_TEXT, text, "" ) ) {
+      int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
+      if( mnemonicIndex != -1 ) {
+        getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
+      }
+    }
+  }
+
+  private static boolean isVisible( ToolItem item ) {
+    return item.getAdapter( IToolItemAdapter.class ).getVisible();
+  }
+
+  static Image getImage( ToolItem item ) {
+    Image result;
+    if( item.getEnabled() && item.getParent().getEnabled() ) {
+      result = item.getImage();
     } else {
-      result = PUSH;
+      result = item.getDisabledImage();
+      if( result == null ) {
+        result = item.getImage();
+      }
     }
     return result;
   }
+
 }

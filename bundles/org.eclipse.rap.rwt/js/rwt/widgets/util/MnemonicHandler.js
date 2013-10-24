@@ -110,14 +110,14 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
       }
     },
 
-    deactivate : function( preventMenuToggle ) {
-      if( this._activeMenu && preventMenuToggle ) {
+    deactivate : function( allowMenuToggle ) {
+      if( this._activeMenu && allowMenuToggle ) {
         this._activeMenu.setActive( false );
         this._activeMenu = null;
       }
       if( this._active ) {
         this._fire( { "type" : "hide" } );
-        if( preventMenuToggle ) {
+        if( allowMenuToggle ) {
           this._activateMenuBar();
         }
         this._active = null;
@@ -141,7 +141,13 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
           this.deactivate();
           delete this._map[ root.toHashCode() ];
         }, this );
-        root.addEventListener( "changeActive", this.deactivate, this );
+        root.addEventListener( "changeActive", this._onRootChangeActive, this );
+      }
+    },
+
+    _onRootChangeActive : function( event ) {
+      if( event.getValue() === false ) {
+        this.deactivate();
       }
     },
 

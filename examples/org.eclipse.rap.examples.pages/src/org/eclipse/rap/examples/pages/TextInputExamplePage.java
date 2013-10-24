@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,9 +101,9 @@ public class TextInputExamplePage implements IExamplePage {
   private void createVerifiedText( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Digits Only:" );
     final Text text = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    GridData gridData1 = ExampleUtil.createHorzFillData();
-    gridData1.minimumWidth = 250;
-    text.setLayoutData( gridData1 );
+    GridData gridData = ExampleUtil.createHorzFillData();
+    gridData.minimumWidth = 250;
+    text.setLayoutData( gridData );
     final ControlDecoration decoration = new ControlDecoration( text, SWT.TOP | SWT.LEFT );
     decoration.setImage( errorImage );
     text.setText( "4711 abcd" );
@@ -128,9 +128,9 @@ public class TextInputExamplePage implements IExamplePage {
   private void createMandatoryText( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Mandatory:" );
     final Text text = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    GridData gridData1 = ExampleUtil.createHorzFillData();
-    gridData1.minimumWidth = 250;
-    text.setLayoutData( gridData1 );
+    GridData gridData = ExampleUtil.createHorzFillData();
+    gridData.minimumWidth = 250;
+    text.setLayoutData( gridData );
     final ControlDecoration decoration = new ControlDecoration( text, SWT.TOP | SWT.LEFT );
     decoration.setImage( warningImage );
     final String errorDescription = "this field cannot be empty. Please enter mandatory content.";
@@ -151,65 +151,60 @@ public class TextInputExamplePage implements IExamplePage {
 
   private Text createFirstNameField( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "First Name:" );
-    final Text firstNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    GridData gridData1 = ExampleUtil.createHorzFillData();
-    gridData1.minimumWidth = 250;
-    firstNameText.setLayoutData( gridData1 );
+    Text firstNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
+    GridData gridData = ExampleUtil.createHorzFillData();
+    gridData.minimumWidth = 250;
+    firstNameText.setLayoutData( gridData );
     return firstNameText;
   }
 
   private Text createLastNameField( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Last Name:" );
-    final Text lastNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
-    GridData gridData2 = ExampleUtil.createHorzFillData();
-    lastNameText.setLayoutData( gridData2 );
+    Text lastNameText = new Text( formComp, SWT.SINGLE | SWT.BORDER );
+    lastNameText.setLayoutData( ExampleUtil.createHorzFillData() );
     return lastNameText;
   }
 
   private Text createPasswordField( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Passphrase:" );
-    final Text passwordText = new Text( formComp, SWT.PASSWORD | SWT.BORDER );
-    GridData gridData3 = ExampleUtil.createHorzFillData();
-    passwordText.setLayoutData( gridData3 );
+    Text passwordText = new Text( formComp, SWT.PASSWORD | SWT.BORDER );
+    passwordText.setLayoutData( ExampleUtil.createHorzFillData() );
     passwordText.setText( "Password" );
     return passwordText;
   }
 
   private Spinner createSpinner( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Age:" );
-    final Spinner spinner = new Spinner( formComp, SWT.BORDER );
-    GridData gridData4 = ExampleUtil.createHorzFillData();
-    spinner.setLayoutData( gridData4 );
+    Spinner spinner = new Spinner( formComp, SWT.BORDER );
+    spinner.setLayoutData( ExampleUtil.createHorzFillData() );
     spinner.setSelection( 23 );
     return spinner;
   }
 
   private Combo createCountryCombo( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Country:" );
-    final Combo combo = new Combo( formComp, SWT.BORDER );
+    Combo combo = new Combo( formComp, SWT.BORDER );
     String[] countries = new String[] { "Germany", "Canada", "USA", "Bulgaria" };
     combo.setItems( countries );
-    GridData gridData = ExampleUtil.createHorzFillData();
-    combo.setLayoutData( gridData );
+    combo.setLayoutData( ExampleUtil.createHorzFillData() );
     combo.select( 0 );
     return combo;
   }
 
   private Combo createReadOnlyCombo( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Class:" );
-    final Combo classCombo = new Combo( formComp, SWT.READ_ONLY | SWT.BORDER );
+    Combo classCombo = new Combo( formComp, SWT.READ_ONLY | SWT.BORDER );
     String[] classes = new String[] { "Business", "Economy", "Economy Plus" };
     classCombo.setItems( classes );
-    GridData gridData = ExampleUtil.createHorzFillData();
-    classCombo.setLayoutData( gridData );
+    classCombo.setLayoutData( ExampleUtil.createHorzFillData() );
     classCombo.select( 0 );
     return classCombo;
   }
 
   private DateTime createDateField( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Date:" );
-    int dateTimeStyle = SWT.READ_ONLY | SWT.BORDER;
-    final DateTime dateTime = new DateTime( formComp, dateTimeStyle );
+    DateTime dateTime = new DateTime( formComp, SWT.DATE | SWT.BORDER );
+    dateTime.setLayoutData( ExampleUtil.createHorzFillData() );
     return dateTime;
   }
 

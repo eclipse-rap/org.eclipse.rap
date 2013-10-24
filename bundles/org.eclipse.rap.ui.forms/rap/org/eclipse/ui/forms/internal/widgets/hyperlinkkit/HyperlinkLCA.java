@@ -14,6 +14,10 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -43,34 +47,32 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
 
   private static final int DEFAULT_UNDERLINE_MODE = 0;
 
-  public void readData( Widget widget ) {
-    ControlLCAUtil.processSelection( widget, null, false );
-    ControlLCAUtil.processDefaultSelection( widget, null );
-    WidgetLCAUtil.processHelp( widget );
-  }
-
   @Override
   public void preserveValues( Widget widget ) {
     Hyperlink hyperlink = ( Hyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
-    WidgetLCAUtil.preserveProperty( hyperlink, PROP_TEXT, hyperlink.getText() );
-    WidgetLCAUtil.preserveProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined() );
-    WidgetLCAUtil.preserveProperty( hyperlink, PROP_UNDERLINE_MODE, getUnderlineMode( hyperlink ) );
-    WidgetLCAUtil.preserveProperty( hyperlink,
-                                    PROP_ACTIVE_FOREGROUND,
-                                    getActiveForeground( hyperlink ) );
-    WidgetLCAUtil.preserveProperty( hyperlink,
-                                    PROP_ACTIVE_BACKGROUND,
-                                    getActiveBackground( hyperlink ) );
-    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
-    WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
+    preserveProperty( hyperlink, PROP_TEXT, hyperlink.getText() );
+    preserveProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined() );
+    preserveProperty( hyperlink,
+                      PROP_UNDERLINE_MODE,
+                      getUnderlineMode( hyperlink ) );
+    preserveProperty( hyperlink,
+                      PROP_ACTIVE_FOREGROUND,
+                      getActiveForeground( hyperlink ) );
+    preserveProperty( hyperlink,
+                      PROP_ACTIVE_BACKGROUND,
+                      getActiveBackground( hyperlink ) );
+    preserveListener( hyperlink,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      isListening( hyperlink, SWT.DefaultSelection ) );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Hyperlink hyperlink = ( Hyperlink )widget;
     RemoteObject remoteObject = createRemoteObject( hyperlink, TYPE );
+    remoteObject.setHandler( new HyperlinkOperationHandler( hyperlink ) );
     remoteObject.set( "parent", getId( hyperlink.getParent() ) ); //$NON-NLS-1$
     remoteObject.set( "style", createJsonArray( getStyles( hyperlink, ALLOWED_STYLES ) ) ); //$NON-NLS-1$
   }
@@ -80,22 +82,24 @@ public class HyperlinkLCA extends AbstractWidgetLCA {
     Hyperlink hyperlink = ( Hyperlink )widget;
     ControlLCAUtil.renderChanges( hyperlink );
     WidgetLCAUtil.renderCustomVariant( widget );
-    WidgetLCAUtil.renderProperty( hyperlink, PROP_TEXT, hyperlink.getText(), "" ); //$NON-NLS-1$
-    WidgetLCAUtil.renderProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined(), false );
-    WidgetLCAUtil.renderProperty( hyperlink,
-                                  PROP_UNDERLINE_MODE,
-                                  getUnderlineMode( hyperlink ),
-                                  DEFAULT_UNDERLINE_MODE );
-    WidgetLCAUtil.renderProperty( hyperlink,
-                                  PROP_ACTIVE_FOREGROUND,
-                                  getActiveForeground( hyperlink ),
-                                  null );
-    WidgetLCAUtil.renderProperty( hyperlink,
-                                  PROP_ACTIVE_BACKGROUND,
-                                  getActiveBackground( hyperlink ),
-                                  null );
-    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
-    WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
+    renderProperty( hyperlink, PROP_TEXT, hyperlink.getText(), "" ); //$NON-NLS-1$
+    renderProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined(), false );
+    renderProperty( hyperlink,
+                    PROP_UNDERLINE_MODE,
+                    getUnderlineMode( hyperlink ),
+                    DEFAULT_UNDERLINE_MODE );
+    renderProperty( hyperlink,
+                    PROP_ACTIVE_FOREGROUND,
+                    getActiveForeground( hyperlink ),
+                    null );
+    renderProperty( hyperlink,
+                    PROP_ACTIVE_BACKGROUND,
+                    getActiveBackground( hyperlink ),
+                    null );
+    renderListener( hyperlink,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    isListening( hyperlink, SWT.DefaultSelection ),
+                    false );
   }
 
   //////////////////

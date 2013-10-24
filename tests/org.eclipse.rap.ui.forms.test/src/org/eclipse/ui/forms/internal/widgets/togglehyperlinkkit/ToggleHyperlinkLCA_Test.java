@@ -10,65 +10,41 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.json.*;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
-import org.eclipse.ui.forms.widgets.ToggleHyperlink;
 import org.eclipse.ui.forms.widgets.Twistie;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
+  private Twistie twistie;
   private ToggleHyperlinkLCA lca;
 
   @Override
   protected void setUp() {
     super.setUp();
+    twistie = new Twistie( shell, SWT.NONE );
     lca = new ToggleHyperlinkLCA();
     Fixture.fakeNewRequest();
   }
 
-  public void testSelectionEvent() {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-    testDefaultSelectionEvent( twistie );
-  }
-
-  @SuppressWarnings("serial")
-  private void testDefaultSelectionEvent( final ToggleHyperlink hyperlink ) {
-    final StringBuffer log = new StringBuffer();
-    Listener listener = new Listener() {
-      public void handleEvent( Event event ) {
-        assertEquals( hyperlink, event.widget );
-        assertEquals( null, event.item );
-        assertEquals( SWT.NONE, event.detail );
-        assertEquals( 0, event.x );
-        assertEquals( 0, event.y );
-        assertEquals( 0, event.width );
-        assertEquals( 0, event.height );
-        assertEquals( true, event.doit );
-        log.append( "widgetDefaultSelected" );
-      }
-    };
-    hyperlink.addListener( SWT.DefaultSelection, listener );
-    Fixture.fakeNotifyOperation( getId( hyperlink ), ClientMessageConst.EVENT_DEFAULT_SELECTION, null );
-    Fixture.readDataAndProcessAction( hyperlink );
-    assertEquals( "widgetDefaultSelected", log.toString() );
-  }
-
   public void testRenderCreate() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-
     lca.renderInitialization( twistie );
 
     Message message = Fixture.getProtocolMessage();
@@ -76,9 +52,27 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "forms.widgets.ToggleHyperlink", operation.getType() );
   }
 
-  public void testRenderParent() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( twistie );
+    lca.renderInitialization( twistie );
 
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ToggleHyperlinkOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    ToggleHyperlinkOperationHandler handler = spy( new ToggleHyperlinkOperationHandler( twistie ) );
+    getRemoteObject( getId( twistie ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( twistie ), "Help", new JsonObject() );
+    lca.readData( twistie );
+
+    verify( handler ).handleNotifyHelp( twistie, new JsonObject() );
+  }
+
+  public void testRenderParent() throws IOException {
     lca.renderInitialization( twistie );
 
     Message message = Fixture.getProtocolMessage();
@@ -87,8 +81,6 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderImages() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-
     lca.renderInitialization( twistie );
 
     Message message = Fixture.getProtocolMessage();
@@ -101,25 +93,18 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
   }
 
-  @SuppressWarnings("serial")
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( twistie );
     Fixture.preserveWidgets();
 
-    twistie.addListener( SWT.DefaultSelection, new Listener() {
-      public void handleEvent( Event event ) {
-      }
-    } );
+    twistie.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( twistie );
 
@@ -128,8 +113,6 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderInitialExpanded() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-
     lca.renderChanges( twistie );
 
     Message message = Fixture.getProtocolMessage();
@@ -137,8 +120,6 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderExpanded() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-
     twistie.setExpanded( true );
     lca.renderChanges( twistie );
 
@@ -147,7 +128,6 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testRenderExpandedUnchanged() throws IOException {
-    Twistie twistie = new Twistie( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( twistie );
 

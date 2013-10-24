@@ -153,11 +153,7 @@ public class Shell extends Decorations {
 
   private Control lastActive;
   private transient IShellAdapter shellAdapter;
-  private String text;
   private int alpha;
-  private Button defaultButton;
-  private Button saveDefault;
-  private Control savedFocus;  // TODO [rh] move to Decorations when exist
   private Rectangle savedBounds;
   private int mode;
   private boolean modified;
@@ -175,7 +171,6 @@ public class Shell extends Decorations {
         this.display = Display.getDefault();
       }
     }
-    text = "";
     alpha = 0xFF;
     mode = MODE_NONE;
     this.style = checkStyle( style );
@@ -456,8 +451,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!--@see Decorations#setDefaultButton-->
-   * @see Shell#setDefaultButton(Button)
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -484,7 +478,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!--@see Decorations#setDefaultButton-->
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -680,8 +674,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * <!-- @see Decorations#setDefaultButton -->
-   * @see Shell#setDefaultButton(Button)
+   * @see Decorations#setDefaultButton(Button)
    * @see Shell#setActive
    * @see Shell#forceActive
    */
@@ -722,166 +715,6 @@ public class Shell extends Decorations {
         }
       }
     } );
-  }
-
-  ///////////////////////////
-  // Title bar text and image
-
-  /**
-   * Sets the receiver's text, which is the string that the
-   * window manager will typically display as the receiver's
-   * <em>title</em>, to the argument, which must not be null.
-   *
-   * @param text the new text
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rh] move to Decorations
-  public void setText( String text ) {
-    checkWidget();
-    if( text == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    this.text = text;
-  }
-
-  /**
-   * Returns the receiver's text, which is the string that the
-   * window manager will typically display as the receiver's
-   * <em>title</em>. If the text has not previously been set,
-   * returns an empty string.
-   *
-   * @return the text
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rh] move to Decorations
-  public String getText() {
-    checkWidget();
-    return text;
-  }
-
-  //////////////////////////////
-  // Methods for default button
-
-  /**
-   * If the argument is not null, sets the receiver's default
-   * button to the argument, and if the argument is null, sets
-   * the receiver's default button to the first button which
-   * was set as the receiver's default button (called the
-   * <em>saved default button</em>). If no default button had
-   * previously been set, or the saved default button was
-   * disposed, the receiver's default button will be set to
-   * null.
-   * <p>
-   * The default button is the button that is selected when
-   * the receiver is active and the user presses ENTER.
-   * </p>
-   *
-   * @param button the new default button
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the button has been disposed</li>
-   *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rst] move to class Decorations as soon as it exists
-  public void setDefaultButton( Button button ) {
-    checkWidget();
-    if( button != null ) {
-      if( button.isDisposed() ) {
-        error( SWT.ERROR_INVALID_ARGUMENT );
-      }
-      if( button.getShell() != this ) {
-        error( SWT.ERROR_INVALID_PARENT );
-      }
-    }
-    setDefaultButton( button, true );
-  }
-
-  // TODO [rst] move to class Decorations as soon as it exists
-  void setDefaultButton( Button button, boolean save ) {
-    if( button == null ) {
-      if( defaultButton == saveDefault ) {
-        if( save ) {
-          saveDefault = null;
-        }
-        return;
-      }
-    } else {
-      if( ( button.getStyle() & SWT.PUSH ) == 0 ) {
-        return;
-      }
-      if( button == defaultButton ) {
-        if( save ) {
-          saveDefault = defaultButton;
-        }
-        return;
-      }
-    }
-    if( defaultButton != null && !defaultButton.isDisposed() ) {
-      defaultButton.setDefault( false );
-    }
-    defaultButton = button;
-    if( defaultButton == null ) {
-      defaultButton = saveDefault;
-    }
-    if( defaultButton != null && !defaultButton.isDisposed() ) {
-      defaultButton.setDefault( true );
-    }
-    if( save ) {
-      saveDefault = defaultButton;
-    }
-    if( saveDefault != null && saveDefault.isDisposed() ) {
-      saveDefault = null;
-    }
-  }
-
-  void updateDefaultButton( final Control focusControl, final boolean set ) {
-    if( focusControl instanceof Button ) {
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          Button defaultButton = set ? ( Button )focusControl : null;
-          setDefaultButton( defaultButton, false );
-        }
-      } );
-    }
-  }
-
-  /**
-   * Returns the receiver's default button if one had
-   * previously been set, otherwise returns null.
-   *
-   * @return the default button or null
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   *
-   * @see Shell#setDefaultButton(Button)
-   */
-  // TODO [rst] move to class Decorations as soon as it exists
-  public Button getDefaultButton() {
-    checkWidget();
-    Button result = null;
-    if( defaultButton != null && !defaultButton.isDisposed() ) {
-      result = defaultButton;
-    }
-    return result;
   }
 
   /**
@@ -1186,39 +1019,6 @@ public class Shell extends Decorations {
     }
   }
 
-  /////////////////////////
-  // Focus handling methods
-
-  // TODO [rh] move to Decorations as soon as exists
-  final void setSavedFocus( Control control ) {
-    savedFocus = control;
-  }
-
-  // TODO [rh] move to Decorations as soon as exists
-  final Control getSavedFocus() {
-    return savedFocus;
-  }
-
-  // TODO [rh] move to Decorations as soon as exists
-  final void saveFocus() {
-    Control control = display.getFocusControl();
-    if( control != null && control != this && this == control.getShell() ) {
-      setSavedFocus( control );
-    }
-  }
-
-  // TODO [rh] move to Decorations as soon as exists
-  final boolean restoreFocus() {
-    if( savedFocus != null && savedFocus.isDisposed() ) {
-      savedFocus = null;
-    }
-    boolean result = false;
-    if( savedFocus != null && savedFocus.setSavedFocus() ) {
-      result = true;
-    }
-    return result;
-  }
-
   private void bringToTop() {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -1480,43 +1280,6 @@ public class Shell extends Decorations {
       }
     }
     return result;
-  }
-
-  ///////////////////
-  // Widget overrides
-
-  // TODO [rh] move to class Decorations as soon as it exists
-  @Override
-  String getNameText() {
-    return getText();
-  }
-
-  ///////////////////
-  // check... methods
-
-  // TODO [rh] move to class Decorations as soon as it exists
-  static int Decorations_checkStyle( int style ) {
-    int result = style;
-    if( ( result & SWT.NO_TRIM ) != 0 ) {
-      int trim = ( SWT.CLOSE
-                 | SWT.TITLE
-                 | SWT.MIN
-                 | SWT.MAX
-                 | SWT.RESIZE
-                 | SWT.BORDER );
-      result &= ~trim;
-    }
-    if( ( result & ( /* SWT.MENU | */ SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0 ) {
-      result |= SWT.TITLE;
-    }
-    if( ( result & ( SWT.MIN | SWT.MAX ) ) != 0 ) {
-      result |= SWT.CLOSE;
-    }
-    return result;
-  }
-
-  private static int checkStyle( int style ) {
-    return Decorations_checkStyle( style );
   }
 
   private static Shell checkParent( Shell parent ) {

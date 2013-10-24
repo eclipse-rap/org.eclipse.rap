@@ -31,8 +31,13 @@ public class ImageFactory {
   public static String getImagePath( Image image ) {
     String result = null;
     if( image != null ) {
-      String resourceName = image.internalImage.getResourceName();
-      result = RWT.getResourceManager().getLocation( resourceName );
+      InternalImage internalImage = image.internalImage;
+      String resourceName = internalImage.getResourceName();
+      if( internalImage.isExternal() ) {
+        result = resourceName;
+      } else {
+        result = RWT.getResourceManager().getLocation( resourceName );
+      }
     }
     return result;
   }
@@ -80,9 +85,10 @@ public class ImageFactory {
     return createImageInstance( device, internalImage );
   }
 
-  private static Image createImageInstance( Device device, InternalImage internalImage ) {
+  static Image createImageInstance( Device device, InternalImage internalImage ) {
     Class[] paramTypes = new Class[] { Device.class, InternalImage.class };
     Object[] paramValues = new Object[] { device, internalImage };
     return ClassUtil.newInstance( Image.class, paramTypes, paramValues );
   }
+
 }

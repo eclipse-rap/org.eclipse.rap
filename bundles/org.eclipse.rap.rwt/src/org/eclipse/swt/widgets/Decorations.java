@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
@@ -32,13 +33,19 @@ public class Decorations extends Canvas {
   private DisposeListener menuBarDisposeListener;
   private Image image;
   private Image[] images;
+  private String text;
+  private Button defaultButton;
+  private Button saveDefault;
+  private Control savedFocus;
 
   Decorations( Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
     images = new Image[0];
+    text = "";
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -173,8 +180,46 @@ public class Decorations extends Canvas {
     return image;
   }
 
-  //////////
-  // MenuBar
+  /**
+   * Sets the receiver's text, which is the string that the
+   * window manager will typically display as the receiver's
+   * <em>title</em>, to the argument, which must not be null.
+   *
+   * @param text the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setText( String text ) {
+    checkWidget();
+    if( text == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    this.text = text;
+  }
+
+  /**
+   * Returns the receiver's text, which is the string that the
+   * window manager will typically display as the receiver's
+   * <em>title</em>. If the text has not previously been set,
+   * returns an empty string.
+   *
+   * @return the text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String getText() {
+    checkWidget();
+    return text;
+  }
 
   /**
    * Sets the receiver's menu bar to the argument, which
@@ -227,16 +272,170 @@ public class Decorations extends Canvas {
     return menuBar;
   }
 
-  ///////////
-  // Disposal
+  /**
+   * If the argument is not null, sets the receiver's default
+   * button to the argument, and if the argument is null, sets
+   * the receiver's default button to the first button which
+   * was set as the receiver's default button (called the
+   * <em>saved default button</em>). If no default button had
+   * previously been set, or the saved default button was
+   * disposed, the receiver's default button will be set to
+   * null.
+   * <p>
+   * The default button is the button that is selected when
+   * the receiver is active and the user presses ENTER.
+   * </p>
+   *
+   * @param button the new default button
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the button has been disposed</li>
+   *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setDefaultButton( Button button ) {
+    checkWidget();
+    if( button != null ) {
+      if( button.isDisposed() ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      if( button.getShell() != this ) {
+        error( SWT.ERROR_INVALID_PARENT );
+      }
+    }
+    setDefaultButton( button, true );
+  }
 
+  /**
+   * Returns the receiver's default button if one had
+   * previously been set, otherwise returns null.
+   *
+   * @return the default button or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Shell#setDefaultButton(Button)
+   */
+  public Button getDefaultButton() {
+    checkWidget();
+    Button result = null;
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      result = defaultButton;
+    }
+    return result;
+  }
+
+  void updateDefaultButton( final Control focusControl, final boolean set ) {
+    if( isPushButton( focusControl ) ) {
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          Button defaultButton = ( Button )focusControl;
+          setDefaultButton( set ? defaultButton : null, false );
+        }
+      } );
+    }
+  }
+
+  void setDefaultButton( Button button, boolean save ) {
+    if( button == null ) {
+      if( defaultButton == saveDefault ) {
+        if( save ) {
+          saveDefault = null;
+        }
+        return;
+      }
+    } else {
+      if( ( button.getStyle() & SWT.PUSH ) == 0 ) {
+        return;
+      }
+      if( button == defaultButton ) {
+        if( save ) {
+          saveDefault = defaultButton;
+        }
+        return;
+      }
+    }
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      defaultButton.setDefault( false );
+    }
+    defaultButton = button;
+    if( defaultButton == null ) {
+      defaultButton = saveDefault;
+    }
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      defaultButton.setDefault( true );
+    }
+    if( save ) {
+      saveDefault = defaultButton;
+    }
+    if( saveDefault != null && saveDefault.isDisposed() ) {
+      saveDefault = null;
+    }
+  }
+
+  final void setSavedFocus( Control control ) {
+    savedFocus = control;
+  }
+
+  final Control getSavedFocus() {
+    return savedFocus;
+  }
+
+  final void saveFocus() {
+    Control control = display.getFocusControl();
+    if( control != null && control != this && this == control.getShell() ) {
+      setSavedFocus( control );
+    }
+  }
+
+  final boolean restoreFocus() {
+    if( savedFocus != null && savedFocus.isDisposed() ) {
+      savedFocus = null;
+    }
+    boolean result = false;
+    if( savedFocus != null && savedFocus.setSavedFocus() ) {
+      result = true;
+    }
+    return result;
+  }
+
+  @Override
+  String getNameText() {
+    return getText();
+  }
+
+  static int checkStyle( int style ) {
+    int result = style;
+    if( ( result & SWT.NO_TRIM ) != 0 ) {
+      int trim = ( SWT.CLOSE
+                 | SWT.TITLE
+                 | SWT.MIN
+                 | SWT.MAX
+                 | SWT.RESIZE
+                 | SWT.BORDER );
+      result &= ~trim;
+    }
+    if( ( result & ( /* SWT.MENU | */ SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0 ) {
+      result |= SWT.TITLE;
+    }
+    if( ( result & ( SWT.MIN | SWT.MAX ) ) != 0 ) {
+      result |= SWT.CLOSE;
+    }
+    return result;
+  }
+
+  @Override
   final void releaseWidget() {
     removeMenuBarDisposeListener();
     super.releaseWidget();
   }
-
-  //////////////////////////////////////////////////////////
-  // Helping methods to observe the disposal of the menuBar
 
   private void addMenuBarDisposeListener() {
     if( menuBar != null ) {
@@ -257,9 +456,14 @@ public class Decorations extends Canvas {
     }
   }
 
+  private static boolean isPushButton( Control control ) {
+    return control instanceof Button && ( control.style & SWT.PUSH ) != 0 ;
+  }
+
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     if( menuBar != null ) {
       menuBar.reskin( flags );
@@ -273,4 +477,5 @@ public class Decorations extends Canvas {
     }
     super.reskinChildren( flags );
   }
+
 }

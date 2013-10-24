@@ -12,6 +12,10 @@
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
@@ -58,24 +62,19 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
-    WidgetLCAUtil.preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
-    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
-    WidgetLCAUtil.preserveListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener );
-  }
-
-  public void readData( Widget widget ) {
-    // It is not neccessary to read the expanded state as a HyperlinkListener
-    // will always be registered (see ToggleHyperlink).
-    ControlLCAUtil.processSelection( widget, null, false );
-    ControlLCAUtil.processDefaultSelection( widget, null );
+    preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
+    preserveListener( hyperlink,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      isListening( hyperlink, SWT.DefaultSelection ) );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     RemoteObject remoteObject = createRemoteObject( hyperlink, TYPE );
+    remoteObject.setHandler( new ToggleHyperlinkOperationHandler( hyperlink ) );
     remoteObject.set( "parent", WidgetUtil.getId( hyperlink.getParent() ) ); //$NON-NLS-1$
-    WidgetLCAUtil.renderProperty( hyperlink, PROP_IMAGES, getImages( hyperlink ), DEFAULT_IMAGES );
+    renderProperty( hyperlink, PROP_IMAGES, getImages( hyperlink ), DEFAULT_IMAGES );
   }
 
   @Override
@@ -83,9 +82,11 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ToggleHyperlink hyperlink = ( ToggleHyperlink )widget;
     ControlLCAUtil.renderChanges( hyperlink );
     WidgetLCAUtil.renderCustomVariant( hyperlink );
-    WidgetLCAUtil.renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
-    boolean hasListener = isListening( hyperlink, SWT.DefaultSelection );
-    WidgetLCAUtil.renderListener( hyperlink, PROP_DEFAULT_SELECTION_LISTENER, hasListener, false );
+    renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
+    renderListener( hyperlink,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    isListening( hyperlink, SWT.DefaultSelection ),
+                    false );
   }
 
   //////////////////

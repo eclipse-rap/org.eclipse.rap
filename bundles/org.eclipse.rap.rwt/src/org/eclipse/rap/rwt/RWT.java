@@ -291,6 +291,26 @@ public final class RWT {
   public static final String CUSTOM_ITEM_HEIGHT = "org.eclipse.rap.rwt.customItemHeight";
 
   /**
+   * Controls the number of preloaded items outside (above and below) visible area of virtual
+   * <code>Tree</code> or <code>Table</code>. The preloaded items must be specified as an
+   * <code>Integer</code> and passed to <code>setData()</code> with this constant as the key.
+   * <p>
+   * For example: <code>table.setData( RWT.PRELOADED_ITEMS, new Integer( 10 ) );</code>
+   * </p>
+   * <p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 2.2
+   */
+  public static final String PRELOADED_ITEMS = "org.eclipse.rap.rwt.preloadedItems";
+
+  /**
    * Controls whether the use of <em>markup</em> in text is enabled. To enable
    * markup in text, this constant must be passed to <code>setData()</code> with
    * a value of <code>Boolean.TRUE</code>. The call to <code>setData()</code>

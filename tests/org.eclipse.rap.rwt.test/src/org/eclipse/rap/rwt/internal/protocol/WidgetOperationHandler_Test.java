@@ -99,6 +99,24 @@ public class WidgetOperationHandler_Test {
   }
 
   @Test
+  public void testCreateSelectionEvent_withDetail_arrow() {
+    JsonObject properties = new JsonObject().add( "detail", "arrow" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( SWT.ARROW, event.detail );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withText() {
+    JsonObject properties = new JsonObject().add( "text", "foo" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( "foo", event.text );
+  }
+
+  @Test
   public void testCreateSelectionEvent_withBounds() {
     JsonObject properties = new JsonObject()
       .add( "x", 1 )

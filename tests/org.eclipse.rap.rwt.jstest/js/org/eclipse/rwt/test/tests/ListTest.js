@@ -141,29 +141,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       widget.destroy();
     },
 
-    testItemsWithMarkupHaveFlexiCell : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      MessageProcessor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.List",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "markupEnabled" : true,
-          "items" : [ "<b>bold</b>  </br>  <i>italic</i>" ]
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-
-      var items = widget.getItems();
-
-      assertEquals( 0, items[ 0 ].getFlexibleCell() );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testItemCellHeightIgnoresBottomPadding : function() {
+    testItemCellHeight : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {
         "target" : "w3",
@@ -184,6 +162,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var paddingTop = 6;
       assertEquals( 30 - paddingTop, item.getCellHeight( 0 ) );
       assertEquals( 6, parseInt( item.getCellNode( 0 ).style.top, 10 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testItemCellWidth : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.List",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "items" : [ "foo" ],
+          "itemDimensions" : [ 100, 30 ]
+        }
+      } );
+      TestUtil.flush();
+      var widget = ObjectRegistry.getObject( "w3" );
+
+      var item = widget.getItems()[ 0 ];
+
+      var paddingLeft = 10;
+      var paddingRight = 10;
+      assertEquals( 100 - paddingLeft - paddingRight, item.getCellWidth( 0 ) );
+      assertEquals( 10, parseInt( item.getCellNode( 0 ).style.left, 10 ) );
       shell.destroy();
       widget.destroy();
     },

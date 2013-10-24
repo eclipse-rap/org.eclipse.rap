@@ -28,9 +28,9 @@
     <surefire-version>2.15</surefire-version>
     <junit-version>4.8.2</junit-version>
     <mockito-version>1.8.4</mockito-version>
-    <base-platform-kepler>4.3/R-4.3-201306052000/</base-platform-kepler>
+    <base-platform-kepler>4.3/R-4.3.1-201309111000/</base-platform-kepler>
     <base-platform-kepler-repository>http://download.eclipse.org/eclipse/updates/${base-platform-kepler}</base-platform-kepler-repository>
-    <base-platform-luna>4.4milestones/S-4.4M1-201308072000/</base-platform-luna>
+    <base-platform-luna>4.4milestones/S-4.4M2-201309182000/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class ImageDataCache_Test {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE1 ); // 129 bytes
     InternalImage internalImage
-      = new InternalImage( "testpath", imageData.width, imageData.height );
+      = new InternalImage( "testpath", imageData.width, imageData.height, false );
     cache.putImageData( internalImage, imageData );
     assertEqualsImageData( imageData, cache.getImageData( internalImage ) );
   }
@@ -57,7 +57,7 @@ public class ImageDataCache_Test {
     ImageDataCache cache = new ImageDataCache();
     ImageData imageData = getImageData( Fixture.IMAGE_100x50 ); // 1281 bytes
     InternalImage internalImage
-      = new InternalImage( "testpath", imageData.width, imageData.height );
+      = new InternalImage( "testpath", imageData.width, imageData.height, false );
     cache.putImageData( internalImage, imageData );
     assertNull( cache.getImageData( internalImage ) );
   }
@@ -67,7 +67,7 @@ public class ImageDataCache_Test {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
     InternalImage internalImage
-      = new InternalImage( "testpath", originalData.width, originalData.height );
+      = new InternalImage( "testpath", originalData.width, originalData.height, false );
     cache.putImageData( internalImage, originalData );
     ImageData copyData = cache.getImageData( internalImage );
     assertNotSame( originalData, copyData );
@@ -79,7 +79,7 @@ public class ImageDataCache_Test {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
     InternalImage internalImage
-      = new InternalImage( "testpath", originalData.width, originalData.height );
+      = new InternalImage( "testpath", originalData.width, originalData.height, false );
     cache.putImageData( internalImage, originalData );
     ImageData copyData1 = cache.getImageData( internalImage );
     // modify original data

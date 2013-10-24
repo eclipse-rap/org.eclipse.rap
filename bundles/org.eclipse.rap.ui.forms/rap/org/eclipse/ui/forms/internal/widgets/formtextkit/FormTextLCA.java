@@ -12,6 +12,7 @@ package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
@@ -58,30 +59,24 @@ public class FormTextLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( formText );
     WidgetLCAUtil.preserveCustomVariant( formText );
     HyperlinkSettings settings = formText.getHyperlinkSettings();
-    WidgetLCAUtil.preserveProperty( formText,
-                                    PROP_HYPERLINK_UNDERLINE_MODE,
-                                    settings.getHyperlinkUnderlineMode() );
-    WidgetLCAUtil.preserveProperty( formText,
-                                    PROP_HYPERLINK_FOREGROUND,
-                                    settings.getForeground() );
-    WidgetLCAUtil.preserveProperty( formText,
-                                    PROP_HYPERLINK_ACTIVE_FOREGROUND,
-                                    settings.getActiveForeground() );
-    WidgetLCAUtil.preserveProperty( widget, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
+    preserveProperty( formText,
+                      PROP_HYPERLINK_UNDERLINE_MODE,
+                      settings.getHyperlinkUnderlineMode() );
+    preserveProperty( formText,
+                      PROP_HYPERLINK_FOREGROUND,
+                      settings.getForeground() );
+    preserveProperty( formText,
+                      PROP_HYPERLINK_ACTIVE_FOREGROUND,
+                      settings.getActiveForeground() );
+    preserveProperty( widget, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
   }
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
     FormText formText = ( FormText )widget;
     RemoteObject remoteObject = createRemoteObject( formText, TYPE );
+    remoteObject.setHandler( new FormTextOperationHandler( formText ) );
     remoteObject.set( "parent", getId( formText.getParent() ) ); //$NON-NLS-1$
-  }
-
-  public void readData( Widget widget ) {
-    FormText formText = ( FormText )widget;
-    ControlLCAUtil.processSelection( formText, null, false );
-    ControlLCAUtil.processEvents( formText );
-    ControlLCAUtil.processKeyEvents( formText );
   }
 
   @Override

@@ -10,18 +10,28 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.FormText;
+import org.junit.Test;
 
 
+@SuppressWarnings( "restriction" )
 public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
   private FormText formText;
@@ -41,6 +51,26 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( formText );
     assertEquals( "forms.widgets.FormText", operation.getType() );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( formText );
+    lca.renderInitialization( formText );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof FormTextOperationHandler );
+  }
+
+  @Test
+  public void testReadData_usesOperationHandler() {
+    FormTextOperationHandler handler = spy( new FormTextOperationHandler( formText ) );
+    getRemoteObject( getId( formText ) ).setHandler( handler );
+
+    Fixture.fakeNotifyOperation( getId( formText ), "Help", new JsonObject() );
+    lca.readData( formText );
+
+    verify( handler ).handleNotifyHelp( formText, new JsonObject() );
   }
 
   public void testRenderParent() throws IOException {

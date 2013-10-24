@@ -349,6 +349,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       assertFalse( menuBar.getActive() );
     },
 
+    testDeactivate_doNotActivateMenu_Bug418887  : function() {
+      handler.setActivator( "CTRL" );
+      this._createMenu();
+      var menuBar = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var menuItem = rwt.remote.ObjectRegistry.getObject( "w5" );
+      menuItem.setText( "foo" );
+      menuItem.setMnemonicIndex( 1 );
+      var widgetTwo = TestUtil.createWidgetByProtocol( "w4", "w2" );
+      TestUtil.flush();
+      var newShell = TestUtil.createShellByProtocol( "w3" );
+      handler.add( widgetTwo, function( event ) {
+        if( event.type === "trigger" ) {
+          newShell.setActive( true );
+          event.success = true;
+        }
+      } );
+
+      TestUtil.keyDown( shell, "Control", DomEvent.CTRL_MASK );
+      TestUtil.keyDown( shell, "Y", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( newShell, "Y", DomEvent.CTRL_MASK );
+      TestUtil.keyUp( newShell, "Control", 0 );
+      TestUtil.flush();
+
+      assertNotNull( newShell );
+      assertFalse( menuBar.getActive() );
+      newShell.destroy();
+    },
+
     testDeactivate_activateMenuWhenAcivatorWasHeldDown : function() {
       handler.setActivator( "CTRL" );
       this._createMenu();

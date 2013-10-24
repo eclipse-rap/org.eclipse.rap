@@ -132,6 +132,7 @@ public class Tree extends Composite {
   private int visibleItemsCount;
   boolean markupEnabled;
   boolean markupValidationDisabled;
+  private int preloadedItems;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -458,14 +459,13 @@ public class Tree extends Composite {
       }
       int flatIndex = item.getFlatIndex();
       int topIndex = getTopItemIndex();
-      if( flatIndex <= topIndex ) {
+      int visibleRows = getVisibleRowCount( false );
+      if( flatIndex < topIndex ) {
+        // Show item as top item
         setTopItemIndex( flatIndex );
-      } else {
-        int itemsAreaHeight = getClientArea().height - getHeaderHeight();
-        int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-        if( flatIndex >= topIndex + rows ) {
-          setTopItemIndex( flatIndex - rows + 1 );
-        }
+      } else if( visibleRows > 0 && flatIndex >= topIndex + visibleRows ) {
+        // Show item as last item
+        setTopItemIndex( flatIndex - visibleRows + 1 );
       }
     }
   }
@@ -1625,6 +1625,8 @@ public class Tree extends Composite {
       layoutCache.invalidateAll();
     } else if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
+    } else if( RWT.PRELOADED_ITEMS.equals( key ) ) {
+      setPreloadedItems( value );
     } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
     } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
@@ -1738,6 +1740,20 @@ public class Tree extends Composite {
         error( SWT.ERROR_INVALID_RANGE );
       }
       customItemHeight = itemHeight;
+    }
+  }
+
+  private void setPreloadedItems( Object value ) {
+    if( value == null ) {
+      preloadedItems = 0;
+    } else {
+      if( !( value instanceof Integer ) ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      preloadedItems = ( ( Integer )value ).intValue();
+      if( preloadedItems < 0 ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
     }
   }
 
@@ -2137,7 +2153,7 @@ public class Tree extends Composite {
   private int updateAllItemsRecursively( TreeItem parent, int index, int flatIndex ) {
     int newFlatIndex = flatIndex;
     TreeItem item = parent == null ? items[ index ] : parent.items[ index ];
-    if( isVirtual() && isItemVisible( flatIndex ) ) {
+    if( shouldResolveItem( flatIndex ) ) {
       if( item == null ) {
         item = parent == null ? _getItem( index ) : parent._getItem( index );
       }
@@ -2155,16 +2171,12 @@ public class Tree extends Composite {
     return newFlatIndex;
   }
 
-  private boolean isItemVisible( int flatIndex ) {
-    boolean result = false;
-    int headerHeight = getHeaderHeight();
-    int itemHeight = getItemHeight();
-    int itemPosition = headerHeight + ( flatIndex - getTopItemIndex() ) * itemHeight;
-    // TODO shouldn't we call getClientArea() instead?
-    if( itemPosition >= 0 && itemPosition <= getSize().y ) {
-      result = true;
-    }
-    return result;
+  private boolean shouldResolveItem( int flatIndex ) {
+    int visibleRows = getVisibleRowCount( true );
+    int topIndex = getTopItemIndex();
+    int startIndex = topIndex - preloadedItems;
+    int endIndex = topIndex + visibleRows + preloadedItems;
+    return isVirtual() ? flatIndex >= startIndex && flatIndex < endIndex : false;
   }
 
   final boolean checkData( TreeItem item, int index ) {

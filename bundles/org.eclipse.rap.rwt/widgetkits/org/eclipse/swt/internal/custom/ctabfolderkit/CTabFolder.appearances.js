@@ -126,15 +126,9 @@ var appearances = {
       } else {
         result.border = new rwt.html.Border( borderWidths, "solid", color );
       }
-      if( states.selected ) {
-        result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
-        result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
-        result.backgroundGradient = tv.getCssGradient( "CTabItem", "background-image" );
-      } else {
-        result.backgroundColor = "undefined";
-        result.backgroundImage = null;
-        result.backgroundGradient = null;
-      }
+      result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
+      result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "CTabItem", "background-image" );
       return result;
     }
   },

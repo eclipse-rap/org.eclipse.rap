@@ -31,11 +31,11 @@ public class RowTemplate_Test {
   @Test
   public void testAddsCell() {
     RowTemplate template = new RowTemplate();
-    CellImpl cell = mock( CellImpl.class );
+    Cell cell = mock( Cell.class );
 
     template.addCell( cell );
 
-    List<Cell> cells = template.getCells();
+    List<Cell<?>> cells = template.getCells();
     assertEquals( 1, cells.size() );
     assertSame( cell, cells.get( 0 ) );
   }
@@ -43,13 +43,13 @@ public class RowTemplate_Test {
   @Test
   public void testAddsCells() {
     RowTemplate template = new RowTemplate();
-    CellImpl cell1 = mock( CellImpl.class );
-    CellImpl cell2 = mock( CellImpl.class );
+    Cell cell1 = mock( Cell.class );
+    Cell cell2 = mock( Cell.class );
 
     template.addCell( cell1 );
     template.addCell( cell2 );
 
-    List<Cell> cells = template.getCells();
+    List<Cell<?>> cells = template.getCells();
     assertEquals( 2, cells.size() );
     assertSame( cell1, cells.get( 0 ) );
     assertSame( cell2, cells.get( 1 ) );
@@ -58,9 +58,9 @@ public class RowTemplate_Test {
   @Test
   public void testCellsAreSafeCopy() {
     RowTemplate template = new RowTemplate();
-    List<Cell> cells = template.getCells();
+    List<Cell<?>> cells = template.getCells();
 
-    template.addCell( mock( CellImpl.class ) );
+    template.addCell( mock( Cell.class ) );
 
     assertEquals( 0, cells.size() );
   }

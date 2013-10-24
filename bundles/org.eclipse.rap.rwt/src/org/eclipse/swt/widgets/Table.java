@@ -199,11 +199,6 @@ public class Table extends Composite {
       return result;
     }
 
-    public boolean isItemVisible( TableItem item ) {
-      int index = Table.this.indexOf( item );
-      return index != -1 && Table.this.isItemVisible( index );
-    }
-
     public boolean isItemVirtual( int index ) {
       boolean result = false;
       if( ( style & SWT.VIRTUAL ) != 0 ) {
@@ -284,6 +279,7 @@ public class Table extends Composite {
   private int bufferedCellSpacing;
   boolean markupEnabled;
   boolean markupValidationDisabled;
+  private int preloadedItems;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -358,6 +354,8 @@ public class Table extends Composite {
   public void setData( String key, Object value ) {
     if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
+    } else if( RWT.PRELOADED_ITEMS.equals( key ) ) {
+      setPreloadedItems( value );
     } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
       markupEnabled = Boolean.TRUE.equals( value );
     } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
@@ -2050,6 +2048,20 @@ public class Table extends Composite {
     }
   }
 
+  private void setPreloadedItems( Object value ) {
+    if( value == null ) {
+      preloadedItems = 0;
+    } else {
+      if( !( value instanceof Integer ) ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      preloadedItems = ( ( Integer )value ).intValue();
+      if( preloadedItems < 0 ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+    }
+  }
+
   final int getItemsPreferredWidth( int columnIndex ) {
     // Mimic Windows behaviour that has a minimal width
     int width = getCheckSize( columnIndex ).x + 12;
@@ -2308,15 +2320,11 @@ public class Table extends Composite {
   // Helping methods - resolving of virtual items
 
   private void checkData() {
-    boolean visible = true;
-    int index = Math.max( 0, topIndex );
-    while( visible && index < itemCount ) {
-      visible = isItemVisible( index );
-      if( visible ) {
-        TableItem item = _getItem( index );
-        checkData( item, index );
-      }
-      index++;
+    int visibleItemCount = getVisibleItemCount( true );
+    int startIndex = Math.max( 0, topIndex - preloadedItems );
+    int endIndex = Math.min( itemCount, topIndex + visibleItemCount + preloadedItems );
+    for( int index = startIndex; index < endIndex; index++ ) {
+      checkData( _getItem( index ), index );
     }
   }
 
@@ -2598,7 +2606,7 @@ public class Table extends Composite {
     }
   }
 
-  private boolean isItemVisible( int index ) {
+  boolean isItemVisible( int index ) {
     boolean result = false;
     int visibleItemCount = getVisibleItemCount( true );
     if( visibleItemCount > 0 ) {

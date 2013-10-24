@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ final class PrepareUIRoot implements IPhase {
     if( LifeCycleUtil.isStartup() ) {
       EntryPoint entryPoint = createEntryPoint();
       entryPoint.createUI();
+      processPendingMessages();
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;
@@ -50,4 +51,13 @@ final class PrepareUIRoot implements IPhase {
     EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
     return registration.getFactory().create();
   }
+
+  private static void processPendingMessages() {
+    Display display = Display.getCurrent();
+    if( display != null ) {
+      while( display.readAndDispatch() ) {
+      }
+    }
+  }
+
 }

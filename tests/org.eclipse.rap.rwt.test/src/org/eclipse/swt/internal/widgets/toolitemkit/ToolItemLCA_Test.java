@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,21 +26,19 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
@@ -49,7 +46,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 
 public class ToolItemLCA_Test {
@@ -77,123 +73,25 @@ public class ToolItemLCA_Test {
   }
 
   @Test
-  public void testReadSelection_Check() {
-    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
-
-    Fixture.fakeSetProperty( getId( item ), "selection", true );
-    lca.readData( item );
-
-    assertTrue( item.getSelection() );
-  }
-
-  @Test
-  public void testFireSelectionEvent_Check() {
-    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
-    Listener listener = mock( Listener.class );
-    item.addListener( SWT.Selection, listener );
-
-    JsonObject params = new JsonObject().add( "altKey", "true" );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
-    Fixture.readDataAndProcessAction( display );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( listener ).handleEvent( captor.capture() );
-    Event event = captor.getValue();
-    assertEquals( null, event.item );
-    assertSame( item, event.widget );
-    assertTrue( event.doit );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
-  }
-
-  @Test
-  public void testReadSelection_Radio() {
-    ToolItem item = new ToolItem( toolbar, SWT.RADIO );
-
-    Fixture.fakeSetProperty( getId( item ), "selection", true );
-    lca.readData( item );
-
-    assertTrue( item.getSelection() );
-  }
-
-  @Test
-  public void testFireSelectionEvent_Radio() {
-    ToolItem item = new ToolItem( toolbar, SWT.RADIO );
-    Listener listener = mock( Listener.class );
-    item.addListener( SWT.Selection, listener );
-
-    JsonObject params = new JsonObject().add( "altKey", "true" );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
-    Fixture.readDataAndProcessAction( display );
-
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( listener ).handleEvent( captor.capture() );
-    Event event = captor.getValue();
-    assertEquals( null, event.item );
-    assertSame( item, event.widget );
-    assertTrue( event.doit );
-    assertEquals( 0, event.x );
-    assertEquals( 0, event.y );
-    assertEquals( 0, event.width );
-    assertEquals( 0, event.height );
-    assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
-  }
-
-  @Test
-  public void testDropDownItemSelected() {
-    final boolean[] wasEventFired = { false };
-    final ToolItem item = new ToolItem( toolbar, SWT.DROP_DOWN );
-    item.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent event ) {
-        wasEventFired[ 0 ] = true;
-        assertEquals( null, event.item );
-        assertSame( item, event.getSource() );
-        assertTrue( event.doit );
-        assertEquals( SWT.ARROW, event.detail );
-        Rectangle itemBounds = item.getBounds();
-        assertEquals( itemBounds.x, event.x );
-        assertEquals( itemBounds.y + itemBounds.height, event.y );
-        assertEquals( itemBounds.width, event.width );
-        assertEquals( itemBounds.height, event.height );
-        assertTrue( ( event.stateMask & SWT.ALT ) != 0 );
-      }
-    } );
-    shell.open();
-
-    Fixture.fakeSetProperty( getId( item ), "selection", true );
-    JsonObject params = new JsonObject()
-      .add( "altKey", "true" )
-      .add( ClientMessageConst.EVENT_PARAM_DETAIL, "arrow" );
-    Fixture.fakeNotifyOperation( getId( item ), ClientMessageConst.EVENT_SELECTION, params );
-    Fixture.readDataAndProcessAction( display );
-
-    assertTrue( wasEventFired[ 0 ] );
-  }
-
-  @Test
   public void testGetImage() throws IOException {
     ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
     Image enabledImage = TestUtil.createImage( display, Fixture.IMAGE1 );
     Image disabledImage = TestUtil.createImage( display, Fixture.IMAGE2 );
-    assertNull( ToolItemLCAUtil.getImage( item ) );
+    assertNull( ToolItemLCA.getImage( item ) );
 
     item.setImage( enabledImage );
-    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
+    assertSame( enabledImage, ToolItemLCA.getImage( item ) );
 
     item.setImage( enabledImage );
     item.setDisabledImage( disabledImage );
-    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
+    assertSame( enabledImage, ToolItemLCA.getImage( item ) );
 
     item.setEnabled( false );
-    assertSame( disabledImage, ToolItemLCAUtil.getImage( item ) );
+    assertSame( disabledImage, ToolItemLCA.getImage( item ) );
 
     item.setDisabledImage( null );
-    assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
+    assertSame( enabledImage, ToolItemLCA.getImage( item ) );
   }
 
   @Test
@@ -262,6 +160,15 @@ public class ToolItemLCA_Test {
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "SEPARATOR" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( toolitem );
+    lca.renderInitialization( toolitem );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof ToolItemOperationHandler );
   }
 
   @Test
@@ -636,7 +543,7 @@ public class ToolItemLCA_Test {
     Fixture.markInitialized( toolitem );
     Fixture.preserveWidgets();
 
-    toolitem.addSelectionListener( new SelectionAdapter() { } );
+    toolitem.addSelectionListener( mock( SelectionListener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
