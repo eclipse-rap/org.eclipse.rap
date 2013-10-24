@@ -372,6 +372,10 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         istyle.margin = 0;
         istyle.border = "0 none";
         istyle.background = "transparent";
+        // See Bug 419676: [Text] Input element of Text field may not be vertically centered in IE
+        if( rwt.client.Client.isNewMshtml() ) {
+          istyle.verticalAlign = "top";
+        }
         istyle.overflow = this._inputOverflow;
         istyle.outline = "none";
         istyle.resize = "none";
