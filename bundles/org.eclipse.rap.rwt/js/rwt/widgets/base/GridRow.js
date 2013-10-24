@@ -73,6 +73,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var contentOnly = scrolling && !heightChanged;
         this._renderStates( item, config, renderSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
+        this._renderItemForeground( item, config );
         if( config.treeColumn !== -1 ) {
           this._renderIndention( item, config, hoverTarget );
         }
@@ -183,9 +184,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._styleMap = this._getStyleMap();
       this.setState( "selected", selected );
       if( config.fullSelection ) {
-        this._overlayStyleMap = this._getOverlayStyleMap();
+        this._overlayStyleMap = this._getOverlayStyleMap( selected );
       } else {
-        this._overlayStyleMap = this._getTreeColumnStyleMap();
+        this._overlayStyleMap = this._getTreeColumnStyleMap( selected );
       }
     },
 
@@ -228,11 +229,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
     },
 
-    _getTreeColumnStyleMap : function() {
+    _getTreeColumnStyleMap : function( selected ) {
       var manager = rwt.theme.AppearanceManager.getInstance();
-      var rowMap = manager.styleFrom( this.getAppearance(), this.__states );
       var overlayMap = manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
-      overlayMap.rowForeground = rowMap.foreground;
+      if( selected ) {
+        var rowMap = manager.styleFrom( this.getAppearance(), this.__states );
+        overlayMap.rowForeground = rowMap.foreground;
+      } else {
+        overlayMap.rowForeground = "undefined";
+      }
       return overlayMap;
     },
 
@@ -617,10 +622,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     } ),
 
     _styleLabel : function( element, item, cell, config ) {
+      // TODO : use inheritance
       this._setForeground( element, this._getCellColor( item, cell, config ) );
       this._setFont( element, this._getCellFont( item, cell, config ) );
       this._setTextDecoration( element, this._styleMap.textDecoration );
       Style.setTextShadow( element, this._styleMap.textShadow );
+    },
+
+    _renderItemForeground : function( item, config ) {
+      this._setForeground( this.getElement(), this._getItemColor( item, config ) );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {
@@ -634,25 +644,39 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _getCellColor : function( item, cell, config ) {
-      var result = null;
-      var foreground = this._styleMap.foreground;
-      var overlayForeground = this._overlayStyleMap.foreground;
-      if( !config.fullSelection ) {
-        if( this._isTreeColumn( cell, config ) ){
-          foreground = this._overlayStyleMap.rowForeground;
-        } else {
-          overlayForeground = "undefined";
-        }
-      }
-      if( overlayForeground !== "undefined" ) {
-        result = overlayForeground;
-      } else if( config.enabled !== false && item.getCellForeground( cell ) ) {
+      var treeColumn = this._isTreeColumn( cell, config );
+      var allowOverlay = config.fullSelection || treeColumn;
+      var result = allowOverlay ? this._overlayStyleMap.foreground : "undefined";
+      if(    result === "undefined"
+          && config.enabled !== false
+          && item.getCellForeground( cell )
+      ) {
         result = item.getCellForeground( cell );
-      } else {
-        result = foreground;
-        if( result === "undefined" ) {
-          result = config.textColor;
-        }
+      }
+      if( result === "undefined" && treeColumn && !config.fullSelection ) {
+        // If there is no overlay the tree column foreground may still have a different color
+        // due to selection. In this case _overlayStyleMap has the tree column foreground color.
+        result = this._overlayStyleMap.rowForeground;
+      }
+       if( result === "undefined" ) {
+         result = "inherit";
+      }
+      return result;
+    },
+
+    _getItemColor : function( item, config ) {
+      var result = "undefined";
+      if( config.fullSelection ) {
+        result = this._overlayStyleMap.foreground;
+      }
+      if( result === "undefined" ) {
+        result = this._styleMap.foreground;
+      }
+      if( result === "undefined" ) {
+        result = config.textColor;
+      }
+      if( result === "undefined" ) {
+        result = "inherit";
       }
       return result;
     },

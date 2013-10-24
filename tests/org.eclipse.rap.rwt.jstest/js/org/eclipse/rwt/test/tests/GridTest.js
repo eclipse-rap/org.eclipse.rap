@@ -2927,8 +2927,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "Test1" ] );
       TestUtil.flush();
-      var row = tree._rowContainer._children[ 0 ];
-      var node = row._getTargetNode().childNodes[ 0 ];
+      var node = tree._rowContainer._children[ 0 ].getElement();
       assertEquals( "red", node.style.color );
       tree.setTextColor( "blue" );
       TestUtil.flush();
