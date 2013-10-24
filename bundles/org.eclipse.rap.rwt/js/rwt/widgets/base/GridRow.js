@@ -16,6 +16,8 @@
 
 (function() {
 
+var INHERIT = rwt.client.Client.isMshtml() ? "" : "inherit";
+
 var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
@@ -262,7 +264,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
     },
 
-    _hasOverlayBackground : function() {
+    _hasOverlayBackground : function( config ) {
+      if( !config.fullSelection && config.rowTemplate ) {
+        return false;
+      }
       var result =    this._overlayStyleMap.background !== "undefined"
                    || this._overlayStyleMap.backgroundImage !== null
                    || this._overlayStyleMap.backgroundGradient !== null;
@@ -392,7 +397,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlay : function( item, config ) {
-      if( item && this._hasOverlayBackground() ) {
+      if( item && this._hasOverlayBackground( config ) ) {
         this._styleOverlay( item, config );
         this._layoutOverlay( item, config );
       } else if( this._overlayElement ){
@@ -664,7 +669,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = this._overlayStyleMap.rowForeground;
       }
        if( result === "undefined" ) {
-         result = "inherit";
+         result = INHERIT;
       }
       return result;
     },
@@ -681,7 +686,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = config.textColor;
       }
       if( result === "undefined" ) {
-        result = "inherit";
+        result = INHERIT;
       }
       return result;
     },

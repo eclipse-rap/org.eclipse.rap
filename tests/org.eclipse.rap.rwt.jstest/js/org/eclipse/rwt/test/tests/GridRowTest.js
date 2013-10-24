@@ -822,7 +822,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "black", row.getElement().style.color );
-      assertEquals( "inherit", node.style.color );
+      assertTrue( "inherit" === node.style.color || "" === node.style.color );
     },
 
     testResetForeground : function( ) {
@@ -834,7 +834,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "red", node.style.color );
       item.setForeground( null );
       row.renderItem( item, tree._config, false, null );
-      assertEquals( "inherit", node.style.color );
+      assertTrue( "inherit" === node.style.color || "" === node.style.color );
     },
 
     testRenderCellForeground : function() {
@@ -2003,11 +2003,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode().childNodes[ 1 ];
       row.renderItem( item, tree._config, false, null );
       assertEquals( "black", row.getElement().style.color );
-      assertEquals( "inherit", node.style.color );
+      assertTrue( "inherit" === node.style.color || "" === node.style.color );
       this._setItemForeground( "red" );
       row.renderItem( item, tree._config, false, null );
       assertEquals( "red", row.getElement().style.color );
-      assertEquals( "inherit", node.style.color );
+      assertTrue( "inherit" === node.style.color || "" === node.style.color );
     },
 
     testSelectionForegroundTheming : function() {
@@ -2036,14 +2036,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
       assertEquals( "black", row.getElement().style.color );
-      assertEquals( "inherit", nodes[ 1 ].style.color );
-      assertEquals( "inherit", nodes[ 2 ].style.color );
+      assertTrue( "inherit" === nodes[ 1 ].style.color || "" === nodes[ 1 ].style.color );
+      assertTrue( "inherit" === nodes[ 2 ].style.color || "" === nodes[ 2 ].style.color );
 
       row.renderItem( item, tree._config, true, null );
 
       assertEquals( "black", row.getElement().style.color );
       assertEquals( "white", nodes[ 1 ].style.color );
-      assertEquals( "inherit", nodes[ 2 ].style.color );
+      assertTrue( "inherit" === nodes[ 2 ].style.color || "" === nodes[ 2 ].style.color );
     },
 
     testSelectionWithItemForeground : function() {
@@ -2104,12 +2104,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
       assertEquals( "black", row.getElement().style.color );
-      assertEquals( "inherit", nodes[ 1 ].style.color );
-      assertEquals( "inherit", nodes[ 2 ].style.color );
+      assertTrue( "inherit" === nodes[ 1 ].style.color || "" === nodes[ 1 ].style.color );
+      assertTrue( "inherit" === nodes[ 2 ].style.color || "" === nodes[ 2 ].style.color );
       row.renderItem( item, tree._config, true, null );
       assertEquals( "white", row.getElement().style.color );
-      assertEquals( "inherit", nodes[ 1 ].style.color );
-      assertEquals( "inherit", nodes[ 2 ].style.color );
+      assertTrue( "inherit" === nodes[ 1 ].style.color || "" === nodes[ 1 ].style.color );
+      assertTrue( "inherit" === nodes[ 2 ].style.color || "" === nodes[ 2 ].style.color );
     },
 
     tesFullSelecitonWithItemForeground : function() {
@@ -2203,7 +2203,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "red", row.getElement().style.color );
-      assertEquals( "inherit", node.style.color );
+      assertTrue( "inherit" === node.style.color || "" === node.style.color );
     },
 
     testInheritFont : function() {
@@ -2585,6 +2585,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testRenderTemplate_EmptyTemplateRendersOverlay : function() {
       tree.setTreeColumn( -1 );
+      tree.getRenderConfig().fullSelection = true;
       var item = this._createItem( tree );
       this._setOverlayBackground( "green" );
 
@@ -2685,7 +2686,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.getRenderConfig().rowTemplate = mockTemplate( [ null, "text", 1, 1, 1, 1 ],
                                                          [ 1, "text", 1, 1, 1, 1 ] );
       row.renderItem( item, tree._config, false, null );
-
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 1, nodes.length );
       assertEquals( "bar", nodes[ 0 ].innerHTML );
@@ -3076,13 +3076,19 @@ var mockTemplate = function() {
       cells.push(  {
         "bindingIndex" : arguments[ i ][ 0 ],
         "type" : arguments[ i ][ 1 ],
-        "left" : arguments[ i ][ 2 ],
-        "top" : arguments[ i ][ 3 ],
-        "width" : arguments[ i ][ 4 ],
-        "height" : arguments[ i ][ 5 ]
+        "left" : arguments[ i ][ 2 ] || 0,
+        "top" : arguments[ i ][ 3 ] || 0,
+        "width" : arguments[ i ][ 4 ] || 0,
+        "height" : arguments[ i ][ 5 ] || 0
       } );
     } else {
-      cells.push( arguments[ i ] );
+      var cellData =  {
+        "left" : 0,
+        "top" : 0,
+        "width" : 10,
+        "height" : 10
+      };
+      cells.push( rwt.util.Objects.mergeWith( cellData, arguments[ i ], true ) );
     }
   }
   return new rwt.widgets.util.Template( cells );

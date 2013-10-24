@@ -14,6 +14,8 @@ namespace( "rwt.widgets.util" );
 
 (function(){
 
+var INHERIT = rwt.client.Client.isMshtml() ? "" : "inherit";
+
 var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.widgets.util.Template = function( cells ) {
@@ -74,7 +76,6 @@ rwt.widgets.util.Template.prototype = {
   },
 
   getCellContent : function( item, cell, cellRenderOptions ) {
-    // TODO : assign cellRenderer in parseCells
     if( !item ) {
       return null;
     }
@@ -200,7 +201,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _renderForeground : function( element, color ) {
-    element.style.color = color || "inherit";
+    element.style.color = color || INHERIT;
   },
 
   _renderFont : function( element, font ) {

@@ -167,7 +167,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testRenderCellLeft_LeftIsOffset : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "left" : 15 } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : 15 } );
 
       var element = render( template, createGridItem( [ "foo" ] ) );
 
@@ -175,12 +175,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellLeft_LeftIsUndefined : function() {
-      var template = new Template( [ {
+      var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
         "width" : 10,
-        "right" : 15
-      } ] );
+        "right" : 15,
+        "left" : undefined
+      } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -189,7 +190,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellTop_TopIsOffset : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "top" : 12 } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : 12 } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -198,12 +199,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellTop_TopIsUndefined : function() {
-      var template = new Template( [ {
+      var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
         "height" : 10,
-        "bottom" : 15
-      } ] );
+        "bottom" : 15,
+        "top" : undefined
+      } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -212,7 +214,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellWidth_WidthIsSet : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "width" : 17 } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "width" : 17 } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -221,19 +223,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellWidth_WidthIsUndefined : function() {
-      var template = new Template( [ {
+      var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
         "left" : 10,
-        "right" : 15
-      } ] );
+        "right" : 15,
+        "width" : undefined
+      } );
       var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
 
       assertEquals( 75, getWidth( element.firstChild ) );
     },
 
     testGetCellHeight_HeightIsSet : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "text", "height" : 12 } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "height" : 12 } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -242,12 +245,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellHeight_HeightIsUndefined : function() {
-      var template = new Template( [ {
+      var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
         "top" : 10,
-        "bottom" : 15
-      } ] );
+        "bottom" : 15,
+        "height" : undefined
+      } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -256,7 +260,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellType : function() {
-      var template = new Template( [ { "type" : "anyString" } ] );
+      var template = createTemplate( { "type" : "anyString" } );
 
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
@@ -534,12 +538,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         }
       } ) );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
-      var template = new Template( [ cellData ] );
+      var template = createTemplate( cellData );
 
       render( template, createGridItem( [ "foo", "bar" ] ) );
 
       assertEquals( 1, renderArgs.length );
-      assertIdentical( cellData, renderArgs[ 0 ] );
+      assertEquals( cellData.type, renderArgs[ 0 ].type );
+      assertEquals( cellData.bindingIndex, renderArgs[ 0 ].bindingIndex );
     },
 
     testCustomRenderer_ArgumentsForRenderContent : function() {
@@ -550,7 +555,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         }
       } ) );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
-      var template = new Template( [ cellData ] );
+      var template = createTemplate( cellData );
       var container = createContainer( template );
       var item = createGridItem( [ "foo", "bar" ] );
       var options = {
@@ -570,7 +575,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       };
       assertIdentical( template.getCellElement( container, 0 ), renderArgs[ 0 ] );
       assertIdentical( "bar", renderArgs[ 1 ] );
-      assertIdentical( cellData, renderArgs[ 2 ] );
+      assertIdentical( cellData.type, renderArgs[ 2 ].type );
       assertEquals( cellRenderOptions, renderArgs[ 3 ] );
     },
 
@@ -582,7 +587,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         }
       } ) );
       var cellData = { "type" : "fooType", "bindingIndex" : 1 };
-      var template = new Template( [ cellData ] );
+      var template = createTemplate( cellData );
       var container = createContainer( template );
       var item = createGridItem( [ "foo", "bar" ] );
       var options = {
@@ -603,7 +608,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       renderer.add( createCellRenderer( {
         "renderContent" : function() { options = arguments[ 3 ]; }
       } ) );
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "fooType" } );
       var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item, { "markupEnabled" : true } );
@@ -617,7 +622,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "renderContent" : function() { options = arguments[ 3 ]; },
         "shouldEscapeText" : function() { return true; }
       } ) );
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "fooType" } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "fooType" } );
       var item = createGridItem( [ "foo", "bar" ] );
 
       render( template, item );
@@ -629,7 +634,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       renderer.add( createCellRenderer( {
         "shouldEscapeText" : function() { return 123; }
       } ) );
-      var template = new Template( [ { "type" : "fooType", "bindingIndex" : 0 } ] );
+      var template = createTemplate( { "type" : "fooType", "bindingIndex" : 0 } );
       var item = createGridItem( [ "foo", "bar" ] );
       var arg;
       item.getText = function() { arg = arguments; };
@@ -666,7 +671,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var image = TestUtil.getCssBackgroundImage( element.firstChild );
       assertTrue( image.indexOf( "foo.jpg" ) != -1 );
       var position = element.firstChild.style.backgroundPosition;
-      assertTrue( position == "center" || position == "center center" || position == "50% 50%" );
+      assertTrue(    position == "center"
+                  || position == "center center"
+                  || position == "50% center"
+                  || position == "center 50%"
+                  || position == "50% 50%" );
       assertEquals( "no-repeat", element.firstChild.style.backgroundRepeat );
       if( !rwt.client.Client.isMshtml() ) {
         var opacity = element.firstChild.style.opacity;
@@ -675,7 +684,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testDefaultImageRenderer_RenderImageDisabled : function() {
-      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "image" } );
       var options = { "enabled" : false };
 
       var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ), options );
@@ -800,14 +809,31 @@ var createCellRenderer = function( map ) {
 };
 
 var createTemplate = function( cellTypes ) {
-  var cells = [];
-  for( var i = 0; i < cellTypes.length; i++ ) {
-    cells[ i ] = {
-      "type" : cellTypes[ i ],
-      "bindingIndex" : i
+  if( cellTypes instanceof Array ) {
+    var cells = [];
+    for( var i = 0; i < cellTypes.length; i++ ) {
+      cells[ i ] = {
+        "type" : cellTypes[ i ],
+        "bindingIndex" : i,
+        "left" : 0,
+        "top" : 0,
+        "width" : 10,
+        "height" : 10
+      };
+    }
+    return new Template( cells );
+  } else {
+    var cellData =  {
+      "type" : "text",
+      "bindingIndex" : 0,
+      "left" : 0,
+      "top" : 0,
+      "width" : 10,
+      "height" : 10
     };
+    cellData = rwt.util.Objects.mergeWith( cellData, cellTypes, true );
+    return new Template( [ cellData ] );
   }
-  return new Template( cells );
 };
 
 var createGridItem = function( texts, images ) {
