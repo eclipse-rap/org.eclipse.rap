@@ -531,7 +531,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
-      var node = row._getTargetNode().childNodes[ 1 ];
+      var node = row.getElement();
       assertEquals( "line-through", node.style.textDecoration );
     },
 
@@ -2213,9 +2213,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setTexts( [ "Test1" ] );
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode().childNodes[ 1 ];
-      var font = TestUtil.getElementFont( node );
+      var font = TestUtil.getElementFont( row.getElement() );
       assertTrue( font.indexOf( "monospace" ) != -1 );
       assertTrue( font.indexOf( "12px" ) != -1 );
+      assertTrue( node.style.font === "" || node.style.font === "inherit" );
     },
 
     testRenderNoItemNoThemingBackground: function() {

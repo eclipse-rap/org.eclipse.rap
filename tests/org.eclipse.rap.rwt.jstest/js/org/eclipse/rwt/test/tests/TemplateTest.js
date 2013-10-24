@@ -642,6 +642,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       var color = container.element.firstChild.style.backgroundColor.toLowerCase();
       assertTrue( color === "" || color === "transparent" );
+    },
+
+    testRenderForegroundColor : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [ "text" ] );
+      item.setCellForegrounds( [ "#ff00ff" ] );
+
+      var element = render( template, item );
+
+      var color = rwt.util.Colors.stringToRgb( element.firstChild.style.color );
+      assertEquals( [ 255, 0, 255 ], color );
+    },
+
+    testResetForegroundColor : function() {
+      renderer.add( createCellRenderer() );
+      var template = createTemplate( [ "fooType", "text" ] );
+      var item = createGridItem( [ "text" ] );
+      item.setCellForegrounds( [ "#ff00ff" ] );
+      var container = createContainer( template );
+      var renderOptions = createRenderOptions( container, item );
+      template.render( renderOptions );
+
+      item.setCellForegrounds( [ null ] );
+      template.render( renderOptions );
+
+      var color = container.element.firstChild.style.color;
+      assertTrue( color === "" || color === "inherit" );
     }
 
   }

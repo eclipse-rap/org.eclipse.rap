@@ -73,7 +73,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var contentOnly = scrolling && !heightChanged;
         this._renderStates( item, config, renderSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
+        // TODO [tb] : item foreground and font could be inherited
         this._renderItemForeground( item, config );
+        this._renderItemFont( item, config );
         if( config.treeColumn !== -1 ) {
           this._renderIndention( item, config, hoverTarget );
         }
@@ -622,15 +624,19 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     } ),
 
     _styleLabel : function( element, item, cell, config ) {
-      // TODO : use inheritance
       this._setForeground( element, this._getCellColor( item, cell, config ) );
-      this._setFont( element, this._getCellFont( item, cell, config ) );
-      this._setTextDecoration( element, this._styleMap.textDecoration );
-      Style.setTextShadow( element, this._styleMap.textShadow );
+      this._setFont( element, item.getCellFont( cell ) );
     },
 
     _renderItemForeground : function( item, config ) {
       this._setForeground( this.getElement(), this._getItemColor( item, config ) );
+    },
+
+    _renderItemFont : function( item, config ) {
+      var element = this.getElement();
+      this._setFont( element, config.font );
+      this._setTextDecoration( element, this._styleMap.textDecoration );
+      Style.setTextShadow( element, this._styleMap.textShadow );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {
