@@ -600,9 +600,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "markupEnabled" : markupEnabled,
         "seeable" : this.isSeeable()
       };
-      options.escaped = this._shouldEscapeText( options );
+      var escape = this._shouldEscapeText( options );
+      options.escaped = escape === false ? false : true;
       renderer.text.renderContent( element,
-                                   item ? item.getText( cell, options.escaped ) : null,
+                                   item ? item.getText( cell, escape ) : null,
                                    null,
                                    options );
     },
