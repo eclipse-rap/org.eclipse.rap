@@ -104,7 +104,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testRenderNoItem : function() {
-      row.renderItem( null );
+      row.renderItem( null, {}, false, null );
       assertEquals( 0, row._getTargetNode().childNodes.length );
     },
 
@@ -2221,7 +2221,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testRenderNoItemNoThemingBackground: function() {
       this._setItemBackground( "blue" );
-      row.renderItem( null );
+      row.renderItem( null, {}, false, null );
       assertNull( row.getBackgroundColor() );
     },
 
@@ -2536,6 +2536,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
       assertIdentical( template, log[ 0 ][ 0 ].container.template );
       assertEquals( 100, log[ 0 ][ 0 ].container.zIndexOffset );
+    },
+
+    testRenderTemplate_CallRenderForNullItem : function() {
+      tree.setTreeColumn( -1 );
+      row.setHeight( 15 );
+      var template = mockTemplate( [ 0, "text", 10, 20 ] );
+      var log = [];
+      var render = template.render;
+      template.render = function() {
+        log.push( rwt.util.Arrays.fromArguments( arguments ) );
+        render.apply( this, arguments );
+      };
+      tree.getRenderConfig().rowTemplate = template;
+
+      row.renderItem( null, tree._config, false, null );
+
+      var options = log[ 0 ][ 0 ];
+      assertNull( options.item );
+      assertEquals( [ 0, 0, 400, 15 ], options.bounds );
+      assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
+      assertIdentical( template, log[ 0 ][ 0 ].container.template );
     },
 
     testRenderTemplate_EmptyTemplateRendersEmptyItem : function() {

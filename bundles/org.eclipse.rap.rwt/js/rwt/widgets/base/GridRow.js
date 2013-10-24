@@ -87,12 +87,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._renderOverlay( item, config );
         this._hideRemainingElements();
       } else {
+        var contentOnly = scrolling || !config;
         this.setBackgroundColor( null );
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
-        this._clearContent( config );
-        if( !scrolling && config ) {
-          this._renderAllBounds( config );
+        if( config.rowTemplate ) {
+          this._renderTemplate( null, config, hoverTarget, false, contentOnly );
+        } else {
+          this._clearContent( config );
+          if( !contentOnly ) {
+            this._renderAllBounds( config );
+          }
         }
       }
       this.dispatchSimpleEvent( "itemRendered", item );
@@ -140,30 +145,23 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
-      var template = config.rowTemplate;
+      config.rowTemplate.render( {
+        "container" : this._getTemplateContainer( config ),
+        "item" : item,
+        "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ],
+        "enabled" : config.enabled
+        // TODO : "seeable" flag for optimized innerHTML rendering in IE
+      } );
+    },
+
+    _getTemplateContainer : function( config ) {
       if( this._templateContainer == null ) {
-        this._templateContainer = template.createContainer( {
+        this._templateContainer = config.rowTemplate.createContainer( {
           "element" : this._getTargetNode(),
           "zIndexOffset" : 100
         } );
       }
-      template.render( {
-        "container" : this._templateContainer,
-        "item" : item,
-        "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ],
-        "enabled" : config.enabled
-      } );
-      for( var i = 0; i < template.getCellCount(); i++ ) {
-        var background = template.getCellBackground( item, i );
-        switch( template.getCellType( i ) ) {
-          case "text":
-            this._cellLabels[ i ] = template.getCellElement( this._templateContainer, i );
-          break;
-          case "image":
-            this._cellImages[ i ] = template.getCellElement( this._templateContainer, i );
-          break;
-        }
-      }
+      return this._templateContainer;
     },
 
     _renderHeight : function( item, config ) {
