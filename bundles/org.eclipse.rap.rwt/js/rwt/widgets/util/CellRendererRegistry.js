@@ -97,10 +97,11 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
         return false;
       } else {
         // IE can not escape propperly if element is not in DOM, escape this once
-        return options.seeable ? false : undefined; // TODO [tb] : not used by Template
+        return options.seeable ? false : undefined;
       }
     },
     "default" : function( options ) {
+      // TODO [tb] : returning true permanently escapes the text, might clash with custom renderer
       return !options.markupEnabled;
     }
   } ),

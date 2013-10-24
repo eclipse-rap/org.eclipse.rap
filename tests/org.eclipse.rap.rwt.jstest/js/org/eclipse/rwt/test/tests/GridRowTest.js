@@ -507,7 +507,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( 3, parseInt( node.style.zIndex, 10 ) );
       assertEquals( "absolute", node.style.position );
-      assertEquals( "middle", node.style.verticalAlign );
       assertEquals( "nowrap", node.style.whiteSpace );
       assertEquals( "hidden", node.style.overflow );
       if( rwt.client.Client.isNewMshtml() ) {
@@ -2536,6 +2535,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
       assertIdentical( template, log[ 0 ][ 0 ].container.template );
       assertEquals( 100, log[ 0 ][ 0 ].container.zIndexOffset );
+      assertEquals( row.isSeeable(), log[ 0 ][ 0 ].seeable );
     },
 
     testRenderTemplate_CallRenderForNullItem : function() {

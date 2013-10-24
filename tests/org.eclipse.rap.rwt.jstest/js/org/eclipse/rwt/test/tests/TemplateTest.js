@@ -557,14 +557,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "container" : container,
         "item" : item,
         "bounds" : [ 0, 0, 100, 100 ],
-        "markupEnabled" : false
+        "markupEnabled" : false,
+        "seeable" : false
       };
 
       template.render( options );
 
       var cellRenderOptions = {
         "markupEnabled" : false,
-        "escaped" : false
+        "escaped" : false,
+        "seeable" : false
       };
       assertIdentical( template.getCellElement( container, 0 ), renderArgs[ 0 ] );
       assertIdentical( "bar", renderArgs[ 1 ] );

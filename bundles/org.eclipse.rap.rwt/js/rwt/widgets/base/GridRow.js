@@ -149,8 +149,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "container" : this._getTemplateContainer( config ),
         "item" : item,
         "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ],
-        "enabled" : config.enabled
-        // TODO : "seeable" flag for optimized innerHTML rendering in IE
+        "enabled" : config.enabled,
+        "seeable" : this.isSeeable()
       } );
     },
 
@@ -796,7 +796,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = this._cellLabels[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.verticalAlign = "middle"; // TODO [tb] : not a valid property, does nothing?
         result.style.whiteSpace = "nowrap";
         if( rwt.client.Client.isNewMshtml() ) {
           result.style.backgroundColor = "rgba(0, 0, 0, 0)";

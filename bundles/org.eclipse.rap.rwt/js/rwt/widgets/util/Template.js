@@ -161,7 +161,8 @@ rwt.widgets.util.Template.prototype = {
   _renderAllContent : function( options ) {
     var cellRenderOptions = {
       "markupEnabled" : options.markupEnabled,
-      "enabled" : options.enabled
+      "enabled" : options.enabled,
+      "seeable" : options.seeable
     };
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = options.container.cellElements[ i ];
