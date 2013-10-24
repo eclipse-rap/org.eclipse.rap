@@ -75,6 +75,9 @@ rwt.widgets.util.Template.prototype = {
 
   getCellContent : function( item, cell, cellRenderOptions ) {
     // TODO : assign cellRenderer in parseCells
+    if( !item ) {
+      return null;
+    }
     switch( this._getContentType( cell ) ) {
       case "text":
         return this._getText( item, cell, cellRenderOptions || {} );
@@ -103,33 +106,39 @@ rwt.widgets.util.Template.prototype = {
 
   getCellForeground : function( item, cell ) {
     var result = null;
-    if( this._isBound( cell ) ) {
-      result = item.getCellForeground( this._getIndex( cell ) );
-    }
-    if( ( result === null || result === "" ) && this._cells[ cell ].foreground ) {
-      result = this._cells[ cell ].foreground;
+    if( item ) {
+      if( this._isBound( cell ) ) {
+        result = item.getCellForeground( this._getIndex( cell ) );
+      }
+      if( ( result === null || result === "" ) && this._cells[ cell ].foreground ) {
+        result = this._cells[ cell ].foreground;
+      }
     }
     return result;
   },
 
   getCellBackground : function( item, cell ) {
     var result = null;
-    if( this._isBound( cell ) ) {
-      result = item.getCellBackground( this._getIndex( cell ) );
-    }
-    if( ( result === null || result === "" ) && this._cells[ cell ].background ) {
-      result = this._cells[ cell ].background;
+    if( item ) {
+      if( this._isBound( cell ) ) {
+        result = item.getCellBackground( this._getIndex( cell ) );
+      }
+      if( ( result === null || result === "" ) && this._cells[ cell ].background ) {
+        result = this._cells[ cell ].background;
+      }
     }
     return result;
   },
 
   getCellFont : function( item, cell ){
     var result = null;
-    if( this._isBound( cell ) ) {
-      result = item.getCellFont( this._getIndex( cell ) );
-    }
-    if( ( result === null || result === "" ) && this._cells[ cell ].font ) {
-      result = this._cells[ cell ].font;
+    if( item ) {
+      if( this._isBound( cell ) ) {
+        result = item.getCellFont( this._getIndex( cell ) );
+      }
+      if( ( result === null || result === "" ) && this._cells[ cell ].font ) {
+        result = this._cells[ cell ].font;
+      }
     }
     return result;
   },
@@ -238,7 +247,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _hasText : function( item, cell ) {
-    if( this._isBound( cell ) ) {
+    if( item && this._isBound( cell ) ) {
       return item.hasText( this._getIndex( cell ) );
     } else {
       return false;
@@ -246,7 +255,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _hasImage : function( item, cell ) {
-    if( this._isBound( cell ) ) {
+    if( item && this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) ) !== null;
     } else {
       return false;

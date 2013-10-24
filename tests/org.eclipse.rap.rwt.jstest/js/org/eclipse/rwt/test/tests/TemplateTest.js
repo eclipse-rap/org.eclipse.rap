@@ -269,6 +269,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "", template.getCellContent( item, 1 ) );
     },
 
+    testGetCellContent_TextFromNullItem : function() {
+      var template = new Template( [ { "type" : "text", "bindingIndex" : 1 }, { "type" : "text" } ] );
+
+      assertNull( template.getCellContent( null, 0 ) ); // there is a difference between null and ""
+    },
+
     testHasContent_TextWithNoBindingOrDefault : function() {
       var template = new Template( [ { "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
@@ -288,6 +294,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var item = createGridItem( [ "foo", "bar" ] );
 
       assertTrue( template.hasContent( item, 0 ) );
+    },
+
+    testHasContent_TextBoundToNullItem : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "text" } ] );
+
+      assertFalse( template.hasContent( null, 0 ) );
     },
 
     testHasContent_ImageWithNoBindingOrDefault : function() {
@@ -311,11 +323,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertTrue( template.hasContent( item, 0 ) );
     },
 
+    testHasContent_ImageBoundToNullItem : function() {
+      var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
+
+      assertFalse( template.hasContent( null, 0 ) );
+    },
+
     testgetCellContent_ImageFromGridItem : function() {
       var template = new Template( [ { "type" : "image", "bindingIndex" : 1 } ] );
       var item = createGridItem( [], [ "foo.png", "bar.png" ] );
 
       assertEquals( "bar.png", template.getCellContent( item, 0 ) );
+    },
+
+    testgetCellContent_ImageFromNullItem : function() {
+      var template = new Template( [ { "type" : "image", "bindingIndex" : 1 } ] );
+
+      assertNull( template.getCellContent( null, 0 ) );
     },
 
     testGetCellFont_NotBoundIsNull : function() {
@@ -336,6 +360,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
     },
 
+    testGetCellFont_FromNullItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+
+      assertEquals( null, template.getCellFont( null, 0 ) );
+    },
+
     testGetCellFont_FromGridItemDoesOverwriteDefault : function() {
       var template = new Template( [ { "bindingIndex" : 1, "font" : [ [ "Foo" ], 17, false, false ] }, {} ] );
       var item = createGridItem( [ "foo", "bar" ] );
@@ -343,6 +373,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellFonts( [ null, "14px Arial" ] );
 
       assertEquals( "14px Arial", template.getCellFont( item, 0 ) );
+    },
+
+    testGetCellFont_FromNullItemDoesOverwriteDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "font" : [ [ "Foo" ], 17, false, false ] }, {} ] );
+
+      assertEquals( null, template.getCellFont( null, 0 ) );
     },
 
     testGetCellFont_FromDefaultUnbound : function() {
@@ -379,6 +415,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( item, 0 ) );
     },
 
+    testGetCellForeground_FromNullItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+
+      assertEquals( null, template.getCellForeground( null, 0 ) );
+    },
+
     testGetCellForeground_FromGridItemDoesOverwriteDefault : function() {
       var template = new Template( [ { "bindingIndex" : 1, "foreground" : [ 255, 0, 0, 255 ] } ] );
       var item = createGridItem( [ "foo", "bar" ] );
@@ -386,6 +428,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellForegrounds( [ null, "rgb( 3, 4, 5 )" ] );
 
       assertEquals( "rgb( 3, 4, 5 )", template.getCellForeground( item, 0 ) );
+    },
+
+    testGetCellForeground_FromNullItemDoesOverwriteDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "foreground" : [ 255, 0, 0, 255 ] } ] );
+
+      assertEquals( null, template.getCellForeground( null, 0 ) );
     },
 
     testGetCellForeground_FromDefaultUnbound : function() {
@@ -420,6 +468,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( item, 0 ) );
     },
 
+    testGetCellBackground_FromNullItem : function() {
+      var template = new Template( [ { "bindingIndex" : 1 }, {} ] );
+
+      assertEquals( null, template.getCellBackground( null, 0 ) );
+    },
+
     testGetCellBackground_FromGridItemDoesOverwriteDefault : function() {
       var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
       var item = createGridItem( [ "foo", "bar" ] );
@@ -427,6 +481,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellBackgrounds( [ null, "rgb( 3, 4, 5 )" ] );
 
       assertEquals( "rgb( 3, 4, 5 )", template.getCellBackground( item, 0 ) );
+    },
+
+    testGetCellBackground_FromNullItemDoesOverwriteDefault : function() {
+      var template = new Template( [ { "bindingIndex" : 1, "background" : [ 255, 0, 0, 255 ] } ] );
+
+      assertEquals( null, template.getCellBackground( null, 0 ) );
     },
 
     testGetCellBackground_FromDefaultUnbound : function() {
@@ -586,6 +646,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "nowrap", element.firstChild.style.whiteSpace );
     },
 
+    testDefaultTextRenderer_RenderNullItemClearsContent : function() {
+      var template = createTemplate( [ "text" ] );
+      var container = createContainer( template );
+      template.render( createRenderOptions( container, createGridItem( [ "bar" ] ) ) );
+
+      template.render( createRenderOptions( container, null ) );
+
+      assertEquals( "", container.element.firstChild.innerHTML );
+    },
+
     testDefaultImageRenderer_RenderImageCentered : function() {
       var template = createTemplate( [ "image" ] );
 
@@ -614,6 +684,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         var opacity = element.firstChild.style.opacity;
         assertTrue( opacity === "0.3" );
       }
+    },
+
+    testDefaultImageRenderer_RenderNullItemClearsContent : function() {
+      var template = createTemplate( [ "image" ] );
+      var container = createContainer( template );
+      var item = createGridItem( [], [ "foo.jpg", "bar" ] );
+      template.render( createRenderOptions( container, item ) );
+
+      template.render( createRenderOptions( container, null ) );
+
+      assertEquals( "", container.element.style.backgroundImage );
     },
 
     testRenderBackgroundColor : function() {
