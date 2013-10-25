@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
@@ -21,6 +22,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -148,6 +150,7 @@ public class TypedEvent_Test {
     Fixture.fakeNewRequest();
     fakeMouseDownRequest( button, 1, 2 );
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeNotifyOperation( getId( button ), EVENT_FOCUS_IN, null );
 
     Fixture.executeLifeCycleFromServerThread( );
 

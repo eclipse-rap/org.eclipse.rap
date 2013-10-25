@@ -249,6 +249,7 @@ public class EventFiltering_Test {
     // is sent. The focusList listener opens a modal shell, thus the event on
     // button must not be executed
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
+    Fixture.fakeNotifyOperation( getId( text ), ClientMessageConst.EVENT_FOCUS_OUT, null );
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
     Fixture.executeLifeCycleFromServerThread( );
 

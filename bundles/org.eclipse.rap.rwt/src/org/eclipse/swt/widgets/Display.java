@@ -328,19 +328,23 @@ public class Display extends Device implements Adaptable {
     return focusControl;
   }
 
-  private void setFocusControl( Control focusControl ) {
+  private void setFocusControl( Control focusControl, boolean fireEvents ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null && !this.focusControl.isInDispose() ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        currentFocusControl.notifyListeners( SWT.FocusOut, new Event() );
+        if( fireEvents ) {
+          currentFocusControl.notifyListeners( SWT.FocusOut, new Event() );
+        }
         shell.updateDefaultButton( currentFocusControl, false );
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
         Control currentFocusControl = this.focusControl;
         Shell shell = currentFocusControl.getShell();
-        currentFocusControl.notifyListeners( SWT.FocusIn, new Event() );
+        if( fireEvents ) {
+          currentFocusControl.notifyListeners( SWT.FocusIn, new Event() );
+        }
         shell.updateDefaultButton( currentFocusControl, true );
       }
     }
@@ -2405,8 +2409,8 @@ public class Display extends Device implements Adaptable {
       Display.this.setActiveShell( activeShell );
     }
 
-    public void setFocusControl( Control focusControl ) {
-      Display.this.setFocusControl( focusControl );
+    public void setFocusControl( Control focusControl, boolean fireEvents ) {
+      Display.this.setFocusControl( focusControl, fireEvents );
     }
 
     public void invalidateFocus() {

@@ -23,7 +23,7 @@ public interface IDisplayAdapter {
   void setBounds( Rectangle bounds );
   void setCursorLocation( int x, int y );
   void setActiveShell( Shell shell );
-  void setFocusControl( Control control );
+  void setFocusControl( Control control, boolean fireEvents );
   void invalidateFocus();
   boolean isFocusInvalidated();
   Shell[] getShells();

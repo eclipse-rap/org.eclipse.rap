@@ -40,6 +40,8 @@ public final class ClientMessageConst {
   public static final String EVENT_TRAVERSE = "Traverse";
   public static final String EVENT_HELP = "Help";
   public static final String EVENT_MENU_DETECT = "MenuDetect";
+  public static final String EVENT_FOCUS_IN = "FocusIn";
+  public static final String EVENT_FOCUS_OUT = "FocusOut";
 
   // CTabFolder specific events
   public static final String EVENT_FOLDER = "Folder";

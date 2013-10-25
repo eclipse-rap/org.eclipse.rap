@@ -630,14 +630,7 @@ public class DateTime extends Composite {
     // [if] Recalculate the sub widgets bounds
     // important for using it in FillLayout where the
     // DateTime#computeSize() is not call.
-    Point size = computeSubWidgetsBounds();
-    // [ad] Fix for bug 284409
-    Point computedSize = this.getSize();
-    if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
-      if( computedSize.x != size.x || computedSize.y != size.y ) {
-        recalculateButtonsBounds( computedSize );
-      }
-    }
+    computeSubWidgetsBounds();
   }
 
   private Point computeCellSize() {
@@ -713,6 +706,7 @@ public class DateTime extends Composite {
       width = spinnerBounds.x + spinnerBounds.width + border * 2;
       height = spinnerBounds.height + border * 2;
     }
+    adjustButtonsBounds();
     return new Point( width, height );
   }
 
@@ -945,13 +939,15 @@ public class DateTime extends Composite {
     return new Point( width, height );
   }
 
-  private void recalculateButtonsBounds( Point size ) {
+  private void adjustButtonsBounds() {
+    Point size = getSize();
     int border = getBorderWidth();
-    spinnerBounds.x = size.x - spinnerBounds.width - 2 * border;
-    spinnerBounds.height = size.y - 2 * border;
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       dropDownButtonBounds.x = size.x - dropDownButtonBounds.width - 2 * border;
       dropDownButtonBounds.height = size.y - 2 * border;
+    } else if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
+      spinnerBounds.x = size.x - spinnerBounds.width - 2 * border;
+      spinnerBounds.height = size.y - 2 * border;
     }
   }
 

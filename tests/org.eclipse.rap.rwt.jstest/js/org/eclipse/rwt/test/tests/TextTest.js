@@ -1385,6 +1385,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
       var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
       assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
+      if( rwt.client.Client.isNewMshtml() ) {
+        assertEquals( "top", text._inputElement.style.verticalAlign );
+      } else {
+        assertEquals( "", text._inputElement.style.verticalAlign );
+      }
     },
 
     /////////
