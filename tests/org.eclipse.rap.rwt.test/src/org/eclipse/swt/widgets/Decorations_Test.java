@@ -12,14 +12,17 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.junit.After;
 import org.junit.Before;
@@ -28,10 +31,15 @@ import org.junit.Test;
 
 public class Decorations_Test {
 
+  private Display display;
+  private Decorations shell;
+
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   @After
@@ -41,8 +49,6 @@ public class Decorations_Test {
 
   @Test
   public void testSetImages() {
-    Display display = new Display();
-    Decorations shell = new Shell( display );
     try {
       shell.setImages( null );
       fail( "null not allowed" );
@@ -59,8 +65,6 @@ public class Decorations_Test {
 
   @Test
   public void testGetImages() throws IOException {
-    Display display = new Display();
-    Decorations shell = new Shell( display );
     assertNotNull( shell.getImages() );
     assertEquals( 0, shell.getImages().length );
     Image image1 = createImage( display, Fixture.IMAGE1 );
@@ -74,12 +78,27 @@ public class Decorations_Test {
 
   @Test
   public void testSetImage() throws IOException {
-    Display display = new Display();
-    Decorations shell = new Shell( display );
     assertNull( shell.getImage() );
     Image image = createImage( display, Fixture.IMAGE1 );
     shell.setImage( image );
     assertEquals( image, shell.getImage() );
+  }
+
+  @Test
+  public void testDefaultButtonFocusOutListener() {
+    ( ( Shell )shell ).open();
+    Button defaultButton = new Button( shell, SWT.PUSH );
+    Button pushButton = new Button( shell, SWT.PUSH );
+    Button checkButton = new Button( shell, SWT.CHECK );
+    shell.setDefaultButton( defaultButton );
+    assertFalse( defaultButton.isListening( SWT.FocusOut ) );
+
+    pushButton.setFocus();
+    assertTrue( pushButton.isListening( SWT.FocusOut ) );
+
+    checkButton.setFocus();
+    assertFalse( defaultButton.isListening( SWT.FocusOut ) );
+    assertFalse( pushButton.isListening( SWT.FocusOut ) );
   }
 
 }

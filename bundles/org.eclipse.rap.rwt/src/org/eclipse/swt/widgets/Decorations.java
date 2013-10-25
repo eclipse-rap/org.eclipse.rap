@@ -36,6 +36,7 @@ public class Decorations extends Canvas {
   private String text;
   private Button defaultButton;
   private Button saveDefault;
+  private Listener defaultButtonFocusListener;
   private Control savedFocus;
 
   Decorations( Composite parent ) {
@@ -337,6 +338,7 @@ public class Decorations extends Canvas {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           Button defaultButton = ( Button )focusControl;
+          updateDefaultButtonFocusListener( defaultButton, set );
           setDefaultButton( set ? defaultButton : null, false );
         }
       } );
@@ -458,6 +460,27 @@ public class Decorations extends Canvas {
 
   private static boolean isPushButton( Control control ) {
     return control instanceof Button && ( control.style & SWT.PUSH ) != 0 ;
+  }
+
+  private void updateDefaultButtonFocusListener( Button defaultButton, boolean set ) {
+    if( !defaultButton.isDisposed() ) {
+      if( set ) {
+        defaultButton.addListener( SWT.FocusOut, getDefaultButtonFocusListener() );
+      } else {
+        defaultButton.removeListener( SWT.FocusOut, getDefaultButtonFocusListener() );
+      }
+    }
+  }
+
+  private Listener getDefaultButtonFocusListener() {
+    if( defaultButtonFocusListener == null ) {
+      defaultButtonFocusListener = new Listener() {
+        public void handleEvent( Event event ) {
+          // dummy listener - see bug 419920
+        }
+      };
+    }
+    return defaultButtonFocusListener;
   }
 
   ///////////////////
