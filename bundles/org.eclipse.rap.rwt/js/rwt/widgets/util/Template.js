@@ -93,7 +93,7 @@ rwt.widgets.util.Template.prototype = {
     if( this._isBound( cell ) ) {
       return item.getText( this._getIndex( cell ), cellRenderOptions.escaped );
     } else {
-      return "";
+      return this._cells[ cell ].defaultText || "";
     }
   },
 
@@ -101,7 +101,8 @@ rwt.widgets.util.Template.prototype = {
     if( this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) );
     } else {
-      return null;
+      var defaultImage = this._cells[ cell ].defaultImage;
+      return defaultImage ? defaultImage[ 0 ] : null;
     }
   },
 
@@ -249,18 +250,22 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _hasText : function( item, cell ) {
-    if( item && this._isBound( cell ) ) {
+    if( !item ) {
+      return false;
+    } else if( this._isBound( cell ) ) {
       return item.hasText( this._getIndex( cell ) );
     } else {
-      return false;
+      return this._cells[ cell ].defaultText != null;
     }
   },
 
   _hasImage : function( item, cell ) {
-    if( item && this._isBound( cell ) ) {
+    if( !item ) {
+      return false;
+    } else if( this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) ) !== null;
     } else {
-      return false;
+      return this._cells[ cell ].defaultImage != null;
     }
   },
 

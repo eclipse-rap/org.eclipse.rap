@@ -510,7 +510,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._topItemIndex = 0;
         this._topItem = null;
       }
-      if( this._inServerResponse() ) {
+      if( this._inServerResponse() || !this.isSeeable() ) {
         this._scheduleUpdate( "topItem" );
       } else {
         this._sendTopItemIndexChange();
