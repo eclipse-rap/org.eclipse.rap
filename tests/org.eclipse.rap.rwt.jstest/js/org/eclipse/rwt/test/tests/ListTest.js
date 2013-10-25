@@ -894,6 +894,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.destroy();
     },
 
+    testSyncClientAreaOnDisposedList : function() {
+      var list = this._createDefaultList();
+      list.setItemDimensions( 500, 20 );
+      this._addItems( list, 100 );
+      TestUtil.flush();
+
+      list._layoutPost( { hSync : true, vSync : true } );
+      list.dispose();
+      TestUtil.forceTimerOnce();
+      list.destroy();
+    },
+
     testDispose: function() {
       var list = this._createDefaultList();
       var clientArea = list._clientArea;

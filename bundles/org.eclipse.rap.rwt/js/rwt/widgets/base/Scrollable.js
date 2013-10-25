@@ -269,7 +269,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     },
 
     _syncClientArea : function( horz, vert ) {
-      if( horz ) {
+      if( horz && this._horzScrollBar != null ) {
         var scrollX = this._horzScrollBar.getValue();
         if( this._clientArea.getScrollLeft() !== scrollX ) {
           this._clientArea.setScrollLeft( scrollX );
@@ -280,7 +280,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
           this.addToQueue( "hSync" );
         }
       }
-      if( vert ) {
+      if( vert && this._vertScrollBar != null ) {
         var scrollY = this._vertScrollBar.getValue();
         if( this._clientArea.getScrollTop() !== scrollY ) {
           this._clientArea.setScrollTop( scrollY );
