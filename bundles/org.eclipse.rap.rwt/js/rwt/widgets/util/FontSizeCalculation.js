@@ -77,7 +77,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
           var bounds = element.getBoundingClientRect();
           // In FF 3.0.x getBoundingClientRect has no width/height properties
           if( bounds.width != null && bounds.height != null ) {
-            result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
+            result = [ Math.ceil( bounds.width ), Math.round( bounds.height ) ];
           } else {
             result = [ element.scrollWidth, element.scrollHeight ];
           }
@@ -90,7 +90,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         var computed = window.getComputedStyle( element, null );
         var result = [
           Math.ceil( parseFloat( computed.width ) ),
-          Math.ceil( parseFloat( computed.height ) )
+          Math.round( parseFloat( computed.height ) )
         ];
         return this._addOffset( result );
       }
