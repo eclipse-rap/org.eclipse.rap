@@ -1151,8 +1151,14 @@ public class List extends Scrollable {
   }
 
   private int getItemWidth( String item ) {
-    int margin = getItemPadding().width;
-    return TextSizeUtil.stringExtent( getFont(), item ).x + margin;
+    int result = 0;
+    Font font = getFont();
+    if( markupEnabled ) {
+      result = TextSizeUtil.markupExtent( font, item, 0 ).x;
+    } else {
+      result = TextSizeUtil.stringExtent( font, item ).x;
+    }
+    return result + getItemPadding().width;
   }
 
   private int getMaxItemWidth() {
