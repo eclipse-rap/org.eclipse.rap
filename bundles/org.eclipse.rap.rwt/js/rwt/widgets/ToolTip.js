@@ -25,7 +25,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     this.setMaxWidth( doc.getClientWidth() / 2 );
     this.setMaxHeight( doc.getClientHeight() / 2 );
     this.addToDocument();
-    this.addEventListener( "mousedown", this._onMouseDown, this );
+    this.addEventListener( "click", this._onClick, this );
     this._hideAfterTimeout = false;
     this._hasSelectionListener = false;
     this._messageFont = this._getMessageFont();
@@ -34,11 +34,12 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     this._image = null;
     this._text = null;
     this._message = null;
+    this._markupEnabled = false;
     this._createControls();
   },
 
   destruct : function() {
-    this.removeEventListener( "mousedown", this._onMouseDown, this );
+    this.removeEventListener( "click", this._onClick, this );
     this._contentArea.dispose();
     this._textArea.dispose();
     this._image.dispose();
@@ -49,18 +50,32 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
 
   members : {
 
-    setText : function( text ) {
+    setText : function( value ) {
+      var text = value;
+      if( !this._markupEnabled ) {
+        text = rwt.util.Encoding.escapeText( text, false );
+      }
       this._text.setText( text );
       if( this.getVisibility() ) {
         this._update();
       }
     },
 
-    setMessage : function( message ) {
+    setMessage : function( value ) {
+      var message = value;
+      if( !this._markupEnabled ) {
+        var EncodingUtil = rwt.util.Encoding;
+        message = EncodingUtil.escapeText( message, false );
+        message = EncodingUtil.replaceNewLines( message, "<br/>" );
+      }
       this._message.setText( message );
       if( this.getVisibility() ) {
         this._update();
       }
+    },
+
+    setMarkupEnabled : function( value ) {
+      this._markupEnabled = value;
     },
 
     setLocation : function( x, y ) {
@@ -125,10 +140,12 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       var message = this._message.getText();
       var textSize = this._getTextSize( this._text.getText(), -1 );
       var messageSize = this._getTextSize( message, -1 );
-      var width = messageSize.x;
-      while( width > 0 && !this._matchesWidthToHeightRatio( messageSize ) ) {
-        width -= 10;
-        messageSize = this._getTextSize( message, width );
+      if( !this._markupEnabled ) {
+        var width = messageSize.x;
+        while( width > 0 && !this._matchesWidthToHeightRatio( messageSize ) ) {
+          width -= 10;
+          messageSize = this._getTextSize( message, width );
+        }
       }
       messageSize.x = this._max( messageSize.x, textSize.x );
       this._message.setWidth( messageSize.x );
@@ -159,7 +176,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       };
     },
 
-    _onMouseDown : function( evt ) {
+    _onClick : function( evt ) {
       this._hide();
       if( this._hasSelectionListener ) {
         rwt.remote.EventUtil.notifySelected( this );
@@ -167,9 +184,11 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     },
 
     _hide : function() {
-      this.setVisible( false );
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "visible", false );
+      if( this.getVisibility() ) {
+        this.setVisible( false );
+        rwt.widgets.base.Widget.flushGlobalQueues();
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "visible", false );
+      }
     },
 
     _getMessageFont : function() {

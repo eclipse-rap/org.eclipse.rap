@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolTip", {
       style = "information";
     }
     var result = new rwt.widgets.ToolTip( style );
+    result.setMarkupEnabled( properties.markupEnabled === true );
     rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );
     rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( parent ) {
       rwt.remote.HandlerUtil.addDestroyableChild( parent, result );
@@ -48,17 +49,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolTip", {
     "backgroundGradient" : rwt.remote.HandlerUtil.getBackgroundGradientHandler(),
     "autoHide" : function( widget, value ) {
       widget.setHideAfterTimeout( value );
-    },
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      widget.setText( text );
-    },
-    "message" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      widget.setMessage( text );
     },
     "location" : function( widget, value ) {
       widget.setLocation( value[ 0 ], value[ 1 ] );

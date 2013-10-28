@@ -152,6 +152,25 @@ public class ToolTipLCA_Test {
   }
 
   @Test
+  public void testRenderMarkupEnabled() throws IOException {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.render( toolTip );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findCreateProperty( toolTip, "markupEnabled" ) );
+  }
+
+  @Test
+  public void testRenderMarkupEnabled_default() throws IOException {
+    lca.render( toolTip );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( toolTip );
+    assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
+  }
+
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( toolTip );
 

@@ -23,6 +23,7 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -46,6 +47,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   private static final String PROP_LOCATION = "location";
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final Point DEFAULT_LOCATION = new Point( 0, 0 );
 
@@ -70,6 +72,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new ToolTipOperationHandler( toolTip ) );
     remoteObject.set( "parent", getId( toolTip.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( toolTip, ALLOWED_STYLES ) ) );
+    renderProperty( toolTip, PROP_MARKUP_ENABLED, isMarkupEnabled( toolTip ), false );
   }
 
   @Override
@@ -91,6 +94,10 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
 
   private static Point getLocation( ToolTip toolTip ) {
     return toolTip.getAdapter( IToolTipAdapter.class ).getLocation();
+  }
+
+  private static boolean isMarkupEnabled( ToolTip toolTip ) {
+    return Boolean.TRUE.equals( toolTip.getData( RWT.MARKUP_ENABLED ) );
   }
 
 }

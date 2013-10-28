@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -36,6 +37,7 @@ public class ToolTipTab extends ExampleTab {
   private Point toolTipLocation;
   private boolean toolTipSelectionListener;
   private final SelectionListener selectionListener;
+  private boolean markup;
 
   public ToolTipTab() {
     super( "ToolTip" );
@@ -56,6 +58,7 @@ public class ToolTipTab extends ExampleTab {
     createStyleButton( "ICON_ERROR", SWT.ICON_ERROR );
     createStyleButton( "ICON_INFORMATION", SWT.ICON_INFORMATION );
     createStyleButton( "ICON_WARNING", SWT.ICON_WARNING );
+    createMarkupButton();
     createAutoHideButton();
     createTextInput();
     createMessageInput();
@@ -75,6 +78,7 @@ public class ToolTipTab extends ExampleTab {
           toolTip.dispose();
         }
         toolTip = new ToolTip( parent.getShell(), getStyle() );
+        toolTip.setData( RWT.MARKUP_ENABLED, Boolean.valueOf( markup ) );
         toolTip.setVisible( true );
         toolTip.setAutoHide( toolTipAutoHide );
         toolTip.setText( toolTipText );
@@ -155,6 +159,20 @@ public class ToolTipTab extends ExampleTab {
         toolTipAutoHide = button.getSelection();
       }
     } );
+  }
+
+  protected Button createMarkupButton( ) {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Markup" );
+    button.setSelection( markup );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        markup = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
   }
 
   private void createSelectionListenerButton() {

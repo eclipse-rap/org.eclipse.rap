@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +35,14 @@ public class ToolTip_Test {
 
   private Display display;
   private Shell shell;
+  private ToolTip toolTip;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
+    toolTip = new ToolTip( shell, SWT.NONE );
   }
 
   @After
@@ -45,17 +50,13 @@ public class ToolTip_Test {
     Fixture.tearDown();
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testConstructorWithNullParent() {
-    try {
-      new ToolTip( null, SWT.NONE ) ;
-    } catch( IllegalArgumentException expected ) {
-    }
+    new ToolTip( null, SWT.NONE ) ;
   }
 
   @Test
   public void testInitialValue() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     assertTrue( toolTip.getAutoHide() );
     assertFalse( toolTip.isVisible() );
     assertEquals( "", toolTip.getText() );
@@ -66,93 +67,80 @@ public class ToolTip_Test {
 
   @Test
   public void testGetParent() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     assertSame( shell, toolTip.getParent() );
   }
 
   @Test
   public void testGetDisplay() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     assertSame( shell.getDisplay(), toolTip.getDisplay() );
   }
 
   @Test
   public void testAutoHide() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     toolTip.setAutoHide( false );
+
     assertFalse( toolTip.getAutoHide() );
   }
 
   @Test
   public void testVisible() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     toolTip.setVisible( true );
+
     assertTrue( toolTip.isVisible() );
   }
 
   @Test
   public void testText() {
     final String text = "text";
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
+
     toolTip.setText( text );
+
     assertEquals( text, toolTip.getText() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetTextWithNullArgument() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
-    try {
-      toolTip.setText( null );
-    } catch( Exception expected ) {
-    }
+    toolTip.setText( null );
   }
 
   @Test
   public void testMessage() {
     final String message = "message";
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
+
     toolTip.setMessage( message );
+
     assertEquals( message, toolTip.getMessage() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetMessageWithNullArgument() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
-    try {
-      toolTip.setMessage( null );
-    } catch( Exception expected ) {
-    }
+    toolTip.setMessage( null );
   }
 
   @Test
   public void testSetLocationXY() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     toolTip.setLocation( 1, 2 );
-    IToolTipAdapter adapter = getToolTipAdapter( toolTip );
-    Point location = adapter.getLocation();
+
+    Point location = getToolTipAdapter( toolTip ).getLocation();
     assertEquals( 1, location.x );
     assertEquals( 2, location.y );
   }
 
   @Test
   public void testSetLocationPoint() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
     Point location = new Point( 1, 2 );
+
     toolTip.setLocation( location );
-    IToolTipAdapter adapter = getToolTipAdapter( toolTip );
-    Point returnedLocation = adapter.getLocation();
+
+    Point returnedLocation = getToolTipAdapter( toolTip ).getLocation();
     assertNotSame( location, returnedLocation );
     assertEquals( 1, returnedLocation.x );
     assertEquals( 2, returnedLocation.y );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetLocationPointWithNullArgument() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE ) ;
-    try {
-      toolTip.setLocation( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    toolTip.setLocation( null );
   }
 
   @Test
@@ -171,13 +159,13 @@ public class ToolTip_Test {
   public void testGetStyleWithOverlappingIconBits() {
     int style = SWT.ICON_ERROR | SWT.ICON_INFORMATION;
     ToolTip toolTip = new ToolTip( shell, style );
+
     assertTrue( ( toolTip.getStyle() & SWT.ICON_ERROR ) == 0 );
     assertTrue( ( toolTip.getStyle() & SWT.ICON_INFORMATION ) != 0 );
   }
 
   @Test
   public void testAddSelectionListener() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     SelectionListener selectionListener = mock( SelectionListener.class );
 
     toolTip.addSelectionListener( selectionListener );
@@ -186,18 +174,13 @@ public class ToolTip_Test {
     assertTrue( toolTip.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    try {
-      toolTip.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    toolTip.addSelectionListener( null );
   }
 
   @Test
   public void testRemoveSelectionListener() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     SelectionListener selectionListener = mock( SelectionListener.class );
     toolTip.addSelectionListener( selectionListener );
 
@@ -207,30 +190,64 @@ public class ToolTip_Test {
     assertFalse( toolTip.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testRemoveSelectionListenerWithNullArgument() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    try {
-      toolTip.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    toolTip.removeSelectionListener( null );
   }
 
   @Test
   public void testDisposeParent() {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     shell.dispose();
+
     assertTrue( toolTip.isDisposed() );
   }
 
   @Test
   public void testIsSerializable() throws Exception {
-    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.setMessage( "message" );
 
     ToolTip deserializedToolTip = Fixture.serializeAndDeserialize( toolTip );
 
     assertEquals( toolTip.getMessage(), deserializedToolTip.getMessage() );
+  }
+
+  @Test
+  public void testMarkupTextWithoutMarkupEnabled() {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      toolTip.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupTextWithMarkupEnabled() {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    toolTip.setText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    toolTip.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      toolTip.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    toolTip.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertTrue( toolTip.markupEnabled );
   }
 
   private static IToolTipAdapter getToolTipAdapter( ToolTip toolTip ) {

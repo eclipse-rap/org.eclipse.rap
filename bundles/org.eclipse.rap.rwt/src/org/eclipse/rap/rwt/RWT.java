@@ -385,6 +385,7 @@ public final class RWT {
    * <li><code>List</code></li>
    * <li><code>Label</code></li>
    * <li><code>CLabel</code></li>
+   * <li><code>ToolTip</code></li>
    * </ul>
    * </p>
    *
