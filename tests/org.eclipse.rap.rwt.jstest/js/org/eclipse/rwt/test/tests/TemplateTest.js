@@ -842,6 +842,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertTrue( style.font === "" || style.font === "inherit" );
       assertTrue( style.fontSize === "" || style.fontSize === "inherit" );
       assertTrue( style.fontFamily === "" || style.fontFamily === "inherit" );
+    },
+
+    testGetCellByElement : function() {
+      var template = createTemplate( [ "text", "text" ] );
+      var container = createContainer( template );
+      template.render( createRenderOptions( container, createGridItem( [ "bar", "foo" ] ) ) );
+
+      var cell = template.getCellByElement( container, container.element.lastChild );
+
+      assertEquals( 1, cell );
+    },
+
+    testIsCellSelectable_ReturnsTrue : function() {
+      var template = createTemplate( { "selectable" : true } );
+
+      assertTrue( template.isCellSelectable( 0 ) );
+    },
+
+    testIsCellSelectable_ReturnsFalse : function() {
+      var template = createTemplate( [ "text" ] );
+
+      assertFalse( template.isCellSelectable( 0 ) );
+    },
+
+    testGetCellName_ReturnNull : function() {
+      var template = createTemplate( [ "text" ] );
+
+      assertNull( template.getCellName( 0 ) );
+    },
+
+    testGetCellName_ReturnString : function() {
+      var template = createTemplate( { "name" : "foobar" } );
+
+      assertEquals( "foobar", template.getCellName( 0 ) );
     }
 
   }

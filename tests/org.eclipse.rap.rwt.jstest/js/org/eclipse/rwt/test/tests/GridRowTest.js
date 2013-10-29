@@ -2720,6 +2720,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( color ) );
     },
 
+    testRenderTemplate_getTargetIdentifier : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "bar", "boo" ] );
+      tree.getRenderConfig().rowTemplate = mockTemplate(
+        { "name" : "fooName" },
+        { "selectable" : true },
+        { "name" : "barName", "selectable" : true }
+       );
+      var log = [];
+      row.addEventListener( "mousedown", function( event ) {
+        log.push( row.getTargetIdentifier( event ) );
+      } );
+
+      row.renderItem( item, tree._config, false, null );
+      TestUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
+      TestUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
+      TestUtil.clickDOM( row._getTargetNode().childNodes[ 2 ] );
+
+      assertEquals( [ "other" ], log[ 0 ] );
+      assertEquals( [ "selectableCell", null ], log[ 1 ] );
+      assertEquals( [ "selectableCell", "barName" ], log[ 2 ] );
+    },
+
    // TODO : Should the cell have a transparent background if an overlay is present?
    // NOTE: "Normal" cells consist of separate backround and foreground elements, overlay is between
 //    testRenderTemplate_RenderNotTextCellBackgroundIfOverlayIsUsed : function() {
@@ -3083,6 +3107,8 @@ var mockTemplate = function() {
       } );
     } else {
       var cellData =  {
+        "type" : "text",
+        "bindingIndex" : i,
         "left" : 0,
         "top" : 0,
         "width" : 10,

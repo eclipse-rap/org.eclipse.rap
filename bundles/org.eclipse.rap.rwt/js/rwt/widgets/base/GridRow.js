@@ -46,6 +46,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._miscNodes = [];
     this._usedMiscNodes = 0;
     this._cellsRendered = 0;
+    this._template = null;
     this._templateContainer = null;
   },
 
@@ -119,6 +120,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         while( node !== this.getElement() && result[ 0 ] === "other" ) { // Can be removed?
           if( this._treeColumnElements.indexOf( node ) != -1 ) {
             result = [ "treeColumn" ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
+          } else if( this._template ) {
+            var cell = this._template.getCellByElement( this._templateContainer, node );
+            if( cell !== -1 && this._template.isCellSelectable( cell ) ) {
+              result = [ "selectableCell", this._template.getCellName( cell ) ];
+            }
           }
           node = node.parentNode;
         }
@@ -154,6 +160,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "enabled" : config.enabled,
         "seeable" : this.isSeeable()
       } );
+      this._template = config.rowTemplate; // needed by getTargetIdentifier
     },
 
     _getTemplateContainer : function( config ) {

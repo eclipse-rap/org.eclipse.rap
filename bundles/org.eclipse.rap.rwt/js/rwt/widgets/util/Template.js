@@ -47,6 +47,10 @@ rwt.widgets.util.Template.prototype = {
     return container.cellElements[ cell ] || null;
   },
 
+  getCellByElement : function( container, element ) {
+    return container.cellElements.indexOf( element );
+  },
+
   render : function( options ) {
     if( !options.container || options.container.template !== this ) {
       throw new Error( "No valid TemplateContainer: " + options.container );
@@ -64,6 +68,10 @@ rwt.widgets.util.Template.prototype = {
     return this._cells[ cell ].type;
   },
 
+  isCellSelectable : function( cell ) {
+    return this._cells[ cell ].selectable === true;
+  },
+
   hasContent : function( item, cell ) {
     switch( this._getContentType( cell ) ) {
       case "text":
@@ -73,6 +81,10 @@ rwt.widgets.util.Template.prototype = {
       default:
         return false;
     }
+  },
+
+  getCellName : function( cell ) {
+    return this._cells[ cell ].name || null;
   },
 
   getCellContent : function( item, cell, cellRenderOptions ) {
