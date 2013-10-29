@@ -61,6 +61,13 @@ rwt.widgets.util.CellRendererRegistry = function() {
       var result = innerCreateElement( cellData );
       result.style.position = "absolute";
       result.style.overflow = "hidden";
+      // NOTE : older IE can (in quirksmode) not deal with multiple css classes!
+      var cssClass = cellData.selectable ? "rwt-cell-selectable" : "rwt-cell";
+      if( rwt.client.Client.isMshtml() ) {
+        result.className = cssClass;
+      } else {
+        result.setAttribute( "class", cssClass );
+      }
       return result;
     };
   };

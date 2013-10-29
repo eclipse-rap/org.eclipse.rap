@@ -128,10 +128,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
         "renderContent" : function(){}
       } );
 
-      var element = registry.getRendererFor( "foo" ).createElement();
+      var element = registry.getRendererFor( "foo" ).createElement( {} );
       assertEquals( "div", element.tagName.toLowerCase() );
       assertEquals( "absolute", element.style.position );
       assertEquals( "hidden", element.style.overflow );
+      assertEquals( "rwt-cell", element.className || element.getAttribute( "class" ) );
     },
 
     testWrapFunctionCreateElement : function() {
@@ -146,11 +147,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
         }
       } );
 
-      var element = registry.getRendererFor( "foo" ).createElement( 123 );
-      assertEquals( 123, arg );
+      var element = registry.getRendererFor( "foo" ).createElement( { "x" : 123 } );
+      assertEquals( { "x" : 123 }, arg );
       assertEquals( "input", element.tagName.toLowerCase() );
       assertEquals( "absolute", element.style.position );
       assertEquals( "hidden", element.style.overflow );
+    },
+
+    testAddFunctionCreateElement_ForSelectableCell : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement( { "selectable" : true } );
+      assertEquals( "rwt-cell-selectable", element.className || element.getAttribute( "class" ) );
     },
 
     testGetAll : function() {
