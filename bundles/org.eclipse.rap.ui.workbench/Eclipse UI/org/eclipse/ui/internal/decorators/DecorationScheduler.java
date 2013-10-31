@@ -348,6 +348,13 @@ public class DecorationScheduler {
           }
         }
 
+        // RAP [if] Scheduler could be shutdown at this point
+        synchronized (DecorationScheduler.this) {
+          if( shutdown ) {
+            return Status.CANCEL_STATUS;
+          }
+        }
+
         monitor.beginTask(
             WorkbenchMessages.get().DecorationScheduler_CalculatingTask,
             100);
@@ -459,7 +466,8 @@ public class DecorationScheduler {
         // RAP [rh] fake service context
         RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
-            result[ 0 ] = PlatformUI.isWorkbenchRunning();
+            // result[ 0 ] = PatformUI.isWorkbenchRunning();
+            result[ 0 ] = !shutdown && PlatformUI.isWorkbenchRunning();
           }
         });
         return result[ 0 ];
