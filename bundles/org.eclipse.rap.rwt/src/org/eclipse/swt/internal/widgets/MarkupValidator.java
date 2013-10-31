@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
@@ -56,6 +57,10 @@ public class MarkupValidator {
     } catch( Exception exception ) {
       throw new IllegalArgumentException( "Failed to parse markup text", exception );
     }
+  }
+
+  public static boolean isValidationDisabledFor( Widget widget ) {
+    return Boolean.TRUE.equals( widget.getData( MARKUP_VALIDATION_DISABLED ) );
   }
 
   private static SAXParser createSAXParser() {

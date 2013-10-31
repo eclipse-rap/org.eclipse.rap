@@ -47,6 +47,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     "visible",
     "enabled",
     "customVariant",
+    "toolTipMarkupEnabled",
     "toolTip",
     "text",
     "mnemonicIndex",
@@ -61,6 +62,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     "visible" : function( widget, value ) {
       widget.setVisibility( value );
     },
+    "toolTipMarkupEnabled" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" ),
     "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" ),
     "image" : function( widget, value ) {
       if( value === null ) {

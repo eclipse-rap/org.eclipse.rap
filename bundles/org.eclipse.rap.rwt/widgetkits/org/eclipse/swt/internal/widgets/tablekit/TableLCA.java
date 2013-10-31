@@ -22,11 +22,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -144,7 +144,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     remoteObject.set( "indentionWidth", 0 );
     remoteObject.set( PROP_TREE_COLUMN, -1 );
-    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( table ) );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( table ) );
     TemplateLCAUtil.renderRowTemplate( table );
     ScrollBarLCAUtil.renderInitialization( table );
   }
@@ -201,10 +201,6 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private boolean listensToSetData( Table table ) {
     return ( table.getStyle() & SWT.VIRTUAL ) != 0;
-  }
-
-  private static boolean isMarkupEnabled( Table table ) {
-    return Boolean.TRUE.equals( table.getData( RWT.MARKUP_ENABLED ) );
   }
 
   private static String[] getSelection( Table table ) {

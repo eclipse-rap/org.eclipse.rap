@@ -31,6 +31,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabItem", {
     "text",
     "mnemonicIndex",
     "image",
+    "toolTipMarkupEnabled",
     "toolTip",
     "customVariant",
     "showing",
@@ -57,6 +58,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabItem", {
         widget.setIcon( value[ 0 ] );
       }
     },
+    "toolTipMarkupEnabled" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" ),
     "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" ),
     "showing" : function( widget, value ) {
       widget.setVisibility( value );

@@ -247,7 +247,7 @@ public class ToolTip_Test {
 
     toolTip.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( toolTip.markupEnabled );
+    assertEquals( Boolean.TRUE, toolTip.getData( RWT.MARKUP_ENABLED ) );
   }
 
   private static IToolTipAdapter getToolTipAdapter( ToolTip toolTip ) {

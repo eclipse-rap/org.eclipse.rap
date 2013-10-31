@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -101,6 +103,27 @@ public class TabItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  @Test
+  public void testRenderIntialToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderChanges( item );
+
+    Message message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( item, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( item );
+
+    lca.renderChanges( item );
+
+    Message message = getProtocolMessage();
+    assertNull( message.findSetOperation( item, "toolTipMarkupEnabled" ) );
   }
 
   @Test

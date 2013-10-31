@@ -24,6 +24,7 @@ import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemot
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,7 +71,8 @@ public final class WidgetLCAUtil {
   private static final String PARAM_WIDTH = "bounds.width";
   private static final String PARAM_HEIGHT = "bounds.height";
 
-  private static final String PROP_TOOL_TIP = "toolTip";
+  private static final String PROP_TOOLTIP = "toolTip";
+  private static final String PROP_TOOLTIP_MARKUP_ENABLED = "toolTipMarkupEnabled";
   private static final String PROP_FONT = "font";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
@@ -208,7 +210,7 @@ public final class WidgetLCAUtil {
   public static void preserveToolTipText( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
     WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_TOOL_TIP, text );
+    adapter.preserve( PROP_TOOLTIP, text );
   }
 
   /**
@@ -448,9 +450,20 @@ public final class WidgetLCAUtil {
    * @see #preserveToolTipText(Widget, String)
    */
   public static void renderToolTip( Widget widget, String toolTip ) {
+    renderToolTipMarkupEnabled( widget );
     String text = toolTip == null ? "" : toolTip;
-    if( hasChanged( widget, PROP_TOOL_TIP, text, "" ) ) {
-      getRemoteObject( widget ).set( PROP_TOOL_TIP, removeAmpersandControlCharacters( text ) );
+    if( hasChanged( widget, PROP_TOOLTIP, text, "" ) ) {
+      if( !isToolTipMarkupEnabledFor( widget ) ) {
+        text = removeAmpersandControlCharacters( text );
+      }
+      getRemoteObject( widget ).set( PROP_TOOLTIP, text );
+    }
+  }
+
+  private static void renderToolTipMarkupEnabled( Widget widget ) {
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    if( !adapter.isInitialized() && isToolTipMarkupEnabledFor( widget ) ) {
+      getRemoteObject( widget ).set( PROP_TOOLTIP_MARKUP_ENABLED, true );
     }
   }
 

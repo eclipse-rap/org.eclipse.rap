@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -18,6 +22,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
@@ -310,6 +315,12 @@ public class CTabItem extends Item {
    */
   public void setToolTipText( String toolTipText ) {
     checkWidget();
+    if(    toolTipText != null
+        && isToolTipMarkupEnabledFor( this )
+        && !isValidationDisabledFor( this ) )
+    {
+      MarkupValidator.getInstance().validate( toolTipText );
+    }
     this.toolTipText = toolTipText;
   }
 
@@ -425,6 +436,13 @@ public class CTabItem extends Item {
     }
   }
 
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
+  }
+
   ///////////////////////////////////////////////////////////////////////
   // Helping methods used by CTabFolder to control item size and location
 
@@ -439,7 +457,9 @@ public class CTabItem extends Item {
   int preferredWidth( boolean isSelected, boolean minimum ) {
     // NOTE: preferred width does not include the "dead space" caused
     // by the curve.
-    if (isDisposed()) return 0;
+    if (isDisposed()) {
+      return 0;
+    }
     int w = 0;
     Image image = getImage();
     if (image != null && (isSelected || parent.showUnselectedImage)) {
@@ -453,7 +473,9 @@ public class CTabItem extends Item {
         if (useEllipses()) {
           int end = minChars < ELLIPSIS.length() + 1 ? minChars : minChars - ELLIPSIS.length();
           text = text.substring(0, end);
-          if (minChars > ELLIPSIS.length() + 1) text += ELLIPSIS;
+          if (minChars > ELLIPSIS.length() + 1) {
+            text += ELLIPSIS;
+          }
         } else {
           int end = minChars;
           text = text.substring(0, end);
@@ -463,7 +485,9 @@ public class CTabItem extends Item {
       text = getText();
     }
     if (text != null) {
-      if (w > 0) w += parent.getItemSpacing( isSelected );
+      if (w > 0) {
+        w += parent.getItemSpacing( isSelected );
+      }
       if (font == null) {
 //        w += gc.textExtent(text, FLAGS).x;
         w += TextSizeUtil.stringExtent( getFont(), text ).x;
@@ -477,7 +501,9 @@ public class CTabItem extends Item {
     }
     if (parent.showClose || showClose) {
       if (isSelected || parent.showUnselectedClose) {
-        if (w > 0) w += parent.getItemSpacing( isSelected );
+        if (w > 0) {
+          w += parent.getItemSpacing( isSelected );
+        }
         w += CTabFolder.BUTTON_SIZE;
       }
     }

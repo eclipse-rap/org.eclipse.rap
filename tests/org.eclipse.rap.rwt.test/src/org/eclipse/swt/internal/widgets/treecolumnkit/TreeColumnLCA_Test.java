@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA.getLeft;
 import static org.junit.Assert.assertEquals;
@@ -245,6 +246,27 @@ public class TreeColumnLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( column, "index" ) );
+  }
+
+  @Test
+  public void testRenderIntialToolTipMarkupEnabled() throws IOException {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderChanges( column );
+
+    Message message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( column, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() throws IOException {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( column );
+
+    lca.renderChanges( column );
+
+    Message message = getProtocolMessage();
+    assertNull( message.findSetOperation( column, "toolTipMarkupEnabled" ) );
   }
 
   @Test

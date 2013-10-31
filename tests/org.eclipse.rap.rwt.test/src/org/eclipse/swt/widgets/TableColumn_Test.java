@@ -33,6 +33,7 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -438,6 +439,52 @@ public class TableColumn_Test {
 
     assertFalse( column.isListening( SWT.Move ) );
     assertFalse( column.isListening( SWT.Resize ) );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      column.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    column.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    column.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      column.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, column.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    column.setData( "foo", "bar" );
+
+    assertEquals( "bar", column.getData( "foo" ) );
   }
 
   private Table createFixedColumnsTable( Shell shell ) {

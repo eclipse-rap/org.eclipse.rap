@@ -20,10 +20,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
@@ -86,7 +86,7 @@ public class ListLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new ListOperationHandler( list ) );
     remoteObject.set( "parent", getId( list.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( list, ALLOWED_STYLES ) ) );
-    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( list ) );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( list ) );
     ScrollBarLCAUtil.renderInitialization( list );
   }
 
@@ -116,10 +116,6 @@ public class ListLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
-
-  private static boolean isMarkupEnabled( List list ) {
-    return Boolean.TRUE.equals( list.getData( RWT.MARKUP_ENABLED ) );
-  }
 
   private static Point getItemDimensions( List list ) {
     return getAdapter( list ).getItemDimensions();

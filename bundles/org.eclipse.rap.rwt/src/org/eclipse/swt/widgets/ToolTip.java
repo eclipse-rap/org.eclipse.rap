@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -55,8 +58,6 @@ public class ToolTip extends Widget {
   private int x;
   private int y;
   private transient IToolTipAdapter toolTipAdapter;
-  boolean markupEnabled;
-  boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -270,7 +271,7 @@ public class ToolTip extends Widget {
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( markupEnabled && !markupValidationDisabled ) {
+    if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
       MarkupValidator.getInstance().validate( text );
     }
     this.text = text;
@@ -310,7 +311,7 @@ public class ToolTip extends Widget {
     if( message == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( markupEnabled && !markupValidationDisabled ) {
+    if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
       MarkupValidator.getInstance().validate( message );
     }
     this.message = message;
@@ -431,12 +432,9 @@ public class ToolTip extends Widget {
 
   @Override
   public void setData( String key, Object value ) {
-    if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
-      markupEnabled = Boolean.TRUE.equals( value );
-    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
-      markupValidationDisabled = Boolean.TRUE.equals( value );
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
     }
-    super.setData( key, value );
   }
 
   @Override

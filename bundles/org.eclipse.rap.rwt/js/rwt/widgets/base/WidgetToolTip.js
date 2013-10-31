@@ -34,9 +34,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     setToolTipText : function( widget, value ) {
       var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       if( value != null && value !== "" ) {
-        var EncodingUtil = rwt.util.Encoding;
-        var text = EncodingUtil.escapeText( value, false );
-        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        var text = value;
+        if( widget.getUserData( "toolTipMarkupEnabled" ) !== true ) {
+          var EncodingUtil = rwt.util.Encoding;
+          var text = EncodingUtil.escapeText( text, false );
+          text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        }
         widget.setToolTipText( text );
         widget.dispatchSimpleEvent( "updateToolTip", widget );
       } else {

@@ -41,6 +41,7 @@ public class CLabel_Test {
 
   private Display display;
   private Shell shell;
+  private CLabel label;
 
   @Before
   public void setUp() {
@@ -48,6 +49,7 @@ public class CLabel_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
+    label = new CLabel( shell, SWT.NONE );
   }
 
   @After
@@ -57,7 +59,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundColor() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     label.setBackground( red );
     assertEquals( label.getBackground(), red );
@@ -65,14 +66,13 @@ public class CLabel_Test {
 
   @Test
   public void testSetToolTipText() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setToolTipText( "foo" );
     assertEquals( label.getToolTipText(), "foo" );
   }
 
   @Test
   public void testSetAlignment() {
-    CLabel label = new CLabel( shell, SWT.LEFT );
+    label = new CLabel( shell, SWT.LEFT );
     assertEquals( label.getAlignment(), SWT.LEFT );
     label.setAlignment( SWT.RIGHT );
     assertEquals( label.getAlignment(), SWT.RIGHT );
@@ -80,7 +80,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetImage() throws IOException {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( label.getImage(), null );
     Image image = createImage( display, Fixture.IMAGE1 );
     label.setImage( image );
@@ -89,7 +88,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetText() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( null, label.getText() );
     label.setText( "bar" );
     assertEquals( label.getText(), "bar" );
@@ -97,7 +95,6 @@ public class CLabel_Test {
 
   @Test
   public void testComputeSize() throws IOException {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Point expected = new Point( 12, 26 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setText( "bar" );
@@ -113,7 +110,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetMargins() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
     Rectangle padding = themeAdapter.getPadding( label );
     assertEquals( padding.x, label.getLeftMargin() );
@@ -150,7 +146,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_Horizontal() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN ),
@@ -168,7 +163,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_Vertical() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN ),
@@ -186,7 +180,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_NullValues() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = null;
     int[] percents = null;
     try {
@@ -209,7 +202,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_ArraysSize() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN ),
@@ -226,7 +218,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_InvalidPercents() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN ),
@@ -257,7 +248,6 @@ public class CLabel_Test {
 
   @Test
   public void testSetBackgroundGradient_NullColorReplace() {
-    CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -275,7 +265,6 @@ public class CLabel_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    CLabel label = new CLabel( shell, SWT.NONE );
     label.setText( "text" );
 
     CLabel deserializedLabel = Fixture.serializeAndDeserialize( label );
@@ -285,7 +274,6 @@ public class CLabel_Test {
 
   @Test
   public void testMarkupTextWithoutMarkupEnabled() {
-    CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     try {
@@ -297,7 +285,6 @@ public class CLabel_Test {
 
   @Test
   public void testMarkupTextWithMarkupEnabled() {
-    CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     try {
@@ -309,7 +296,6 @@ public class CLabel_Test {
 
   @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
-    CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     label.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
 
@@ -322,12 +308,18 @@ public class CLabel_Test {
 
   @Test
   public void testDisableMarkupIsIgnored() {
-    CLabel label = new CLabel( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( label.markupEnabled );
+    assertEquals( Boolean.TRUE, label.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    label.setData( "foo", "bar" );
+
+    assertEquals( "bar", label.getData( "foo" ) );
   }
 
 }

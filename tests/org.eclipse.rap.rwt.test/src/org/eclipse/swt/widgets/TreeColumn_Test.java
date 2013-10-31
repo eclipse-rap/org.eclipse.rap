@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -365,6 +367,52 @@ public class TreeColumn_Test {
     tree.setHeaderVisible( false );
 
     assertEquals( preferredWidth, column.getPreferredWidth() );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      column.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    column.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    column.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      column.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    column.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, column.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    column.setData( "foo", "bar" );
+
+    assertEquals( "bar", column.getData( "foo" ) );
   }
 
   //////////////////

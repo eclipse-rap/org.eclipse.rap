@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
@@ -84,8 +87,6 @@ public class CLabel extends Canvas {
 
   private Image backgroundImage;
   private Color background;
-  boolean markupEnabled;
-  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -121,14 +122,18 @@ public class CLabel extends Canvas {
   public CLabel( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     int result = style;
-    if ( (style & (SWT.CENTER | SWT.RIGHT)) == 0 )
+    if ( (style & (SWT.CENTER | SWT.RIGHT)) == 0 ) {
       result |= SWT.LEFT;
-    if ( (result & SWT.CENTER) != 0 )
+    }
+    if ( (result & SWT.CENTER) != 0 ) {
       align = SWT.CENTER;
-    if ( (result & SWT.RIGHT) != 0 )
+    }
+    if ( (result & SWT.RIGHT) != 0 ) {
       align = SWT.RIGHT;
-    if ( (result & SWT.LEFT) != 0 )
+    }
+    if ( (result & SWT.LEFT) != 0 ) {
       align = SWT.LEFT;
+    }
 
     addDisposeListener( new LabelDisposeListener() );
     initMargins();
@@ -140,8 +145,9 @@ public class CLabel extends Canvas {
    */
   private static int checkStyle( int style ) {
     int result = style;
-    if ( (style & SWT.BORDER) != 0 )
+    if ( (style & SWT.BORDER) != 0 ) {
       result |= SWT.SHADOW_IN;
+    }
     int mask = SWT.SHADOW_IN | SWT.SHADOW_OUT | SWT.SHADOW_NONE | SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/;
     result = style & mask;
     return result |= SWT.NO_FOCUS;
@@ -201,15 +207,16 @@ public class CLabel extends Canvas {
     }
     if ( text != null && text.length() > 0 ) {
       Point extent;
-      if( markupEnabled ) {
+      if( isMarkupEnabledFor( this ) ) {
         extent = TextSizeUtil.markupExtent( getFont(), text, SWT.DEFAULT );
       } else {
         extent = TextSizeUtil.textExtent( getFont(), text, SWT.DEFAULT );
       }
       size.x += extent.x;
       size.y = Math.max( size.y, extent.y );
-      if ( image != null )
+      if ( image != null ) {
         size.x += spacing;
+      }
     } else {
       int charHeight = TextSizeUtil.getCharHeight( getFont() );
       size.y = Math.max( size.y, charHeight );
@@ -285,11 +292,13 @@ public class CLabel extends Canvas {
     // Are these settings the same as before?
     if ( backgroundImage == null ) {
       if ( color == null ) {
-        if ( background == null )
+        if ( background == null ) {
           return;
+        }
       } else {
-        if ( color.equals( background ) )
+        if ( color.equals( background ) ) {
           return;
+        }
       }
     }
     background = color;
@@ -454,7 +463,7 @@ public class CLabel extends Canvas {
     if( text == null ) {
       this.text = "";
     } else if( !text.equals( this.text ) ) {
-      if( markupEnabled && !markupValidationDisabled ) {
+      if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
         MarkupValidator.getInstance().validate( text );
       }
       this.text = text;
@@ -674,12 +683,9 @@ public class CLabel extends Canvas {
 
   @Override
   public void setData( String key, Object value ) {
-    if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
-      markupEnabled = Boolean.TRUE.equals( value );
-    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
-      markupValidationDisabled = Boolean.TRUE.equals( value );
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
     }
-    super.setData( key, value );
   }
 
   private void initMargins() {

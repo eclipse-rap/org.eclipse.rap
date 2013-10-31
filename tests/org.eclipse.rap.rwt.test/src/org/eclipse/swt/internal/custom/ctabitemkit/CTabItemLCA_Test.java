@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -119,6 +120,27 @@ public class CTabItemLCA_Test {
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
+  }
+
+  @Test
+  public void testRenderIntialToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderChanges( item );
+
+    Message message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( item, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() throws IOException {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( item );
+
+    lca.renderChanges( item );
+
+    Message message = getProtocolMessage();
+    assertNull( message.findSetOperation( item, "toolTipMarkupEnabled" ) );
   }
 
   @Test

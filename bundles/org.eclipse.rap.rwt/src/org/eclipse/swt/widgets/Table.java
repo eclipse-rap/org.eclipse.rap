@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
@@ -30,7 +32,6 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
-import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -277,8 +278,6 @@ public class Table extends Composite {
   private Point itemImageSize;
   private Rectangle bufferedCellPadding;
   private int bufferedCellSpacing;
-  boolean markupEnabled;
-  boolean markupValidationDisabled;
   private int preloadedItems;
 
   /**
@@ -356,12 +355,10 @@ public class Table extends Composite {
       setCustomItemHeight( value );
     } else if( RWT.PRELOADED_ITEMS.equals( key ) ) {
       setPreloadedItems( value );
-    } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
-      markupEnabled = Boolean.TRUE.equals( value );
-    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
-      markupValidationDisabled = Boolean.TRUE.equals( value );
     }
-    super.setData( key, value );
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   ///////////////////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +31,16 @@ public class ToolItem_Test {
 
   private Display display;
   private Shell shell;
+  private ToolBar toolbar;
+  private ToolItem item;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
+    toolbar = new ToolBar( shell, SWT.NONE );
+    item = new ToolItem( toolbar, SWT.NONE );
   }
 
   @After
@@ -44,8 +50,6 @@ public class ToolItem_Test {
 
   @Test
   public void testText() {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     String text0 = "text0";
     String text1 = "text1";
@@ -63,16 +67,12 @@ public class ToolItem_Test {
 
   @Test
   public void testImage() {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
     item.setImage( null );
     assertEquals( null, item.getImage() );
   }
 
   @Test
   public void testEnabled() {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     separator.setControl( new Text( toolbar, SWT.NONE ) );
 
@@ -98,8 +98,6 @@ public class ToolItem_Test {
 
   @Test
   public void testSeparatorWithControl() {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( toolbar, SWT.NONE );
     ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     separator.setControl( new Text( toolbar, SWT.NONE ) );
 
@@ -151,51 +149,49 @@ public class ToolItem_Test {
 
   @Test
   public void testSeparatorWithControlBounds() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
-    ToolItem push = new ToolItem( toolBar, SWT.PUSH );
-    ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
+    ToolItem push = new ToolItem( toolbar, SWT.PUSH );
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     separator.setWidth( 60 );
-    Text text = new Text( toolBar, SWT.BORDER );
+    Text text = new Text( toolbar, SWT.BORDER );
     separator.setControl( text );
     push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
-    toolBar.pack();
+    toolbar.pack();
     assertEquals( separator.getBounds(), text.getBounds() );
   }
 
   @Test
   public void testSeparatorWidthHorizontal() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
-    ToolItem push = new ToolItem( toolBar, SWT.PUSH );
-    ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
+    ToolItem push = new ToolItem( toolbar, SWT.PUSH );
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
-    toolBar.pack();
+    toolbar.pack();
     int initalWidth = separator.getSeparatorWidth();
     assertEquals( initalWidth, separator.getWidth() );
     separator.setWidth( 60 );
-    toolBar.pack();
+    toolbar.pack();
     assertEquals( 60, separator.getWidth() );
     separator.setWidth( 60 );
   }
 
   @Test
   public void testSeparatorWidthVertical() {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
-    ToolItem push = new ToolItem( toolBar, SWT.PUSH );
-    ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
+    toolbar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem push = new ToolItem( toolbar, SWT.PUSH );
+    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
     push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
-    toolBar.pack();
+    toolbar.pack();
     int initalWidth = push.getWidth();
     assertEquals( initalWidth, separator.getWidth() );
     separator.setWidth( 60 );
-    toolBar.pack();
+    toolbar.pack();
     assertEquals( 60, separator.getWidth() );
     separator.setWidth( 60 );
   }
 
   @Test
   public void testPreferredHeight() {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
-    ToolItem push = new ToolItem( toolBar, SWT.PUSH );
+    toolbar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem push = new ToolItem( toolbar, SWT.PUSH );
     assertEquals( 22, push.getPreferredHeight() );
     push.setText( "Hello" );
     assertEquals( 30, push.getPreferredHeight() );
@@ -205,8 +201,8 @@ public class ToolItem_Test {
 
   @Test
   public void testPreferredWidth() {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
-    ToolItem push = new ToolItem( toolBar, SWT.PUSH );
+    toolbar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem push = new ToolItem( toolbar, SWT.PUSH );
     assertEquals( 16, push.getPreferredWidth() );
     push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
     assertEquals( 48, push.getPreferredWidth() );
@@ -216,8 +212,8 @@ public class ToolItem_Test {
 
   @Test
   public void testDropDownPreferredWidth() {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
-    ToolItem push = new ToolItem( toolBar, SWT.DROP_DOWN );
+    toolbar = new ToolBar( shell, SWT.VERTICAL );
+    ToolItem push = new ToolItem( toolbar, SWT.DROP_DOWN );
     assertEquals( 32, push.getPreferredWidth() );
     push.setImage(  display.getSystemImage( SWT.ICON_ERROR ) );
     assertEquals( 64, push.getPreferredWidth() );
@@ -227,9 +223,6 @@ public class ToolItem_Test {
 
   @Test
   public void testAddSelectionListener() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
-    ToolItem item = new ToolItem( toolBar, SWT.NONE );
-
     item.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( item.isListening( SWT.Selection ) );
@@ -238,8 +231,6 @@ public class ToolItem_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
-    ToolItem item = new ToolItem( toolBar, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     item.addSelectionListener( listener );
 
@@ -249,25 +240,60 @@ public class ToolItem_Test {
     assertFalse( item.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
-    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+    item.addSelectionListener( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListenerWithNullArgument() {
+    item.removeSelectionListener( null );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
 
     try {
-      item.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
+      item.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    item.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    item.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      item.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
     }
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE);
-    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+  public void testDisableMarkupIsIgnored() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
-    try {
-      item.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, item.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
   }
+
+  @Test
+  public void testSetData() {
+    item.setData( "foo", "bar" );
+
+    assertEquals( "bar", item.getData( "foo" ) );
+  }
+
 }

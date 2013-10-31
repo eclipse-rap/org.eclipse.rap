@@ -2632,7 +2632,14 @@ public class Table_Test {
 
     table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( table.markupEnabled );
+    assertEquals( Boolean.TRUE, table.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    table.setData( "foo", "bar" );
+
+    assertEquals( "bar", table.getData( "foo" ) );
   }
 
   @Test

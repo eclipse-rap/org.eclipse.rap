@@ -36,6 +36,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridColumn", {
     "footerText",
     "footerImage",
     "footerFont",
+    "toolTipMarkupEnabled",
     "toolTip",
     "resizable",
     "moveable",
@@ -48,6 +49,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridColumn", {
   ],
 
   propertyHandler : {
+    "toolTipMarkupEnabled" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" ),
     "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" ),
     "group" : function( widget, value ) {
       rwt.remote.HandlerUtil.callWithTarget( value, function( group ) {

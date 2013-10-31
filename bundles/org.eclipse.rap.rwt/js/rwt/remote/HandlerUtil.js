@@ -35,6 +35,7 @@ rwt.remote.HandlerUtil = {
   _controlProperties : [
     "children",
     "tabIndex",
+    "toolTipMarkupEnabled",
     /**
      * @name setToolTipText
      * @methodOf Control#
@@ -183,6 +184,9 @@ rwt.remote.HandlerUtil = {
       }
       widget.setWidth( bounds[ 2 ] );
       widget.setHeight( bounds[ 3 ] );
+    },
+    "toolTipMarkupEnabled" : function( widget, value ) {
+      widget.setUserData( "toolTipMarkupEnabled", value );
     },
     "toolTip" : function( widget, value ) {
       rwt.widgets.base.WidgetToolTip.setToolTipText( widget, value );

@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -56,6 +57,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.layout.FillLayout;
 import org.junit.After;
 import org.junit.Before;
@@ -1409,6 +1411,45 @@ public class Control_Test {
     }
   }
 
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      shell.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    shell.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    shell.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      shell.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    shell.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, shell.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
+  }
+
   private static class RedrawLogginShell extends Shell {
     private final List<Widget> log;
 
@@ -1437,6 +1478,7 @@ public class Control_Test {
       this.log = log;
     }
 
+    @Override
     public void readData( Widget widget ) {
     }
 

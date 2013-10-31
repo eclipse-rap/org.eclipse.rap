@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
@@ -64,8 +67,6 @@ public class Label extends Control {
 
   private String text = "";
   private Image image;
-  boolean markupEnabled;
-  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -146,7 +147,7 @@ public class Label extends Control {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      if( markupEnabled && !markupValidationDisabled ) {
+      if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
         MarkupValidator.getInstance().validate( text );
       }
       this.text = text;
@@ -289,7 +290,7 @@ public class Label extends Control {
         wrapWidth = wHint;
       }
       Point extent;
-      if( markupEnabled ) {
+      if( isMarkupEnabledFor( this ) ) {
         extent = TextSizeUtil.markupExtent( getFont(), text, wrapWidth );
       } else {
         extent = TextSizeUtil.textExtent( getFont(), text, wrapWidth );
@@ -318,12 +319,9 @@ public class Label extends Control {
 
   @Override
   public void setData( String key, Object value ) {
-    if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
-      markupEnabled = Boolean.TRUE.equals( value );
-    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
-      markupValidationDisabled = Boolean.TRUE.equals( value );
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
     }
-    super.setData( key, value );
   }
 
   //////////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,10 @@ package org.eclipse.swt.internal.widgets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import org.eclipse.swt.widgets.Widget;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -106,5 +109,13 @@ public class MarkupValidator_Test {
       assertEquals( expectedMessage, expected.getMessage() );
     }
   }
+
+  @Test
+    public void testIsValidationDisabledFor() {
+      Widget widget = mock( Widget.class );
+      when( widget.getData( MarkupValidator.MARKUP_VALIDATION_DISABLED ) ).thenReturn( Boolean.TRUE );
+  
+      assertTrue( MarkupValidator.isValidationDisabledFor( widget ) );
+    }
 
 }

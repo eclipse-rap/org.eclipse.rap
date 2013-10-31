@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -39,6 +43,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 
 
 /**
@@ -588,7 +593,9 @@ public abstract class Control extends Widget implements Drawable {
   // verbatim copy of SWT 3.7.0 GTK
   void checkBackground () {
     Shell shell = getShell ();
-    if (this == shell) return;
+    if (this == shell) {
+      return;
+    }
     state &= ~PARENT_BACKGROUND;
     Composite composite = parent;
     do {
@@ -606,7 +613,9 @@ public abstract class Control extends Widget implements Drawable {
         state |= PARENT_BACKGROUND;
         return;
       }
-      if (composite == shell) break;
+      if (composite == shell) {
+        break;
+      }
       composite = composite.parent;
     } while (true);
   }
@@ -1299,6 +1308,12 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void setToolTipText( String toolTipText ) {
     checkWidget();
+    if(    toolTipText != null
+        && isToolTipMarkupEnabledFor( this )
+        && !isValidationDisabledFor( this ) )
+    {
+      MarkupValidator.getInstance().validate( toolTipText );
+    }
     this.toolTipText = toolTipText;
   }
 
@@ -2325,6 +2340,13 @@ public abstract class Control extends Widget implements Drawable {
   public boolean getTouchEnabled() {
     checkWidget();
     return false;
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   ////////////

@@ -882,6 +882,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       var expectedTop = Math.round( 20 + 1 + 10 + 20 / 2 - toolTip.getBoxHeight() / 2 );
       assertEquals( expectedLeft, parseInt( toolTip._style.left, 10 ) );
       assertEquals( expectedTop, parseInt( toolTip._style.top, 10 ) );
+    },
+
+    testToolTipTextEscape : function() {
+      WidgetToolTip.setToolTipText( widget, "<foo> \n <bar>" );
+
+      assertEquals( "&lt;foo&gt; <br/> &lt;bar&gt;", widget.getToolTipText() );
+    },
+
+    testToolTipTextEscape_withToolTipMarkupEnabled : function() {
+      widget.setUserData( "toolTipMarkupEnabled", true );
+
+      WidgetToolTip.setToolTipText( widget, "<b>foo</b> <br/> <i>bar</i>" );
+
+      assertEquals( "<b>foo</b> <br/> <i>bar</i>", widget.getToolTipText() );
     }
 
   }

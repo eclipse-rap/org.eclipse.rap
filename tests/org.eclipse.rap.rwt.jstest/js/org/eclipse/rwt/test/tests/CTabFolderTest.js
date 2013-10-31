@@ -353,6 +353,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       widget.destroy();
     },
 
+    testSetToolTipMarkupEnabledByProtocol : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+
+      TestUtil.protocolSet( "w4", { "toolTipMarkupEnabled" : true } );
+
+      assertTrue( item.getUserData( "toolTipMarkupEnabled" ) );
+      folder.destroy();
+    },
+
     testSetItemToolTipByProtocol : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       var widget = this._createCTabItemByProtocol( "w4", "w3" );

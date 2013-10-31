@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -22,6 +26,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -168,16 +173,22 @@ public class TableColumn extends Item {
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
    *
-   * @param string the new tool tip text (or null)
+   * @param toolTipText the new tool tip text (or null)
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setToolTipText( String string ) {
+  public void setToolTipText( String toolTipText ) {
     checkWidget();
-    toolTipText = string;
+    if(    toolTipText != null
+        && isToolTipMarkupEnabledFor( this )
+        && !isValidationDisabledFor( this ) )
+    {
+      MarkupValidator.getInstance().validate( toolTipText );
+    }
+    this.toolTipText = toolTipText;
   }
 
   /**
@@ -479,6 +490,13 @@ public class TableColumn extends Item {
     }
     removeListener( SWT.Selection, listener );
     removeListener( SWT.DefaultSelection, listener );
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   @Override

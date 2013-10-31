@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -27,6 +28,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -38,9 +40,18 @@ import org.junit.Test;
 
 public class CTabItem_Test {
 
+  private Display display;
+  private Shell shell;
+  private CTabFolder folder;
+  private CTabItem item;
+
   @Before
   public void setUp() {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    folder = new CTabFolder( shell, SWT.NONE );
+    item = new CTabItem( folder, SWT.NONE );
   }
 
   @After
@@ -50,10 +61,6 @@ public class CTabItem_Test {
 
   @Test
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.MULTI );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
     assertEquals( null, folder.getSelection() );
     assertSame( folder, item.getParent() );
     assertSame( display, item.getDisplay() );
@@ -61,11 +68,6 @@ public class CTabItem_Test {
 
   @Test
   public void testInitialState() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
-
     assertEquals( null, item.getToolTipText() );
     assertEquals( "", item.getText() );
     assertEquals( null, item.getControl() );
@@ -74,9 +76,6 @@ public class CTabItem_Test {
 
   @Test
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     assertEquals( SWT.NONE, item1.getStyle() );
 
@@ -92,8 +91,6 @@ public class CTabItem_Test {
 
   @Test
   public void testBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI | SWT.TOP );
     folder.setSize( 150, 80 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -113,18 +110,12 @@ public class CTabItem_Test {
 
   @Test
   public void testDisplay() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
     assertSame( display, item.getDisplay() );
     assertSame( folder.getDisplay(), item.getDisplay() );
   }
 
   @Test
   public void testSetControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI | SWT.TOP );
     folder.setSize( 80, 50 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -180,16 +171,10 @@ public class CTabItem_Test {
 
   @Test
   public void testShowClose() {
-    CTabFolder folder;
-    CTabItem item;
-    ICTabFolderAdapter adapter;
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test with folder that was created with SWT.CLOSE
-    folder = new CTabFolder( shell, SWT.CLOSE );
-    adapter
-      = folder.getAdapter( ICTabFolderAdapter.class );
-    item = new CTabItem( folder, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.CLOSE );
+    ICTabFolderAdapter adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
     assertFalse( item.getShowClose() );
     assertTrue( adapter.showItemClose( item ) );
     item = new CTabItem( folder, SWT.CLOSE );
@@ -201,8 +186,7 @@ public class CTabItem_Test {
 
     // Test with folder that was created without SWT.CLOSE
     folder = new CTabFolder( shell, SWT.NONE );
-    adapter
-      = folder.getAdapter( ICTabFolderAdapter.class );
+    adapter = folder.getAdapter( ICTabFolderAdapter.class );
     item = new CTabItem( folder, SWT.NONE );
     assertFalse( item.getShowClose() );
     assertFalse( adapter.showItemClose( item ) );
@@ -216,18 +200,14 @@ public class CTabItem_Test {
 
   @Test
   public void testShowImage() throws IOException {
-    CTabItem item1, item2;
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test with images, that should appear on unselected tabs
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setSize( 120, 120 );
     folder.setUnselectedImageVisible( true );
     ICTabFolderAdapter adapter
       = folder.getAdapter( ICTabFolderAdapter.class );
-    item1 = new CTabItem( folder, SWT.NONE );
+    CTabItem item1 = new CTabItem( folder, SWT.NONE );
     item1.setImage( createImage( display, Fixture.IMAGE1 ) );
-    item2 = new CTabItem( folder, SWT.NONE );
+    CTabItem item2 = new CTabItem( folder, SWT.NONE );
     item2.setImage( createImage( display, Fixture.IMAGE1 ) );
     folder.setSelection( item1 );
     assertTrue( adapter.showItemImage( item1 ) );
@@ -247,12 +227,8 @@ public class CTabItem_Test {
 
   @Test
   public void testSetFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test with images, that should appear on unselected tabs
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Font folderFont = folder.getFont();
-    CTabItem item = new CTabItem( folder, SWT.NONE );
     Font cTabFont = new Font( display, "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     item.setFont( cTabFont );
     assertSame( cTabFont, item.getFont() );
@@ -273,19 +249,61 @@ public class CTabItem_Test {
 
   @Test
   public void testGetFontFromCSS() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     String css = "CTabItem { font: 22px Verdana, sans-serif; }"
                + "CTabItem:selected { font: 24px Verdana, sans-serif; }";
     ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeTestUtil.setCurrentThemeId( "custom" );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
     Font font = item.getFont();
     assertEquals( 22, FontUtil.getData( font ).getHeight() );
     folder.setSelection( 0 );
     font = item.getFont();
     assertEquals( 24, FontUtil.getData( font ).getHeight() );
+  }
+
+  @Test
+  public void testMarkupToolTipTextWithoutMarkupEnabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      item.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupToolTipTextWithMarkupEnabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    item.setToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    item.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      item.setToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, item.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    item.setData( "foo", "bar" );
+
+    assertEquals( "bar", item.getData( "foo" ) );
   }
 
 }

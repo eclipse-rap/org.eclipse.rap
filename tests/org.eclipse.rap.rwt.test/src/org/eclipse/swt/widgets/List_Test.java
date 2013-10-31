@@ -1542,7 +1542,7 @@ public class List_Test {
 
     list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( list.markupEnabled );
+    assertEquals( Boolean.TRUE, list.getData( RWT.MARKUP_ENABLED ) );
   }
 
   @Test

@@ -647,6 +647,27 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
+  public void testRenderIntialToolTipMarkupEnabled() {
+    widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    renderToolTip( widget, "foo" );
+
+    Message message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( widget, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() {
+    widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( widget );
+
+    renderToolTip( widget, "foo" );
+
+    Message message = getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "toolTipMarkupEnabled" ) );
+  }
+
+  @Test
   public void testRenderIntialToolTip() {
     renderToolTip( widget, null );
 
@@ -668,6 +689,16 @@ public class WidgetLCAUtil_Test {
 
     Message message = getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderToolTip_withAmpersandAndMarkupEnabled() {
+    widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    renderToolTip( widget, "foo &#38; bar" );
+
+    Message message = getProtocolMessage();
+    assertEquals( "foo &#38; bar", message.findSetProperty( widget, "toolTip" ).asString() );
   }
 
   @Test

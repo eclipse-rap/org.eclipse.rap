@@ -181,6 +181,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       assertEquals( "bar", map.foo );
       assertEquals( "two", map.one );
       widget.destroy();
+    },
+
+    testToolTipMarkupEnabledHandler : function() {
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" );
+      var widget = new rwt.widgets.Composite();
+
+      handler( widget, true );
+
+      assertTrue( widget.getUserData( "toolTipMarkupEnabled" ) );
+      widget.destroy();
+    },
+
+    testToolTipHandler : function() {
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" );
+      var widget = new rwt.widgets.Composite();
+
+      handler( widget, "foo" );
+
+      assertEquals( "foo", widget.getToolTipText() );
+      widget.destroy();
     }
 
   }

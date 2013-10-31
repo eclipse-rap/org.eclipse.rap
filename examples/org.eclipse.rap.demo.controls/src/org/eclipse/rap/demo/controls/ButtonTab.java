@@ -14,6 +14,7 @@ package org.eclipse.rap.demo.controls;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -110,6 +111,8 @@ public class ButtonTab extends ExampleTab {
     radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
     Button arrowButton = new Button( parent, style | SWT.ARROW );
+    arrowButton.setToolTipText( getToolTipText() );
+    arrowButton.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       Listener listener = new Listener() {
         public void handleEvent( Event event ) {
@@ -162,6 +165,14 @@ public class ButtonTab extends ExampleTab {
       item.setText( "Item " + ( i + 1 ) );
     }
     parent.setMenu( menu );
+  }
+
+  private String getToolTipText() {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "<span style='color:yellow; font-weight:bold;'>" );
+    builder.append( "This is tooltip with markup <br/> &#38 <br/> <i>additional line</i>" );
+    builder.append( "</span>" );
+    return builder.toString();
   }
 
   private void createButtonImage( Display display ) {

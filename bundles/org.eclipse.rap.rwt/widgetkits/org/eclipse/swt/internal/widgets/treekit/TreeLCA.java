@@ -22,11 +22,11 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -150,7 +150,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       remoteObject.set( "selectionPadding", padding );
     }
     remoteObject.set( "indentionWidth", adapter.getIndentionWidth() );
-    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabled( tree ) );
+    remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( tree ) );
     TemplateLCAUtil.renderRowTemplate( tree );
     ScrollBarLCAUtil.renderInitialization( tree );
   }
@@ -208,10 +208,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private boolean listensToSetData( Tree tree ) {
     return ( tree.getStyle() & SWT.VIRTUAL ) != 0;
-  }
-
-  private static boolean isMarkupEnabled( Tree tree ) {
-    return Boolean.TRUE.equals( tree.getData( RWT.MARKUP_ENABLED ) );
   }
 
   private static String[] getSelection( Tree tree ) {

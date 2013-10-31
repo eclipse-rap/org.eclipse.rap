@@ -19,10 +19,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -78,7 +78,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     remoteObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
     remoteObject.set( "appearance", "clabel" );
-    renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabled( clabel ), false );
+    renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabledFor( clabel ), false );
   }
 
   @Override
@@ -110,10 +110,6 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static boolean isMarkupEnabled( CLabel clabel ) {
-    return Boolean.TRUE.equals( clabel.getData( RWT.MARKUP_ENABLED ) );
-  }
-
   private static String getAlignment( CLabel clabel ) {
     int alignment = clabel.getAlignment();
     String result;
@@ -133,7 +129,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     String newValue = clabel.getText();
     if( hasChanged( clabel, PROP_TEXT, newValue, null ) ) {
       String text = newValue;
-      if( !isMarkupEnabled( clabel ) ) {
+      if( !isMarkupEnabledFor( clabel ) ) {
         text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
       }
       getRemoteObject( clabel ).set( PROP_TEXT, text );
@@ -141,7 +137,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   }
 
   private static void renderMnemonicIndex( CLabel clabel ) {
-    if( !isMarkupEnabled( clabel ) ) {
+    if( !isMarkupEnabledFor( clabel ) ) {
       String text = clabel.getText();
       if( hasChanged( clabel, PROP_TEXT, text, null ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );

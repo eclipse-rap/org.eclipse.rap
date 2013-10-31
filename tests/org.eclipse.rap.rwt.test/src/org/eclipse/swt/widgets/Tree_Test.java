@@ -1784,7 +1784,14 @@ public class Tree_Test {
 
     tree.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( tree.markupEnabled );
+    assertEquals( Boolean.TRUE, tree.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    tree.setData( "foo", "bar" );
+
+    assertEquals( "bar", tree.getData( "foo" ) );
   }
 
   // see bug 371860

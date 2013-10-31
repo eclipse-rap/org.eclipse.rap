@@ -261,6 +261,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
+    testSetToolTipMarkupEnabledByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "toolTipMarkupEnabled" : true } );
+
+      assertTrue( widget.getUserData( "toolTipMarkupEnabled" ) );
+      shell.destroy();
+      toolbar.destroy();
+      widget.destroy();
+    },
+
     testSetToolTipByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );

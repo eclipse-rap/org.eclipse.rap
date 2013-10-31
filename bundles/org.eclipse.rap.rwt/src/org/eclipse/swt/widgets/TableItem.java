@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -259,7 +262,7 @@ public class TableItem extends Item {
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( parent.markupEnabled && !parent.markupValidationDisabled ) {
+    if( isMarkupEnabledFor( parent ) && !isValidationDisabledFor( parent ) ) {
       MarkupValidator.getInstance().validate( text );
     }
     int count = Math.max( 1, parent.getColumnCount() );

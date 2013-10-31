@@ -398,6 +398,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
     },
 
+    testSetToolTipMarkupEnabledByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "toolTipMarkupEnabled" : true } );
+
+      assertTrue( column.getUserData( "toolTipMarkupEnabled" ) );
+      column.dispose();
+      tree.destroy();
+    },
+
     testSetToolTipByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );

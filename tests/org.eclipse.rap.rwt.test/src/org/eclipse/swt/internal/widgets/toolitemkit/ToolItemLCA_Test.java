@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -209,6 +210,27 @@ public class ToolItemLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "enabled" ) );
+  }
+
+  @Test
+  public void testRenderIntialToolTipMarkupEnabled() throws IOException {
+    toolitem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderChanges( toolitem );
+
+    Message message = getProtocolMessage();
+    assertTrue( "foo", message.findSetProperty( toolitem, "toolTipMarkupEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderToolTipMarkupEnabled() throws IOException {
+    toolitem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    Fixture.markInitialized( toolitem );
+
+    lca.renderChanges( toolitem );
+
+    Message message = getProtocolMessage();
+    assertNull( message.findSetOperation( toolitem, "toolTipMarkupEnabled" ) );
   }
 
   @Test

@@ -36,6 +36,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
     "mnemonicIndex",
     "image",
     "control",
+    "toolTipMarkupEnabled",
     "toolTip",
     "customVariant"
   ],
@@ -59,6 +60,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
         } );
       }
     },
+    "toolTipMarkupEnabled" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" ),
     "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" )
   }
 

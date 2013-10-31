@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -971,7 +974,7 @@ public class TreeItem extends Item {
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( parent.markupEnabled && !parent.markupValidationDisabled ) {
+    if( isMarkupEnabledFor( parent ) && !isValidationDisabledFor( parent ) ) {
       MarkupValidator.getInstance().validate( text );
     }
     int count = Math.max( 1, parent.getColumnCount() );

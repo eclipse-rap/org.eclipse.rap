@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class Label_Test {
 
   private Display display;
   private Shell shell;
+  private Label label;
 
   @Before
   public void setUp() {
@@ -44,6 +45,7 @@ public class Label_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display , SWT.NONE );
+    label = new Label( shell, SWT.NONE );
   }
 
   @After
@@ -53,14 +55,12 @@ public class Label_Test {
 
   @Test
   public void testInitialValues() {
-    Label label = new Label( shell, SWT.NONE );
     assertEquals( "", label.getText() );
     assertEquals( SWT.LEFT, label.getAlignment() );
   }
 
   @Test
   public void testText() {
-    Label label = new Label( shell, SWT.NONE );
     label.setText( "abc" );
     assertEquals( "abc", label.getText() );
     try {
@@ -73,9 +73,6 @@ public class Label_Test {
 
   @Test
   public void testStyle() {
-    Label label;
-
-    label = new Label( shell, SWT.NONE );
     assertTrue( ( label.getStyle() & SWT.SEPARATOR ) == 0 );
     assertTrue( ( label.getStyle() & SWT.LEFT ) != 0 );
 
@@ -93,9 +90,6 @@ public class Label_Test {
 
   @Test
   public void testAlignment() {
-    Label label;
-
-    label = new Label( shell, SWT.NONE );
     label.setAlignment( SWT.LEFT );
     assertEquals( SWT.LEFT, label.getAlignment() );
     label.setAlignment( SWT.RIGHT );
@@ -129,7 +123,6 @@ public class Label_Test {
 
   @Test
   public void testImageAndText() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
     Image image = createImage();
     label.setImage( image );
@@ -166,7 +159,6 @@ public class Label_Test {
 
   @Test
   public void testComputeSize() throws IOException {
-    Label label = new Label( shell, SWT.NONE );
     Point expected = new Point( 0, 14 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -198,7 +190,6 @@ public class Label_Test {
 
   @Test
   public void testComputeSizeWithMarkupEnabled() {
-    Label label = new Label( shell, SWT.NONE );
     label.setText( "foo bar" );
     Point textExtent = label.computeSize( SWT.DEFAULT, SWT.DEFAULT );
 
@@ -213,7 +204,6 @@ public class Label_Test {
   @Test
   public void testIsSerializable() throws Exception {
     String text = "labelText";
-    Label label = new Label( shell, SWT.NONE );
     label.setText( text );
 
     Label deserializedLabel = Fixture.serializeAndDeserialize( label );
@@ -223,7 +213,6 @@ public class Label_Test {
 
   @Test
   public void testMarkupTextWithoutMarkupEnabled() {
-    Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     try {
@@ -235,7 +224,6 @@ public class Label_Test {
 
   @Test
   public void testMarkupTextWithMarkupEnabled() {
-    Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     try {
@@ -247,7 +235,6 @@ public class Label_Test {
 
   @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
-    Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     label.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
 
@@ -260,12 +247,18 @@ public class Label_Test {
 
   @Test
   public void testDisableMarkupIsIgnored() {
-    Label label = new Label( shell, SWT.NONE );
     label.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     label.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
-    assertTrue( label.markupEnabled );
+    assertEquals( Boolean.TRUE, label.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testSetData() {
+    label.setData( "foo", "bar" );
+
+    assertEquals( "bar", label.getData( "foo" ) );
   }
 
   private Image createImage() throws IOException {

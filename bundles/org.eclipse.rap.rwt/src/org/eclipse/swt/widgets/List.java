@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
@@ -65,8 +68,6 @@ public class List extends Scrollable {
   private boolean hasHScrollBar;
   private Rectangle bufferedItemPadding;
   private int customItemHeight;
-  boolean markupEnabled;
-  private boolean markupValidationDisabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -1074,12 +1075,10 @@ public class List extends Scrollable {
   public void setData( String key, Object value ) {
     if( RWT.CUSTOM_ITEM_HEIGHT.equals( key ) ) {
       setCustomItemHeight( value );
-    } else if( RWT.MARKUP_ENABLED.equals( key ) && !markupEnabled ) {
-      markupEnabled = Boolean.TRUE.equals( value );
-    } else if( MarkupValidator.MARKUP_VALIDATION_DISABLED.equals( key ) ) {
-      markupValidationDisabled = Boolean.TRUE.equals( value );
     }
-    super.setData( key, value );
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   /////////////////////////////////////////
@@ -1153,7 +1152,7 @@ public class List extends Scrollable {
   private int getItemWidth( String item ) {
     int result = 0;
     Font font = getFont();
-    if( markupEnabled ) {
+    if( isMarkupEnabledFor( this ) ) {
       result = TextSizeUtil.markupExtent( font, item, 0 ).x;
     } else {
       result = TextSizeUtil.stringExtent( font, item ).x;
@@ -1198,7 +1197,7 @@ public class List extends Scrollable {
     int height = 0;
     if( getItemCount() > 0 ) {
       int availableWidth = getClientArea().width;
-      if( ( style & SWT.H_SCROLL ) == 0 && markupEnabled ) {
+      if( ( style & SWT.H_SCROLL ) == 0 && isMarkupEnabledFor( this ) ) {
         width = availableWidth;
       } else {
         width = Math.max( getMaxItemWidth(), availableWidth );
@@ -1232,7 +1231,7 @@ public class List extends Scrollable {
   }
 
   private void validateMarkup( String[] items ) {
-    if( markupEnabled && !markupValidationDisabled && items != null ) {
+    if( items != null && isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
       for( int i = 0; i < items.length; i++ ) {
         if( items[ i ] != null ) {
           MarkupValidator.getInstance().validate( items[ i ] );

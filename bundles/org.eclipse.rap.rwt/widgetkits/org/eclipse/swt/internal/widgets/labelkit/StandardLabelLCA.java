@@ -18,10 +18,10 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -59,7 +59,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     remoteObject.setHandler( new LabelOperationHandler( label ) );
     remoteObject.set( "parent", getId( label.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
-    renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabled( label ), false );
+    renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabledFor( label ), false );
   }
 
   @Override
@@ -75,10 +75,6 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   //////////////////
   // Helping methods
-
-  private static boolean isMarkupEnabled( Label label ) {
-    return Boolean.TRUE.equals( label.getData( RWT.MARKUP_ENABLED ) );
-  }
 
   private static String getAlignment( Label label ) {
     int alignment = label.getAlignment();
@@ -99,7 +95,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     String newValue = label.getText();
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, newValue, "" ) ) {
       String text = newValue;
-      if( !isMarkupEnabled( label ) ) {
+      if( !isMarkupEnabledFor( label ) ) {
         text = MnemonicUtil.removeAmpersandControlCharacters( newValue );
       }
       getRemoteObject( label ).set( PROP_TEXT, text );
@@ -107,7 +103,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   }
 
   private static void renderMnemonicIndex( Label label ) {
-    if( !isMarkupEnabled( label ) ) {
+    if( !isMarkupEnabledFor( label ) ) {
       String text = label.getText();
       if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, text, "" ) ) {
         int mnemonicIndex = MnemonicUtil.findMnemonicCharacterIndex( text );
