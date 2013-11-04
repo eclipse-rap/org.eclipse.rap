@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.template.Cell.CellAlignment;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -357,6 +358,35 @@ public class TemplateSerializer_Test {
     assertEquals( 22, font.get( 1 ).asInt() );
     assertFalse( font.get( 2 ).asBoolean() );
     assertFalse( font.get( 3 ).asBoolean() );
+  }
+
+  @Test
+  public void testSerializesCellAlignmentAttribute() {
+    RowTemplate template = new RowTemplate();
+    Cell cell = new TestCell( template, "foo" );
+    cell.setAlignment( CellAlignment.BOTTOM );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray alignemnt = actualCell.get( "alignment" ).asArray();
+    assertEquals( "BOTTOM", alignemnt.get( 0 ).asString() );
+  }
+
+  @Test
+  public void testSerializesMultipleCellAlignmentAttribute() {
+    RowTemplate template = new RowTemplate();
+    Cell cell = new TestCell( template, "foo" );
+    cell.setAlignment( CellAlignment.BOTTOM, CellAlignment.LEFT );
+    TemplateSerializer serializer = new TemplateSerializer( template );
+
+    JsonArray cells = serializer.toJson().asArray();
+
+    JsonObject actualCell = cells.get( 0 ).asObject();
+    JsonArray alignemnt = actualCell.get( "alignment" ).asArray();
+    assertEquals( "BOTTOM", alignemnt.get( 0 ).asString() );
+    assertEquals( "LEFT", alignemnt.get( 1 ).asString() );
   }
 
   private Image createImage( String name ) {

@@ -96,6 +96,17 @@ public class TemplateSerializer {
     if( value instanceof Boolean ) {
       return JsonValue.valueOf( ( ( Boolean )value ).booleanValue() );
     }
+    if( value instanceof Object[] ) {
+      return createJsonArray( ( Object[] )value );
+    }
     return JsonValue.NULL;
+  }
+
+  private JsonValue createJsonArray( Object[] value ) {
+    JsonArray jsonArray = new JsonArray();
+    for( Object object : value ) {
+      jsonArray.add( getJsonValue( object ) );
+    }
+    return jsonArray;
   }
 }

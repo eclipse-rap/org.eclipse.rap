@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Font;
 
 public abstract class Cell<T extends Cell> implements Adaptable, Serializable  {
 
-  public enum CellAlignment {
+  public static enum CellAlignment {
     LEFT, RIGHT, H_CENTER, V_CENTER, TOP, BOTTOM
   }
 
