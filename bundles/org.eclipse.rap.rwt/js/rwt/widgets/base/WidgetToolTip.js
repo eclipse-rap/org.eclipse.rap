@@ -77,6 +77,13 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       nullable : true,
       init : null,
       themeable : true
+    },
+
+    textAlign : {
+      check : [ "left", "center", "right" ],
+      init : "center",
+      themeable : true,
+      apply : "_applyTextAlign"
     }
 
   },
@@ -95,6 +102,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _applyElement : function( value, old ) {
       this.base( arguments, value, old );
+    },
+
+    _applyTextAlign : function( value, old ) {
+      this._label.setHorizontalChildrenAlign( value );
     },
 
     _getPointerElement : function() {

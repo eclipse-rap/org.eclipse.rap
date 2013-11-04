@@ -132,6 +132,8 @@ public final class PropertyResolver {
       result = readBackgroundPosition( unit );
     } else if( isTextDecorationProperty( name ) ) {
       result = readTextDecoration( unit );
+    } else if( isTextAlignProperty( name ) ) {
+      result = readTextAlign( unit );
     } else if( isCursorProperty( name ) ) {
       result = readCursor( unit, loader );
     } else if( isFloatProperty( name ) ) {
@@ -772,6 +774,27 @@ public final class PropertyResolver {
     }
     if( result == null ) {
       throw new IllegalArgumentException( "Failed to parse text-decoration " + toString( unit ) );
+    }
+    return result;
+  }
+
+  static boolean isTextAlignProperty( String property ) {
+    return "text-align".equals( property );
+  }
+
+  static QxIdentifier readTextAlign( LexicalUnit unit ) {
+    QxIdentifier result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = unit.getStringValue();
+      if( "left".equals( value ) || "right".equals( value ) || "center".equals( value ) ) {
+        result = new QxIdentifier( value );
+      } else {
+        throw new IllegalArgumentException( "Invalid value for text-align: " + value );
+      }
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse text-align " + toString( unit ) );
     }
     return result;
   }

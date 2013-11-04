@@ -1,0 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2013 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ *******************************************************************************/
+
+Widget-ToolTip {
+  padding: 1px 3px 2px 3px;
+  background-color: #e9f3d2;
+  border: 1px solid #abe033;
+  border-radius: 2px 2px 2px 2px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  opacity: 1;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
+  box-shadow: 3px 4px 2px rgba( 0, 0, 0, 0.3 );
+  text-align: center;
+}
+
+Widget-ToolTip-Pointer {
+  background-image: none;
+}
+
+Display {
+  rwt-shadow-color: #a7a6aa;
+  rwt-highlight-color: #ffffff;
+  rwt-darkshadow-color: #85878c;
+  rwt-lightshadow-color: #dcdfe4;
+  rwt-thinborder-color: #aca899;
+  rwt-selectionmarker-color: #fec83c;
+  rwt-infobackground-color: #ffffff;
+
+  rwt-error-image: url( theme/resources/dialog/error.png );
+  rwt-information-image: url( theme/resources/dialog/information.png );
+  rwt-question-image: url( theme/resources/dialog/question.png );
+  rwt-warning-image: url( theme/resources/dialog/warning.png );
+  rwt-working-image: url( theme/resources/dialog/information.png );
+
+  rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
+
+  background-image: url( theme/fancy/icons/browser_bg.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}

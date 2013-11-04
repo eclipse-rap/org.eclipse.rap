@@ -33,6 +33,7 @@ Widget-ToolTip {
   opacity: 0.9;
   animation: fadeIn 150ms ease-in, fadeOut 150ms ease-in;
   box-shadow: none;
+  text-align: center;
 }
 
 Widget-ToolTip-Pointer {

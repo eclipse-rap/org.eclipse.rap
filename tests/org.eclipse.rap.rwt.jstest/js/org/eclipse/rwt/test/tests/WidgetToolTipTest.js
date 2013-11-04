@@ -896,6 +896,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       WidgetToolTip.setToolTipText( widget, "<b>foo</b> <br/> <i>bar</i>" );
 
       assertEquals( "<b>foo</b> <br/> <i>bar</i>", widget.getToolTipText() );
+    },
+
+    testTextAlign : function() {
+      assertEquals( "center", toolTip._label.getHorizontalChildrenAlign() );
+
+      toolTip.setTextAlign( "left" );
+
+      assertEquals( "left", toolTip._label.getHorizontalChildrenAlign() );
     }
 
   }

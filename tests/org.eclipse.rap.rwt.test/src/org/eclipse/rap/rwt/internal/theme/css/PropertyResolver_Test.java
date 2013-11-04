@@ -977,9 +977,43 @@ public class PropertyResolver_Test {
     assertEquals( "left center", identifier.value );
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test( expected = IllegalArgumentException.class )
   public void testBackgroundposition_Invalid() throws Exception {
     PropertyResolver.readBackgroundRepeat( parseProperty( "foo bar" ) );
+  }
+
+  @Test
+  public void testIsTextDecorationProperty() {
+    assertTrue( PropertyResolver.isTextDecorationProperty( "text-decoration" ) );
+  }
+
+  @Test
+  public void testTextDecoration_Valid() throws Exception {
+    QxIdentifier identifier = PropertyResolver.readTextDecoration( parseProperty( "underline" ) );
+
+    assertEquals( "underline", identifier.value );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testTextDecoration_Invalid() throws Exception {
+    PropertyResolver.readTextDecoration( parseProperty( "foo" ) );
+  }
+
+  @Test
+  public void testIsTextAlignProperty() {
+    assertTrue( PropertyResolver.isTextAlignProperty( "text-align" ) );
+  }
+
+  @Test
+  public void testTextAlign_Valid() throws Exception {
+    QxIdentifier identifier = PropertyResolver.readTextAlign( parseProperty( "center" ) );
+
+    assertEquals( "center", identifier.value );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testTextAlign_Invalid() throws Exception {
+    PropertyResolver.readTextAlign( parseProperty( "foo" ) );
   }
 
   private static LexicalUnit parseProperty( String input )

@@ -25,14 +25,15 @@
 
 Widget-ToolTip {
   padding: 1px 3px 2px 3px;
-  background-color: #dae9f7;
-  border: 1px solid #00589f;
+  background-color: #e9f3d2;
+  border: 1px solid #abe033;
   border-radius: 2px 2px 2px 2px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
   opacity: 1;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
   box-shadow: 3px 4px 2px rgba( 0, 0, 0, 0.3 );
+  text-align: center;
 }
 
 Widget-ToolTip-Pointer {
@@ -56,7 +57,7 @@ Display {
 
   rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
 
-  background-image: url( theme/resources/display/browser_bg.png );
+  background-image: url( theme/fancy/icons/browser_bg.png );
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -2890,13 +2891,6 @@ Composite.inactiveButton {
   border: none;
 }
 
-/* ToolTip */
-
-Widget-ToolTip {
-  background-color: #e9f3d2;
-  border: 1px solid #abe033;
-}
-
 /* Slider */
 
 Slider-DownButton-Icon[HORIZONTAL] {
@@ -2929,12 +2923,6 @@ Slider-UpButton-Icon[VERTICAL] {
 
 Slider-UpButton-Icon[VERTICAL]:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
-}
-
-/* Display */
-
-Display {
-  background-image: url( theme/fancy/icons/browser_bg.png );
 }
 
 /* CTabFolder, TabFolder */

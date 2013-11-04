@@ -174,6 +174,7 @@ var appearances = {
       result.backgroundGradient = tv.getCssGradient( "Widget-ToolTip", "background-image" );
       result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
       result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
+      result.textAlign = tv.getCssIdentifier( "Widget-ToolTip", "text-align" );
       if( !rwt.client.Client.isMshtml() ) {
         // NOTE : IE can not support opacity and visible overflow at the same time.
         //        Supporting the older feature to avoid regressions.
