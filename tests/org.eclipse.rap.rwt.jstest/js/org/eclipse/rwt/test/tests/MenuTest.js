@@ -2079,6 +2079,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    // should not throw error - see bug 420981
+    testLeftArrowPressWithNonMenuItemOpener : function() {
+      var menu = createMenuWithItems( "push", 3 );
+      menu.setOpener( menu.getParent() );
+
+      TestUtil.press( menu, "Left" );
+
+      menu.destroy();
+    },
+
     tearDown : function() {
       if( ObjectRegistry.getObject( "w2" ) ) {
         ObjectRegistry.getObject( "w2" ).destroy();

@@ -556,13 +556,15 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     },
 
     _handleKeyLeft : function( event ) {
-      var parentMenu = this._opener ? this._opener.getParentMenu() : null;
-      if( parentMenu instanceof rwt.widgets.Menu ) {
-        var hover = this._opener;
-        parentMenu.setOpenItem( null );
-        parentMenu.setHoverItem( hover, true );
-        event.preventDefault();
-        event.stopPropagation();
+      if( this._opener instanceof rwt.widgets.MenuItem ) {
+        var parentMenu = this._opener.getParentMenu();
+        if( parentMenu instanceof rwt.widgets.Menu ) {
+          var hover = this._opener;
+          parentMenu.setOpenItem( null );
+          parentMenu.setHoverItem( hover, true );
+          event.preventDefault();
+          event.stopPropagation();
+        }
       }
     },
 
