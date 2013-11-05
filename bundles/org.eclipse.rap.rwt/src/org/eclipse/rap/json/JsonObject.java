@@ -15,20 +15,39 @@ import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import org.eclipse.rap.json.JsonObject.Member;
 
 
 /**
- * Represents a JSON object. A JSON object contains a sequence of members, which are pairs of a name
- * and a JSON value (see {@link JsonValue}). Although JSON objects should be used for unordered
- * collections, this class stores members in document order.
+ * Represents a JSON object, i.e. an unordered set of name/value pairs, where the names are strings
+ * and the values are JSON values.
  * <p>
- * Members can be added using one of the different <code>add(...)</code> methods. Accepted values
- * are either instances of {@link JsonValue}, or strings, primitive numbers, or boolean values.
+ * Members can be added using the <code>add(String, ...)</code> methods which accept instances of
+ * {@link JsonValue}, strings, primitive numbers, and boolean values. To modify certain values of an
+ * object, use the <code>set(String, ...)</code> methods. Please note that the <code>add</code>
+ * methods are faster than <code>set</code> as they do not search for existing members. On the other
+ * hand, the <code>add</code> methods do not prevent adding multiple members with the same name, as
+ * duplicate names are discouraged but not prohibited by JSON.
  * </p>
  * <p>
  * Members can be accessed by their name using {@link #get(String)}. A list of all names can be
- * obtained from the method {@link #names()}.
+ * obtained from the method {@link #names()}. This class also supports iterating over the members in
+ * document order using an {@link #iterator()} or an enhanced for loop:
+ * </p>
+ *
+ * <pre>
+ * for( Member member : jsonObject ) {
+ *   String name = member.getName();
+ *   JsonValue value = member.getValue();
+ *   ...
+ * }
+ * </pre>
+ * <p>
+ * Even though JSON objects are unordered by definition, instances of this class preserve the order
+ * of members to allow processing in document order and to guarantee a predictable output.
  * </p>
  * <p>
  * Note that this class is <strong>not thread-safe</strong>. If multiple threads access a
@@ -42,7 +61,7 @@ import java.util.List;
  * @since 2.1
  */
 @SuppressWarnings( "serial" ) // use default serial UID
-public class JsonObject extends JsonValue {
+public class JsonObject extends JsonValue implements Iterable<Member> {
 
   private final List<String> names;
   private final List<JsonValue> values;
@@ -84,6 +103,11 @@ public class JsonObject extends JsonValue {
 
   /**
    * Reads a JSON object from the given reader.
+   * <p>
+   * Characters are read in chunks and buffered internally, therefore wrapping an existing reader in
+   * an additional <code>BufferedReader</code> does <strong>not</strong> improve reading
+   * performance.
+   * </p>
    *
    * @param reader
    *          the reader to read the JSON object from
@@ -132,14 +156,37 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and the JSON representation of the
-   * specified <code>long</code> value.
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified <code>int</code> value.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject add( String name, int value ) {
+    add( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified <code>long</code> value.
+   * <p>
+   * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
@@ -154,14 +201,14 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and the JSON representation of the
-   * specified <code>float</code> value.
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified <code>float</code> value.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
@@ -176,14 +223,14 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and the JSON representation of the
-   * specified <code>double</code> value.
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified <code>double</code> value.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
@@ -198,14 +245,14 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and the JSON representation of the
-   * specified <code>boolean</code> value.
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified <code>boolean</code> value.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
@@ -220,14 +267,14 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and the JSON representation of the
-   * specified string.
+   * Adds a new member at the end of this object, with the specified name and the JSON
+   * representation of the specified string.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
@@ -242,19 +289,20 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Adds a new member to this object, with the specified name and JSON value.
+   * Adds a new member at the end of this object, with the specified name and the specified JSON
+   * value.
    * <p>
    * This method <strong>does not prevent duplicate names</strong>. Adding a member with a name that
-   * is already contained in the object will add another member with the same name. In order to
-   * ensure that the names are unique, the method <code>remove( String )</code> can be called before
-   * calling this method. However, this practice incurs a performance penalty and should only be
-   * used when the calling code can not ensure that same name won't be added more than once.
+   * already exists in the object will add another member with the same name. In order to replace
+   * existing members, use the method <code>set(name, value)</code> instead. However, <strong>
+   * <em>add</em> is much faster than <em>set</em></strong> (because it does not need to search for
+   * existing members). Therefore <em>add</em> should be preferred when constructing new objects.
    * </p>
    *
    * @param name
    *          the name of the member to add
    * @param value
-   *          the value of the member to add
+   *          the value of the member to add, must not be <code>null</code>
    * @return the object itself, to enable method chaining
    */
   public JsonObject add( String name, JsonValue value ) {
@@ -271,8 +319,181 @@ public class JsonObject extends JsonValue {
   }
 
   /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified <code>int</code> value. If this object does not contain a member with this name, a
+   * new member is added at the end of the object. If this object contains multiple members with
+   * this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to replace
+   * @param value
+   *          the value to set to the member
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, int value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified <code>long</code> value. If this object does not contain a member with this name, a
+   * new member is added at the end of the object. If this object contains multiple members with
+   * this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to replace
+   * @param value
+   *          the value to set to the member
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, long value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified <code>float</code> value. If this object does not contain a member with this name, a
+   * new member is added at the end of the object. If this object contains multiple members with
+   * this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, float value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified <code>double</code> value. If this object does not contain a member with this name, a
+   * new member is added at the end of the object. If this object contains multiple members with
+   * this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, double value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified <code>boolean</code> value. If this object does not contain a member with this name,
+   * a new member is added at the end of the object. If this object contains multiple members with
+   * this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, boolean value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the JSON representation of the
+   * specified string. If this object does not contain a member with this name, a new member is
+   * added at the end of the object. If this object contains multiple members with this name, only
+   * the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, String value ) {
+    set( name, valueOf( value ) );
+    return this;
+  }
+
+  /**
+   * Sets the value of the member with the specified name to the specified JSON value. If this
+   * object does not contain a member with this name, a new member is added at the end of the
+   * object. If this object contains multiple members with this name, only the last one is changed.
+   * <p>
+   * This method should <strong>only be used to modify existing objects</strong>. To fill a new
+   * object with members, the method <code>add(name, value)</code> should be preferred which is much
+   * faster (as it does not need to search for existing members).
+   * </p>
+   *
+   * @param name
+   *          the name of the member to add
+   * @param value
+   *          the value of the member to add, must not be <code>null</code>
+   * @return the object itself, to enable method chaining
+   * @since 2.2
+   */
+  public JsonObject set( String name, JsonValue value ) {
+    if( name == null ) {
+      throw new NullPointerException( "name is null" );
+    }
+    if( value == null ) {
+      throw new NullPointerException( "value is null" );
+    }
+    int index = indexOf( name );
+    if( index != -1 ) {
+      values.set( index, value );
+    } else {
+      table.add( name, names.size() );
+      names.add( name );
+      values.add( value );
+    }
+    return this;
+  }
+
+  /**
    * Removes a member with the specified name from this object. If this object contains multiple
-   * members with the given name, only the first one is removed. If this object does not contain a
+   * members with the given name, only the last one is removed. If this object does not contain a
    * member with the specified name, the object is not modified.
    *
    * @param name
@@ -285,7 +506,7 @@ public class JsonObject extends JsonValue {
     }
     int index = indexOf( name );
     if( index != -1 ) {
-      table.remove( name );
+      table.remove( index );
       names.remove( index );
       values.remove( index );
     }
@@ -293,12 +514,13 @@ public class JsonObject extends JsonValue {
   }
 
   /**
-   * Returns the value of the member with the specified name in this object.
+   * Returns the value of the member with the specified name in this object. If this object contains
+   * multiple members with the given name, this method will return the last one.
    *
    * @param name
    *          the name of the member whose value is to be returned
-   * @return the value of the member with the specified name, or <code>null</code> if there is no
-   *         member with that name in this object
+   * @return the value of the last member with the specified name, or <code>null</code> if this
+   *         object does not contain a member with that name
    */
   public JsonValue get( String name ) {
     if( name == null ) {
@@ -337,19 +559,38 @@ public class JsonObject extends JsonValue {
     return Collections.unmodifiableList( names );
   }
 
+  /**
+   * Returns an iterator over the members of this object in document order. The returned iterator
+   * cannot be used to modify this object.
+   *
+   * @return an iterator over the members of this object
+   * @since 2.2
+   */
+  public Iterator<Member> iterator() {
+    final Iterator<String> namesIterator = names.iterator();
+    final Iterator<JsonValue> valuesIterator = values.iterator();
+    return new Iterator<Member>() {
+
+      public boolean hasNext() {
+        return namesIterator.hasNext();
+      }
+
+      public Member next() {
+        String name = namesIterator.next();
+        JsonValue value = valuesIterator.next();
+        return new Member( name, value );
+      }
+
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+
+    };
+  }
+
   @Override
   protected void write( JsonWriter writer ) throws IOException {
-    writer.writeBeginObject();
-    int length = names.size();
-    for( int i = 0; i < length; i++ ) {
-      if( i != 0 ) {
-        writer.writeObjectValueSeparator();
-      }
-      writer.writeString( names.get( i ) );
-      writer.writeNameValueSeparator();
-      values.get( i ).write( writer );
-    }
-    writer.writeEndObject();
+    writer.writeObject( this );
   }
 
   @Override
@@ -385,12 +626,12 @@ public class JsonObject extends JsonValue {
     return names.equals( other.names ) && values.equals( other.values );
   }
 
-  private int indexOf( String name ) {
+  int indexOf( String name ) {
     int index = table.get( name );
     if( index != -1 && name.equals( names.get( index ) ) ) {
       return index;
     }
-    return names.indexOf( name );
+    return names.lastIndexOf( name );
   }
 
   private synchronized void readObject( ObjectInputStream inputStream ) throws IOException,
@@ -408,9 +649,66 @@ public class JsonObject extends JsonValue {
     }
   }
 
+  /**
+   * Represents a member of a JSON object, i.e. a pair of name and value.
+   * @since 2.2
+   */
+  public static class Member {
+
+    private final String name;
+    private final JsonValue value;
+
+    Member( String name, JsonValue value ) {
+      this.name = name;
+      this.value = value;
+    }
+
+    /**
+     * Returns the name of this member.
+     *
+     * @return the name of this member, never <code>null</code>
+     */
+    public String getName() {
+      return name;
+    }
+
+    /**
+     * Returns the value of this member.
+     *
+     * @return the value of this member, never <code>null</code>
+     */
+    public JsonValue getValue() {
+      return value;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = 1;
+      result = 31 * result + name.hashCode();
+      result = 31 * result + value.hashCode();
+      return result;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+      if( this == obj ) {
+        return true;
+      }
+      if( obj == null ) {
+        return false;
+      }
+      if( getClass() != obj.getClass() ) {
+        return false;
+      }
+      Member other = (Member)obj;
+      return name.equals( other.name ) && value.equals( other.value );
+    }
+
+  }
+
   static class HashIndexTable {
 
-    private final byte[] hashTable = new byte[ 32 ]; // must be a power of two
+    private final byte[] hashTable = new byte[32]; // must be a power of two
 
     public HashIndexTable() {
     }
@@ -420,18 +718,23 @@ public class JsonObject extends JsonValue {
     }
 
     void add( String name, int index ) {
+      int slot = hashSlotFor( name );
       if( index < 0xff ) {
-        int slot = hashSlotFor( name );
-        if( hashTable[slot] == 0 ) {
-          // increment by 1, 0 stands for empty
-          hashTable[slot] = (byte)( index + 1 );
-        }
+        // increment by 1, 0 stands for empty
+        hashTable[slot] = (byte)( index + 1 );
+      } else {
+        hashTable[slot] = 0;
       }
     }
 
-    void remove( String name ) {
-      int slot = hashSlotFor( name );
-      hashTable[slot] = 0;
+    void remove( int index ) {
+      for( int i = 0; i < hashTable.length; i++ ) {
+        if( hashTable[i] == index + 1 ) {
+          hashTable[i] = 0;
+        } else if( hashTable[i] > index + 1 ) {
+          hashTable[i]--;
+        }
+      }
     }
 
     int get( Object name ) {

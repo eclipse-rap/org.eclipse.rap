@@ -14,10 +14,15 @@ import static org.eclipse.rap.json.TestUtil.assertException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import org.junit.Test;
 
@@ -129,15 +134,6 @@ public class JsonValue_Test {
   }
 
   @Test
-  public void readFrom_reader() throws IOException {
-    assertEquals( new JsonArray(), JsonValue.readFrom( new StringReader( "[]" ) ) );
-    assertEquals( new JsonObject(), JsonValue.readFrom( new StringReader( "{}" ) ) );
-    assertEquals( JsonValue.valueOf( "foo" ), JsonValue.readFrom( new StringReader( "\"foo\"" ) ) );
-    assertEquals( JsonValue.valueOf( 23 ), JsonValue.readFrom( new StringReader( "23" ) ) );
-    assertSame( JsonValue.NULL, JsonValue.readFrom( new StringReader( "null" ) ) );
-  }
-
-  @Test
   public void readFrom_string() {
     assertEquals( new JsonArray(), JsonValue.readFrom( "[]" ) );
     assertEquals( new JsonObject(), JsonValue.readFrom( "{}" ) );
@@ -147,13 +143,43 @@ public class JsonValue_Test {
   }
 
   @Test
+  public void readFrom_reader() throws IOException {
+    assertEquals( new JsonArray(), JsonValue.readFrom( new StringReader( "[]" ) ) );
+    assertEquals( new JsonObject(), JsonValue.readFrom( new StringReader( "{}" ) ) );
+    assertEquals( JsonValue.valueOf( "foo" ), JsonValue.readFrom( new StringReader( "\"foo\"" ) ) );
+    assertEquals( JsonValue.valueOf( 23 ), JsonValue.readFrom( new StringReader( "23" ) ) );
+    assertSame( JsonValue.NULL, JsonValue.readFrom( new StringReader( "null" ) ) );
+  }
+
+  @Test
+  @SuppressWarnings( "resource" )
+  public void readFrom_reader_doesNotCloseReader() throws IOException {
+    Reader reader = spy( new StringReader( "{}" ) );
+
+    JsonValue.readFrom( reader );
+
+    verify( reader, never() ).close();
+  }
+
+  @Test
   public void writeTo() throws IOException {
-    JsonArray array = new JsonArray();
-    StringWriter writer = new StringWriter();
+    JsonValue value = new JsonObject();
+    Writer writer = new StringWriter();
 
-    array.writeTo( writer );
+    value.writeTo( writer );
 
-    assertEquals( "[]", writer.toString() );
+    assertEquals( "{}", writer.toString() );
+  }
+
+  @Test
+  @SuppressWarnings( "resource" )
+  public void writeTo_doesNotCloseWriter() throws IOException {
+    JsonValue value = new JsonObject();
+    Writer writer = spy( new StringWriter() );
+
+    value.writeTo( writer );
+
+    verify( writer, never() ).close();
   }
 
   @Test

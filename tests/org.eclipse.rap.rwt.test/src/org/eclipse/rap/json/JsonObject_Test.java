@@ -18,25 +18,30 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.StringReader;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.rap.json.JsonObject.HashIndexTable;
+import org.eclipse.rap.json.JsonObject.Member;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 
 public class JsonObject_Test {
 
   private JsonObject object;
-  private StringWriter output;
-  private JsonWriter writer;
 
   @Before
   public void setUp() {
     object = new JsonObject();
-    output = new StringWriter();
-    writer = new JsonWriter( output );
   }
 
   @Test
@@ -88,6 +93,19 @@ public class JsonObject_Test {
     JsonObject unmodifiableObject = JsonObject.unmodifiableObject( object );
 
     unmodifiableObject.add( "foo", 23 );
+  }
+
+  @Test
+  public void readFrom_reader() throws IOException {
+    assertEquals( new JsonObject(), JsonObject.readFrom( new StringReader( "{}" ) ) );
+    assertEquals( new JsonObject().add( "a", 23 ),
+                  JsonObject.readFrom( new StringReader( "{ \"a\": 23 }" ) ) );
+  }
+
+  @Test
+  public void readFrom_string() {
+    assertEquals( new JsonObject(), JsonObject.readFrom( "{}" ) );
+    assertEquals( new JsonObject().add( "a", 23 ), JsonObject.readFrom( "{ \"a\": 23 }" ) );
   }
 
   @Test
@@ -146,6 +164,61 @@ public class JsonObject_Test {
   }
 
   @Test
+  public void iterator_isEmptyAfterCreation() {
+    assertFalse( object.iterator().hasNext() );
+  }
+
+  @Test
+  public void iterator_hasNextAfterAdd() {
+    object.add( "a", true );
+    Iterator<Member> iterator = object.iterator();
+
+    assertTrue( iterator.hasNext() );
+  }
+
+  @Test
+  public void iterator_nextReturnsActualValue() {
+    object.add( "a", true );
+    Iterator<Member> iterator = object.iterator();
+
+    assertEquals( new Member( "a", JsonValue.TRUE ), iterator.next() );
+  }
+
+  @Test
+  public void iterator_nextProgressesToNextValue() {
+    object.add( "a", true );
+    object.add( "b", false );
+    Iterator<Member> iterator = object.iterator();
+
+    iterator.next();
+    assertTrue( iterator.hasNext() );
+    assertEquals( new Member( "b", JsonValue.FALSE ), iterator.next() );
+  }
+
+  @Test( expected = NoSuchElementException.class )
+  public void iterator_nextFailsAtEnd() {
+    Iterator<Member> iterator = object.iterator();
+
+    iterator.next();
+  }
+
+  @Test( expected = UnsupportedOperationException.class )
+  public void iterator_doesNotAllowModification() {
+    object.add( "a", 23 );
+    Iterator<Member> iterator = object.iterator();
+    iterator.next();
+
+    iterator.remove();
+  }
+
+  @Test( expected = ConcurrentModificationException.class )
+  public void iterator_detectsConcurrentModification() {
+    Iterator<Member> iterator = object.iterator();
+    object.add( "a", 23 );
+    iterator.next();
+  }
+
+  @Test
   public void get_failsWithNullName() {
     assertException( NullPointerException.class, "name is null", new Runnable() {
       public void run() {
@@ -155,15 +228,22 @@ public class JsonObject_Test {
   }
 
   @Test
-  public void get_returnsExistingValue() {
-    object.add( "foo", true );
-
-    assertSame( JsonValue.TRUE, object.get( "foo" ) );
+  public void get_returnsNullForNonExistingMember() {
+    assertNull( object.get( "foo" ) );
   }
 
   @Test
-  public void get_returnsNullForNonExistingValue() {
-    assertSame( null, object.get( "foo" ) );
+  public void get_returnsValueForName() {
+    object.add( "foo", true );
+
+    assertEquals( JsonValue.TRUE, object.get( "foo" ) );
+  }
+
+  @Test
+  public void get_returnsLastValueForName() {
+    object.add( "foo", false ).add( "foo", true );
+
+    assertEquals( JsonValue.TRUE, object.get( "foo" ) );
   }
 
   @Test
@@ -330,6 +410,130 @@ public class JsonObject_Test {
   }
 
   @Test
+  public void set_int() {
+    object.set( "a", 23 );
+
+    assertEquals( "{\"a\":23}", object.toString() );
+  }
+
+  @Test
+  public void set_int_enablesChaining() {
+    assertSame( object, object.set( "a", 23 ) );
+  }
+
+  @Test
+  public void set_long() {
+    object.set( "a", 23l );
+
+    assertEquals( "{\"a\":23}", object.toString() );
+  }
+
+  @Test
+  public void set_long_enablesChaining() {
+    assertSame( object, object.set( "a", 23l ) );
+  }
+
+  @Test
+  public void set_float() {
+    object.set( "a", 3.14f );
+
+    assertEquals( "{\"a\":3.14}", object.toString() );
+  }
+
+  @Test
+  public void set_float_enablesChaining() {
+    assertSame( object, object.set( "a", 3.14f ) );
+  }
+
+  @Test
+  public void set_double() {
+    object.set( "a", 3.14d );
+
+    assertEquals( "{\"a\":3.14}", object.toString() );
+  }
+
+  @Test
+  public void set_double_enablesChaining() {
+    assertSame( object, object.set( "a", 3.14d ) );
+  }
+
+  @Test
+  public void set_boolean() {
+    object.set( "a", true );
+
+    assertEquals( "{\"a\":true}", object.toString() );
+  }
+
+  @Test
+  public void set_boolean_enablesChaining() {
+    assertSame( object, object.set( "a", true ) );
+  }
+
+  @Test
+  public void set_string() {
+    object.set( "a", "foo" );
+
+    assertEquals( "{\"a\":\"foo\"}", object.toString() );
+  }
+
+  @Test
+  public void set_string_enablesChaining() {
+    assertSame( object, object.set( "a", "foo" ) );
+  }
+
+  @Test
+  public void set_jsonNull() {
+    object.set( "a", JsonValue.NULL );
+
+    assertEquals( "{\"a\":null}", object.toString() );
+  }
+
+  @Test
+  public void set_jsonArray() {
+    object.set( "a", new JsonArray() );
+
+    assertEquals( "{\"a\":[]}", object.toString() );
+  }
+
+  @Test
+  public void set_jsonObject() {
+    object.set( "a", new JsonObject() );
+
+    assertEquals( "{\"a\":{}}", object.toString() );
+  }
+
+  @Test
+  public void set_json_enablesChaining() {
+    assertSame( object, object.set( "a", JsonValue.NULL ) );
+  }
+
+  @Test
+  public void set_addsElementIfMissing() {
+    object.set( "a", JsonValue.TRUE );
+
+    assertEquals( "{\"a\":true}", object.toString() );
+  }
+
+  @Test
+  public void set_modifiesElementIfExisting() {
+    object.add( "a", JsonValue.TRUE );
+
+    object.set( "a", JsonValue.FALSE );
+
+    assertEquals( "{\"a\":false}", object.toString() );
+  }
+
+  @Test
+  public void set_modifiesLastElementIfMultipleExisting() {
+    object.add( "a", 1 );
+    object.add( "a", 2 );
+
+    object.set( "a", JsonValue.TRUE );
+
+    assertEquals( "{\"a\":1,\"a\":true}", object.toString() );
+  }
+
+  @Test
   public void remove_failsWithNullName() {
     assertException( NullPointerException.class, "name is null", new Runnable() {
       public void run() {
@@ -359,17 +563,17 @@ public class JsonObject_Test {
   }
 
   @Test
-  public void remove_removesOnlyFirstMatchingMember() {
+  public void remove_removesOnlyLastMatchingMember() {
     object.add( "a", 23 );
     object.add( "a", 42 );
 
     object.remove( "a" );
 
-    assertEquals( "{\"a\":42}", object.toString() );
+    assertEquals( "{\"a\":23}", object.toString() );
   }
 
   @Test
-  public void remove_removesOnlyFirstMatchingMember_afterRemove() {
+  public void remove_removesOnlyLastMatchingMember_afterRemove() {
     object.add( "a", 23 );
     object.remove( "a" );
     object.add( "a", 42 );
@@ -377,7 +581,7 @@ public class JsonObject_Test {
 
     object.remove( "a" );
 
-    assertEquals( "{\"a\":47}", object.toString() );
+    assertEquals( "{\"a\":42}", object.toString() );
   }
 
   @Test
@@ -390,33 +594,12 @@ public class JsonObject_Test {
   }
 
   @Test
-  public void write_whenEmpty() throws IOException {
-    object.write( writer );
-
-    assertEquals( "{}", output.toString() );
-  }
-
-  @Test
-  public void write_withSingleValue() throws IOException {
-    object.add( "a", 23 );
+  public void write_delegatesToJsonWriter() throws IOException {
+    JsonWriter writer = mock( JsonWriter.class );
 
     object.write( writer );
 
-    assertEquals( "{\"a\":23}", output.toString() );
-  }
-
-  @Test
-  public void write_withMultipleValues() throws IOException {
-    object.add( "a", 23 );
-    object.add( "b", 3.14f );
-    object.add( "c", "foo" );
-    object.add( "d", true );
-    object.add( "e", ( String )null );
-
-    object.write( writer );
-
-    assertEquals( "{\"a\":23,\"b\":3.14,\"c\":\"foo\",\"d\":true,\"e\":null}",
-                  output.toString() );
+    verify( writer ).writeObject( same( object ) );
   }
 
   @Test
@@ -473,6 +656,57 @@ public class JsonObject_Test {
   }
 
   @Test
+  public void indexOf_returnsNoIndexIfEmpty() {
+    assertEquals( -1, object.indexOf( "a" ) );
+  }
+
+  @Test
+  public void indexOf_returnsIndexOfMember() {
+    object.add( "a", true );
+
+    assertEquals( 0, object.indexOf( "a" ) );
+  }
+
+  @Test
+  public void indexOf_returnsIndexOfLastMember() {
+    object.add( "a", true );
+    object.add( "a", true );
+
+    assertEquals( 1, object.indexOf( "a" ) );
+  }
+
+  @Test
+  public void indexOf_returnsIndexOfLastMember_afterRemove() {
+    object.add( "a", true );
+    object.add( "a", true );
+    object.remove( "a" );
+
+    assertEquals( 0, object.indexOf( "a" ) );
+  }
+
+  @Test
+  public void indexOf_returnsUpdatedIndexAfterRemove() {
+    // See issue #16
+    object.add( "a", true );
+    object.add( "b", true );
+    object.remove( "a" );
+
+    assertEquals( 0, object.indexOf( "b" ) );
+  }
+
+  @Test
+  public void indexOf_returnsIndexOfLastMember_forBigObject() {
+    object.add( "a", true );
+    // for indexes above 255, the hash index table does not return a value
+    for( int i = 0; i < 256; i++ ) {
+      object.add( "x-" + i, 0 );
+    }
+    object.add( "a", true );
+
+    assertEquals( 257, object.indexOf( "a" ) );
+  }
+
+  @Test
   public void hashIndexTable_copyConstructor() {
     HashIndexTable original = new HashIndexTable();
     original.add( "name", 23 );
@@ -498,13 +732,23 @@ public class JsonObject_Test {
   }
 
   @Test
-  public void hashIndexTable_add_doesNotOverwrite() {
+  public void hashIndexTable_add_overwritesPreviousValue() {
     HashIndexTable indexTable = new HashIndexTable();
 
     indexTable.add( "name", 23 );
     indexTable.add( "name", 42 );
 
-    assertEquals( 23, indexTable.get( "name" ) );
+    assertEquals( 42, indexTable.get( "name" ) );
+  }
+
+  @Test
+  public void hashIndexTable_add_clearsPreviousValueIfIndexExceeds0xff() {
+    HashIndexTable indexTable = new HashIndexTable();
+
+    indexTable.add( "name", 23 );
+    indexTable.add( "name", 300 );
+
+    assertEquals( -1, indexTable.get( "name" ) );
   }
 
   @Test
@@ -512,9 +756,31 @@ public class JsonObject_Test {
     HashIndexTable indexTable = new HashIndexTable();
 
     indexTable.add( "name", 23 );
-    indexTable.remove( "name" );
+    indexTable.remove( 23 );
 
     assertEquals( -1, indexTable.get( "name" ) );
+  }
+
+  @Test
+  public void hashIndexTable_remove_updatesSubsequentElements() {
+    HashIndexTable indexTable = new HashIndexTable();
+
+    indexTable.add( "foo", 23 );
+    indexTable.add( "bar", 42 );
+    indexTable.remove( 23 );
+
+    assertEquals( 41, indexTable.get( "bar" ) );
+  }
+
+  @Test
+  public void hashIndexTable_remove_doesNotChangePrecedingElements() {
+    HashIndexTable indexTable = new HashIndexTable();
+
+    indexTable.add( "foo", 23 );
+    indexTable.add( "bar", 42 );
+    indexTable.remove( 42 );
+
+    assertEquals( 23, indexTable.get( "foo" ) );
   }
 
   @Test
@@ -531,6 +797,65 @@ public class JsonObject_Test {
     JsonObject deserializedObject = serializeAndDeserialize( object );
 
     assertEquals( 23, deserializedObject.get( "foo" ).asInt() );
+  }
+
+  @Test
+  public void member_returnsNameAndValue() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertEquals( "a", member.getName() );
+    assertEquals( JsonValue.TRUE, member.getValue() );
+  }
+
+  @Test
+  public void member_equals_trueForSameInstance() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertTrue( member.equals( member ) );
+  }
+
+  @Test
+  public void member_equals_trueForEqualObjects() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertTrue( member.equals( new Member( "a", JsonValue.TRUE ) ) );
+  }
+
+  @Test
+  public void member_equals_falseForDifferingObjects() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertFalse( member.equals( new Member( "b", JsonValue.TRUE ) ) );
+    assertFalse( member.equals( new Member( "a", JsonValue.FALSE ) ) );
+  }
+
+  @Test
+  public void member_equals_falseForNull() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertFalse( member.equals( null ) );
+  }
+
+  @Test
+  public void member_equals_falseForSubclass() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertFalse( member.equals( new Member( "a", JsonValue.TRUE ) {} ) );
+  }
+
+  @Test
+  public void member_hashCode_equalsForEqualObjects() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertTrue( member.hashCode() == new Member( "a", JsonValue.TRUE ).hashCode() );
+  }
+
+  @Test
+  public void member_hashCode_differsForDifferingobjects() {
+    Member member = new Member( "a", JsonValue.TRUE );
+
+    assertFalse( member.hashCode() == new Member( "b", JsonValue.TRUE ).hashCode() );
+    assertFalse( member.hashCode() == new Member( "a", JsonValue.FALSE ).hashCode() );
   }
 
   private static JsonObject object( String... namesAndValues ) {

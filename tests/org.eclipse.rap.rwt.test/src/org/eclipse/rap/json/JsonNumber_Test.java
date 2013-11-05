@@ -33,6 +33,11 @@ public class JsonNumber_Test {
     writer = new JsonWriter( output );
   }
 
+  @Test( expected = NullPointerException.class )
+  public void constructor_failsWithNull() {
+    new JsonNumber( null );
+  }
+
   @Test
   public void write() throws IOException {
     new JsonNumber( "23" ).write( writer );
@@ -72,7 +77,7 @@ public class JsonNumber_Test {
 
   @Test
   public void asLong() {
-    assertEquals( 23, new JsonNumber( "23" ).asLong() );
+    assertEquals( 23l, new JsonNumber( "23" ).asLong() );
   }
 
   @Test( expected = NumberFormatException.class )

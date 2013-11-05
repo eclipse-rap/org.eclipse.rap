@@ -16,9 +16,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.StringReader;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,14 +33,10 @@ import org.junit.Test;
 public class JsonArray_Test {
 
   private JsonArray array;
-  private StringWriter output;
-  private JsonWriter writer;
 
   @Before
   public void setUp() {
     array = new JsonArray();
-    output = new StringWriter();
-    writer = new JsonWriter( output );
   }
 
   @Test
@@ -88,6 +88,19 @@ public class JsonArray_Test {
   }
 
   @Test
+  public void readFrom_reader() throws IOException {
+    assertEquals( new JsonArray(), JsonArray.readFrom( new StringReader( "[]" ) ) );
+    assertEquals( new JsonArray().add( "a" ).add( 23 ),
+                  JsonArray.readFrom( new StringReader( "[ \"a\", 23 ]" ) ) );
+  }
+
+  @Test
+  public void readFrom_string() {
+    assertEquals( new JsonArray(), JsonArray.readFrom( "[]" ) );
+    assertEquals( new JsonArray().add( "a" ).add( 23 ), JsonArray.readFrom( "[ \"a\", 23 ]" ) );
+  }
+
+  @Test
   public void isEmpty_isTrueAfterCreation() {
     assertTrue( array.isEmpty() );
   }
@@ -132,6 +145,13 @@ public class JsonArray_Test {
     Iterator<JsonValue> iterator = array.iterator();
     iterator.next();
     iterator.remove();
+  }
+
+  @Test( expected = ConcurrentModificationException.class )
+  public void iterator_detectsConcurrentModification() {
+    Iterator<JsonValue> iterator = array.iterator();
+    array.add( 23 );
+    iterator.next();
   }
 
   @Test
@@ -328,30 +348,162 @@ public class JsonArray_Test {
   }
 
   @Test
-  public void write_whenEmpty() throws IOException {
-    array.write( writer );
+  public void set_int() {
+    array.add( false );
+    array.set( 0, 23 );
 
-    assertEquals( "[]", output.toString() );
+    assertEquals( "[23]", array.toString() );
   }
 
   @Test
-  public void write_withSingleValue() throws IOException {
-    array.add( 23 );
-
-    array.write( writer );
-
-    assertEquals( "[23]", output.toString() );
-  }
-
-  @Test
-  public void write_withMultipleValues() throws IOException {
-    array.add( 23 );
-    array.add( "foo" );
+  public void set_int_enablesChaining() {
     array.add( false );
 
+    assertSame( array, array.set( 0, 23 ) );
+  }
+
+  @Test
+  public void set_long() {
+    array.add( false );
+
+    array.set( 0, 23l );
+
+    assertEquals( "[23]", array.toString() );
+  }
+
+  @Test
+  public void set_long_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, 23l ) );
+  }
+
+  @Test
+  public void set_float() {
+    array.add( false );
+
+    array.set( 0, 3.14f );
+
+    assertEquals( "[3.14]", array.toString() );
+  }
+
+  @Test
+  public void set_float_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, 3.14f ) );
+  }
+
+  @Test
+  public void set_double() {
+    array.add( false );
+
+    array.set( 0, 3.14d );
+
+    assertEquals( "[3.14]", array.toString() );
+  }
+
+  @Test
+  public void set_double_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, 3.14d ) );
+  }
+
+  @Test
+  public void set_boolean() {
+    array.add( false );
+
+    array.set( 0, true );
+
+    assertEquals( "[true]", array.toString() );
+  }
+
+  @Test
+  public void set_boolean_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, true ) );
+  }
+
+  @Test
+  public void set_string() {
+    array.add( false );
+
+    array.set( 0, "foo" );
+
+    assertEquals( "[\"foo\"]", array.toString() );
+  }
+
+  @Test
+  public void set_string_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, "foo" ) );
+  }
+
+  @Test
+  public void set_jsonNull() {
+    array.add( false );
+
+    array.set( 0, JsonValue.NULL );
+
+    assertEquals( "[null]", array.toString() );
+  }
+
+  @Test
+  public void set_jsonArray() {
+    array.add( false );
+
+    array.set( 0, new JsonArray() );
+
+    assertEquals( "[[]]", array.toString() );
+  }
+
+  @Test
+  public void set_jsonObject() {
+    array.add( false );
+
+    array.set( 0, new JsonObject() );
+
+    assertEquals( "[{}]", array.toString() );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void set_json_failsWithNull() {
+    array.add( false );
+
+    array.set( 0, (JsonValue)null );
+  }
+
+  @Test( expected = IndexOutOfBoundsException.class )
+  public void set_json_failsWithInvalidIndex() {
+    array.set( 0, JsonValue.NULL );
+  }
+
+  @Test
+  public void set_json_enablesChaining() {
+    array.add( false );
+
+    assertSame( array, array.set( 0, JsonValue.NULL ) );
+  }
+
+  @Test
+  public void set_json_replacesDifferntArrayElements() {
+    array.add( 3 ).add( 6 ).add( 9 );
+
+    array.set( 1, 4 ).set( 2, 5 );
+
+    assertEquals( "[3,4,5]", array.toString() );
+  }
+
+  @Test
+  public void write_delegatesToJsonWriter() throws IOException {
+    JsonWriter writer = mock( JsonWriter.class );
+
     array.write( writer );
 
-    assertEquals( "[23,\"foo\",false]", output.toString() );
+    verify( writer ).writeArray( same( array ) );
   }
 
   @Test

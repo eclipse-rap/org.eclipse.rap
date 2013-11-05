@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.json;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.StringWriter;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class JsonWriter_Test {
@@ -108,17 +108,24 @@ public class JsonWriter_Test {
   }
 
   @Test
-  public void escapesControlCharacter8() throws IOException {
-    writer.writeString( string( 'f', 'o', 'o', (char)8, 'b', 'a', 'r' ) );
+  public void escapesControlCharacters() throws IOException {
+    writer.writeString( string( (char)1, (char)8, (char)15, (char)16, (char)31 ) );
 
-    assertEquals( "\"foo\\u0008bar\"", output.toString() );
+    assertEquals( "\"\\u0001\\u0008\\u000f\\u0010\\u001f\"", output.toString() );
   }
 
   @Test
-  public void escapesControlCharacter15() throws IOException {
-    writer.writeString( string( 'f', 'o', 'o', (char)15, 'b', 'a', 'r' ) );
+  public void escapesFirstChar() throws IOException {
+    writer.writeString( string( '\\', 'x' ) );
 
-    assertEquals( "\"foo\\u000fbar\"", output.toString() );
+    assertEquals( "\"\\\\x\"", output.toString() );
+  }
+
+  @Test
+  public void escapesLastChar() throws IOException {
+    writer.writeString( string( 'x', '\\' ) );
+
+    assertEquals( "\"x\\\\\"", output.toString() );
   }
 
   @Test
@@ -132,12 +139,68 @@ public class JsonWriter_Test {
   }
 
   @Test
+  public void writeObject_empty() throws IOException {
+    writer.writeObject( new JsonObject() );
+
+    assertEquals( "{}", output.toString() );
+  }
+
+  @Test
+  public void writeObject_withSingleValue() throws IOException {
+    JsonObject object = new JsonObject().add( "a", 23 );
+
+    writer.writeObject( object );
+
+    assertEquals( "{\"a\":23}", output.toString() );
+  }
+
+  @Test
+  public void writeObject_withMultipleValues() throws IOException {
+    JsonObject object = new JsonObject();
+    object.add( "a", 23 );
+    object.add( "b", 3.14f );
+    object.add( "c", "foo" );
+    object.add( "d", true );
+    object.add( "e", ( String )null );
+
+    writer.writeObject( object );
+
+    assertEquals( "{\"a\":23,\"b\":3.14,\"c\":\"foo\",\"d\":true,\"e\":null}",
+                  output.toString() );
+  }
+
+  @Test
   public void writeArrayParts() throws IOException {
     writer.writeBeginArray();
     writer.writeArrayValueSeparator();
     writer.writeEndArray();
 
     assertEquals( "[,]", output.toString() );
+  }
+
+  @Test
+  public void writeArray_empty() throws IOException {
+    writer.writeArray( new JsonArray() );
+
+    assertEquals( "[]", output.toString() );
+  }
+
+  @Test
+  public void writeArray_withSingleValue() throws IOException {
+    JsonArray array = new JsonArray().add( 23 );
+
+    writer.writeArray( array );
+
+    assertEquals( "[23]", output.toString() );
+  }
+
+  @Test
+  public void writeArray_withMultipleValues() throws IOException {
+    JsonArray array = new JsonArray().add( 23 ).add( "foo" ).add( false );
+
+    writer.writeArray( array );
+
+    assertEquals( "[23,\"foo\",false]", output.toString() );
   }
 
   private static String string( char ... chars ) {
