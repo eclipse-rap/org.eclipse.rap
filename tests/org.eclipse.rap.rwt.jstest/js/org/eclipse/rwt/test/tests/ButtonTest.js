@@ -818,6 +818,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( { "left" : 4, "top" : 6, "width" : 7, "height" : 8 },
                     widget.getToolTipTargetBounds() );
       shell.destroy();
+    },
+
+    testHoverAnimation_Bug418667 : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addToDocument();
+      button.setAnimation( { "hoverIn" : [ 400, "linear" ] } );
+      button.setBackgroundGradient( [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ] );
+      TestUtil.flush();
+
+      button.addState( "over" );
+      button._animation.activateRendererOnce();
+      button.setBackgroundGradient( [ [ 0, "rgb(255, 255, 255)" ], [ 1, "rgb(255, 0, 255)" ] ] );
+      assertTrue( button._animation.isStarted() );
+      button.setBackgroundGradient( null );
+
+      assertFalse( button._animation.isStarted() );
+      button.destroy();
     }
 
   }
