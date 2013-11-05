@@ -231,6 +231,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       registry.removeRendererFor( "foo" );
 
       assertNull( renderer, registry.getRendererFor( "foo" ) );
+    },
+
+    testTextRenderer_CreateElementSetsHorizontalAlignment : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "text" ).createElement;
+      assertEquals( "left", create( { "alignment" : {} } ).style.textAlign );
+      assertEquals( "left", create( { "alignment" : { "LEFT" : true } } ).style.textAlign );
+      assertEquals( "center", create( { "alignment" : { "H_CENTER" : true } } ).style.textAlign );
+      assertEquals( "right", create( { "alignment" : { "RIGHT" : true } } ).style.textAlign );
     }
 
   }

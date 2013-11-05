@@ -265,6 +265,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( "anyString", template.getCellType( 0 ) );
     },
 
+    testGetCellData_AlignmentIsParsed : function() {
+      var template = createTemplate( { "type" : "foo", "alignment" : [ "RIGHT", "BOTTOM" ] } );
+
+      var cellData = template.getCellData( 0 );
+
+      assertTrue( cellData.alignment.RIGHT );
+      assertTrue( cellData.alignment.BOTTOM );
+      assertTrue( !cellData.alignment.LEFT );
+    },
+
     testGetCellContent_TextFromGridItem : function() {
       var template = new Template( [ { "type" : "text", "bindingIndex" : 1 }, { "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
