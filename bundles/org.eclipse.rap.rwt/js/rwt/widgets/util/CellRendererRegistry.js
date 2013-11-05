@@ -95,14 +95,14 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "contentType" : "text",
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
-    result.style.whiteSpace = "nowrap";
-    if( cellData.alignment.RIGHT ) {
+    if( cellData.alignment && cellData.alignment.RIGHT ) {
       result.style.textAlign = "right";
-    } else if( cellData.alignment.H_CENTER ) {
+    } else if( cellData.alignment && cellData.alignment.H_CENTER ) {
       result.style.textAlign = "center";
     } else {
       result.style.textAlign = "left";
     }
+    result.style.whiteSpace = cellData.wrap ? "" : "nowrap";
     return result;
   },
   "shouldEscapeText" : Variant.select( "qx.client", {

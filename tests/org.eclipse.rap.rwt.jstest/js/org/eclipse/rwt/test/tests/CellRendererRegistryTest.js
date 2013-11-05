@@ -240,6 +240,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       assertEquals( "left", create( { "alignment" : { "LEFT" : true } } ).style.textAlign );
       assertEquals( "center", create( { "alignment" : { "H_CENTER" : true } } ).style.textAlign );
       assertEquals( "right", create( { "alignment" : { "RIGHT" : true } } ).style.textAlign );
+    },
+
+    testTextRenderer_CreateElementSetsWrap : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "text" ).createElement;
+      assertEquals( "nowrap", create( {} ).style.whiteSpace );
+      assertTrue( "nowrap" != create( { "wrap" : true } ).style.whiteSpace );
     }
 
   }
