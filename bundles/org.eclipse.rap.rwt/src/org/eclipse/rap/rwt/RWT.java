@@ -400,10 +400,6 @@ public final class RWT {
    * a value of <code>Boolean.TRUE</code>. The call to <code>setData()</code>
    * must be placed directly after the control is created. Once, the markup in tooltip text
    * is enabled it's not possible to disable it.
-   * <p>
-   * <strong>Note:</strong> This constant is considered <strong>provisional</strong> and may change
-   * again until the final release.
-   * </p>
    *
    * @see Control#setData(String,Object)
    * @see RWT#MARKUP_ENABLED
