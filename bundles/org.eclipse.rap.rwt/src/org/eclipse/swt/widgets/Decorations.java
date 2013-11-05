@@ -195,6 +195,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * @since 2.2
    */
   public void setText( String text ) {
     checkWidget();
@@ -216,6 +217,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * @since 2.2
    */
   public String getText() {
     checkWidget();
@@ -297,6 +299,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * @since 2.2
    */
   public void setDefaultButton( Button button ) {
     checkWidget();
@@ -323,6 +326,7 @@ public class Decorations extends Canvas {
    * </ul>
    *
    * @see Shell#setDefaultButton(Button)
+   * @since 2.2
    */
   public Button getDefaultButton() {
     checkWidget();
