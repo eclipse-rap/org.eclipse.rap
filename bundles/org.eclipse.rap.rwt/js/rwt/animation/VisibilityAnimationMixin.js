@@ -142,13 +142,14 @@ rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
     _onDestroyAnim : function() {
       var result = true;
       if( this._animateDestroy ) {
-        result = false;
         this._markInDispose();
         this.hide();
         if( this._disappearAnimation.isStarted() ) {
+          result = false;
           this._disappearAnimation.addEventListener( "cancel", this._finishDestroyAnimation, this );
         } else {
-          this._finishDestroyAnimation();
+          this._animateDestroy = false;
+          delete this._isInGlobalDisposeQueue;
         }
       }
       return result;
