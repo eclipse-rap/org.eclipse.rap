@@ -145,7 +145,11 @@ rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
         result = false;
         this._markInDispose();
         this.hide();
-        this._disappearAnimation.addEventListener( "cancel", this._finishDestroyAnimation, this );
+        if( this._disappearAnimation.isStarted() ) {
+          this._disappearAnimation.addEventListener( "cancel", this._finishDestroyAnimation, this );
+        } else {
+          this._finishDestroyAnimation();
+        }
       }
       return result;
     },

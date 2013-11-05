@@ -225,6 +225,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VisibilityAnimationMixinTest", 
       assertTrue( animation.isRunning() );
     },
 
+    testShellFlyOutTopDestroyInvisible : function() {
+      shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
+      shell.hide();
+      TestUtil.flush();
+
+      shell.destroy();
+      TestUtil.flush();
+      Animation._mainLoop();
+      TestUtil.flush();
+      Animation._mainLoop();
+
+      assertFalse( shell.isSeeable() );
+      assertTrue( shell.isDisposed() );
+      assertNull( this.getDisappearAnimation( shell ) );
+    },
+
     testShellFlyOutTopDestroyFinish : function() {
       shell.setAnimation( { "flyOutTop" : [ 400, "linear" ] } );
       var animation = this.getDisappearAnimation( shell );
