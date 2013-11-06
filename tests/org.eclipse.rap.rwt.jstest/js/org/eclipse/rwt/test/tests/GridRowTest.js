@@ -2663,6 +2663,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "bar", nodes[ 0 ].innerHTML );
     },
 
+    testRenderTemplate_RenderSingleCellTextWithEscapedCharacters : function() {
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "<b\n  ar&" ] );
+
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 1, "text", 10, 20 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row._getTargetNode().childNodes;
+      var expected1 = "&lt;b<br/>&nbsp; ar&amp;";
+      var expected2 = "&lt;b<br>&nbsp; ar&amp;";
+      var html = nodes[ 0 ].innerHTML.toLowerCase();
+      assertTrue( expected1 === html || expected2 === html );
+    },
+
     testRenderTemplate_RenderMultipleTextCells : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
@@ -2743,25 +2759,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( [ "selectableCell", null ], log[ 1 ] );
       assertEquals( [ "selectableCell", "barName" ], log[ 2 ] );
     },
-
-   // TODO : Should the cell have a transparent background if an overlay is present?
-   // NOTE: "Normal" cells consist of separate backround and foreground elements, overlay is between
-//    testRenderTemplate_RenderNotTextCellBackgroundIfOverlayIsUsed : function() {
-//      tree.setTreeColumn( -1 );
-//      var item = this._createItem( tree );
-//      item.setTexts( [ "foo", "bar" ] );
-//      this._setOverlayBackground( "green" );
-//
-//      tree.getRenderConfig().rowTemplate = mockTemplate( {
-//        "type" : "text",
-//        "background" : [ 255, 0, 0 ]
-//      } );
-//
-//      row.renderItem( item, tree._config, false, null );
-//
-//      var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
-//      assertTrue( color === "" || color === "transparent" );
-//    },
 
     testRenderTemplate_ResetTextCellBackground : function() {
       tree.setTreeColumn( -1 );

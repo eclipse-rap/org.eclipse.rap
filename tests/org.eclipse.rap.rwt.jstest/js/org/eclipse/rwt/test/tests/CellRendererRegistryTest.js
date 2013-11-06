@@ -255,7 +255,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : { "H_CENTER" : true, "V_CENTER" : true } } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "center center" === position || "50% 50%" === position );
+      assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
     },
 
     testImageRenderer_CreateElementSetsAlignmentDefault : function() {
@@ -265,7 +265,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : {} } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "center center" === position || "50% 50%" === position );
+      assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
     },
 
     testImageRenderer_CreateElementSetsAlignmentRightBottom : function() {
@@ -290,7 +290,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
       var position = element.style.backgroundPosition;
       var size = element.style.backgroundSize;
-      assertTrue( "center center" === position || "50% 50%" === position );
+      assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
       assertEquals( "contain", size );
     },
 
@@ -305,7 +305,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
       var position = element.style.backgroundPosition;
       var size = element.style.backgroundSize;
-      assertTrue( "center center" === position || "50% 50%" === position );
+      assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
       assertEquals( "cover", size );
     }
 

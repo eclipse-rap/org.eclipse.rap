@@ -89,9 +89,9 @@ rwt.widgets.util.CellRendererRegistry.getInstance = function() {
 
 var Encoding = rwt.util.Encoding;
 
-var escapeText = function( text ) {
+var escapeText = function( text, removeNewLines ) {
   var result = Encoding.escapeText( text, false );
-  result = Encoding.replaceNewLines( result, "" );
+  result = Encoding.replaceNewLines( result, removeNewLines ? "" : "<br/>" );
   result = Encoding.replaceWhiteSpaces( result );
   return result;
 };
@@ -121,9 +121,12 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
           element.rap_Markup = text;
         }
       } else if( options.seeable ) {
-        element.innerText = Encoding.replaceNewLines( text, "" ); // considerably faster
+        if( options.removeNewLines ) {
+          text = Encoding.replaceNewLines( text, "" );
+        }
+        element.innerText = text; // considerably faster than innerHTML
       } else {
-        element.innerHTML = escapeText( text );
+        element.innerHTML = escapeText( text, options.removeNewLines );
       }
     },
     "default" : function( element, content, cellData, options ) {
@@ -134,7 +137,7 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
           element.rap_Markup = text;
         }
       } else {
-        element.innerHTML = escapeText( text );
+        element.innerHTML = escapeText( text, options.removeNewLines );
       }
     }
   } )

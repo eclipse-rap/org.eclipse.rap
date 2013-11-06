@@ -610,7 +610,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderElementContent : function( element, item, cell, markupEnabled ) {
       var options = {
         "markupEnabled" : markupEnabled,
-        "seeable" : this.isSeeable()
+        "seeable" : this.isSeeable(),
+        "removeNewLines" : true
       };
       renderer.text.renderContent( element,
                                    item ? item.getText( cell ) : null,
