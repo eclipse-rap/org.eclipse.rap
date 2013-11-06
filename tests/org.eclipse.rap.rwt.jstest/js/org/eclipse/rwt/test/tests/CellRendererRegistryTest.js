@@ -256,7 +256,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : { "LEFT" : true, "TOP" : true } } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "left top" === position ||  "0% 0%" === position );
+      assertTrue( "left top" === position || "0% 0%" === position );
     },
 
     testImageRenderer_CreateElementSetsAlignmentCenterCenter : function() {
@@ -266,7 +266,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : { "H_CENTER" : true, "V_CENTER" : true } } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "center center" === position ||  "50% 50%" === position );
+      assertTrue( "center center" === position || "50% 50%" === position );
     },
 
     testImageRenderer_CreateElementSetsAlignmentDefault : function() {
@@ -276,7 +276,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : {} } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "center center" === position ||  "50% 50%" === position );
+      assertTrue( "center center" === position || "50% 50%" === position );
     },
 
     testImageRenderer_CreateElementSetsAlignmentRightBottom : function() {
@@ -286,7 +286,38 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var element = create( { "alignment" : { "RIGHT" : true, "BOTTOM" : true } } );
 
       var position = element.style.backgroundPosition;
-      assertTrue( "right bottom" === position ||  "100% 100%" === position );
+      assertTrue( "right bottom" === position || "100% 100%" === position );
+    },
+
+
+    testImageRenderer_CreateElementSetsScaleModeFit : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( {
+        "scaleMode" : "FIT",
+        "alignment" : { "RIGHT" : true, "BOTTOM" : true }
+      } );
+
+      var position = element.style.backgroundPosition;
+      var size = element.style.backgroundSize;
+      assertTrue( "center center" === position || "50% 50%" === position );
+      assertEquals( "contain", size );
+    },
+
+    testImageRenderer_CreateElementSetsScaleModeFill : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( {
+        "scaleMode" : "FILL",
+        "alignment" : { "RIGHT" : true, "BOTTOM" : true }
+      } );
+
+      var position = element.style.backgroundPosition;
+      var size = element.style.backgroundSize;
+      assertTrue( "center center" === position || "50% 50%" === position );
+      assertEquals( "cover", size );
     }
 
   }

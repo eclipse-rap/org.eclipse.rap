@@ -85,17 +85,17 @@ public class ImageCell_Test {
   public void testSetsModeAsString() {
     ImageCell cell = new ImageCell( new RowTemplate() );
 
-    cell.setScaleMode( ScaleMode.STRETCH );
+    cell.setScaleMode( ScaleMode.FILL );
 
     Object actualMode = cell.getAdapter( CellData.class ).getAttributes().get( ImageCell.PROPERTY_SCALE_MODE );
-    assertEquals( ScaleMode.STRETCH.name(), actualMode );
+    assertEquals( ScaleMode.FILL.name(), actualMode );
   }
 
   @Test
   public void testSetScaleModeReturnsCell() {
     ImageCell cell = new ImageCell( new RowTemplate() );
 
-    ImageCell actualCell = cell.setScaleMode( ScaleMode.STRETCH );
+    ImageCell actualCell = cell.setScaleMode( ScaleMode.FILL );
 
     assertSame( cell, actualCell );
   }

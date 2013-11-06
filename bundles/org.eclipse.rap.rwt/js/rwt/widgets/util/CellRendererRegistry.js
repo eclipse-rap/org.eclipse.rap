@@ -160,15 +160,21 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
     var result = document.createElement( "div" );
     result.style.backgroundRepeat = "no-repeat";
     var position = [ "center", "center" ];
-    if( cellData.alignment.LEFT ) {
-      position[ 0 ] = "left";
-    } else if( cellData.alignment.RIGHT ) {
-      position[ 0 ] = "right";
-    }
-    if( cellData.alignment.TOP ) {
-      position[ 1 ] = "top";
-    } else if( cellData.alignment.BOTTOM ) {
-      position[ 1 ] = "bottom";
+    if( cellData.scaleMode === "FIT" ) {
+      result.style.backgroundSize = "contain";
+    } else if( cellData.scaleMode === "FILL" ) {
+      result.style.backgroundSize = "cover";
+    } else {
+      if( cellData.alignment && cellData.alignment.LEFT ) {
+        position[ 0 ] = "left";
+      } else if( cellData.alignment && cellData.alignment.RIGHT ) {
+        position[ 0 ] = "right";
+      }
+      if( cellData.alignment && cellData.alignment.TOP ) {
+        position[ 1 ] = "top";
+      } else if( cellData.alignment && cellData.alignment.BOTTOM ) {
+        position[ 1 ] = "bottom";
+      }
     }
     result.style.backgroundPosition = position.join( " " );
     return result;

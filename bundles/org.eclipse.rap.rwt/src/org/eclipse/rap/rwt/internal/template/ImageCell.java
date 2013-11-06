@@ -20,8 +20,8 @@ public class ImageCell extends Cell<ImageCell> {
     NONE,
     // scaled keeping aspect ratio until touches cell from inside
     FIT,
-    // scaled not keeping aspect ratio
-    STRETCH
+ // scaled keeping aspect ratio until touches cell from outside
+    FILL
   }
 
   static final String TYPE_IMAGE = "image";
