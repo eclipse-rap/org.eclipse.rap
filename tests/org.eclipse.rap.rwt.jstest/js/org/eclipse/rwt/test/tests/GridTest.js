@@ -156,7 +156,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var message = TestUtil.getMessageObject();
       assertNull( message.findSetOperation( "w11", "selection" ) );
       assertEquals( "w2", message.findNotifyProperty( "w11", "Selection", "item" ) );
-      assertEquals( "hyperlink", message.findNotifyProperty( "w11", "Selection", "detail" ) );
+      assertEquals( "cell", message.findNotifyProperty( "w11", "Selection", "detail" ) );
       var text = message.findNotifyProperty( "w11", "Selection", "text" );
       assertEquals( "bar", text );
       tree.destroy();
