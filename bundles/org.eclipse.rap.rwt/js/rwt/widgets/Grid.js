@@ -1386,7 +1386,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getItemWidth : function() {
       var result = 0;
-      if( this._config.itemLeft.length > 0 ) {
+      if( this._config.rowTemplate ) {
+        result = this._rowContainer.getWidth();
+      } else if( this._config.itemLeft.length > 0 ) {
         var columnCount = Math.max( 1, this._config.columnCount );
         for( var i = 0; i < columnCount; i++ ) {
           result = Math.max( result, this._config.itemLeft[ i ] + this._config.itemWidth[ i ] );

@@ -162,6 +162,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testGridWithRowTempalteLimitsRowWidth: function() {
+      var cellData = { "type" : "text", "left" : 0, "top" : 0, "width" : 1, "height" : 1 };
+      var template = new rwt.widgets.util.Template( [ cellData ] );
+      var tree = this._createDefaultTree( false, false, "rowTemplate", template );
+      tree.setItemCount( 1 );
+
+      tree.setWidth( 100 );
+      tree.setItemMetrics( 0, 0, 150, 0, 0, 0, 0 );
+      TestUtil.flush();
+
+      var row = tree._rowContainer.getChildren()[ 0 ];
+      assertEquals( 100, row.getWidth() );
+    },
+
     testSetItemCountByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
