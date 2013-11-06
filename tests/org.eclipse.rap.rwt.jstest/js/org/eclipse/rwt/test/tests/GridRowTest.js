@@ -50,7 +50,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testRenderItemWithoutMarkupEnabled : function() {
       var item = this._createItem( tree );
-      item.setTexts( [ "<b>Test</b>" ] );
+      item.setTexts( [ "<b>\nTest</b>" ] );
       row.renderItem( item, tree._config, false, null );
       assertEquals( 2, row._getTargetNode().childNodes.length );
       assertEquals( "&lt;b&gt;Test&lt;/b&gt;", row._getTargetNode().childNodes[ 1 ].innerHTML );
@@ -58,7 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testRenderItemWithMultipleSpacesWhileNotVisible_Bug395822 : function() {
       var item = this._createItem( tree );
-      item.setTexts( [ "Test   Test" ] );
+      item.setTexts( [ "Test\n   Test" ] );
       row.setDisplay( false );
 
       row.renderItem( item, tree._config, false, null );

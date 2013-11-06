@@ -48,7 +48,6 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     }
     this._expanded = this.isRootItem();
     this.addEventListener( "update", this._onUpdate, this );
-    this._escaped = false;
     if( this.isRootItem() ) {
       this._rootItem = this;
       this._height = 16;
@@ -157,32 +156,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setTexts : function( texts ) {
       this._texts = texts;
-      this._escaped = false;
       this._update( "content" );
     },
 
-    /**
-     * Id doEscape is true, the text is permanantly ecaped, unescaped text can no longer
-     * be provided. If it is undefined the text is escaped, but not permanently.
-     */
-    getText : function( column, doEscape ) {
-      var result = this._texts[ column ];
-      if( ( typeof result ) === "string" ) {
-        if( doEscape !== false && !this._escaped ) {
-          if( doEscape === true ) {
-            this._escapeTexts();
-            this._escaped = true;
-            result = this._texts[ column ];
-          } else {
-            result = this._escape( this._texts[ column ] );
-          }
-        } if( doEscape === false && this._escaped ) {
-          throw new Error( "Unescaped text requested from GridItem, but is already escaped" );
-        }
-      } else {
-        result = "";
-      }
-      return result;
+    getText : function( column ) {
+      return this._texts[ column ] || "";
     },
 
     hasText : function( column ) {
@@ -738,23 +716,6 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     /////////
     // Helper
-
-    _escapeTexts : function() {
-      for( var i = 0; i < this._texts.length; i++ ) {
-        var text = this._texts[ i ];
-        if( text ) {
-          text = this._escape( text );
-        }
-        this._texts[ i ] = text;
-      }
-    },
-
-    _escape : function( text ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var result = EncodingUtil.escapeText( text, false );
-      result = EncodingUtil.replaceWhiteSpaces( result );
-      return result;
-    },
 
     _computeVisibleChildrenCount : function() {
       // NOTE: Caching this value speeds up creating and scrolling the tree considerably

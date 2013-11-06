@@ -612,27 +612,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "markupEnabled" : markupEnabled,
         "seeable" : this.isSeeable()
       };
-      var escape = this._shouldEscapeText( options );
-      options.escaped = escape === false ? false : true;
       renderer.text.renderContent( element,
-                                   item ? item.getText( cell, escape ) : null,
+                                   item ? item.getText( cell ) : null,
                                    null,
                                    options );
     },
-
-    _shouldEscapeText : Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function( options ) {
-        if( options.markupEnabled ) {
-          return false;
-        } else {
-          // IE can not escape propperly if element is not in DOM, escape this once
-          return options.seeable ? false : undefined;
-        }
-      },
-      "default" : function( options ) {
-        return !options.markupEnabled;
-      }
-    } ),
 
     _styleLabel : function( element, item, cell, config ) {
       this._setForeground( element, this._getCellColor( item, cell, config ) );

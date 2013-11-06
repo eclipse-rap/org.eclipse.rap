@@ -174,7 +174,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       var ObjectManager = rwt.remote.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
       assertEquals( "1", item.getText( 0 ) );
-      assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
+      assertEquals( "2&<  >\"", item.getText( 1 ) );
       assertEquals( "3", item.getText( 2 ) );
       shell.destroy();
       tree.destroy();
@@ -561,31 +561,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertTrue( item.isCached() );
     },
 
-    testText : function() {
+    testGetText : function() {
       var item = new rwt.widgets.GridItem();
       item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
-      assertEquals( "&lt;b&gt;Test&lt;/b&gt;", item.getText( 0 ) );
-      assertEquals( "&lt;i&gt;Test2&lt;/i&gt;", item.getText( 1 ) );
-    },
-
-    testTextAsMarkup : function() {
-      var item = new rwt.widgets.GridItem();
-      item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
-      assertEquals( "<b>Test</b>", item.getText( 0, false ) );
-      assertEquals( "<i>Test2</i>", item.getText( 1, false ) );
-    },
-
-    testTextGetUnEscapedTextAfterPermanentEscape : function() {
-      var item = new rwt.widgets.GridItem();
-      item.setTexts( [ "<b>Test</b>", "<i>Test2</i>" ] );
-      item.getText( 1, true );
-
-      try {
-        item.getText( 1, false );
-        fail();
-      } catch( ex ) {
-        // expected
-      }
+      assertEquals( "<b>Test</b>", item.getText( 0 ) );
+      assertEquals( "<i>Test2</i>", item.getText( 1 ) );
     },
 
     testItemFont : function() {

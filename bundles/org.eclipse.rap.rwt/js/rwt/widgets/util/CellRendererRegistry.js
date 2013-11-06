@@ -53,9 +53,6 @@ rwt.widgets.util.CellRendererRegistry = function() {
   };
 
   var extendRenderer = function( renderer ) {
-    if( !renderer.shouldEscapeText ) {
-      renderer.shouldEscapeText = rwt.util.Functions.returnFalse;
-    }
     var innerCreateElement = renderer.createElement || defaultCreateElement;
     renderer.createElement = function( cellData ) {
       var result = innerCreateElement( cellData );
@@ -90,6 +87,15 @@ rwt.widgets.util.CellRendererRegistry.getInstance = function() {
 ///////////////////
 // default renderer
 
+var Encoding = rwt.util.Encoding;
+
+var escapeText = function( text ) {
+  var result = Encoding.escapeText( text, false );
+  result = Encoding.replaceNewLines( result, "" );
+  result = Encoding.replaceWhiteSpaces( result );
+  return result;
+};
+
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "text",
   "contentType" : "text",
@@ -106,45 +112,29 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
     result.style.textOverflow = "ellipsis";
     return result;
   },
-  "shouldEscapeText" : Variant.select( "qx.client", {
-    "mshtml|newmshtml" : function( options ) {
-      if( options.markupEnabled ) {
-        return false;
-      } else {
-        // IE can not escape propperly if element is not in DOM, escape this once
-        return options.seeable ? false : undefined;
-      }
-    },
-    "default" : function( options ) {
-      // TODO [tb] : returning true permanently escapes the text, might clash with custom renderer
-      return !options.markupEnabled;
-    }
-  } ),
   "renderContent" : Variant.select( "qx.client", {
     "mshtml|newmshtml" : function( element, content, cellData, options ) {
-      var html = content || "";
+      var text = content || "";
       if( options.markupEnabled ) {
-        if( element.rap_Markup !== html ) {
-          element.innerHTML = html;
-          element.rap_Markup = html;
+        if( element.rap_Markup !== text ) {
+          element.innerHTML = text;
+          element.rap_Markup = text;
         }
+      } else if( options.seeable ) {
+        element.innerText = Encoding.replaceNewLines( text, "" ); // considerably faster
       } else {
-        if( options.escaped ) {
-          element.innerHTML = html;
-        } else {
-          element.innerText = html;
-        }
+        element.innerHTML = escapeText( text );
       }
     },
     "default" : function( element, content, cellData, options ) {
-      var html = content || "";
+      var text = content || "";
       if( options.markupEnabled ) {
-        if( html !== element.rap_Markup ) {
-          element.innerHTML = html;
-          element.rap_Markup = html;
+        if( text !== element.rap_Markup ) {
+          element.innerHTML = text;
+          element.rap_Markup = text;
         }
       } else {
-        element.innerHTML = html;
+        element.innerHTML = escapeText( text );
       }
     }
   } )

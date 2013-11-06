@@ -629,37 +629,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       var cellRenderOptions = {
         "markupEnabled" : false,
-        "escaped" : false,
         "seeable" : false
       };
       assertIdentical( template.getCellElement( container, 0 ), renderArgs[ 0 ] );
       assertIdentical( "bar", renderArgs[ 1 ] );
       assertIdentical( cellData.type, renderArgs[ 2 ].type );
       assertEquals( cellRenderOptions, renderArgs[ 3 ] );
-    },
-
-    testCustomRenderer_ArgumentsForShouldEscapeText : function() {
-      var renderArgs;
-      renderer.add( createCellRenderer( {
-        "shouldEscapeText" : function() {
-          renderArgs = rwt.util.Arrays.fromArguments( arguments );
-        }
-      } ) );
-      var cellData = { "type" : "fooType", "bindingIndex" : 1 };
-      var template = createTemplate( cellData );
-      var container = createContainer( template );
-      var item = createGridItem( [ "foo", "bar" ] );
-      var options = {
-        "container" : container,
-        "item" : item,
-        "bounds" : [ 0, 0, 100, 100 ],
-        "markupEnabled" : false
-      };
-
-      template.render( options );
-
-      assertEquals( [ options ], renderArgs );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testCustomRenderer_CellRenderOptionMarkupEnabled : function() {
@@ -673,35 +648,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       render( template, item, { "markupEnabled" : true } );
 
       assertTrue( options.markupEnabled );
-    },
-
-    testCustomRenderer_CellRenderOptionEscaped : function() {
-      var options;
-      renderer.add( createCellRenderer( {
-        "renderContent" : function() { options = arguments[ 3 ]; },
-        "shouldEscapeText" : function() { return true; }
-      } ) );
-      var template = createTemplate( { "bindingIndex" : 0, "type" : "fooType" } );
-      var item = createGridItem( [ "foo", "bar" ] );
-
-      render( template, item );
-
-      assertTrue( options.escaped );
-    },
-
-    testCustomRenderer_ForwardShouldEscapeTextReturnValueToItemGetText : function() {
-      renderer.add( createCellRenderer( {
-        "shouldEscapeText" : function() { return 123; }
-      } ) );
-      var template = createTemplate( { "type" : "fooType", "bindingIndex" : 0 } );
-      var item = createGridItem( [ "foo", "bar" ] );
-      var arg;
-      item.getText = function() { arg = arguments; };
-
-      render( template, item );
-
-      assertEquals( [ 0, 123 ], rwt.util.Arrays.fromArguments( arg ) );
-      renderer.removeRendererFor( "fooType" );
     },
 
     testDefaultTextRenderer_DefaultTextStyles : function() {

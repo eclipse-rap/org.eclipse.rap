@@ -187,7 +187,6 @@ rwt.widgets.util.Template.prototype = {
       if( element ) {
         var cellRenderer = renderer[ this._cells[ i ].type ];
         var renderContent = cellRenderer.renderContent;
-        cellRenderOptions.escaped = cellRenderer.shouldEscapeText( options );
         // TODO : render styles only if changing
         this._renderBackground( element, this.getCellBackground( options.item, i ) );
         this._renderForeground( element, this.getCellForeground( options.item, i ) );
