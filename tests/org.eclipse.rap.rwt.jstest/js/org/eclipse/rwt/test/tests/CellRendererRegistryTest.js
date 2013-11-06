@@ -233,6 +233,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       assertNull( renderer, registry.getRendererFor( "foo" ) );
     },
 
+    testTextRenderer_CreateElementSetsTextOverflow : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "text" ).createElement;
+      assertEquals( "ellipsis", create( {} ).style.textOverflow );
+    },
+
     testTextRenderer_CreateElementSetsHorizontalAlignment : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var create = defaultRegistry.getRendererFor( "text" ).createElement;

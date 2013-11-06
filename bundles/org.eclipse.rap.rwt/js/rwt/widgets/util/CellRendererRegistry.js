@@ -103,6 +103,7 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
       result.style.textAlign = "left";
     }
     result.style.whiteSpace = cellData.wrap ? "" : "nowrap";
+    result.style.textOverflow = "ellipsis";
     return result;
   },
   "shouldEscapeText" : Variant.select( "qx.client", {
