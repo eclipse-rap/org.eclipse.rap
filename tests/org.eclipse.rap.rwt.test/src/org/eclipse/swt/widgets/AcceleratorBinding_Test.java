@@ -88,10 +88,31 @@ public class AcceleratorBinding_Test {
   }
 
   @Test
-  public void testSetAccelerator_addsActiveKey() {
+  public void testSetAccelerator_addsActiveKey_letter() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
     assertTrue( getActiveKeys().contains( "ALT+A" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_addsActiveKey_number() {
+    acceleratorSupport.setAccelerator( SWT.ALT | '1' );
+
+    assertTrue( getActiveKeys().contains( "ALT+1" ) );
+  }
+
+  @Test
+  public void testSetAccelerator_addsActiveKey_punctuation() {
+    acceleratorSupport.setAccelerator( SWT.ALT | '.' );
+
+    assertTrue( getActiveKeys().contains( "ALT+." ) );
+  }
+
+  @Test
+  public void testSetAccelerator_addsActiveKey_special() {
+    acceleratorSupport.setAccelerator( SWT.ALT | SWT.F4 );
+
+    assertTrue( getActiveKeys().contains( "ALT+F4" ) );
   }
 
   @Test
@@ -197,6 +218,36 @@ public class AcceleratorBinding_Test {
   }
 
   @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withNumberInAccelerator() {
+    acceleratorSupport.setAccelerator( SWT.ALT | '1' );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, '1' ) );
+
+    verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withSpecialInAccelerator() {
+    acceleratorSupport.setAccelerator( SWT.ALT | SWT.F4 );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, SWT.F4 ) );
+
+    verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
+  public void testKeyDownEvent_triggersHandleAcceleratorActivation_withPunctuationInAccelerator() {
+    acceleratorSupport.setAccelerator( SWT.ALT | '.' );
+    when( Boolean.valueOf( menuItem.isEnabled() ) ).thenReturn( Boolean.TRUE );
+
+    display.sendEvent( SWT.KeyDown, mockKeyDownEvent( SWT.ALT, '.' ) );
+
+    verify( menuItem ).handleAcceleratorActivation();
+  }
+
+  @Test
   public void testKeyDownEvent_doesNotTriggerHandleAcceleratorActivation_onDisabledItem() {
     acceleratorSupport.setAccelerator( SWT.ALT | 'A' );
 
@@ -280,6 +331,13 @@ public class AcceleratorBinding_Test {
     Event event = mock( Event.class );
     event.stateMask = modifiers;
     event.character = character;
+    return event;
+  }
+
+  private static Event mockKeyDownEvent( int modifiers, int keyCode ) {
+    Event event = mock( Event.class );
+    event.stateMask = modifiers;
+    event.keyCode = keyCode;
     return event;
   }
 
