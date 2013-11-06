@@ -159,7 +159,18 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
     result.style.backgroundRepeat = "no-repeat";
-    result.style.backgroundPosition = "center";
+    var position = [ "center", "center" ];
+    if( cellData.alignment.LEFT ) {
+      position[ 0 ] = "left";
+    } else if( cellData.alignment.RIGHT ) {
+      position[ 0 ] = "right";
+    }
+    if( cellData.alignment.TOP ) {
+      position[ 1 ] = "top";
+    } else if( cellData.alignment.BOTTOM ) {
+      position[ 1 ] = "bottom";
+    }
+    result.style.backgroundPosition = position.join( " " );
     return result;
   }
 } );

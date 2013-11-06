@@ -247,6 +247,46 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var create = defaultRegistry.getRendererFor( "text" ).createElement;
       assertEquals( "nowrap", create( {} ).style.whiteSpace );
       assertTrue( "nowrap" != create( { "wrap" : true } ).style.whiteSpace );
+    },
+
+    testImageRenderer_CreateElementSetsAlignmentLeftTop : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( { "alignment" : { "LEFT" : true, "TOP" : true } } );
+
+      var position = element.style.backgroundPosition;
+      assertTrue( "left top" === position ||  "0% 0%" === position );
+    },
+
+    testImageRenderer_CreateElementSetsAlignmentCenterCenter : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( { "alignment" : { "H_CENTER" : true, "V_CENTER" : true } } );
+
+      var position = element.style.backgroundPosition;
+      assertTrue( "center center" === position ||  "50% 50%" === position );
+    },
+
+    testImageRenderer_CreateElementSetsAlignmentDefault : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( { "alignment" : {} } );
+
+      var position = element.style.backgroundPosition;
+      assertTrue( "center center" === position ||  "50% 50%" === position );
+    },
+
+    testImageRenderer_CreateElementSetsAlignmentRightBottom : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( { "alignment" : { "RIGHT" : true, "BOTTOM" : true } } );
+
+      var position = element.style.backgroundPosition;
+      assertTrue( "right bottom" === position ||  "100% 100%" === position );
     }
 
   }
