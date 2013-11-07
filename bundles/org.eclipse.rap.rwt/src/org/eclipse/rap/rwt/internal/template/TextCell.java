@@ -10,12 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
+import org.eclipse.rap.json.JsonObject;
+
 
 public class TextCell extends Cell<TextCell>  {
 
   static final String TYPE_TEXT = "text";
   static final String PROPERTY_DEFAULT_TEXT = "defaultText";
   static final String PROPERTY_WRAP = "wrap";
+  private String text;
+  private boolean wrap;
 
   public TextCell( RowTemplate template ) {
     super( template, TYPE_TEXT );
@@ -24,13 +28,33 @@ public class TextCell extends Cell<TextCell>  {
   // binding index wins. Only if no binding index is set the default will be used
   public TextCell setDefaultText( String text ) {
     checkNotNull( text, "Text" );
-    addAttribute( PROPERTY_DEFAULT_TEXT, text );
+    this.text = text;
     return this;
   }
 
+  String getText() {
+    return text;
+  }
+
   public TextCell setWrap( boolean wrap ) {
-    addAttribute( PROPERTY_WRAP, Boolean.valueOf( wrap ) );
+    this.wrap = wrap;
     return this;
+  }
+
+  boolean isWrap() {
+    return wrap;
+  }
+
+  @Override
+  protected JsonObject toJson() {
+    JsonObject json = super.toJson();
+    if( text != null ) {
+      json.add( PROPERTY_DEFAULT_TEXT, text );
+    }
+    if( wrap ) {
+      json.add( PROPERTY_WRAP, wrap );
+    }
+    return json;
   }
 
   private void checkNotNull( Object value, String name ) {

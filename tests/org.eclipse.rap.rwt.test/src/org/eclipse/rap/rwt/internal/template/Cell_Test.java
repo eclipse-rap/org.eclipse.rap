@@ -10,16 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
+import static org.junit.Assert.*;
 
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.template.Cell.CellAlignment;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -34,10 +32,12 @@ import org.junit.Test;
 public class Cell_Test {
 
   private Display display;
+  private RowTemplate template;
 
   @Before
   public void setUp() {
     Fixture.setUp();
+    template = new RowTemplate();
     display = new Display();
   }
 
@@ -53,18 +53,16 @@ public class Cell_Test {
 
   @Test( expected = NullPointerException.class )
   public void testFailsWithoutType() {
-    new TestCell( new RowTemplate(), null );
+    new TestCell( template, null );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testFailsEmptyType() {
-    new TestCell( new RowTemplate(), "" );
+    new TestCell( template, "" );
   }
 
   @Test
   public void testAddsItselfToTemplate() {
-    RowTemplate template = new RowTemplate();
-
     Cell<?> cell = new TestCell( template, "foo" );
 
     List<Cell<?>> cells = template.getCells();
@@ -74,7 +72,7 @@ public class Cell_Test {
 
   @Test
   public void testHasType() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+    Cell cell = new TestCell( template, "foo" );
 
     String type = cell.getType();
 
@@ -82,41 +80,31 @@ public class Cell_Test {
   }
 
   @Test
-  public void testNameIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetName() {
+    Cell cell = new TestCell( template, "foo" );
 
-    Object name = getAttributes( cell ).get( Cell.PROPERTY_NAME );
+    cell.setName( "bar" );
 
-    assertNull( name );
+    assertEquals( "bar", cell.getName() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetNameFailsWithNullName() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetName_failsWithNullName() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     cell.setName( null );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetNameFailsWithEmptyName() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetName_failsWithEmptyName() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     cell.setName( "" );
   }
 
   @Test
-  public void testSetsName() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setName( "bar" );
-
-    String name = ( String )getAttributes( cell ).get( Cell.PROPERTY_NAME );
-    assertEquals( name, "bar" );
-  }
-
-  @Test
-  public void testSetNameReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetName_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setName( "bar" );
 
@@ -124,27 +112,17 @@ public class Cell_Test {
   }
 
   @Test
-  public void testSelectableIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object selectable = getAttributes( cell ).get( Cell.PROPERTY_SELECTABLE );
-
-    assertNull( selectable );
-  }
-
-  @Test
-  public void testSetsSelectable() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetSelectable() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setSelectable( true );
 
-    Boolean selectable = ( Boolean )getAttributes( cell ).get( Cell.PROPERTY_SELECTABLE );
-    assertTrue( selectable.booleanValue() );
+    assertTrue( cell.isSelectable() );
   }
 
   @Test
-  public void testSetSelectableReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetSelectable_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setSelectable( true );
 
@@ -152,27 +130,26 @@ public class Cell_Test {
   }
 
   @Test
-  public void testSetsForeground() {
+  public void testSetForeground() {
     Color color = new Color( display, 100, 100, 100 );
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setForeground( color );
 
-    Color actualColor = ( Color )getAttributes( cell ).get( Cell.PROPERTY_FOREGROUND );
-    assertSame( color, actualColor );
+    assertSame( color, cell.getForeground() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetForegroundFailsWithNull() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetForeground_failsWithNull() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setForeground( null );
   }
 
   @Test
-  public void testSetForegroundReturnsCell() {
+  public void testSetForeground_returnsCell() {
     Color color = new Color( display, 100, 100, 100 );
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setForeground( color );
 
@@ -180,27 +157,26 @@ public class Cell_Test {
   }
 
   @Test
-  public void testSetsBackground() {
+  public void testSetBackground() {
     Color color = new Color( display, 100, 100, 100 );
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBackground( color );
 
-    Color actualColor = ( Color )getAttributes( cell ).get( Cell.PROPERTY_BACKGROUND );
-    assertSame( color, actualColor );
+    assertSame( color, cell.getBackground() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetBackgroundFailsWithNull() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBackground_failsWithNull() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBackground( null );
   }
 
   @Test
-  public void testSetBackgroundReturnsCell() {
+  public void testSetBackground_returnsCell() {
     Color color = new Color( display, 100, 100, 100 );
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setBackground( color );
 
@@ -208,27 +184,26 @@ public class Cell_Test {
   }
 
   @Test
-  public void testSetsFont() {
+  public void testSetFont() {
     Font font = new Font( display, "Arial", 22, SWT.BOLD );
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setFont( font );
 
-    Font actualFont = ( Font )getAttributes( cell ).get( Cell.PROPERTY_FONT );
-    assertSame( font, actualFont );
+    assertSame( font, cell.getFont() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetFontFailsWithNull() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetFont_failsWithNull() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setFont( null );
   }
 
   @Test
-  public void testSetFontReturnsCell() {
+  public void testSetFont_returnsCell() {
     Font font = new Font( display, "Arial", 22, SWT.BOLD );
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setFont( font );
 
@@ -236,92 +211,78 @@ public class Cell_Test {
   }
 
   @Test
-  public void testBindingIndexIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object index = getAttributes( cell ).get( Cell.PROPERTY_BINDING_INDEX );
-
-    assertNull( index );
-  }
-
-  @Test
-  public void testSetsBindingIndex() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBindingIndex() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBindingIndex( 1 );
 
-    Integer index = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_BINDING_INDEX );
-    assertEquals( Integer.valueOf( 1 ), index );
+    assertEquals( 1, cell.getBindingIndex() );
   }
 
   @Test
-  public void testSetsBindingIndexToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBindingIndex_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBindingIndex( 0 );
 
-    Integer index = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_BINDING_INDEX );
-    assertEquals( Integer.valueOf( 0 ), index );
+    assertEquals( 0, cell.getBindingIndex() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetBindingIndex_failsWithNegativeValue() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setBindingIndex( -1 );
   }
 
   @Test
-  public void testSetBindingIndexReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBindingIndex_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setBindingIndex( 1 );
 
     assertSame( cell, actualCell );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetBindingIndexFailsWithNegativeBindingIndex() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setBindingIndex( -1 );
-  }
-
   @Test
-  public void testLeftIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object left = getAttributes( cell ).get( Cell.PROPERTY_LEFT );
-
-    assertNull( left );
-  }
-
-  @Test
-  public void testSetsLeft() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetLeft() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setLeft( 23 );
 
-    Integer left = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_LEFT );
-    assertEquals( Integer.valueOf( 23 ), left );
+    assertEquals( Integer.valueOf( 23 ), cell.getLeft() );
   }
 
   @Test
-  public void testSetsLeftToNegative() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setLeft( -1 );
-
-    Integer left = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_LEFT );
-    assertEquals( Integer.valueOf( -1 ), left );
-  }
-
-  @Test
-  public void testSetsLeftToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetLeft_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setLeft( 0 );
 
-    Integer left = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_LEFT );
-    assertEquals( Integer.valueOf( 0 ), left );
+    assertEquals( Integer.valueOf( 0 ), cell.getLeft() );
   }
 
   @Test
-  public void testSetLeftReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetLeft_acceptsNegativeValues() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setLeft( -1 );
+
+    assertEquals( Integer.valueOf( -1 ), cell.getLeft() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetLeft_failsWith_Width_Right() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setWidth( 10 );
+    cell.setRight( 10 );
+
+    cell.setLeft( 10 );
+  }
+
+  @Test
+  public void testSetLeft_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setLeft( 23 );
 
@@ -329,47 +290,47 @@ public class Cell_Test {
   }
 
   @Test
-  public void testRightIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object right = getAttributes( cell ).get( Cell.PROPERTY_RIGHT );
-
-    assertNull( right );
-  }
-
-  @Test
-  public void testSetsRight() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetRight() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setRight( 23 );
 
-    Integer right = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_RIGHT );
+    Integer right = cell.getRight();
     assertEquals( Integer.valueOf( 23 ), right );
   }
 
   @Test
-  public void testSetsRightToNegative() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setRight( -1 );
-
-    Integer right = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_RIGHT );
-    assertEquals( Integer.valueOf( -1 ), right );
-  }
-
-  @Test
-  public void testSetsRightToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetRight_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setRight( 0 );
 
-    Integer right = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_RIGHT );
+    Integer right = cell.getRight();
     assertEquals( Integer.valueOf( 0 ), right );
   }
 
   @Test
-  public void testSetRightReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetRight_acceptsNegativeValues() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setRight( -1 );
+
+    Integer right = cell.getRight();
+    assertEquals( Integer.valueOf( -1 ), right );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetRight_failsWith_Width_Left() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setLeft( 10 );
+    cell.setWidth( 10 );
+
+    cell.setRight( 10 );
+  }
+
+  @Test
+  public void testSetRight_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setRight( 23 );
 
@@ -377,47 +338,44 @@ public class Cell_Test {
   }
 
   @Test
-  public void testTopIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object top = getAttributes( cell ).get( Cell.PROPERTY_TOP );
-
-    assertNull( top );
-  }
-
-  @Test
-  public void testSetsTop() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetTop() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setTop( 23 );
 
-    Integer top = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_TOP );
-    assertEquals( Integer.valueOf( 23 ), top );
+    assertEquals( Integer.valueOf( 23 ), cell.getTop() );
   }
 
   @Test
-  public void testSetsTopToNegative() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setTop( -1 );
-
-    Integer top = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_TOP );
-    assertEquals( Integer.valueOf( -1 ), top );
-  }
-
-  @Test
-  public void testSetsTopToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetTop_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setTop( 0 );
 
-    Integer top = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_TOP );
-    assertEquals( Integer.valueOf( 0 ), top );
+    assertEquals( Integer.valueOf( 0 ), cell.getTop() );
   }
 
   @Test
-  public void testSetTopReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetTop_acceptsNegativeValues() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setTop( -1 );
+
+    assertEquals( Integer.valueOf( -1 ), cell.getTop() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetTop_failsWith_Bottom_Height() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setBottom( 10 );
+    cell.setHeight( 10 );
+
+    cell.setTop( 10 );
+  }
+
+  @Test
+  public void testSetTop_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setTop( 23 );
 
@@ -425,47 +383,44 @@ public class Cell_Test {
   }
 
   @Test
-  public void testBottomIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object bottom = getAttributes( cell ).get( Cell.PROPERTY_BOTTOM );
-
-    assertNull( bottom );
-  }
-
-  @Test
-  public void testSetsBottom() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBottom() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBottom( 23 );
 
-    Integer bottom = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_BOTTOM );
-    assertEquals( Integer.valueOf( 23 ), bottom );
+    assertEquals( Integer.valueOf( 23 ), cell.getBottom() );
   }
 
   @Test
-  public void testSetsBottomToNegative() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBottom_acceptsNegativeValues() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBottom( -1 );
 
-    Integer bottom = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_BOTTOM );
-    assertEquals( Integer.valueOf( -1 ), bottom );
+    assertEquals( Integer.valueOf( -1 ), cell.getBottom() );
   }
 
   @Test
-  public void testSetsBottomToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBottom_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setBottom( 0 );
 
-    Integer bottom = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_BOTTOM );
-    assertEquals( Integer.valueOf( 0 ), bottom );
+    assertEquals( Integer.valueOf( 0 ), cell.getBottom() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetBottom_failsWith_Height_Top() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setHeight( 10 );
+    cell.setTop( 10 );
+
+    cell.setBottom( 10 );
   }
 
   @Test
-  public void testSetBottomReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetBottom_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setBottom( 23 );
 
@@ -473,266 +428,267 @@ public class Cell_Test {
   }
 
   @Test
-  public void testWidthIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object width = getAttributes( cell ).get( Cell.PROPERTY_WIDTH );
-
-    assertNull( width );
-  }
-
-  @Test
-  public void testSetsWidth() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetWidth() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setWidth( 23 );
 
-    Integer width = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_WIDTH );
-    assertEquals( Integer.valueOf( 23 ), width );
+    assertEquals( Integer.valueOf( 23 ), cell.getWidth() );
   }
 
   @Test
-  public void testSetsWidthToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetWidth_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setWidth( 0 );
 
-    Integer width = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_WIDTH );
-    assertEquals( Integer.valueOf( 0 ), width );
+    assertEquals( Integer.valueOf( 0 ), cell.getWidth() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetWidth_failsWithNegativeValue() {
+    Cell<?> cell = new TestCell( template, "foo" );
+
+    cell.setWidth( -23 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetWidth_failsWith_Left_Right() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setLeft( 10 );
+    cell.setRight( 10 );
+
+    cell.setWidth( 10 );
   }
 
   @Test
-  public void testSetWidthReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetWidth_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setWidth( 23 );
 
     assertSame( cell, actualCell );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetWidthFailsWithNegativeValue() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setWidth( -23 );
-  }
-
   @Test
-  public void testHeightIsNullByDefault() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object height = getAttributes( cell ).get( Cell.PROPERTY_HEIGHT );
-
-    assertNull( height );
-  }
-
-  @Test
-  public void testSetsHeight() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetHeight() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setHeight( 23 );
 
-    Integer height = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_HEIGHT );
-    assertEquals( Integer.valueOf( 23 ), height );
+    assertEquals( Integer.valueOf( 23 ), cell.getHeight() );
   }
 
   @Test
-  public void testSetsHeightToZero() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetHeight_acceptsZero() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setHeight( 0 );
 
-    Integer height = ( Integer )getAttributes( cell ).get( Cell.PROPERTY_HEIGHT );
-    assertEquals( Integer.valueOf( 0 ), height );
+    assertEquals( Integer.valueOf( 0 ), cell.getHeight() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeight_failsWithNegativeValues() {
+    Cell<?> cell = new TestCell( template, "foo" );
+
+    cell.setHeight( -23 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetHeight_failsWith_Top_Bottom() {
+    Cell<?> cell = new TestCell( template, "foo" );
+    cell.setTop( 10 );
+    cell.setBottom( 10 );
+  
+    cell.setHeight( 10 );
   }
 
   @Test
-  public void testSetHeightReturnsCell() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetHeight_returnsCell() {
+    Cell<?> cell = new TestCell( template, "foo" );
 
     Cell<?> actualCell = cell.setHeight( 23 );
 
     assertSame( cell, actualCell );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetHeightFailsWithNegativeValue() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setHeight( -23 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Left_Right_Width() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setLeft( 10 );
-    cell.setRight( 10 );
-
-    cell.setWidth( 10 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Width_Right_Left() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setWidth( 10 );
-    cell.setRight( 10 );
-
-    cell.setLeft( 10 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Width_Left_Right() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setLeft( 10 );
-    cell.setWidth( 10 );
-
-    cell.setRight( 10 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Top_Bottom_Height() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setTop( 10 );
-    cell.setBottom( 10 );
-
-    cell.setHeight( 10 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Bottom_Height_Top() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setBottom( 10 );
-    cell.setHeight( 10 );
-
-    cell.setTop( 10 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testFailsWith_Height_Top_Bottom() {
-    Cell<?> cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setHeight( 10 );
-    cell.setTop( 10 );
-
-    cell.setBottom( 10 );
-  }
-
   @Test
-  public void testAddsAttribute() {
-    TestCell cell = new TestCell( new RowTemplate(), "foo" );
-    Object attribute = new Object();
+  public void testSetAlignment() {
+    Cell cell = new TestCell( template, "foo" );
 
-    cell.addAttribute( "foo", attribute );
+    cell.setAlignment( CellAlignment.LEFT, CellAlignment.RIGHT );
 
-    Map<String, Object> attributes = getAttributes( cell );
-    assertEquals( 1, attributes.size() );
-    assertSame( attribute, attributes.get( "foo" ) );
-  }
-
-  @Test
-  public void testAddsAllAttribute() {
-    TestCell cell = new TestCell( new RowTemplate(), "foo" );
-    Object attribute1 = new Object();
-    Object attribute2 = new Object();
-
-    cell.addAttribute( "foo", attribute1 );
-    cell.addAttribute( "bar", attribute2 );
-
-    Map<String, Object> attributes = getAttributes( cell );
-    assertEquals( 2, attributes.size() );
-    assertSame( attribute1, attributes.get( "foo" ) );
-    assertSame( attribute2, attributes.get( "bar" ) );
-  }
-
-  @Test
-  public void testAttributesAreSafeCopy() {
-    TestCell cell = new TestCell( new RowTemplate(), "foo" );
-    Map<String, Object> attributes = getAttributes( cell );
-
-    cell.addAttribute( "foo", new Object() );
-
-    assertEquals( 0, attributes.size() );
+    CellAlignment[] expected = new CellAlignment[] { CellAlignment.LEFT, CellAlignment.RIGHT };
+    CellAlignment[] alignment = cell.getAlignment();
+    assertArrayEquals( expected, alignment );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testAddAttributeFailsWithNullKey() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-    Object attribute = new Object();
-
-    cell.addAttribute( null, attribute );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testAddAttributeFailsWithEmptyKey() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-    Object attribute = new Object();
-
-    cell.addAttribute( "", attribute );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testAddAttributeFailsWithNullValue() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.addAttribute( "foo", null );
-  }
-
-  @Test
-  @SuppressWarnings( "unchecked" )
-  public void testHasCellData() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object data = cell.getAdapter( CellData.class );
-
-    assertNotNull( data );
-  }
-
-  @Test
-  @SuppressWarnings( "unchecked" )
-  public void testCellDataIsSameInstance() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    Object data = cell.getAdapter( CellData.class );
-    Object data2 = cell.getAdapter( CellData.class );
-
-    assertSame( data, data2 );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetAlignmentFailsWithNullAlignment() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetAlignment_failsWithNullAlignment() {
+    Cell cell = new TestCell( template, "foo" );
 
     cell.setAlignment( ( CellAlignment )null );
   }
 
   @Test
-  @SuppressWarnings( "unchecked" )
-  public void testSetsAlignmentAsStringArray() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
-
-    cell.setAlignment( CellAlignment.LEFT, CellAlignment.RIGHT );
-
-    CellData data = ( CellData )cell.getAdapter( CellData.class );
-    String[] actualAlignment = ( String[] )data.getAttributes().get( Cell.PROPERTY_ALIGNMENT );
-    assertArrayEquals( new String[] { "LEFT", "RIGHT" }, actualAlignment );
-  }
-
-  @Test
-  public void testSetAlignmentReturnsCell() {
-    Cell cell = new TestCell( new RowTemplate(), "foo" );
+  public void testSetAlignment_returnsCell() {
+    Cell cell = new TestCell( template, "foo" );
 
     Cell actualCell = cell.setAlignment( CellAlignment.LEFT, CellAlignment.RIGHT );
 
     assertSame( cell, actualCell );
   }
 
-  private Map<String, Object> getAttributes( Cell<?> cell ) {
-    return cell.getAdapter( CellData.class ).getAttributes();
+  @Test
+  public void testToJson_containsType() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( "foo", json.get( "type" ).asString() );
+  }
+
+  @Test
+  public void testToJson_doesNotContainOtherPropertiesByDefault() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( 1, json.size() );
+  }
+
+  @Test
+  public void testToJson_containsLeft() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setLeft( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "left" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsRight() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setRight( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "right" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsTop() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setTop( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "top" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsBottom() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setBottom( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "bottom" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsWidth() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setWidth( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "width" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsHeight() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setHeight( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "height" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsBindingIndex() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setBindingIndex( 23 );
+    JsonObject json = cell.toJson();
+
+    assertEquals( 23, json.get( "bindingIndex" ).asInt() );
+  }
+
+  @Test
+  public void testToJson_containsSelectable() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setSelectable( true );
+    JsonObject json = cell.toJson();
+
+    assertTrue( json.get( "selectable" ).asBoolean() );
+  }
+
+  @Test
+  public void testToJson_containsName() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setName( "bar" );
+    JsonObject json = cell.toJson();
+
+    assertEquals( "bar", json.get( "name" ).asString() );
+  }
+
+  @Test
+  public void testToJson_containsForeground() {
+    Cell cell = new Cell( template, "foo" ) {};
+    Color color = new Color( display, 1, 2, 3 );
+
+    cell.setForeground( color );
+    JsonObject json = cell.toJson();
+
+    assertEquals( getJsonForColor( color, false ), json.get( "foreground" ) );
+  }
+
+  @Test
+  public void testToJson_containsBackground() {
+    Cell cell = new Cell( template, "foo" ) {};
+    Color color = new Color( display, 1, 2, 3 );
+
+    cell.setBackground( color );
+    JsonObject json = cell.toJson();
+
+    assertEquals( getJsonForColor( color, false ), json.get( "background" ) );
+  }
+
+  @Test
+  public void testToJson_containsFont() {
+    Cell cell = new Cell( template, "foo" ) {};
+    Font font = new Font( display, "Helvetica", 12, SWT.BOLD );
+
+    cell.setFont( font );
+    JsonObject json = cell.toJson();
+
+    assertEquals( getJsonForFont( font ), json.get( "font" ) );
+  }
+
+  @Test
+  public void testToJson_containsAlignment() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setAlignment( CellAlignment.TOP, CellAlignment.LEFT );
+    JsonObject json = cell.toJson();
+
+    assertEquals( new JsonArray().add( "TOP" ).add( "LEFT" ), json.get( "alignment" ) );
   }
 
 }

@@ -11,16 +11,27 @@
 package org.eclipse.rap.rwt.internal.template;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.rap.json.JsonObject;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class TextCell_Test {
 
+  private RowTemplate template;
+
+  @Before
+  public void setUp() {
+    template = new RowTemplate();
+  }
+
   @Test
   public void testHasType() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     String type = cell.getType();
 
@@ -29,24 +40,23 @@ public class TextCell_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testSetDefaultTextFailsWithNullText() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     cell.setDefaultText( null );
   }
 
   @Test
   public void testSetsDefaultText() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     cell.setDefaultText( "foo" );
 
-    Object actualText = cell.getAdapter( CellData.class ).getAttributes().get( TextCell.PROPERTY_DEFAULT_TEXT );
-    assertEquals( "foo", actualText );
+    assertEquals( "foo", cell.getText() );
   }
 
   @Test
   public void testSetDefaultTextReturnsCell() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     TextCell actualCell = cell.setDefaultText( "foo" );
 
@@ -55,30 +65,67 @@ public class TextCell_Test {
 
   @Test
   public void testSetsWrapWithTrue() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     cell.setWrap( true );
 
-    Object actualStyle = cell.getAdapter( CellData.class ).getAttributes().get( TextCell.PROPERTY_WRAP );
-    assertEquals( Boolean.TRUE, actualStyle );
+    assertTrue( cell.isWrap() );
   }
 
   @Test
   public void testSetsWrapWithFalse() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     cell.setWrap( false );
 
-    Object actualStyle = cell.getAdapter( CellData.class ).getAttributes().get( TextCell.PROPERTY_WRAP );
-    assertEquals( Boolean.FALSE, actualStyle );
+    assertFalse( cell.isWrap() );
   }
 
   @Test
   public void testSetStyleReturnsCell() {
-    TextCell cell = new TextCell( new RowTemplate() );
+    TextCell cell = new TextCell( template );
 
     TextCell actualCell = cell.setWrap( true );
 
     assertSame( cell, actualCell );
   }
+
+  @Test
+  public void testToJson_containsType() {
+    TextCell cell = new TextCell( template );
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( "text", json.get( "type" ).asString() );
+  }
+
+  @Test
+  public void testToJson_doesNotContainOtherPropertiesByDefault() {
+    TextCell cell = new TextCell( template );
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( 1, json.size() );
+  }
+
+  @Test
+  public void testToJson_containsText() {
+    TextCell cell = new TextCell( template );
+
+    cell.setDefaultText( "Hello" );
+    JsonObject json = cell.toJson();
+
+    assertEquals( "Hello", json.get( "defaultText" ).asString() );
+  }
+
+  @Test
+  public void testToJson_containsWrap() {
+    TextCell cell = new TextCell( template );
+
+    cell.setWrap( true );
+    JsonObject json = cell.toJson();
+
+    assertTrue( json.get( "wrap" ).asBoolean() );
+  }
+
 }

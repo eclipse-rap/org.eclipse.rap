@@ -12,6 +12,8 @@ package org.eclipse.rap.rwt.internal.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -21,13 +23,21 @@ public class TemplateLCAUtil {
 
   public static void renderRowTemplate( Widget widget ) {
     Object data = widget.getData( RowTemplate.ROW_TEMPLATE );
-    if( data != null && data instanceof RowTemplate ) {
-      TemplateSerializer serializer = new TemplateSerializer( ( RowTemplate )data );
-      getRemoteObject( widget ).set( PROP_ROW_TEMPLATE, serializer.toJson() );
+    if( data instanceof RowTemplate ) {
+      getRemoteObject( widget ).set( PROP_ROW_TEMPLATE, toJson( ( RowTemplate )data ) );
     }
+  }
+
+  public static JsonValue toJson( RowTemplate template ) {
+    JsonArray jsonArray = new JsonArray();
+    for( Cell<?> cell : template.getCells() ) {
+      jsonArray.add( cell.toJson() );
+    }
+    return jsonArray;
   }
 
   private TemplateLCAUtil() {
     // prevent instantiation
   }
+
 }

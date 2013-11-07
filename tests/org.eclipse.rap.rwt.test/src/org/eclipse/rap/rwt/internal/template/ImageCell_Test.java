@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.template.ImageCell.ScaleMode;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
@@ -25,10 +27,12 @@ import org.junit.Test;
 public class ImageCell_Test {
 
   private Display display;
+  private RowTemplate template;
 
   @Before
   public void setUp() {
     Fixture.setUp();
+    template = new RowTemplate();
     display = new Display();
   }
 
@@ -39,34 +43,33 @@ public class ImageCell_Test {
 
   @Test
   public void testHasImageType() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
+    ImageCell cell = new ImageCell( template );
 
     String type = cell.getType();
 
     assertEquals( ImageCell.TYPE_IMAGE, type );
   }
 
+  @Test
+  public void testSetDefaultImage() {
+    ImageCell cell = new ImageCell( template );
+    Image image = createImage( Fixture.IMAGE1 );
+
+    cell.setDefaultImage( image );
+
+    assertSame( image, cell.getImage() );
+  }
+
   @Test( expected = IllegalArgumentException.class )
-  public void testSetDefaultImageFailsWithNullImage() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
+  public void testSetDefaultImage_failsWithNullImage() {
+    ImageCell cell = new ImageCell( template );
 
     cell.setDefaultImage( null );
   }
 
   @Test
-  public void testSetsDefaultImage() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
-    Image image = createImage( Fixture.IMAGE1 );
-
-    cell.setDefaultImage( image );
-
-    Object actualImage = cell.getAdapter( CellData.class ).getAttributes().get( ImageCell.PROPERTY_DEFAULT_IMAGE );
-    assertSame( image, actualImage );
-  }
-
-  @Test
-  public void testSetsDefaultImageReturnsCell() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
+  public void testSetDefaultImage_returnsCell() {
+    ImageCell cell = new ImageCell( template );
     Image image = createImage( Fixture.IMAGE1 );
 
     ImageCell actualCell = cell.setDefaultImage( image );
@@ -74,34 +77,73 @@ public class ImageCell_Test {
     assertSame( cell, actualCell );
   }
 
+  @Test
+  public void testSetScaleMode() {
+    ImageCell cell = new ImageCell( template );
+
+    cell.setScaleMode( ScaleMode.FILL );
+
+    assertSame( ScaleMode.FILL, cell.getScaleMode() );
+  }
+
   @Test( expected = IllegalArgumentException.class )
-  public void testSetScaleModeFailsWithNullStyle() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
+  public void testSetScaleMode_failsWithNullStyle() {
+    ImageCell cell = new ImageCell( template );
 
     cell.setScaleMode( ( ScaleMode )null );
   }
 
   @Test
-  public void testSetsModeAsString() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
-
-    cell.setScaleMode( ScaleMode.FILL );
-
-    Object actualMode = cell.getAdapter( CellData.class ).getAttributes().get( ImageCell.PROPERTY_SCALE_MODE );
-    assertEquals( ScaleMode.FILL.name(), actualMode );
-  }
-
-  @Test
-  public void testSetScaleModeReturnsCell() {
-    ImageCell cell = new ImageCell( new RowTemplate() );
+  public void testSetScaleMode_returnsCell() {
+    ImageCell cell = new ImageCell( template );
 
     ImageCell actualCell = cell.setScaleMode( ScaleMode.FILL );
 
     assertSame( cell, actualCell );
   }
 
+  @Test
+  public void testToJson_containsType() {
+    ImageCell cell = new ImageCell( template );
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( "image", json.get( "type" ).asString() );
+  }
+
+  @Test
+  public void testToJson_doesNotContainOtherPropertiesByDefault() {
+    ImageCell cell = new ImageCell( template );
+
+    JsonObject json = cell.toJson();
+
+    assertEquals( 1, json.size() );
+  }
+
+  @Test
+  public void testToJson_containsImage() {
+    ImageCell cell = new ImageCell( template );
+    Image image = createImage( Fixture.IMAGE1 );
+
+    cell.setDefaultImage( image );
+    JsonObject json = cell.toJson();
+
+    assertEquals( getJsonForImage( image ), json.get( "defaultImage" ) );
+  }
+
+  @Test
+  public void testToJson_containsScaleMode() {
+    ImageCell cell = new ImageCell( template );
+
+    cell.setScaleMode( ScaleMode.FILL );
+    JsonObject json = cell.toJson();
+
+    assertEquals( "FILL", json.get( "scaleMode" ).asString() );
+  }
+
   private Image createImage( String name ) {
     ClassLoader loader = Fixture.class.getClassLoader();
     return new Image( display, loader.getResourceAsStream( name ) );
   }
+
 }

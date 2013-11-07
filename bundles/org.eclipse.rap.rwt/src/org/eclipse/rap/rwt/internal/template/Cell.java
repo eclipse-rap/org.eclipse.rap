@@ -10,137 +10,199 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.template;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
 import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNull;
 import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 
 import java.io.Serializable;
-import java.util.Map;
-
-import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 
-public abstract class Cell<T extends Cell> implements Adaptable, Serializable  {
+public abstract class Cell<T extends Cell> implements Serializable  {
 
   public static enum CellAlignment {
     LEFT, RIGHT, H_CENTER, V_CENTER, TOP, BOTTOM
   }
 
-  static final String PROPERTY_LEFT = "left";
-  static final String PROPERTY_TOP = "top";
-  static final String PROPERTY_RIGHT = "right";
-  static final String PROPERTY_BOTTOM = "bottom";
-  static final String PROPERTY_WIDTH = "width";
-  static final String PROPERTY_HEIGHT = "height";
-  static final String PROPERTY_BINDING_INDEX = "bindingIndex";
-  static final String PROPERTY_SELECTABLE = "selectable";
-  static final String PROPERTY_NAME = "name";
-  static final String PROPERTY_FOREGROUND = "foreground";
-  static final String PROPERTY_BACKGROUND = "background";
-  static final String PROPERTY_FONT = "font";
-  static final String PROPERTY_ALIGNMENT = "alignment";
+  private static final String PROPERTY_TYPE = "type";
+  private static final String PROPERTY_LEFT = "left";
+  private static final String PROPERTY_TOP = "top";
+  private static final String PROPERTY_RIGHT = "right";
+  private static final String PROPERTY_BOTTOM = "bottom";
+  private static final String PROPERTY_WIDTH = "width";
+  private static final String PROPERTY_HEIGHT = "height";
+  private static final String PROPERTY_BINDING_INDEX = "bindingIndex";
+  private static final String PROPERTY_SELECTABLE = "selectable";
+  private static final String PROPERTY_NAME = "name";
+  private static final String PROPERTY_FOREGROUND = "foreground";
+  private static final String PROPERTY_BACKGROUND = "background";
+  private static final String PROPERTY_FONT = "font";
+  private static final String PROPERTY_ALIGNMENT = "alignment";
 
-  private final CellData data;
   private final String type;
+  private String name;
+  private int bindingIndex;
+  private boolean isSelectable;
+  private Color foreground;
+  private Color background;
+  private Font font;
+  private Integer left;
+  private Integer right;
+  private Integer top;
+  private Integer bottom;
+  private Integer width;
+  private Integer height;
+  private CellAlignment[] alignment;
 
   public Cell( RowTemplate template, String type ) {
     notNull( template, "template" );
     notNullOrEmpty( type, "type" );
     this.type = type;
-    this.data = new CellData();
+    bindingIndex = -1;
     template.addCell( this );
   }
 
-  public String getType() {
+  String getType() {
     return type;
   }
 
   public T setName( String name ) {
     checkNotNullOrEmpty( name );
-    data.addAttribute( PROPERTY_NAME, name );
+    this.name = name;
     return getThis();
+  }
+
+  String getName() {
+    return name;
   }
 
   public T setBindingIndex( int index ) {
     ensurePositive( index, "BindingIndex" );
-    data.addAttribute( PROPERTY_BINDING_INDEX, Integer.valueOf( index ) );
+    bindingIndex = index;
     return getThis();
   }
 
+  int getBindingIndex() {
+    return bindingIndex;
+  }
+
   public T setSelectable( boolean selectable ) {
-    data.addAttribute( PROPERTY_SELECTABLE, Boolean.valueOf( selectable ) );
+    isSelectable = selectable;
     return getThis();
+  }
+
+  boolean isSelectable() {
+    return isSelectable;
   }
 
   public T setForeground( Color foreground ) {
     checkNotNull( foreground, "Foreground" );
-    data.addAttribute( PROPERTY_FOREGROUND, foreground );
+    this.foreground = foreground;
     return getThis();
+  }
+
+  Color getForeground() {
+    return foreground;
   }
 
   public T setBackground( Color background ) {
     checkNotNull( background, "Background" );
-    data.addAttribute( PROPERTY_BACKGROUND, background );
+    this.background = background;
     return getThis();
+  }
+
+  Color getBackground() {
+    return background;
   }
 
   public T setFont( Font font ) {
     checkNotNull( font, "Font" );
-    data.addAttribute( PROPERTY_FONT, font );
+    this.font = font;
     return getThis();
+  }
+
+  Font getFont() {
+    return font;
   }
 
   public T setLeft( int offset ) {
-    checkHorizontalParameters( PROPERTY_RIGHT, PROPERTY_WIDTH );
-    data.addAttribute( PROPERTY_LEFT, Integer.valueOf( offset ) );
+    checkHorizontalParameters( right, width );
+    left = Integer.valueOf( offset );
     return getThis();
+  }
+
+  Integer getLeft() {
+    return left;
   }
 
   public T setRight( int offset ) {
-    checkHorizontalParameters( PROPERTY_LEFT, PROPERTY_WIDTH );
-    data.addAttribute( PROPERTY_RIGHT, Integer.valueOf( offset ) );
+    checkHorizontalParameters( left, width );
+    this.right = Integer.valueOf( offset );
     return getThis();
+  }
+
+  Integer getRight() {
+    return right;
   }
 
   public T setTop( int offset ) {
-    checkVerticalParameters( PROPERTY_BOTTOM, PROPERTY_HEIGHT );
-    data.addAttribute( PROPERTY_TOP, Integer.valueOf( offset ) );
+    checkVerticalParameters( bottom, height );
+    this.top = Integer.valueOf( offset );
     return getThis();
   }
 
+  Integer getTop() {
+    return top;
+  }
+
   public T setBottom( int offset ) {
-    checkVerticalParameters( PROPERTY_TOP, PROPERTY_HEIGHT );
-    data.addAttribute( PROPERTY_BOTTOM, Integer.valueOf( offset ) );
+    checkVerticalParameters( top, height );
+    this.bottom = Integer.valueOf( offset );
     return getThis();
+  }
+
+  Integer getBottom() {
+    return bottom;
   }
 
   public T setWidth( int width ) {
     ensurePositive( width, "Width" );
-    checkHorizontalParameters( PROPERTY_LEFT, PROPERTY_RIGHT );
-    data.addAttribute( PROPERTY_WIDTH, Integer.valueOf( width ) );
+    checkHorizontalParameters( left, right );
+    this.width = Integer.valueOf( width );
     return getThis();
+  }
+
+  Integer getWidth() {
+    return width;
   }
 
   public T setHeight( int height ) {
     ensurePositive( height, "Height" );
-    checkVerticalParameters( PROPERTY_TOP, PROPERTY_BOTTOM );
-    data.addAttribute( PROPERTY_HEIGHT, Integer.valueOf( height ) );
+    checkVerticalParameters( top, bottom );
+    this.height = Integer.valueOf( height );
     return getThis();
+  }
+
+  Integer getHeight() {
+    return height;
   }
 
   public T setAlignment( CellAlignment... alignment ) {
     checkNotNull( alignment, "Alignment" );
-    String[] values = new String[ alignment.length ];
     for( int i = 0; i < alignment.length; i++ ) {
-      CellAlignment cellAlignment = alignment[ i ];
-      checkNotNull( cellAlignment, "Alignment" );
-      values[ i ] = cellAlignment.toString();
+      checkNotNull( alignment[ i ], "Alignment" );
     }
-    addAttribute( PROPERTY_ALIGNMENT, values );
+    this.alignment = alignment;
     return getThis();
   }
 
+  CellAlignment[] getAlignment() {
+    return alignment;
+  }
   @SuppressWarnings( "unchecked" )
   private T getThis() {
     return ( T )this;
@@ -152,28 +214,69 @@ public abstract class Cell<T extends Cell> implements Adaptable, Serializable  {
     }
   }
 
-  private void checkHorizontalParameters( String key1, String key2 ) {
-    Map<String, Object> attributes = data.getAttributes();
-    if( attributes.get( key1 ) != null && attributes.get( key2 ) != null ) {
+  private void checkHorizontalParameters( Integer value1, Integer value2 ) {
+    if( value1 != null && value2 != null ) {
       throw new IllegalArgumentException( "Can only set two horizontal attributes" );
     }
   }
 
-  private void checkVerticalParameters( String key1, String key2 ) {
-    Map<String, Object> attributes = data.getAttributes();
-    if( attributes.get( key1 ) != null && attributes.get( key2 ) != null ) {
+  private void checkVerticalParameters( Integer value1, Integer value2 ) {
+    if( value1 != null && value2 != null ) {
       throw new IllegalArgumentException( "Can only set two vertical attributes" );
     }
   }
 
-  protected void addAttribute( String name, Object attribute ) {
-    checkAttribute( name, attribute );
-    data.addAttribute( name, attribute );
+  protected JsonObject toJson() {
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add( PROPERTY_TYPE, type );
+    if( left != null ) {
+      jsonObject.add( PROPERTY_LEFT, left.intValue() );
+    }
+    if( right != null ) {
+      jsonObject.add( PROPERTY_RIGHT, right.intValue() );
+    }
+    if( top != null ) {
+      jsonObject.add( PROPERTY_TOP, top.intValue() );
+    }
+    if( bottom != null ) {
+      jsonObject.add( PROPERTY_BOTTOM, bottom.intValue() );
+    }
+    if( width != null ) {
+      jsonObject.add( PROPERTY_WIDTH, width.intValue() );
+    }
+    if( height != null ) {
+      jsonObject.add( PROPERTY_HEIGHT, height.intValue() );
+    }
+    if( bindingIndex != -1 ) {
+      jsonObject.add( PROPERTY_BINDING_INDEX, bindingIndex );
+    }
+    if( isSelectable ) {
+      jsonObject.add( PROPERTY_SELECTABLE, isSelectable );
+    }
+    if( name != null ) {
+      jsonObject.add( PROPERTY_NAME, name );
+    }
+    if( foreground != null ) {
+      jsonObject.add( PROPERTY_FOREGROUND, getJsonForColor( foreground, false ) );
+    }
+    if( background != null ) {
+      jsonObject.add( PROPERTY_BACKGROUND, getJsonForColor( background, false ) );
+    }
+    if( font != null ) {
+      jsonObject.add( PROPERTY_FONT, getJsonForFont( font ) );
+    }
+    if( alignment != null ) {
+      jsonObject.add( PROPERTY_ALIGNMENT, alignmentToJson( alignment ) );
+    }
+    return jsonObject;
   }
 
-  private void checkAttribute( String name, Object attribute ) {
-    checkNotNullOrEmpty( name );
-    checkNotNull( attribute, "Attribute" );
+  private static JsonArray alignmentToJson( CellAlignment[] alignments ) {
+    JsonArray result = new JsonArray();
+    for( CellAlignment cellAlignment : alignments ) {
+      result.add( cellAlignment.toString() );
+    }
+    return result;
   }
 
   private void checkNotNull( Object value, String name ) {
@@ -189,11 +292,4 @@ public abstract class Cell<T extends Cell> implements Adaptable, Serializable  {
     notNullOrEmpty( name, "Attribute name" );
   }
 
-  @SuppressWarnings( "unchecked" )
-  public <S> S getAdapter( Class<S> adapter ) {
-    if( adapter == CellData.class ) {
-      return ( S )data;
-    }
-    return null;
-  }
 }

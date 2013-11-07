@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.template.RowTemplate;
-import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -1595,32 +1594,11 @@ public class TreeLCA_Test {
   public void testRenderRowTemplate() throws IOException {
     RowTemplate rowTemplate = new RowTemplate();
     tree.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
-    JsonValue template = new TemplateSerializer( rowTemplate ).toJson();
 
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( template, message.findCreateProperty( tree, "rowTemplate" ) );
-  }
-
-  @Test
-  public void testRenderRowTemplateOnlyIfItsARowTemplate() throws IOException {
-    tree.setData( RowTemplate.ROW_TEMPLATE, new Object() );
-
-    lca.render( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation createOperation = message.findCreateOperation( tree );
-    assertNull( createOperation.getProperty( "rowTemplate" ) );
-  }
-
-  @Test
-  public void testRenderRowTemplateOnlyIfPresent() throws IOException {
-    lca.render( tree );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation createOperation = message.findCreateOperation( tree );
-    assertNull( createOperation.getProperty( "rowTemplate" ) );
+    assertNotNull( message.findCreateProperty( tree, "rowTemplate" ) );
   }
 
   private static void setScrollLeft( Tree tree, int scrollLeft ) {
