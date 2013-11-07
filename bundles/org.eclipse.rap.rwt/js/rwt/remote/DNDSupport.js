@@ -448,7 +448,8 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         var textColor = item.getCellForeground( config.treeColumn );
         widget.setBackgroundColor( backgroundColor );
         widget.setTextColor( textColor );
-        widget.setCellContent( 1, item.getText( config.treeColumn ) );
+        var text = item.getText( config.treeColumn );
+        widget.setCellContent( 1, rwt.util.Encoding.escapeText( text, false ) );
         widget.setFont( config.font );
       }
     },
