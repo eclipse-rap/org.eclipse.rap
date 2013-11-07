@@ -408,6 +408,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
+    testBufferEvents_onDisposedWidget : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+      var req = rwt.remote.Connection.getInstance();
+      req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
+      TestUtil.initRequestLog();
+      var text = this._createTextWidget();
+      TestUtil.press( text, "x", false, 0 );
+      assertEquals( 0, keyUtil._bufferedEvents.length );
+      TestUtil.press( text, "y", false, 0 );
+      assertEquals( 1, keyUtil._bufferedEvents.length );
+      TestUtil.press( text, "z", false, 0 );
+      assertEquals( 2, keyUtil._bufferedEvents.length );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+
+      this._disposeTextWidget( text );
+      keyUtil._onRequestReceived();
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      assertEquals( 0, keyUtil._bufferedEvents.length );
+      req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
+    },
+
     testBufferedEventInfo : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = rwt.remote.KeyEventSupport.getInstance();

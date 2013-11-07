@@ -153,7 +153,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
     _sendKeyEvent : function( widget, keyCode, charCode, domEvent ) {
       if( this._keyEventRequestRunning ) {
         this._bufferedEvents.push( [ widget, keyCode, charCode, domEvent ] );
-      } else {
+      } else if( widget == null || !widget.isDisposed() ) {
         this._attachKeyEvent( widget, keyCode, charCode, domEvent );
         this._keyEventRequestRunning = true;
         this._sendRequestAsync();
