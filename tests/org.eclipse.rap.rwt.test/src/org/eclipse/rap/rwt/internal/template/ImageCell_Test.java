@@ -51,28 +51,28 @@ public class ImageCell_Test {
   }
 
   @Test
-  public void testSetDefaultImage() {
+  public void testSetImage() {
     ImageCell cell = new ImageCell( template );
     Image image = createImage( Fixture.IMAGE1 );
 
-    cell.setDefaultImage( image );
+    cell.setImage( image );
 
     assertSame( image, cell.getImage() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testSetDefaultImage_failsWithNullImage() {
+  public void testSetImage_failsWithNullImage() {
     ImageCell cell = new ImageCell( template );
 
-    cell.setDefaultImage( null );
+    cell.setImage( null );
   }
 
   @Test
-  public void testSetDefaultImage_returnsCell() {
+  public void testSetImage_returnsCell() {
     ImageCell cell = new ImageCell( template );
     Image image = createImage( Fixture.IMAGE1 );
 
-    ImageCell actualCell = cell.setDefaultImage( image );
+    ImageCell actualCell = cell.setImage( image );
 
     assertSame( cell, actualCell );
   }
@@ -125,10 +125,10 @@ public class ImageCell_Test {
     ImageCell cell = new ImageCell( template );
     Image image = createImage( Fixture.IMAGE1 );
 
-    cell.setDefaultImage( image );
+    cell.setImage( image );
     JsonObject json = cell.toJson();
 
-    assertEquals( getJsonForImage( image ), json.get( "defaultImage" ) );
+    assertEquals( getJsonForImage( image ), json.get( "image" ) );
   }
 
   @Test

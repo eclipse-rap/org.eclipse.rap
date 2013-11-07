@@ -109,7 +109,7 @@ rwt.widgets.util.Template.prototype = {
     if( this._isBound( cell ) ) {
       return item.getText( this._getIndex( cell ), cellRenderOptions.escaped );
     } else {
-      return this._cells[ cell ].defaultText || "";
+      return this._cells[ cell ].text || "";
     }
   },
 
@@ -117,7 +117,7 @@ rwt.widgets.util.Template.prototype = {
     if( this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) );
     } else {
-      var defaultImage = this._cells[ cell ].defaultImage;
+      var defaultImage = this._cells[ cell ].image;
       return defaultImage ? defaultImage[ 0 ] : null;
     }
   },
@@ -176,6 +176,7 @@ rwt.widgets.util.Template.prototype = {
       }
     }
   },
+
   _renderAllContent : function( options ) {
     var cellRenderOptions = {
       "markupEnabled" : options.markupEnabled,
@@ -270,7 +271,7 @@ rwt.widgets.util.Template.prototype = {
     } else if( this._isBound( cell ) ) {
       return item.hasText( this._getIndex( cell ) );
     } else {
-      return this._cells[ cell ].defaultText != null;
+      return this._cells[ cell ].text != null;
     }
   },
 
@@ -280,7 +281,7 @@ rwt.widgets.util.Template.prototype = {
     } else if( this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) ) !== null;
     } else {
-      return this._cells[ cell ].defaultImage != null;
+      return this._cells[ cell ].image != null;
     }
   },
 

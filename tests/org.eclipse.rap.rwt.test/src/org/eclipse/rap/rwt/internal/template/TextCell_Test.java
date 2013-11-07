@@ -35,36 +35,36 @@ public class TextCell_Test {
 
     String type = cell.getType();
 
-    assertEquals( TextCell.TYPE_TEXT, type );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetDefaultTextFailsWithNullText() {
-    TextCell cell = new TextCell( template );
-
-    cell.setDefaultText( null );
+    assertEquals( "text", type );
   }
 
   @Test
-  public void testSetsDefaultText() {
+  public void testSetText() {
     TextCell cell = new TextCell( template );
 
-    cell.setDefaultText( "foo" );
+    cell.setText( "foo" );
 
     assertEquals( "foo", cell.getText() );
   }
 
-  @Test
-  public void testSetDefaultTextReturnsCell() {
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetText_failsWithNullText() {
     TextCell cell = new TextCell( template );
 
-    TextCell actualCell = cell.setDefaultText( "foo" );
+    cell.setText( null );
+  }
+
+  @Test
+  public void testSetText_returnsCell() {
+    TextCell cell = new TextCell( template );
+
+    TextCell actualCell = cell.setText( "foo" );
 
     assertSame( cell, actualCell );
   }
 
   @Test
-  public void testSetsWrapWithTrue() {
+  public void testSetWrap_withTrue() {
     TextCell cell = new TextCell( template );
 
     cell.setWrap( true );
@@ -73,7 +73,7 @@ public class TextCell_Test {
   }
 
   @Test
-  public void testSetsWrapWithFalse() {
+  public void testSetWrap_withFalse() {
     TextCell cell = new TextCell( template );
 
     cell.setWrap( false );
@@ -82,7 +82,7 @@ public class TextCell_Test {
   }
 
   @Test
-  public void testSetStyleReturnsCell() {
+  public void testSetWrap_returnsCell() {
     TextCell cell = new TextCell( template );
 
     TextCell actualCell = cell.setWrap( true );
@@ -112,10 +112,10 @@ public class TextCell_Test {
   public void testToJson_containsText() {
     TextCell cell = new TextCell( template );
 
-    cell.setDefaultText( "Hello" );
+    cell.setText( "Hello" );
     JsonObject json = cell.toJson();
 
-    assertEquals( "Hello", json.get( "defaultText" ).asString() );
+    assertEquals( "Hello", json.get( "text" ).asString() );
   }
 
   @Test

@@ -284,7 +284,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellContent_TextFromCellDefault : function() {
-      var template = new Template( [ { "type" : "text", "defaultText" : "abc" }, { "type" : "text" } ] );
+      var template = new Template( [ { "type" : "text", "text" : "abc" }, { "type" : "text" } ] );
       var item = createGridItem( [ "foo", "bar" ] );
 
       assertEquals( "abc", template.getCellContent( item, 0 ) );
@@ -311,14 +311,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testHasContent_TextBoundToEmptyWithDefault : function() {
-      var template = new Template( [ { "type" : "text", "bindingIndex" : 0, "defaultText" : "lalala" } ] );
+      var template = new Template( [ { "type" : "text", "bindingIndex" : 0, "text" : "lalala" } ] );
       var item = createGridItem( [ "", "bar" ] );
 
       assertFalse( template.hasContent( item, 0 ) );
     },
 
     testHasContent_TextNotBoundWithDefault : function() {
-      var template = new Template( [ { "type" : "text", "defaultText" : "lalala" } ] );
+      var template = new Template( [ { "type" : "text", "text" : "lalala" } ] );
       var item = createGridItem( [ "", "bar" ] );
 
       assertTrue( template.hasContent( item, 0 ) );
@@ -355,7 +355,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = new Template( [ {
         "type" : "image",
         "bindingIndex" : 0,
-        "defaultImage" : [ "x.jpg", 1, 1 ]
+        "image" : [ "x.jpg", 1, 1 ]
       } ] );
       var item = createGridItem(  [], [ null, "bar" ] );
 
@@ -365,7 +365,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testHasContent_ImageNotBoundWithDefault : function() {
       var template = new Template( [ {
         "type" : "image",
-        "defaultImage" : [ "x.jpg", 1, 1 ]
+        "image" : [ "x.jpg", 1, 1 ]
       } ] );
       var item = createGridItem( [], [ "", "bar" ] );
 
@@ -393,7 +393,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellContent_ImageFromCellDefault : function() {
-      var template = new Template( [ { "type" : "image", "defaultImage" : [ "x.jpg", 1, 1 ] } ] );
+      var template = new Template( [ { "type" : "image", "image" : [ "x.jpg", 1, 1 ] } ] );
       var item = createGridItem( [], [ "foo.png", "bar.png" ] );
 
       assertEquals( "x.jpg", template.getCellContent( item, 0 ) );

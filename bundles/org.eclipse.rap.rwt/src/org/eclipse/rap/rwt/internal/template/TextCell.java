@@ -15,9 +15,9 @@ import org.eclipse.rap.json.JsonObject;
 
 public class TextCell extends Cell<TextCell>  {
 
-  static final String TYPE_TEXT = "text";
-  static final String PROPERTY_DEFAULT_TEXT = "defaultText";
-  static final String PROPERTY_WRAP = "wrap";
+  private static final String TYPE_TEXT = "text";
+  private static final String PROPERTY_TEXT = "text";
+  private static final String PROPERTY_WRAP = "wrap";
   private String text;
   private boolean wrap;
 
@@ -26,7 +26,7 @@ public class TextCell extends Cell<TextCell>  {
   }
 
   // binding index wins. Only if no binding index is set the default will be used
-  public TextCell setDefaultText( String text ) {
+  public TextCell setText( String text ) {
     checkNotNull( text, "Text" );
     this.text = text;
     return this;
@@ -49,7 +49,7 @@ public class TextCell extends Cell<TextCell>  {
   protected JsonObject toJson() {
     JsonObject json = super.toJson();
     if( text != null ) {
-      json.add( PROPERTY_DEFAULT_TEXT, text );
+      json.add( PROPERTY_TEXT, text );
     }
     if( wrap ) {
       json.add( PROPERTY_WRAP, wrap );

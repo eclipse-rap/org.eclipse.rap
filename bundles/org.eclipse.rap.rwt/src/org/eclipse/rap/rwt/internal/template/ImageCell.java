@@ -27,7 +27,7 @@ public class ImageCell extends Cell<ImageCell> {
   }
 
   static final String TYPE_IMAGE = "image";
-  static final String PROPERTY_DEFAULT_IMAGE = "defaultImage";
+  static final String PROPERTY_IMAGE = "image";
   static final String PROPERTY_SCALE_MODE = "scaleMode";
   private Image image;
   private ScaleMode scaleMode;
@@ -37,7 +37,7 @@ public class ImageCell extends Cell<ImageCell> {
   }
 
   // binding index wins. Only if no binding index is set the default will be used
-  public ImageCell setDefaultImage( Image image ) {
+  public ImageCell setImage( Image image ) {
     this.image = image;
     checkNotNull( image, "Image" );
     return this;
@@ -61,7 +61,7 @@ public class ImageCell extends Cell<ImageCell> {
   protected JsonObject toJson() {
     JsonObject json = super.toJson();
     if( image != null ) {
-      json.add( PROPERTY_DEFAULT_IMAGE, ProtocolUtil.getJsonForImage( image ) );
+      json.add( PROPERTY_IMAGE, ProtocolUtil.getJsonForImage( image ) );
     }
     if( scaleMode != null ) {
       json.add( PROPERTY_SCALE_MODE, scaleMode.name() );
