@@ -225,10 +225,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
     testTextRenderer_CreateElementSetsHorizontalAlignment : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var create = defaultRegistry.getRendererFor( "text" ).createElement;
-      assertEquals( "left", create( { "alignment" : {} } ).style.textAlign );
-      assertEquals( "left", create( { "alignment" : { "LEFT" : true } } ).style.textAlign );
-      assertEquals( "center", create( { "alignment" : { "H_CENTER" : true } } ).style.textAlign );
-      assertEquals( "right", create( { "alignment" : { "RIGHT" : true } } ).style.textAlign );
+      assertEquals( "left", create( {} ).style.textAlign );
+      assertEquals( "left", create( { "horizontalAlignment" : "LEFT" } ).style.textAlign );
+      assertEquals( "center", create( { "horizontalAlignment" : "CENTER" } ).style.textAlign );
+      assertEquals( "right", create( { "horizontalAlignment" : "RIGHT" } ).style.textAlign );
     },
 
     testTextRenderer_CreateElementSetsWrap : function() {
@@ -242,7 +242,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var create = defaultRegistry.getRendererFor( "image" ).createElement;
 
-      var element = create( { "alignment" : { "LEFT" : true, "TOP" : true } } );
+      var element = create( {
+        "horizontalAlignment" : "LEFT",
+        "verticalAlignment" : "TOP"
+      } );
 
       var position = element.style.backgroundPosition;
       assertTrue( "left top" === position || "0% 0%" === position );
@@ -252,7 +255,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var create = defaultRegistry.getRendererFor( "image" ).createElement;
 
-      var element = create( { "alignment" : { "H_CENTER" : true, "V_CENTER" : true } } );
+      var element = create( {
+        "horizontalAlignment" : "CENTER",
+        "verticalAlignment" : "CENTER"
+      } );
 
       var position = element.style.backgroundPosition;
       assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
@@ -272,7 +278,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var create = defaultRegistry.getRendererFor( "image" ).createElement;
 
-      var element = create( { "alignment" : { "RIGHT" : true, "BOTTOM" : true } } );
+      var element = create( {
+        "horizontalAlignment" : "RIGHT",
+        "verticalAlignment" : "BOTTOM"
+      } );
 
       var position = element.style.backgroundPosition;
       assertTrue( "right bottom" === position || "100% 100%" === position );

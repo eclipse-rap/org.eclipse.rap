@@ -16,17 +16,15 @@ import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNull;
 import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 
 import java.io.Serializable;
-import org.eclipse.rap.json.JsonArray;
+
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 
 public abstract class Cell<T extends Cell> implements Serializable  {
-
-  public static enum CellAlignment {
-    LEFT, RIGHT, H_CENTER, V_CENTER, TOP, BOTTOM
-  }
 
   private static final String PROPERTY_TYPE = "type";
   private static final String PROPERTY_LEFT = "left";
@@ -41,7 +39,8 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   private static final String PROPERTY_FOREGROUND = "foreground";
   private static final String PROPERTY_BACKGROUND = "background";
   private static final String PROPERTY_FONT = "font";
-  private static final String PROPERTY_ALIGNMENT = "alignment";
+  private static final String PROPERTY_H_ALIGNMENT = "horizontalAlignment";
+  private static final String PROPERTY_V_ALIGNMENT = "verticalAlignment";
 
   private final String type;
   private String name;
@@ -56,7 +55,8 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   private Integer bottom;
   private Integer width;
   private Integer height;
-  private CellAlignment[] alignment;
+  private int horizontalAlignment = SWT.NONE;
+  private int verticalAlignment = SWT.NONE;
 
   public Cell( RowTemplate template, String type ) {
     notNull( template, "template" );
@@ -191,18 +191,24 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return height;
   }
 
-  public T setAlignment( CellAlignment... alignment ) {
-    checkNotNull( alignment, "Alignment" );
-    for( int i = 0; i < alignment.length; i++ ) {
-      checkNotNull( alignment[ i ], "Alignment" );
-    }
-    this.alignment = alignment;
+  public T setHorizontalAlignment( int alignment ) {
+    horizontalAlignment = alignment;
     return getThis();
   }
 
-  CellAlignment[] getAlignment() {
-    return alignment;
+  int getHorizontalAlignment() {
+    return horizontalAlignment;
   }
+
+  public T setVerticalAlignment( int alignment ) {
+    verticalAlignment = alignment;
+    return getThis();
+  }
+
+  int getVerticalAlignment() {
+    return verticalAlignment;
+  }
+
   @SuppressWarnings( "unchecked" )
   private T getThis() {
     return ( T )this;
@@ -265,27 +271,44 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     if( font != null ) {
       jsonObject.add( PROPERTY_FONT, getJsonForFont( font ) );
     }
-    if( alignment != null ) {
-      jsonObject.add( PROPERTY_ALIGNMENT, alignmentToJson( alignment ) );
+    if( horizontalAlignment != SWT.NONE ) {
+      jsonObject.add( PROPERTY_H_ALIGNMENT, hAlignmentToString( horizontalAlignment ) );
+    }
+    if( verticalAlignment != SWT.NONE ) {
+      jsonObject.add( PROPERTY_V_ALIGNMENT, vAlignmentToString( verticalAlignment ) );
     }
     return jsonObject;
   }
 
-  private static JsonArray alignmentToJson( CellAlignment[] alignments ) {
-    JsonArray result = new JsonArray();
-    for( CellAlignment cellAlignment : alignments ) {
-      result.add( cellAlignment.toString() );
+  private static String hAlignmentToString( int alignment ) {
+    int style = translate( translate( alignment, SWT.BEGINNING, SWT.LEFT ), SWT.END, SWT.RIGHT );
+    String[] styles = StylesUtil.filterStyles( style, "LEFT", "RIGHT", "CENTER" );
+    if( styles.length != 0 ) {
+      return styles[ 0 ];
     }
-    return result;
+    return null;
   }
 
-  private void checkNotNull( Object value, String name ) {
+  private static String vAlignmentToString( int alignment ) {
+    int style = translate( translate( alignment, SWT.BEGINNING, SWT.TOP ), SWT.END, SWT.BOTTOM );
+    String[] styles = StylesUtil.filterStyles( style, "TOP", "BOTTOM", "CENTER" );
+    if( styles.length != 0 ) {
+      return styles[ 0 ];
+    }
+    return null;
+  }
+
+  private static int translate( int style, int from, int to ) {
+    return ( style & from ) == from ? to : style;
+  }
+
+  private static void checkNotNull( Object value, String name ) {
     if( value == null ) {
       throw new IllegalArgumentException( name + " must not be null" );
     }
   }
 
-  private void checkNotNullOrEmpty( String name ) {
+  private static void checkNotNullOrEmpty( String name ) {
     if( name == null ) {
       throw new IllegalArgumentException( "Name must not be null" );
     }

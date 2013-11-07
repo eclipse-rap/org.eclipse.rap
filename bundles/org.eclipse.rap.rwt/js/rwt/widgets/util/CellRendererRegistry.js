@@ -96,18 +96,20 @@ var escapeText = function( text, removeNewLines ) {
   return result;
 };
 
+var alignmentStyleToCss = {
+  "LEFT" : "left",
+  "CENTER" : "center",
+  "RIGHT" : "right",
+  "TOP" : "top",
+  "BOTTOM" : "bottom"
+};
+
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "text",
   "contentType" : "text",
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
-    if( cellData.alignment && cellData.alignment.RIGHT ) {
-      result.style.textAlign = "right";
-    } else if( cellData.alignment && cellData.alignment.H_CENTER ) {
-      result.style.textAlign = "center";
-    } else {
-      result.style.textAlign = "left";
-    }
+    result.style.textAlign = alignmentStyleToCss[ cellData.horizontalAlignment ] || "left";
     result.style.whiteSpace = cellData.wrap ? "" : "nowrap";
     result.style.textOverflow = "ellipsis";
     return result;
@@ -159,16 +161,8 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
     } else if( cellData.scaleMode === "FILL" ) {
       result.style.backgroundSize = "cover";
     } else {
-      if( cellData.alignment && cellData.alignment.LEFT ) {
-        position[ 0 ] = "left";
-      } else if( cellData.alignment && cellData.alignment.RIGHT ) {
-        position[ 0 ] = "right";
-      }
-      if( cellData.alignment && cellData.alignment.TOP ) {
-        position[ 1 ] = "top";
-      } else if( cellData.alignment && cellData.alignment.BOTTOM ) {
-        position[ 1 ] = "bottom";
-      }
+      position[ 0 ] = alignmentStyleToCss[ cellData.horizontalAlignment ] || "center";
+      position[ 1 ] = alignmentStyleToCss[ cellData.verticalAlignment ] || "center";
     }
     result.style.backgroundPosition = position.join( " " );
     return result;

@@ -296,11 +296,6 @@ rwt.widgets.util.Template.prototype = {
   _parseCells : function() {
     for( var i = 0; i < this._cells.length; i++ ) {
       this._cellRenderer[ i ] = renderer[ this._cells[ i ].type ];
-      if( this._cells[ i ].alignment ) {
-        this._cells[ i ].alignment = rwt.util.Objects.fromArray( this._cells[ i ].alignment );
-      } else {
-        this._cells[ i ].alignment = {};
-      }
       if( this._cells[ i ].font ) {
         var font = this._cells[ i ].font;
         this._cells[ i ].font = rwt.html.Font.fromArray( font ).toCss();

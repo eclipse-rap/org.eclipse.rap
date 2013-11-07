@@ -12,13 +12,13 @@ package org.eclipse.rap.rwt.internal.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.template.Cell.CellAlignment;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -500,7 +500,7 @@ public class Cell_Test {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setTop( 10 );
     cell.setBottom( 10 );
-  
+
     cell.setHeight( 10 );
   }
 
@@ -514,28 +514,37 @@ public class Cell_Test {
   }
 
   @Test
-  public void testSetAlignment() {
-    Cell cell = new TestCell( template, "foo" );
+  public void testSetHorizontalAlignment() {
+    Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setAlignment( CellAlignment.LEFT, CellAlignment.RIGHT );
+    cell.setHorizontalAlignment( SWT.CENTER );
 
-    CellAlignment[] expected = new CellAlignment[] { CellAlignment.LEFT, CellAlignment.RIGHT };
-    CellAlignment[] alignment = cell.getAlignment();
-    assertArrayEquals( expected, alignment );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetAlignment_failsWithNullAlignment() {
-    Cell cell = new TestCell( template, "foo" );
-
-    cell.setAlignment( ( CellAlignment )null );
+    assertEquals( SWT.CENTER, cell.getHorizontalAlignment() );
   }
 
   @Test
-  public void testSetAlignment_returnsCell() {
+  public void testSetHorizontalAlignment_returnsCell() {
     Cell cell = new TestCell( template, "foo" );
 
-    Cell actualCell = cell.setAlignment( CellAlignment.LEFT, CellAlignment.RIGHT );
+    Cell actualCell = cell.setHorizontalAlignment( SWT.CENTER );
+
+    assertSame( cell, actualCell );
+  }
+
+  @Test
+  public void testSetVerticalAlignment() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setVerticalAlignment( SWT.CENTER );
+
+    assertEquals( SWT.CENTER, cell.getVerticalAlignment() );
+  }
+
+  @Test
+  public void testSetVerticalAlignment_returnsCell() {
+    Cell cell = new TestCell( template, "foo" );
+
+    Cell actualCell = cell.setVerticalAlignment( SWT.CENTER );
 
     assertSame( cell, actualCell );
   }
@@ -682,13 +691,57 @@ public class Cell_Test {
   }
 
   @Test
-  public void testToJson_containsAlignment() {
+  public void testToJson_containsHorizontalAlignment() {
     Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setAlignment( CellAlignment.TOP, CellAlignment.LEFT );
+    cell.setHorizontalAlignment( SWT.CENTER );
     JsonObject json = cell.toJson();
 
-    assertEquals( new JsonArray().add( "TOP" ).add( "LEFT" ), json.get( "alignment" ) );
+    assertEquals( "CENTER", json.get( "horizontalAlignment" ).asString() );
+  }
+
+  @Test
+  public void testToJson_containsVerticalAlignment() {
+    Cell cell = new Cell( template, "foo" ) {};
+
+    cell.setVerticalAlignment( SWT.CENTER );
+    JsonObject json = cell.toJson();
+
+    assertEquals( "CENTER", json.get( "verticalAlignment" ).asString() );
+  }
+
+  @Test
+  public void testToJson_horizontalAlignmentFormat() {
+    assertEquals( "LEFT", hAlignToJson( SWT.LEFT ) );
+    assertEquals( "RIGHT", hAlignToJson( SWT.RIGHT ) );
+    assertEquals( "CENTER", hAlignToJson( SWT.CENTER ) );
+    assertEquals( "LEFT", hAlignToJson( SWT.BEGINNING ) );
+    assertEquals( "RIGHT", hAlignToJson( SWT.END ) );
+    assertEquals( "LEFT", hAlignToJson( SWT.LEFT | SWT.TOP ) );
+  }
+
+  @Test
+  public void testToJson_verticalAlignmentFormat() {
+    assertEquals( "TOP", vAlignToJson( SWT.TOP ) );
+    assertEquals( "BOTTOM", vAlignToJson( SWT.BOTTOM ) );
+    assertEquals( "CENTER", vAlignToJson( SWT.CENTER ) );
+    assertEquals( "TOP", vAlignToJson( SWT.BEGINNING ) );
+    assertEquals( "BOTTOM", vAlignToJson( SWT.END ) );
+    assertEquals( "TOP", vAlignToJson( SWT.LEFT | SWT.TOP ) );
+  }
+
+  private String vAlignToJson( int alignment ) {
+    Cell cell = new Cell( template, "foo" ) {};
+    cell.setVerticalAlignment( alignment );
+    JsonObject json = cell.toJson();
+    return json.get( "verticalAlignment" ).asString();
+  }
+
+  private String hAlignToJson( int alignment ) {
+    Cell cell = new Cell( template, "foo" ) {};
+    cell.setHorizontalAlignment( alignment );
+    JsonObject json = cell.toJson();
+    return json.get( "horizontalAlignment" ).asString();
   }
 
 }
