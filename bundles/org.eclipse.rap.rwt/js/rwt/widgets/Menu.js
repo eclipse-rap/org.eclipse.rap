@@ -367,16 +367,28 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     // overwritten:
     _makeActive : function() {
-      this._lastActive = this.getFocusRoot().getActiveChild();
-      this._lastFocus = this.getFocusRoot().getFocusedChild();
-      this.getFocusRoot().setActiveChild(this);
+      var focusRoot = this.getFocusRoot();
+      this._lastActive = focusRoot.getActiveChild();
+      this._lastFocus = focusRoot.getFocusedChild();
+      this._restoreActive = true;
+      focusRoot.setActiveChild( this );
+      focusRoot.addEventListener( "changeActiveChild", this._onChangeActiveChild, this );
     },
 
     // overwritten:
     _makeInactive : function() {
-      var vRoot = this.getFocusRoot();
-      vRoot.setActiveChild( this._lastActive );
-      vRoot.setFocusedChild( this._lastFocus );
+      var focusRoot = this.getFocusRoot();
+      focusRoot.removeEventListener( "changeActiveChild", this._onChangeActiveChild, this );
+      if( this._restoreActive ) {
+        focusRoot.setActiveChild( this._lastActive );
+        focusRoot.setFocusedChild( this._lastFocus );
+      }
+    },
+
+    _onChangeActiveChild : function( evt ) {
+      if( !( evt.getValue() instanceof rwt.widgets.MenuItem ) ) {
+        this._restoreActive = false;
+      }
     },
 
     _beforeAppear : function() {

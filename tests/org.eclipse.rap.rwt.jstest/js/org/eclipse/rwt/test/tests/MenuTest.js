@@ -1082,6 +1082,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       disposeMenu();
     },
 
+    testContextMenuDoesNotOverwriteActiveChild : function() {
+      var widget1 = createControl();
+      widget1.addToDocument();
+      var menu = new rwt.widgets.Menu();
+      menu.addToDocument();
+      var menuItem = new MenuItem( "PUSH" );
+      menu.addMenuItemAt( menuItem, 0 );
+      widget1.setContextMenu( menu );
+      addContextMenuListener( widget1 );
+      var widget2 = createControl();
+      widget2.addToDocument();
+      TestUtil.flush();
+
+      TestUtil.rightClick( widget1 );
+      TestUtil.flush();
+      assertTrue( menu.isSeeable() );
+      TestUtil.rightClick( widget2 );
+      TestUtil.flush();
+
+      assertFalse( menu.isSeeable() );
+      assertIdentical( widget2, widget1.getFocusRoot().getActiveChild() );
+      menu.destroy();
+      widget1.destroy();
+      widget2.destroy();
+    },
+
     testContextMenuOpenOnControl : function() {
       var parent = createControl();
       parent.addToDocument();
