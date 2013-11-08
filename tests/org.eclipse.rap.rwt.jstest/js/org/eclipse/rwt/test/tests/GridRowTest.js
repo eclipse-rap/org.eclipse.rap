@@ -2538,6 +2538,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( row.isSeeable(), log[ 0 ][ 0 ].seeable );
     },
 
+    testRenderTemplate_CallRenderWithIndention : function() {
+      tree.setTreeColumn( 0 );
+      var itemParent = this._createItem( tree );
+      var item = this._createItem( itemParent );
+      row.setHeight( 15 );
+      var template = mockTemplate( [ 0, "text", 10, 20 ] );
+      var log = [];
+      var render = template.render;
+      template.render = function() {
+        log.push( rwt.util.Arrays.fromArguments( arguments ) );
+        render.apply( this, arguments );
+      };
+      tree.getRenderConfig().rowTemplate = template;
+
+      row.renderItem( item, tree._config, false, null );
+
+      var options = log[ 0 ][ 0 ];
+      assertEquals( [ 32, 0, 368, 15 ], options.bounds );
+    },
+
     testRenderTemplate_CallRenderForNullItem : function() {
       tree.setTreeColumn( -1 );
       row.setHeight( 15 );

@@ -153,10 +153,19 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
+      var hasIndention =    item
+                         && typeof config.treeColumn === "number"
+                         && config.treeColumn > -1;
+      var xOffset = hasIndention ? this._correctOffset( 0, item, config ) : 0;
       config.rowTemplate.render( {
         "container" : this._getTemplateContainer( config ),
         "item" : item,
-        "bounds" : [ 0, 0, this.getWidth(), this.getHeight() ],
+        "bounds" : [
+          xOffset,
+          0,
+          this.getWidth() - xOffset,
+          this.getHeight()
+        ],
         "enabled" : config.enabled,
         "seeable" : this.isSeeable()
       } );

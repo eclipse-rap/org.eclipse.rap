@@ -240,11 +240,12 @@ rwt.widgets.util.Template.prototype = {
   _getCellLeft : function( options, cell ) {
     var cellData = this._cells[ cell ];
     return   cellData.left !== undefined
-           ? cellData.left
-           : options.bounds[ 2 ] - cellData.width - cellData.right;
+           ? options.bounds[ 0 ] + cellData.left
+           : options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - cellData.right;
   },
 
   _getCellTop : function( options, cell ) {
+    // TODO [tb] : render offset is currently not respected since widget uses it
     var cellData = this._cells[ cell ];
     return   cellData.top !== undefined
            ? cellData.top
