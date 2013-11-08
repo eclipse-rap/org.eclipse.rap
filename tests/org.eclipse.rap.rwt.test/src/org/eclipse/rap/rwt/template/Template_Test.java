@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -16,21 +16,25 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.TemplateSerializer;
 import org.junit.Test;
 
 
-public class RowTemplate_Test {
+public class Template_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testAddCellFailsWithNullCell() {
-    RowTemplate template = new RowTemplate();
+    Template template = new Template();
 
     template.addCell( null );
   }
 
   @Test
   public void testAddsCell() {
-    RowTemplate template = new RowTemplate();
+    Template template = new Template();
     Cell cell = mock( Cell.class );
 
     template.addCell( cell );
@@ -42,7 +46,7 @@ public class RowTemplate_Test {
 
   @Test
   public void testAddsCells() {
-    RowTemplate template = new RowTemplate();
+    Template template = new Template();
     Cell cell1 = mock( Cell.class );
     Cell cell2 = mock( Cell.class );
 
@@ -56,12 +60,27 @@ public class RowTemplate_Test {
   }
 
   @Test
-  public void testCellsAreSafeCopy() {
-    RowTemplate template = new RowTemplate();
+  public void testCellsArrayIsASafeCopy() {
+    Template template = new Template();
     List<Cell<?>> cells = template.getCells();
 
     template.addCell( mock( Cell.class ) );
 
     assertEquals( 0, cells.size() );
   }
+
+  @Test
+  public void testTemplateSerializer_toJson() {
+    Template template = new Template();
+    new TextCell( template );
+    new ImageCell( template );
+
+    JsonValue json = template.getAdapter( TemplateSerializer.class ).toJson();
+
+    JsonObject textCellJson = new JsonObject().add( "type", "text" );
+    JsonObject imageCellJson = new JsonObject().add( "type", "image" );
+    JsonArray expected = new JsonArray().add( textCellJson ).add( imageCellJson );
+    assertEquals( expected, json );
+  }
+
 }

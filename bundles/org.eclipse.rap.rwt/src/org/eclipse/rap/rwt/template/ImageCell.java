@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -32,7 +32,7 @@ public class ImageCell extends Cell<ImageCell> {
   private Image image;
   private ScaleMode scaleMode;
 
-  public ImageCell( RowTemplate template ) {
+  public ImageCell( Template template ) {
     super( template, TYPE_IMAGE );
   }
 

@@ -454,6 +454,11 @@ public final class RWT {
   public static final String CUSTOM_VARIANT = "org.eclipse.rap.rwt.customVariant";
 
   /**
+   * @since 2.2
+   */
+  public static final String ROW_TEMPLATE = "org.eclipse.rap.rwt.rowTemplate";
+
+  /**
    * Used as extra detail information about the selection event.
    * Indicates that a hyperlink (anchor) in the item markup text was clicked.
    * The hyperlink must have it's target property set to "_rwt", otherwise there
@@ -471,6 +476,11 @@ public final class RWT {
    * @since 2.1
    */
   public static final int HYPERLINK = 1 << 26;
+
+  /**
+   * @since 2.2
+   */
+  public static final int CELL = 1 << 27;
 
   /**
    * Returns the instance of the life cycle which is currently processed.

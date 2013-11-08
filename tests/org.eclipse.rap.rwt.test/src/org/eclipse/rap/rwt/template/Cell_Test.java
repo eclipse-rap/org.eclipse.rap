@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.template.Cell;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -32,12 +34,12 @@ import org.junit.Test;
 public class Cell_Test {
 
   private Display display;
-  private RowTemplate template;
+  private Template template;
 
   @Before
   public void setUp() {
     Fixture.setUp();
-    template = new RowTemplate();
+    template = new Template();
     display = new Display();
   }
 

@@ -37,13 +37,13 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.template.RowTemplate;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -1483,8 +1483,8 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderRowTemplate() throws IOException {
-    RowTemplate rowTemplate = new RowTemplate();
-    table.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
+    Template rowTemplate = new Template();
+    table.setData( RWT.ROW_TEMPLATE, rowTemplate );
 
     lca.render( table );
 

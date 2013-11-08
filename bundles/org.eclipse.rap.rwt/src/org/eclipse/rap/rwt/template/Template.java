@@ -8,20 +8,23 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.TemplateSerializer;
 
-public class RowTemplate implements Serializable {
 
-  public static final String ROW_TEMPLATE = "org.eclipse.rap.rwt.rowTemplate";
+public class Template implements Serializable, Adaptable {
 
   private final List<Cell<?>> cells;
 
-  public RowTemplate() {
+  public Template() {
     cells = new ArrayList<Cell<?>>();
   }
 
@@ -39,4 +42,21 @@ public class RowTemplate implements Serializable {
   public List<Cell<?>> getCells() {
     return new ArrayList<Cell<?>>( cells );
   }
+
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == TemplateSerializer.class ) {
+      return ( T )new TemplateSerializer() {
+        public JsonValue toJson() {
+          JsonArray jsonArray = new JsonArray();
+          for( Cell<?> cell : getCells() ) {
+            jsonArray.add( cell.toJson() );
+          }
+          return jsonArray;
+        }
+      };
+    }
+    return null;
+  }
+
 }

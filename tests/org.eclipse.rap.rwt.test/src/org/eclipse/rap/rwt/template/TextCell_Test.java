@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,17 +16,19 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.template.Template;
+import org.eclipse.rap.rwt.template.TextCell;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class TextCell_Test {
 
-  private RowTemplate template;
+  private Template template;
 
   @Before
   public void setUp() {
-    template = new RowTemplate();
+    template = new Template();
   }
 
   @Test

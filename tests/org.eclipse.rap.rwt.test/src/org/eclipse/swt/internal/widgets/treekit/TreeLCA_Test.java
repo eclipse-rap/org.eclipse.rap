@@ -35,11 +35,11 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.template.RowTemplate;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -1592,8 +1592,8 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderRowTemplate() throws IOException {
-    RowTemplate rowTemplate = new RowTemplate();
-    tree.setData( RowTemplate.ROW_TEMPLATE, rowTemplate );
+    Template rowTemplate = new Template();
+    tree.setData( RWT.ROW_TEMPLATE, rowTemplate );
 
     lca.render( tree );
 

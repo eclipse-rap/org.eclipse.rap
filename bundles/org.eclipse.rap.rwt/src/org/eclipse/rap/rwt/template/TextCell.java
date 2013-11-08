@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import org.eclipse.rap.json.JsonObject;
 
@@ -21,7 +21,7 @@ public class TextCell extends Cell<TextCell>  {
   private String text;
   private boolean wrap;
 
-  public TextCell( RowTemplate template ) {
+  public TextCell( Template template ) {
     super( template, TYPE_TEXT );
   }
 

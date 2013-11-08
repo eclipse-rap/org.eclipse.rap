@@ -18,11 +18,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -34,7 +35,7 @@ import org.junit.Test;
 public class TemplateLCAUtil_Test {
 
   private Shell shell;
-  private RowTemplate template;
+  private Template template;
   private RemoteObjectImpl remoteObject;
 
   @Before
@@ -42,7 +43,7 @@ public class TemplateLCAUtil_Test {
     Fixture.setUp();
     Display display = new Display();
     shell = new Shell( display );
-    template = new RowTemplate();
+    template = new Template();
     remoteObject = fakeRemoteObject();
   }
 
@@ -53,7 +54,7 @@ public class TemplateLCAUtil_Test {
 
   @Test
   public void testRenderRowTemplate() {
-    shell.setData( RowTemplate.ROW_TEMPLATE, template );
+    shell.setData( RWT.ROW_TEMPLATE, template );
 
     TemplateLCAUtil.renderRowTemplate( shell );
 
@@ -61,22 +62,8 @@ public class TemplateLCAUtil_Test {
   }
 
   @Test
-  public void testRenderRowTemplate_rendersAllCells() {
-    new TextCell( template );
-    new ImageCell( template );
-    shell.setData( RowTemplate.ROW_TEMPLATE, template );
-
-    TemplateLCAUtil.renderRowTemplate( shell );
-
-    JsonObject textCellJson = new JsonObject().add( "type", "text" );
-    JsonObject imageCellJson = new JsonObject().add( "type", "image" );
-    JsonArray expected = new JsonArray().add( textCellJson ).add( imageCellJson );
-    verify( remoteObject ).set( eq( "rowTemplate" ), eq( expected ) );
-  }
-
-  @Test
   public void testRenderRowTemplate_omitsUnknownTypes() {
-    shell.setData( RowTemplate.ROW_TEMPLATE, new Object() );
+    shell.setData( RWT.ROW_TEMPLATE, new Object() );
 
     TemplateLCAUtil.renderRowTemplate( shell );
 

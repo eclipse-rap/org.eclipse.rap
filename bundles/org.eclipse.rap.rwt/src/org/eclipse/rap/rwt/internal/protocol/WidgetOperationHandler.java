@@ -101,6 +101,8 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
         detail = SWT.DRAG;
       } else if( "arrow".equals( stringValue ) ) {
         detail = SWT.ARROW;
+      } else if( "cell".equals( stringValue ) ) {
+        detail = RWT.CELL;
       } else if( "hyperlink".equals( stringValue ) ) {
         detail = RWT.HYPERLINK;
       }

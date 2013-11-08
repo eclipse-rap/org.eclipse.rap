@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
@@ -58,7 +58,7 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   private int horizontalAlignment = SWT.NONE;
   private int verticalAlignment = SWT.NONE;
 
-  public Cell( RowTemplate template, String type ) {
+  public Cell( Template template, String type ) {
     notNull( template, "template" );
     notNullOrEmpty( type, "type" );
     this.type = type;

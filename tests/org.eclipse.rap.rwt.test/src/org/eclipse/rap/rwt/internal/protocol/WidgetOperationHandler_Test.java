@@ -108,6 +108,15 @@ public class WidgetOperationHandler_Test {
   }
 
   @Test
+  public void testCreateSelectionEvent_withDetail_cell() {
+    JsonObject properties = new JsonObject().add( "detail", "cell" );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( RWT.CELL, event.detail );
+  }
+
+  @Test
   public void testCreateSelectionEvent_withText() {
     JsonObject properties = new JsonObject().add( "text", "foo" );
 

@@ -8,12 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.template;
+package org.eclipse.rap.rwt.internal;
+
+import org.eclipse.rap.json.JsonValue;
 
 
-public class TestCell extends Cell<TestCell> {
+public interface TemplateSerializer {
 
-  public TestCell( RowTemplate template, String type ) {
-    super( template, type );
-  }
+  JsonValue toJson();
+
 }
