@@ -37,7 +37,28 @@ public class MarkupValidator_Test {
     try {
       validator.validate( markup );
     } catch( Exception ex ) {
-      ex.printStackTrace();
+      fail( ex.getMessage() );
+    }
+  }
+
+  @Test
+  public void testValidate_withNamedEntities() {
+    String markup = "&nbsp; &lt;foo&gt; &amp; &lt;bar&gt;";
+
+    try {
+      validator.validate( markup );
+    } catch( Exception ex ) {
+      fail( ex.getMessage() );
+    }
+  }
+
+  @Test
+  public void testValidate_withNumericEntities() {
+    String markup = "foo &#38; bar";
+
+    try {
+      validator.validate( markup );
+    } catch( Exception ex ) {
       fail( ex.getMessage() );
     }
   }
@@ -114,7 +135,7 @@ public class MarkupValidator_Test {
     public void testIsValidationDisabledFor() {
       Widget widget = mock( Widget.class );
       when( widget.getData( MarkupValidator.MARKUP_VALIDATION_DISABLED ) ).thenReturn( Boolean.TRUE );
-  
+
       assertTrue( MarkupValidator.isValidationDisabledFor( widget ) );
     }
 

@@ -33,6 +33,7 @@ public class MarkupValidator {
   public static final String MARKUP_VALIDATION_DISABLED
     = "org.eclipse.rap.rwt.markupValidationDisabled";
 
+  private static final String DTD = createDTD();
   private static final Map<String, String[]> SUPPORTED_ELEMENTS = createSupportedElementsMap();
   private final SAXParser saxParser;
 
@@ -46,6 +47,7 @@ public class MarkupValidator {
 
   public void validate( String text ) {
     StringBuilder markup = new StringBuilder();
+    markup.append( DTD );
     markup.append( "<html>" );
     markup.append( text );
     markup.append( "</html>" );
@@ -72,6 +74,23 @@ public class MarkupValidator {
       throw new RuntimeException( "Failed to create SAX parser", exception );
     }
     return result;
+  }
+
+  private static String createDTD() {
+    StringBuilder result = new StringBuilder();
+    result.append( "<!DOCTYPE html [" );
+    result.append( "<!ENTITY quot \"&#34;\">" );
+    result.append( "<!ENTITY amp \"&#38;\">" );
+    result.append( "<!ENTITY apos \"&#39;\">" );
+    result.append( "<!ENTITY lt \"&#60;\">" );
+    result.append( "<!ENTITY gt \"&#62;\">" );
+    result.append( "<!ENTITY nbsp \"&#160;\">" );
+    result.append( "<!ENTITY ensp \"&#8194;\">" );
+    result.append( "<!ENTITY emsp \"&#8195;\">" );
+    result.append( "<!ENTITY ndash \"&#8211;\">" );
+    result.append( "<!ENTITY mdash \"&#8212;\">" );
+    result.append( "]>" );
+    return result.toString();
   }
 
   private static Map<String, String[]> createSupportedElementsMap() {
