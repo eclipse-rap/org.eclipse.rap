@@ -16,7 +16,7 @@
 RAP_STREAM=head
 
 TMP_DIR=/shared/rt/rap/tmp
-JOBS_DIR=/shared/jobs
+JOBS_DIR=/jobs/genie.rt.rap
 NIGHTLY_DIR=/home/data/httpd/download.eclipse.org/rt/rap/nightly
 SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 # Set bash's internal file separator to \n to avoid problems with filenames that contain spaces
