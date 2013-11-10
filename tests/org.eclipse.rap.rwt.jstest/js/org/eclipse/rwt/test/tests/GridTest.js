@@ -124,6 +124,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       var config = rwt.remote.ObjectRegistry.getObject( "w3" ).getRenderConfig();
       assertTrue( config.rowTemplate instanceof rwt.widgets.util.Template );
+      assertFalse( config.fullSelection );
       assertIdentical( template, config.rowTemplate._cells );
       shell.destroy();
     },

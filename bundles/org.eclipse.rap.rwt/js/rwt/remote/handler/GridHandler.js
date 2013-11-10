@@ -16,13 +16,14 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     var rowTemplate =   properties.rowTemplate
                       ? new rwt.widgets.util.Template( properties.rowTemplate )
                       : null;
+    var forceFullSelection = ( properties.appearance === "table" ) && !rowTemplate;
     var configMap = {
       appearance : properties.appearance,
       noScroll : styleMap.NO_SCROLL,
       multiSelection : styleMap.MULTI,
       check : styleMap.CHECK,
       // TODO: Remove this check when bug 355408: [Table] Always uses FULL_SELECTION is fixed
-      fullSelection : properties.appearance === "table" ? true : styleMap.FULL_SELECTION,
+      fullSelection :  forceFullSelection ? true : styleMap.FULL_SELECTION,
       hideSelection : styleMap.HIDE_SELECTION,
       checkBoxMetrics : properties.checkBoxMetrics,
       selectionPadding : properties.selectionPadding,
