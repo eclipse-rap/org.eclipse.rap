@@ -63,8 +63,8 @@ public final class Examples {
     List<ExampleCategory> exampleCategories = new ArrayList<ExampleCategory>();
     exampleCategories.add( createCategory( "Basic Widgets",
                                            "input", "button", "canvas", "dialog" ) );
-    exampleCategories.add( createCategory( "Trees & Tables",
-                                           "tableviewer", "treeviewer", "table-markup" ) );
+    exampleCategories.add( createCategory( "Trees & Tables", "tableviewer", "treeviewer",
+                                           "table-markup", "table-template" ) );
     exampleCategories.add( createCategory( "Key Features",
                                            "complex-data", "rich-label", "validation",
                                            "drag-and-drop", "file-upload", "nls" ) );
