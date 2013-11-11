@@ -16,8 +16,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.template.Template;
-import org.eclipse.rap.rwt.template.TextCell;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +47,7 @@ public class TextCell_Test {
     assertEquals( "foo", cell.getText() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = NullPointerException.class )
   public void testSetText_failsWithNullText() {
     TextCell cell = new TextCell( template );
 

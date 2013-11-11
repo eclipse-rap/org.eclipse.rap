@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.template;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -90,7 +91,7 @@ public class Cell_Test {
     assertEquals( "bar", cell.getName() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = NullPointerException.class )
   public void testSetName_failsWithNullName() {
     Cell<?> cell = new TestCell( template, "foo" );
 
@@ -141,11 +142,14 @@ public class Cell_Test {
     assertSame( color, cell.getForeground() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetForeground_failsWithNull() {
+  @Test
+  public void testSetForeground_acceptsNull() {
     Cell cell = new TestCell( template, "foo" );
+    cell.setForeground( new Color( display, 0, 0, 0 ) );
 
     cell.setForeground( null );
+
+    assertNull( cell.getForeground() );
   }
 
   @Test
@@ -168,11 +172,14 @@ public class Cell_Test {
     assertSame( color, cell.getBackground() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetBackground_failsWithNull() {
+  @Test
+  public void testSetBackground_acceptsNull() {
     Cell cell = new TestCell( template, "foo" );
+    cell.setBackground( new Color( display, 0, 0, 0 ) );
 
     cell.setBackground( null );
+
+    assertNull( cell.getBackground() );
   }
 
   @Test
@@ -195,11 +202,14 @@ public class Cell_Test {
     assertSame( font, cell.getFont() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetFont_failsWithNull() {
+  @Test
+  public void testSetFont_acceptsWithNull() {
     Cell cell = new TestCell( template, "foo" );
+    cell.setFont( new Font( display, "Arial", 22, SWT.BOLD ) );
 
     cell.setFont( null );
+
+    assertNull( cell.getFont() );
   }
 
   @Test
@@ -230,11 +240,13 @@ public class Cell_Test {
     assertEquals( 0, cell.getBindingIndex() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetBindingIndex_failsWithNegativeValue() {
+  @Test
+  public void testSetBindingIndex_acceptsMinusOne() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setBindingIndex( -1 );
+
+    assertEquals( -1, cell.getBindingIndex() );
   }
 
   @Test
@@ -273,7 +285,7 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( -1 ), cell.getLeft() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetLeft_failsWith_Width_Right() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setWidth( 10 );
@@ -321,7 +333,7 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( -1 ), right );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetRight_failsWith_Width_Left() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setLeft( 10 );
@@ -366,7 +378,7 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( -1 ), cell.getTop() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetTop_failsWith_Bottom_Height() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setBottom( 10 );
@@ -411,7 +423,7 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( 0 ), cell.getBottom() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetBottom_failsWith_Height_Top() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setHeight( 10 );
@@ -447,14 +459,16 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( 0 ), cell.getWidth() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetWidth_failsWithNegativeValue() {
+  @Test
+  public void testSetWidth_acceptsMinusOne() {
     Cell<?> cell = new TestCell( template, "foo" );
 
-    cell.setWidth( -23 );
+    cell.setWidth( -1 );
+
+    assertEquals( Integer.valueOf( -1 ), cell.getWidth() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetWidth_failsWith_Left_Right() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setLeft( 10 );
@@ -490,14 +504,16 @@ public class Cell_Test {
     assertEquals( Integer.valueOf( 0 ), cell.getHeight() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetHeight_failsWithNegativeValues() {
+  @Test
+  public void testSetHeight_acceptsMinusOne() {
     Cell<?> cell = new TestCell( template, "foo" );
 
-    cell.setHeight( -23 );
+    cell.setHeight( -1 );
+
+    assertEquals( Integer.valueOf( -1 ), cell.getHeight() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
+  @Test( expected = IllegalStateException.class )
   public void testSetHeight_failsWith_Top_Bottom() {
     Cell<?> cell = new TestCell( template, "foo" );
     cell.setTop( 10 );

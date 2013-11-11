@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.template;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.TemplateSerializer;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.swt.widgets.Widget;
 

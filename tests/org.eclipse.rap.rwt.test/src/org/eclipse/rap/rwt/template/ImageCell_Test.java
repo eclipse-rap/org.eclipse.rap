@@ -11,8 +11,7 @@
 package org.eclipse.rap.rwt.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.template.ImageCell;
@@ -49,7 +48,7 @@ public class ImageCell_Test {
 
     String type = cell.getType();
 
-    assertEquals( ImageCell.TYPE_IMAGE, type );
+    assertEquals( "image", type );
   }
 
   @Test
@@ -62,11 +61,14 @@ public class ImageCell_Test {
     assertSame( image, cell.getImage() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetImage_failsWithNullImage() {
+  @Test
+  public void testSetImage_acceptsNull() {
     ImageCell cell = new ImageCell( template );
+    cell.setImage( createImage( Fixture.IMAGE1 ) );
 
     cell.setImage( null );
+
+    assertNull( cell.getImage() );
   }
 
   @Test
@@ -88,8 +90,8 @@ public class ImageCell_Test {
     assertSame( ScaleMode.FILL, cell.getScaleMode() );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testSetScaleMode_failsWithNullStyle() {
+  @Test( expected = NullPointerException.class )
+  public void testSetScaleMode_failsWithNull() {
     ImageCell cell = new ImageCell( template );
 
     cell.setScaleMode( ( ScaleMode )null );

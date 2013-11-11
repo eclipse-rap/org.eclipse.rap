@@ -17,32 +17,48 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.Adaptable;
-import org.eclipse.rap.rwt.internal.TemplateSerializer;
+import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
 
 
+/**
+ * Templates are used to describe how a given data item is presented by a widget.
+ * <p>
+ * Templates can be applied to multiple widgets within the same UI session.
+ * </p>
+ * @see org.eclipse.rap.rwt.RWT#ROW_TEMPLATE
+ */
 public class Template implements Serializable, Adaptable {
 
   private final List<Cell<?>> cells;
 
+  /**
+   * Constructs an empty template.
+   */
   public Template() {
     cells = new ArrayList<Cell<?>>();
   }
 
   void addCell( Cell<?> cell ) {
-    checkCell( cell );
     cells.add( cell );
   }
 
-  private void checkCell( Cell<?> cell ) {
-    if( cell == null ) {
-      throw new IllegalArgumentException( "Cell must not be null" );
-    }
-  }
-
+  /**
+   * Returns the list of cells included in this template. Modifications to the returned list will
+   * not change the template.
+   *
+   * @return the list of cells in this template, may be empty but never <code>null</code>
+   */
   public List<Cell<?>> getCells() {
     return new ArrayList<Cell<?>>( cells );
   }
 
+  /**
+   * <strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT public API. It is
+   * marked public only so that it can be shared within the packages provided by RWT. It should
+   * never be accessed from application code.
+   *
+   * @noreference This method is not intended to be referenced by clients.
+   */
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
     if( adapter == TemplateSerializer.class ) {

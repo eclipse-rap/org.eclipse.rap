@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal;
+package org.eclipse.rap.rwt.internal.template;
 
 import org.eclipse.rap.json.JsonValue;
 

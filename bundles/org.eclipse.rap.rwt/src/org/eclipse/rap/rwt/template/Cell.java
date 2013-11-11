@@ -12,18 +12,27 @@ package org.eclipse.rap.rwt.template;
 
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
-import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNull;
-import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
 
 import java.io.Serializable;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 
+/**
+ * Defines a region in a template. A cell can display a part of a connected data item. This part is
+ * selected by the <em>bindingIndex</em>.
+ * <p>
+ * For horizontal positioning, two of the the properties <em>left</em>, <em>right<em>, and
+ * <em>width</em> must be set.
+ * For vertical positioning, two properties out of <em>top</em>, <em>bottom</em>, and
+ * <em>height</em> are required.
+ * </p>
+ */
 public abstract class Cell<T extends Cell> implements Serializable  {
 
   private static final String PROPERTY_TYPE = "type";
@@ -58,9 +67,16 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   private int horizontalAlignment = SWT.NONE;
   private int verticalAlignment = SWT.NONE;
 
+  /**
+   * Constructs a new cell on the given template. Subclasses must provide a unique name.
+   *
+   * @param template the template that this cell will be part of, must not be <code>null</code>
+   * @param type a unique type string to identify the cell type, must not be <code>null</code> or
+   *          empty
+   */
   public Cell( Template template, String type ) {
-    notNull( template, "template" );
-    notNullOrEmpty( type, "type" );
+    ParamCheck.notNull( template, "template" );
+    ParamCheck.notNullOrEmpty( type, "type" );
     this.type = type;
     bindingIndex = -1;
     template.addCell( this );
@@ -70,8 +86,17 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return type;
   }
 
+  /**
+   * Sets a name for this cell. This name is used to identify the cell in a selection event.
+   * If the cell is selectable, a selection event will have its <em>text</em> attribute set to
+   * this name.
+   *
+   * @return the cell itself, to enable method chaining
+   * @see #setSelectable(boolean)
+   * @see org.eclipse.swt.widgets.Event#text
+   */
   public T setName( String name ) {
-    checkNotNullOrEmpty( name );
+    ParamCheck.notNullOrEmpty( name, "name" );
     this.name = name;
     return getThis();
   }
@@ -80,8 +105,14 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return name;
   }
 
+  /**
+   * Sets the index that is used to select the part (e.g. text/image) from the connected data item
+   * to be displayed by this cell. A value of <code>-1</code> indicates that the cell is not bound.
+   *
+   * @param index the index of the part to display
+   * @return the cell itself, to enable method chaining
+   */
   public T setBindingIndex( int index ) {
-    ensurePositive( index, "BindingIndex" );
     bindingIndex = index;
     return getThis();
   }
@@ -90,6 +121,17 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return bindingIndex;
   }
 
+  /**
+   * Enables cell selection. If set to <code>true</code>, clicking this cell will not select the
+   * item but still trigger a selection event on the control. This selection event will have its
+   * <em>detail</em> field set to <code>RWT.CELL</code> and it's <em>text</em> field set to the name
+   * of this cell. The default is <code>false</code>.
+   *
+   * @param selectable <code>true</code> to enable cell selection
+   * @return the cell itself, to enable method chaining
+   * @see #setName(String)
+   * @see org.eclipse.rap.rwt.RWT#CELL
+   */
   public T setSelectable( boolean selectable ) {
     isSelectable = selectable;
     return getThis();
@@ -99,9 +141,15 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return isSelectable;
   }
 
-  public T setForeground( Color foreground ) {
-    checkNotNull( foreground, "Foreground" );
-    this.foreground = foreground;
+  /**
+   * Sets the foreground color for this cell. The connected data item may override this color. If
+   * the argument is null, the widget's default foreground color will be used.
+   *
+   * @param color the foreground color, or <code>null</code> to use the default
+   * @return the cell itself, to enable method chaining
+   */
+  public T setForeground( Color color ) {
+    foreground = color;
     return getThis();
   }
 
@@ -109,9 +157,15 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return foreground;
   }
 
-  public T setBackground( Color background ) {
-    checkNotNull( background, "Background" );
-    this.background = background;
+  /**
+   * Sets the background color for this cell. The connected data item may override this color. If
+   * the argument is null, the widget's default color will be used.
+   *
+   * @param color the background color, or <code>null</code> to use the default
+   * @return the cell itself, to enable method chaining
+   */
+  public T setBackground( Color color ) {
+    this.background = color;
     return getThis();
   }
 
@@ -119,8 +173,14 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return background;
   }
 
+  /**
+   * Sets the font for this cell. The connected data item may override this font. If the argument is
+   * null, the widget's default font will be used.
+   *
+   * @param font a font, or <code>null</code> to use the default
+   * @return the cell itself, to enable method chaining
+   */
   public T setFont( Font font ) {
-    checkNotNull( font, "Font" );
     this.font = font;
     return getThis();
   }
@@ -129,6 +189,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return font;
   }
 
+  /**
+   * Sets the left offset of the cell, i.e. the distance from the left edge of the template.
+   *
+   * @param offset the left offset in px
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>right</em> and <em>width</em> are already set
+   */
   public T setLeft( int offset ) {
     checkHorizontalParameters( right, width );
     left = Integer.valueOf( offset );
@@ -139,6 +206,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return left;
   }
 
+  /**
+   * Sets the right offset of the cell, i.e. the distance from the right edge of the template.
+   *
+   * @param offset the right offset in px
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>left</em> and <em>width</em> are already set
+   */
   public T setRight( int offset ) {
     checkHorizontalParameters( left, width );
     this.right = Integer.valueOf( offset );
@@ -149,6 +223,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return right;
   }
 
+  /**
+   * Sets the top offset of the cell, i.e. the distance from the top edge of the template.
+   *
+   * @param offset the top offset in px
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>bottom</em> and <em>height</em> are already set
+   */
   public T setTop( int offset ) {
     checkVerticalParameters( bottom, height );
     this.top = Integer.valueOf( offset );
@@ -159,6 +240,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return top;
   }
 
+  /**
+   * Sets the bottom offset of the cell, i.e. the distance from the bottom edge of the template.
+   *
+   * @param offset the bottom offset in px
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>top</em> and <em>height</em> are already set
+   */
   public T setBottom( int offset ) {
     checkVerticalParameters( top, height );
     this.bottom = Integer.valueOf( offset );
@@ -169,8 +257,14 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return bottom;
   }
 
+  /**
+   * Sets the width of the cell, i.e. the distance from the bottom edge of the template.
+   * A value of <code>SWT.DEFAULT</code> resets the width.
+   *
+   * @param width the width in px, must not be negative
+   * @return the cell itself, to enable method chaining
+   */
   public T setWidth( int width ) {
-    ensurePositive( width, "Width" );
     checkHorizontalParameters( left, right );
     this.width = Integer.valueOf( width );
     return getThis();
@@ -180,8 +274,14 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return width;
   }
 
+  /**
+   * Sets the height of the cell, i.e. the distance from the bottom edge of the template.
+   * A value of <code>SWT.DEFAULT</code> resets the width.
+   *
+   * @param height the height in px, must not be negative
+   * @return the cell itself, to enable method chaining
+   */
   public T setHeight( int height ) {
-    ensurePositive( height, "Height" );
     checkVerticalParameters( top, bottom );
     this.height = Integer.valueOf( height );
     return getThis();
@@ -191,6 +291,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return height;
   }
 
+  /**
+   * Defines how the content of this cell should be positioned horizontally.
+   *
+   * @param alignment the horizontal alignment, must be one of: SWT.BEGINNING (or SWT.LEFT),
+   *          SWT.CENTER, SWT.END (or SWT.RIGHT)
+   * @return the cell itself, to enable method chaining
+   */
   public T setHorizontalAlignment( int alignment ) {
     horizontalAlignment = alignment;
     return getThis();
@@ -200,6 +307,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return horizontalAlignment;
   }
 
+  /**
+   * Defines how the content of this cell should be positioned vertically.
+   *
+   * @param alignment the horizontal alignment, must be one of: SWT.BEGINNING (or SWT.TOP),
+   *          SWT.CENTER, SWT.END (or SWT.BOTTOM)
+   * @return the cell itself, to enable method chaining
+   */
   public T setVerticalAlignment( int alignment ) {
     verticalAlignment = alignment;
     return getThis();
@@ -209,29 +323,19 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return verticalAlignment;
   }
 
-  @SuppressWarnings( "unchecked" )
-  private T getThis() {
-    return ( T )this;
-  }
-
-  private void ensurePositive( int value, String valueName ) {
-    if( value < 0 ) {
-      throw new IllegalArgumentException( valueName + " must be >= 0 but was " + value );
-    }
-  }
-
-  private void checkHorizontalParameters( Integer value1, Integer value2 ) {
-    if( value1 != null && value2 != null ) {
-      throw new IllegalArgumentException( "Can only set two horizontal attributes" );
-    }
-  }
-
-  private void checkVerticalParameters( Integer value1, Integer value2 ) {
-    if( value1 != null && value2 != null ) {
-      throw new IllegalArgumentException( "Can only set two vertical attributes" );
-    }
-  }
-
+  /**
+   * Creates a JSON representation of this cell. Subclasses can override this method, but must call
+   * super and add additional attributes like this:
+   * <pre>
+   * protected JsonObject toJson() {
+   *   JsonObject json = super.toJson();
+   *   json.add( "foo", getFoo() );
+   *   ...
+   *   return json;
+   * }
+   * </pre>
+   * @return a json object that represents this cell
+   */
   protected JsonObject toJson() {
     JsonObject jsonObject = new JsonObject();
     jsonObject.add( PROPERTY_TYPE, type );
@@ -280,6 +384,23 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return jsonObject;
   }
 
+  @SuppressWarnings( "unchecked" )
+  private T getThis() {
+    return ( T )this;
+  }
+
+  private void checkHorizontalParameters( Integer value1, Integer value2 ) {
+    if( value1 != null && value2 != null ) {
+      throw new IllegalStateException( "Can only set two horizontal attributes" );
+    }
+  }
+
+  private void checkVerticalParameters( Integer value1, Integer value2 ) {
+    if( value1 != null && value2 != null ) {
+      throw new IllegalStateException( "Can only set two vertical attributes" );
+    }
+  }
+
   private static String hAlignmentToString( int alignment ) {
     int style = translate( translate( alignment, SWT.BEGINNING, SWT.LEFT ), SWT.END, SWT.RIGHT );
     String[] styles = StylesUtil.filterStyles( style, "LEFT", "RIGHT", "CENTER" );
@@ -300,19 +421,6 @@ public abstract class Cell<T extends Cell> implements Serializable  {
 
   private static int translate( int style, int from, int to ) {
     return ( style & from ) == from ? to : style;
-  }
-
-  private static void checkNotNull( Object value, String name ) {
-    if( value == null ) {
-      throw new IllegalArgumentException( name + " must not be null" );
-    }
-  }
-
-  private static void checkNotNullOrEmpty( String name ) {
-    if( name == null ) {
-      throw new IllegalArgumentException( "Name must not be null" );
-    }
-    notNullOrEmpty( name, "Attribute name" );
   }
 
 }

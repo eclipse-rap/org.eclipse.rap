@@ -19,18 +19,11 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.TemplateSerializer;
+import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
 import org.junit.Test;
 
 
 public class Template_Test {
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testAddCellFailsWithNullCell() {
-    Template template = new Template();
-
-    template.addCell( null );
-  }
 
   @Test
   public void testAddsCell() {

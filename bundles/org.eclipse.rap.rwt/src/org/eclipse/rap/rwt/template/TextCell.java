@@ -11,8 +11,12 @@
 package org.eclipse.rap.rwt.template;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
+/**
+ * Defines a region in a template that displays a text.
+ */
 public class TextCell extends Cell<TextCell>  {
 
   private static final String TYPE_TEXT = "text";
@@ -21,13 +25,22 @@ public class TextCell extends Cell<TextCell>  {
   private String text;
   private boolean wrap;
 
+  /**
+   * Constructs a new text cell and adds it to the given template.
+   */
   public TextCell( Template template ) {
     super( template, TYPE_TEXT );
   }
 
-  // binding index wins. Only if no binding index is set the default will be used
+  /**
+   * Sets the text to be displayed in the cell if the <em>bindingIndex</em> is not set.
+   * Can be used to display a static text.
+   *
+   * @param text the text to display, must not be <code>null</code>
+   * @return the cell itself, to enable method chaining
+   */
   public TextCell setText( String text ) {
-    checkNotNull( text, "Text" );
+    ParamCheck.notNull( text, "text" );
     this.text = text;
     return this;
   }
@@ -36,6 +49,12 @@ public class TextCell extends Cell<TextCell>  {
     return text;
   }
 
+  /**
+   * Enables automatic line wrapping. The default is <code>false</code>.
+   *
+   * @param wrap <code>true</code> to enable automatic line wrapping
+   * @return the cell itself, to enable method chaining
+   */
   public TextCell setWrap( boolean wrap ) {
     this.wrap = wrap;
     return this;
@@ -57,9 +76,4 @@ public class TextCell extends Cell<TextCell>  {
     return json;
   }
 
-  private void checkNotNull( Object value, String name ) {
-    if( value == null ) {
-      throw new IllegalArgumentException( name + " must not be null" );
-    }
-  }
 }
