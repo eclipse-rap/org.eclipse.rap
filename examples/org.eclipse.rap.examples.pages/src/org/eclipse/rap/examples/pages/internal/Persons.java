@@ -52,4 +52,5 @@ public class Persons {
     String prefix = "/resources/";
     return new Image( display, Persons.class.getResourceAsStream( prefix + name ) );
   }
+
 }

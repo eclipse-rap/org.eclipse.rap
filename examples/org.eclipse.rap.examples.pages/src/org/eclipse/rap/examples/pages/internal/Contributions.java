@@ -26,7 +26,7 @@ import org.eclipse.rap.examples.pages.ListExample;
 import org.eclipse.rap.examples.pages.MarkupExample;
 import org.eclipse.rap.examples.pages.MarkupLabelExample;
 import org.eclipse.rap.examples.pages.RowLayoutExample;
-import org.eclipse.rap.examples.pages.RowTemlateExample;
+import org.eclipse.rap.examples.pages.RowTemplateExample;
 import org.eclipse.rap.examples.pages.TableViewerExample;
 import org.eclipse.rap.examples.pages.TextInputExamplePage;
 import org.eclipse.rap.examples.pages.TreeViewerExample;
@@ -59,7 +59,7 @@ class Contributions {
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
     addContribution( "table-markup", "Table with Markup", MarkupExample.class );
-    addContribution( "table-template", "Table with RowTemplate", RowTemlateExample.class );
+    addContribution( "table-template", "Table with RowTemplate", RowTemplateExample.class );
     addContribution( "nls", "Internationalization", InternationalizationExamplePage.class );
     addContribution( "validation", "Input Validation", ValidationExamplePage.class );
   }

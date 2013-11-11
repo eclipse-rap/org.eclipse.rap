@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 
-public class RowTemlateExample implements IExamplePage {
+public class RowTemplateExample implements IExamplePage {
 
   private final class SelectionListener extends SelectionAdapter {
 
@@ -149,16 +149,6 @@ public class RowTemlateExample implements IExamplePage {
       public String getText( Object element ) {
         Person p = ( Person )element;
         return p.getMail();
-      }
-    } );
-  }
-
-  private void addFooColumn( ColumnViewer viewer ) {
-    ViewerColumn fooColumn = createViewerColumn( viewer, "Foo", 200 );
-    fooColumn.setLabelProvider( new ColumnLabelProvider() {
-      @Override
-      public String getText( Object element ) {
-        return "foo";
       }
     } );
   }
