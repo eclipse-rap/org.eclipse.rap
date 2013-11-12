@@ -157,13 +157,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private static String getOSGiProperty( String name ) {
     Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
-    // TODO: [if] Temporary workaround for bug
-    // 415447: Unable to obtain system.bundle by Platform.getBundle
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=415447
-    if( systemBundle != null ) {
-      return systemBundle.getBundleContext().getProperty( name );
-    }
-    return null;
+    return systemBundle.getBundleContext().getProperty( name );
   }
 
   @SuppressWarnings( "unchecked" )
