@@ -31,7 +31,6 @@ rwt.qx.Class.define( "rwt.client.Client", {
       this._engineVersionBuild = 0;
       this._browserPlatform = null;
       this._runsLocally = window.location.protocol === "file:";
-      this._engineQuirksMode = document.compatMode !== "CSS1Compat";
       this._defaultLocale = "en";
       // NOTE: Order is important!
       this._initOpera();
@@ -94,10 +93,6 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
     isWebkit : function() {
       return this._engineName === "webkit";
-    },
-
-    isInQuirksMode : function() {
-      return this._engineQuirksMode;
     },
 
     getTimezoneOffset : function() {
@@ -314,7 +309,8 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
     _initMshtml : function() {
       if( this._engineName === null ) {
-        var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( navigator.userAgent );
+        var userAgent = navigator.userAgent;
+        var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( userAgent );
         if( isMshtml ) {
           this._parseVersion( RegExp.$1 );
           if( this._engineVersion >= 9 ) {
@@ -323,6 +319,13 @@ rwt.qx.Class.define( "rwt.client.Client", {
             this._engineName = "mshtml";
           }
           this._browserName = "explorer";
+        } else {
+          // IE11 does not have MSIE in his userAgent string - see bug 421529
+          if( userAgent.indexOf( "Trident" ) != -1 && /rv\:([^\);]+)(\)|;)/.test( userAgent ) ) {
+            this._parseVersion( RegExp.$1 );
+            this._engineName = "newmshtml";
+            this._browserName = "explorer";
+          }
         }
       }
     },
