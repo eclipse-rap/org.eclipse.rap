@@ -38,7 +38,12 @@ public class ImageCell extends Cell<ImageCell> {
      * The image is scaled to the minimum size required to cover the entire cell.
      * The aspect ratio is preserved.
      */
-    FILL
+    FILL,
+    /**
+     * The image is scaled in all direction to cover the entire cell.
+     * The aspect ration is not preserved.
+     */
+    STRETCH
   }
 
   private static final String TYPE_IMAGE = "image";
