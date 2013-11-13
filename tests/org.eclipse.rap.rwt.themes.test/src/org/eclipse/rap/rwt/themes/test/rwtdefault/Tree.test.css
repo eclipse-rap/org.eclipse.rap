@@ -30,6 +30,10 @@ TreeItem {
   background-image: none;
 }
 
+TreeItem:linesvisible:even:rowtemplate {
+  color: transparent;
+}
+
 TreeItem:hover {
   background-color: transparent;
   color: inherit;
@@ -116,15 +120,27 @@ Tree-Cell {
 }
 
 Tree-GridLine {
-  color: #d0d0d0;
+  color: transparent;
 }
 
 Tree-GridLine:header {
   color: #d0d0d0;
 }
 
+Tree-GridLine:vertical {
+  color: #d0d0d0;
+}
+
 Tree-GridLine:horizontal {
   color: transparent;
+}
+
+Tree-GridLine:vertical:rowtemplate {
+  color: transparent;
+}
+
+Tree-GridLine:horizontal:rowtemplate {
+  color: #d0d0d0;
 }
 
 Tree-Checkbox {

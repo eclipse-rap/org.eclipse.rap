@@ -52,6 +52,10 @@ TableItem:linesvisible:even {
   color: inherit;
 }
 
+TableItem:linesvisible:even:rowtemplate {
+  color: transparent;
+}
+
 Table-RowOverlay:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
@@ -163,10 +167,14 @@ Table-Cell {
 }
 
 Table-GridLine {
-  color: #dedede;
+  color: transparent;
 }
 
 Table-GridLine:header {
+  color: #dedede;
+}
+
+Table-GridLine:vertical {
   color: #dedede;
 }
 
@@ -174,8 +182,16 @@ Table-GridLine:horizontal {
   color: transparent;
 }
 
+Table-GridLine:vertical:rowtemplate {
+  color: transparent;
+}
+
+Table-GridLine:horizontal:rowtemplate {
+  color: #dedede;
+}
+
 Table-Checkbox {
-  /* 
+  /*
   For backward compatibility we have to keep the width property.
   Deprecated, use "margin" instead.
   */

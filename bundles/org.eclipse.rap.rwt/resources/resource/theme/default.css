@@ -1026,7 +1026,8 @@ TableColumn:hover {
   );
 }
 
-TableItem {
+TableItem,
+TableItem:linesvisible:even:rowtemplate {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
@@ -1034,12 +1035,10 @@ TableItem {
   background-image: none;
 }
 
-
 TableItem:linesvisible:even {
   background-color: #f0f0f0;
   color: inherit;
 }
-
 
 Table-RowOverlay {
   background-color: transparent;
@@ -1124,13 +1123,17 @@ Table-Cell {
   padding: 5px 3px 5px 3px;
 }
 
-Table-GridLine {
+Table-GridLine,
+Table-GridLine:vertical:rowtemplate {
+  color: transparent;
+}
+
+Table-GridLine:vertical,
+Table-GridLine:header,
+Table-GridLine:horizontal:rowtemplate {
   color: #dedede;
 }
 
-Table-GridLine:horizontal {
-  color: transparent;
-}
 
 Table-Checkbox {
   /*
@@ -1301,7 +1304,8 @@ Tree[BORDER] {
   border: 1px solid #bdbdbd;
 }
 
-TreeItem {
+TreeItem,
+TreeItem:linesvisible:even:rowtemplate {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
@@ -1420,12 +1424,15 @@ Tree-Cell {
   padding: 5px 3px 5px 3px;
 }
 
-Tree-GridLine {
-  color: #d0d0d0;
+Tree-GridLine,
+Tree-GridLine:vertical:rowtemplate {
+  color: transparent;
 }
 
-Tree-GridLine:horizontal {
-  color: transparent;
+Tree-GridLine:vertical,
+Tree-GridLine:header,
+Tree-GridLine:horizontal:rowtemplate {
+  color: #d0d0d0;
 }
 
 Tree-Checkbox {
