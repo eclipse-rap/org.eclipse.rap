@@ -2532,6 +2532,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertIdentical( item, options.item );
       assertEquals( [ 0, 0, 400, 15 ], options.bounds );
       assertTrue( options.enabled );
+      assertTrue( !options.markupEnabled );
       assertIdentical( row._getTargetNode(), log[ 0 ][ 0 ].container.element );
       assertIdentical( template, log[ 0 ][ 0 ].container.template );
       assertEquals( 100, log[ 0 ][ 0 ].container.zIndexOffset );
@@ -2556,6 +2557,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       var options = log[ 0 ][ 0 ];
       assertEquals( [ 32, 0, 368, 15 ], options.bounds );
+    },
+
+    testRenderTemplate_CallRenderWithMarkup : function() {
+      row.destroy();
+      tree.destroy();
+      this._createTree( false, "markupEnabled" );
+      var itemParent = this._createItem( tree );
+      var item = this._createItem( itemParent );
+      var template = mockTemplate( [ 0, "text", 10, 20 ] );
+      var log = [];
+      var render = template.render;
+      template.render = function() {
+        log.push( rwt.util.Arrays.fromArguments( arguments ) );
+        //render.apply( this, arguments );
+      };
+      tree.getRenderConfig().rowTemplate = template;
+
+      row.renderItem( item, tree._config, false, null );
+
+      var options = log[ 0 ][ 0 ];
+      assertTrue( options.markupEnabled );
     },
 
     testRenderTemplate_CallRenderForNullItem : function() {

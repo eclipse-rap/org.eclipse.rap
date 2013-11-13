@@ -167,6 +167,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this.getHeight()
         ],
         "enabled" : config.enabled,
+        "markupEnabled" : config.markupEnabled,
         "seeable" : this.isSeeable()
       } );
       this._template = config.rowTemplate; // needed by getTargetIdentifier

@@ -89,8 +89,8 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
       "newmshtml" : function( element ) {
         var computed = window.getComputedStyle( element, null );
         var result = [
-          Math.ceil( parseFloat( computed.width ) ),
-          Math.round( parseFloat( computed.height ) )
+          Math.ceil( parseFloat( computed.width ) ), // Ensure Texts are not cut off or wrap
+          Math.round( parseFloat( computed.height ) ) // Ensure vertical alignment looks right
         ];
         return this._addOffset( result );
       }
