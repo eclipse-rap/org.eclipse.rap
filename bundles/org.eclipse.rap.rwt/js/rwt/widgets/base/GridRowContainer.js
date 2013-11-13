@@ -222,6 +222,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     },
 
     _getGridBorder : function( state ) {
+      if( this._config.rowTemplate ) {
+        state.rowtemplate = true;
+      }
       var tvGrid = new rwt.theme.ThemeValues( state );
       var cssElement = rwt.util.Strings.toFirstUp( this._baseAppearance ) + "-GridLine";
       var gridColor = tvGrid.getCssColor( cssElement, "color" );

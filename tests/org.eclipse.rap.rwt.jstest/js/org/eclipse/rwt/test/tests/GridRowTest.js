@@ -2625,6 +2625,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "red", row._getTargetNode().style.backgroundColor );
     },
 
+    testRenderTemplate_SetRowTemplateState : function() {
+      tree.getRenderConfig().rowTemplate = mockTemplate();
+      var item = this._createItem( tree );
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertTrue( row.hasState( "rowtemplate" ) );
+    },
+
     testRenderTemplate_EmptyTemplateRendersOverlay : function() {
       tree.setTreeColumn( -1 );
       tree.getRenderConfig().fullSelection = true;

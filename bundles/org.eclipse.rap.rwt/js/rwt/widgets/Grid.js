@@ -172,6 +172,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._hasFixedColumns = map.splitContainer;
       this._config.baseAppearance = map.appearance;
       this._config.rowTemplate = map.rowTemplate;
+      if( this._config.rowTemplate ) {
+        this.addState( "rowtemplate" );
+      }
       this._rowContainer.setBaseAppearance( map.appearance );
       this.setAppearance( map.appearance );
     },

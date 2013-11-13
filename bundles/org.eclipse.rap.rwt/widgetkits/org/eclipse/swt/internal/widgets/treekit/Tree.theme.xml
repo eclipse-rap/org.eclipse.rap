@@ -36,6 +36,9 @@
     <state name="linesvisible"
         description="Applies to trees with gridlines." />
 
+    <state name="rowtemplate"
+        description="Applies to a tree with a row template." />
+
     <element name="TreeItem"
         description="Item elements of tree controls">
 
@@ -69,6 +72,9 @@
       <state name="linesvisible"
           description="Applies to items of a tree with gridlines." />
 
+      <state name="rowtemplate"
+          description="Applies to the items of a tree with a row template." />
+
       <state name="hover"
           description="Mouse over state." />
 
@@ -100,6 +106,9 @@
 
       <state name="linesvisible"
           description="Applies to the items of a tree with gridlines." />
+
+      <state name="rowtemplate"
+          description="Applies to the items of a tree with a row template." />
 
       <state name="hover"
           description="Applies while the user hovers over the tree item." />
@@ -180,6 +189,9 @@
 
       <state name="header"
           description="Applies for grid lines in header." />
+
+      <state name="rowtemplate"
+          description="Applies for grid lines in a tree with a row template" />
 
     </element>
 

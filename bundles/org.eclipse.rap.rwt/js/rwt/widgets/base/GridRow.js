@@ -194,6 +194,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderStates : function( item, config, selected, hoverTarget ) {
+      this.setState( "rowtemplate", config.rowTemplate != null );
       this.setState( "checked", item.isChecked() );
       this.setState( "grayed", item.isGrayed() );
       this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );

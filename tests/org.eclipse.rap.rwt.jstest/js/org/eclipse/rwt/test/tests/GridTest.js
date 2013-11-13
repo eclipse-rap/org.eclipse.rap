@@ -122,8 +122,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         }
       ] );
 
-      var config = rwt.remote.ObjectRegistry.getObject( "w3" ).getRenderConfig();
+      var grid = rwt.remote.ObjectRegistry.getObject( "w3" );
+      var config = grid.getRenderConfig();
       assertTrue( config.rowTemplate instanceof rwt.widgets.util.Template );
+      assertTrue( grid.hasState( "rowtemplate" ) );
       assertFalse( config.fullSelection );
       assertIdentical( template, config.rowTemplate._cells );
       shell.destroy();

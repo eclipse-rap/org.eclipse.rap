@@ -39,6 +39,9 @@
     <state name="linesvisible"
         description="Applies to a table with gridlines." />
 
+    <state name="rowtemplate"
+        description="Applies to a table with a row template." />
+
     <element name="TableItem"
         description="Item elements of table controls">
 
@@ -72,6 +75,9 @@
       <state name="linesvisible"
           description="Applies to the items of a table with gridlines." />
 
+      <state name="rowtemplate"
+          description="Applies to the items of a table with a row template." />
+
       <state name="hover"
           description="Applies while the user hovers over the table item." />
 
@@ -103,6 +109,9 @@
 
       <state name="linesvisible"
           description="Applies to the items of a table with gridlines." />
+
+      <state name="rowtemplate"
+          description="Applies to the items of a table with a row template." />
 
       <state name="hover"
           description="Applies while the user hovers over the table item." />
@@ -180,6 +189,9 @@
 
       <state name="header"
           description="Applies for grid lines in header." />
+
+      <state name="rowtemplate"
+          description="Applies for grild lines in a table with a row template" />
 
     </element>
 
