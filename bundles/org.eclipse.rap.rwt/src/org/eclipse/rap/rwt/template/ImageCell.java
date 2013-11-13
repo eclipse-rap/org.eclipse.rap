@@ -35,13 +35,12 @@ public class ImageCell extends Cell<ImageCell> {
      */
     FIT,
     /**
-     * The image is scaled to the minimum size required to cover the entire cell.
-     * The aspect ratio is preserved.
+     * The image is scaled to the minimum size required to cover the entire cell. The aspect ratio
+     * is preserved.
      */
     FILL,
     /**
-     * The image is scaled in all direction to cover the entire cell.
-     * The aspect ration is not preserved.
+     * The image is scaled to the exact bounds of the cell. The aspect ratio is not preserved.
      */
     STRETCH
   }
