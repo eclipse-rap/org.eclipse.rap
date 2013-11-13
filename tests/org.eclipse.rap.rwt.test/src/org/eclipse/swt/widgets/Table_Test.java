@@ -28,6 +28,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -2390,6 +2391,16 @@ public class Table_Test {
     table.showColumn( table.getColumn( 0 ) );
 
     assertEquals( 100, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testFixedColumnsNotSetWithRowTemplate() {
+    Table table = createFixedColumnsTable();
+
+    table.setData( RWT.ROW_TEMPLATE, new Template() );
+
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    assertEquals( -1, adapter.getFixedColumns() );
   }
 
   @Test

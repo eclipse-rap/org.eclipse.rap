@@ -33,6 +33,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -1914,6 +1915,16 @@ public class Tree_Test {
     tree.showColumn( tree.getColumn( 0 ) );
 
     assertEquals( 100, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testFixedColumnsNotSetWithRowTemplate() {
+    Tree tree = createFixedColumnsTree();
+
+    tree.setData( RWT.ROW_TEMPLATE, new Template() );
+
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
+    assertEquals( -1, adapter.getFixedColumns() );
   }
 
   @Test

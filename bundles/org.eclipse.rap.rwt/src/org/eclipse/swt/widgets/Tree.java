@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -1919,7 +1920,7 @@ public class Tree extends Composite {
     int result = -1;
     try {
       Integer data = ( Integer )getData( RWT.FIXED_COLUMNS );
-      if( data != null ) {
+      if( data != null && !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
         result = data.intValue();
       }
     } catch( ClassCastException ex ) {
