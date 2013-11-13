@@ -13,11 +13,10 @@ below for instructions on how to add them to the .war files.
 * Google Maps:
   https://github.com/eclipsesource/rap-gmap
 
-* Rich Text Editor:
-  https://github.com/eclipsesource/rap-ckeditor
-
 * Complex Data:
   https://github.com/ralfstx/rap-demo-additions
+
+* d3 Chart
 
 
 Changing the default p2 repositories
@@ -32,12 +31,12 @@ by setting the following properties
   rap-incubator-repository, and 
   eclipse-simultaneous-release-repository
 
-Example with RAP 2.1 final and RAP Incubator builds for 2.1 using the
+Example with RAP 2.2M3 and RAP Incubator builds for 2.2 /nightly using the
 Kepler Simultaneous Release:
 
   mvn -e \
-      -Drap-repository=http://download.eclipse.org/rt/rap/2.1/ \
-      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.1/ \
+      -Drap-repository=http://download.eclipse.org/rt/rap/2.2/M3-20131111-1653/ \
+      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/nightly/ \
       -Declipse-simultaneous-release-repository=http://download.eclipse.org/releases/kepler/ \
       clean install
 
