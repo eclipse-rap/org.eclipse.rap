@@ -466,7 +466,7 @@ public final class RWT {
    * <pre>
    * Template template = new Template();
    * // add cells to this template
-   * new TextCell().setBindingindex( 0 ).setTop( 10 ).setLeft( 20 ) ...;
+   * new TextCell(template).setBindingIndex(0).setTop(10).setLeft(20) ...;
    * ...
    * Table table = new Table(parent, SWT.FULL_SELECTION);
    * // Add as many columns as needed to add multiple texts/images to items
