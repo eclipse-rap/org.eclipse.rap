@@ -318,13 +318,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     setScrollBarsVisible : function( horzVisible, vertVisible ) {
-      if( !horzVisible ) {
-        this._horzScrollBar.setValue( 0 );
-      }
       this._horzScrollBar.setVisibility( horzVisible );
-      if( !vertVisible ) {
-        this._vertScrollBar.setValue( 0 );
-      }
       this._vertScrollBar.setVisibility( vertVisible );
       this._layoutX();
       this._layoutY();

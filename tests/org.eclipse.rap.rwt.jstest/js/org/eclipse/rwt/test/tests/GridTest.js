@@ -4456,6 +4456,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    // see bug 419982
+    testSetTopItemIndexAndScrollBarsVisibilityTogether : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var hScroll = this._createScrollBarByProtocol( "s1", "w3", [ "HORIZONTAL" ] );
+      var vScroll = this._createScrollBarByProtocol( "s2", "w3", [ "VERTICAL" ] );
+      widget.setItemCount( 10 );
+      widget.setItemHeight( 20 );
+      TestUtil.flush();
+
+      TestUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
+      TestUtil.protocolSet( "s1", { "visibility" : true } );
+      TestUtil.protocolSet( "s2", { "visibility" : true } );
+
+      assertEquals( 60, widget._vertScrollBar.getValue() );
+      assertEquals( 3, widget.getTopItemIndex() );
+      shell.destroy();
+      widget.destroy();
+      hScroll.destroy();
+      vScroll.destroy();
+    },
+
     /////////
     // helper
 
@@ -4472,6 +4494,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
           "indentionWidth" : 16,
           "checkBoxMetrics" : [ 5, 16 ],
           "bounds" : [ 0, 0, 100, 100 ]
+        }
+      } );
+      return rwt.remote.ObjectRegistry.getObject( id );
+    },
+
+    _createScrollBarByProtocol : function( id, parentId, styles ) {
+      rwt.remote.MessageProcessor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "style" : styles,
+          "parent" : parentId
         }
       } );
       return rwt.remote.ObjectRegistry.getObject( id );
