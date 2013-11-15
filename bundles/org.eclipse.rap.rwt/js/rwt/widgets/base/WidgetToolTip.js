@@ -194,7 +194,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
           if( this._config.disappearOn === "move" ) {
             this._startHideTimer();
           } else if( this._config.disappearOn === "exitTargetBounds" ) {
-            var bounds = this._getWidgetBounds();
+            var bounds = this._getTargetBounds();
             var x = event.getPageX();
             var y = event.getPageY();
             if(    ( x < bounds.left ) || ( x > ( bounds.left + bounds.width ) )
@@ -243,7 +243,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _afterAppearLayout : function() {
-      var targetBounds = this._getWidgetBounds();
+      var targetBounds = this._getTargetBounds();
       var docDimension = this._getDocumentDimension();
       var selfDimension = this._getOwnDimension();
       var newPosition = this._getPositionAfterAppear( targetBounds, docDimension, selfDimension );
@@ -279,32 +279,22 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _renderPointerUp : function( target, self ) {
       var pointer = this.getPointers()[ 0 ];
       var element = this._getPointerElement();
-      var targetCenter = this._getBoundsCenter( target );
       rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
       element.style.width = pointer[ 1 ] + "px";
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = ( -1 * pointer[ 2 ] ) + "px";
-      if( this._config.position === "align-left" ) {
-        element.style.left = this.getPaddingLeft() + "px";
-      } else {
-        element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
-      }
+      this._renderPointerHorizontalAlign( target, self, pointer );
       element.style.display = "";
     },
 
     _renderPointerDown : function( target, self ) {
       var pointer = this.getPointers()[ 2 ];
       var element = this._getPointerElement();
-      var targetCenter = this._getBoundsCenter( target );
       rwt.html.Style.setBackgroundImage( element, pointer[ 0 ] );
       element.style.width = pointer[ 1 ] + "px";
       element.style.height = pointer[ 2 ] + "px";
       element.style.top = self.height + "px";
-      if( this._config.position === "align-left" ) {
-        element.style.left = this.getPaddingLeft() + "px";
-      } else {
-        element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
-      }
+      this._renderPointerHorizontalAlign( target, self, pointer );
       element.style.display = "";
     },
 
@@ -330,6 +320,20 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       element.style.left = self.width + "px";
       element.style.top = Math.round( targetCenter.top - self.top - pointer[ 2 ] / 2 ) + "px";
       element.style.display = "";
+    },
+
+    _renderPointerHorizontalAlign : function( target, self, pointer ) {
+      var element = this._getPointerElement();
+      if( this._config.position === "align-left" ) {
+        var targetedLeft =   target.left
+                           + this._targetDistance
+                           + this._cachedBorderLeft
+                           + this.getPaddingLeft();
+        element.style.left = Math.round( targetedLeft - self.left ) + "px";
+      } else {
+        var targetCenter = this._getBoundsCenter( target );
+        element.style.left = Math.round( targetCenter.left - self.left - pointer[ 1 ] / 2 ) + "px";
+      }
     },
 
     _getDirection : function( target, self ) {
@@ -441,7 +445,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return Math.round( target.top + ( target.height / 2 ) - self.height / 2 );
     },
 
-    _getWidgetBounds : function() {
+    _getTargetBounds : function() {
       var widget = this.getBoundToWidget();
       var location = rwt.html.Location.get( widget.getElement() );
       var result = {

@@ -263,6 +263,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertEquals( 0, right );
     },
 
+    testPosition_HorizontalCenterRestrictToPageRightAdjustPointer : function() {
+      config = { "position" : "align-left" };
+      toolTip.setPaddingLeft( 12 );
+      toolTip.setPointers( [ [ "foo.gif", 10, 20 ], null, null, null ] );
+      WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
+      var totalWidth = rwt.widgets.base.ClientDocument.getInstance().getClientWidth();
+      widget.setLeft( totalWidth - 30  );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 110, 20 );
+      showToolTip();
+
+      var pointer = toolTip._getPointerElement();
+      var actual = rwt.html.Location.get( pointer ).left;
+      var expected = rwt.html.Location.get( widget.getElement() ).left + overlap + 1 + 12;
+      assertEquals( expected, actual );
+    },
+
     testPosition_MouseRelativeRestrictToPageBottom : function() {
       WidgetToolTip.setToolTipText( widget, "foobar" );
       var totalHeight = rwt.widgets.base.ClientDocument.getInstance().getClientHeight();
