@@ -498,6 +498,62 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       toolTip.setAnimation( {} );
     },
 
+    testDoNotHideOnMouseOverIfAnchorIsPresent : function() {
+      config = { "disappearOn" : "exit" };
+      widget.setUserData( "toolTipMarkupEnabled", true );
+      WidgetToolTip.setToolTipText( widget, "<a>test1</a>" );
+      toolTip.setAnimation( { "fadeOut" : [ 400, "linear" ] } );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      TestUtil.hoverFromTo( widget.getElement(), document.body );
+      TestUtil.hoverFromTo( document.body, toolTip.getElement() );
+      TestUtil.hoverFromTo( toolTip.getElement(), toolTip._label.getElement() );
+
+      assertFalse( toolTip._hideTimer.getEnabled() );
+      assertFalse( toolTip._disappearAnimation.isStarted() );
+      assertTrue( toolTip.isSeeable() );
+      assertIdentical( widget, toolTip.getBoundToWidget() );
+      toolTip.setAnimation( {} );
+    },
+
+    testDoNotHideOnMouseDownOnToolTipLabel : function() {
+      config = { "disappearOn" : "exit" };
+      widget.setUserData( "toolTipMarkupEnabled", true );
+      widget.focus(); // focus change can close a tooltip
+      WidgetToolTip.setToolTipText( widget, "<a>test1</a>" );
+      toolTip.setAnimation( { "fadeOut" : [ 400, "linear" ] } );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var a = toolTip.getElement().getElementsByTagName( "a" )[ 0 ];
+      TestUtil.fakeMouseEventDOM( a, "mousedown" );
+
+      assertFalse( toolTip._hideTimer.getEnabled() );
+      assertFalse( toolTip._disappearAnimation.isStarted() );
+      assertTrue( toolTip.isSeeable() );
+      assertIdentical( widget, toolTip.getBoundToWidget() );
+      toolTip.setAnimation( {} );
+    },
+
+    testHideOnMouseUpOnToolTip : function() {
+      config = { "disappearOn" : "exit" };
+      widget.setUserData( "toolTipMarkupEnabled", true );
+      widget.focus(); // focus change can close a tooltip
+      WidgetToolTip.setToolTipText( widget, "<a>test1</a>" );
+      toolTip.setAnimation( { "fadeOut" : [ 400, "linear" ] } );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+
+      var a = toolTip.getElement().getElementsByTagName( "a" )[ 0 ];
+      TestUtil.fakeMouseEventDOM( a, "mousedown" );
+      TestUtil.fakeMouseEventDOM( a, "mouseup" );
+      TestUtil.forceTimerOnce();
+
+      assertFalse( toolTip.isSeeable() );
+      toolTip.setAnimation( {} );
+    },
+
     testHideOnExitTargetBoundsLeft: function() {
       config = { "disappearOn" : "exitTargetBounds" };
       WidgetToolTip.setToolTipText( widget, "test1" );

@@ -256,8 +256,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
     testGridRowConfig : function() {
       assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
       assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
-    },
-
+    }
 
   }
 

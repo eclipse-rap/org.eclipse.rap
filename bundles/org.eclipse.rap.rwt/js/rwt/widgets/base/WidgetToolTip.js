@@ -23,8 +23,10 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._showTimer.addEventListener( "interval", this._onshowtimer, this );
     this._hideTimer = new rwt.client.Timer();
     this._hideTimer.addEventListener( "interval", this._onhidetimer, this );
-    this.addEventListener( "mouseover", this._onmouseover );
-    this.addEventListener( "mouseout", this._onmouseover );
+    this._lastWidget = null;
+    this.addEventListener( "mouseover", this._onMouseOver );
+    this.addEventListener( "mouseout", this._onMouseOver );
+    this.addEventListener( "mouseup", this._onMouseUp );
     this._currentConfig = {};
     this.setRestrictToPageOnOpen( false );
   },
@@ -100,6 +102,14 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
+    getLastWidget : function() {
+      return this._lastWidget;
+    },
+
+    getFocusRoot : function() {
+      return null; // prevent setting clientDocument as a focused widget
+    },
+
     _applyElement : function( value, old ) {
       this.base( arguments, value, old );
     },
@@ -143,7 +153,8 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _startShowTimer : function() {
-      if( this._config.appearOn === "enter" && this._allowQuickAppear() ) {
+      if(     this._allowQuickAppear()
+          && ( this._config.appearOn === "enter" || this._lastWidget == this.getBoundToWidget() )  ) {
         this._onshowtimer();
       } else {
         if( !this._showTimer.getEnabled() ) {
@@ -175,10 +186,23 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onmouseover : function( event ) {
+    _onMouseOver : function( event ) {
       if( this._pointer && this._pointer === event.getDomTarget() ) {
         return;
       }
+      if( this.getElement().getElementsByTagName( "a" ).length > 0 ) {
+        return;
+      }
+      this._quickHide();
+    },
+
+    _onMouseUp : function() {
+      rwt.client.Timer.once( function() {
+        this._quickHide();
+      }, this, 100 );
+    },
+
+    _quickHide : function() {
       if( this._disappearAnimation && this._disappearAnimation.getDefaultRenderer().isActive() ) {
         this._disappearAnimation.getDefaultRenderer().setActive( false );
         this.hide();
@@ -212,6 +236,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _onshowtimer : function( e ) {
+      this._lastWidget = this.getBoundToWidget();
       this._stopShowTimer();
       this._stopHideTimer();
       this._updateTextInternal();
