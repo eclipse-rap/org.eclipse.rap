@@ -190,7 +190,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _handleMouseMove : function( event ) {
       if( this.getBoundToWidget() ) {
-        if( this.isSeeable() ) {
+        if( this.isSeeable() && !this._hideTimer.getEnabled() ) {
           if( this._config.disappearOn === "move" ) {
             this._startHideTimer();
           } else if( this._config.disappearOn === "exitTargetBounds" ) {

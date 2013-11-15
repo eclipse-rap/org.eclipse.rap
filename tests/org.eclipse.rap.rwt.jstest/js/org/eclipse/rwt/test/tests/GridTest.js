@@ -548,6 +548,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    testSetCellToolTipTextByProtocol_NoCrashWhenAnotherToolTipIsVisible : function() {
+      rwt.widgets.util.GridCellToolTipSupport._cell = [ null, null, null ];
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      rwt.widgets.base.WidgetToolTip.setToolTipText( shell, "foo" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 10 );
+      widget.setColumnCount( 2 );
+      widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
+      widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
+      TestUtil.flush();
+      var row = widget.getRowContainer().getFirstChild();
+
+      TestUtil.fakeMouseEvent( shell, "mouseover", 30, 10 );
+      rwt.widgets.base.WidgetToolTip.getInstance()._onshowtimer();
+      TestUtil.fakeMouseEvent( row, "mouseover", 30, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 30, 10 ); // can crash if _cell is not set
+
+      shell.destroy();
+    },
+
     testSetMarkupEnabledByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       rwt.remote.MessageProcessor.processOperation( {
