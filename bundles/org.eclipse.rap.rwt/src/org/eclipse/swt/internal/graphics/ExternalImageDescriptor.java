@@ -17,23 +17,18 @@ import org.eclipse.swt.graphics.Image;
 
 public class ExternalImageDescriptor {
 
-  private final String url;
-  private final int width;
-  private final int height;
+  private final InternalImage internalImage;
 
   public ExternalImageDescriptor( String url, int width, int height ) {
     ParamCheck.notNull( url, "url" );
     if( width <= 0 || height <= 0 ) {
       throw new IllegalArgumentException( "Illegal size" );
     }
-    this.url = url;
-    this.width = width;
-    this.height = height;
+    internalImage = new InternalImage( url, width, height, true );
   }
 
   public Image createImage( Device device ) {
     ParamCheck.notNull( device, "device" );
-    InternalImage internalImage = new InternalImage( url, width, height, true );
     return ImageFactory.createImageInstance( device, internalImage );
   }
 

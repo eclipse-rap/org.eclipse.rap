@@ -85,4 +85,15 @@ public class ExternalImageDescriptor_Test {
     assertSame( display, image.getDevice() );
   }
 
+  @Test
+  public void testCreateImage_usesSameInternalImage() {
+    String url = "http://foo.org/bar.png";
+    ExternalImageDescriptor imageDescriptor = new ExternalImageDescriptor( url, 1, 2 );
+
+    Image image1 = imageDescriptor.createImage( display );
+    Image image2 = imageDescriptor.createImage( display );
+
+    assertSame( image1.internalImage, image2.internalImage );
+  }
+
 }
