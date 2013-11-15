@@ -316,6 +316,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var size = element.style.backgroundSize;
       assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
       assertEquals( "cover", size );
+    },
+
+    testImageRenderer_CreateElementSetsScaleModeStretch : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+
+      var element = create( {
+        "scaleMode" : "STRETCH",
+        "alignment" : { "RIGHT" : true, "BOTTOM" : true }
+      } );
+
+      var position = element.style.backgroundPosition;
+      var size = element.style.backgroundSize;
+      assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
+      assertTrue( "100% 100%" === size || "100%" === size );
     }
 
   }

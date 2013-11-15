@@ -160,6 +160,8 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
       result.style.backgroundSize = "contain";
     } else if( cellData.scaleMode === "FILL" ) {
       result.style.backgroundSize = "cover";
+    } else if( cellData.scaleMode === "STRETCH" ) {
+      result.style.backgroundSize = "100% 100%";
     } else {
       position[ 0 ] = alignmentStyleToCss[ cellData.horizontalAlignment ] || "center";
       position[ 1 ] = alignmentStyleToCss[ cellData.verticalAlignment ] || "center";
