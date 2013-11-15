@@ -193,6 +193,15 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
         if( this.isSeeable() ) {
           if( this._config.disappearOn === "move" ) {
             this._startHideTimer();
+          } else if( this._config.disappearOn === "exitTargetBounds" ) {
+            var bounds = this._getWidgetBounds();
+            var x = event.getPageX();
+            var y = event.getPageY();
+            if(    ( x < bounds.left ) || ( x > ( bounds.left + bounds.width ) )
+                || ( y < bounds.top ) || ( y > ( bounds.top + bounds.height ) ) )
+            {
+              this._startHideTimer();
+            }
           }
         } else {
           if( this._config.appearOn === "rest" ) {

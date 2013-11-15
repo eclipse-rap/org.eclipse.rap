@@ -251,7 +251,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "enter", getConfig( new rwt.widgets.Scale() ).appearOn );
       assertEquals( "enter", getConfig( new rwt.widgets.Slider() ).appearOn );
       assertEquals( "enter", getConfig( new rwt.widgets.ProgressBar() ).appearOn );
-    }
+    },
+
+    testGridRowConfig : function() {
+      assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
+      assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
+    },
+
 
   }
 

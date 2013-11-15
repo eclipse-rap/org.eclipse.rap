@@ -480,6 +480,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       toolTip.setAnimation( {} );
     },
 
+    testHideOnExitTargetBoundsLeft: function() {
+      config = { "disappearOn" : "exitTargetBounds" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      widget.getToolTipTargetBounds = function() {
+        return { "top" : 2, "left" : 2, "width" : 10, "height" : 10 };
+      };
+      var inTarget = [
+        10 + 1 + 100 + 3,
+        20 + 1 + 10 + 3
+      ];
+      TestUtil.fakeMouseEvent( widget, "mouseover", inTarget[ 0 ], inTarget[ 1 ] );
+      showToolTip();
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", inTarget[ 0 ] + 2 , inTarget[ 1 ] );
+      assertTrue( toolTip.isSeeable() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", inTarget[ 0 ] + 2 , inTarget[ 1 ] - 2 );
+      TestUtil.forceInterval( toolTip._hideTimer );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
+    testHideOnExitTargetBoundsRight: function() {
+      config = { "disappearOn" : "exitTargetBounds" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      widget.getToolTipTargetBounds = function() {
+        return { "top" : 2, "left" : 2, "width" : 10, "height" : 10 };
+      };
+      var inTarget = [
+        10 + 1 + 100 + 3,
+        20 + 1 + 10 + 3
+      ];
+      TestUtil.fakeMouseEvent( widget, "mouseover", inTarget[ 0 ], inTarget[ 1 ] );
+      showToolTip();
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", inTarget[ 0 ] + 2 , inTarget[ 1 ] );
+      assertTrue( toolTip.isSeeable() );
+      TestUtil.fakeMouseEvent( widget, "mousemove", inTarget[ 0 ] + 2 , inTarget[ 1 ] + 12 );
+      TestUtil.forceInterval( toolTip._hideTimer );
+
+      assertFalse( toolTip.isSeeable() );
+    },
+
     testStopHideTimerWhenReAppearWhileVisible : function() {
       var widget2 = new rwt.widgets.base.Label( "Hello World 2" );
       widget2.addToDocument();
