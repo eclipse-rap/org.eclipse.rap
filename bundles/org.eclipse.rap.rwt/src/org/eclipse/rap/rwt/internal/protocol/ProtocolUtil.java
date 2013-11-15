@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.protocol;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
@@ -63,7 +66,7 @@ public final class ProtocolUtil {
     if( clientMessage == null ) {
       HttpServletRequest request = ContextProvider.getRequest();
       try {
-        JsonObject json = JsonObject.readFrom( request.getReader() );
+        JsonObject json = JsonObject.readFrom( getReader( request ) );
         clientMessage = new ClientMessage( json );
       } catch( IOException ioe ) {
         throw new IllegalStateException( "Unable to read the json message", ioe );
@@ -71,6 +74,19 @@ public final class ProtocolUtil {
       serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
     }
     return clientMessage;
+  }
+
+  /*
+   * Workaround for bug in certain servlet containers where the reader is sometimes empty.
+   * 411616: Application crash with very long messages
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=411616
+   */
+  private static Reader getReader( HttpServletRequest request ) throws IOException {
+    String encoding = request.getCharacterEncoding();
+    if( encoding == null ) {
+      encoding = HTTP.CHARSET_UTF_8;
+    }
+    return new InputStreamReader( request.getInputStream(), encoding );
   }
 
   public static void setClientMessage( ClientMessage clientMessage ) {
