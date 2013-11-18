@@ -22,14 +22,14 @@ rwt.qx.Class.define( "rwt.client.Client", {
   statics : {
 
     __init : function() {
-      this._engineName = null;
-      this._browserName = null;
-      this._engineVersion = null;
+      this._engineName = "unknown";
+      this._browserName = "unknown";
+      this._engineVersion = 0;
       this._engineVersionMajor = 0;
       this._engineVersionMinor = 0;
       this._engineVersionRevision = 0;
       this._engineVersionBuild = 0;
-      this._browserPlatform = null;
+      this._browserPlatform = "other";
       this._runsLocally = window.location.protocol === "file:";
       this._defaultLocale = "en";
       // NOTE: Order is important!
@@ -211,7 +211,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
     // Helper
 
     _initOpera : function() {
-      if( this._engineName === null ) {
+      if( !this._isBrowserDetected() ) {
         var isOpera =    window.opera
                       && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
         if( isOpera ) {
@@ -229,7 +229,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
     },
 
     _initKonqueror : function() {
-      if( this._engineName === null ) {
+      if( !this._isBrowserDetected() ) {
         var vendor = navigator.vendor;
         var isKonqueror =    typeof vendor === "string" && vendor === "KDE"
                           && /KHTML\/([0-9\-\.]*)/.test( navigator.userAgent );
@@ -244,7 +244,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
     },
 
     _initWebkit : function() {
-      if( this._engineName === null ) {
+      if( !this._isBrowserDetected() ) {
         var userAgent = navigator.userAgent;
         var isWebkit =    userAgent.indexOf( "AppleWebKit" ) != -1
                        && /AppleWebKit\/([^ ]+)/.test( userAgent );
@@ -283,7 +283,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
     },
 
     _initGecko : function() {
-      if( this._engineName === null ) {
+      if( !this._isBrowserDetected() ) {
         var product = navigator.product;
         var userAgent = navigator.userAgent;
         var isGecko =    window.controllers
@@ -308,7 +308,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
     },
 
     _initMshtml : function() {
-      if( this._engineName === null ) {
+      if( !this._isBrowserDetected() ) {
         var userAgent = navigator.userAgent;
         var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( userAgent );
         if( isMshtml ) {
@@ -328,6 +328,10 @@ rwt.qx.Class.define( "rwt.client.Client", {
           }
         }
       }
+    },
+
+    _isBrowserDetected : function() {
+      return this._engineName !== "unknown";
     },
 
     _parseVersion : function( versionStr ) {
