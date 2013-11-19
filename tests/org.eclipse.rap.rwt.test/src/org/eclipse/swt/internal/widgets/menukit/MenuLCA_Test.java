@@ -73,33 +73,6 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testUnassignedMenuBar() throws IOException {
-    String shellId = WidgetUtil.getId( shell );
-    Menu menuBar = new Menu( shell, SWT.BAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( menuBar );
-    // Ensure that a menuBar that is not assigned to any shell (via setMenuBar)
-    // is rendered but without settings its parent
-    lca.renderChanges( menuBar );
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menuBar, "parent" ) );
-    // The contrary: an assigned menuBar has to be rendered with setParent
-    Fixture.fakeNewRequest();
-    Fixture.preserveWidgets();
-    shell.setMenuBar( menuBar );
-    lca.renderChanges( menuBar );
-    message = Fixture.getProtocolMessage();
-    assertEquals( shellId, message.findSetProperty( menuBar, "parent" ).asString() );
-    // Un-assigning a menuBar must result in setParent( null ) being rendered
-    Fixture.fakeNewRequest();
-    Fixture.preserveWidgets();
-    shell.setMenuBar( null );
-    lca.renderChanges( menuBar );
-    message = Fixture.getProtocolMessage();
-    assertEquals( JsonObject.NULL, message.findSetProperty( menuBar, "parent" ) );
-  }
-
-  @Test
   public void testRenderBoundsForMenuBar() {
     getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     Menu menuBar = new Menu( shell, SWT.BAR );
@@ -205,39 +178,23 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderInitialParent() throws IOException {
+  public void testRenderParent_bar() throws IOException {
     Menu menu = new Menu( shell, SWT.BAR );
 
-    lca.render( menu );
+    lca.renderInitialization( menu );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( menu );
-    assertTrue( operation.getPropertyNames().indexOf( "parent" ) == -1 );
+    assertEquals( getId( shell ), message.findCreateProperty( menu, "parent" ).asString() );
   }
 
   @Test
-  public void testRenderParent() throws IOException {
-    Menu menu = new Menu( shell, SWT.BAR );
+  public void testRenderParent_popup() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
 
-    shell.setMenuBar( menu );
-    lca.renderChanges( menu );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( getId( shell ), message.findSetProperty( menu, "parent" ).asString() );
-  }
-
-  @Test
-  public void testRenderParentUnchanged() throws IOException {
-    Menu menu = new Menu( shell, SWT.BAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( menu );
-
-    shell.setMenuBar( menu );
-    Fixture.preserveWidgets();
-    lca.renderChanges( menu );
+    lca.renderInitialization( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menu, "parent" ) );
+    assertEquals( getId( shell ), message.findCreateProperty( menu, "parent" ).asString() );
   }
 
   @Test
@@ -290,7 +247,8 @@ public class MenuLCA_Test {
     lca.renderChanges( menu );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menu, "bounds" ) );
+    JsonArray bounds = message.findSetProperty( menu, "bounds" ).asArray();
+    assertEquals( new JsonArray().add( 0 ).add( 0 ).add( 0 ).add( 0 ), bounds );
   }
 
   @Test

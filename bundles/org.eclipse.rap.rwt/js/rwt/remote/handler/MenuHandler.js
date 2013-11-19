@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Menu", {
     // TODO [tb] : split into Menu and MenuBar, or unify parent handling
     if( properties.style.indexOf( "BAR" ) != -1 ) {
       result = new rwt.widgets.MenuBar();
+      rwt.remote.HandlerUtil.callWithTarget( properties.parent, function( parent ) {
+        result.setParent( parent );
+      } );
     } else {
       result = new rwt.widgets.Menu();
     }
@@ -28,20 +31,12 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Menu", {
   getDestroyableChildren : rwt.remote.HandlerUtil.getDestroyableChildrenFinder(),
 
   properties : [
-    "parent",
     "bounds",
     "enabled",
     "customVariant"
   ],
 
   propertyHandler : {
-    "parent" : function( widget, value ) {
-      if( widget.hasState( "rwt_BAR" ) ) {
-        rwt.remote.HandlerUtil.callWithTarget( value, function( parent ) {
-          widget.setParent( parent );
-        } );
-      }
-    },
     "bounds" : function( widget, value ) {
       if( widget.hasState( "rwt_BAR" ) ) {
         widget.setLeft( value[ 0 ] );

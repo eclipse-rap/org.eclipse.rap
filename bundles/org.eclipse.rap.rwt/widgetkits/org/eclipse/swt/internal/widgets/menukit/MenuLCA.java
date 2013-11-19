@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -47,12 +49,13 @@ public final class MenuLCA extends AbstractWidgetLCA {
     "BAR", "DROP_DOWN", "POP_UP", "NO_RADIO_GROUP"
   };
 
-  private static final String PROP_PARENT = "parent";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_SHOW_LISTENER = "Show";
   private static final String PROP_HIDE_LISTENER = "Hide";
   private static final String METHOD_UNHIDE_ITEMS = "unhideItems";
   private static final String METHOD_SHOW_MENU = "showMenu";
+
+  private static final Rectangle DEFAULT_BOUNDS = new Rectangle( 0, 0, 0, 0 );
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -62,9 +65,6 @@ public final class MenuLCA extends AbstractWidgetLCA {
     preserveListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ) );
     WidgetLCAUtil.preserveCustomVariant( menu );
     WidgetLCAUtil.preserveHelpListener( menu );
-    if( isMenuBar( menu ) ) {
-      preserveProperty( menu, PROP_PARENT, getParent( menu ) );
-    }
   }
 
   @Override
@@ -72,6 +72,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
     Menu menu = ( Menu )widget;
     RemoteObject remoteObject = createRemoteObject( menu , TYPE );
     remoteObject.setHandler( new MenuOperationHandler( menu ) );
+    remoteObject.set( "parent", getId( menu.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( menu, ALLOWED_STYLES ) ) );
   }
 
@@ -83,9 +84,6 @@ public final class MenuLCA extends AbstractWidgetLCA {
     renderListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ), false );
     WidgetLCAUtil.renderCustomVariant( menu );
     WidgetLCAUtil.renderListenHelp( menu );
-    if( isMenuBar( menu ) ) {
-      renderProperty( menu, PROP_PARENT, getParent( menu ), null );
-    }
     renderBounds( menu );
     renderShow( menu );
     renderUnhideItems( menu );
@@ -98,9 +96,9 @@ public final class MenuLCA extends AbstractWidgetLCA {
   }
 
   private static void renderBounds( Menu menu ) {
-    if( isMenuBar( menu ) && getParent( menu ) != null ) {
+    if( isMenuBar( menu ) ) {
       // Bounds are preserved in ShellLCA#preserveMenuBounds
-      WidgetLCAUtil.renderBounds( menu, getBounds( menu ) );
+      renderProperty( menu, Props.BOUNDS, getBounds( menu ), DEFAULT_BOUNDS );
     }
   }
 
@@ -146,15 +144,14 @@ public final class MenuLCA extends AbstractWidgetLCA {
 
   private static Rectangle getBounds( Menu menu ) {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
-    Decorations parent = getParent( menu );
+    Decorations parent = getBoundingShell( menu );
     if( parent != null ) {
-      IShellAdapter shellAdapter = parent.getAdapter( IShellAdapter.class );
-      result = shellAdapter.getMenuBounds();
+      result = parent.getAdapter( IShellAdapter.class ).getMenuBounds();
     }
     return result;
   }
 
-  private static Decorations getParent( Menu menu ) {
+  private static Decorations getBoundingShell( Menu menu ) {
     Decorations result = null;
     if( menu.getParent().getMenuBar() == menu ) {
       result = menu.getParent();
