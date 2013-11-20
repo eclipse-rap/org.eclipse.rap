@@ -440,7 +440,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         var config = tree.getRenderConfig();
         var image = item.getImage( config.treeColumn );
         if( image != null ) {
-          widget.setCellContent( 0, image );
+          widget.setCellContent( 0, image[ 0 ] );
           var imageWidth = config.itemImageWidth[ config.treeColumn ];
           widget.setCellDimension( 0, imageWidth, row.getHeight() );
         }

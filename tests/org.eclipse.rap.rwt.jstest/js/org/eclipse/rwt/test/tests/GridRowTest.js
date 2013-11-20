@@ -113,7 +113,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Text" ] );
       item.setCellBackgrounds( [ "red" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
 
       row.renderItem( item, tree._config, false, null );
       row.renderItem( null, tree._config, false, null );
@@ -357,7 +357,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       this._createRow( tree, true );
       row.setHeight( 15 );
       var item = this._createItem( tree );
-      item.setImages( [ "url.jpg" ] );
+      item.setImages( [ [ "url.jpg", 10, 10 ] ] );
       var emptyItem = this._createItem( tree );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
 
@@ -380,7 +380,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       this._createRow( tree, true );
       row.setHeight( 15 );
       var item = this._createItem( tree );
-      item.setImages( [ "url.jpg" ] );
+      item.setImages( [ [ "url.jpg", 10, 10 ] ] );
       tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
 
       row.renderItem( null, tree._config, false, null, false ); // render empty with metrics 1
@@ -940,7 +940,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setColumnCount( 3 );
 
       item.setTexts( [ "", "", "" ] );
-      item.setImages( [ "test1.jpg", null, "test3.jpg" ] );
+      item.setImages( [ [ "test1.jpg", 10, 10 ], null, [ "test3.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
       assertEquals( 3, nodes.length );
@@ -960,7 +960,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       tree.setColumnCount( 3 );
       item.setTexts( [ "", "", "" ] );
-      item.setImages( [ "test1.jpg", null, "test3.jpg" ] );
+      item.setImages( [ [ "test1.jpg", 10, 10 ], null, [ "test3.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
       assertFalse( TestUtil.hasElementOpacity( nodes[ 1 ] ) );
@@ -973,7 +973,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var item = this._createItem( tree );
       item.setTexts( [ "" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode();
       assertEquals( 2, node.childNodes.length );
@@ -988,7 +988,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
@@ -1005,10 +1005,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testImageBoundsScroll : function() {
       row.setHeight( 15 );
       var parentItem = this._createItem( tree );
-      parentItem.setImages( [ "bla.jpg" ] );
+      parentItem.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       var item = this._createItem( parentItem );
       item.setTexts( [ "" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
 
       row.renderItem( parentItem, tree._config, false, null );
       row.renderItem( item, tree._config, false, null, true ); // true = dont render bounds
@@ -1042,13 +1042,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var item = this._createItem( tree );
       item.setTexts( [ "foo" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       var node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
       var left1 = parseInt( node.childNodes[ 2 ].style.left, 10 );
       var subitem = this._createItem( item );
-      subitem.setImages( [ "bla.jpg" ] );
+      subitem.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       row.renderItem( subitem, tree._config, false, null );
       node = row._getTargetNode();
       assertEquals( 3, node.childNodes.length );
@@ -1078,7 +1078,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderImageAndLabelAndBackground : function() {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       item.setCellBackgrounds( [ "green" ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
@@ -1126,7 +1126,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     tesHideUnusedImage : function() {
       var item1 = this._createItem( tree );
       item1.setTexts( [ "" ] );
-      item1.setImages( [ "bla.jpg" ] );
+      item1.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       var item2 = this._createItem( tree );
       item2.setTexts( [ "Test" ] );
 
@@ -1141,11 +1141,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     tesReUseImage : function() {
       var item1 = this._createItem( tree );
-      item1.setImages( [ "bla.jpg" ] );
+      item1.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       item1.setTexts( [ "Test" ] );
       var item2 = this._createItem( tree );
       item2.setTexts( [ "" ] );
-      item2.setImages( [ "bla2.jpg" ] );
+      item2.setImages( [ [ "bla2.jpg", 10, 10 ] ] );
 
       row.renderItem( item1, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
@@ -1159,7 +1159,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testReUseHiddenImage : function() {
       this._createTree( true );
       var item1 = this._createItem( tree );
-      item1.setImages( [ "bla.jpg" ] );
+      item1.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       item1.setTexts( [ "Test" ] );
       var item2 = this._createItem( tree );
       item2.setTexts( [ null ] );
@@ -1192,7 +1192,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testReUselabel : function() {
       var item1 = this._createItem( tree );
       item1.setTexts( [ "Test" ] );
-      item1.setImages( [ "bla.jpg" ] );
+      item1.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       var item2 = this._createItem( tree );
       item2.setTexts( [ "Test2" ] );
       item2.setCellBackgrounds( [ "red" ] );
@@ -1212,7 +1212,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setColumnCount( 2 );
       var item = this._createItem( tree );
       item.setTexts( [ "Test", "Test2" ] );
-      item.setImages( [ "bla.jpg", "bla2.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ], [ "bla2.jpg", 10, 10 ] ] );
       item.setCellBackgrounds( [ "green", "blue" ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
@@ -1233,7 +1233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var parent2 = this._createItem( parent1 );
       var item = this._createItem( parent2 );
       item.setTexts( [ "Test", "Test2" ] );
-      item.setImages( [ "bla.jpg", "bla2.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ], [ "bla2.jpg", 10, 10 ] ] );
       item.setCellBackgrounds( [ "green", "blue" ] );
       row.renderItem( item, tree._config, false, null );
       var nodes = row._getTargetNode().childNodes;
@@ -1261,7 +1261,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       tree.setColumnCount( 4 );
       item.setTexts( [ "Test1", "Test2" ] );
-      item.setImages( [ "bla1.jpg" ] );
+      item.setImages( [ [ "bla1.jpg", 10, 10 ] ] );
       row.renderItem( item, tree._config, false, null );
       assertEquals( 4, row._getTargetNode().childNodes.length );
     },
@@ -2154,7 +2154,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var parent = this._createItem( tree, false, true );
       var item = this._createItem( parent );
       item.setTexts( [ "Test", "Test2" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       this._setCheckBox( "mycheckbox.gif" );
       row.renderItem( item, tree._config, false, null );
       var log = [];
@@ -2179,7 +2179,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var parent = this._createItem( tree, false, true  );
       var item = this._createItem( parent );
       item.setTexts( [ "Test", "Test2" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       this._setCheckBox( "mycheckbox.gif" );
       row.renderItem( item, tree._config, false, null );
       var log = [];
@@ -2830,7 +2830,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderImageCellContent : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
-      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      item.setImages( [ [ "foo.jpg", 10, 10 ], [ "bar.jpg", 10, 10 ] ] );
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 1, "image", 10, 20, 30, 40 ] );
 
       row.renderItem( item, tree._config, false, null );
@@ -2843,7 +2843,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderImageCellLeft : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
-      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      item.setImages( [ [ "foo.jpg", 10, 10 ], [ "bar.jpg", 10, 10 ] ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20 ] );
 
@@ -2857,7 +2857,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderImageCellTop : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
-      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      item.setImages( [ [ "foo.jpg", 10, 10 ], [ "bar.jpg", 10, 10 ] ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20 ] );
 
@@ -2870,7 +2870,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderImageCellWidth : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
-      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      item.setImages( [ [ "foo.jpg", 10, 10 ], [ "bar.jpg", 10, 10 ] ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20, 100, 12 ] );
 
@@ -2883,7 +2883,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     testRenderTemplate_RenderImageCellHeight : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
-      item.setImages( [ "foo.jpg", "bar.jpg" ] );
+      item.setImages( [ [ "foo.jpg", 10, 10 ], [ "bar.jpg", 10, 10 ] ] );
 
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "image", 10, 20, 100, 12 ] );
 

@@ -53,17 +53,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
   ],
 
   propertyHandler : {
-    "images" : function( widget, value ) {
-      var images = [];
-      for( var i = 0; i < value.length; i++ ) {
-        if( value[ i ] === null ) {
-          images[ i ] = null;
-        } else {
-          images[ i ] = value[ i ][ 0 ];
-        }
-      }
-      widget.setImages( images );
-    },
     "background" : function( widget, value ) {
       if( value === null ) {
         widget.setBackground( null );

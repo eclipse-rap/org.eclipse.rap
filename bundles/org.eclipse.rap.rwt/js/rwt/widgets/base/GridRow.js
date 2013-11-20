@@ -557,7 +557,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( source !== null ) {
         renderBounds = isTreeColumn || !contentOnly || !this._cellImages[ cell ];
         element = this._getCellImage( cell );
-        this._setImage( element, source, renderBounds ? config.enabled : null );
+        this._setImage( element, source[ 0 ], renderBounds ? config.enabled : null );
       } else if( this._cellImages[ cell ] ) {
         renderBounds = isTreeColumn || !contentOnly;
         element = this._getCellImage( cell );

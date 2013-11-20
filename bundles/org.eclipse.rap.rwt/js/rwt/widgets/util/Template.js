@@ -117,8 +117,7 @@ rwt.widgets.util.Template.prototype = {
     if( this._isBound( cell ) ) {
       return item.getImage( this._getIndex( cell ) );
     } else {
-      var defaultImage = this._cells[ cell ].image;
-      return defaultImage ? defaultImage[ 0 ] : null;
+      return this._cells[ cell ].image || null;
     }
   },
 

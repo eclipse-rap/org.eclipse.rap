@@ -1486,7 +1486,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       var item0 = this.createTreeItem( 0, tree, tree );
-      item0.setImages( [ "bla.jpg" ] );
+      item0.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       TestUtil.flush();
       var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       var doc = document.body;

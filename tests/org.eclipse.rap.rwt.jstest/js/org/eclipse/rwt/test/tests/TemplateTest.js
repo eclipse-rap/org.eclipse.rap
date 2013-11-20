@@ -107,7 +107,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testRenderCreatesElements_CreateOneImageElement : function() {
       var template = createTemplate( [ "image" ] );
 
-      var element = render( template, createGridItem( [], [ "foo.jpg" ] ) );
+      var element = render( template, createGridItem( [], [ [ "foo.jpg", 10, 10 ] ] ) );
 
       assertEquals( 1, element.children.length );
     },
@@ -353,7 +353,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testHasContent_ImageWithNoBindingOrDefault : function() {
       var template = new Template( [ { "type" : "image" } ] );
-      var item = createGridItem( [], [ "foo", "bar" ] );
+      var item = createGridItem( [], [ [ "foo", 10, 10 ], [ "bar", 10, 10 ] ] );
 
       assertFalse( template.hasContent( item, 0 ) );
     },
@@ -388,7 +388,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testHasContent_ImageBoundToValue : function() {
       var template = new Template( [ { "bindingIndex" : 0, "type" : "image" } ] );
-      var item = createGridItem( [], [ "foo", "bar" ] );
+      var item = createGridItem( [], [ [ "foo", 10, 10 ], [ "bar", 10, 10 ] ] );
 
       assertTrue( template.hasContent( item, 0 ) );
     },
@@ -401,16 +401,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testGetCellContent_ImageFromGridItem : function() {
       var template = new Template( [ { "type" : "image", "bindingIndex" : 1 } ] );
-      var item = createGridItem( [], [ "foo.png", "bar.png" ] );
+      var item = createGridItem( [], [ [ "foo.png", 10, 10 ], [ "bar.png", 10, 10 ] ] );
 
-      assertEquals( "bar.png", template.getCellContent( item, 0 ) );
+      assertEquals( [ "bar.png", 10, 10 ], template.getCellContent( item, 0 ) );
     },
 
     testGetCellContent_ImageFromCellDefault : function() {
       var template = new Template( [ { "type" : "image", "image" : [ "x.jpg", 1, 1 ] } ] );
-      var item = createGridItem( [], [ "foo.png", "bar.png" ] );
+      var item = createGridItem( [], [ [ "foo.png", 10, 10 ], [ "bar.png", 10, 10 ] ] );
 
-      assertEquals( "x.jpg", template.getCellContent( item, 0 ) );
+      assertEquals( [ "x.jpg", 1, 1 ], template.getCellContent( item, 0 ) );
     },
 
     testgetCellContent_ImageFromNullItem : function() {
@@ -685,7 +685,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testDefaultImageRenderer_RenderImageCentered : function() {
       var template = createTemplate( [ "image" ] );
 
-      var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ) );
+      var element = render( template, createGridItem( [], [ [ "foo.jpg", 10, 10], [ "bar", 10, 10 ] ] ) );
 
       var image = TestUtil.getCssBackgroundImage( element.firstChild );
       assertTrue( image.indexOf( "foo.jpg" ) != -1 );
@@ -706,7 +706,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( { "bindingIndex" : 0, "type" : "image" } );
       var options = { "enabled" : false };
 
-      var element = render( template, createGridItem( [], [ "foo.jpg", "bar" ] ), options );
+      var element = render( template, createGridItem( [], [ [ "foo.jpg", 10, 10], [ "bar", 10, 10 ] ] ), options );
 
       var image = TestUtil.getCssBackgroundImage( element.firstChild );
       assertTrue( image.indexOf( "foo.jpg" ) != -1 );
@@ -719,7 +719,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testDefaultImageRenderer_RenderNullItemClearsContent : function() {
       var template = createTemplate( [ "image" ] );
       var container = createContainer( template );
-      var item = createGridItem( [], [ "foo.jpg", "bar" ] );
+      var item = createGridItem( [], [ [ "foo.jpg", 10, 10 ], [ "bar", 10, 10 ] ] );
       template.render( createRenderOptions( container, item ) );
 
       template.render( createRenderOptions( container, null ) );

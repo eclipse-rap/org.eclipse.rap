@@ -223,7 +223,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     getImage : function( column ) {
       var result = this._images[ column ];
-      return typeof result === "string" ? result : null;
+      return result || null;
     },
 
     setChecked : function( value ) {

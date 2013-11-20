@@ -196,9 +196,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var item = ObjectManager.getObject( "w4" );
-      assertEquals( "1.gif", item.getImage( 0 ) );
-      assertEquals( "2.gif", item.getImage( 1 ) );
-      assertEquals( "3.gif", item.getImage( 2 ) );
+      assertEquals( [ "1.gif", 1, 1 ], item.getImage( 0 ) );
+      assertEquals( [ "2.gif", 2, 2 ], item.getImage( 1 ) );
+      assertEquals( [ "3.gif", 3, 3 ], item.getImage( 2 ) );
       shell.destroy();
       tree.destroy();
     },
@@ -636,15 +636,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
 
     testImages : function() {
       var item = new rwt.widgets.GridItem();
-      item.setImages( [ "test1.jpg", "test2.jpg" ] );
-      assertEquals( "test1.jpg", item.getImage( 0 ) );
-      assertEquals( "test2.jpg", item.getImage( 1 ) );
+      item.setImages( [ [ "test1.jpg", 10, 10 ], [ "test2.jpg", 10, 10 ] ] );
+      assertEquals( [ "test1.jpg", 10, 10 ], item.getImage( 0 ) );
+      assertEquals( [ "test2.jpg", 10, 10 ], item.getImage( 1 ) );
       assertEquals( null, item.getImage( 2 ) );
     },
 
     testClear : function() {
       var item = new rwt.widgets.GridItem();
-      item.setImages( [ "test1.jpg", "test2.jpg" ] );
+      item.setImages( [ [ "test1.jpg", 10, 10 ], [ "test2.jpg", 10, 10 ] ] );
       item.setTexts( [ "bla", "blubg" ] );
       item.setCellFonts( "arial", "windings" ) ;
       item.setCellForegrounds( "red", "blue" );
@@ -774,7 +774,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       item.setCellForegrounds( [ "red" ] );
       item.setBackground( "red" );
       item.setCellBackgrounds( [ "red" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       assertEquals( 8, log.length );
     },
 

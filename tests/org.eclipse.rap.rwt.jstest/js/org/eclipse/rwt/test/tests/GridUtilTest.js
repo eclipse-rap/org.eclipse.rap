@@ -332,7 +332,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemCount( 1 );
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item.setTexts( [ "bla" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       TestUtil.flush();
       var rowNode = tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode();
       TestUtil.hoverFromTo( document.body, rowNode );

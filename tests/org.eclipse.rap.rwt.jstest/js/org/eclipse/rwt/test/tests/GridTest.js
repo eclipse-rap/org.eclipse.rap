@@ -2448,7 +2448,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemCount( 1 );
       var item = this._createItem( tree.getRootItem(), 0 );
       item.setTexts( [ "bla" ] );
-      item.setImages( [ "bla.jpg" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       assertNull( tree._rowContainer._hoverElement );
       TestUtil.flush();
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
