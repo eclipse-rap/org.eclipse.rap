@@ -28,6 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testCreateRow : function() {
       assertTrue( row.isCreated() );
+      assertEquals( "hidden", row.getOverflow() );
       assertEquals( 0, row._getTargetNode().childNodes.length );
     },
 

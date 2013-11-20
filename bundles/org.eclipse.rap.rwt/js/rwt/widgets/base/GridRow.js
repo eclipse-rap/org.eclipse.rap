@@ -30,6 +30,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
   construct : function() {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
+    this.setOverflow( "hidden" );
     this.setHeight( 16 );
     this._styleMap = {};
     this._overlayStyleMap = {};
