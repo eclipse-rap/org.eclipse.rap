@@ -145,14 +145,30 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   } )
 } );
 
+var setImage = function( element, content, cellData, options ) {
+  var opacity = options.enabled ? 1 : 0.3;
+  var src = content ? content[ 0 ] : null;
+  rwt.html.Style.setBackgroundImage( element, src, opacity );
+};
+
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "image",
   "contentType" : "image",
-  "renderContent" : function( element, content, cellData, options ) {
-    var opacity = options.enabled ? 1 : 0.3;
-    var src = content ? content[ 0 ] : null;
-    rwt.html.Style.setBackgroundImage( element, src, opacity );
-  },
+  "renderContent" : rwt.util.Variant.select( "qx.client", {
+    "default" : setImage,
+    "mshtml" : function( element, content, cellData, options ) {
+      if( cellData.scaleMode === "STRETCH" ) {
+        if( content ) {
+          var path = rwt.html.Style._resolveResource( content[ 0 ] );
+          element.innerHTML = "<img width=\"100%\" height=\"100%\" src=\"" + path + "\">";
+        } else {
+          element.innerHTML = "";
+        }
+      } else {
+        setImage( element, content, cellData, options );
+      }
+    }
+  } ),
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
     result.style.backgroundRepeat = "no-repeat";
