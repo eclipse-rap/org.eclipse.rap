@@ -572,6 +572,20 @@ public class ToolItemLCA_Test {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolitem, "Selection" ) );
   }
+  
+  @Test
+  public void testRenderSelectionListener_onSeparator() throws Exception {
+    toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( toolitem );
+    Fixture.preserveWidgets();
+
+    toolitem.addListener( SWT.Selection, mock( Listener.class ) );
+    lca.renderChanges( toolitem );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( toolitem, "Selection" ) );
+  }
 
   @Test
   public void testRenderInitialMnemonicIndex() throws IOException {

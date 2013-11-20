@@ -67,7 +67,9 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_HOT_IMAGE, item.getHotImage() );
     preserveProperty( item, PROP_CONTROL, item.getControl() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
-    preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
+    if( !isSeparator( item ) ) {
+      preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
+    }
   }
 
   @Override
@@ -102,10 +104,12 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_HOT_IMAGE, item.getHotImage(), null );
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     renderProperty( item, PROP_SELECTION, item.getSelection(), false );
-    renderListener( item,
-                    PROP_SELECTION_LISTENER,
-                    isListening( item, SWT.Selection ),
-                    false );
+    if( !isSeparator( item ) ) {
+      renderListener( item,
+                      PROP_SELECTION_LISTENER,
+                      isListening( item, SWT.Selection ),
+                      false );
+    }
   }
 
   private static void renderText( ToolItem item ) {
@@ -141,6 +145,10 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
       }
     }
     return result;
+  }
+  
+  private static boolean isSeparator( ToolItem item ) {
+    return ( item.getStyle() & SWT.SEPARATOR ) != 0;
   }
 
 }
