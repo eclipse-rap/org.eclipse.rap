@@ -63,7 +63,9 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Integer} Value of given style property
      */
     __num : function(elem, style) {
-      return parseInt(rwt.html.Style.get(elem, style, rwt.html.Style.COMPUTED_MODE, false), 10) || 0;
+      var value = rwt.html.Style.get( elem, style, rwt.html.Style.COMPUTED_MODE, false );
+      var result = Math.round( parseFloat( value ,10 ) );
+      return result || 0;
     },
 
 
