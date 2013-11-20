@@ -213,6 +213,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testDefaultButtonExecute : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+      rwt.event.EventHandler.setFocusRoot( shell );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w3"
+        }
+      } );
+      var button = ObjectRegistry.getObject( "w4" );
+      button.setHasSelectionListener( true );
+      shell.setDefaultButton( button );
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+
+      TestUtil.keyDown( shell.getElement(), "Enter", 0 );
+
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selection" ) );
+      button.destroy();
+      shell.destroy();
+    },
+
+    testDefaultButtonExecute_onDisabledButton : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+      rwt.event.EventHandler.setFocusRoot( shell );
+      MessageProcessor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w3",
+          "enabled" : false
+        }
+      } );
+      var button = ObjectRegistry.getObject( "w4" );
+      button.setHasSelectionListener( true );
+      shell.setDefaultButton( button );
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+
+      TestUtil.keyDown( shell.getElement(), "Enter", 0 );
+      rwt.remote.Connection.getInstance().send();
+
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w4", "Selection" ) );
+      button.destroy();
+      shell.destroy();
+    },
+
     testFiresParentShellChangedEvent : function() {
       var shell = this._createDefaultShell( {} );
       var parentShell = this._createDefaultShell( {} );

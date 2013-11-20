@@ -494,7 +494,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
           && !evt.isMetaPressed() )
       {
         var defButton = this.getDefaultButton();
-        if( defButton != null && defButton.isSeeable() ) {
+        if( defButton != null && defButton.isSeeable() && defButton.getEnabled() ) {
           defButton.setFocused( true );
           defButton.execute();
         }
