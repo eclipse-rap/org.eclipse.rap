@@ -66,8 +66,4 @@ public class RWTProperties_Test {
     assertFalse( RWTProperties.getBooleanProperty( TEST_PROPERTY, false ) );
   }
 
-  @Test
-  public void test_Name() {
-  }
-
 }
