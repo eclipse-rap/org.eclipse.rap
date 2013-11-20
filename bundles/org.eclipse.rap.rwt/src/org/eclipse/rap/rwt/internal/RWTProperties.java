@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,9 @@ public final class RWTProperties {
     return System.getProperty( ID_GENERATOR );
   }
 
-  private static boolean getBooleanProperty( String key, boolean defaultValue ) {
-    boolean result = defaultValue;
-    String propertyValue = System.getProperty( key );
-    if( propertyValue != null ) {
-      result = propertyValue.equalsIgnoreCase( "true" );
-    }
-    return result;
+  public static boolean getBooleanProperty( String name, boolean defaultValue ) {
+    String value = System.getProperty( name );
+    return value == null ? defaultValue : value.equalsIgnoreCase( "true" );
   }
 
 }
