@@ -34,6 +34,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this.setHeight( 16 );
     this._styleMap = {};
     this._overlayStyleMap = {};
+    this._elementStyleCache = {};
     this._variant = null;
     this._graphicsOverlay = null;
     this._expandElement = null;
@@ -642,9 +643,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderItemFont : function( item, config ) {
       var element = this.getElement();
-      this._setFont( element, config.font );
-      this._setTextDecoration( element, this._styleMap.textDecoration );
-      Style.setTextShadow( element, this._styleMap.textShadow );
+      if( this._elementStyleCache.font !== config.font ) {
+        this._elementStyleCache.font = config.font;
+        this._setFont( element, config.font );
+      }
+      if( this._elementStyleCache.textDecoration !== this._styleMap.textDecoration ) {
+        this._elementStyleCache.textDecoration = this._styleMap.textDecoration;
+        this._setTextDecoration( element, this._styleMap.textDecoration );
+      }
+      if( this._elementStyleCache.textShadow !== this._styleMap.textShadow ) {
+        this._elementStyleCache.textShadow = this._styleMap.textShadow;
+        Style.setTextShadow( element, this._styleMap.textShadow );
+      }
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {

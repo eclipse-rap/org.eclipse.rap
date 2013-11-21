@@ -59,7 +59,9 @@ rwt.widgets.util.Template.prototype = {
     }
     this._createElements( options );
     this._renderAllBounds( options );
+    this._renderAllStyles( options );
     this._renderAllContent( options );
+    this._updateCache( options );
   },
 
   getCellCount : function() {
@@ -174,7 +176,7 @@ rwt.widgets.util.Template.prototype = {
         element.style.zIndex = options.container.zIndexOffset + i;
         options.container.element.appendChild( element );
         options.container.cellElements[ i ] = element;
-        options.container.cellCache[ i ] = {};
+        options.container.cellCache[ i ] = { "initialized" : false };
       }
     }
   },
@@ -192,10 +194,6 @@ rwt.widgets.util.Template.prototype = {
         cellRenderOptions.width = options.container.cellCache[ i ].width;
         cellRenderOptions.height = options.container.cellCache[ i ].height;
         var renderContent = cellRenderer.renderContent;
-        // TODO : render styles only if changing
-        this._renderBackground( element, this.getCellBackground( options.item, i ) );
-        this._renderForeground( element, this.getCellForeground( options.item, i ) );
-        this._renderFont( element, this.getCellFont( options.item, i ) );
         renderContent( element,
                        this.getCellContent( options.item, i, cellRenderOptions ),
                        this._cells[ i ],
@@ -204,12 +202,38 @@ rwt.widgets.util.Template.prototype = {
     }
   },
 
-  // TODO [tb] : optimize to render only flexi content or if bounds changed or if new
-  _renderAllBounds : function( options ) {
+  _renderAllStyles : function( options ) {
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = options.container.cellElements[ i ];
       if( element ) {
         var cache = options.container.cellCache[ i ];
+        var background = this.getCellBackground( options.item, i );
+        var foreground = this.getCellForeground( options.item, i );
+        var font = this.getCellFont( options.item, i );
+        if( cache.font !== font ) {
+          cache.font = font;
+          this._renderFont( element, font );
+        }
+        if( cache.color !== foreground ) {
+          cache.color = foreground;
+          this._renderForeground( element, foreground );
+        }
+        if( cache.backgroundColor !== background ) {
+          cache.backgroundColor = background;
+          this._renderBackground( element, background );
+        }
+      }
+    }
+  },
+
+  // TODO [tb] : optimize to render only flexi content or if bounds changed or if new
+  _renderAllBounds : function( options ) {
+    var container = options.container;
+    var boundsChanged = container.lastBounds !== options.bounds.join( "," );
+    for( var i = 0; i < this._cells.length; i++ ) {
+      var element = options.container.cellElements[ i ];
+      if( element && ( boundsChanged || !container.cellCache[ i ].initialized ) ) {
+        var cache = container.cellCache[ i ];
         element.style.left = this._getCellLeft( options, i ) + "px";
         element.style.top = this._getCellTop( options, i ) + "px";
         var width = this._getCellWidth( options, i );
@@ -236,6 +260,16 @@ rwt.widgets.util.Template.prototype = {
     } else {
       rwt.html.Font.resetElement( element );
     }
+  },
+
+  _updateCache : function( options ) {
+    var container = options.container;
+    for( var i = 0; i < this._cells.length; i++ ) {
+      if( container.cellCache[ i ] ) {
+        container.cellCache[ i ].initialized = true;
+      }
+    }
+    container.lastBounds = options.bounds.join( "," );
   },
 
   /**
