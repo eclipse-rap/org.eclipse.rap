@@ -47,6 +47,9 @@ public class DeferredTreeContentManager {
 
 	private ListenerList updateCompleteListenerList;
 
+    // RAP [if] display used to access NLS messages   
+    private final Display display;
+
 	/**
 	 * The DeferredContentFamily is a class used to keep track of a
 	 * manager-object pair so that only jobs scheduled by the receiver are
@@ -129,6 +132,8 @@ public class DeferredTreeContentManager {
 	 */
 	public DeferredTreeContentManager(AbstractTreeViewer viewer) {
 		treeViewer = viewer;
+		// RAP [if] display used to access NLS messages 
+		display = treeViewer.getControl().getDisplay();
 	}
 
 	/**
@@ -145,7 +150,7 @@ public class DeferredTreeContentManager {
 	 */
 	public boolean mayHaveChildren(Object element) {
 		Assert.isNotNull(element,
-				ProgressMessages.get().DeferredTreeContentManager_NotDeferred);
+				ProgressMessages.get( display ).DeferredTreeContentManager_NotDeferred);
 		IDeferredWorkbenchAdapter adapter = getAdapter(element);
 		return adapter != null && adapter.isContainer();
 	}
@@ -316,7 +321,7 @@ public class DeferredTreeContentManager {
 	protected String getFetchJobName(Object parent,
 			IDeferredWorkbenchAdapter adapter) {
 		return NLS.bind(
-				ProgressMessages.get().DeferredTreeContentManager_FetchingName,
+				ProgressMessages.get( display ).DeferredTreeContentManager_FetchingName,
 				adapter.getLabel(parent));
 	}
 
@@ -329,8 +334,8 @@ public class DeferredTreeContentManager {
 	 */
 	protected void addChildren(final Object parent, final Object[] children,
 			IProgressMonitor monitor) {
-		WorkbenchJob updateJob = new WorkbenchJob(
-				ProgressMessages.get().DeferredTreeContentManager_AddingChildren) {
+		WorkbenchJob updateJob = new WorkbenchJob( display,
+				ProgressMessages.get( display ).DeferredTreeContentManager_AddingChildren) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -375,14 +380,13 @@ public class DeferredTreeContentManager {
 //		if (placeholder.isRemoved() || !PlatformUI.isWorkbenchRunning()) {
 //			return;
 //		}
-        Display display = treeViewer.getControl().getDisplay();
         if (placeholder.isRemoved() || !ProgressUtil.isWorkbenchRunning( display )) {
 			return;
 		}
 
 		// Clear the placeholder if it is still there
-		WorkbenchJob clearJob = new WorkbenchJob(
-				ProgressMessages.get().DeferredTreeContentManager_ClearJob) {
+		WorkbenchJob clearJob = new WorkbenchJob( display,
+				ProgressMessages.get( display ).DeferredTreeContentManager_ClearJob) {
 			/*
 			 * (non-Javadoc)
 			 * 
