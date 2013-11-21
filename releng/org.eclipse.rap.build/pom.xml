@@ -22,7 +22,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.18.0</tycho-version>
+    <tycho-version>0.18.1</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <signing-plugin-version>1.0.4</signing-plugin-version>
     <surefire-version>2.15</surefire-version>
