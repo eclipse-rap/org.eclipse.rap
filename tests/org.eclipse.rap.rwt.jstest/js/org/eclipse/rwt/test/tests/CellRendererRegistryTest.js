@@ -340,15 +340,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
       var renderer = defaultRegistry.getRendererFor( "image" );
       var cellData = { "scaleMode" : "STRETCH" };
+      var options = { "enabled" : true, "width" : 20, "height" : 40 };
       var element = renderer.createElement( cellData );
 
-      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, { "enabled" : true } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, options );
 
       if( rwt.client.Client.isMshtml() ) {
         var img = element.firstChild;
         assertEquals( "img", img.tagName.toLowerCase() );
-        assertEquals( "100%", img.style.width );
-        assertEquals( "100%", img.style.height );
+        assertEquals( "20px", img.style.width );
+        assertEquals( "40px", img.style.height );
       } else {
         var url = TestUtil.getCssBackgroundImage( element );
         assertTrue( url.indexOf( "foo.jpg" ) != -1 );
@@ -394,6 +395,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
         assertEquals( "7px", img.style.width );
         assertEquals( "10px", img.style.height );
         assertEquals( "7px", img.style.left );
+        assertEquals( "0px", img.style.top );
+      } else {
+        var url = TestUtil.getCssBackgroundImage( element );
+        assertTrue( url.indexOf( "foo.jpg" ) != -1 );
+      }
+    },
+
+    testImageRenderer_RenderImageScaleFillWidth : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var renderer = defaultRegistry.getRendererFor( "image" );
+      var cellData = { "scaleMode" : "FILL" };
+      var element = renderer.createElement( cellData );
+      var options = { "enabled" : true, "width" : 20, "height" : 20 };
+
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, options );
+
+      if( rwt.client.Client.isMshtml() ) {
+        var img = element.firstChild;
+        assertEquals( "img", img.tagName.toLowerCase() );
+        assertEquals( "absolute", img.style.position );
+        assertEquals( "20px", img.style.width );
+        assertEquals( "30px", img.style.height );
+        assertEquals( "0px", img.style.left );
+        assertEquals( "-5px", img.style.top );
+      } else {
+        var url = TestUtil.getCssBackgroundImage( element );
+        assertTrue( url.indexOf( "foo.jpg" ) != -1 );
+      }
+    },
+
+    testImageRenderer_RenderImageScaleFillHeight : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var renderer = defaultRegistry.getRendererFor( "image" );
+      var cellData = { "scaleMode" : "FILL" };
+      var element = renderer.createElement( cellData );
+      var options = { "enabled" : true, "width" : 5, "height" : 10 };
+
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, options );
+
+      if( rwt.client.Client.isMshtml() ) {
+        var img = element.firstChild;
+        assertEquals( "img", img.tagName.toLowerCase() );
+        assertEquals( "absolute", img.style.position );
+        assertEquals( "7px", img.style.width );
+        assertEquals( "10px", img.style.height );
+        assertEquals( "-1px", img.style.left );
         assertEquals( "0px", img.style.top );
       } else {
         var url = TestUtil.getCssBackgroundImage( element );

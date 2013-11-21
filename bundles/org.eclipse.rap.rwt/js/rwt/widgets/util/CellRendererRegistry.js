@@ -153,10 +153,10 @@ var setImage = function( element, content, cellData, options ) {
 
 var imgHtml = function( path, left, top, width, height ) {
   return   "<img style=\"position:absolute;width:"
-         + ( typeof width === "string" ? width : width + "px" )
-         + ";height:"
-         + ( typeof height === "string" ? height : height + "px" )
-         + ";left:"
+         + width
+         + "px;height:"
+         + height
+         + "px;left:"
          + left
          + "px;top:"
          + top
@@ -175,28 +175,24 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
         setImage( element, content, cellData, options );
       } else {
         if( content ) {
+          var fit = cellData.scaleMode === "FIT";
+          var fill = cellData.scaleMode === "FILL";
           var path = rwt.html.Style._resolveResource( content[ 0 ] );
-          var width;
-          var height;
-          switch( cellData.scaleMode ) {
-            case "STRETCH":
-              element.innerHTML = imgHtml( path, 0, 0, "100%", "100%" );
-            break;
-            case "FIT":
-              var width = options.width;
-              var height = options.height;
-              var left = 0;
-              var top = 0;
-              if( options.width / options.height > content[ 1 ] / content[ 2 ] ) {
-                width = Math.round( content[ 1 ] * height / content[ 2 ] );
-                left = Math.round( ( options.width - width ) / 2 );
-              } else  {
-                height = Math.round( content[ 2 ] * width / content[ 1 ] );
-                top = Math.round( ( options.height - height ) / 2 );
-              }
-              element.innerHTML = imgHtml( path, left, top, width, height );
-            break;
+          var width = options.width;
+          var height = options.height;
+          var left = 0;
+          var top = 0;
+          if( fit || fill ) {
+            var imageWiderThanCell = options.width / options.height > content[ 1 ] / content[ 2 ];
+            if( ( fit && imageWiderThanCell ) || ( fill && !imageWiderThanCell ) ) {
+              width = Math.round( content[ 1 ] * height / content[ 2 ] );
+              left = Math.round( ( options.width - width ) / 2 );
+            } else  {
+              height = Math.round( content[ 2 ] * width / content[ 1 ] );
+              top = Math.round( ( options.height - height ) / 2 );
+            }
           }
+          element.innerHTML = imgHtml( path, left, top, width, height );
         } else {
           element.innerHTML = "";
         }
