@@ -148,6 +148,10 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     this._container[ 1 ].renderAll();
   },
 
+  getSplitOffset : function( column ) {
+    return column < this._fixedColumns ? 0 : this._splitOffset;
+  },
+
   _updateConfig : function() {
     var configLeft = this._container[ 0 ].getRenderConfig();
     var configRight = this._container[ 1 ].getRenderConfig();
@@ -213,6 +217,11 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
         this._container[ i ].setHoverItem( eventTarget.getHoverItem() );
       }
     }
+  },
+
+  _findRowByItem : function( item, column ) {
+    var pos = column < this._fixedColumns ? 0 : 1;
+    return this._container[ pos ]._findRowByItem( item );
   }
 
 };
