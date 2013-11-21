@@ -187,17 +187,22 @@ rwt.widgets.util.Template.prototype = {
       "enabled" : options.enabled,
       "seeable" : options.seeable
     };
-    for( var i = 0; i < this._cells.length; i++ ) {
-      var element = options.container.cellElements[ i ];
-      if( element ) {
-        var cellRenderer = renderer[ this._cells[ i ].type ];
-        cellRenderOptions.width = options.container.cellCache[ i ].width;
-        cellRenderOptions.height = options.container.cellCache[ i ].height;
-        var renderContent = cellRenderer.renderContent;
-        renderContent( element,
-                       this.getCellContent( options.item, i, cellRenderOptions ),
-                       this._cells[ i ],
-                       cellRenderOptions );
+    var container = options.container;
+    var boundsChanged = container.lastBounds !== options.bounds.join( "," );
+    var contentChanged = container.lastItem !== options.item;
+    if( boundsChanged || contentChanged ) {
+      for( var i = 0; i < this._cells.length; i++ ) {
+        var element = container.cellElements[ i ];
+        if( element ) {
+          var cellRenderer = renderer[ this._cells[ i ].type ];
+          cellRenderOptions.width = container.cellCache[ i ].width;
+          cellRenderOptions.height = container.cellCache[ i ].height;
+          var renderContent = cellRenderer.renderContent;
+          renderContent( element,
+                         this.getCellContent( options.item, i, cellRenderOptions ),
+                         this._cells[ i ],
+                         cellRenderOptions );
+        }
       }
     }
   },
@@ -270,6 +275,7 @@ rwt.widgets.util.Template.prototype = {
       }
     }
     container.lastBounds = options.bounds.join( "," );
+    container.lastItem = options.item;
   },
 
   /**
