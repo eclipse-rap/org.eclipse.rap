@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 EclipseSource and others.
+ * Copyright (c) 2006, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 
-public final class WorkbenchApplicationConfigurator implements ApplicationConfiguration {
+public class WorkbenchApplicationConfiguration implements ApplicationConfiguration {
 
   private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
   private static final String ID_THEMES = "org.eclipse.rap.ui.themes";
@@ -79,10 +79,15 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private final ServiceReference<HttpService> httpServiceReference;
 
+  // Default constructor to enable subclassing without adding a dependency to OSGi API
+  public WorkbenchApplicationConfiguration() {
+    httpServiceReference = null;
+  }
+
   /*
    * Note [rst]: public as per request in https://bugs.eclipse.org/bugs/show_bug.cgi?id=372183
    */
-  public WorkbenchApplicationConfigurator( ServiceReference<HttpService> httpServiceReference ) {
+  public WorkbenchApplicationConfiguration( ServiceReference<HttpService> httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 EclipseSource and others.
+ * Copyright (c) 2008, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,7 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
                                                  HttpContext context )
   {
     ApplicationConfiguration configuration
-      = new WorkbenchApplicationConfigurator( httpServiceReference );
+      = new WorkbenchApplicationConfiguration( httpServiceReference );
     String contextDirectory = findContextPath().toString();
     return applicationLauncher.launch( configuration, service, context, null, contextDirectory );
   }

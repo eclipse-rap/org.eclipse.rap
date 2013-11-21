@@ -499,6 +499,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    testSetCellToolTipTextByProtocol_withFixedColumns : function() {
+      var widget = this._createDefaultTree( false, false, "fixedColumns", 1 );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 10 );
+      TestUtil.flush();
+      var row = widget.getRowContainer().getSubContainer( 0 ).getFirstChild();
+
+      TestUtil.fakeMouseEvent( row, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
+
+      var labelObject = rwt.widgets.base.WidgetToolTip.getInstance()._label;
+      assertEquals( "foo", labelObject.getCellContent( 0 ) );
+      assertEquals( "", row.getToolTipText() );
+      widget.destroy();
+    },
+
     testSetCellToolTipTextByProtocol_ToolTipHasBeenUbound : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLocation( 0, 0 );
@@ -516,7 +534,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( shell, "mouseover", 10, 10 );
       TestUtil.fakeMouseEvent( shell, "mousemove", 10, 10 );
       TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._hideTimer );
-      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
 
       assertFalse( rwt.widgets.base.WidgetToolTip.getInstance().isSeeable() );
       assertNull( rwt.widgets.base.WidgetToolTip.getInstance().getBoundToWidget() );
@@ -541,11 +559,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( row, "mouseover", 30, 10 );
       TestUtil.fakeMouseEvent( row, "mousemove", 30, 10 );
       TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
-      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
 
       var left = rwt.widgets.base.WidgetToolTip.getInstance().getLeft();
       assertEquals( 1 + 2 + 20 + 4, left );
       shell.destroy();
+    },
+
+    testSetCellToolTipTextByProtocol_PositionIsColumnAligned_withFixedColumns : function() {
+      var widget = this._createDefaultTree( false, false, "fixedColumns", 1 );
+      widget.setLocation( 2, 0 );
+      widget.setBorder( null );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 10 );
+      widget.setColumnCount( 2 );
+      widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
+      widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
+      TestUtil.flush();
+      var rowContainer = widget.getRowContainer();
+      rowContainer._splitOffset = 20;
+      var row = rowContainer.getSubContainer( 1 ).getFirstChild();
+
+      TestUtil.fakeMouseEvent( row, "mouseover", 30, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 30, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
+
+      var left = rwt.widgets.base.WidgetToolTip.getInstance().getLeft();
+      assertEquals( 2 + 4, left );
+      widget.destroy();
     },
 
     testSetCellToolTipTextByProtocol_NoCrashWhenAnotherToolTipIsVisible : function() {

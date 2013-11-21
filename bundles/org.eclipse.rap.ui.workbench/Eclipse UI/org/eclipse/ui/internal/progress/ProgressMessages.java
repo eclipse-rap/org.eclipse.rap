@@ -11,6 +11,7 @@
 package org.eclipse.ui.internal.progress;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.swt.widgets.Display;
 
 // RAP [fappel]: NLS needs to be session/request aware
 //public class ProgressMessages extends NLS{
@@ -136,4 +137,15 @@ public class ProgressMessages {
     public static ProgressMessages get() {
       return RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, ProgressMessages.class );
     }
+
+    public static ProgressMessages get( Display display ) {
+      final ProgressMessages[] result = { null };
+      RWT.getUISession( display ).exec( new Runnable() {
+        public void run() {
+          result[ 0 ] = get();
+        }
+      } );
+      return result[ 0 ];
+    }
+
 }

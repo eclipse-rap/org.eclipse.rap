@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.UISession;
@@ -107,10 +108,13 @@ import com.ibm.icu.text.MessageFormat;
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
 
-// RAP [rh] SessionStore key to initicate whether the session-scoped 
-//     PerspectiveRegistry is initialized   
+// RAP [rh] SessionStore key to indicate whether the session-scoped
+//     PerspectiveRegistry is initialized
   private static final String PERSP_REGISTRY_INITIALIZED
     = PerspectiveRegistry.class + "#initialized";
+
+// RAP [rst] System property to disable workbench autostart
+  private static final String PROP_WORKBENCH_AUTOSTART = "org.eclipse.rap.workbenchAutostart";
 
   // TODO [bm]: turn into real session scoped manager
 	// RAP [rs]:
@@ -1086,9 +1090,11 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         // RAP [fappel]: initialize session aware job management
         JobManagerAdapter.getInstance();
         
-        // initialize RWT context and register RWT servlet
-        httpServiceTracker = new HttpServiceTracker( context );
-        httpServiceTracker.open();
+        // RAP initialize RWT context and register RWT servlet
+        if( RWTProperties.getBooleanProperty( PROP_WORKBENCH_AUTOSTART, true ) ) {
+          httpServiceTracker = new HttpServiceTracker( context );
+          httpServiceTracker.open();
+        }
 
         
 // RAP [fappel]: as workbench instances in RAP run in session scope the
