@@ -1088,7 +1088,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           "item" : this._getItemId( item ),
           "detail" : detail,
           "index" : !isNaN( index ) ? index : undefined,
-          "text" : text
+          "text" : text != null ? text : undefined
         };
         if( defaultSelected ) {
           rwt.remote.EventUtil.notifyDefaultSelected( this, properties );
