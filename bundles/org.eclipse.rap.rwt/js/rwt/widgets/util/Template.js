@@ -20,6 +20,7 @@ var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
+  this._cellCatch = [];
   this._cellRenderer = [];
   this._parseCells();
 };
@@ -39,7 +40,8 @@ rwt.widgets.util.Template.prototype = {
       "element" : options.element,
       "template" : this,
       "zIndexOffset" : options.zIndexOffset,
-      "cellElements" : []
+      "cellElements" : [],
+      "cellCache" : []
     };
   },
 
@@ -56,8 +58,8 @@ rwt.widgets.util.Template.prototype = {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
     this._createElements( options );
-    this._renderAllContent( options );
     this._renderAllBounds( options );
+    this._renderAllContent( options );
   },
 
   getCellCount : function() {
@@ -172,6 +174,7 @@ rwt.widgets.util.Template.prototype = {
         element.style.zIndex = options.container.zIndexOffset + i;
         options.container.element.appendChild( element );
         options.container.cellElements[ i ] = element;
+        options.container.cellCache[ i ] = {};
       }
     }
   },
@@ -186,6 +189,8 @@ rwt.widgets.util.Template.prototype = {
       var element = options.container.cellElements[ i ];
       if( element ) {
         var cellRenderer = renderer[ this._cells[ i ].type ];
+        cellRenderOptions.width = options.container.cellCache[ i ].width;
+        cellRenderOptions.height = options.container.cellCache[ i ].height;
         var renderContent = cellRenderer.renderContent;
         // TODO : render styles only if changing
         this._renderBackground( element, this.getCellBackground( options.item, i ) );
@@ -204,10 +209,15 @@ rwt.widgets.util.Template.prototype = {
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = options.container.cellElements[ i ];
       if( element ) {
+        var cache = options.container.cellCache[ i ];
         element.style.left = this._getCellLeft( options, i ) + "px";
         element.style.top = this._getCellTop( options, i ) + "px";
-        element.style.width = this._getCellWidth( options, i ) + "px";
-        element.style.height = this._getCellHeight( options, i ) + "px";
+        var width = this._getCellWidth( options, i );
+        var height = this._getCellHeight( options, i );
+        element.style.width = width + "px";
+        element.style.height = height + "px";
+        cache.width = width;
+        cache.height = height;
       }
     }
   },

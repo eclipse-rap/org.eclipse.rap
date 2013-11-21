@@ -151,21 +151,55 @@ var setImage = function( element, content, cellData, options ) {
   rwt.html.Style.setBackgroundImage( element, src, opacity );
 };
 
+var imgHtml = function( path, left, top, width, height ) {
+  return   "<img style=\"position:absolute;width:"
+         + ( typeof width === "string" ? width : width + "px" )
+         + ";height:"
+         + ( typeof height === "string" ? height : height + "px" )
+         + ";left:"
+         + left
+         + "px;top:"
+         + top
+         + "px;\" src=\""
+         + path
+         + "\">";
+};
+
 rwt.widgets.util.CellRendererRegistry.getInstance().add( {
   "cellType" : "image",
   "contentType" : "image",
   "renderContent" : rwt.util.Variant.select( "qx.client", {
     "default" : setImage,
     "mshtml" : function( element, content, cellData, options ) {
-      if( cellData.scaleMode === "STRETCH" ) {
+      if( !cellData.scaleMode || cellData.scaleMode === "NONE" ) {
+        setImage( element, content, cellData, options );
+      } else {
         if( content ) {
           var path = rwt.html.Style._resolveResource( content[ 0 ] );
-          element.innerHTML = "<img width=\"100%\" height=\"100%\" src=\"" + path + "\">";
+          var width;
+          var height;
+          switch( cellData.scaleMode ) {
+            case "STRETCH":
+              element.innerHTML = imgHtml( path, 0, 0, "100%", "100%" );
+            break;
+            case "FIT":
+              var width = options.width;
+              var height = options.height;
+              var left = 0;
+              var top = 0;
+              if( options.width / options.height > content[ 1 ] / content[ 2 ] ) {
+                width = Math.round( content[ 1 ] * height / content[ 2 ] );
+                left = Math.round( ( options.width - width ) / 2 );
+              } else  {
+                height = Math.round( content[ 2 ] * width / content[ 1 ] );
+                top = Math.round( ( options.height - height ) / 2 );
+              }
+              element.innerHTML = imgHtml( path, left, top, width, height );
+            break;
+          }
         } else {
           element.innerHTML = "";
         }
-      } else {
-        setImage( element, content, cellData, options );
       }
     }
   } ),

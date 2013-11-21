@@ -347,8 +347,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       if( rwt.client.Client.isMshtml() ) {
         var img = element.firstChild;
         assertEquals( "img", img.tagName.toLowerCase() );
-        assertEquals( 100, parseInt( img.getAttribute( "width" ), 10 ) );
-        assertEquals( 100, parseInt( img.getAttribute( "height" ), 10 ) );
+        assertEquals( "100%", img.style.width );
+        assertEquals( "100%", img.style.height );
+      } else {
+        var url = TestUtil.getCssBackgroundImage( element );
+        assertTrue( url.indexOf( "foo.jpg" ) != -1 );
+      }
+    },
+
+    testImageRenderer_RenderImageScaleFitWidth : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var renderer = defaultRegistry.getRendererFor( "image" );
+      var cellData = { "scaleMode" : "FIT" };
+      var element = renderer.createElement( cellData );
+      var options = { "enabled" : true, "width" : 20, "height" : 40 };
+
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, options );
+
+      if( rwt.client.Client.isMshtml() ) {
+        var img = element.firstChild;
+        assertEquals( "img", img.tagName.toLowerCase() );
+        assertEquals( "absolute", img.style.position );
+        assertEquals( "20px", img.style.width );
+        assertEquals( "30px", img.style.height );
+        assertEquals( "0px", img.style.left );
+        assertEquals( "5px", img.style.top );
+      } else {
+        var url = TestUtil.getCssBackgroundImage( element );
+        assertTrue( url.indexOf( "foo.jpg" ) != -1 );
+      }
+    },
+
+    testImageRenderer_RenderImageScaleFitHeight : function() {
+      var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
+      var renderer = defaultRegistry.getRendererFor( "image" );
+      var cellData = { "scaleMode" : "FIT" };
+      var element = renderer.createElement( cellData );
+      var options = { "enabled" : true, "width" : 20, "height" : 10 };
+
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], cellData, options );
+
+      if( rwt.client.Client.isMshtml() ) {
+        var img = element.firstChild;
+        assertEquals( "img", img.tagName.toLowerCase() );
+        assertEquals( "absolute", img.style.position );
+        assertEquals( "7px", img.style.width );
+        assertEquals( "10px", img.style.height );
+        assertEquals( "7px", img.style.left );
+        assertEquals( "0px", img.style.top );
       } else {
         var url = TestUtil.getCssBackgroundImage( element );
         assertTrue( url.indexOf( "foo.jpg" ) != -1 );
