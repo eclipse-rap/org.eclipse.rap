@@ -21,7 +21,6 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.rap.demo.ckeditor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.clientscripting" autoStart="true" startLevel="0" />

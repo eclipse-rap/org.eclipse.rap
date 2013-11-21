@@ -56,8 +56,13 @@
           </execution>
         </executions>
         <configuration>
-          <file>target/products/${project.artifactId}/linux/gtk/x86_64/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info</file>
-          <token>javax\.servlet.*false|org\.hamcrest.*false|org\.junit.*false</token>
+          <file>target/products/${project.artifactId}/linux/gtk/x86_64/configuration/config.ini</file>
+          <replacements>
+            <replacement>
+              <token>osgi.bundles=</token>
+              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle@4:start,</value>
+             </replacement>
+          </replacements>
           <regexFlags>
             <regexFlag>CASE_INSENSITIVE</regexFlag>
             <regexFlag>UNIX_LINES</regexFlag>
