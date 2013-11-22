@@ -3553,7 +3553,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
       } else {
         this.removeStyleProperty( "backgroundImage" );
-        if( rwt.client.Client.supportsCss3() ) {
+        if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
           rwt.html.Style.setBackgroundGradient( this, this.getBackgroundGradient() );
         }
       }
@@ -3797,7 +3797,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _prepareGraphicsSupport : ( function() {
       var result;
-      if( rwt.client.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
         result = rwt.util.Functions.returnTrue;
       } else {
         result = function() {

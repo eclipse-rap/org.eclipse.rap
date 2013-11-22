@@ -438,7 +438,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlayGradient : function( element, gradient ) {
-      if( rwt.client.Client.supportsCss3() ) {
+      if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
         Style.setBackgroundGradient( element, gradient );
       } else {
         rwt.graphics.GraphicsUtil.setFillGradient( this._getOverlayShape(), gradient );

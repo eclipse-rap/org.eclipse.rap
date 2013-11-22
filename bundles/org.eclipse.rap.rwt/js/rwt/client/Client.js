@@ -173,6 +173,13 @@ rwt.qx.Class.define( "rwt.client.Client", {
       if( this.isAndroidBrowser() ) {
         result = version >= 534; // only Android 3+ supports SVG
       }
+      if( !result ) {
+        try {
+          result = document.implementation.hasFeature( "http://www.w3.org/TR/SVG11/feature#Shape",
+                                                       "1.0" );
+        } catch( ex ) {
+        }
+      }
       return result;
     },
 
