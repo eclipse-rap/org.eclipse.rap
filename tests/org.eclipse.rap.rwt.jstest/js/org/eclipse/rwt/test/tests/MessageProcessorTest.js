@@ -823,7 +823,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
     },
 
-    testPauseExecution_alsoDelaysHeadProcessing : function() {
+    testPauseExecution_doesNotDelaysHeadProcessing : function() {
       // note: this is relevant because the request counter is used to check if a request is active
       var connection = rwt.remote.Connection.getInstance();
       connection.setRequestCounter( 2 );
@@ -841,7 +841,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
 
         MessageProcessor.processMessage( message );
 
-        assertEquals( 2, connection.getRequestCounter() );
+        assertEquals( 33, connection.getRequestCounter() );
         MessageProcessor.continueExecution();
         assertEquals( 33, connection.getRequestCounter() );
     },

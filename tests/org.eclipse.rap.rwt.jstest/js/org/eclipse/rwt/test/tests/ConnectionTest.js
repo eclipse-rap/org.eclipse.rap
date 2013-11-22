@@ -43,9 +43,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
 
       server.sendImmediate( true );
       // NOTE [tb] : can not test sending second request since fixture for Connection.js
-      //             does not support the requestCounter -1 case
+      //             does not support the pending request case
 
-      assertEquals( -1, server.getRequestCounter() );
+      assertTrue( server._requestPending );
       TestUtil.forceInterval( fakeServer._timer );
       assertEquals( 1, TestUtil.getRequestsSend() );
       org.eclipse.rwt.test.fixture.FakeServer.getInstance().setUseAsync( false );

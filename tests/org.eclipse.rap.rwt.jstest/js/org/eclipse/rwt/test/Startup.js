@@ -33,17 +33,15 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
     return new org.eclipse.rwt.test.fixture.NativeRequestMock();
   };
   rwt.remote.Request.prototype._shouldUseStateListener = rwt.util.Functions.returnTrue;
-  rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {
-    rwt.remote.Connection.getInstance().sendImmediate( true );
-  };
   var server = rwt.remote.Connection.getInstance();
+  rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {
+    server._requestPending = false;
+    server.sendImmediate( true );
+  };
   server.send = function() {
     if( !this._ignoreSend && !this._sendTimer.isEnabled() ) {
       this._sendTimer.start();
-      if( this._requestCounter === -1 ) {
-        // prevent infinite loop:
-        throw new Error( "_requestCounter is -1" );
-      }
+      this._requestPending = false;
       this.sendImmediate( true ); // omit timer
     }
   };
@@ -61,7 +59,7 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   } );
   rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
     = function( script, error, currentRequest ) { throw error; };
-  rwt.remote.Connection.getInstance().setRequestCounter( 0 );
+  server.setRequestCounter( 0 );
   org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
   org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
   org.eclipse.rwt.test.Asserts.createShortcuts();

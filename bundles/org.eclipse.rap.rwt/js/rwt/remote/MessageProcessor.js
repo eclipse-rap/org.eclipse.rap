@@ -19,11 +19,14 @@ var pendingMessage = null;
 rwt.remote.MessageProcessor = {
 
   processMessage : function( messageObject, callback, startOffset ) {
-    var operations = messageObject.operations;
     var offset = 0;
     if( typeof startOffset !== "undefined" ) {
       offset = startOffset;
     }
+    if( offset === 0 ) {
+      this.processHead( messageObject.head );
+    }
+    var operations = messageObject.operations;
     while( offset < operations.length ) {
       this.processOperationArray( operations[ offset ] );
       offset++;
@@ -32,19 +35,18 @@ rwt.remote.MessageProcessor = {
         return;
       }
     }
-    this.processHead( messageObject.head );
     if( callback ) {
       callback();
     }
   },
 
   processHead : function( head ) {
-    var server = rwt.remote.Connection.getInstance();
+    var connection = rwt.remote.Connection.getInstance();
     if( head.url !== undefined ) {
-      server.setUrl( head.url );
+      connection.setUrl( head.url );
     }
     if( head.requestCounter !== undefined ) {
-      server.setRequestCounter( head.requestCounter );
+      connection.setRequestCounter( head.requestCounter );
     }
     if( head.redirect !== undefined ) {
       rwt.widgets.Display.getCurrent().setExitConfirmation( null );

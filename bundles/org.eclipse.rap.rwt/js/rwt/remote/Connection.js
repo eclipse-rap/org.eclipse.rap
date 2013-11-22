@@ -31,6 +31,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     this._writer = null;
     this._event = null;
     this._requestCounter = null;
+    this._requestPending = false;
     this._connectionId = this._generateConnectionId();
     this._sendTimer = new Timer( 60 );
     this._sendTimer.addEventListener( "interval", function() {
@@ -111,9 +112,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
      */
     sendImmediate : function( async ) {
       this._delayTimer.stop();
-      if( this._requestCounter === -1 ) {
-        // NOTE: Delay sending the request until requestCounter is set
-        // TOOD [tb] : This would not work with synchronous requests - bug?
+      if( this._requestPending && async ) {
         this._sendTimer.stop();
         this.send();
       } else {
@@ -125,7 +124,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         if( this._requestCounter != null ) {
           this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
         }
-        this._requestCounter = -1;
+        this._requestPending = true;
         this._startWaitHintTimer();
         var request = this._createRequest();
         request.setAsynchronous( async );
@@ -211,6 +210,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         rwt.remote.EventUtil.setSuspended( true );
         var that = this;
         Processor.processMessage( messageObject, function() {
+          that._requestPending = false;
           Widget.flushGlobalQueues();
           rap._.notify( "render" );
           EventUtil.setSuspended( false );
