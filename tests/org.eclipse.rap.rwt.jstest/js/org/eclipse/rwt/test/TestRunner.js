@@ -250,6 +250,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
         org.eclipse.rwt.test.fixture.TestUtil.resetWindowManager();
         org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
+        rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode 
+          = rwt.util.Functions.returnFalse;
         rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
         rwt.event.EventHandler.setFocusRoot(
           rwt.widgets.base.ClientDocument.getInstance()

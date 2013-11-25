@@ -24,6 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     this._hideTimer = new rwt.client.Timer();
     this._hideTimer.addEventListener( "interval", this._onhidetimer, this );
     this._lastWidget = null;
+    this._fallbackMode = false;
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOver );
     this.addEventListener( "mouseup", this._onMouseUp );
@@ -215,7 +216,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _handleMouseMove : function( event ) {
       if( this.getBoundToWidget() ) {
         if( this.isSeeable() && !this._hideTimer.getEnabled() ) {
-          if( this._config.disappearOn === "move" ) {
+          if( this._config.disappearOn === "move" || this._fallbackMode ) {
             this._startHideTimer();
           } else if( this._config.disappearOn === "exitTargetBounds" ) {
             var bounds = this._getTargetBounds();
@@ -269,6 +270,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _afterAppearLayout : function() {
       var targetBounds = this._getTargetBounds();
+      this._fallbackMode = this._computeFallbackMode( targetBounds );
       var docDimension = this._getDocumentDimension();
       var selfDimension = this._getOwnDimension();
       var newPosition = this._getPositionAfterAppear( targetBounds, docDimension, selfDimension );
@@ -285,7 +287,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
 
     _renderPointer : function( target, self ) {
       var pointers = this.getPointers();
-      var enabled = this._config.position && this._config.position !== "mouse" && pointers;
+      var enabled =    this._config.position
+                    && this._config.position !== "mouse" && pointers
+                    && !this._fallbackMode;
       this._getPointerElement().style.display = "none";
       if( enabled ) {
         var direction = this._getDirection( target, self );
@@ -382,25 +386,51 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this._label.setCellContent( 0, this.getBoundToWidget().getToolTipText() );
     },
 
+    _computeFallbackMode : function( target ) {
+      var doc = this._getDocumentDimension();
+      var right = target.left + target.width;
+      var bottom = target.top + target.height;
+      if( target.left < 0 || target.top < 0 || right > doc.width || bottom > doc.height ) {
+        return true;
+      }
+      var display = this.getElement().style.display;
+      this.getElement().style.display = "none";
+      var targetLeftTop = document.elementFromPoint( target.left + 1, target.top + 1 );
+      var targetRightBottom = document.elementFromPoint( right - 1, bottom - 1 );
+      this.getElement().style.display = display;
+      var widgetLeftTop = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetLeftTop );
+      var widgetRightBottom
+        = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetRightBottom );
+      var boundWidget = this.getBoundToWidget();
+      return    ( widgetLeftTop == null )
+             || ( widgetRightBottom == null )
+             || !( boundWidget === widgetLeftTop || boundWidget.contains( widgetLeftTop ) )
+             || !( boundWidget === widgetRightBottom || boundWidget.contains( widgetRightBottom ) );
+    },
+
     getText : function() {
       return this._label.getCellContent( 0 );
     },
 
     _getPositionAfterAppear : function( target, doc, self ) {
       var result;
-      switch( this._config.position ) {
-        case "horizontal-center":
-          result = this._positionHorizontalCenter( target, doc, self );
-        break;
-        case "align-left":
-          result = this._positionAlignLeft( target, doc, self );
-        break;
-        case "vertical-center":
-          result = this._positionVerticalCenter( target, doc, self );
-        break;
-        default:
-          result = this._positionMouseRelative( target, doc, self );
-        break;
+      if( !this._fallbackMode ) {
+        switch( this._config.position ) {
+          case "horizontal-center":
+            result = this._positionHorizontalCenter( target, doc, self );
+          break;
+          case "align-left":
+            result = this._positionAlignLeft( target, doc, self );
+          break;
+          case "vertical-center":
+            result = this._positionVerticalCenter( target, doc, self );
+          break;
+          default:
+            result = this._positionMouseRelative( target, doc, self );
+          break;
+        }
+      } else {
+        result = this._positionMouseRelative( target, doc, self );
       }
       result[ 0 ] = Math.max( 0, Math.min( result[ 0 ], doc.width - self.width ) );
       result[ 1 ] = Math.max( 0, Math.min( result[ 1 ], doc.height - self.height ) );
