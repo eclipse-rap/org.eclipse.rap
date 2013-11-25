@@ -52,6 +52,7 @@ public class ServerPushManager_Test {
   public static final String SYS_PROP_SLEEP_TIME = "sleepTime";
 
   private static final int SLEEP_TIME;
+  private static final int REQUEST_WAIT_TIMEOUT = 1000;
 
   private static final Object HANDLE_1 = new Object();
   private static final Object HANDLE_2 = new Object();
@@ -219,12 +220,29 @@ public class ServerPushManager_Test {
   }
 
   @Test
-  public void testCallBackRequestIsReleasedOnSessionInvalidate() throws Exception {
+  public void testCallBackRequestIsReleased_onSessionInvalidation() throws Exception {
     ServiceContext context = ContextProvider.getContext();
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
     callBackRequestSimulator.sendRequest();
 
     context.getUISession().getHttpSession().invalidate();
+    callBackRequestSimulator.waitForRequest();
+
+    assertFalse( manager.isCallBackRequestBlocked() );
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
+  }
+
+  /*
+   * See bug 422472: ServerPush request is not released when web application is stopped
+   */
+  @Test
+  public void testCallBackRequestIsReleased_onApplicationContextDeactivation() throws Exception {
+    ServiceContext context = ContextProvider.getContext();
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
+    callBackRequestSimulator.sendRequest();
+
+    context.getApplicationContext().deactivate();
     callBackRequestSimulator.waitForRequest();
 
     assertFalse( manager.isCallBackRequestBlocked() );
@@ -617,7 +635,7 @@ public class ServerPushManager_Test {
     }
 
     void waitForRequest() throws InterruptedException {
-      requestThread.join();
+      requestThread.join( REQUEST_WAIT_TIMEOUT );
     }
 
     boolean isRequestRunning() {
