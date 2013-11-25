@@ -31,7 +31,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -81,6 +83,29 @@ public class TextSizeRecalculation_Test {
     checkRePackTookPlace();
   }
 
+  // See bug 421942: [Dialog] Initial size is too big
+  @Test
+  public void testExecute_restoreShellAfterScrolledComposite() {
+    createWidgetTree();
+    turnOnImmediateResizeEventHandling();
+    fakeMeasurementResults();
+    TextSizeRecalculation recalculation = new TextSizeRecalculation();
+    final Rectangle scrolledCompositeContentBounds = new Rectangle( 0, 0, 0, 0 );
+    shell.addListener( SWT.Resize, new Listener() {
+      public void handleEvent( Event event ) {
+        Rectangle size = scrolledCompositeContent.getBounds();
+        scrolledCompositeContentBounds.x = size.x;
+        scrolledCompositeContentBounds.y = size.x;
+        scrolledCompositeContentBounds.width = size.width;
+        scrolledCompositeContentBounds.height = size.height;
+      }
+    } );
+
+    recalculation.execute();
+
+    assertEquals( getInitialContentBounds(), scrolledCompositeContentBounds );
+  }
+
   @Test
   public void testIControlAdapterIsPacked() {
     Shell control = new Shell( display );
@@ -127,7 +152,7 @@ public class TextSizeRecalculation_Test {
 
   private void checkResizeTookPlace() {
     assertEquals( getInitialShellBounds(), shell.getBounds() );
-    assertEquals( getInitialCompositeBounds(), scrolledCompositeContent.getBounds() );
+    assertEquals( getInitialContentBounds(), scrolledCompositeContent.getBounds() );
     assertEquals( 2, shellResizeListener.resizeCount() );
     assertEquals( 2, scrolledCompositeContentResizeListener.resizeCount() );
     assertEquals( "true|false|", shellResizeListener.getResizeLog() );
@@ -138,10 +163,6 @@ public class TextSizeRecalculation_Test {
     assertEquals( new Point( 100, 22 ), packedControl.getSize() );
     assertEquals( 106, packedTableColumn.getWidth() );
     assertEquals( 116, packedTreeColumn.getWidth() );
-  }
-
-  private Rectangle getInitialCompositeBounds() {
-    return new Composite( new Shell(), SWT.NONE ).getBounds();
   }
 
   private Rectangle getInitialShellBounds() {
@@ -179,9 +200,15 @@ public class TextSizeRecalculation_Test {
   }
 
   private void createScrolledCompositeWithContent() {
-    ScrolledComposite scrolledComposite = new ScrolledComposite( shell, SWT.NONE );
+    ScrolledComposite scrolledComposite = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     scrolledCompositeContent = new Composite( scrolledComposite, SWT.NONE );
+    scrolledCompositeContent.setBounds( getInitialContentBounds() );
     scrolledComposite.setContent( scrolledCompositeContent );
+    scrolledComposite.setOrigin( 5, 5 );
+  }
+
+  private Rectangle getInitialContentBounds() {
+    return new Rectangle( -5, -5, 100, 100 );
   }
 
   private void createShellWithLayout() {

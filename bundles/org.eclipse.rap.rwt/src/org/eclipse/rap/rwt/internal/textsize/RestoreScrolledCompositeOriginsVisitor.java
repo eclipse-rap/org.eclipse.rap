@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2013 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,11 @@ import org.eclipse.swt.widgets.Widget;
 
 class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
 
+  @Override
   public boolean doVisit( Widget widget ) {
     if( widget instanceof ScrolledComposite ) {
-      restoreOrigin( ( ScrolledComposite )widget );
       restoreContentSize( ( ScrolledComposite )widget );
+      restoreOrigin( ( ScrolledComposite )widget );
     }
     return true;
   }
