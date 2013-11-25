@@ -83,9 +83,11 @@ public class TextSizeRecalculation_Test {
     checkRePackTookPlace();
   }
 
-  // See bug 421942: [Dialog] Initial size is too big
+  /*
+   * See bug 421942: [Dialog] Initial size is too big
+   */
   @Test
-  public void testExecute_restoreShellAfterScrolledComposite() {
+  public void testExecute_restoresShellAfterScrolledComposite() {
     createWidgetTree();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
