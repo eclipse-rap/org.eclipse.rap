@@ -813,9 +813,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       template.render( renderOptions );
 
       var style = container.element.firstChild.style;
-      assertTrue( style.font === "" || style.font === "inherit" );
-      assertTrue( style.fontSize === "" || style.fontSize === "inherit" );
-      assertTrue( style.fontFamily === "" || style.fontFamily === "inherit" );
+      if( !rwt.client.Client.isMobileSafari() ) {
+        // on mobile safari the computed font is returned, making it impossibel to check for reset
+        assertTrue( style.font === "" || style.font === "inherit"  );
+        assertTrue( style.fontSize === "" || style.fontSize === "inherit" );
+        assertTrue( style.fontFamily === "" || style.fontFamily === "inherit" );
+      }
     },
 
     testGetCellByElement : function() {

@@ -32,8 +32,10 @@ rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
   rwt.remote.Request.createXHR = function() {
     return new org.eclipse.rwt.test.fixture.NativeRequestMock();
   };
-  rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode 
+  rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode
     = rwt.util.Functions.returnFalse;
+  // undo the changed done by MobileWebkitSupport to allow normal tooltip tests:
+  delete  rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent;
   rwt.remote.Request.prototype._shouldUseStateListener = rwt.util.Functions.returnTrue;
   var server = rwt.remote.Connection.getInstance();
   rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {

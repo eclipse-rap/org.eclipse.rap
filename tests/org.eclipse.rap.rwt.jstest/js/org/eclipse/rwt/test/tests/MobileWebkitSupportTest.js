@@ -349,24 +349,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       var widget = new rwt.widgets.base.Terminator();
+      rwt.runtime.MobileWebkitSupport._configureToolTip();
       widget.addToDocument();
-      widget.setToolTip( toolTip );
-      widget.setToolTipText( "foo" );
+      rwt.widgets.base.WidgetToolTip.setToolTipText( widget, "foo" );
       TestUtil.flush();
       var node = widget._getTargetNode();
       this.touch( node, "touchstart" );
       TestUtil.forceInterval( toolTip._showTimer );
       assertTrue( toolTip.getVisibility() );
       this.touch( node, "touchend" );
+      TestUtil.forceInterval( toolTip._hideTimer );
       assertFalse( toolTip.getVisibility() );
       this.touch( node, "touchstart" );
-      TestUtil.forceInterval( toolTip._showTimer );
       assertTrue( toolTip.getVisibility() );
       this.touch( node, "touchend" );
+      TestUtil.forceInterval( toolTip._hideTimer );
       assertFalse( toolTip.getVisibility() );
       widget.destroy();
       this.resetMobileWebkitSupport();
-
     },
 
     testMouseOver : function() {
@@ -1443,6 +1443,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       mobile._lastMouseClickTime = null;
       mobile._mouseEnabled = true;
       mobile._fullscreen = window.navigator.standalone;
+      delete  rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent;
     },
 
     _createGridByProtocol : function( inScrolledComposite ) {
