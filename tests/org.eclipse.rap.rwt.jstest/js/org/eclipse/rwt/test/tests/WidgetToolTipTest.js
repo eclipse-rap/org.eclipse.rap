@@ -23,6 +23,11 @@ var widget;
 var offset = 4;
 var overlap = 4;
 
+// force creation
+toolTip.show();
+TestUtil.flush();
+toolTip.hide();
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   extend : rwt.qx.Object,
 
@@ -1067,6 +1072,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       shell.setSpace( 0, 102, 0, 102 );
+      widget.setBorder( new rwt.html.Border( 1, "rounded", "black", 15 ) );
       widget.setSpace( 0, 100, 0, 100 );
       var ontop = this._createWidget( 0, 0, 50, 50, "foo" );
       shell.setZIndex( 10000000 );
@@ -1083,10 +1089,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip._computeFallbackMode( ontopTo( 20, 20 ) ) );
       assertFalse( toolTip._computeFallbackMode( ontopTo( 101, 0 ) ) );
       assertFalse( toolTip._computeFallbackMode( ontopTo( 0, 101 ) ) );
-      assertTrue( toolTip._computeFallbackMode( ontopTo( 0, 0 ) ) );
-      assertTrue( toolTip._computeFallbackMode( ontopTo( -40, 0 ) ) );
-      assertTrue( toolTip._computeFallbackMode( ontopTo( 0, -40 ) ) );
-      assertTrue( toolTip._computeFallbackMode( ontopTo( 90, 90 ) ) );
+      assertTrue( toolTip._computeFallbackMode( ontopTo( 30, 0 ) ) );
+      assertTrue( toolTip._computeFallbackMode( ontopTo( -40, 30 ) ) );
+      assertTrue( toolTip._computeFallbackMode( ontopTo( 30, -40 ) ) );
+      assertTrue( toolTip._computeFallbackMode( ontopTo( 30, 90 ) ) );
+      assertTrue( toolTip._computeFallbackMode( ontopTo( 90, 30 ) ) );
     },
 
     testComputeFallbackMode_WidgetOutOfDocument : function() {
@@ -1095,6 +1102,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       widget.setSpace( 0, 100, 0, 100 );
+      widget.setBorder( new rwt.html.Border( 1, "rounded", "black", 15 ) );
       shell.setZIndex( 10000000 );
       var doc = rwt.widgets.base.ClientDocument.getInstance();
       var shellTo = function( x, y ) {
@@ -1110,6 +1118,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertTrue( toolTip._computeFallbackMode( shellTo( 0, -3 ) ) );
       assertTrue( toolTip._computeFallbackMode( shellTo( doc.getClientWidth() - 90, 0 ) ) );
       assertTrue( toolTip._computeFallbackMode( shellTo( 0, doc.getClientHeight() - 90 ) ) );
+    },
+
+    testComputeFallbackMode_ObscuredByToolTip : function() {
+      delete toolTip._computeFallbackMode; // overwritten by TestRunner
+      WidgetToolTip.setToolTipText( widget, "foobarfoobarfoobarfoobar" );
+      shell.setSpace( 0, 102, 0, 102 );
+      widget.setSpace( 0, 50, 0, 10 );
+      shell.setZIndex( 10000000 );
+      toolTip.setMousePointerOffsetX( 1 );
+      toolTip.setMousePointerOffsetY( 1 );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+
+      TestUtil.fakeMouseEvent( widget, "mousemove", 20, 3 );
+      showToolTip();
+
+      assertFalse( toolTip._computeFallbackMode( toolTip._getTargetBounds() ) );
+      toolTip.resetMousePointerOffsetX();
+      toolTip.resetMousePointerOffsetY();
     }
 
   }

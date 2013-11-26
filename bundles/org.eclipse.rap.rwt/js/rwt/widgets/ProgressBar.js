@@ -161,7 +161,7 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
           "top" : this.getBoxHeight() - this._cachedBorderLeft - this._getIndicatorLength(),
           "left" : 0,
           "width" : this.getBoxWidth(),
-          "height" : 0
+          "height" : 1
         };
       } else if( this._isIndeterminate() ) {
         return {
@@ -174,7 +174,7 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
         return {
           "left" : this._cachedBorderLeft + this._getIndicatorLength(),
           "top" : 0,
-          "width" : 0,
+          "width" : 1,
           "height" : this.getBoxHeight()
         };
       }

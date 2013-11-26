@@ -920,7 +920,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       var bounds = bar.getToolTipTargetBounds();
       assertEquals( 100, bounds.left );
       assertEquals( 0, bounds.top );
-      assertEquals( 0, bounds.width );
+      assertEquals( 1, bounds.width );
       assertEquals( 30, bounds.height );
       bar.destroy();
       TestUtil.flush();
@@ -940,7 +940,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 0, bounds.left );
       assertEquals( 139, bounds.top );
       assertEquals( 30, bounds.width );
-      assertEquals( 0, bounds.height );
+      assertEquals( 1, bounds.height );
       bar.destroy();
       TestUtil.flush();
     },

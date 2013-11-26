@@ -395,17 +395,23 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
       var display = this.getElement().style.display;
       this.getElement().style.display = "none";
-      var targetLeftTop = document.elementFromPoint( target.left + 1, target.top + 1 );
-      var targetRightBottom = document.elementFromPoint( right - 1, bottom - 1 );
+      var targetElements = [
+        document.elementFromPoint( target.left + target.width / 2 , target.top + 1 ),
+        document.elementFromPoint( right - 1, target.top + target.height / 2 ),
+        document.elementFromPoint( target.left + target.width / 2, bottom - 1 ),
+        document.elementFromPoint( target.left + 1, target.top + target.height / 2 )
+      ];
       this.getElement().style.display = display;
-      var widgetLeftTop = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetLeftTop );
-      var widgetRightBottom
-        = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetRightBottom );
       var boundWidget = this.getBoundToWidget();
-      return    ( widgetLeftTop == null )
-             || ( widgetRightBottom == null )
-             || !( boundWidget === widgetLeftTop || boundWidget.contains( widgetLeftTop ) )
-             || !( boundWidget === widgetRightBottom || boundWidget.contains( widgetRightBottom ) );
+      for( var i = 0; i < 4; i++ ) {
+        var widget = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetElements[ i ] );
+        if(    widget == null
+            || !( boundWidget === widget || boundWidget.contains( widget ) ) )
+        {
+          return true;
+        }
+      }
+      return false; // all four edges are visible on screen
     },
 
     getText : function() {
