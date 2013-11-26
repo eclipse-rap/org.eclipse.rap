@@ -18,6 +18,8 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Defines a region in a template that displays an image.
+ *
+ * @since 2.2
  */
 public class ImageCell extends Cell<ImageCell> {
 

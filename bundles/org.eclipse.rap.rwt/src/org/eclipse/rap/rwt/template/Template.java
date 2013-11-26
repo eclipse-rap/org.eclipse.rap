@@ -26,6 +26,8 @@ import org.eclipse.rap.rwt.internal.template.TemplateSerializer;
  * Templates can be applied to multiple widgets within the same UI session.
  * </p>
  * @see org.eclipse.rap.rwt.RWT#ROW_TEMPLATE
+ *
+ * @since 2.2
  */
 public class Template implements Serializable, Adaptable {
 

@@ -16,6 +16,8 @@ import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 /**
  * Defines a region in a template that displays a text.
+ *
+ * @since 2.2
  */
 public class TextCell extends Cell<TextCell>  {
 

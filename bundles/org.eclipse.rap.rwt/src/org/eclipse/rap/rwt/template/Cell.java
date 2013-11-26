@@ -28,10 +28,11 @@ import org.eclipse.swt.graphics.Font;
  * selected by the <em>bindingIndex</em>.
  * <p>
  * For horizontal positioning, two of the the properties <em>left</em>, <em>right<em>, and
- * <em>width</em> must be set.
- * For vertical positioning, two properties out of <em>top</em>, <em>bottom</em>, and
- * <em>height</em> are required.
+ * <em>width</em> must be set. For vertical positioning, two properties out of <em>top</em>,
+ * <em>bottom</em>, and <em>height</em> are required.
  * </p>
+ *
+ * @since 2.2
  */
 public abstract class Cell<T extends Cell> implements Serializable  {
 
