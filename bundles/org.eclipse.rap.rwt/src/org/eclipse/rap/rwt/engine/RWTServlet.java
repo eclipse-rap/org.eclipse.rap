@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,9 @@ public class RWTServlet extends HttpServlet {
   private void handleRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
-    if( request.getPathInfo() == null ) {
+    if( !applicationContext.isActive() ) {
+      response.sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+    } else if( request.getPathInfo() == null ) {
       handleValidRequest( request, response );
     } else {
       handleInvalidRequest( request, response );

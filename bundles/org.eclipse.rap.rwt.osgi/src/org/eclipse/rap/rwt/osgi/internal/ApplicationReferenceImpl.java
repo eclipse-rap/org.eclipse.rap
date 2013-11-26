@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,14 +116,17 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void stopRWTApplication() {
-    unregisterServlets();
-    unregisterResourcesDirectory();
+    // We unregister servlets at the end, because the servlet bridge blocks while unregistering
+    // servlets with standing requests. Stopping the application releases standing push requests.
+    // See bug 407371: Tomcat hangs during shutdown
+    Collection<String> aliases = applicationRunner.getServletPaths();
     serviceRegistration.unregister();
     applicationRunner.stop();
+    unregisterServlets( aliases );
+    unregisterResourcesDirectory();
   }
 
-  private void unregisterServlets() {
-    Collection<String> aliases = applicationRunner.getServletPaths();
+  private void unregisterServlets( Collection<String> aliases ) {
     if( aliases.isEmpty() ) {
       unregisterServlet( DEFAULT_ALIAS );
     }
@@ -237,4 +240,5 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void markNotAlive() {
     alive = false;
   }
+
 }
