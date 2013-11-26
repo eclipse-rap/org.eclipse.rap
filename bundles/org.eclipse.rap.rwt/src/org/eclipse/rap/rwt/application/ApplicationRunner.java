@@ -73,24 +73,26 @@ public class ApplicationRunner {
   }
 
   /**
-   * Starts the application.
-   *
-   * @throws IllegalStateException if this application was already started.
+   * Starts the application if it is not running. If the application is already running, this method
+   * does nothing.
    */
   public void start() {
-    applicationContext.attachToServletContext( );
-    activateApplicationContext();
+    applicationContext.attachToServletContext();
+    try {
+      applicationContext.activate();
+    } catch( RuntimeException rte ) {
+      applicationContext.removeFromServletContext();
+      throw rte;
+    }
   }
 
   /**
-   * Stops the application if it is running. Calling <code>stop()</code> on a non-running
-   * application does nothing.
+   * Stops the application if it is running. If the application is not running, this method does
+   * nothing.
    */
   public void stop() {
     try {
-      if( applicationContext.isActive() ) {
-        applicationContext.deactivate();
-      }
+      applicationContext.deactivate();
     } finally {
       applicationContext.removeFromServletContext();
     }
@@ -107,14 +109,5 @@ public class ApplicationRunner {
     Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
     result.addAll( servletPaths );
     return Collections.unmodifiableCollection( result );
-  }
-
-  private void activateApplicationContext() {
-    try {
-      applicationContext.activate();
-    } catch( RuntimeException rte ) {
-      applicationContext.removeFromServletContext();
-      throw rte;
-    }
   }
 }

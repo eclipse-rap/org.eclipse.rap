@@ -24,6 +24,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.Application;
@@ -218,28 +219,38 @@ public class ApplicationContextImpl_Test {
   }
 
   @Test
-  public void testActivate_failsIfAlreadyActivated() {
+  public void testActivate_canBeCalledTwice() {
     applicationContext = createApplicationContextSpy();
+
+    applicationContext.activate();
     applicationContext.activate();
 
-    try {
-      applicationContext.activate();
-      fail();
-    } catch( IllegalStateException expected ) {
-      assertEquals( "ApplicationContext is already active", expected.getMessage() );
-    }
+    assertTrue( applicationContext.isActive() );
+    verify( applicationContext, times( 1 ) ).doActivate();
   }
 
   @Test
-  public void testDeactivate_failsIfNotActivated() {
+  public void testDeactivate_canBeCalledTwice() {
     applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
 
-    try {
-      applicationContext.deactivate();
-      fail();
-    } catch( IllegalStateException expected ) {
-      assertEquals( "ApplicationContext is not active", expected.getMessage() );
-    }
+    applicationContext.deactivate();
+    applicationContext.deactivate();
+
+    assertFalse( applicationContext.isActive() );
+    verify( applicationContext, times( 1 ) ).doDeactivate();
+  }
+
+  @Test
+  public void testDeactivate_calledTwice_doesNotCallListenersTwice() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+    applicationContext.deactivate();
+
+    verify( listener, times( 1 ) ).beforeDestroy( any( ApplicationContextEvent.class ) );
   }
 
   @Test
@@ -413,6 +424,24 @@ public class ApplicationContextImpl_Test {
     verify( listener ).beforeDestroy( captor.capture() );
     assertSame( applicationContext, captor.getValue().getSource() );
     assertSame( applicationContext, captor.getValue().getApplicationContext() );
+  }
+
+  @Test
+  public void testBeforeDestroyEvent_hasActiveApplicationContext() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.activate();
+    final AtomicBoolean applicationContextActive = new AtomicBoolean();
+    ApplicationContextListener listener = new ApplicationContextListener() {
+      public void beforeDestroy( ApplicationContextEvent event ) {
+        boolean active = ( ( ApplicationContextImpl )event.getApplicationContext() ).isActive();
+        applicationContextActive.set( active );
+      }
+    };
+    applicationContext.addApplicationContextListener( listener );
+
+    applicationContext.deactivate();
+
+    assertTrue( applicationContextActive.get() );
   }
 
   @Test

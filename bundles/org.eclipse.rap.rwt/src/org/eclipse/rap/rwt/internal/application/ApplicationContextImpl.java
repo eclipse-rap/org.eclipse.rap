@@ -58,7 +58,7 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 public class ApplicationContextImpl implements ApplicationContext {
 
-  private static enum State { INACTIVE, ACTIVATING, ACTIVE, DEACTIVATING }
+  private static enum State { INACTIVE, ACTIVATING, ACTIVE, ABOUT_TO_DEACTIVATE, DEACTIVATING }
 
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContextImpl.class.getName() + "#instance";
@@ -191,31 +191,35 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   public boolean isActive() {
+    State currentState = state.get();
+    return currentState.equals( State.ACTIVE ) || currentState.equals( State.ABOUT_TO_DEACTIVATE );
+  }
+
+  public boolean allowsRequests() {
     return state.get().equals( State.ACTIVE );
   }
 
   public void activate() {
-    if( !state.compareAndSet( State.INACTIVE, State.ACTIVATING ) ) {
-      throw new IllegalStateException( "ApplicationContext is already active" );
-    }
-    try {
-      doActivate();
-      state.set( State.ACTIVE );
-    } catch( RuntimeException rte ) {
-      state.set( State.INACTIVE );
-      throw rte;
+    if( state.compareAndSet( State.INACTIVE, State.ACTIVATING ) ) {
+      try {
+        doActivate();
+        state.set( State.ACTIVE );
+      } catch( RuntimeException rte ) {
+        state.set( State.INACTIVE );
+        throw rte;
+      }
     }
   }
 
   public void deactivate() {
-    if( !state.compareAndSet( State.ACTIVE, State.DEACTIVATING ) ) {
-      throw new IllegalStateException( "ApplicationContext is not active" );
-    }
-    try {
-      fireBeforeDestroy();
-      doDeactivate();
-    } finally {
-      state.set( State.INACTIVE );
+    if( state.compareAndSet( State.ACTIVE, State.ABOUT_TO_DEACTIVATE ) ) {
+      try {
+        fireBeforeDestroy();
+        state.set( State.DEACTIVATING );
+        doDeactivate();
+      } finally {
+        state.set( State.INACTIVE );
+      }
     }
   }
 
