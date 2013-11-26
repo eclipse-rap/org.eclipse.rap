@@ -102,7 +102,9 @@ public class RWTServlet extends HttpServlet {
   private void handleRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
-    if( request.getPathInfo() == null ) {
+    if( !applicationContext.isActive() ) {
+      response.sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+    } else if( request.getPathInfo() == null ) {
       handleValidRequest( request, response );
     } else {
       handleInvalidRequest( request, response );

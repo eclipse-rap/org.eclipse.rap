@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -139,6 +138,22 @@ public class RWTServlet_Test {
     servlet.doPost( request, new TestResponse() );
 
     assertSame( applicationContext, captor.get() );
+  }
+
+  @Test
+  public void testProcessRequestOnDeactivatedApplicationContext()
+    throws ServletException, IOException
+  {
+    ApplicationContextImpl applicationContext = createApplicationContext();
+    applyTestSession( request, applicationContext );
+    initServlet( servlet, applicationContext );
+    applicationContext.deactivate();
+    HttpServletResponse response = mock( HttpServletResponse.class );
+
+    servlet.doPost( request, response );
+
+    verify( response ).sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+    verifyNoMoreInteractions( response );
   }
 
   @Test
