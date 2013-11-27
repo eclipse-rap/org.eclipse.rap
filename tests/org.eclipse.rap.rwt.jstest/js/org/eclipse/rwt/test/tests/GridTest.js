@@ -784,6 +784,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testRenderItemsOnResizeWidth : function() {
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
+      this._fakeAppearance();
+      tree.addToDocument();
+      tree.setWidth( 300 );
+      tree.setHeight( 300 );
+      TestUtil.flush();
+      var log = [];
+      var row = tree.getRowContainer().getChildren()[ 0 ];
+      row.addEventListener( "itemRendered", function( event ) {
+        log.push( event );
+      } );
+
+      tree.setWidth( 700 );
+      TestUtil.flush();
+
+      assertEquals( 1, log.length );
+      tree.destroy();
+    },
+
     testSimpleInternalLayoutWithBorder : function() {
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       this._fakeAppearance();

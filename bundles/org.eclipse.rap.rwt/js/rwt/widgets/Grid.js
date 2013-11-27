@@ -1354,6 +1354,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.setWidth( width );
       this._rowContainer.setWidth( width );
       this._updateScrollWidth();
+      this._scheduleUpdate();
     },
 
     _layoutY : function() {
