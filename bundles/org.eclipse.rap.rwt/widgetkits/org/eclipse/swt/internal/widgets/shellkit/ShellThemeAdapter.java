@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ShellThemeAdapter extends ControlThemeAdapterImpl {
+public class ShellThemeAdapter extends ControlThemeAdapterImpl {
 
   private static final int MENU_BAR_MIN_HEIGHT = 20;
 
@@ -79,4 +79,5 @@ public final class ShellThemeAdapter extends ControlThemeAdapterImpl {
     QxType cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
     return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
+
 }

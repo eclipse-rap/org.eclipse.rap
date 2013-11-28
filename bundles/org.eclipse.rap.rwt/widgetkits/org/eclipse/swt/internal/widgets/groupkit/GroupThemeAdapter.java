@@ -18,7 +18,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Group;
 
 
-public final class GroupThemeAdapter extends ControlThemeAdapterImpl {
+public class GroupThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getFramePadding( Group group ) {
     return getCssBoxDimensions( "Group-Frame", "padding", group );
@@ -54,4 +54,5 @@ public final class GroupThemeAdapter extends ControlThemeAdapterImpl {
     int height = margin.height + padding.height;
     return new Rectangle( left, top, width, height );
   }
+
 }

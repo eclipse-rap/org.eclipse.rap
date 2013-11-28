@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.TabFolder;
 
 
-public final class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
+public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
 
   public int getContentContainerBorderWidth( TabFolder folder ) {
     return getCssBorderWidth( "TabFolder-ContentContainer", "border", folder );
@@ -30,4 +30,5 @@ public final class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
     QxType cssValue = ThemeUtil.getCssValue( "TabItem", "padding", selector );
     return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
+
 }

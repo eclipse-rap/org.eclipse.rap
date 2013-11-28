@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 
 
-public final class CLabelThemeAdapter extends ControlThemeAdapterImpl {
+public class CLabelThemeAdapter extends ControlThemeAdapterImpl {
 
   public int getBorderWidth( CLabel clabel ) {
     int result = super.getBorderWidth( clabel );
@@ -30,4 +30,5 @@ public final class CLabelThemeAdapter extends ControlThemeAdapterImpl {
   public int getSpacing( CLabel clabel ) {
     return getCssDimension( "CLabel", "spacing", clabel );
   }
+
 }

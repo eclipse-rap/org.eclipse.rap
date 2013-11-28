@@ -15,7 +15,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
-public final class CComboThemeAdapter extends ControlThemeAdapterImpl {
+public class CComboThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getFieldPadding( Control control ) {
     return getCssBoxDimensions( "CCombo-Field", "padding", control );

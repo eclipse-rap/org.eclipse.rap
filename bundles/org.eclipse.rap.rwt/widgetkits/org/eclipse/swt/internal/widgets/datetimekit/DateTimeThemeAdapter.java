@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,26 +15,20 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.DateTime;
 
 
-public final class DateTimeThemeAdapter extends ControlThemeAdapterImpl {
+public class DateTimeThemeAdapter extends ControlThemeAdapterImpl {
 
   public int getSpinnerButtonWidth( DateTime dateTime ) {
-    int upButtonWidth = getCssDimension( "DateTime-UpButton",
-                                         "width",
-                                         dateTime );
-    int downButtonWidth = getCssDimension( "DateTime-DownButton",
-                                           "width",
-                                           dateTime );
+    int upButtonWidth = getCssDimension( "DateTime-UpButton", "width", dateTime );
+    int downButtonWidth = getCssDimension( "DateTime-DownButton", "width", dateTime );
     return Math.max( upButtonWidth, downButtonWidth );
   }
 
   public int getDropDownButtonWidth( DateTime dateTime ) {
-    int dropDownButtonWidth = getCssDimension( "DateTime-DropDownButton",
-                                               "width",
-                                               dateTime );
-    return dropDownButtonWidth;
+    return getCssDimension( "DateTime-DropDownButton", "width", dateTime );
   }
 
   public Rectangle getFieldPadding( DateTime dateTime ) {
     return getCssBoxDimensions( "DateTime-Field", "padding", dateTime );
   }
+
 }

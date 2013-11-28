@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Spinner;
 
 
-public final class SpinnerThemeAdapter extends ControlThemeAdapterImpl {
+public class SpinnerThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getFieldPadding( Spinner spinner ) {
     return getCssBoxDimensions( "Spinner-Field", "padding", spinner );
@@ -31,4 +31,5 @@ public final class SpinnerThemeAdapter extends ControlThemeAdapterImpl {
                                            spinner );
     return Math.max( upButtonWidth, downButtonWidth );
   }
+
 }

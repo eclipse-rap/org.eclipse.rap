@@ -16,7 +16,7 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
-public final class ComboThemeAdapter extends ControlThemeAdapterImpl {
+public class ComboThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getFieldPadding( Control control ) {
     return getCssBoxDimensions( "Combo-Field", "padding", control );
