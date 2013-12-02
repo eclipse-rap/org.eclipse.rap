@@ -70,8 +70,10 @@
     <module>../../tests/org.eclipse.rap.rwt.osgi.test</module>
     <module>../../tests/org.eclipse.rap.rwt.themes.test</module>
     <module>../../tests/org.eclipse.rap.ui.forms.test</module>
+    <!--
     <module>../../tests/org.eclipse.rap.rwt.cluster.test</module>
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
+    -->
     <!-- Packaging projects -->
     <module>../../features/org.eclipse.rap.feature</module>
     <module>../../features/org.eclipse.rap.sdk.feature</module>
