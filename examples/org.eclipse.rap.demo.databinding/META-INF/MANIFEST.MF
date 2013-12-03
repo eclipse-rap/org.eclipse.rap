@@ -4,8 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.demo.databinding;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.rap.jface.databinding;bundle-version="[2.2.0,3.0.0)",
+Require-Bundle: org.eclipse.rap.jface.databinding;bundle-version="[2.2.0,3.0.0)",
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans,
  org.eclipse.rap.ui;bundle-version="[2.2.0,3.0.0)"
