@@ -188,6 +188,10 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this.base( arguments, value, oldValue );
       if( this._inputTag == "textarea" ) {
         this._styleWrap();
+        if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getVersion() === 9 ) {
+          // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
+          rwt.html.Style.setBackgroundImage( this._inputElement, "static/image/blank.gif" );
+        }
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";

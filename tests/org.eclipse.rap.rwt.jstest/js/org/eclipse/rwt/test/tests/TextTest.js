@@ -1427,6 +1427,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.restoreAppearance();
     },
 
+    testSetTextAreaBackgroundImage : function() {
+      createText( false, true );
+
+      var element = text._getTargetNode().firstChild;
+      var image = TestUtil.getCssBackgroundImage( element );
+      // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
+      var expected = rwt.client.Client.isNewMshtml() && rwt.client.Client.getVersion() === 9;
+      assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
+    },
+
+    testSetInputBackgroundImage : function() {
+      createText( false, false );
+
+      var element = text._getTargetNode().firstChild;
+      var image = TestUtil.getCssBackgroundImage( element );
+      assertTrue( image.indexOf( "blank.gif" ) === -1 );
+    },
+
     /////////
     // Helper
 
