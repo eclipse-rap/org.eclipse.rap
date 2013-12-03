@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -134,6 +135,19 @@ public class LifeCycleServiceHandler_Test {
     service( handler );
 
     assertFalse( uiSession.isBound() );
+  }
+
+  @Test
+  public void testShutdownUISession_returnsValidJson() throws IOException {
+    LifeCycleServiceHandler.markSessionStarted();
+    simulateShutdownUiRequest();
+    service( handler );
+
+    TestResponse response = getResponse();
+    JsonObject message = JsonObject.readFrom( response.getContent() );
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
+    assertNotNull( message.get( ClientMessage.PROP_HEAD ) );
+    assertNotNull( message.get( ClientMessage.PROP_OPERATIONS ) );
   }
 
   @Test

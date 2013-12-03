@@ -108,6 +108,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       writeInvalidContentType( response );
     } else if( isSessionShutdown() ) {
       shutdownUISession();
+      writeEmptyMessage( response );
     } else if( isSessionTimeout() ) {
       writeSessionTimeoutError( response );
     } else if( !isRequestCounterValid() ) {
@@ -249,6 +250,10 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void setJsonResponseHeaders( ServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+  }
+
+  private static void writeEmptyMessage( ServletResponse response ) throws IOException {
+    new ProtocolMessageWriter().createMessage().writeTo( response.getWriter() );
   }
 
   private static void writeProtocolMessage( ServletResponse response ) throws IOException {
