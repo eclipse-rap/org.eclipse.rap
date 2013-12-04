@@ -60,8 +60,12 @@
           <replacements>
             <replacement>
               <token>osgi.bundles=</token>
-              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle@4:start,</value>
-             </replacement>
+              <value>osgi.bundles=org.eclipse.equinox.servletbridge.extensionbundle,</value>
+            </replacement>
+            <replacement>
+              <token>reference\\:file\\:javax.servlet.*?jar@4,</token>
+              <value></value>
+            </replacement>
           </replacements>
           <regexFlags>
             <regexFlag>CASE_INSENSITIVE</regexFlag>
