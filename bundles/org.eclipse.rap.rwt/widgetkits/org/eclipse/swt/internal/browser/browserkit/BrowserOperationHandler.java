@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FUNCTION_ERROR;
 import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FUNCTION_NAME;
@@ -18,7 +17,9 @@ import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FU
 import static org.eclipse.swt.internal.events.EventTypes.PROGRESS_CHANGED;
 import static org.eclipse.swt.internal.events.EventTypes.PROGRESS_COMPLETED;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -71,7 +72,7 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
    */
   public void handleCallExecuteFunction( final Browser browser, JsonObject properties ) {
     String name = properties.get( PARAM_NAME ).asString();
-    final Object[] arguments = ( Object[] )jsonToJava( properties.get( PARAM_ARGUMENTS ) );
+    final Object[] arguments = jsonToJava( properties.get( PARAM_ARGUMENTS ).asArray() );
     BrowserFunction[] functions = getAdapter( browser ).getBrowserFunctions();
     boolean found = false;
     for( int i = 0; i < functions.length && !found; i++ ) {
@@ -99,10 +100,10 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
    * @param result ([object]) array with one element that contains evaluation result
    */
   public void handleCallEvaluationSucceeded( Browser browser, JsonObject properties ) {
-    Object evalValue = jsonToJava( properties.get( PARAM_RESULT ) );
+    JsonValue value = properties.get( PARAM_RESULT );
     Object result = null;
-    if( evalValue != null && evalValue instanceof Object[] ) {
-      result = ( ( Object[] )evalValue )[ 0 ];
+    if( value != null && !value.isNull() ) {
+      result = jsonToJava( value.asArray() )[ 0 ];
     }
     getAdapter( browser ).setExecuteResult( true, result );
   }
@@ -137,6 +138,32 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
   private static void setExecutedFunctionName( Browser browser, String name ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( EXECUTED_FUNCTION_NAME + getId( browser ), name );
+  }
+
+  static Object jsonToJava( JsonValue value ) {
+    Object result;
+    if( value.isNull() ) {
+      result = null;
+    } else if( value.isBoolean() ) {
+      result = Boolean.valueOf( value.asBoolean() );
+    } else if( value.isNumber() ) {
+      result = Double.valueOf( value.asDouble() );
+    } else if( value.isString() ) {
+      result = value.asString();
+    } else if( value.isArray() ) {
+      result = jsonToJava( value.asArray() );
+    } else {
+      throw new RuntimeException( "Unable to convert JsonValue to Java: " + value );
+    }
+    return result;
+  }
+
+  private static Object[] jsonToJava( JsonArray value ) {
+    Object[] result = new Object[ value.size() ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = jsonToJava( value.get( i ) );
+    }
+    return result;
   }
 
   private IBrowserAdapter getAdapter( Browser browser ) {

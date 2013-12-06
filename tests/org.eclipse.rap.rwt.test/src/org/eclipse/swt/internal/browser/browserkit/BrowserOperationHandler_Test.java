@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.swt.internal.browser.browserkit.BrowserOperationHandler.jsonToJava;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
@@ -117,6 +121,25 @@ public class BrowserOperationHandler_Test {
   }
 
   @Test
+  public void testHandleCallExecuteFunction_withoutArguments() {
+    final List<Object> log = new ArrayList<Object>();
+    new BrowserFunction( browser, "func" ) {
+      @Override
+      public Object function( Object[] arguments ) {
+        log.addAll( Arrays.asList( arguments ) );
+        return new Object[ 0 ];
+      }
+    };
+
+    JsonObject parameters = new JsonObject()
+      .add( "name", "func" )
+      .add( "arguments", new JsonArray() );
+    handler.handleCall( "executeFunction", parameters );
+
+    assertEquals( 0, log.toArray().length );
+  }
+
+  @Test
   public void testHandleCallEvaluationSucceeded() {
     BrowserCallback browserCallback = mock( BrowserCallback.class );
     BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
@@ -124,7 +147,18 @@ public class BrowserOperationHandler_Test {
     JsonObject parameters = new JsonObject().add( "result", new JsonArray().add( 27 ) );
     handler.handleCall( "evaluationSucceeded", parameters );
 
-    verify( browserCallback ).evaluationSucceeded( Integer.valueOf( 27 ) );
+    verify( browserCallback ).evaluationSucceeded( Double.valueOf( 27 ) );
+  }
+
+  @Test
+  public void testHandleCallEvaluationSucceeded_nullResult() {
+    BrowserCallback browserCallback = mock( BrowserCallback.class );
+    BrowserUtil.evaluate( browser, "alert('33');", browserCallback );
+
+    JsonObject parameters = new JsonObject().add( "result", JsonObject.NULL );
+    handler.handleCall( "evaluationSucceeded", parameters );
+
+    verify( browserCallback ).evaluationSucceeded( null );
   }
 
   @Test
@@ -135,6 +169,58 @@ public class BrowserOperationHandler_Test {
     handler.handleCall( "evaluationFailed", new JsonObject() );
 
     verify( browserCallback ).evaluationFailed( any( Exception.class ) );
+  }
+
+  @Test
+  public void testJsonToJava_null() {
+    assertNull( jsonToJava( JsonObject.NULL ) );
+  }
+
+  @Test
+  public void testJsonToJava_boolean() {
+    assertEquals( Boolean.TRUE, jsonToJava( JsonObject.TRUE ) );
+  }
+
+  @Test
+  public void testJsonToJava_number() {
+    assertEquals( Double.valueOf( 5 ), jsonToJava( JsonValue.valueOf( 5 ) ) );
+  }
+
+  @Test
+  public void testJsonToJava_string() {
+    assertEquals( "foo", jsonToJava( JsonValue.valueOf( "foo" ) ) );
+  }
+
+  @Test( expected = RuntimeException.class )
+  public void testJsonToJava_object() {
+    jsonToJava( new JsonObject() );
+  }
+
+  @Test
+  public void testJsonToJava_array() {
+    JsonArray array = new JsonArray().add( true ).add( JsonObject.NULL ).add( 5 ).add( "foo" );
+
+    Object[] result = ( Object[] )jsonToJava( array );
+
+    assertEquals( 4, result.length );
+    assertEquals( Boolean.TRUE, result[ 0 ] );
+    assertNull( result[ 1 ] );
+    assertEquals( Double.valueOf( 5 ), result[ 2 ] );
+    assertEquals( "foo", result[ 3 ] );
+  }
+
+  @Test
+  public void testJsonToJava_nestedArrays() {
+    JsonArray array = new JsonArray().add( true ).add( new JsonArray().add( 5 ).add( "foo" ) );
+
+    Object[] result = ( Object[] )jsonToJava( array );
+
+    assertEquals( 2, result.length );
+    assertEquals( Boolean.TRUE, result[ 0 ] );
+    Object[] innerArray = ( Object[] )result[ 1 ];
+    assertEquals( 2, innerArray.length );
+    assertEquals( Double.valueOf( 5 ), innerArray[ 0 ] );
+    assertEquals( "foo", innerArray[ 1 ] );
   }
 
 }

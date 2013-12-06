@@ -117,7 +117,7 @@ public class BrowserUtil_Test {
     Fixture.fakeCallOperation( getId( browser ), "evaluationSucceeded", parameters );
     Fixture.readDataAndProcessAction( browser );
 
-    verify( browserCallback ).evaluationSucceeded( Integer.valueOf( 5 ) );
+    verify( browserCallback ).evaluationSucceeded( Double.valueOf( 5 ) );
   }
 
   @Test
