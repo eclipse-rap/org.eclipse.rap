@@ -70,10 +70,8 @@
     <module>../../tests/org.eclipse.rap.rwt.osgi.test</module>
     <module>../../tests/org.eclipse.rap.rwt.themes.test</module>
     <module>../../tests/org.eclipse.rap.ui.forms.test</module>
-    <!--
     <module>../../tests/org.eclipse.rap.rwt.cluster.test</module>
     <module>../../tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
-    -->
     <!-- Packaging projects -->
     <module>../../features/org.eclipse.rap.feature</module>
     <module>../../features/org.eclipse.rap.sdk.feature</module>
@@ -186,6 +184,29 @@
             </configuration>
             <goals>
               <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- ensure Java 1.5 class library compatibility -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.9</version>
+        <configuration>
+          <signature>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java15</artifactId>
+            <version>1.0</version>
+          </signature>
+        </configuration>
+        <executions>
+          <execution>
+            <id>ensure-java-1.5-class-library</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
