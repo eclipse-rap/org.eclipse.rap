@@ -504,10 +504,7 @@ public class FontDialog extends Dialog {
   }
 
   private void updateFontData() {
-    String name = fontData.getName();
-    if( txtFontFamily.getText().length() > 0 ) {
-      name = txtFontFamily.getText();
-    }
+    String name = txtFontFamily.getText();
     int height = spFontSize.getSelection();
     int style = SWT.NORMAL;
     if( cbBold.getSelection() ) {
