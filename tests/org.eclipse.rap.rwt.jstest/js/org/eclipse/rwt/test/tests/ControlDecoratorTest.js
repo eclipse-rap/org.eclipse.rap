@@ -46,7 +46,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ControlDecoratorTest", {
 
       TestUtil.protocolSet( "w3", { "text" : "foo\n && <> \" bar" } );
 
-      assertEquals( "foo<br/> &amp;&amp; &lt;&gt; &quot; bar", widget._text );
+      assertEquals( "foo\n && <> \" bar", widget._text );
+      assertEquals( "foo<br/> &amp;&amp; &lt;&gt; &quot; bar", widget.getToolTipText() );
       shell.destroy();
       widget.destroy();
     },

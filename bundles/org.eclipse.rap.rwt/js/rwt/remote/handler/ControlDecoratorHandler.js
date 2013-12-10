@@ -41,12 +41,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ControlDecorator", {
       widget.setWidth( value[ 2 ] );
       widget.setHeight( value[ 3 ] );
     },
-    "text" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      widget.setText( text );
-    },
     "image" : function( widget, value ) {
       if( value === null ) {
         widget.setSource( null );
