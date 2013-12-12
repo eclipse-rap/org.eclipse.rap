@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -583,7 +584,16 @@ public class TabFolder extends Composite {
   }
 
   private int getTabBarHeight() {
-    int result = TextSizeUtil.getCharHeight( getFont() );
+    int textHeight = TextSizeUtil.getCharHeight( getFont() );
+    int imageHeight = 0;
+    for( TabItem item : getItems() ) {
+      Image image = item.getImage();
+      int height = image == null ? 0 : image.getBounds().height;
+      if( height > imageHeight ) {
+        imageHeight = height;
+      }
+    }
+    int result = Math.max( textHeight, imageHeight );
     result += getItemPadding( true ).height;
     result += TabItem.SELECTED_ITEM_BORDER;
     return result;

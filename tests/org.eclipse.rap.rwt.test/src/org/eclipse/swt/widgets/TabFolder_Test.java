@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
@@ -296,6 +298,28 @@ public class TabFolder_Test {
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
     folder.setSize( 100, 100 );
     expected = new Rectangle( 2, 2, 96, 66 );
+    assertEquals( expected, folder.getClientArea() );
+  }
+
+  @Test
+  public void testClientArea_withImageInItem_top() throws IOException {
+    folder = new TabFolder( shell, SWT.TOP );
+    folder.setSize( 100, 200 );
+    TabItem item = new TabItem( folder, SWT.NONE );
+    item.setImage( createImage( display, Fixture.IMAGE_50x100 ) );
+
+    Rectangle expected = new Rectangle( 1, 117, 98, 82 );
+    assertEquals( expected, folder.getClientArea() );
+  }
+
+  @Test
+  public void testClientArea_withImageInItem_bottom() throws IOException {
+    folder = new TabFolder( shell, SWT.BOTTOM );
+    folder.setSize( 100, 200 );
+    TabItem item = new TabItem( folder, SWT.NONE );
+    item.setImage( createImage( display, Fixture.IMAGE_50x100 ) );
+
+    Rectangle expected = new Rectangle( 1, 1, 98, 82 );
     assertEquals( expected, folder.getClientArea() );
   }
 
