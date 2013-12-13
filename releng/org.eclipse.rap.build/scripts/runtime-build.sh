@@ -7,8 +7,14 @@
 ######################################################################
 # set up environment
 
-SCRIPTS_DIR=$(dirname $(readlink -nm $0))
-. $SCRIPTS_DIR/build-environment.sh
+export MVN=${MVN:-"/opt/public/common/apache-maven-3.0.4/bin/mvn"}
+echo "Maven path: ${MVN}"
+
+export ECLIPSE_HOME=${ECLIPSE_HOME:-"/shared/rt/rap/build-runtimes/eclipse"}
+echo "Eclipse location: ${ECLIPSE_HOME}"
+
+export MAVEN_LOCAL_REPO_PATH=${MAVEN_LOCAL_REPO_PATH:-"/shared/rt/rap/m2/repository"}
+echo "Local Maven repository location: ${MAVEN_LOCAL_REPO_PATH}"
 
 if [ "${BUILD_TYPE:0:1}" == "S" ]; then
   sign=true

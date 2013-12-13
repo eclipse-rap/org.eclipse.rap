@@ -75,8 +75,6 @@
     <module>../../features/org.eclipse.rap.sdk.feature</module>
     <module>../../features/org.eclipse.rap.examples.feature</module>
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
-    <module>../../features/org.eclipse.rap.equinox.luna.target.feature</module>
-    <module>repository</module>
     <module>repository.luna</module>
   </modules>
 
