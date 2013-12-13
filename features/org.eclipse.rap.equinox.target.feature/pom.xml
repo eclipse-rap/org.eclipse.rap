@@ -28,13 +28,13 @@
     <repository>
       <id>base-platform-repository</id>
       <layout>p2</layout>
-      <url>${base-platform-kepler-repository}</url>
+      <url>${base-platform-luna-repository}</url>
     </repository>
     <repository>
       <id>base-platform-repository-with-ICU-bundle</id>
       <layout>p2</layout>
       <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/SR1/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/M0/runtime-base</url>
     </repository>
   </repositories>
 

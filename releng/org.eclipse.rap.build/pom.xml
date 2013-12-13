@@ -26,10 +26,8 @@
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <signing-plugin-version>1.0.4</signing-plugin-version>
     <surefire-version>2.15</surefire-version>
-    <junit-version>4.8.2</junit-version>
-    <mockito-version>1.8.4</mockito-version>
-    <base-platform-kepler>4.3/R-4.3.1-201309111000/</base-platform-kepler>
-    <base-platform-kepler-repository>http://download.eclipse.org/eclipse/updates/${base-platform-kepler}</base-platform-kepler-repository>
+    <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
+    <junit-version>4.11</junit-version>
     <base-platform-luna>4.4milestones/S-4.4M3-201310302000/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -79,7 +77,6 @@
     <module>../../features/org.eclipse.rap.equinox.target.feature</module>
     <module>../../features/org.eclipse.rap.equinox.luna.target.feature</module>
     <module>repository</module>
-    <module>repository.kepler</module>
     <module>repository.luna</module>
   </modules>
 
@@ -91,12 +88,12 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.1/RC4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/M0/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.2/extra-dependencies</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/extra-dependencies</url>
     </repository>
   </repositories>
 
@@ -303,6 +300,7 @@
 
   </profiles>
 
+  <!-- Required by maven-surefire -->
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

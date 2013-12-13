@@ -56,10 +56,8 @@ test -n "$TIMESTAMP" || exit 1
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
-zipFileNameLuna=rap-luna-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-mv repository.kepler/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
-mv repository.luna/target/*.zip "$WORKSPACE/$zipFileNameLuna" || exit 1
+mv repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
 
 ######################################################################
 # include legal files in zip files
@@ -68,4 +66,3 @@ cd "$WORKSPACE"
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/epl-v10.html .
 zip "$zipFileName" notice.html epl-v10.html
-zip "$zipFileNameLuna" notice.html epl-v10.html
