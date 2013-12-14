@@ -52,7 +52,7 @@ fi
 ######################################################################
 # rename ZIP archive
 
-repoDirectory="$basedirectory"/repository/target/repository
+repoDirectory="$basedirectory"/repository.luna/target/repository
 VERSION=$(ls "$repoDirectory"/features/org.eclipse.rap.sdk.feature_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
 echo "Version is $VERSION"
 test -n "$VERSION" || exit 1
@@ -63,7 +63,7 @@ test -n "$TIMESTAMP" || exit 1
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-mv repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+mv "$basedirectory"/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
 
 ######################################################################
 # include legal files in zip files
