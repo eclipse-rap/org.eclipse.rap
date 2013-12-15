@@ -28,7 +28,7 @@
     <surefire-version>2.15</surefire-version>
     <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
     <junit-version>4.11</junit-version>
-    <base-platform-luna>4.4milestones/S-4.4M3-201310302000/</base-platform-luna>
+    <base-platform-luna>4.4milestones/S-4.4M4-201312121600/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
