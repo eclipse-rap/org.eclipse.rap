@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 
@@ -78,6 +79,7 @@ public class Combo extends Composite {
   // This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;
 
+  private ITextAdapter textAdapter;
   private final ListModel model;
   private String text;
   private int textLimit;
@@ -129,9 +131,6 @@ public class Combo extends Composite {
   void initState() {
     state &= ~( /* CANVAS | */THEME_BACKGROUND );
   }
-
-  //////////////////////////////////////
-  // Methods to manipulate the selection
 
   /**
    * Returns the zero-relative index of the item which is currently
@@ -207,7 +206,7 @@ public class Combo extends Composite {
     checkWidget();
     model.deselectAll();
     text = "";
-    sendModifyEvent();
+    notifyListeners( SWT.Modify, new Event() );
   }
 
   /**
@@ -295,12 +294,8 @@ public class Combo extends Composite {
    */
   public void clearSelection() {
     checkWidget();
-    selection.x = 0;
-    selection.y = 0;
+    resetSelection();
   }
-
-  ///////////////////////////////////////
-  // Methods to manipulate and get items
 
   /**
    * Adds the argument to the end of the receiver's list.
@@ -768,9 +763,9 @@ public class Combo extends Composite {
         selection.x = 0;
         selection.y = string.length();
       }
-    } else {
-      internalSetText( string, true );
-      clearSelection();
+    } else if( internalSetText( string, true ) ) {
+      resetSelection();
+      notifyListeners( SWT.Modify, new Event() );
     }
   }
 
@@ -847,9 +842,6 @@ public class Combo extends Composite {
     return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 
-  // //////////////////
-  // Widget dimensions
-
   // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in
   //      the DEFAULT_WIDTH/HEIGHT.
   @Override
@@ -894,9 +886,6 @@ public class Combo extends Composite {
     width += 2 * border;
     return new Point( width, height );
   }
-
-  /////////////////////////////////////////
-  // Listener registration/de-registration
 
   /**
    * Adds the listener to the collection of listeners who will
@@ -1064,6 +1053,27 @@ public class Combo extends Composite {
     removeListener( SWT.Verify, listener );
   }
 
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
+    if( adapter == ITextAdapter.class ) {
+      if( textAdapter == null ) {
+        textAdapter = new ITextAdapter() {
+          public void setText( String text ) {
+            if( internalSetText( text, true ) ) {
+              adjustSelection();
+              notifyListeners( SWT.Modify, new Event() );
+            }
+          }
+        };
+      }
+      result = ( T )textAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
 
   @Override
   boolean isTabGroup() {
@@ -1075,20 +1085,20 @@ public class Combo extends Composite {
     return getText();
   }
 
-  //////////////////
-  // Helping methods
-
   private void updateText() {
     if( ( style & SWT.READ_ONLY ) == 0 ) {
       int selectionIndex = getSelectionIndex();
       String text = selectionIndex != -1 ? getItem( selectionIndex ) : "";
-      internalSetText( text, false );
+      if( internalSetText( text, false ) ) {
+        adjustSelection();
+        notifyListeners( SWT.Modify, new Event() );
+      }
     } else {
-      sendModifyEvent();
+      notifyListeners( SWT.Modify, new Event() );
     }
   }
 
-  private void internalSetText( String text, boolean updateSelection ) {
+  private boolean internalSetText( String text, boolean updateSelection ) {
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       if( updateSelection ) {
@@ -1106,8 +1116,8 @@ public class Combo extends Composite {
       } else {
         this.text = verifiedText;
       }
-      sendModifyEvent();
     }
+    return verifiedText != null;
   }
 
   private String verifyText( String text, int start, int end ) {
@@ -1130,8 +1140,14 @@ public class Combo extends Composite {
     return result;
   }
 
-  private void sendModifyEvent() {
-    notifyListeners( SWT.Modify, new Event() );
+  private void resetSelection() {
+    selection.x = 0;
+    selection.y = 0;
+  }
+
+  private void adjustSelection() {
+    selection.x = Math.min( selection.x, text.length() );
+    selection.y = Math.min( selection.y, text.length() );
   }
 
   private Rectangle getFieldPadding() {

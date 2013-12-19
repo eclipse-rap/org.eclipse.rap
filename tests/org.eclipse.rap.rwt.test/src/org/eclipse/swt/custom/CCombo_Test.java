@@ -29,6 +29,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -48,6 +49,7 @@ public class CCombo_Test {
   private boolean listenerCalled;
   private Display display;
   private Shell shell;
+  private CCombo combo;
 
   @Before
   public void setUp() {
@@ -55,6 +57,7 @@ public class CCombo_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    combo = new CCombo( shell, SWT.NONE );
   }
 
   @After
@@ -64,7 +67,6 @@ public class CCombo_Test {
 
   @Test
   public void testDeselect() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
@@ -81,7 +83,7 @@ public class CCombo_Test {
 
   @Test
   public void testGetText() {
-    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
@@ -104,8 +106,37 @@ public class CCombo_Test {
   }
 
   @Test
+  public void testSetText_resetSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 2, 4 ) );
+
+    combo.setText( "other text" );
+
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_doesNotResetSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 2, 4 ) );
+
+    combo.getAdapter( ITextAdapter.class ).setText( "other text" );
+
+    assertEquals( new Point( 2, 4 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_adjustsSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 7, 9 ) );
+
+    combo.getAdapter( ITextAdapter.class ).setText( "text" );
+
+    assertEquals( new Point( 4, 4 ), combo.getSelection() );
+  }
+
+  @Test
   public void testTextLimit() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setTextLimit( -1 );
     assertEquals( Combo.LIMIT, combo.getTextLimit() );
     combo.setTextLimit( -20 );
@@ -129,7 +160,6 @@ public class CCombo_Test {
 
   @Test
   public void testListVisible() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setListVisible( true );
     assertTrue( combo.getListVisible() );
     combo.setListVisible( false );
@@ -138,7 +168,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelection() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     // test clearSelection
     combo.setText( "abc" );
     combo.setSelection( new Point( 1, 3 ) );
@@ -157,7 +186,7 @@ public class CCombo_Test {
 
   @Test
   public void testIndexOf() {
-    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
       combo.indexOf( null );
@@ -206,7 +235,7 @@ public class CCombo_Test {
 
   @Test
   public void testIndexOfI() {
-    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
       combo.indexOf( null );
@@ -241,7 +270,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetText() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     try {
       combo.setText( null );
       fail( "No exception thrown for text == null" );
@@ -272,7 +300,7 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextReadOnly() {
-    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo = new CCombo( shell, SWT.READ_ONLY );
 
     combo.setText( "foo" );
 
@@ -281,7 +309,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextNotEditable() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setEditable( false );
 
     combo.setText( "foo" );
@@ -291,7 +318,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextNotInItems() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
     combo.select( 1 );
 
@@ -303,7 +329,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextInItems() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String[] { "a", "b", "c" } );
 
     combo.setText( "b" );
@@ -314,7 +339,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelect() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
@@ -327,7 +351,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelect2() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
@@ -348,7 +371,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelect3() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -397,7 +419,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelectWithInvalidIndex() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -417,7 +438,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextSelect() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test2" );
     combo.add( "test3" );
@@ -428,7 +448,6 @@ public class CCombo_Test {
 
   @Test
   public void testRemoveAll() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
     combo.removeAll();
@@ -437,7 +456,6 @@ public class CCombo_Test {
 
   @Test
   public void testDispose() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.dispose();
     assertTrue( combo.isDisposed() );
@@ -445,7 +463,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddModifyListener() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems( new String [] { "A-1", "B-1", "C-1" } );
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -512,7 +529,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddModifyListenerWithNullArgument() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     try {
       combo.addModifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -521,7 +537,7 @@ public class CCombo_Test {
 
   @Test
   public void testAddModifyListenerReadOnly() {
-    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+    combo = new CCombo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -585,7 +601,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddModifyListenerRegistersUntypedEvents() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addModifyListener( mock( ModifyListener.class ) );
 
     assertTrue( combo.isListening( SWT.Modify ) );
@@ -593,7 +608,6 @@ public class CCombo_Test {
 
   @Test
   public void testRemoveModifyListenerUnregistersUntypedEvents() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     ModifyListener listener = mock( ModifyListener.class );
     combo.addModifyListener( listener );
 
@@ -604,7 +618,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddVerifyListenerWithNullArgument() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     try {
       combo.addVerifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -613,7 +626,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddVerifyListenerRegistersUntypedEvents() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addVerifyListener( mock( VerifyListener.class ) );
 
     assertTrue( combo.isListening( SWT.Verify ) );
@@ -621,7 +633,6 @@ public class CCombo_Test {
 
   @Test
   public void testRemoveVerifyListenerUnregistersUntypedEvents() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     VerifyListener listener = mock( VerifyListener.class );
     combo.addVerifyListener( listener );
 
@@ -634,7 +645,6 @@ public class CCombo_Test {
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    final CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         log.add( event );
@@ -713,7 +723,6 @@ public class CCombo_Test {
 
   @Test
   public void testVisibleItemCount() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
     combo.add( "3" );
@@ -728,7 +737,6 @@ public class CCombo_Test {
 
   @Test
   public void testComputeSize() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     Point expected = new Point( 64, 26 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -753,7 +761,6 @@ public class CCombo_Test {
 
   @Test
   public void testSetTextAndSelection() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -770,7 +777,6 @@ public class CCombo_Test {
 
   @Test
   public void testGetTextHeight() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     // default theme font is 11px
     assertEquals( 16, combo.getTextHeight() );
     combo.setFont( new Font( display, "Helvetica", 12, SWT.NORMAL ) );
@@ -781,7 +787,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelectionIsSerializable() throws Exception {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "0" );
     combo.add( "1" );
     combo.select( 1 );
@@ -796,7 +801,6 @@ public class CCombo_Test {
 
   @Test
   public void testSelectionIndex() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test" );
     combo.add( "test" );
@@ -814,8 +818,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddSelectionListener() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
-
     combo.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( combo.isListening( SWT.Selection ) );
@@ -824,7 +826,6 @@ public class CCombo_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
 
@@ -836,7 +837,6 @@ public class CCombo_Test {
 
   @Test
   public void testAddSelectionListenerWithNullArgument() {
-    CCombo combo = new CCombo( shell, SWT.NONE );
     try {
       combo.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {

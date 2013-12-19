@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 
@@ -76,6 +77,7 @@ public class Text extends Scrollable {
    */
   public static final String DELIMITER = "\n";
 
+  private ITextAdapter textAdapter;
   private String text;
   private String message;
   private int textLimit;
@@ -173,15 +175,8 @@ public class Text extends Scrollable {
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    String verifiedText = verifyText( text, 0, this.text.length() );
-    if( verifiedText != null ) {
-      if( verifiedText.length() > textLimit ) {
-        this.text = verifiedText.substring( 0, textLimit );
-      } else {
-        this.text = verifiedText;
-      }
-      selection.x = 0;
-      selection.y = 0;
+    if( internalSetText( text ) ) {
+      resetSelection();
       notifyListeners( SWT.Modify, new Event() );
     }
   }
@@ -454,9 +449,6 @@ public class Text extends Scrollable {
     return echoChar;
   }
 
-  //////////////////////////
-  // Input length constraint
-
   /**
    * Sets the maximum number of characters that the receiver
    * is capable of holding to be the argument.
@@ -529,9 +521,6 @@ public class Text extends Scrollable {
     checkWidget();
     return text.length();
   }
-
-  ///////////////////////////////////////////
-  // Selection start, count and selected text
 
   /**
    * Sets the selection.
@@ -737,9 +726,6 @@ public class Text extends Scrollable {
     return selection.x;
   }
 
-  ///////////
-  // Editable
-
   /**
    * Sets the editable state.
    *
@@ -802,9 +788,6 @@ public class Text extends Scrollable {
     setText( replace );
     setSelection( sel.x + string.length() );
   }
-
-  ////////////////////
-  // Widget dimensions
 
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
@@ -871,9 +854,6 @@ public class Text extends Scrollable {
     }
     return result;
   }
-
-  ///////////////////////////////////////
-  // Listener registration/deregistration
 
   /**
    * Adds the listener to the collection of listeners who will
@@ -1046,12 +1026,43 @@ public class Text extends Scrollable {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
+    if( adapter == ITextAdapter.class ) {
+      if( textAdapter == null ) {
+        textAdapter = new ITextAdapter() {
+          public void setText( String text ) {
+            if( internalSetText( text ) ) {
+              adjustSelection();
+              notifyListeners( SWT.Modify, new Event() );
+            }
+          }
+        };
+      }
+      result = ( T )textAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+
+  @Override
   boolean isTabGroup() {
     return true;
   }
 
-  ////////////////////////////////////////////
-  // Text modification and verify event helper
+  private boolean internalSetText( String text ) {
+    String verifiedText = verifyText( text, 0, this.text.length() );
+    if( verifiedText != null ) {
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
+      }
+    }
+    return verifiedText != null;
+  }
 
   private String verifyText( String text, int start, int end ) {
     Event event = new Event();
@@ -1073,8 +1084,15 @@ public class Text extends Scrollable {
     return result;
   }
 
-  ///////////////////////////////////////
-  // Helping method to adjust style flags
+  private void resetSelection() {
+    selection.x = 0;
+    selection.y = 0;
+  }
+
+  private void adjustSelection() {
+    selection.x = Math.min( selection.x, text.length() );
+    selection.y = Math.min( selection.y, text.length() );
+  }
 
   private static int checkStyle( int style ) {
     int result = style;
@@ -1104,9 +1122,6 @@ public class Text extends Scrollable {
     }
     return result | SWT.SINGLE;
   }
-
-  ///////////////////////
-  // Other helping method
 
   private Point getSearchIconOuterSize() {
     Point result = new Point( 0, 0 );

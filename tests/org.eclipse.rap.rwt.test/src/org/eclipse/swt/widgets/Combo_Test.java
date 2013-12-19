@@ -30,6 +30,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,12 +47,14 @@ public class Combo_Test {
   protected boolean listenerCalled;
   private Display display;
   private Shell shell;
+  private Combo combo;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
+    combo = new Combo( shell, SWT.NONE );
   }
 
   @After
@@ -61,7 +64,6 @@ public class Combo_Test {
 
   @Test
   public void testDeselect() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
@@ -74,7 +76,6 @@ public class Combo_Test {
 
   @Test
   public void testDeselectWithWrongIndex() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
@@ -87,7 +88,7 @@ public class Combo_Test {
 
   @Test
   public void testGetText() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item1" );
     combo.add( "item2" );
     combo.add( "item3" );
@@ -113,7 +114,7 @@ public class Combo_Test {
 
   @Test
   public void testIndexOf() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
       combo.indexOf( null );
@@ -162,7 +163,7 @@ public class Combo_Test {
 
   @Test
   public void testIndexOfI() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
       combo.indexOf( null );
@@ -197,7 +198,7 @@ public class Combo_Test {
 
   @Test
   public void testSetText() {
-    Combo combo = new Combo( shell, SWT.DROP_DOWN );
+    combo = new Combo( shell, SWT.DROP_DOWN );
     try {
       combo.setText( null );
       fail( "No exception thrown for text == null" );
@@ -227,8 +228,38 @@ public class Combo_Test {
   }
 
   @Test
+  public void testSetText_resetSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 2, 4 ) );
+
+    combo.setText( "other text" );
+
+    assertEquals( new Point( 0, 0 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_doesNotResetSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 2, 4 ) );
+
+    combo.getAdapter( ITextAdapter.class ).setText( "other text" );
+
+    assertEquals( new Point( 2, 4 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_adjustsSelection() {
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 7, 9 ) );
+
+    combo.getAdapter( ITextAdapter.class ).setText( "text" );
+
+    assertEquals( new Point( 4, 4 ), combo.getSelection() );
+  }
+
+  @Test
   public void testSetTextForReadOnly() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item0" );
     combo.add( "item1" );
     combo.select( 0 );
@@ -240,7 +271,7 @@ public class Combo_Test {
 
   @Test
   public void testTextLimit() {
-    Combo combo = new Combo( shell, SWT.DROP_DOWN );
+    combo = new Combo( shell, SWT.DROP_DOWN );
     assertEquals( Combo.LIMIT, combo.getTextLimit() );
     try {
       combo.setTextLimit( 0 );
@@ -262,7 +293,6 @@ public class Combo_Test {
 
   @Test
   public void testSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
@@ -275,7 +305,6 @@ public class Combo_Test {
 
   @Test
   public void testSelection2() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
@@ -296,7 +325,6 @@ public class Combo_Test {
 
   @Test
   public void testSelection3() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -346,7 +374,6 @@ public class Combo_Test {
 
   @Test
   public void testSelection_RemoveSingleItemAdjustSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test0" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -359,7 +386,6 @@ public class Combo_Test {
 
   @Test
   public void testSelection_RemoveMultipleItemsAdjustSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test0" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -372,7 +398,6 @@ public class Combo_Test {
 
   @Test
   public void testSelectWithInvalidIndex() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -392,7 +417,6 @@ public class Combo_Test {
 
   @Test
   public void testSetTextSelect() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test2" );
     combo.add( "test3" );
@@ -403,7 +427,6 @@ public class Combo_Test {
 
   @Test
   public void testTextSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     // test clearSelection
     combo.setText( "abc" );
     combo.setSelection( new Point( 1, 3 ) );
@@ -422,7 +445,6 @@ public class Combo_Test {
 
   @Test
   public void testRemoveAll() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
     combo.removeAll();
@@ -431,7 +453,7 @@ public class Combo_Test {
 
   @Test
   public void testRemoveAllForReadOnly() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item" );
     combo.select( 0 );
     assertEquals( "item", combo.getText() ); // precondition
@@ -442,7 +464,7 @@ public class Combo_Test {
 
   @Test
   public void testRemoveForReadOnly() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item" );
     combo.select( 0 );
     assertEquals( "item", combo.getText() ); // precondition
@@ -452,7 +474,6 @@ public class Combo_Test {
 
   @Test
   public void testRemoveOutOfRange() {
-    final Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -484,7 +505,6 @@ public class Combo_Test {
 
   @Test
   public void testDispose() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.dispose();
     assertTrue( combo.isDisposed() );
@@ -493,7 +513,6 @@ public class Combo_Test {
   @Test
   public void testAddModifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -561,7 +580,7 @@ public class Combo_Test {
   @Test
   public void testAddModifyListenerReadOnly() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
@@ -625,7 +644,6 @@ public class Combo_Test {
 
   @Test
   public void testAddModifyListenerWithNullArgument() {
-    Combo combo = new Combo( shell, SWT.NONE );
     try {
       combo.addModifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -634,7 +652,6 @@ public class Combo_Test {
 
   @Test
   public void testAddModifyListenerRegistersUntypedEvents() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.addModifyListener( mock( ModifyListener.class ) );
 
     assertTrue( combo.isListening( SWT.Modify ) );
@@ -642,7 +659,6 @@ public class Combo_Test {
 
   @Test
   public void testRemoveModifyListenerUnregistersUntypedEvents() {
-    Combo combo = new Combo( shell, SWT.NONE );
     ModifyListener listener = mock( ModifyListener.class );
     combo.addModifyListener( listener );
 
@@ -653,7 +669,6 @@ public class Combo_Test {
 
   @Test
   public void testAddVerifyListenerWithNullArgument() {
-    Combo combo = new Combo( shell, SWT.NONE );
     try {
       combo.addVerifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -662,7 +677,6 @@ public class Combo_Test {
 
   @Test
   public void testAddVerifyListenerRegistersUntypedEvents() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.addVerifyListener( mock( VerifyListener.class ) );
 
     assertTrue( combo.isListening( SWT.Verify ) );
@@ -670,7 +684,6 @@ public class Combo_Test {
 
   @Test
   public void testRemoveVerifyListenerUnregistersUntypedEvents() {
-    Combo combo = new Combo( shell, SWT.NONE );
     VerifyListener listener = mock( VerifyListener.class );
     combo.addVerifyListener( listener );
 
@@ -684,7 +697,6 @@ public class Combo_Test {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    final Combo combo = new Combo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
       public void modifyText( ModifyEvent event ) {
         log.add( event );
@@ -763,7 +775,6 @@ public class Combo_Test {
 
   @Test
   public void testVisibleItemCount() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
     combo.add( "3" );
@@ -779,7 +790,6 @@ public class Combo_Test {
   @Test
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Combo combo = new Combo( shell, SWT.NONE );
     Point expected = new Point( 66, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -797,7 +807,6 @@ public class Combo_Test {
   @Test
   public void testSetTextAndSelection() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
     combo.add( "test2" );
@@ -812,7 +821,6 @@ public class Combo_Test {
 
   @Test
   public void testSetText_clearsSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setText( "original text" );
     combo.setSelection( new Point( 1, 3 ) );
 
@@ -823,7 +831,6 @@ public class Combo_Test {
 
   @Test
   public void testSetText_sameTextClearsSelection() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setText( "original text" );
     combo.setSelection( new Point( 1, 3 ) );
 
@@ -834,7 +841,7 @@ public class Combo_Test {
 
   @Test
   public void testSetText_onReadOnlyComboSelectsAllText() {
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.setItems( new String[] { "item 1", "item 22" } );
 
     combo.setText( "item 22" );
@@ -844,7 +851,6 @@ public class Combo_Test {
 
   @Test
   public void testListVisible() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.setListVisible( true );
     assertTrue( combo.getListVisible() );
     combo.setListVisible( false );
@@ -853,7 +859,6 @@ public class Combo_Test {
 
   @Test
   public void testGetTextHeight() {
-    Combo combo = new Combo( shell, SWT.NONE );
     // default theme font is 11px
     assertEquals( 16, combo.getTextHeight() );
     combo.setFont( new Font( display, "Helvetica", 12, SWT.NORMAL ) );
@@ -865,7 +870,6 @@ public class Combo_Test {
   @Test
   public void testIsSerializable() throws Exception {
     String item = "foo";
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( item );
 
     Combo deserializedCombo = Fixture.serializeAndDeserialize( combo );
@@ -875,7 +879,6 @@ public class Combo_Test {
 
   @Test
   public void testSelectionIndex() {
-    Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test" );
     combo.add( "test" );
@@ -893,8 +896,6 @@ public class Combo_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Combo combo = new Combo( shell, SWT.NONE );
-
     combo.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( combo.isListening( SWT.Selection ) );
@@ -903,7 +904,6 @@ public class Combo_Test {
 
   @Test
   public void testAddSelectionListenerWithNullArgument() {
-    Combo combo = new Combo( shell, SWT.NONE );
     try {
       combo.addSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -912,7 +912,6 @@ public class Combo_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Combo combo = new Combo( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     combo.addSelectionListener( listener );
 
@@ -921,5 +920,6 @@ public class Combo_Test {
     assertFalse( combo.isListening( SWT.Selection ) );
     assertFalse( combo.isListening( SWT.DefaultSelection ) );
   }
+
 }
 

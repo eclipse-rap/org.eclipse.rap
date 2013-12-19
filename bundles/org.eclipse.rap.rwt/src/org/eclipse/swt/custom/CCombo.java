@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -77,6 +78,7 @@ public class CCombo extends Composite {
    */
   public static final int LIMIT = Integer.MAX_VALUE;
 
+  private ITextAdapter textAdapter;
   private final ListModel model;
   private String text;
   private int textLimit;
@@ -347,8 +349,7 @@ public class CCombo extends Composite {
    */
   public void clearSelection() {
     checkWidget();
-    selection.x = 0;
-    selection.y = 0;
+    resetSelection();
   }
 
   /**
@@ -763,7 +764,10 @@ public class CCombo extends Composite {
     if( string == null ) {
       SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     }
-    internalSetText( string, true );
+    if( internalSetText( string, true ) ) {
+      resetSelection();
+      notifyListeners( SWT.Modify, new Event() );
+    }
   }
 
   /**
@@ -1051,16 +1055,38 @@ public class CCombo extends Composite {
   	return;
   }
 
-  //////////////////
-  // Helping methods
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
+    if( adapter == ITextAdapter.class ) {
+      if( textAdapter == null ) {
+        textAdapter = new ITextAdapter() {
+          public void setText( String text ) {
+            if( internalSetText( text, true ) ) {
+              adjustSelection();
+              notifyListeners( SWT.Modify, new Event() );
+            }
+          }
+        };
+      }
+      result = ( T )textAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
 
   private void updateText() {
     int selectionIndex = getSelectionIndex();
     String text = selectionIndex != -1 ? getItem( selectionIndex ) : "";
-    internalSetText( text, false );
+    if( internalSetText( text, false ) ) {
+      adjustSelection();
+      notifyListeners( SWT.Modify, new Event() );
+    }
   }
 
-  private void internalSetText( String text, boolean updateSelection ) {
+  private boolean internalSetText( String text, boolean updateSelection ) {
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       if( updateSelection ) {
@@ -1078,8 +1104,8 @@ public class CCombo extends Composite {
       } else {
         this.text = verifiedText;
       }
-      notifyListeners( SWT.Modify, new Event() );
     }
+    return verifiedText != null;
   }
 
   // Direct copy from Combo.java
@@ -1102,6 +1128,16 @@ public class CCombo extends Composite {
       return null;
     }
     return result;
+  }
+
+  private void resetSelection() {
+    selection.x = 0;
+    selection.y = 0;
+  }
+
+  private void adjustSelection() {
+    selection.x = Math.min( selection.x, text.length() );
+    selection.y = Math.min( selection.y, text.length() );
   }
 
   private Rectangle getFieldPadding() {

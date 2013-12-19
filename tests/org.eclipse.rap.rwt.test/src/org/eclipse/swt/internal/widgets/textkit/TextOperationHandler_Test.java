@@ -85,6 +85,17 @@ public class TextOperationHandler_Test {
   }
 
   @Test
+  public void testHandleText_doesNotResetSelection() {
+    handler = new TextOperationHandler( text );
+    text.setText( "some text" );
+    text.setSelection( new Point( 2, 4 ) );
+
+    handler.handleSet( new JsonObject().add( "text", "other text" ) );
+
+    assertEquals( new Point( 2, 4 ), text.getSelection() );
+  }
+
+  @Test
   public void testHandleSelection() {
     handler = new TextOperationHandler( text );
     text.setText( "text" );

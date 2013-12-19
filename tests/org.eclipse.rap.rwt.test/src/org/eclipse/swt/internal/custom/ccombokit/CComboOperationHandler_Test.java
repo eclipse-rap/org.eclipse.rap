@@ -82,6 +82,16 @@ public class CComboOperationHandler_Test {
   }
 
   @Test
+  public void testHandleText_doesNotResetSelection() {
+    ccombo.setText( "some text" );
+    ccombo.setSelection( new Point( 2, 4 ) );
+
+    handler.handleSet( new JsonObject().add( "text", "other text" ) );
+
+    assertEquals( new Point( 2, 4 ), ccombo.getSelection() );
+  }
+
+  @Test
   public void testHandleText_withVerifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     ccombo.setText( "some text" );

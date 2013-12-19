@@ -32,6 +32,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -489,13 +490,43 @@ public class Text_Test {
   }
 
   @Test
-  public void testGetText() {
+  public void testSetText() {
     text.setText( "Test Text" );
     assertEquals( "Test", text.getText( 0, 3 ) );
     assertEquals( "", text.getText( 5, 4 ) );
     assertEquals( "s", text.getText( 2, 2 ) );
     assertEquals( "Test Text", text.getText( 0, 25 ) );
     assertEquals( "Test ", text.getText( -3, 4 ) );
+  }
+
+  @Test
+  public void testSetText_resetSelection() {
+    text.setText( "some text" );
+    text.setSelection( 2, 4 );
+
+    text.setText( "other text" );
+
+    assertEquals( new Point( 0, 0 ), text.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_doesNotResetSelection() {
+    text.setText( "some text" );
+    text.setSelection( 2, 4 );
+
+    text.getAdapter( ITextAdapter.class ).setText( "other text" );
+
+    assertEquals( new Point( 2, 4 ), text.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_adjustsSelection() {
+    text.setText( "some text" );
+    text.setSelection( 7, 9 );
+
+    text.getAdapter( ITextAdapter.class ).setText( "text" );
+
+    assertEquals( new Point( 4, 4 ), text.getSelection() );
   }
 
   @Test
@@ -542,34 +573,34 @@ public class Text_Test {
   }
 
   @Test
-  public void testSetTextChars() {
-    char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
-    text.setTextChars( expected );
-    char[] result = text.getTextChars();
-    assertEquals( expected.length, result.length );
-    for( int i = 0; i < expected.length; i++ ) {
-      assertEquals( expected[ i ], result[ i ] );
+    public void testInternalSetTextChars() {
+      char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
+      text.setTextChars( expected );
+      char[] result = text.getTextChars();
+      assertEquals( expected.length, result.length );
+      for( int i = 0; i < expected.length; i++ ) {
+        assertEquals( expected[ i ], result[ i ] );
+      }
+      assertEquals( "password", text.getText() );
     }
-    assertEquals( "password", text.getText() );
-  }
 
   @Test
-  public void testSetTextChars_NullValue() {
-    try {
-      text.setTextChars( null );
-      fail( "No exception thrown for chars == null" );
-    } catch( IllegalArgumentException e ) {
+    public void testInternalSetTextChars_NullValue() {
+      try {
+        text.setTextChars( null );
+        fail( "No exception thrown for chars == null" );
+      } catch( IllegalArgumentException e ) {
+      }
     }
-  }
 
   @Test
-  public void testSetTextChars_EmptyArray() {
-    char[] expected = new char[ 0 ];
-    text.setTextChars( expected );
-    char[] result = text.getTextChars();
-    assertEquals( 0, result.length );
-    assertEquals( "", text.getText() );
-  }
+    public void testInternalSetTextChars_EmptyArray() {
+      char[] expected = new char[ 0 ];
+      text.setTextChars( expected );
+      char[] result = text.getTextChars();
+      assertEquals( 0, result.length );
+      assertEquals( "", text.getText() );
+    }
 
   @Test
   public void testGetTextChars_FromText() {

@@ -103,6 +103,17 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
+  public void testHandleText_doesNotResetSelection() {
+    handler = new ComboOperationHandler( combo );
+    combo.setText( "some text" );
+    combo.setSelection( new Point( 2, 4 ) );
+
+    handler.handleSet( new JsonObject().add( "text", "other text" ) );
+
+    assertEquals( new Point( 2, 4 ), combo.getSelection() );
+  }
+
+  @Test
   public void testHandleText_withVerifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new ComboOperationHandler( combo );

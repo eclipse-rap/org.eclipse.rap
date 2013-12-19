@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.Event;
 
 
@@ -99,13 +100,13 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            ccombo.setText( text );
+            setText( ccombo, text );
             // since text is set in process action, preserved values have to be replaced
             getAdapter( ccombo ).preserve( PROP_TEXT, text );
          }
         } );
       } else {
-        ccombo.setText( text );
+        setText( ccombo, text );
       }
     }
   }
@@ -163,6 +164,10 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
    * ignored, Modify event is fired when set text
    */
   public void handleNotifyModify( CCombo ccombo, JsonObject properties ) {
+  }
+
+  private static void setText( CCombo ccombo, String value ) {
+    ccombo.getAdapter( ITextAdapter.class ).setText( value );
   }
 
 }

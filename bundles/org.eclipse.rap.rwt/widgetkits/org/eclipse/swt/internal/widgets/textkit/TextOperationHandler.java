@@ -23,6 +23,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
@@ -71,13 +72,13 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            text.setText( stringValue );
+            setText( text, stringValue );
             // since text is set in process action, preserved values have to be replaced
             getAdapter( text ).preserve( PROP_TEXT, stringValue );
          }
         } );
       } else {
-        text.setText( stringValue );
+        setText( text, stringValue );
       }
     }
   }
@@ -140,6 +141,10 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
    * ignored, Modify event is fired when set text
    */
   public void handleNotifyModify( Text text, JsonObject properties ) {
+  }
+
+  private static void setText( Text text, String value ) {
+    text.getAdapter( ITextAdapter.class ).setText( value );
   }
 
 }
