@@ -8,27 +8,17 @@
 # set up environment
 
 export MVN=${MVN:-"/opt/public/common/apache-maven-3.0.4/bin/mvn"}
-echo "Maven path: ${MVN}"
-
-export ECLIPSE_HOME=${ECLIPSE_HOME:-"/shared/rt/rap/build-runtimes/eclipse"}
-echo "Eclipse location: ${ECLIPSE_HOME}"
 
 export MAVEN_LOCAL_REPO_PATH=${MAVEN_LOCAL_REPO_PATH:-"/shared/rt/rap/m2/repository"}
 echo "Local Maven repository location: ${MAVEN_LOCAL_REPO_PATH}"
 
 if [ "${BUILD_TYPE:0:1}" == "S" ]; then
-  sign=true
   SIGNPROFILE="-Peclipse-sign -Dmaven.test.skip=true"
 else
-  sign=false
   SIGNPROFILE=""
 fi
 
 basedirectory="$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
-
-######################################################################
-# clean up WORKSPACE
-rm -r ${WORKSPACE}/rap*.zip
 
 ######################################################################
 # clean up local Maven repository to circumvent p2 cache problems
@@ -64,11 +54,3 @@ test -n "$TIMESTAMP" || exit 1
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
 mv "$basedirectory"/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
-
-######################################################################
-# include legal files in zip files
-
-cd "$WORKSPACE"
-cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
-cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/epl-v10.html .
-zip "$zipFileName" notice.html epl-v10.html

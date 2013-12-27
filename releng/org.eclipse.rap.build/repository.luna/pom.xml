@@ -49,6 +49,7 @@
           <compress>true</compress>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho.extras</groupId>
         <artifactId>tycho-p2-extras-plugin</artifactId>
@@ -78,7 +79,31 @@
           <latestVersionOnly>true</latestVersionOnly>
           <mirrorMetadataOnly>true</mirrorMetadataOnly>
         </configuration>
-      </plugin>      
+      </plugin>
+
+    <!-- include legal files in zip -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-antrun-plugin</artifactId>
+      <version>1.7</version>
+      <executions>
+        <execution>
+          <id>copy</id>
+          <phase>prepare-package</phase>
+          <configuration>
+            <target name="copy legal files">
+              <copy todir="${project.build.directory}/repository">
+                <fileset dir="${project.basedir}/../legal"/>
+              </copy>
+            </target>
+          </configuration>
+          <goals>
+            <goal>run</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+
     </plugins>
   </build>
 
