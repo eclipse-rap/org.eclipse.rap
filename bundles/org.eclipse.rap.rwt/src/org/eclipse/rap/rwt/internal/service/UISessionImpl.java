@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,6 @@ public final class UISessionImpl
     synchronized( lock ) {
       if( bound ) {
         result = true;
-        removeAttributeInternal( name );
         attributes.put( name, value );
       }
     }
@@ -148,7 +147,7 @@ public final class UISessionImpl
     synchronized( lock ) {
       if( bound ) {
         result = true;
-        removeAttributeInternal( name );
+        attributes.remove( name );
       }
     }
     return result;
@@ -297,10 +296,6 @@ public final class UISessionImpl
 
   private static String getUISessionAttributeName( String connectionId ) {
     return ATTR_UI_SESSION + ( connectionId == null ? "" : connectionId );
-  }
-
-  private void removeAttributeInternal( String name ) {
-    attributes.remove( name );
   }
 
   private void destroy() {
