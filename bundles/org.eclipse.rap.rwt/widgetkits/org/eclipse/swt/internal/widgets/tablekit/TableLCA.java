@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
@@ -27,6 +28,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -38,8 +40,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -151,7 +156,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
-    Table table = ( Table )widget;
+    final Table table = ( Table )widget;
     ControlLCAUtil.renderChanges( table );
     WidgetLCAUtil.renderCustomVariant( table );
     renderProperty( table, PROP_ITEM_COUNT, table.getItemCount(), ZERO );
@@ -162,12 +167,16 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
-    renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
     renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
-    renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
     renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
+    renderAfterItems( table, new IRenderRunnable() {
+      public void afterRender() throws IOException {
+        renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
+        renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
+      }
+    } );
     renderListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ), false );
     renderListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ), false );
     renderListener( table,
@@ -186,18 +195,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     getTableAdapter( table ).checkData();
   }
 
-  ////////////////
-  // Cell tooltips
-
   private static String getAndResetCellToolTipText( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     String toolTipText = adapter.getCellToolTipText();
     adapter.setCellToolTipText( null );
     return toolTipText;
   }
-
-  //////////////////
-  // Helping methods
 
   private boolean listensToSetData( Table table ) {
     return ( table.getStyle() & SWT.VIRTUAL ) != 0;
@@ -249,8 +252,16 @@ public final class TableLCA extends AbstractWidgetLCA {
     return table.getAdapter( ITableAdapter.class );
   }
 
-  /////////////////
-  // Item Metrics
+  private static void renderAfterItems( Table table, IRenderRunnable runnable ) throws IOException {
+    Item[] items = ItemHolder.<Item>getItemHolder( table ).getItems();
+    if( items.length > 0 ) {
+      Item lastItem = items[ items.length - 1 ];
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
+      adapter.setRenderRunnable( runnable );
+    } else {
+      runnable.afterRender();
+    }
+  }
 
   private static void renderItemMetrics( Table table ) {
     ItemMetrics[] itemMetrics = getItemMetrics( table );

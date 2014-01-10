@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -47,6 +48,7 @@ import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -93,7 +95,7 @@ public class TableLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    table = new Table( shell, SWT.NONE );
+    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     lca = new TableLCA();
     Fixture.fakeNewRequest();
   }
@@ -922,7 +924,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialTopItemIndex() throws IOException {
-    lca.render( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
@@ -934,10 +936,26 @@ public class TableLCA_Test {
     createTableItems( table, 3 );
 
     table.setTopIndex( 2 );
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( table, "topItemIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderTopItemIndex_afterAllItems() throws IOException {
+    createTableItems( table, 3 );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    table.setTopIndex( 2 );
+    getLCA( display ).render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( table.getItem( 2 ) ) );
+    assertNotNull( message.findCreateOperation( column ) );
+    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    assertEquals( getId( table ), lastOperation.getTarget() );
+    assertEquals( 2, lastOperation.getProperty( "topItemIndex" ).asInt() );
   }
 
   @Test
@@ -948,7 +966,7 @@ public class TableLCA_Test {
 
     table.setTopIndex( 2 );
     Fixture.preserveWidgets();
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "topItemIndex" ) );
@@ -991,7 +1009,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialScrollLeft() throws IOException {
-    lca.render( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
@@ -1001,10 +1019,27 @@ public class TableLCA_Test {
   @Test
   public void testRenderScrollLeft() throws IOException {
     table.getAdapter( ITableAdapter.class ).setLeftOffset( 10 );
-    lca.renderChanges( table );
+
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( table, "scrollLeft" ).asInt() );
+  }
+
+  @Test
+  public void testRenderScrollLeft_afterAllItems() throws IOException {
+    createTableItems( table, 3 );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    table.getAdapter( ITableAdapter.class ).setLeftOffset( 10 );
+    getLCA( display ).render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( table.getItem( 2 ) ) );
+    assertNotNull( message.findCreateOperation( column ) );
+    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    assertEquals( getId( table ), lastOperation.getTarget() );
+    assertEquals( 10, lastOperation.getProperty( "scrollLeft" ).asInt() );
   }
 
   @Test
@@ -1014,7 +1049,7 @@ public class TableLCA_Test {
 
     table.getAdapter( ITableAdapter.class ).setLeftOffset( 10 );
     Fixture.preserveWidgets();
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "scrollLeft" ) );
@@ -1131,12 +1166,11 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = table.getHorizontalBar();
     lca.renderInitialization( table );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1145,14 +1179,13 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = table.getHorizontalBar();
-    SelectionListener listener = new SelectionAdapter() { };
-    hScroll.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    hScroll.addListener( SWT.Selection, listener );
     lca.render( table );
     Fixture.preserveWidgets();
 
-    hScroll.removeSelectionListener( listener );
+    hScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1161,12 +1194,11 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = table.getHorizontalBar();
     Fixture.markInitialized( display );
     lca.render( table );
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( table );
 
@@ -1176,12 +1208,11 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = table.getVerticalBar();
     lca.renderInitialization( table );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1190,14 +1221,13 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = table.getVerticalBar();
-    SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    vScroll.addListener( SWT.Selection, listener );
     lca.render( table );
     Fixture.preserveWidgets();
 
-    vScroll.removeSelectionListener( listener );
+    vScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1206,12 +1236,11 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = table.getVerticalBar();
     Fixture.markInitialized( display );
     lca.render( table );
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( table );
 
@@ -1221,8 +1250,6 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialScrollBarsVisible() throws IOException {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.render( table );
 
     Message message = Fixture.getProtocolMessage();
@@ -1232,8 +1259,6 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     column.setWidth( 25 );
@@ -1246,7 +1271,6 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     new TableColumn( table, SWT.NONE );
 
     table.setHeaderVisible( true );
@@ -1259,12 +1283,10 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
-    lca.render( table );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( table.getHorizontalBar() );
+    Fixture.markInitialized( table.getVerticalBar() );
 
     column.setWidth( 25 );
     table.setHeaderVisible( true );
@@ -1342,7 +1364,7 @@ public class TableLCA_Test {
     Fixture.markInitialized( table );
     Fixture.preserveWidgets();
 
-    table.addSelectionListener( new SelectionAdapter() { } );
+    table.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( table );
 

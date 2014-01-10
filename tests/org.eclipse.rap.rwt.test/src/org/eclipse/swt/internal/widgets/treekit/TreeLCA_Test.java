@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -35,7 +36,6 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -88,7 +88,7 @@ public class TreeLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    tree = new Tree( shell, SWT.NONE );
+    tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     lca = new TreeLCA();
     Fixture.fakeNewRequest();
   }
@@ -1010,7 +1010,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialTopItemIndex() throws IOException {
-    lca.render( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -1020,19 +1020,34 @@ public class TreeLCA_Test {
   @Test
   public void testRenderTopItemIndex() throws IOException {
     new TreeItem( tree, SWT.NONE );
-    new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     tree.setTopItem( item );
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( 2, message.findSetProperty( tree, "topItemIndex" ).asInt() );
+    assertEquals( 1, message.findSetProperty( tree, "topItemIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderTopItemIndex_afterAllItems() throws IOException {
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    tree.setTopItem( item );
+    getLCA( display ).render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( item ) );
+    assertNotNull( message.findCreateOperation( column ) );
+    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    assertEquals( getId( tree ), lastOperation.getTarget() );
+    assertEquals( 1, lastOperation.getProperty( "topItemIndex" ).asInt() );
   }
 
   @Test
   public void testRenderTopItemIndexUnchanged() throws IOException {
-    new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
@@ -1040,7 +1055,7 @@ public class TreeLCA_Test {
 
     tree.setTopItem( item );
     Fixture.preserveWidgets();
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "topItemIndex" ) );
@@ -1048,7 +1063,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialScrollLeft() throws IOException {
-    lca.render( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -1058,10 +1073,28 @@ public class TreeLCA_Test {
   @Test
   public void testRenderScrollLeft() throws IOException {
     setScrollLeft( tree, 10 );
-    lca.renderChanges( tree );
+
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( tree, "scrollLeft" ).asInt() );
+  }
+
+  @Test
+  public void testRenderScrollLeft_afterAllItems() throws IOException {
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    setScrollLeft( tree, 10 );
+    getLCA( display ).render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCreateOperation( item ) );
+    assertNotNull( message.findCreateOperation( column ) );
+    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    assertEquals( getId( tree ), lastOperation.getTarget() );
+    assertEquals( 10, lastOperation.getProperty( "scrollLeft" ).asInt() );
   }
 
   @Test
@@ -1071,7 +1104,7 @@ public class TreeLCA_Test {
 
     setScrollLeft( tree, 10 );
     Fixture.preserveWidgets();
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "scrollLeft" ) );
@@ -1122,13 +1155,12 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = tree.getHorizontalBar();
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1137,16 +1169,15 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = tree.getHorizontalBar();
-    SelectionListener listener = new SelectionAdapter() { };
-    hScroll.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    hScroll.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
-    hScroll.removeSelectionListener( listener );
+    hScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1155,13 +1186,12 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar hScroll = tree.getHorizontalBar();
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.preserveWidgets();
 
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
+    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( tree );
 
@@ -1171,13 +1201,12 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = tree.getVerticalBar();
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1186,16 +1215,15 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = tree.getVerticalBar();
-    SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    vScroll.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
-    vScroll.removeSelectionListener( listener );
+    vScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1204,13 +1232,12 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     ScrollBar vScroll = tree.getVerticalBar();
     Fixture.markInitialized( display );
     lca.render( tree );
     Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( tree );
 
@@ -1220,8 +1247,6 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialScrollBarsVisible() throws IOException {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-
     lca.render( tree );
 
     Message message = Fixture.getProtocolMessage();
@@ -1231,8 +1256,6 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
 
     column.setWidth( 25 );
@@ -1245,7 +1268,6 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     new TreeColumn( tree, SWT.NONE );
 
     tree.setHeaderVisible( true );
@@ -1258,12 +1280,10 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
+    Fixture.markInitialized( tree.getHorizontalBar() );
+    Fixture.markInitialized( tree.getVerticalBar() );
 
     column.setWidth( 25 );
     tree.setHeaderVisible( true );
@@ -1341,7 +1361,7 @@ public class TreeLCA_Test {
     Fixture.markInitialized( tree );
     Fixture.preserveWidgets();
 
-    tree.addSelectionListener( new SelectionAdapter() { } );
+    tree.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( tree );
 

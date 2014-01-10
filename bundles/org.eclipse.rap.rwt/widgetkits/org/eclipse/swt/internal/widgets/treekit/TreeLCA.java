@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
@@ -27,6 +28,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
@@ -37,8 +39,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -157,7 +162,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
-    Tree tree = ( Tree )widget;
+    final Tree tree = ( Tree )widget;
     ControlLCAUtil.renderChanges( tree );
     WidgetLCAUtil.renderCustomVariant( tree );
     renderProperty( tree, PROP_ITEM_COUNT, tree.getItemCount(), ZERO );
@@ -169,14 +174,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
-    renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
     if( tree.getSelectionCount() > 0 ) {
       renderProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ), null );
     }
-    renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
     renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
+    renderAfterItems( tree, new IRenderRunnable() {
+      public void afterRender() throws IOException {
+        renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
+        renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
+      }
+    } );
     renderListener( tree, PROP_SELECTION_LISTENER, isListening( tree, SWT.Selection ), false );
     renderListener( tree, PROP_SETDATA_LISTENER, listensToSetData( tree ), false );
     renderListener( tree,
@@ -195,9 +204,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     Tree tree = ( Tree )control;
     getTreeAdapter( tree ).checkData();
   }
-
-  //////////////////
-  // Helping methods
 
   private static String getAndResetCellToolTipText( Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
@@ -271,8 +277,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return tree.getAdapter( ITreeAdapter.class );
   }
 
-  ///////////////
-  // Item Metrics
+  private static void renderAfterItems( Tree tree, IRenderRunnable runnable ) throws IOException {
+    Item[] items = ItemHolder.<Item>getItemHolder( tree ).getItems();
+    if( items.length > 0 ) {
+      Item lastItem = items[ items.length - 1 ];
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
+      adapter.setRenderRunnable( runnable );
+    } else {
+      runnable.afterRender();
+    }
+  }
 
   private static void renderItemMetrics( Tree tree ) {
     ItemMetrics[] itemMetrics = getItemMetrics( tree );
