@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -302,6 +302,65 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       spinner.destroy();
       TestUtil.flush();
       assertTrue( spinner.isDisposed() );
+    },
+
+    testAcceptNumbersOnly : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
+      var spinner = new rwt.widgets.Spinner();
+      spinner.addToDocument();
+      spinner.setSpace( 0, 60, 5, 30 );
+      TestUtil.flush();
+      spinner.focus();
+
+      var domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "1" );
+      assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
+
+      domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "C" );
+      assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
+
+      var shift = rwt.event.DomEvent.SHIFT_MASK;
+      domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "C", shift );
+      assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
+
+      spinner.destroy();
+    },
+
+    testAcceptMinus : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
+      var spinner = new rwt.widgets.Spinner();
+      spinner.addToDocument();
+      spinner.setSpace( 0, 60, 5, 30 );
+      TestUtil.flush();
+      spinner.focus();
+
+      var domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "-" );
+      assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
+
+      rwt.remote.EventUtil.setSuspended( true );
+      spinner._textfield.setValue( "-1" );
+      rwt.remote.EventUtil.setSuspended( false );
+      domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "-" );
+      assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
+
+      spinner.destroy();
+    },
+
+    testCopyPasteIsNotBlocked : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var EventHandlerUtil = rwt.event.EventHandlerUtil;
+      var spinner = new rwt.widgets.Spinner();
+      spinner.addToDocument();
+      spinner.setSpace( 0, 60, 5, 30 );
+      TestUtil.flush();
+      spinner.focus();
+
+      var ctrl = rwt.event.DomEvent.CTRL_MASK;
+      var domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "C", ctrl );
+      assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
+
+      spinner.destroy();
     },
 
     testSendSelectionEvent : function() {

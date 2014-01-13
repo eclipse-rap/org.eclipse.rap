@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -140,6 +140,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     this._textfield.addEventListener("changeValue", this._ontextchange, this);
     this._textfield.addEventListener("input", this._oninput, this);
     this._textfield.addEventListener("blur", this._onblur, this);
+    this._textfield.addEventListener("keypress", this._onkeypress, this);
     this._upbutton.addEventListener("mousedown", this._onmousedown, this);
     this._downbutton.addEventListener("mousedown", this._onmousedown, this);
     this._timer.addEventListener("interval", this._oninterval, this);
@@ -465,19 +466,25 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
             break;
 
           default:
-            if ((vIdentifier >= "0" && vIdentifier <= "9") ||
-                (vIdentifier == '-')) {
-              return;
-            }
-
-            // supress all key events without modifier
-            if( e.getModifiers() === 0 ) {
-              e.preventDefault();
+            if( !this._isMinus( vIdentifier ) && !this._isNumber( vIdentifier ) ) {
+              var modifiers = e.getModifiers();
+              if( modifiers === 0 || modifiers === rwt.event.DomEvent.SHIFT_MASK ) {
+                e.preventDefault();
+              }
             }
         }
       }
     },
 
+    _isMinus : function( identifier ) {
+      var caretPosition = this._textfield._getSelectionStart();
+      var text = this._textfield.getValue();
+      return identifier === "-" && caretPosition === 0 && !/-/.test( text );
+    },
+
+    _isNumber : function( identifier ) {
+      return identifier >= "0" && identifier <= "9";
+    },
 
     /**
      * Callback for "keyDown" event.<br/>
