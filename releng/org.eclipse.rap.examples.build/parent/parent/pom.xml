@@ -40,7 +40,7 @@
     <repository>
       <id>local-examples-repository</id>
       <layout>p2</layout>
-      <url>file:${basedir}/../../localrepo</url>
+      <url>file:${basedir}/../localrepo</url>
     </repository>
   </repositories>
 
