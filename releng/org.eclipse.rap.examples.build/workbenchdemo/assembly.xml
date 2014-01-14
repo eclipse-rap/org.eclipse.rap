@@ -10,9 +10,11 @@
       <outputDirectory>/WEB-INF</outputDirectory>
       <excludes>
         <exclude>plugins/javax.servlet*.jar</exclude>
-        <exclude>plugins/org.hamcrest*.jar</exclude>
-        <exclude>plugins/**junit*/</exclude>
       </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/rootfiles</directory>
+      <outputDirectory>/</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>${basedir}/target/products/${artifactId}/linux/gtk/x86_64/plugins</directory>

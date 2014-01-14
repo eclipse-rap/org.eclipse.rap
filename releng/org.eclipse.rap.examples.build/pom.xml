@@ -26,15 +26,9 @@
     <module>../../../rap-gmap/org.eclipse.rap.demo.gmaps</module>
     <module>../../../rap-demo-additions/org.eclipse.rap.demo.enrondata</module>
    -->
-    <!-- rapdemo -->
-    <module>rapdemo/feature</module>
-    <module>rapdemo/product</module>
-    <!-- workbenchdemo -->
-    <module>workbenchdemo/feature</module>
-    <module>workbenchdemo/product</module>
-    <!-- controls -->
-    <module>controlsdemo/feature</module>
-    <module>controlsdemo/product</module>
+    <module>rapdemo</module>
+    <module>workbenchdemo</module>
+    <module>controlsdemo</module>
   </modules>
 
 </project>
