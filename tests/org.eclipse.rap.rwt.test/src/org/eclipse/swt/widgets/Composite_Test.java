@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,8 +58,6 @@ public class Composite_Test {
   @Test
   public void testStyle() {
     Composite composite = new Composite( shell, SWT.NONE );
-    assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
-    composite = new Composite( shell, SWT.NONE );
     assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
 
@@ -132,6 +130,27 @@ public class Composite_Test {
     Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     assertEquals( 302, preferredSize.x ); // 3 * 100 + border
     assertEquals( 52, preferredSize.y ); // 50 + border
+  }
+
+  @Test
+  public void testComputeSize_returnsDefaultSizeIfLayoutManagerIsNotSet() {
+    Composite composite = new Composite( shell, SWT.NONE );
+
+    Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertEquals( 64, preferredSize.x );
+    assertEquals( 64, preferredSize.y );
+  }
+
+  @Test
+  public void testComputeSize_returnsZeroIfLayoutManagerIsSet() {
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
+
+    Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertEquals( 0, preferredSize.x );
+    assertEquals( 0, preferredSize.y );
   }
 
   @Test

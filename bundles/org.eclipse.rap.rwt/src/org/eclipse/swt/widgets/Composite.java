@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -566,12 +566,12 @@ public class Composite extends Scrollable {
       }
     } else {
       size = minimumSize( wHint, hHint, hasChanged );
-    }
-    if( size.x == 0 ) {
-      size.x = DEFAULT_WIDTH;
-    }
-    if( size.y == 0 ) {
-      size.y = DEFAULT_HEIGHT;
+      if( size.x == 0 ) {
+        size.x = DEFAULT_WIDTH;
+      }
+      if( size.y == 0 ) {
+        size.y = DEFAULT_HEIGHT;
+      }
     }
     if( wHint != SWT.DEFAULT ) {
       size.x = wHint;
