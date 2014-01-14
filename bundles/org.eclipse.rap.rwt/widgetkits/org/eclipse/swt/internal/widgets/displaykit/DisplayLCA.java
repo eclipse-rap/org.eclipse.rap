@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,11 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValueAsString;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
@@ -26,7 +26,11 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
@@ -37,12 +41,10 @@ import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
@@ -50,7 +52,6 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
@@ -63,26 +64,9 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static final String METHOD_BEEP = "beep";
   private static final String PROP_RESIZE_LISTENER = "listener_Resize";
 
-  ////////////////////////////////////////////////////////
-  // interface implementation of DisplayLifeCycleAdapter
-
   public void readData( Display display ) {
-    readBounds( display );
-    readCursorLocation( display );
-    readFocusControl( display );
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      @Override
-      public boolean doVisit( Widget widget ) {
-        WidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-        adapter.readData( widget );
-        return true;
-      }
-    };
-    Shell[] shells = getShells( display );
-    for( int i = 0; i < shells.length; i++ ) {
-      Composite shell = shells[ i ];
-      WidgetTreeVisitor.accept( shell, visitor );
-    }
+    handleOperations( display );
+    visitWidgets( display );
     DNDSupport.processEvents();
     RemoteObjectLifeCycleAdapter.readData();
   }
@@ -143,11 +127,48 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
   }
 
+  private static void handleOperations( Display display ) {
+    ClientMessage clientMessage = ProtocolUtil.getClientMessage();
+    List<Operation> operations = clientMessage .getAllOperationsFor( getId( display ) );
+    if( !operations.isEmpty() ) {
+      OperationHandler handler = new DisplayOperationHandler( display );
+      for( Operation operation : operations ) {
+        handleOperation( handler, operation );
+      }
+    }
+  }
+
+  private static void handleOperation( OperationHandler handler, Operation operation ) {
+    if( operation instanceof SetOperation ) {
+      SetOperation setOperation = ( SetOperation )operation;
+      handler.handleSet( setOperation.getProperties() );
+    } else if( operation instanceof CallOperation ) {
+      CallOperation callOperation = ( CallOperation )operation;
+      handler.handleCall( callOperation.getMethodName(), callOperation.getProperties() );
+    } else if( operation instanceof NotifyOperation ) {
+      NotifyOperation notifyOperation = ( NotifyOperation )operation;
+      handler.handleNotify( notifyOperation.getEventName(), notifyOperation.getProperties() );
+    }
+  }
+
+  private static void visitWidgets( Display display ) {
+    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      @Override
+      public boolean doVisit( Widget widget ) {
+        WidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
+        adapter.readData( widget );
+        return true;
+      }
+    };
+    for( Shell shell : getShells( display ) ) {
+      WidgetTreeVisitor.accept( shell, visitor );
+    }
+  }
+
   private static void renderShells( Display display ) throws IOException {
     RenderVisitor visitor = new RenderVisitor();
-    Composite[] shells = getShells( display );
-    for( int i = 0; i < shells.length; i++ ) {
-      WidgetTreeVisitor.accept( shells[ i ], visitor );
+    for( Shell shell : getShells( display ) ) {
+      WidgetTreeVisitor.accept( shell, visitor );
       visitor.reThrowProblem();
     }
   }
@@ -174,9 +195,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     ExitConfirmation exitConfirmation = RWT.getClient().getService( ExitConfirmation.class );
     return exitConfirmation == null ? null : exitConfirmation.getMessage();
   }
-
-  /////////////////////////////
-  // Helping methods for render
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
@@ -259,71 +277,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     adapter.setInitialized( true );
   }
 
-  static void readBounds( Display display ) {
-    Rectangle oldBounds = display.getBounds();
-    Rectangle bounds = ProtocolUtil.readPropertyValueAsRectangle( getId( display ),  "bounds" );
-    if( bounds == null ) {
-      bounds = new Rectangle( 0, 0, oldBounds.width, oldBounds.height );
-    }
-    getDisplayAdapter( display ).setBounds( bounds );
-    processResizeEvent( display );
-  }
-
-  private static void readCursorLocation( Display display ) {
-    Point location = ProtocolUtil.readPropertyValueAsPoint( getId( display ), "cursorLocation" );
-    if( location == null ) {
-      location = new Point( 0, 0 );
-    }
-    getDisplayAdapter( display ).setCursorLocation( location.x, location.y );
-  }
-
-  static void readFocusControl( Display display ) {
-    // TODO [rh] revise this: traversing the widget tree once more only to find
-    //      out which control is focused. Could that be optimized?
-    String id = readPropertyValue( display, "focusControl" );
-    if( id != null ) {
-      Control focusControl = null;
-      // Even though the loop below would anyway result in focusControl == null
-      // the client may send 'null' to indicate that no control on the active
-      // shell currently has the input focus.
-      if( !"null".equals(  id ) ) {
-        Shell[] shells = getDisplayAdapter( display ).getShells();
-        for( int i = 0; focusControl == null && i < shells.length; i++ ) {
-          Widget widget = WidgetUtil.find( shells[ i ], id );
-          if( widget instanceof Control ) {
-            focusControl = ( Control )widget;
-          }
-        }
-      }
-      if( focusControl != null && EventUtil.isAccessible( focusControl ) ) {
-        getDisplayAdapter( display ).setFocusControl( focusControl, false );
-      }
-    }
-  }
-
-  private static String readPropertyValue( Display display, String propertyName ) {
-    return readPropertyValueAsString( getId( display ), propertyName );
-  }
-
-  private static void processResizeEvent( Display display ) {
-    if( ProtocolUtil.wasEventSent( getId( display ), ClientMessageConst.EVENT_RESIZE ) ) {
-      getDisplayAdapter( display ).notifyListeners( SWT.Resize, createResizeEvent( display ) );
-    }
-  }
-
-  private static Event createResizeEvent( Display display ) {
-    Event result = new Event();
-    result.display = display;
-    result.type = SWT.Resize;
-    result.time = EventUtil.getLastEventTime();
-    Rectangle bounds = display.getBounds();
-    result.x = bounds.x;
-    result.y = bounds.y;
-    result.width = bounds.width;
-    result.height = bounds.height;
-    return result;
-  }
-
   private static boolean hasResizeListener( Display display ) {
     return getDisplayAdapter( display ).isListening( SWT.Resize );
   }
@@ -364,9 +317,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
       WidgetUtil.getLCA( widget ).render( widget );
     }
 
-    private static void runRenderRunnable( Widget widget )
-      throws IOException
-    {
+    private static void runRenderRunnable( Widget widget ) throws IOException {
       WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
       if( adapter.getRenderRunnable() != null ) {
         adapter.getRenderRunnable().afterRender();

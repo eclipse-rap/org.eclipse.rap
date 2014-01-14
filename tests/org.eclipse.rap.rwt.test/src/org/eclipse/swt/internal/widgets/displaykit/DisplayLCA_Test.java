@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -46,6 +45,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.DeferredRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
@@ -65,6 +65,8 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -73,14 +75,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 
@@ -181,20 +181,12 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testFireResizeEvent() {
-    Listener listener = mock( Listener.class );
-    display.addListener( SWT.Resize, listener  );
+  public void testReadCursorLocation() {
+    Fixture.fakeSetProperty( getId( display ), "cursorLocation", createJsonArray( 1, 2 ) );
 
-    Fixture.fakeSetProperty( getId( display ), "bounds", createJsonArray( 1, 2, 3, 4 ) );
-    Fixture.fakeNotifyOperation( getId( display ), "Resize", null );
-    Fixture.readDataAndProcessAction( display );
+    displayLCA.readData( display );
 
-    ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
-    verify( listener ).handleEvent( captor.capture() );
-    Event event = captor.getValue();
-    assertSame( display, event.display );
-    assertEquals( 3, event.width );
-    assertEquals( 4, event.height );
+    assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
   @Test
@@ -333,37 +325,6 @@ public class DisplayLCA_Test {
     assertEquals( null, widgetAdapter.getRenderRunnable() );
   }
 
-
-  @Test
-  public void testFocusControl() {
-    Shell shell = new Shell( display, SWT.NONE );
-    Control control = new Button( shell, SWT.PUSH );
-    shell.open();
-
-    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( control, display.getFocusControl() );
-
-    // Request parameter focusControl with value 'null' is ignored
-    Control previousFocusControl = display.getFocusControl();
-    Fixture.fakeNewRequest();
-    Fixture.fakeSetProperty( getId( display ), "focusControl", "null" );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( previousFocusControl, display.getFocusControl() );
-  }
-
-  @Test
-  public void testReadCursorLocation() {
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
-    Fixture.fakeSetProperty( getId( display ), "cursorLocation", createJsonArray( 1, 2 ) );
-
-    displayLCA.readData( display );
-
-    assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
-  }
-
   @Test
   public void testServerPushRendered() throws IOException {
     ServerPushManager.getInstance().activateServerPushFor( new Object() );
@@ -491,6 +452,58 @@ public class DisplayLCA_Test {
     displayLCA.readData( display );
 
     verify( handler ).handleCall( eq( "method" ), eq( new JsonObject().add( "foo", "bar" ) ) );
+  }
+
+  @Test
+  public void testFocusControl_doesNotRenderBack() {
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display, SWT.NONE );
+    new Button( shell, SWT.PUSH );
+    Control control = new Button( shell, SWT.PUSH );
+
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( getId( display ), "focusControl" ) );
+  }
+
+  /* Test case to simulate the scenario reported in this bug:
+   * 196911: Invalid value Text#getText with opened shell
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=196911
+   */
+  @Test
+  public void testFocusControl_renderBackIsEnforced() {
+    Fixture.markInitialized( display );
+    final Shell shell = new Shell( display, SWT.NONE );
+    final Button button = new Button( shell, SWT.PUSH );
+    final Shell[] childShell = { null };
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent e ) {
+        childShell[ 0 ] = new Shell( shell, SWT.NONE );
+        childShell[ 0 ].setBounds( 0, 0, 100, 100 );
+        childShell[ 0 ].open();
+        button.setFocus();
+      }
+    } );
+    shell.open();
+
+    // Simulate initial request that constructs UI
+    Fixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+
+    // Simulate request that is sent when button was pressed
+    Fixture.fakeNewRequest();
+    Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
+    Fixture.fakeSetProperty( getId( display ), "focusControl", getId( button ) );
+    Fixture.executeLifeCycleFromServerThread();
+
+    // ensure that widgetSelected was called
+    assertNotNull( childShell[ 0 ] );
+    Message message = Fixture.getProtocolMessage();
+    String focusControlId = message.findSetProperty( getId( display ), "focusControl" ).asString();
+    assertEquals( getId( button ), focusControlId );
   }
 
   private static void setEnableUiTests( boolean value ) {
