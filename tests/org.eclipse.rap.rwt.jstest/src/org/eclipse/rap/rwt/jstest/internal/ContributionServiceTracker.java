@@ -30,7 +30,10 @@ public class ContributionServiceTracker
     super( context, TestContribution.class.getName(), null );
     contributions = new LinkedHashMap<String, TestContribution>();
     register( new RWTContribution() );
+    register( new TestFixtureContribution() );
+    register( new TestRunnerContribution() );
     register( new RWTTestsContribution() );
+    register( new JasmineTestsContribution() );
   }
 
   public Map<String, TestContribution> getContributions() {

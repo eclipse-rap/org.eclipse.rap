@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
+import static java.util.Arrays.asList;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -33,6 +36,7 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   private static final String PARAM_CONTRIBUTION = "contribution";
   private static final String PARAM_FILE = "file";
   private static final String PARAM_NOCACHE = "nocache";
+  private static final String PARAM_JASMINE = "jasmine";
   public static final String ID = "clientResources";
 
   public Map<String, TestContribution> getContributions() {
@@ -44,11 +48,29 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   {
     String fileParameter = request.getParameter( PARAM_FILE );
     String contributionParameter = request.getParameter( PARAM_CONTRIBUTION );
-    if( fileParameter != null ) {
+    boolean isJasmine = "true".equals( request.getParameter( PARAM_JASMINE ) );
+    if( fileParameter != null && contributionParameter != null ) {
       deliverResource( response, contributionParameter, fileParameter );
+    } else if( contributionParameter != null ) {
+      deliverFilesList( response, asList( getContributions().get( contributionParameter ) ), isJasmine );
     } else {
-      deliverFilesList( response );
+      deliverFilesList( response, getNonSetupContributions(), isJasmine );
     }
+  }
+
+  private Collection<TestContribution> getNonSetupContributions() {
+    ArrayList<TestContribution> jasmineContributions = new ArrayList<TestContribution>();
+    Collection<TestContribution> contributions = getContributions().values();
+    for( TestContribution contribution : contributions ) {
+      if( !isSetupContribution( contribution ) ) {
+        jasmineContributions.add( contribution );
+      }
+    }
+    return jasmineContributions;
+  }
+
+  private static boolean isSetupContribution( TestContribution contribution ) {
+    return asList( "rwt", "test-fixture", "test-runner" ).contains( contribution.getName() );
   }
 
   private void deliverResource( HttpServletResponse response, String contributionName, String file )
@@ -62,14 +84,16 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
     }
   }
 
-  private void deliverFilesList( HttpServletResponse response ) throws IOException {
+  private void deliverFilesList( HttpServletResponse response,
+                                 Collection<TestContribution> contributions,
+                                 boolean isJasmine ) throws IOException
+  {
     response.setContentType( "text/javascript" );
     response.setCharacterEncoding( "UTF-8" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
-    Collection<TestContribution> contributions = getContributions().values();
     for( TestContribution contribution : contributions ) {
-      writeIncludeResources( writer, contribution );
+      writeIncludeResources( writer, contribution, isJasmine );
     }
     writer.write( "} )();\n" );
   }
@@ -102,12 +126,15 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
     writer.write( "<html><h1>HTTP " + statusCode + "</h1><p>" + message + "</p></html>" );
   }
 
-  private static void writeIncludeResources( PrintWriter writer, TestContribution contribution )
-    throws IOException
+  private static void writeIncludeResources( PrintWriter writer,
+                                             TestContribution contribution,
+                                             boolean isJasmine ) throws IOException
   {
     String[] clientResources = contribution.getResources();
     for( String resource : clientResources ) {
-      writeIncludeResource( writer, contribution, resource );
+      if( isJasmine ? !resource.endsWith( "Test.js" ) : !resource.endsWith( "spec.js" ) ) {
+        writeIncludeResource( writer, contribution, resource );
+      }
     }
   }
 

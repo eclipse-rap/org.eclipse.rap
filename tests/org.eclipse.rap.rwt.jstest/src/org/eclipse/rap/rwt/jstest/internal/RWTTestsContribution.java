@@ -12,9 +12,6 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 
@@ -22,18 +19,7 @@ public class RWTTestsContribution implements TestContribution {
 
   private static final String PATH_PREFIX = "/org/eclipse/rwt/test/";
 
-  private static final String[] RESOURCE_FILES = new String[] {
-    "fixture/FakeServer.js",
-    "fixture/NativeRequestMock.js",
-    "fixture/Message.js",
-    "Presenter.js",
-    "TestRunner.js",
-    "fixture/TestUtil.js",
-    "Asserts.js",
-    "Startup.js"
-  };
-
-  private static final String[] TEST_FILES = new String[] {
+  private static final String[] FILES = new String[] {
     "tests/ClientTest.js",
     "tests/ClientAPITest.js",
     "tests/TestUtilTest.js",
@@ -126,28 +112,19 @@ public class RWTTestsContribution implements TestContribution {
   };
 
   public String getName() {
-    return "rwt-test";
+    return "rwt-tests";
   }
 
   public String[] getResources() {
-    List<String> result = new ArrayList<String>();
-    for( String resource : RESOURCE_FILES ) {
-      result.add( PATH_PREFIX + resource );
+    String[] result = new String[ FILES.length ];
+    for( int i = 0; i < FILES.length; i++ ) {
+      result[ i ] = PATH_PREFIX + FILES[ i ];
     }
-    for( String resource : TEST_FILES ) {
-      result.add( PATH_PREFIX + resource );
-    }
-    return toArray( result );
+    return result;
   }
 
   public InputStream getResourceAsStream( String resource ) throws IOException {
     return RWTTestsContribution.class.getResourceAsStream( resource );
-  }
-
-  private static String[] toArray( List<String> list ) {
-    String[] array = new String[ list.size() ];
-    list.toArray( array );
-    return array;
   }
 
 }
