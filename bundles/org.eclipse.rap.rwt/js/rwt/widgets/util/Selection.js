@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,12 +14,9 @@
 /**
  * Helper for rwt.widgets.util.SelectionManager, contains data for selections
  */
-rwt.qx.Class.define("rwt.widgets.util.Selection",
-{
+rwt.qx.Class.define( "rwt.widgets.util.Selection", {
+
   extend : rwt.qx.Object,
-
-
-
 
   /*
   *****************************************************************************
@@ -27,19 +24,10 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
   *****************************************************************************
   */
 
-  /**
-   * @param mgr {Object} a class which implements a getItemHashCode(item) method
-   */
-  construct : function(mgr)
-  {
-    this.base(arguments);
-
-    this.__manager = mgr;
+  construct : function() {
+    this.base( arguments );
     this.removeAll();
   },
-
-
-
 
   /*
   *****************************************************************************
@@ -47,8 +35,7 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
   *****************************************************************************
   */
 
-  members :
-  {
+  members : {
     /*
     ---------------------------------------------------------------------------
       USER METHODS
@@ -62,10 +49,12 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @param item {var} item to add
      * @return {void}
      */
-    add : function(item) {
-      this.__storage[this.getItemHashCode(item)] = item;
+    add : function( item ) {
+      var index = this._indexOf( item );
+      if( index === -1 ) {
+        this.__storage.push( item );
+      }
     },
-
 
     /**
      * Remove an item from the selection
@@ -74,10 +63,12 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @param item {var} item to remove
      * @return {void}
      */
-    remove : function(item) {
-      delete this.__storage[this.getItemHashCode(item)];
+    remove : function( item ) {
+      var index = this._indexOf( item );
+      if( index !== -1 ) {
+        this.__storage.splice( index, 1 );
+      }
     },
-
 
     /**
      * Remove all items from the selection
@@ -86,9 +77,8 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @return {void}
      */
     removeAll : function() {
-      this.__storage = {};
+      this.__storage = [];
     },
-
 
     /**
      * Check whether the selection contains a given item
@@ -97,10 +87,9 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @param item {var} item to check for
      * @return {Boolean} whether the selection contains the item
      */
-    contains : function(item) {
-      return this.getItemHashCode(item) in this.__storage;
+    contains : function( item ) {
+      return this._indexOf( item ) !== -1;
     },
-
 
     /**
      * Convert selection to an array
@@ -108,17 +97,9 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @type member
      * @return {Array} array representation of the selection
      */
-    toArray : function()
-    {
-      var res = [];
-
-      for (var key in this.__storage) {
-        res.push(this.__storage[key]);
-      }
-
-      return res;
+    toArray : function() {
+      return this.__storage.slice( 0 );
     },
-
 
     /**
      * Return first element of the Selection
@@ -126,14 +107,9 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @type member
      * @return {var} first item of the selection
      */
-    getFirst : function()
-    {
-      for (var key in this.__storage) {
-        return this.__storage[key];
-      }
-      return null;
+    getFirst : function() {
+      return this.__storage.length > 0 ? this.__storage[ 0 ] : null;
     },
-
 
     /**
      * Get a string representation of the Selection. The return value can be used to compare selections.
@@ -141,30 +117,11 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @type member
      * @return {String} string representation of the Selection
      */
-    getChangeValue : function()
-    {
-      var sb = [];
-
-      for (var key in this.__storage) {
-        sb.push(key);
-      }
-
+    getChangeValue : function() {
+      var sb = this.__storage.slice( 0 );
       sb.sort();
-      return sb.join(";");
+      return sb.join( ";" );
     },
-
-
-    /**
-     * Compute a hash code for an item using the manager
-     *
-     * @type member
-     * @param item {var} the item
-     * @return {var} unique hash code for the item
-     */
-    getItemHashCode : function(item) {
-      return this.__manager.getItemHashCode(item);
-    },
-
 
     /**
      * Whether the selection is empty
@@ -173,12 +130,25 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
      * @return {Boolean} whether the selection is empty
      */
     isEmpty : function() {
-      return rwt.util.Objects.isEmpty(this.__storage);
+      return this.__storage.length === 0;
+    },
+
+    _indexOf : function( item ) {
+      var result = -1;
+      if( this.__storage.indexOf ) {
+        result = this.__storage.indexOf( item );
+      } else {
+        for( var i = 0; i < this.__storage.length; i++ ) {
+          if( this.__storage[ i ] === item ) {
+            result = i;
+            break;
+          }
+        }
+      }
+      return result;
     }
+
   },
-
-
-
 
   /*
   *****************************************************************************
@@ -187,6 +157,7 @@ rwt.qx.Class.define("rwt.widgets.util.Selection",
   */
 
   destruct : function() {
-    this._disposeFields("__storage", "__manager");
+    this._disposeFields( "__storage" );
   }
-});
+
+} );
