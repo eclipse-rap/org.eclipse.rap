@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 
@@ -20,7 +21,11 @@ public class JasmineTestsContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rwt/test/";
 
   private static final String[] TEST_FILES = new String[] {
-    "spec/ServerPush.spec.js"
+    "spec/ServerPush.spec.js",
+    "spec/DragSource.spec.js",
+    "spec/DropTarget.spec.js",
+    "spec/DragSourceHandler.spec.js",
+    "spec/DropTargetHandler.spec.js"
   };
 
   public String getName() {

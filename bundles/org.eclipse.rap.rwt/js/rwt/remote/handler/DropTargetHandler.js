@@ -13,49 +13,18 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DropTarget", {
 
   factory : function( properties ) {
     var control = rwt.remote.ObjectRegistry.getObject( properties.control );
-    var result = { "control" : control };
-    rwt.remote.DNDSupport.getInstance().registerDropTarget( control, properties.style );
+    var result = new rwt.widgets.DropTarget( control, properties.style );
     rwt.remote.HandlerUtil.addDestroyableChild( control, result );
     return result;
   },
 
-  destructor : function( source ) {
-    rwt.remote.HandlerUtil.removeDestroyableChild( source.control, source );
-    rwt.remote.DNDSupport.getInstance().deregisterDropTarget( source.control );
+  destructor : function( target ) {
+    rwt.remote.HandlerUtil.removeDestroyableChild( target.control, target );
+    target.dispose();
   },
 
   properties : [ "transfer" ],
 
-  propertyHandler : {
-    "transfer" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setDropTargetTransferTypes( control, value );
-    }
-  },
-
-  listeners : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ],
-
-  listenerHandler : {
-    "DragEnter" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragEnter", value );
-    },
-    "DragOver" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragOver", value );
-    },
-    "DragLeave" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragLeave", value );
-    },
-    "DragOperationChanged" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragOperationChanged", value );
-    },
-    "DropAccept" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DropAccept", value );
-    }
-  }
+  listeners : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ]
 
 } );

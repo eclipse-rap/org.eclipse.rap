@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -592,7 +592,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = rwt.remote.DNDSupport.getInstance();
       var leftButton = rwt.event.MouseEvent.buttons.left;
-      var actions = [ "copy", "move", "alias" ];
       var source = this.createSource();
       var target = this.createTarget();
       var parentTarget = new rwt.widgets.base.Parent();
@@ -601,8 +600,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       parentTarget.addToDocument();
       rwt.remote.WidgetManager.getInstance().add( parentTarget, "w3" );
       parentTarget.setUserData( "isControl", true );
-      dndSupport.registerDropTarget( parentTarget, actions );
-      dndSupport.setDropTargetTransferTypes( parentTarget, [ "default" ] );
+      this.createDropTarget( parentTarget );
       target.setParent( parentTarget );
       var targetLog = [];
       var parentTargetLog = [];
@@ -1324,9 +1322,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.prepareTimerUse();
       var tree = this.createTreeTarget();
       // Target is also source:
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( tree, actions );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createDragSource( tree );
       this.createTreeItem( 0, tree, tree );
       this.createTreeItem( 1, tree, tree );
       var source = this.createSource();
@@ -1367,9 +1363,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.prepareTimerUse();
       var tree = this.createTreeTarget();
       // Target is also source:
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( tree, actions );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createDragSource( tree );
       var source = this.createSource();
       TestUtil.flush();
       var itemNode0 = tree._rowContainer._children[ 0 ]._getTargetNode();
@@ -1408,9 +1402,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.addToDocument();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( tree, actions );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createDragSource( tree );
       this.createTreeItem( 0, tree, tree );
       TestUtil.flush();
       var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
@@ -1448,9 +1440,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.addToDocument();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( tree, actions );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createDragSource( tree );
       this.createTreeItem( 0, tree, tree ).setTexts( [ "te&st" ] );
       TestUtil.flush();
       var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
@@ -1482,9 +1472,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 50, 40, 50, 12, 65, 12 );
       tree.addToDocument();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( tree, actions );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      this.createDragSource( tree );
       var item0 = this.createTreeItem( 0, tree, tree );
       item0.setImages( [ [ "bla.jpg", 10, 10 ] ] );
       TestUtil.flush();
@@ -1628,10 +1616,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.addToDocument();
       rwt.remote.WidgetManager.getInstance().add( result, "w11" );
       result.setUserData( "isControl", true );
-      var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDragSource( result, actions );
-      dndSupport.setDragSourceTransferTypes( result, [ "default" ] );
+      this.createDragSource( result );
       this.setHasDragDropListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
@@ -1644,10 +1629,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.addToDocument();
       rwt.remote.WidgetManager.getInstance().add( result, "w2" );
       result.setUserData( "isControl", true );
-      var dndSupport = rwt.remote.DNDSupport.getInstance();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDropTarget( result, actions );
-      dndSupport.setDropTargetTransferTypes( result, [ "default" ] );
+      this.createDropTarget( result );
       this.setHasDragDropListeners( result, true );
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       return result;
@@ -1692,11 +1674,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
       tree.addToDocument();
-      var actions = [ "copy", "move", "alias" ];
-      dndSupport.registerDropTarget( tree, actions );
-      dndSupport.setDropTargetTransferTypes( tree, [ "default" ] );
+      this.createDropTarget( tree );
       this.setHasDragDropListeners( tree, true );
       return tree;
+    },
+
+    createDragSource : function( control ) {
+      var operations = [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ];
+      var dragSource = new rwt.widgets.DragSource( control, operations );
+      dragSource.setTransfer( [ "default" ] );
+    },
+
+    createDropTarget : function( control ) {
+      var operations = [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ];
+      var dropTarget = new rwt.widgets.DropTarget( control, operations );
+      dropTarget.setTransfer( [ "default" ] );
     },
 
     setHasDragDropListeners : function( widget, value ) {

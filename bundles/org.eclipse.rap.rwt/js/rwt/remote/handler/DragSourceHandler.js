@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,64 +13,41 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DragSource", {
 
   factory : function( properties ) {
     var control = rwt.remote.ObjectRegistry.getObject( properties.control );
-    var result = { "control" : control };
-    rwt.remote.DNDSupport.getInstance().registerDragSource( control, properties.style );
+    var result = new rwt.widgets.DragSource( control, properties.style );
     rwt.remote.HandlerUtil.addDestroyableChild( control, result );
     return result;
   },
 
   destructor : function( source ) {
     rwt.remote.HandlerUtil.removeDestroyableChild( source.control, source );
-    rwt.remote.DNDSupport.getInstance().deregisterDragSource( source.control );
+    source.dispose();
   },
 
   properties : [ "transfer" ],
 
-  propertyHandler : {
-    "transfer" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setDragSourceTransferTypes( control, value );
-    }
-  },
-
   listeners : [ "DragStart", "DragEnd" ],
-
-  listenerHandler : {
-    "DragStart" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragStart", value );
-    },
-    "DragEnd" : function( source, value ) {
-      var control = source.control;
-      rwt.remote.DNDSupport.getInstance().setHasListener( control, "DragEnd", value );
-    }
-  },
 
   methods : [ "changeFeedback", "changeDetail", "changeDataType", "cancel" ],
 
   methodHandler : {
     "changeFeedback" : function( source, properties ) {
-      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.remote.ObjectRegistry.getObject( properties.control );
       var feedback = properties.feedback;
       var flags = properties.flags;
-      dnd.setFeedback( control, feedback, flags );
+      rwt.remote.DNDSupport.getInstance().setFeedback( control, feedback, flags );
     },
     "changeDetail" : function( source, properties ) {
-      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.remote.ObjectRegistry.getObject( properties.control );
       var detail = properties.detail;
-      dnd.setOperationOverwrite( control, detail );
+      rwt.remote.DNDSupport.getInstance().setOperationOverwrite( control, detail );
     },
     "changeDataType" : function( source, properties ) {
-      var dnd = rwt.remote.DNDSupport.getInstance();
       var control = rwt.remote.ObjectRegistry.getObject( properties.control );
       var dataType = properties.dataType;
-      dnd.setDataType( control, dataType );
+      rwt.remote.DNDSupport.getInstance().setDataType( control, dataType );
     },
     "cancel" : function( source, properties ) {
-      var dnd = rwt.remote.DNDSupport.getInstance();
-      dnd.cancel();
+      rwt.remote.DNDSupport.getInstance().cancel();
     }
   }
 

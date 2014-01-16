@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,19 +37,16 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     /////////////
     // dragSource
 
-    registerDragSource : function( widget, operations ) {
+    registerDragSource : function( widget, operations, dragSource ) {
       widget.addEventListener( "dragstart", this._dragStartHandler, this );
       widget.addEventListener( "dragend", this._dragEndHandler, this );
       var hash = widget.toHashCode();
-      this._dragSources[ hash ] = {
-        "dataTypes" : [],
-        "actions" : this._operationsToActions( operations )
-      };
+      this._dragSources[ hash ] = dragSource;
     },
 
     setDragSourceTransferTypes : function( widget, transferTypes ) {
       var hash = widget.toHashCode();
-      this._dragSources[ hash ][ "dataTypes" ] = transferTypes;
+      this._dragSources[ hash ].dataTypes = transferTypes;
     },
 
     deregisterDragSource : function( widget ) {
@@ -142,15 +139,13 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     /////////////
     // dropTarget
 
-    registerDropTarget : function( widget, operations ) {
+    registerDropTarget : function( widget, operations, dropTarget ) {
       widget.addEventListener( "dragover", this._dragOverHandler, this );
       widget.addEventListener( "dragmove", this._dragMoveHandler, this );
       widget.addEventListener( "dragout", this._dragOutHandler, this );
       widget.addEventListener( "dragdrop", this._dragDropHandler, this );
       var hash = widget.toHashCode();
-      this._dropTargets[ hash ] = {
-        "actions" : this._operationsToActions( operations )
-      };
+      this._dropTargets[ hash ] = dropTarget;
       widget.setSupportsDropMethod( rwt.util.Functions.returnTrue );
     },
 
