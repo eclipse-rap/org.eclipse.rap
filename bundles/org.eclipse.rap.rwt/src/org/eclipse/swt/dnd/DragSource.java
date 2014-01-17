@@ -14,8 +14,6 @@ package org.eclipse.swt.dnd;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.internal.dnd.DNDAdapter;
-import org.eclipse.swt.internal.dnd.IDNDAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -103,7 +101,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class DragSource extends Widget {
 
-  transient IDNDAdapter dndAdapter;
 	// info for registering as a drag source
 	Control control;
 	Listener controlListener;
@@ -190,20 +187,6 @@ public DragSource(Control control, int style) {
 static int checkStyle(int style) {
 	if (style == SWT.NONE) return DND.DROP_MOVE;
 	return style;
-}
-
-@SuppressWarnings("unchecked")
-public <T> T getAdapter( Class<T> adapter ) {
-  T result;
-  if( adapter == IDNDAdapter.class ) {
-    if( dndAdapter == null ) {
-      dndAdapter = new DNDAdapter();
-    }
-    result = ( T )dndAdapter;
-  } else {
-    result = super.getAdapter( adapter );
-  }
-  return result;
 }
 
 /**

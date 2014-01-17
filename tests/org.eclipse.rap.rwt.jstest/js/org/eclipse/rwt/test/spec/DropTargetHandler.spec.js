@@ -60,4 +60,44 @@ describe( "DropTargetHandler", function() {
 
   } );
 
+  describe( "changeFeedback", function() {
+
+    it( "changes feedback on DropTarget", function() {
+      var dropTarget = new rwt.widgets.DropTarget( control, [] );
+      spyOn( dropTarget, "changeFeedback" );
+
+      var properties = { "feedback" : "FEEDBACK_INSERT_BEFORE", "flags" : 2 };
+      handler.methodHandler.changeFeedback( dropTarget, properties );
+
+      expect( dropTarget.changeFeedback ).toHaveBeenCalledWith( "FEEDBACK_INSERT_BEFORE", 2 );
+    } );
+
+  } );
+
+  describe( "changeDetail", function() {
+
+    it( "changes detail on DropTarget", function() {
+      var dropTarget = new rwt.widgets.DropTarget( control, [] );
+      spyOn( dropTarget, "changeDetail" );
+
+      handler.methodHandler.changeDetail( dropTarget, { "detail" : "DROP_MOVE" } );
+
+      expect( dropTarget.changeDetail ).toHaveBeenCalledWith( "DROP_MOVE" );
+    } );
+
+  } );
+
+  describe( "changeDataType", function() {
+
+    it( "changes data type on DropTarget", function() {
+      var dropTarget = new rwt.widgets.DropTarget( control, [] );
+      spyOn( dropTarget, "changeDataType" );
+
+      handler.methodHandler.changeDataType( dropTarget, { "dataType" : 3 } );
+
+      expect( dropTarget.changeDataType ).toHaveBeenCalledWith( 3 );
+    } );
+
+  } );
+
 } );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -479,8 +479,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeDetail" );
     assertEquals( "DROP_LINK", call.getProperty( "detail" ).asString() );
   }
 
@@ -500,8 +499,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeDetail" );
     assertEquals( "DROP_LINK", call.getProperty( "detail" ).asString() );
   }
 
@@ -568,8 +566,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeFeedback" );
     assertEquals( DND.FEEDBACK_SELECT, call.getProperty( "flags" ).asInt() );
     JsonArray feedbackArr = call.getProperty( "feedback" ).asArray();
     assertEquals( 1, feedbackArr.size() );
@@ -594,8 +591,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeFeedback" );
     assertEquals( DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND, call.getProperty( "flags" ).asInt() );
     JsonArray feedbackArr = call.getProperty( "feedback" ).asArray();
     assertEquals( 2, feedbackArr.size() );
@@ -621,8 +617,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    assertNotNull( message.findCallOperation( dropTarget, "changeDataType" ) );
   }
 
   @Test
@@ -646,8 +641,7 @@ public class DNDSupport_Test {
     DropTargetEvent dragEnter = getDropTargetEvent( 0 );
     assertTrue( HTMLTransfer.getInstance().isSupportedType( dragEnter.currentDataType ) );
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeDataType" );
     assertEquals( getTextType(), call.getProperty( "dataType" ).asInt() );
   }
 
@@ -673,8 +667,7 @@ public class DNDSupport_Test {
     DropTargetEvent dragOver = getDropTargetEvent( 1 );
     assertTrue( TextTransfer.getInstance().isSupportedType( dragOver.currentDataType ) );
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeDataType" );
     int expectedType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     assertEquals( expectedType, call.getProperty( "dataType" ).asInt() );
   }
@@ -701,8 +694,7 @@ public class DNDSupport_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
+    CallOperation call = message.findCallOperation( dropTarget, "changeDataType" );
     assertEquals( getTextType(), call.getProperty( "dataType" ).asInt() );
   }
 

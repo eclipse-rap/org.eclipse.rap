@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.swt.internal.dnd.DNDUtil.cancel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -34,8 +35,6 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.swt.internal.dnd.IDNDAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -52,6 +51,7 @@ public class DragSourceLCA_Test {
   private Shell shell;
   private Display display;
   private DragSourceLCA lca;
+  private DragSource source;
 
   @Before
   public void setUp() {
@@ -60,6 +60,7 @@ public class DragSourceLCA_Test {
     Fixture.markInitialized( display );
     shell = new Shell( display );
     control = new Label( shell, SWT.NONE );
+    source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     lca = new DragSourceLCA();
     Fixture.fakeNewRequest();
   }
@@ -71,7 +72,6 @@ public class DragSourceLCA_Test {
 
   @Test
   public void testRenderCreate() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     lca.renderInitialization( source );
 
     Message message = Fixture.getProtocolMessage();
@@ -84,7 +84,6 @@ public class DragSourceLCA_Test {
 
   @Test
   public void testRenderTransfer() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
 
@@ -103,92 +102,13 @@ public class DragSourceLCA_Test {
   }
 
   @Test
-  public void testRenderDetail() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
-    Button targetControl = new Button( shell, SWT.PUSH );
-    new DropTarget( targetControl, DND.DROP_MOVE | DND.DROP_COPY );
-    Fixture.markInitialized( source );
-    Fixture.preserveWidgets();
-    IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-
-    adapter.setDetailChanged( targetControl, DND.DROP_COPY );
-    lca.renderChanges( source );
-
-    Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( source, "changeDetail" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
-    assertEquals( "DROP_COPY", call.getProperty( "detail" ).asString() );
-  }
-
-  @Test
-  public void testRenderDetailNone() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
-    Button targetControl = new Button( shell, SWT.PUSH );
-    new DropTarget( targetControl, DND.DROP_MOVE | DND.DROP_COPY );
-    Fixture.markInitialized( source );
-    Fixture.preserveWidgets();
-    IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-
-    adapter.setDetailChanged( targetControl, DND.DROP_NONE );
-    lca.renderChanges( source );
-
-    Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( source, "changeDetail" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
-    assertEquals( "DROP_NONE", call.getProperty( "detail" ).asString() );
-  }
-
-  @Test
-  public void testRenderFeedback() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
-    Button targetControl = new Button( shell, SWT.PUSH );
-    new DropTarget( targetControl, DND.DROP_MOVE | DND.DROP_COPY );
-    Fixture.markInitialized( source );
-    Fixture.preserveWidgets();
-    int feedback = DND.FEEDBACK_SCROLL | DND.FEEDBACK_SELECT;
-    IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-
-
-    adapter.setFeedbackChanged( targetControl, feedback );
-    lca.renderChanges( source );
-
-    Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( source, "changeFeedback" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
-    assertEquals( feedback, call.getProperty( "flags" ).asInt() );
-    JsonArray expected = new JsonArray().add( "FEEDBACK_SCROLL" ).add( "FEEDBACK_SELECT" );
-    assertEquals( expected, call.getProperty( "feedback" ) );
-  }
-
-  @Test
-  public void testRenderDataType() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
-    Button targetControl = new Button( shell, SWT.PUSH );
-    new DropTarget( targetControl, DND.DROP_MOVE | DND.DROP_COPY );
-    Fixture.markInitialized( source );
-    Fixture.preserveWidgets();
-    IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
-    TransferData dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ];
-
-    adapter.setDataTypeChanged( targetControl, dataType );
-    lca.renderChanges( source );
-
-    Message message = Fixture.getProtocolMessage();
-    CallOperation call = message.findCallOperation( source, "changeDataType" );
-    assertEquals( getId( targetControl ), call.getProperty( "control" ).asString() );
-    assertEquals( dataType.type, call.getProperty( "dataType" ).asInt() );
-  }
-
-  @Test
   public void testRenderCancel() throws IOException {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Button targetControl = new Button( shell, SWT.PUSH );
     new DropTarget( targetControl, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
-    IDNDAdapter adapter = source.getAdapter( IDNDAdapter.class );
 
-    adapter.cancel();
+    cancel();
     lca.renderChanges( source );
 
     Message message = Fixture.getProtocolMessage();
@@ -198,38 +118,37 @@ public class DragSourceLCA_Test {
 
   @Test
   public void testDisposeDragControl() {
-    DragSource dragSource = new DragSource( control, DND.DROP_MOVE );
     shell.open();
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     control.dispose();
+
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNull( message.findDestroyOperation( dragSource ) );
+    assertNull( message.findDestroyOperation( source ) );
   }
 
   @Test
   public void testDisposeDragSourceAndControl() {
-    DragSource dragSource = new DragSource( control, DND.DROP_MOVE );
     shell.open();
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    dragSource.dispose();
+    source.dispose();
     control.dispose();
+
     Fixture.executeLifeCycleFromServerThread();
 
     Message message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
-    assertNull( message.findDestroyOperation( dragSource ) );
+    assertNull( message.findDestroyOperation( source ) );
   }
 
   @Test
   public void testRenderAddDragListener() throws Exception {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( display );
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();
@@ -244,7 +163,6 @@ public class DragSourceLCA_Test {
 
   @Test
   public void testRenderRemoveDragListener() throws Exception {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     DragSourceListener listener = mock( DragSourceListener.class );
     source.addDragListener( listener );
     Fixture.markInitialized( display );
@@ -261,7 +179,6 @@ public class DragSourceLCA_Test {
 
   @Test
   public void testRenderDragListenerUnchanged() throws Exception {
-    DragSource source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
     Fixture.markInitialized( display );
     Fixture.markInitialized( source );
     Fixture.preserveWidgets();

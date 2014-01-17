@@ -45,6 +45,18 @@ rwt.widgets.DropTarget.prototype = {
 
   setHasDropAcceptListener : function( value ) {
     rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DropAccept", value );
+  },
+
+  changeFeedback : function( feedback, flags ) {
+    rwt.remote.DNDSupport.getInstance().setFeedback( this.control, feedback, flags );
+  },
+
+  changeDetail : function( detail ) {
+    rwt.remote.DNDSupport.getInstance().setOperationOverwrite( this.control, detail );
+  },
+
+  changeDataType : function( dataType ) {
+    rwt.remote.DNDSupport.getInstance().setDataType( this.control, dataType );
   }
 
 };

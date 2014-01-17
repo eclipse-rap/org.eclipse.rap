@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,23 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertOperations;
-import static org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil.convertTransferTypes;
+import static org.eclipse.swt.internal.dnd.DNDUtil.convertOperations;
+import static org.eclipse.swt.internal.dnd.DNDUtil.convertTransferTypes;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getDataTypeChangedControl;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getDataTypeChangedValue;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getDetailChangedControl;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getDetailChangedValue;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getFeedbackChangedControl;
+import static org.eclipse.swt.internal.dnd.DNDUtil.getFeedbackChangedValue;
+import static org.eclipse.swt.internal.dnd.DNDUtil.hasDataTypeChanged;
+import static org.eclipse.swt.internal.dnd.DNDUtil.hasDetailChanged;
+import static org.eclipse.swt.internal.dnd.DNDUtil.hasFeedbackChanged;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -65,6 +76,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
                       isListening( dropTarget, DND.DropAccept ) );
   }
 
+  @Override
   public void readData( Widget widget ) {
   }
 
@@ -80,6 +92,9 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
     renderTransfer( dropTarget );
+    renderDetail( dropTarget );
+    renderFeedback( dropTarget );
+    renderDataType( dropTarget );
     renderListener( dropTarget,
                     PROP_DRAG_ENTER_LISTENER,
                     isListening( dropTarget, DND.DragEnter ),
@@ -108,6 +123,54 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
       JsonValue renderValue = convertTransferTypes( newValue );
       getRemoteObject( dropTarget ).set( "transfer", renderValue );
     }
+  }
+
+  private void renderDetail( DropTarget dropTarget ) {
+    if( hasDetailChanged() && dropTarget.getControl() == getDetailChangedControl() ) {
+      JsonArray operations = convertOperations( getDetailChangedValue() );
+      JsonValue detail = JsonValue.valueOf( "DROP_NONE" );
+      if( !operations.isEmpty() ) {
+        detail = operations.get( 0 );
+      }
+      JsonObject parameters = new JsonObject().add( "detail", detail );
+      getRemoteObject( dropTarget ).call( "changeDetail", parameters );
+    }
+  }
+
+  private void renderFeedback( DropTarget dropTarget ) {
+    if( hasFeedbackChanged() && dropTarget.getControl() == getFeedbackChangedControl() ) {
+      JsonObject parameters = new JsonObject()
+        .add( "flags", getFeedbackChangedValue() )
+        .add( "feedback", convertFeedback( getFeedbackChangedValue() ) );
+      getRemoteObject( dropTarget ).call( "changeFeedback", parameters );
+    }
+  }
+
+  private void renderDataType( DropTarget dropTarget ) {
+    if( hasDataTypeChanged() && dropTarget.getControl() == getDataTypeChangedControl() ) {
+      JsonObject parameters = new JsonObject().add( "dataType", getDataTypeChangedValue().type );
+      getRemoteObject( dropTarget ).call( "changeDataType", parameters );
+    }
+  }
+
+  private static JsonArray convertFeedback( int feedback ) {
+    JsonArray feedbackNames = new JsonArray();
+    if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
+      feedbackNames.add( "FEEDBACK_EXPAND" );
+    }
+    if( ( feedback & DND.FEEDBACK_INSERT_AFTER ) != 0 ) {
+      feedbackNames.add( "FEEDBACK_INSERT_AFTER" );
+    }
+    if( ( feedback & DND.FEEDBACK_INSERT_BEFORE ) != 0 ) {
+      feedbackNames.add( "FEEDBACK_INSERT_BEFORE" );
+    }
+    if( ( feedback & DND.FEEDBACK_SCROLL ) != 0 ) {
+      feedbackNames.add( "FEEDBACK_SCROLL" );
+    }
+    if( ( feedback & DND.FEEDBACK_SELECT ) != 0 ) {
+      feedbackNames.add( "FEEDBACK_SELECT" );
+    }
+    return feedbackNames;
   }
 
 }

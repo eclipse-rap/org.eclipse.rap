@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,20 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DropTarget", {
 
   properties : [ "transfer" ],
 
-  listeners : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ]
+  listeners : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ],
+
+  methods : [ "changeFeedback", "changeDetail", "changeDataType" ],
+
+  methodHandler : {
+    "changeFeedback" : function( target, properties ) {
+      target.changeFeedback( properties.feedback, properties.flags );
+    },
+    "changeDetail" : function( target, properties ) {
+      target.changeDetail( properties.detail );
+    },
+    "changeDataType" : function( target, properties ) {
+      target.changeDataType( properties.dataType );
+    }
+  }
 
 } );

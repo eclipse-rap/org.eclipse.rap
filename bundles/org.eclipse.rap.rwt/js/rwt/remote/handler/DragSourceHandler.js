@@ -27,25 +27,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DragSource", {
 
   listeners : [ "DragStart", "DragEnd" ],
 
-  methods : [ "changeFeedback", "changeDetail", "changeDataType", "cancel" ],
+  methods : [ "cancel" ],
 
   methodHandler : {
-    "changeFeedback" : function( source, properties ) {
-      var control = rwt.remote.ObjectRegistry.getObject( properties.control );
-      var feedback = properties.feedback;
-      var flags = properties.flags;
-      rwt.remote.DNDSupport.getInstance().setFeedback( control, feedback, flags );
-    },
-    "changeDetail" : function( source, properties ) {
-      var control = rwt.remote.ObjectRegistry.getObject( properties.control );
-      var detail = properties.detail;
-      rwt.remote.DNDSupport.getInstance().setOperationOverwrite( control, detail );
-    },
-    "changeDataType" : function( source, properties ) {
-      var control = rwt.remote.ObjectRegistry.getObject( properties.control );
-      var dataType = properties.dataType;
-      rwt.remote.DNDSupport.getInstance().setDataType( control, dataType );
-    },
     "cancel" : function( source, properties ) {
       rwt.remote.DNDSupport.getInstance().cancel();
     }
