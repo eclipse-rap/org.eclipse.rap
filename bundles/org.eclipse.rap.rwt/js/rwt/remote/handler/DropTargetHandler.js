@@ -25,7 +25,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DropTarget", {
 
   properties : [ "transfer" ],
 
-  listeners : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ],
+  events : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ],
 
   methods : [ "changeFeedback", "changeDetail", "changeDataType" ],
 

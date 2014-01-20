@@ -15,25 +15,17 @@ rwt.widgets.DragSource = function( control, operations ) {
   this.control = control;
   this.actions = rwt.remote.DNDSupport.getInstance()._operationsToActions( operations );
   this.dataTypes = [];
-  rwt.remote.DNDSupport.getInstance().registerDragSource( control, operations, this );
+  rwt.remote.DNDSupport.getInstance().registerDragSource( this );
 };
 
 rwt.widgets.DragSource.prototype = {
 
   dispose : function() {
-    rwt.remote.DNDSupport.getInstance().deregisterDragSource( this.control );
+    rwt.remote.DNDSupport.getInstance().deregisterDragSource( this );
   },
 
   setTransfer : function( transferTypes ) {
     rwt.remote.DNDSupport.getInstance().setDragSourceTransferTypes( this.control, transferTypes );
-  },
-
-  setHasDragStartListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragStart", value );
-  },
-
-  setHasDragEndListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragEnd", value );
   }
 
 };

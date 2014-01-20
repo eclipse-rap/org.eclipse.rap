@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +30,6 @@ import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -82,9 +80,7 @@ public class DNDSupport_Test {
     shell = new Shell( display );
     shell.open();
     sourceControl = new Label( shell, SWT.NONE );
-    initControl( sourceControl );
     targetControl = new Label( shell, SWT.NONE );
-    initControl( targetControl );
     events = new ArrayList<TypedEvent>();
     eventTypes = new ArrayList<Integer>();
     Fixture.fakeNewRequest();
@@ -742,14 +738,6 @@ public class DNDSupport_Test {
     assertEquals( DND.DROP_MOVE | DND.DROP_LINK, getDropTargetEvent( 5 ).operations );
   }
 
-  /////////
-  // Helper
-
-  private void initControl( Control control ) {
-    Fixture.markInitialized( control );
-    getRemoteObject( control ).setHandler( new ControlOperationHandler<Control>( control ){} );
-  }
-
   private void fakeDragSourceEvent( String eventType, int time ) {
     createDragSourceEvent( eventType, 0, 0, "move", time );
   }
@@ -759,7 +747,7 @@ public class DNDSupport_Test {
       .add( "x", String.valueOf( x ) )
       .add( "y", String.valueOf( y ) )
       .add( "time", String.valueOf( time ) );
-    Fixture.fakeNotifyOperation( getId( sourceControl ), eventType, parameters );
+    Fixture.fakeNotifyOperation( getId( dragSource ), eventType, parameters );
   }
 
   private void fakeDropTargetEvent( String eventType, int time ) {
@@ -781,8 +769,7 @@ public class DNDSupport_Test {
       .add( "feedback", String.valueOf( 0 ) )
       .add( "source", getId( sourceControl ) )
       .add( "dataType", String.valueOf( dataType ) );
-    Fixture.fakeNotifyOperation( getId( targetControl ), eventType, parameters );
-
+    Fixture.fakeNotifyOperation( getId( dropTarget ), eventType, parameters );
   }
 
   private void createDropTarget( int style ) {

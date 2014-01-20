@@ -25,7 +25,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DragSource", {
 
   properties : [ "transfer" ],
 
-  listeners : [ "DragStart", "DragEnd" ],
+  events : [ "DragStart", "DragEnd" ],
 
   methods : [ "cancel" ],
 

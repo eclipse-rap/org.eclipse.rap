@@ -14,37 +14,17 @@ namespace( "rwt.widgets" );
 rwt.widgets.DropTarget = function( control, operations ) {
   this.control = control;
   this.actions = rwt.remote.DNDSupport.getInstance()._operationsToActions( operations );
-  rwt.remote.DNDSupport.getInstance().registerDropTarget( control, operations, this );
+  rwt.remote.DNDSupport.getInstance().registerDropTarget( this );
 };
 
 rwt.widgets.DropTarget.prototype = {
 
   dispose : function() {
-    rwt.remote.DNDSupport.getInstance().deregisterDropTarget( this.control );
+    rwt.remote.DNDSupport.getInstance().deregisterDropTarget( this );
   },
 
   setTransfer : function( transferTypes ) {
     rwt.remote.DNDSupport.getInstance().setDropTargetTransferTypes( this.control, transferTypes );
-  },
-
-  setHasDragEnterListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragEnter", value );
-  },
-
-  setHasDragOverListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragOver", value );
-  },
-
-  setHasDragLeaveListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragLeave", value );
-  },
-
-  setHasDragOperationChangedListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DragOperationChanged", value );
-  },
-
-  setHasDropAcceptListener : function( value ) {
-    rwt.remote.DNDSupport.getInstance().setHasListener( this.control, "DropAccept", value );
   },
 
   changeFeedback : function( feedback, flags ) {

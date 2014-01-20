@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Button;
@@ -409,70 +408,6 @@ public class ControlOperationHandler_Test {
     handler.handleNotify( "Deactivate", properties );
 
     verify( mockedControl, never() ).notifyListeners( eq( SWT.Deactivate ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragStart() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragStart", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragStart ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragEnter() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragEnter", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragEnter ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragOperationChanged() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragOperationChanged", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragOperationChanged ),
-                                                      any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragOver() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragOver", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragOver ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragLeave() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragLeave", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragLeave ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDropAccept() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DropAccept", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DropAccept ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesDragEnd() {
-    JsonObject properties = new JsonObject();
-
-    handler.handleNotify( "DragEnd", properties );
-
-    verify( mockedControl, never() ).notifyListeners( eq( DND.DragEnd ), any( Event.class ) );
   }
 
   @Test

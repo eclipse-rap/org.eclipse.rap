@@ -97,8 +97,8 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_START );
     if( notify != null ) {
-      Control control = ( Control )findWidgetById( notify.getTarget() );
-      DragSource dragSource = getDragSource( control );
+      DragSource dragSource = ( DragSource )findWidgetById( notify.getTarget() );
+      Control control = dragSource.getControl();
       Point point = readXYParams( notify ); // should be changed to array
       Point mappedPoint = control.getDisplay().map( null, control, point );
       Event dragDetectEvent = createDragDetectEvent( notify, control, mappedPoint );
@@ -115,8 +115,8 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_ENTER );
     if( notify != null ) {
-      Control control = ( Control )findWidgetById( notify.getTarget() );
-      DropTarget dropTarget = getDropTarget( control );
+      DropTarget dropTarget = ( DropTarget )findWidgetById( notify.getTarget() );
+      Control control = dropTarget.getControl();
       Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       Point point = readXYParams( notify );
@@ -151,8 +151,8 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OVER );
     if( notify != null ) {
-      Control control = ( Control )findWidgetById( notify.getTarget() );
-      DropTarget dropTarget = getDropTarget( control );
+      DropTarget dropTarget = ( DropTarget )findWidgetById( notify.getTarget() );
+      Control control = dropTarget.getControl();
       Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       int operation = getOperationParam( notify );
@@ -187,8 +187,8 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_OPERATION_CHANGED );
     if( notify != null ) {
-      Control control = ( Control )findWidgetById( notify.getTarget() );
-      DropTarget dropTarget = getDropTarget( control );
+      DropTarget dropTarget = ( DropTarget )findWidgetById( notify.getTarget() );
+      Control control = dropTarget.getControl();
       Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       int operation = getOperationParam( notify );
@@ -223,8 +223,7 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_LEAVE );
     if( notify != null ) {
-      Control control = ( Control )findWidgetById( notify.getTarget() );
-      DropTarget dropTarget = getDropTarget( control );
+      DropTarget dropTarget = ( DropTarget )findWidgetById( notify.getTarget() );
       Point point = readXYParams( notify );
       int operation = readOperationParam( notify );
       int time = readIntParam( notify, EVENT_PARAM_TIME );
@@ -237,8 +236,7 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DROP_ACCEPT );
     if( notify != null ) {
-      Control dropTargetControl = ( Control )findWidgetById( notify.getTarget() );
-      DropTarget dropTarget = getDropTarget( dropTargetControl );
+      DropTarget dropTarget = ( DropTarget )findWidgetById( notify.getTarget() );
       Control sourceControl = readControlParam( notify );
       DragSource dragSource = getDragSource( sourceControl );
       operation = getOperationParam( notify );
@@ -346,9 +344,8 @@ public final class DNDSupport {
     ClientMessage message = ProtocolUtil.getClientMessage();
     NotifyOperation notify = message.getLastNotifyOperationFor( null, EVENT_DRAG_END );
     if( notify != null ) {
-      Control dragSourceControl = ( Control )findWidgetById( notify.getTarget() );
+      DragSource dragSource = ( DragSource )findWidgetById( notify.getTarget() );
       // fire DRAG_END
-      DragSource dragSource = getDragSource( dragSourceControl );
       cancelDetailChanged();
       cancelFeedbackChanged();
       cancelDataTypeChanged();
@@ -363,10 +360,6 @@ public final class DNDSupport {
       event.time = readIntParam( notify, EVENT_PARAM_TIME );
       dragSource.notifyListeners( DND.DragEnd, event );
     }
-  }
-
-  private static DropTarget getDropTarget( Control control ) {
-    return ( DropTarget )control.getData( DND.DROP_TARGET_KEY );
   }
 
   private static DragSource getDragSource( Control control ) {
