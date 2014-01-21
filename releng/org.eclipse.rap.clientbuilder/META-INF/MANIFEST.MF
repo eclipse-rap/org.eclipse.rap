@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RAP JavaScript WebClient Builder
 Bundle-SymbolicName: org.eclipse.rap.clientbuilder
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.mozilla.javascript;bundle-version="1.6.6",

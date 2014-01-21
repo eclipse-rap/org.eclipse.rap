@@ -3,24 +3,24 @@ Eclipse-ExtensibleAPI: true
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.rap.ui.workbench;singleton:=true
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-ClassPath: patch.jar,
  .
 Bundle-Activator: org.eclipse.ui.internal.WorkbenchPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package:  org.eclipse.rap.ui.resources;version="2.1.1",
- org.eclipse.rap.ui.interactiondesign;version="2.1.1",
- org.eclipse.rap.ui.interactiondesign.internal;version="2.1.1";x-friends:="org.eclipse.rap.ui.tests",
- org.eclipse.rap.ui.interactiondesign.layout;version="2.1.1",
- org.eclipse.rap.ui.interactiondesign.layout.model;version="2.1.1",
- org.eclipse.rap.ui.internal;version="2.1.1";x-internal:=true,
- org.eclipse.rap.ui.internal.application;version="2.1.1";x-internal:=true,
- org.eclipse.rap.ui.internal.branding;version="2.1.1";x-internal:=true,
- org.eclipse.rap.ui.internal.preferences;version="2.1.1";x-internal:=true,
- org.eclipse.rap.ui.internal.progress;version="2.1.1";x-internal:=true,
- org.eclipse.rap.ui.internal.servlet;version="2.1.1";x-internal:=true,
+Export-Package:  org.eclipse.rap.ui.resources;version="2.1.2",
+ org.eclipse.rap.ui.interactiondesign;version="2.1.2",
+ org.eclipse.rap.ui.interactiondesign.internal;version="2.1.2";x-friends:="org.eclipse.rap.ui.tests",
+ org.eclipse.rap.ui.interactiondesign.layout;version="2.1.2",
+ org.eclipse.rap.ui.interactiondesign.layout.model;version="2.1.2",
+ org.eclipse.rap.ui.internal;version="2.1.2";x-internal:=true,
+ org.eclipse.rap.ui.internal.application;version="2.1.2";x-internal:=true,
+ org.eclipse.rap.ui.internal.branding;version="2.1.2";x-internal:=true,
+ org.eclipse.rap.ui.internal.preferences;version="2.1.2";x-internal:=true,
+ org.eclipse.rap.ui.internal.progress;version="2.1.2";x-internal:=true,
+ org.eclipse.rap.ui.internal.servlet;version="2.1.2";x-internal:=true,
  org.eclipse.ui;ui.workbench=split;mandatory:="ui.workbench",
  org.eclipse.ui.about,
  org.eclipse.ui.actions;ui.workbench=split;mandatory:="ui.workbench",

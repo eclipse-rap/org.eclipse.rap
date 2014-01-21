@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.examples.feature"
       label="RAP Examples"
-      version="2.1.1.qualifier"
+      version="2.1.2.qualifier"
       provider-name="Eclipse.org - RAP">
 
    <description url="http://www.eclipse.org/rap/">
@@ -22,7 +22,7 @@
    </url>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="2.1.1" match="compatible"/>
+      <import feature="org.eclipse.rap.feature" version="2.1.2" match="compatible"/>
    </requires>
 
    <plugin
