@@ -79,7 +79,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processSelection( slider, null, true );
     ControlLCAUtil.processKeyEvents( slider );
-    ControlLCAUtil.processEvents( slider );
+    ControlLCAUtil.processMouseEvents( slider );
     ControlLCAUtil.processMenuDetect( slider );
     WidgetLCAUtil.processHelp( slider );
   }

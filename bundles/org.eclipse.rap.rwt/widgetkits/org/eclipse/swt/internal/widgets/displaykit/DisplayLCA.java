@@ -307,7 +307,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
         }
       }
       if( focusControl != null && EventUtil.isAccessible( focusControl ) ) {
-        getDisplayAdapter( display ).setFocusControl( focusControl, false );
+        getDisplayAdapter( display ).setFocusControl( focusControl );
       }
     }
   }

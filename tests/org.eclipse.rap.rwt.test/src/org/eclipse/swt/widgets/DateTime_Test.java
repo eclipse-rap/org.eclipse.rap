@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.DROP_DOWN_BUTTON;
-import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.SPINNER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,8 +24,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -253,39 +249,6 @@ public class DateTime_Test {
   }
 
   @Test
-  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_time() {
-    DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    dateTime.setSize( 208, 28 );
-
-    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-
-    Rectangle expected = new Rectangle( 177, 0, 31, 28 );
-    assertEquals( expected, getAdapter( dateTime ).getBounds( SPINNER ) );
-  }
-
-  @Test
-  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_date() {
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    dateTime.setSize( 208, 28 );
-
-    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-
-    Rectangle expected = new Rectangle( 177, 0, 31, 28 );
-    assertEquals( expected, getAdapter( dateTime ).getBounds( SPINNER ) );
-  }
-
-  @Test
-  public void testComputeSize_doesNotMoveButtonsOnBiggerSize_dropDown() {
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.DROP_DOWN );
-    dateTime.setSize( 208, 28 );
-
-    dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-
-    Rectangle expected = new Rectangle( 177, 0, 31, 28 );
-    assertEquals( expected, getAdapter( dateTime ).getBounds( DROP_DOWN_BUTTON ) );
-  }
-
-  @Test
   public void testDateIsSerializable() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
     dateTime.setDate( 2000, 1, 1 );
@@ -350,9 +313,4 @@ public class DateTime_Test {
     } catch( IllegalArgumentException expected ) {
     }
   }
-
-  private IDateTimeAdapter getAdapter( DateTime dateTime ) {
-    return dateTime.getAdapter( IDateTimeAdapter.class );
-  }
-
 }
