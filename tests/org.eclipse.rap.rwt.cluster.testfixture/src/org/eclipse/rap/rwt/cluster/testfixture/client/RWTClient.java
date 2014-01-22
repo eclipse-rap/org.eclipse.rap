@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,32 +92,34 @@ public class RWTClient {
     return sendPostRequest( message );
   }
 
-  public Response sendDragStartRequest( String widgetId ) throws IOException {
+  public Response sendDragStartRequest( String dragSourceId ) throws IOException {
     JsonMessage message = new JsonMessage();
     message.addOperation( "[\"notify\",\""
-                          + widgetId
+                          + dragSourceId
                           + "\",\"DragStart\",{\"x\":100,\"y\":100,\"time\":"
                           + createTimeParam()
                           + "}]" );
     return sendPostRequest( message );
   }
 
-  public Response sendDragFinishedRequest( String sourceWidgetId, String targetWidgetId )
+  public Response sendDragFinishedRequest( String dragSourceId,
+                                           String dropTargetId,
+                                           String sourceControlId )
     throws IOException
   {
     JsonMessage message = new JsonMessage();
     message.addOperation( "[\"notify\",\""
-                          + sourceWidgetId
+                          + dragSourceId
                           + "\",\"DragEnd\",{\"x\":100,\"y\":100,\"time\":"
                           + createTimeParam()
                           + "}]" );
     message.addOperation( "[\"notify\",\""
-                          + targetWidgetId
+                          + dropTargetId
                           + "\",\"DropAccept\",{\"x\":100,\"y\":100,\"item\":null,"
                           + "\"operation\":\"move\",\"feedback\":0,\"dataType\":"
                           + TEXT_TRANSFER_DATA_TYPE
                           + ",\"source\":\""
-                          + sourceWidgetId
+                          + sourceControlId
                           + "\",\"time\":"
                           + createTimeParam()
                           + "}]" );
@@ -235,4 +237,5 @@ public class RWTClient {
       return url.openConnection();
     }
   }
+
 }

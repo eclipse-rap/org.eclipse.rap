@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,9 @@ import org.eclipse.swt.widgets.Widget;
 
 public class DNDEntryPoint implements EntryPoint {
 
-  public static final String ID_SOURCE_LABEL = "sourceLabel";
-  public static final String ID_TARGET_LABEL = "targetLabel";
+  public static final String ID_DRAG_SOURCE = "dragSourceId";
+  public static final String ID_DROP_TARGET = "dropTargetId";
+  public static final String ID_SOURCE_LABEL = "sourceLabelId";
 
   private static final String TRANSFER_DATA = "transfer data";
   private static final String ATTR_DRAG_FINISHED = "dragFinished";
@@ -53,15 +54,16 @@ public class DNDEntryPoint implements EntryPoint {
     Display display = new Display();
     Shell shell = new Shell( display );
     Label sourceLabel = new Label( shell, SWT.NONE );
-    sourceLabel.setText( "source label" );
     assignWidgetId( sourceLabel, ID_SOURCE_LABEL );
+    sourceLabel.setText( "source label" );
     DragSource dragSource = new DragSource( sourceLabel, DND.DROP_MOVE );
+    assignWidgetId( dragSource, ID_DRAG_SOURCE );
     dragSource.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dragSource.addDragListener( new LabelDragSourceListener() );
     Label targetLabel = new Label( shell, SWT.NONE );
     targetLabel.setText( "target label" );
-    assignWidgetId( targetLabel, ID_TARGET_LABEL );
     DropTarget dropTarget = new DropTarget( targetLabel, DND.DROP_MOVE );
+    assignWidgetId( dropTarget, ID_DROP_TARGET );
     dropTarget.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dropTarget.addDropListener( new LabelDropTargetListener() );
     shell.open();
@@ -74,10 +76,12 @@ public class DNDEntryPoint implements EntryPoint {
 
   private static class LabelDragSourceListener extends DragSourceAdapter implements Serializable {
 
+    @Override
     public void dragSetData( DragSourceEvent event ) {
       event.data = TRANSFER_DATA;
     }
 
+    @Override
     public void dragFinished( DragSourceEvent event ) {
       RWT.getUISession().setAttribute( ATTR_DRAG_FINISHED, Boolean.TRUE );
     }
@@ -85,10 +89,12 @@ public class DNDEntryPoint implements EntryPoint {
 
   private static class LabelDropTargetListener extends DropTargetAdapter implements Serializable {
 
+    @Override
     public void drop( DropTargetEvent event ) {
       if( TRANSFER_DATA.equals( event.data ) ) {
         RWT.getUISession().setAttribute( ATTR_DROP_FINISHED, Boolean.TRUE );
       }
     }
   }
+
 }
