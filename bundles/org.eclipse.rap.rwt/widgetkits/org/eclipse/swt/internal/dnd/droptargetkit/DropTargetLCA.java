@@ -125,7 +125,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void renderDetail( DropTarget dropTarget ) {
+  private static void renderDetail( DropTarget dropTarget ) {
     if( hasDetailChanged() && dropTarget.getControl() == getDetailChangedControl() ) {
       JsonArray operations = convertOperations( getDetailChangedValue() );
       JsonValue detail = JsonValue.valueOf( "DROP_NONE" );
@@ -137,7 +137,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void renderFeedback( DropTarget dropTarget ) {
+  private static void renderFeedback( DropTarget dropTarget ) {
     if( hasFeedbackChanged() && dropTarget.getControl() == getFeedbackChangedControl() ) {
       JsonObject parameters = new JsonObject()
         .add( "flags", getFeedbackChangedValue() )
@@ -146,7 +146,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void renderDataType( DropTarget dropTarget ) {
+  private static void renderDataType( DropTarget dropTarget ) {
     if( hasDataTypeChanged() && dropTarget.getControl() == getDataTypeChangedControl() ) {
       JsonObject parameters = new JsonObject().add( "dataType", getDataTypeChangedValue().type );
       getRemoteObject( dropTarget ).call( "changeDataType", parameters );

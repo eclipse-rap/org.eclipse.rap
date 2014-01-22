@@ -1301,9 +1301,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       assertTrue( dndSupport._currentTargetWidget instanceof rwt.widgets.base.GridRow );
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
-      assertTrue( dndSupport._isDropTargetEventScheduled( "DragEnter" ) );
-      dndSupport._cancelDropTargetEvent( "DragEnter" );
-      dndSupport._cancelDropTargetEvent( "DragOver" );
+      assertTrue( dndSupport._isEventScheduled( "DragEnter" ) );
+      dndSupport._cancelEvent( "DragEnter" );
+      dndSupport._cancelEvent( "DragOver" );
       // over clientArea
       // NOTE: IE may fire mousemove before mouseover, See Bug 345692
       TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton );
@@ -1594,6 +1594,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       source.control.setParent( null );
       source.control.destroy();
       TestUtil.flush();
+    },
+
+    testEventOrder_withoutLeave : function() {
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var events = {
+        "DragEnter" : {},
+        "DragOver" : {}
+      };
+
+      var expected = [ "DragStart", "DragEnter", "DragOperationChanged", "DragOver", "DragLeave",
+                       "DropAccept", "DragEnd" ];
+      assertEquals( expected, dndSupport._getEventOrder( events ) );
+    },
+
+    testEventOrder_withoutEnter : function() {
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var events = {
+        "DragOver" : {},
+        "DragLeave" : {}
+      };
+
+      var expected = [ "DragStart", "DragEnter", "DragOperationChanged", "DragOver", "DragLeave",
+                       "DropAccept", "DragEnd" ];
+      assertEquals( expected, dndSupport._getEventOrder( events ) );
+    },
+
+    testEventOrder_enterBeforeLeave : function() {
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var events = {
+        "DragEnter" : { "param" : { "time" : 1 } },
+        "DragLeave" : { "param" : { "time" : 2 } }
+      };
+
+      var expected = [ "DragStart", "DragEnter", "DragOperationChanged", "DragOver", "DragLeave",
+                       "DropAccept", "DragEnd" ];
+      assertEquals( expected, dndSupport._getEventOrder( events ) );
+    },
+
+    testEventOrder_leaveBeforeEnter : function() {
+      var dndSupport = rwt.remote.DNDSupport.getInstance();
+      var events = {
+        "DragEnter" : { "param" : { "time" : 2 } },
+        "DragLeave" : { "param" : { "time" : 1 } }
+      };
+
+      var expected = [ "DragStart", "DragLeave", "DragEnter", "DragOperationChanged", "DragOver",
+                       "DropAccept", "DragEnd" ];
+      assertEquals( expected, dndSupport._getEventOrder( events ) );
     },
 
     /////////

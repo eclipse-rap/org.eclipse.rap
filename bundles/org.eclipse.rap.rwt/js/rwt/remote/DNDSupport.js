@@ -18,7 +18,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     this.base( arguments );
     this._dragSources = {};
     this._dropTargets = {};
-    this._dropTargetEventQueue = {};
+    this._eventQueue = {};
     this._requestScheduled = false;
     this._currentDragControl = null;
     this._currentDropControl = null;
@@ -103,10 +103,6 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       var mouseEvent = event.getMouseEvent();
       // fix for Bug 301544: block new dragStarts until request is send
       this._blockDrag = true;
-      if( !this._requestScheduled ) {
-        var req = rwt.remote.Connection.getInstance();
-        req.addEventListener( "send", this._onSend, this );
-      }
       this._sendDragSourceEvent( target, "DragEnd", mouseEvent );
       this._cleanUp();
       event.stopPropagation();
@@ -119,13 +115,22 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         x = qxDomEvent.getPageX();
         y = qxDomEvent.getPageY();
       }
-      var parameters = {
+      var event = {};
+      event[ "widget" ] = this._getDragSource( widget );
+      event[ "eventName" ] = type;
+      var param = {
         "x" : x,
         "y" : y,
         "time" : rwt.remote.EventUtil.eventTimestamp()
       };
-      var dragSource = this._getDragSource( widget );
-      rwt.remote.Connection.getInstance().getRemoteObject( dragSource ).notify( type, parameters );
+      event[ "param" ] = param;
+      this._eventQueue[ type ] = event;
+      var connection = rwt.remote.Connection.getInstance();
+      if( !this._requestScheduled ) {
+        connection.addEventListener( "send", this._onSend, this );
+        this._requestScheduled = true;
+      }
+      connection.send();
     },
 
     /////////////
@@ -189,9 +194,9 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       this._currentDropControl = null;
       this._actionOverwrite = null;
       this._dataTypeOverwrite = null;
-      if( this._isDropTargetEventScheduled( "DragEnter" ) ) {
-        this._cancelDropTargetEvent( "DragEnter" );
-        this._cancelDropTargetEvent( "DragOver" );
+      if( this._isEventScheduled( "DragEnter" ) ) {
+        this._cancelEvent( "DragEnter" );
+        this._cancelEvent( "DragOver" );
       } else {
         this._sendDropTargetEvent( target, "DragLeave", mouseEvent, "none" );
       }
@@ -207,9 +212,8 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     },
 
     _sendDropTargetEvent : function( widget, type, qxDomEvent, action ) {
-      var wm = rwt.remote.WidgetManager.getInstance();
       var item = this._getCurrentItemTarget();
-      var itemId = item != null ? wm.findIdByWidget( item ) : null;
+      var itemId = item != null ? rwt.remote.ObjectRegistry.getId( item ) : null;
       var x = 0;
       var y = 0;
       if( qxDomEvent instanceof rwt.event.MouseEvent ) {
@@ -219,56 +223,77 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
         x = this._currentMousePosition.x;
         y = this._currentMousePosition.y;
       }
-      var source = wm.findIdByWidget( this._currentDragControl );
+      var source = rwt.remote.ObjectRegistry.getId( this._currentDragControl );
       var time = rwt.remote.EventUtil.eventTimestamp();
       var operation = action == "alias" ? "link" : action;
       var event = {};
       event[ "widget" ] = this._getDropTarget( widget );
       event[ "eventName" ] = type;
-      var param = {};
-      param[ "x" ] = x;
-      param[ "y" ] = y;
-      param[ "item" ] = itemId;
-      param[ "operation" ] = operation;
-      param[ "feedback" ] = this._dropFeedbackFlags;
-      param[ "dataType" ] = this._dataTypeOverwrite;
-      param[ "source" ] = source;
-      param[ "time" ] = time;
+      var param = {
+        "x" : x,
+        "y" : y,
+        "item" : itemId,
+        "operation" : operation,
+        "feedback" : this._dropFeedbackFlags,
+        "dataType" : this._dataTypeOverwrite,
+        "source" : source,
+        "time" : time
+      };
       event[ "param" ] = param;
-      this._dropTargetEventQueue[ type ] = event;
+      this._eventQueue[ type ] = event;
       if( !this._requestScheduled ) {
-        var req = rwt.remote.Connection.getInstance();
-        req.addEventListener( "send", this._onSend, this );
+        var connection = rwt.remote.Connection.getInstance();
+        connection.addEventListener( "send", this._onSend, this );
         this._requestScheduled = true;
-        rwt.client.Timer.once( req.send, req, 200 );
+        rwt.client.Timer.once( connection.send, connection, 200 );
       }
     },
 
-    _isDropTargetEventScheduled : function( type ) {
-      return typeof this._dropTargetEventQueue[ type ] != "undefined";
+    _isEventScheduled : function( type ) {
+      return typeof this._eventQueue[ type ] != "undefined";
     },
 
-    _cancelDropTargetEvent : function( type ) {
-      delete this._dropTargetEventQueue[ type ];
+    _cancelEvent : function( type ) {
+      delete this._eventQueue[ type ];
     },
 
-    _setPropertyRetroactively : function( dropTarget, property, value ) {
-      for( var type in this._dropTargetEventQueue ) {
-        var event = this._dropTargetEventQueue[ type ];
-        if( event[ "widget" ].control === dropTarget ) {
+    _setPropertyRetroactively : function( widget, property, value ) {
+      for( var type in this._eventQueue ) {
+        var event = this._eventQueue[ type ];
+        if( event[ "widget" ].control === widget ) {
           event[ "param" ][ property ] = value;
         }
       }
     },
 
-    _attachDropTargetEvents : function() {
-      var server = rwt.remote.Connection.getInstance();
-      var events = this._dropTargetEventQueue;
-      for( var type in events ) {
-        var event = events[ type ];
-        server.getRemoteObject( event.widget ).notify( event.eventName, event.param );
+    _attachEvents : function() {
+      var connection = rwt.remote.Connection.getInstance();
+      var order = this._getEventOrder( this._eventQueue );
+      for( var i = 0; i < order.length; i++ ) {
+        var event = this._eventQueue[ order[ i ] ];
+        if( event ) {
+          connection.getRemoteObject( event.widget ).notify( event.eventName, event.param );
+        }
       }
-      this._dropTargetEventQueue = {};
+      this._eventQueue = {};
+    },
+
+    _getEventOrder : function( events ) {
+      var order;
+      if( this._isLeaveBeforeEnter( events ) ) {
+        order = [ "DragStart", "DragLeave", "DragEnter", "DragOperationChanged", "DragOver",
+                  "DropAccept", "DragEnd" ];
+      } else {
+        order = [ "DragStart", "DragEnter", "DragOperationChanged", "DragOver", "DragLeave",
+                  "DropAccept", "DragEnd" ];
+      }
+      return order;
+    },
+
+    _isLeaveBeforeEnter : function( events ) {
+      var leave = events[ "DragLeave" ];
+      var enter = events[ "DragEnter" ];
+      return leave && enter && leave[ "param" ].time <= enter[ "param" ].time;
     },
 
     _getCurrentItemTarget : function() {
@@ -398,8 +423,7 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
       var item = target;
       var success = false;
       if( this._dragFeedbackWidget == null ) {
-        this._dragFeedbackWidget
-          = new rwt.widgets.base.MultiCellWidget( [ "image", "label" ] );
+        this._dragFeedbackWidget = new rwt.widgets.base.MultiCellWidget( [ "image", "label" ] );
         this._dragFeedbackWidget.setOpacity( 0.7 );
         this._dragFeedbackWidget.setEnabled( false );
         this._dragFeedbackWidget.setPadding( 2 );
@@ -453,11 +477,10 @@ rwt.qx.Class.define( "rwt.remote.DNDSupport", {
     // eventhandler
 
     _onSend : function( event ) {
-      this._attachDropTargetEvents();
+      this._attachEvents();
       this._requestScheduled = false;
       this._blockDrag = false;
-      var req = rwt.remote.Connection.getInstance();
-      req.removeEventListener( "send", this._onSend, this );
+      rwt.remote.Connection.getInstance().removeEventListener( "send", this._onSend, this );
     },
 
     _onMouseOver : function( event ) {
