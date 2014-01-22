@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -575,7 +575,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
     },
 
     setStyleProperty : function( target, property, value ) {
-      if( target instanceof rwt.widgets.base.Widget ) {
+      if( target.setStyleProperty ) {
         target.setStyleProperty( property, value );
       } else {
         target.style[ property ] = value;
@@ -613,7 +613,13 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     _setCssBackgroundImage : function( target, value ) {
       var cssImageStr = value ? "URL(" + this._resolveResource( value ) + ")" : "none";
-      this.setStyleProperty( target, "backgroundImage", cssImageStr );
+      if( target.setStyleProperty ) {
+        target.setStyleProperty( "backgroundImage", cssImageStr );
+      } else if( target.___rwtStyle__backgroundImage !== cssImageStr ){
+        // Not re-applying a current value prevents some occasional flickering in google chrome
+        target.___rwtStyle__backgroundImage = cssImageStr;
+        target.style.backgroundImage = cssImageStr;
+      }
     },
 
     _setCssFilterImage : function( target, value ) {

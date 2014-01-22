@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
-  this._cellCatch = [];
   this._cellRenderer = [];
   this._parseCells();
 };
@@ -29,12 +28,23 @@ rwt.widgets.util.Template.prototype = {
 
   hasCellLayout : true,
 
+  /**
+   * @param {Object} options The options object.
+   *
+   * @param {HTMLElement} options.element The element in which to render the cells. The element
+   * may have other children that will be ignored, but no assumptions should be made about the
+   * amount or order of the cell elements added by this template.
+   *
+   * @param {int} options.zIndexOffset The z-index of the first cell.
+   *
+   * @returns {object} the container reference
+   */
   createContainer : function( options ) {
     if( !options.element || typeof options.element.nodeName !== "string" ) {
       throw new Error( "Not a valid target for TemplateContainer:" + options.element );
     }
     if( typeof options.zIndexOffset !== "number" ) {
-      throw new Error( "Not a valid target for TemplateContainer:" + options.element );
+      throw new Error( "Not a valid z-index:" + options.zIndexOffset );
     }
     return {
       "element" : options.element,
@@ -53,6 +63,15 @@ rwt.widgets.util.Template.prototype = {
     return container.cellElements.indexOf( element );
   },
 
+  /**
+   * @param {Object} options The options object.
+   * @param {Object} options.container Reference to a container created by this template
+   * @param {Object} options.item The item to be rendered. Must implement API of GridItem.
+   * @param {boolean} options.enabled Items are renderd as disabled unless this is true
+   * @param {boolean} options.seeable Must indicate whether the container element is already in DOM
+   * @param {boolean} options.markupEnabled Set to true to prevent escaping
+   * @param {int[]} options.bounds The bounds in pixel and order of left, top, width, height
+   */
   render : function( options ) {
     if( !options.container || options.container.template !== this ) {
       throw new Error( "No valid TemplateContainer: " + options.container );
@@ -188,21 +207,17 @@ rwt.widgets.util.Template.prototype = {
       "seeable" : options.seeable
     };
     var container = options.container;
-    var boundsChanged = container.lastBounds !== options.bounds.join( "," );
-    var contentChanged = container.lastItem !== options.item;
-    if( boundsChanged || contentChanged ) {
-      for( var i = 0; i < this._cells.length; i++ ) {
-        var element = container.cellElements[ i ];
-        if( element ) {
-          var cellRenderer = renderer[ this._cells[ i ].type ];
-          cellRenderOptions.width = container.cellCache[ i ].width;
-          cellRenderOptions.height = container.cellCache[ i ].height;
-          var renderContent = cellRenderer.renderContent;
-          renderContent( element,
-                         this.getCellContent( options.item, i, cellRenderOptions ),
-                         this._cells[ i ],
-                         cellRenderOptions );
-        }
+    for( var i = 0; i < this._cells.length; i++ ) {
+      var element = container.cellElements[ i ];
+      if( element ) {
+        var cellRenderer = renderer[ this._cells[ i ].type ];
+        cellRenderOptions.width = container.cellCache[ i ].width;
+        cellRenderOptions.height = container.cellCache[ i ].height;
+        var renderContent = cellRenderer.renderContent;
+        renderContent( element,
+                       this.getCellContent( options.item, i, cellRenderOptions ),
+                       this._cells[ i ],
+                       cellRenderOptions );
       }
     }
   },
