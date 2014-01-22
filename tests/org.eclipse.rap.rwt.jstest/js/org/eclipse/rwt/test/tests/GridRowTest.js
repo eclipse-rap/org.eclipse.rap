@@ -2560,6 +2560,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( [ 32, 0, 368, 15 ], options.bounds );
     },
 
+    testRenderTemplate_RenderIndentSymbol : function() {
+      tree.setTreeColumn( 0 );
+      var itemParent = this._createItem( tree );
+      var item = this._createItem( itemParent );
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
+
+      row.renderItem( itemParent, tree._config, false, null );
+
+      var url = TestUtil.getCssBackgroundImage( row.getElement().childNodes[ 0 ] );
+      assertTrue( url.indexOf( "single-collapsed.gif" ) !== -1 );
+    },
+
+    testRenderTemplate_ClearIndentSymbol : function() {
+      tree.setTreeColumn( 0 );
+      var itemParent = this._createItem( tree );
+      var item = this._createItem( itemParent );
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
+
+      row.renderItem( itemParent, tree._config, false, null );
+      var node = row.getElement().childNodes[ 0 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      row.renderItem( null, tree._config, false, null );
+
+      assertTrue( url.indexOf( "single-collapsed.gif" ) !== -1 );
+      assertTrue( node.style.display === "none" );
+    },
+
     testRenderTemplate_CallRenderWithMarkup : function() {
       row.destroy();
       tree.destroy();

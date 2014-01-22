@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,6 +98,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this.setBackgroundGradient( null );
         if( config.rowTemplate ) {
           this._renderTemplate( null, config, hoverTarget, false, contentOnly );
+          this._hideRemainingElements();
         } else {
           this._clearContent( config );
           if( !contentOnly ) {
