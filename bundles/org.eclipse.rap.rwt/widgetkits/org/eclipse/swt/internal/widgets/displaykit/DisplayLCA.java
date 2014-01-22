@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -27,10 +28,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
@@ -67,7 +65,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   public void readData( Display display ) {
     handleOperations( display );
     visitWidgets( display );
-    DNDSupport.processEvents();
+    DNDSupport.handleOperations();
     RemoteObjectLifeCycleAdapter.readData();
   }
 
@@ -135,19 +133,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
       for( Operation operation : operations ) {
         handleOperation( handler, operation );
       }
-    }
-  }
-
-  private static void handleOperation( OperationHandler handler, Operation operation ) {
-    if( operation instanceof SetOperation ) {
-      SetOperation setOperation = ( SetOperation )operation;
-      handler.handleSet( setOperation.getProperties() );
-    } else if( operation instanceof CallOperation ) {
-      CallOperation callOperation = ( CallOperation )operation;
-      handler.handleCall( callOperation.getMethodName(), callOperation.getProperties() );
-    } else if( operation instanceof NotifyOperation ) {
-      NotifyOperation notifyOperation = ( NotifyOperation )operation;
-      handler.handleNotify( notifyOperation.getEventName(), notifyOperation.getProperties() );
     }
   }
 

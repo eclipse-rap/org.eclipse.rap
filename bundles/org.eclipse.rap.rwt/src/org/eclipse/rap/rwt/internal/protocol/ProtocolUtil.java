@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,14 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -97,6 +99,19 @@ public final class ProtocolUtil {
   public static boolean isClientMessageProcessed() {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     return serviceStore.getAttribute( CLIENT_MESSAGE ) != null;
+  }
+
+  public static void handleOperation( OperationHandler handler, Operation operation ) {
+    if( operation instanceof SetOperation ) {
+      SetOperation setOperation = ( SetOperation )operation;
+      handler.handleSet( setOperation.getProperties() );
+    } else if( operation instanceof CallOperation ) {
+      CallOperation callOperation = ( CallOperation )operation;
+      handler.handleCall( callOperation.getMethodName(), callOperation.getProperties() );
+    } else if( operation instanceof NotifyOperation ) {
+      NotifyOperation notifyOperation = ( NotifyOperation )operation;
+      handler.handleNotify( notifyOperation.getEventName(), notifyOperation.getProperties() );
+    }
   }
 
   public static JsonValue readPropertyValue( String target, String property ) {

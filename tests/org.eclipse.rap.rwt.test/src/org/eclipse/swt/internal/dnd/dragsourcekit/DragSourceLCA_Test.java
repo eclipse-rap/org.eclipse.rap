@@ -15,13 +15,16 @@ import static org.eclipse.swt.internal.dnd.DNDUtil.cancel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
@@ -80,6 +83,15 @@ public class DragSourceLCA_Test {
     assertEquals( getId( control ), operation.getProperty( "control" ).asString() );
     JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
     assertEquals( expected, operation.getProperty( "style" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_setsOperationHandler() throws IOException {
+    String id = getId( source );
+    lca.renderInitialization( source );
+
+    OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
+    assertTrue( handler instanceof DragSourceOperationHandler );
   }
 
   @Test

@@ -60,6 +60,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     RemoteObject remoteObject = createRemoteObject( dragSource, TYPE );
+    remoteObject.setHandler( new DragSourceOperationHandler( dragSource ) );
     remoteObject.set( "control", getId( dragSource.getControl() ) );
     remoteObject.set( "style", convertOperations( dragSource.getStyle() ) );
   }

@@ -84,6 +84,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
     RemoteObject remoteObject = createRemoteObject( dropTarget, TYPE );
+    remoteObject.setHandler( new DropTargetOperationHandler( dropTarget ) );
     remoteObject.set( "control", getId( dropTarget.getControl() ) );
     remoteObject.set( "style", convertOperations( dropTarget.getStyle() ) );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -18,10 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -153,19 +151,6 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
       throw new IllegalStateException( "No operation handler found for widget: " + id );
     }
     return handler;
-  }
-
-  private static void handleOperation( OperationHandler handler, Operation operation ) {
-    if( operation instanceof SetOperation ) {
-      SetOperation setOperation = ( SetOperation )operation;
-      handler.handleSet( setOperation.getProperties() );
-    } else if( operation instanceof CallOperation ) {
-      CallOperation callOperation = ( CallOperation )operation;
-      handler.handleCall( callOperation.getMethodName(), callOperation.getProperties() );
-    } else if( operation instanceof NotifyOperation ) {
-      NotifyOperation notifyOperation = ( NotifyOperation )operation;
-      handler.handleNotify( notifyOperation.getEventName(), notifyOperation.getProperties() );
-    }
   }
 
 }

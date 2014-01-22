@@ -11,8 +11,11 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.eclipse.swt.internal.widgets.displaykit.DNDSupport.handleOperations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -30,6 +34,7 @@ import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -53,6 +58,9 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.DragDetectEvent;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.dnd.dragsourcekit.DragSourceOperationHandler;
+import org.eclipse.swt.internal.dnd.droptargetkit.DropTargetOperationHandler;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -94,6 +102,19 @@ public class DNDSupport_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testHandleOperations_processesOnlyDNDOperations() {
+    ControlOperationHandler controlHandler = mock( ControlOperationHandler.class );
+    getRemoteObject( sourceControl ).setHandler( controlHandler );
+
+    Fixture.fakeSetProperty( getId( display ), "cursorLocation", new JsonArray().add( 1 ).add( 2 ) );
+    Fixture.fakeSetProperty( getId( sourceControl ), "text", "foo" );
+    handleOperations();
+
+    assertEquals( new Point( 0, 0 ), display.getCursorLocation() );
+    verify( controlHandler, never() ).handleSet( new JsonObject().add( "text", "foo" ) );
   }
 
   @Test
@@ -530,21 +551,6 @@ public class DNDSupport_Test {
   }
 
   @Test
-  public void testDetermineDataType() {
-    createDragSource( DND.DROP_MOVE );
-    createDropTarget( DND.DROP_MOVE );
-    dropTarget.setTransfer( new Transfer[]{
-      RTFTransfer.getInstance(),
-      HTMLTransfer.getInstance()
-    } );
-
-    TransferData[] dataTypes = DNDSupport.determineDataTypes( dragSource, dropTarget );
-
-    assertEquals( 1, dataTypes.length );
-    assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
-  }
-
-  @Test
   public void testResponseFeedbackChangedOnEnter() {
     createDragSource( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
     createDropTarget( DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY );
@@ -743,10 +749,7 @@ public class DNDSupport_Test {
   }
 
   private void createDragSourceEvent( String eventType, int x, int y, String operation, int time ) {
-    JsonObject parameters = new JsonObject()
-      .add( "x", String.valueOf( x ) )
-      .add( "y", String.valueOf( y ) )
-      .add( "time", String.valueOf( time ) );
+    JsonObject parameters = new JsonObject().add( "x", x ).add( "y", y ).add( "time", time );
     Fixture.fakeNotifyOperation( getId( dragSource ), eventType, parameters );
   }
 
@@ -762,24 +765,28 @@ public class DNDSupport_Test {
                                       int time )
   {
     JsonObject parameters = new JsonObject()
-      .add( "x", String.valueOf( x ) )
-      .add( "y", String.valueOf( y ) )
-      .add( "time", String.valueOf( time ) )
+      .add( "x", x )
+      .add( "y", y )
+      .add( "time", time )
       .add( "operation", operation )
-      .add( "feedback", String.valueOf( 0 ) )
+      .add( "feedback", 0 )
       .add( "source", getId( sourceControl ) )
-      .add( "dataType", String.valueOf( dataType ) );
+      .add( "dataType", dataType );
     Fixture.fakeNotifyOperation( getId( dropTarget ), eventType, parameters );
   }
 
   private void createDropTarget( int style ) {
     dropTarget = new DropTarget( targetControl, style );
     dropTarget.setTransfer( transfers );
+    getRemoteObject( dropTarget ).setHandler( new DropTargetOperationHandler( dropTarget ) );
+    Fixture.markInitialized( dropTarget );
   }
 
   private void createDragSource( int style ) {
     dragSource = new DragSource( sourceControl, style );
     dragSource.setTransfer( transfers );
+    getRemoteObject( dragSource ).setHandler( new DragSourceOperationHandler( dragSource ) );
+    Fixture.markInitialized( dragSource );
   }
 
   TransferData getType( Transfer transfer ) {
