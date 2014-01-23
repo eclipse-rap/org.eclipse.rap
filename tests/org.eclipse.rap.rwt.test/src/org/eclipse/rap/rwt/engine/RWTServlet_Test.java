@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,20 +18,18 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.client.ClientSelector;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
@@ -50,13 +48,24 @@ import org.junit.Test;
 
 public class RWTServlet_Test {
 
+  private ApplicationContextImpl applicationContext;
+  private ServiceHandler serviceHandler;
   private RWTServlet servlet;
   private TestRequest request;
   private TestResponse response;
 
   @Before
-  public void setUp() {
-    servlet = new RWTServlet();
+  public void setUp() throws ServletException {
+    applicationContext = mockApplicationContext();
+    serviceHandler = mock( ServiceHandler.class );
+    fakeServiceHandler( applicationContext, serviceHandler );
+    servlet = new RWTServlet() {
+      @Override
+      public ServletContext getServletContext() {
+        return mockServletContext( applicationContext );
+      }
+    };
+    servlet.init();
     request = new TestRequest();
     response = new TestResponse();
   }
@@ -67,10 +76,54 @@ public class RWTServlet_Test {
   }
 
   @Test
-  public void testInvalidRequestUrlWithPathInfo() throws Exception {
+  public void testHandleRequest_whenApplicationContextNotReady() throws Exception {
+    fakeAllowsRequest( applicationContext, false );
+    HttpServletResponse response = mock( HttpServletResponse.class );
+
+    servlet.doGet( request, response );
+
+    verify( response ).sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+    verifyNoMoreInteractions( response );
+  }
+
+  @Test
+  public void testHandleRequest_withValidUrl() throws Exception {
+    request.setServletPath( "/foo" );
+    request.setPathInfo( null );
+    request.setSession( mock( HttpSession.class ) );
+
+    servlet.doGet( request, response );
+
+    verify( serviceHandler ).service( request, response );
+  }
+
+  @Test
+  public void testHandleRequest_withRootServlet() throws Exception {
+    request.setServletPath( "" );
+    request.setPathInfo( "/" );
+    request.setSession( mock( HttpSession.class ) );
+
+    servlet.doGet( request, response );
+
+    verify( serviceHandler ).service( request, response );
+  }
+
+  @Test
+  public void testHandleRequest_withTrailingSlash() throws Exception {
+    request.setRequestURI( "/foo/bar" );
+    request.setPathInfo( "/" );
+    request.setSession( mock( HttpSession.class ) );
+
+    servlet.doGet( request, response );
+
+    assertEquals( "/foo/bar", response.getRedirect() );
+  }
+
+  @Test
+  public void testHandleRequest_withIllegalPathInfo() throws Exception {
     request.setPathInfo( "foo" );
 
-    RWTServlet.handleInvalidRequest( request, response );
+    servlet.doGet( request, response );
 
     assertEquals( HttpServletResponse.SC_NOT_FOUND, response.getErrorStatus() );
   }
@@ -85,7 +138,7 @@ public class RWTServlet_Test {
   }
 
   @Test
-  public void testCreateRedirectUrlWithParam() {
+  public void testCreateRedirectUrl_withParam() {
     request.setParameter( "param1", "value1" );
 
     String url = RWTServlet.createRedirectUrl( request );
@@ -94,7 +147,7 @@ public class RWTServlet_Test {
   }
 
   @Test
-  public void testCreateRedirectUrlWithTwoParams() {
+  public void testCreateRedirectUrl_withTwoParams() {
     request.setParameter( "param1", "value1" );
     request.setParameter( "param2", "value2" );
 
@@ -106,71 +159,50 @@ public class RWTServlet_Test {
 
   @Test
   public void testServiceHandlerHasServiceStore() throws ServletException, IOException {
-    final List<ServiceStore> log = new ArrayList<ServiceStore>();
-    ApplicationContextImpl applicationContext = createApplicationContext();
-    applyTestSession( request, applicationContext );
-    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
-    applicationContext.getServiceManager().registerServiceHandler( "foo", new ServiceHandler() {
+    final AtomicReference<ServiceStore> serviceStoreRef = new AtomicReference<ServiceStore>();
+    fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
-        log.add( ContextProvider.getServiceStore() );
+        serviceStoreRef.set( ContextProvider.getServiceStore() );
       }
     } );
-    initServlet( servlet, applicationContext );
+    request.setSession( new TestSession() );
 
     servlet.doPost( request, new TestResponse() );
 
-    assertNotNull( log.get( 0 ) );
+    assertNotNull( serviceStoreRef.get() );
   }
 
   @Test
   public void testSetApplicationContextInServiceContext() throws ServletException, IOException {
-    final AtomicReference<ApplicationContext> captor = new AtomicReference<ApplicationContext>();
-    ApplicationContextImpl applicationContext = createApplicationContext();
-    applyTestSession( request, applicationContext );
-    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
-    applicationContext.getServiceManager().registerServiceHandler( "foo", new ServiceHandler() {
+    final AtomicReference<ApplicationContext> appContextRef = new AtomicReference<ApplicationContext>();
+    fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
-        captor.set( ContextProvider.getContext().getApplicationContext() );
+        appContextRef.set( ContextProvider.getContext().getApplicationContext() );
       }
     } );
-    initServlet( servlet, applicationContext );
+    request.setSession( new TestSession() );
 
     servlet.doPost( request, new TestResponse() );
 
-    assertSame( applicationContext, captor.get() );
-  }
-
-  @Test
-  public void testProcessRequestOnDeactivatedApplicationContext()
-    throws ServletException, IOException
-  {
-    ApplicationContextImpl applicationContext = createApplicationContext();
-    applyTestSession( request, applicationContext );
-    initServlet( servlet, applicationContext );
-    applicationContext.deactivate();
-    HttpServletResponse response = mock( HttpServletResponse.class );
-
-    servlet.doPost( request, response );
-
-    verify( response ).sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
-    verifyNoMoreInteractions( response );
+    assertSame( applicationContext, appContextRef.get() );
   }
 
   @Test
   public void testEnsureUISession() {
+    ApplicationContextImpl applicationContext = createRealApplicationContext();
     request.setSession( new TestSession() );
-    ServiceContext serviceContext
-      = new ServiceContext( request, response, createApplicationContext() );
+    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     ContextProvider.setContext( serviceContext );
 
     RWTServlet.ensureUISession( serviceContext );
 
     assertNotNull( serviceContext.getUISession() );
+    ContextProvider.disposeContext();
   }
 
   @Test
   public void testEnsureUISession_returnsExistingUISession() {
-    ApplicationContextImpl applicationContext = createApplicationContext();
+    ApplicationContextImpl applicationContext = createRealApplicationContext();
     HttpSession httpSession = new TestSession();
     request.setSession( httpSession );
     UISessionImpl uiSession = new UISessionImpl( applicationContext, httpSession );
@@ -181,11 +213,12 @@ public class RWTServlet_Test {
     RWTServlet.ensureUISession( serviceContext );
 
     assertSame( uiSession, serviceContext.getUISession() );
+    ContextProvider.disposeContext();
   }
 
   @Test
   public void testEnsureUISession_returnsExistingUISession_withConnectionId() {
-    ApplicationContextImpl applicationContext = createApplicationContext();
+    ApplicationContextImpl applicationContext = createRealApplicationContext();
     HttpSession httpSession = new TestSession();
     request.setSession( httpSession );
     request.setParameter( "cid", "foo" );
@@ -197,34 +230,47 @@ public class RWTServlet_Test {
     RWTServlet.ensureUISession( serviceContext );
 
     assertSame( uiSession, serviceContext.getUISession() );
+    ContextProvider.disposeContext();
   }
 
-  private static void initServlet( HttpServlet servlet, ApplicationContextImpl applicationContext )
-    throws ServletException
-  {
+  private static ServletContext mockServletContext( ApplicationContext applicationContext ) {
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getAttribute( anyString() ) ).thenReturn( applicationContext );
-    ServletConfig servletConfig = mock( ServletConfig.class );
-    when( servletConfig.getServletContext() ).thenReturn( servletContext );
-    servlet.init( servletConfig );
+    return servletContext;
   }
 
-  private static ApplicationContextImpl createApplicationContext() {
-    ServletContext servletContext = new TestServletContext();
-    ApplicationConfiguration configuration = mock( ApplicationConfiguration.class );
-    ApplicationContextImpl applicationContext
-      = new ApplicationContextImpl( configuration, servletContext );
-    applicationContext.activate();
-    applicationContext.attachToServletContext();
+  private static ApplicationContextImpl mockApplicationContext() {
+    ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
+    when( applicationContext.getEntryPointManager() ).thenReturn( mock( EntryPointManager.class ) );
+    when( applicationContext.getClientSelector() ).thenReturn( mock( ClientSelector.class ) );
+    when( Boolean.valueOf( applicationContext.isActive() ) ).thenReturn( Boolean.TRUE );
+    when( Boolean.valueOf( applicationContext.allowsRequests() ) ).thenReturn( Boolean.TRUE );
     return applicationContext;
   }
 
-  private static void applyTestSession( TestRequest request,
-                                        ApplicationContextImpl applicationContext )
+  private static void fakeServiceHandler( ApplicationContext applicationContext,
+                                          ServiceHandler serviceHandler )
   {
-    TestSession session = new TestSession();
-    session.setServletContext( applicationContext.getServletContext() );
-    request.setSession( session );
+    ServiceManagerImpl serviceManager = mock( ServiceManagerImpl.class );
+    when( serviceManager.getHandler() ).thenReturn( serviceHandler );
+    when( applicationContext.getServiceManager() ).thenReturn( serviceManager );
+  }
+
+  private static void fakeAllowsRequest( ApplicationContextImpl applicationContext,
+                                         boolean allowsRequests )
+  {
+    when( Boolean.valueOf( applicationContext.allowsRequests() ) )
+      .thenReturn( Boolean.valueOf( allowsRequests ) );
+  }
+
+  private static ApplicationContextImpl createRealApplicationContext() {
+    ServletContext servletContext = new TestServletContext();
+    ApplicationConfiguration configuration = mock( ApplicationConfiguration.class );
+    ApplicationContextImpl applicationContext = new ApplicationContextImpl( configuration,
+                                                                            servletContext );
+    applicationContext.activate();
+    applicationContext.attachToServletContext();
+    return applicationContext;
   }
 
 }

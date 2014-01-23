@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ class CutOffContextPathWrapper extends HttpServlet {
 
     @Override
     public String getServletPath() {
-      return alias;
+      return "/".equals( alias ) ? "" : alias;
     }
 
     @Override
@@ -115,4 +115,5 @@ class CutOffContextPathWrapper extends HttpServlet {
   public void log( String msg ) {
     servlet.log( msg );
   }
+
 }

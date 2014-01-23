@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,6 @@ import org.junit.Test;
 
 public class EntryPointManager_Test {
 
-  private static final String PATH = "/entrypoint";
-  private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
-
   private EntryPointManager entryPointManager;
   private EntryPointFactory entryPointFactory;
   private EntryPoint entryPoint;
@@ -56,7 +53,7 @@ public class EntryPointManager_Test {
 
   private void mockEntryPoint() {
     entryPoint = mock( EntryPoint.class );
-    when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( RETURN_VALUE );
+    when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( Integer.valueOf( 23 ) );
   }
 
   @After
@@ -64,141 +61,141 @@ public class EntryPointManager_Test {
     Fixture.tearDown();
   }
 
-  @Test
-  public void testRegisterEntryPointByPath_nullPath() {
-    try {
-      entryPointManager.register( null, TestEntryPoint.class, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+  @Test( expected = NullPointerException.class )
+  public void testRegister_entryPoint_nullPath() {
+    entryPointManager.register( null, TestEntryPoint.class, null );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRegister_entryPoint_nullClass() {
+    entryPointManager.register( "/foo", ( Class<? extends EntryPoint> )null, null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testRegister_entryPoint_duplicate() {
+    entryPointManager.register( "/foo", TestEntryPoint.class, null );
+    entryPointManager.register( "/foo", TestEntryPoint.class, null );
   }
 
   @Test
-  public void testRegisterEntryPointByPath_nullClass() {
-    try {
-      entryPointManager.register( PATH, ( Class<? extends EntryPoint> )null, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testRegisterEntryPointByPath_duplicate() {
-    entryPointManager.register( PATH, TestEntryPoint.class, null );
-    try {
-      entryPointManager.register( PATH, TestEntryPoint.class, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  @Test
-  public void testRegisterEntryPointByPath_illegalPath() {
+  public void testRegister_entryPoint_illegalPath() {
     Class<TestEntryPoint> entryPointClass = TestEntryPoint.class;
-    assertRegisterByPathFails( "", entryPointClass );
-    assertRegisterByPathFails( "/", entryPointClass );
-    assertRegisterByPathFails( "foo", entryPointClass );
-    assertRegisterByPathFails( "/foo/", entryPointClass );
-    assertRegisterByPathFails( "/foo/bar", entryPointClass );
+    assertRegisterFails( "", entryPointClass );
+    assertRegisterFails( "foo", entryPointClass );
+    assertRegisterFails( "/foo/", entryPointClass );
+    assertRegisterFails( "/foo/bar", entryPointClass );
   }
 
   @Test
-  public void testRegisterEntryPointByPath() {
-    entryPointManager.register( PATH, TestEntryPoint.class, null );
+  public void testRegister_entryPoint() {
+    entryPointManager.register( "/foo", TestEntryPoint.class, null );
 
-    EntryPointFactory factory = entryPointManager.getRegistrationByPath( PATH ).getFactory();
+    EntryPointFactory factory = entryPointManager.getRegistrationByPath( "/foo" ).getFactory();
+
     assertSame( DefaultEntryPointFactory.class, factory.getClass() );
     assertEquals( TestEntryPoint.class, factory.create().getClass() );
   }
 
   @Test
-  public void testRegisterEntryPointByPath_withProperties() {
+  public void testRegister_entryPoint_withRootPath() {
+    entryPointManager.register( "/", TestEntryPoint.class, null );
+
+    EntryPointFactory factory = entryPointManager.getRegistrationByPath( "/" ).getFactory();
+
+    assertSame( DefaultEntryPointFactory.class, factory.getClass() );
+    assertEquals( TestEntryPoint.class, factory.create().getClass() );
+  }
+
+  @Test
+  public void testRegister_entryPoint_withProperties() {
     Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
 
-    entryPointManager.register( PATH, TestEntryPoint.class, map );
+    entryPointManager.register( "/foo", TestEntryPoint.class, map );
 
-    assertEquals( map, entryPointManager.getRegistrationByPath( PATH ).getProperties() );
+    assertEquals( map, entryPointManager.getRegistrationByPath( "/foo" ).getProperties() );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRegister_factory_nullPath() {
+    entryPointManager.register( null, entryPointFactory, null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testRegister_factory_duplicate() {
+    entryPointManager.register( "/foo", entryPointFactory, null );
+    entryPointManager.register( "/foo", entryPointFactory, null );
   }
 
   @Test
-  public void testRegisterFactoryByPath_nullPath() {
-    try {
-      entryPointManager.register( null, entryPointFactory, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+  public void testRegister_factory_illegalPath() {
+    assertRegisterFails( "", entryPointFactory );
+    assertRegisterFails( "foo", entryPointFactory );
+    assertRegisterFails( "/foo/", entryPointFactory );
+    assertRegisterFails( "/foo/bar", entryPointFactory );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRegister_factory_nullFactory() {
+    entryPointManager.register( "/foo", ( EntryPointFactory )null, null );
   }
 
   @Test
-  public void testRegisterFactoryByPath_duplicate() {
-    entryPointManager.register( PATH, entryPointFactory, null );
-    try {
-      entryPointManager.register( PATH, entryPointFactory, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testRegister_factory() {
+    entryPointManager.register( "/foo", entryPointFactory, null );
+
+    assertSame( entryPointFactory, entryPointManager.getRegistrationByPath( "/foo" ).getFactory() );
   }
 
   @Test
-  public void testRegisterFactoryByPath_illegalPath() {
-    assertRegisterByPathFails( "", entryPointFactory );
-    assertRegisterByPathFails( "/", entryPointFactory );
-    assertRegisterByPathFails( "foo", entryPointFactory );
-    assertRegisterByPathFails( "/foo/", entryPointFactory );
-    assertRegisterByPathFails( "/foo/bar", entryPointFactory );
+  public void testRegister_factory_withRootPath() {
+    entryPointManager.register( "/", entryPointFactory, null );
+
+    assertSame( entryPointFactory, entryPointManager.getRegistrationByPath( "/" ).getFactory() );
   }
 
   @Test
-  public void testRegisterFactoryByPath_nullFactory() {
-    try {
-      entryPointManager.register( PATH, ( EntryPointFactory )null, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testRegisterFactoryByPath() {
-    entryPointManager.register( PATH, entryPointFactory, null );
-
-    assertSame( entryPointFactory, entryPointManager.getRegistrationByPath( PATH ).getFactory() );
-  }
-
-  @Test
-  public void testRegisterFactoryByPath_withProperties() {
+  public void testRegister_factory_withProperties() {
     Map<String, String> map = new HashMap<String, String>();
     map.put( "foo", "bar" );
 
-    entryPointManager.register( PATH, entryPointFactory, map );
+    entryPointManager.register( "/foo", entryPointFactory, map );
 
-    assertEquals( map, entryPointManager.getRegistrationByPath( PATH ).getProperties() );
+    assertEquals( map, entryPointManager.getRegistrationByPath( "/foo" ).getProperties() );
   }
 
   @Test
   public void testGetRegistrationByPath_nonExisting() {
-    assertNull( entryPointManager.getRegistrationByPath( PATH ) );
+    assertNull( entryPointManager.getRegistrationByPath( "/foo" ) );
   }
 
   @Test
   public void testGetRegistrationByPath_propertiesNotNull() {
-    entryPointManager.register( PATH, entryPointFactory, null );
+    entryPointManager.register( "/foo", entryPointFactory, null );
 
-    assertNotNull( entryPointManager.getRegistrationByPath( PATH ).getProperties() );
-    assertEquals( 0, entryPointManager.getRegistrationByPath( PATH ).getProperties().size() );
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( "/foo" );
+
+    assertNotNull( registration.getProperties() );
+    assertEquals( 0, registration.getProperties().size() );
   }
 
   @Test
-  public void testGetRegistrationByPath_propertiesNotModifiable() {
-    entryPointManager.register( PATH, entryPointFactory, new HashMap<String, String>() );
-    Map<String, String> properties = entryPointManager.getRegistrationByPath( PATH ).getProperties();
+  public void testGetRegistrationByPath_withRootPath() {
+    // getServletPath returns "" for servlets registered at the root path
+    entryPointManager.register( "/", entryPointFactory, null );
 
-    try {
-      properties.put( "foo", "bar" );
-      fail();
-    } catch( Exception e ) {
-      // expected
-    }
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( "" );
+
+    assertSame( entryPointFactory, registration.getFactory() );
+  }
+
+  @Test( expected = UnsupportedOperationException.class )
+  public void testGetRegistrationByPath_propertiesNotModifiable() {
+    entryPointManager.register( "/foo", entryPointFactory, new HashMap<String, String>() );
+
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( "/foo" );
+
+    registration.getProperties().put( "foo", "bar" );
   }
 
   @Test
@@ -218,7 +215,7 @@ public class EntryPointManager_Test {
 
   @Test
   public void testDeregisterAll() {
-    entryPointManager.register( PATH, entryPointFactory, null );
+    entryPointManager.register( "/foo", entryPointFactory, null );
 
     entryPointManager.deregisterAll();
 
@@ -229,9 +226,9 @@ public class EntryPointManager_Test {
   public void testGetEntryPointRegistration() {
     HashMap<String, String> properties = new HashMap<String, String>();
     properties.put( "prop", "value" );
-    entryPointManager.register( PATH, entryPointFactory, properties );
+    entryPointManager.register( "/foo", entryPointFactory, properties );
     TestRequest request = new TestRequest();
-    request.setServletPath( PATH );
+    request.setServletPath( "/foo" );
 
     EntryPointRegistration registration = entryPointManager.getEntryPointRegistration( request );
 
@@ -239,30 +236,26 @@ public class EntryPointManager_Test {
     assertEquals( "value", registration.getProperties().get( "prop" ) );
   }
 
-  @Test
-  public void testGetEntryPointRegistrationForUnregisteredEntryPoint() {
+  @Test( expected = IllegalArgumentException.class )
+  public void testGetEntryPointRegistration_forUnregisteredEntryPoint() {
     TestRequest request = new TestRequest();
-    request.setServletPath( PATH );
+    request.setServletPath( "/foo" );
 
-    try {
-      entryPointManager.getEntryPointRegistration( request );
-      fail();
-    } catch( Exception expected ) {
-    }
+    entryPointManager.getEntryPointRegistration( request );
   }
 
-  private void assertRegisterByPathFails( String path, Class<? extends EntryPoint> type ) {
+  private void assertRegisterFails( String path, Class<? extends EntryPoint> type ) {
     try {
       entryPointManager.register( path, type, null );
-      fail( "Exected to fail but succeeded" );
+      fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  private void assertRegisterByPathFails( String path, EntryPointFactory factory ) {
+  private void assertRegisterFails( String path, EntryPointFactory factory ) {
     try {
       entryPointManager.register( path, factory, null );
-      fail( "Exected to fail but succeeded" );
+      fail();
     } catch( IllegalArgumentException expected ) {
     }
   }

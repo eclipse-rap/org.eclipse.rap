@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,12 +101,14 @@ public interface Application {
   void setOperationMode( OperationMode operationMode );
 
   /**
-   * Registers an entrypoint at the given servlet path. A servlet path must begin with slash ('/')
-   * and must not end with a slash. The root path (&quot;/&quot;) is currently not supported, as
-   * well as nested paths (e.g. &quot;/path/subpath&quot;). Properties can be specified to control
-   * client-specific aspects of the entrypoint such as theme, icons, etc. The acceptable keys and
-   * values depend on the client implementation. The class {@link WebClient} provides constants for
-   * the default RAP client.
+   * Registers an entrypoint at the given servlet path. A valid path must start with a slash ('/')
+   * and must not contain any other slashes. The servlet path &quot;/&quot; denotes the root path.
+   * Nested paths (e.g. &quot;/path/subpath&quot;) are currently not supported.
+   * <p>
+   * Properties can be specified to control client-specific aspects of the entrypoint such as theme,
+   * icons, etc. The acceptable keys and values depend on the client implementation. The class
+   * {@link WebClient} provides constants for the default RAP client.
+   * </p>
    *
    * @param path a valid path to register the entry point at
    * @param entryPointType the entry point class to be registered, must not be <code>null</code>
@@ -118,12 +120,14 @@ public interface Application {
                       Map<String, String> properties );
 
   /**
-   * Registers an entrypoint factory at the given servlet path. A servlet path must begin with slash
-   * ('/') and must not end with a slash. The root path (&quot;/&quot;) is currently not supported,
-   * as well as nested paths (e.g. &quot;/path/subpath&quot;). Properties can be specified to
-   * control client-specific aspects of the entrypoint such as theme, icons, etc. The acceptable
-   * keys and values depend on the client implementation. The class {@link WebClient} provides
-   * constants for the default RAP client.
+   * Registers an entrypoint at the given servlet path. A valid path must start with a slash ('/')
+   * and must not contain any other slashes. The servlet path &quot;/&quot; denotes the root path.
+   * Nested paths (e.g. &quot;/path/subpath&quot;) are currently not supported.
+   * <p>
+   * Properties can be specified to control client-specific aspects of the entrypoint such as theme,
+   * icons, etc. The acceptable keys and values depend on the client implementation. The class
+   * {@link WebClient} provides constants for the default RAP client.
+   * </p>
    *
    * @param path a valid path to register the entry point at
    * @param entryPointFactory the entry point factory to be registered, must not be
@@ -235,4 +239,5 @@ public interface Application {
   void addServiceHandler( String serviceHandlerId, ServiceHandler serviceHandler );
 
   void addResource( String resourceName, ResourceLoader resourceLoader );
+
 }

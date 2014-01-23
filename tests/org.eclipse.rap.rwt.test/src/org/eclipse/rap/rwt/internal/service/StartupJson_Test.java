@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,15 +67,29 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_Url() {
+  public void testGet_url() {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/foo" );
+
     JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
-    assertEquals( "rap", message.getHead().get( PROPERTY_URL ).asString() );
+    assertEquals( "foo", message.getHead().get( PROPERTY_URL ).asString() );
   }
 
   @Test
-  public void testStartupJsonContent_CreateDisplay() {
+  public void testGet_url_withRootServletPath() {
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "" );
+
+    JsonObject content = StartupJson.get();
+
+    Message message = new Message( content );
+    assertEquals( "", message.getHead().get( PROPERTY_URL ).asString() );
+  }
+
+  @Test
+  public void testGet_createDisplay() {
     JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
@@ -83,7 +97,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_LoadFallbackTheme() {
+  public void testGet_loadFallbackTheme() {
     clientResources.registerResources();
 
     JsonObject content = StartupJson.get();
@@ -97,7 +111,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_LoadActiveTheme_DefaultTheme() {
+  public void testGet_loadActiveTheme_DefaultTheme() {
     clientResources.registerResources();
 
     JsonObject content = StartupJson.get();
@@ -111,7 +125,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_LoadActiveTheme_CustomTheme() {
+  public void testGet_loadActiveTheme_CustomTheme() {
     ThemeTestUtil.registerTheme( new Theme( CUSTOM_THEME_ID, null, null ) );
     HashMap<String, String> properties = new HashMap<String,String>();
     properties.put( WebClient.THEME_ID, CUSTOM_THEME_ID );
@@ -129,7 +143,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_initializeClientMessages() {
+  public void testGet_initializeClientMessages() {
     clientResources.registerResources();
 
     JsonObject content = StartupJson.get();
@@ -140,7 +154,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testStartupJsonContent_doesNotInitializeClientMessagesForNonWebClient() {
+  public void testGet_doesNotInitializeClientMessagesForNonWebClient() {
     clientResources.registerResources();
     Fixture.fakeClient( mock( Client.class ) );
 
@@ -151,7 +165,7 @@ public class StartupJson_Test {
   }
 
   @Test
-  public void testSendStartupJson() throws IOException {
+  public void testSend() throws IOException {
     Fixture.fakeNewGetRequest();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
 

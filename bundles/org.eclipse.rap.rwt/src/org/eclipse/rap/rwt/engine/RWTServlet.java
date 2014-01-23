@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,9 +105,20 @@ public class RWTServlet extends HttpServlet {
     if( !applicationContext.allowsRequests() ) {
       response.sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
     } else if( request.getPathInfo() == null ) {
+      // /context/servlet: no extra path info after servlet name
       handleValidRequest( request, response );
+    } else if( "/".equals( request.getPathInfo() ) ) {
+      if( "".equals( request.getServletPath() ) ) {
+        // /context/: root servlet, in this case path info "/" is ok
+        handleValidRequest( request, response );
+      } else {
+        // /context/servlet/: redirect to /context/servlet (without trailing slash)
+        // in order to maintain relative links to static resources
+        String redirectUrl = createRedirectUrl( request );
+        response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
+      }
     } else {
-      handleInvalidRequest( request, response );
+      response.sendError( HttpServletResponse.SC_NOT_FOUND );
     }
   }
 
@@ -132,6 +143,10 @@ public class RWTServlet extends HttpServlet {
     return context;
   }
 
+  private ServiceHandler getServiceHandler() {
+    return applicationContext.getServiceManager().getHandler();
+  }
+
   static void ensureUISession( ServiceContext serviceContext ) {
     // Ensure that there is exactly one UISession per connection created
     synchronized( RWTServlet.class ) {
@@ -146,42 +161,24 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private ServiceHandler getServiceHandler() {
-    return applicationContext.getServiceManager().getHandler();
-  }
-
-  static void handleInvalidRequest( HttpServletRequest request, HttpServletResponse response )
-    throws IOException
-  {
-    if( "/".equals( request.getPathInfo() ) ) {
-      // In case of "http://example.com/webapp/servlet/" redirect to
-      // "http://example.com/webapp/servlet" (same URL without trailing slash)
-      String redirectUrl = createRedirectUrl( request );
-      response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
-    } else {
-      // Otherwise send 404 - not found
-      response.sendError( HttpServletResponse.SC_NOT_FOUND );
-    }
-  }
-
   static String createRedirectUrl( HttpServletRequest request ) {
-    String result = request.getContextPath() + request.getServletPath();
+    StringBuilder url = new StringBuilder( request.getRequestURI() );
     Enumeration parameterNames = request.getParameterNames();
     if( parameterNames.hasMoreElements() ) {
-      result += "?";
+      url.append( '?' );
       boolean first = true;
       while( parameterNames.hasMoreElements() ) {
-        String parameterName = ( String )parameterNames.nextElement();
         if( !first ) {
-          result += "&";
+          url.append( '&' );
         }
-        result += parameterName;
-        result += "=";
-        result += request.getParameter( parameterName );
+        String parameterName = ( String )parameterNames.nextElement();
+        url.append( parameterName );
+        url.append( '=' );
+        url.append( request.getParameter( parameterName ) );
         first = false;
       }
     }
-    return result;
+    return url.toString();
   }
 
 }

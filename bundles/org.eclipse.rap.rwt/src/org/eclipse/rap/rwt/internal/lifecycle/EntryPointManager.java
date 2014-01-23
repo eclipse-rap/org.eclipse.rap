@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,20 +59,18 @@ public class EntryPointManager {
   }
 
   public EntryPointRegistration getEntryPointRegistration( HttpServletRequest request ) {
-    EntryPointRegistration result = null;
     String path = request.getServletPath();
-    if( path != null && path.length() > 0 ) {
-      result = getRegistrationByPath( path );
-    }
+    EntryPointRegistration result = getRegistrationByPath( path );
     if( result == null ) {
       throw new IllegalArgumentException( "Entry point not found: " + path );
     }
     return result;
   }
 
-  public EntryPointRegistration getRegistrationByPath( String path ) {
+  public EntryPointRegistration getRegistrationByPath( String servletPath ) {
+    String normalizedPath = "".equals( servletPath ) ? "/" : servletPath;
     synchronized( entryPoints ) {
-      return entryPoints.get( path );
+      return entryPoints.get( normalizedPath );
     }
   }
 
@@ -96,11 +94,8 @@ public class EntryPointManager {
     if( !path.startsWith( "/" ) ) {
       throw new IllegalArgumentException( "Path must start with '/': " + path );
     }
-    if( path.endsWith( "/" ) ) {
-      throw new IllegalArgumentException( "Path must not end with '/': " + path );
-    }
-    if( path.length() > 0 && path.substring( 1 ).contains( "/" ) ) {
-      throw new IllegalArgumentException( "Nested paths not yet supported: " + path );
+    if( path.substring( 1 ).contains( "/" ) ) {
+      throw new IllegalArgumentException( "Nested paths not supported: " + path );
     }
   }
 

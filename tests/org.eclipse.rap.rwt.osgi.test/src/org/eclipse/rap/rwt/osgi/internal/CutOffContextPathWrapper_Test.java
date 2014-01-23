@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.junit.Test;
 
 
 public class CutOffContextPathWrapper_Test {
-  private static final String ALIAS = "alias";
 
   private CutOffContextPathWrapper cutOffContextPathWrapper;
   private HttpServlet servlet;
@@ -36,7 +35,7 @@ public class CutOffContextPathWrapper_Test {
   public void setUp() {
     servlet = mock( HttpServlet.class );
     ServletContext servletContext = mock( ServletContext.class );
-    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, servletContext, ALIAS );
+    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, servletContext, "/foo" );
   }
 
   @Test
@@ -48,10 +47,9 @@ public class CutOffContextPathWrapper_Test {
 
   @Test
   public void testGetInitParameter() {
-    String key = "key";
-    cutOffContextPathWrapper.getInitParameter( key );
+    cutOffContextPathWrapper.getInitParameter( "key" );
 
-    verify( servlet ).getInitParameter( key );
+    verify( servlet ).getInitParameter( "key" );
   }
 
   @Test
@@ -115,32 +113,53 @@ public class CutOffContextPathWrapper_Test {
   }
 
   @Test
-  public void testRequestWrapper() {
+  public void testRequestWrapper_getServletPath() {
     HttpServletRequest servletRequest = mock( HttpServletRequest.class );
     ServletContext servletContext = mock( ServletContext.class );
-    RequestWrapper requestWrapper = new RequestWrapper( servletRequest, servletContext, ALIAS );
+    RequestWrapper requestWrapper = new RequestWrapper( servletRequest, servletContext, "/foo" );
 
     String servletPath = requestWrapper.getServletPath();
+
+    assertEquals( "/foo", servletPath );
+  }
+
+  @Test
+  public void testRequestWrapper_getServletPath_withRootPath() {
+    // When a servlet is registered at the root path ("/"), getServletContext returns ""
+    HttpServletRequest servletRequest = mock( HttpServletRequest.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    RequestWrapper requestWrapper = new RequestWrapper( servletRequest, servletContext, "/" );
+
+    String servletPath = requestWrapper.getServletPath();
+
+    assertEquals( "", servletPath );
+  }
+
+  @Test
+  public void testRequestWrapper_getSession_returnsServletContext() {
+    HttpServletRequest servletRequest = mock( HttpServletRequest.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    RequestWrapper requestWrapper = new RequestWrapper( servletRequest, servletContext, "/foo" );
+
     ServletContext foundContext = requestWrapper.getSession().getServletContext();
 
-    assertEquals( ALIAS, servletPath );
     assertSame( servletContext, foundContext );
   }
 
   @Test
   public void testLogWithThrowable() {
     Throwable throwable = new Throwable();
-    String message = "message";
-    cutOffContextPathWrapper.log( message, throwable );
 
-    verify( servlet ).log( message, throwable );
+    cutOffContextPathWrapper.log( "message", throwable );
+
+    verify( servlet ).log( "message", throwable );
   }
 
   @Test
   public void testLog() {
-    String message = "message";
-    cutOffContextPathWrapper.log( message );
+    cutOffContextPathWrapper.log( "message" );
 
-    verify( servlet ).log( message );
+    verify( servlet ).log( "message" );
   }
+
 }

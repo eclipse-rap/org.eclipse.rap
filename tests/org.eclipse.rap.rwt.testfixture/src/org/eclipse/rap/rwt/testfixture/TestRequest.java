@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public final class TestRequest implements HttpServletRequest {
   private HttpSession session;
   private String scheme;
   private String serverName;
-  private final String contextPath;
+  private String contextPath;
   private String requestURI;
   private String servletPath;
   private String pathInfo;
@@ -152,6 +152,10 @@ public final class TestRequest implements HttpServletRequest {
 
   public String getContextPath() {
     return contextPath;
+  }
+
+  public void setContextPath( String contextPath ) {
+    this.contextPath = contextPath;
   }
 
   public String getQueryString() {
@@ -463,4 +467,5 @@ public final class TestRequest implements HttpServletRequest {
   public Part getPart( String name ) throws IOException, ServletException {
     return null;
   }
+
 }
