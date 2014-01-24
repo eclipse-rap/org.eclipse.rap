@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -553,19 +553,19 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( item != null ) {
         var identifier = row.getTargetIdentifier( event );
         if( identifier[ 0 ] === "expandIcon" && item.hasChildren() ) {
-          var expanded = !item.isExpanded();
-          if( !expanded ) {
-            this._deselectVisibleChildren( item );
-          }
-          item.setExpanded( expanded );
+          this._onExpandClick( item );
         } else if( identifier[ 0 ] === "checkBox" || identifier[ 0 ] === "cellCheckBox" ) {
           this._toggleCheckSelection( item, identifier[ 1 ] );
         } else if( identifier[ 0 ] === "selectableCell" ) {
           this._sendSelectionEvent( item, false, "cell", undefined, identifier[ 1 ] );
-        } else if( this._isSelectionClick( identifier ) ) {
+        } else if( identifier[ 0 ] === "treeColumn" || this._acceptsGlobalSelection() ) {
           this._onSelectionClick( event, item );
         }
       }
+    },
+
+    _acceptsGlobalSelection : function() {
+      return this._config.fullSelection || this._config.rowTemplate;
     },
 
     _checkAndProcessHyperlink : function( event ) {
@@ -602,14 +602,12 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       return hyperlink.getAttribute( "target" ) === "_rwt";
     },
 
-    _isSelectionClick : function( identifier ) {
-      var result;
-      if( this._config.fullSelection ) {
-        result = identifier[ 0 ] !== "checkBox";
-      } else {
-        result = identifier[ 0 ] === "treeColumn";
-      }
-      return result;
+    _onExpandClick : function( item ) {
+       var expanded = !item.isExpanded();
+       if( !expanded ) {
+         this._deselectVisibleChildren( item );
+       }
+       item.setExpanded( expanded );
     },
 
     _onSelectionClick : function( event, item ) {
@@ -618,14 +616,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var doubleClick = this._isDoubleClicked( event, item );
       if( doubleClick ) {
         this._sendSelectionEvent( item, true, null );
-      } else {
-        if( this._hasMultiSelection ) {
-          if( !this._delayMultiSelect( event, item ) ) {
-            this._multiSelectItem( event, item );
-          }
-        } else {
-          this._singleSelectItem( event, item );
-        }
+      } else if( !this._hasMultiSelection ) {
+        this._singleSelectItem( event, item );
+      } else if( !this._delayMultiSelect( event, item ) ) {
+        this._multiSelectItem( event, item );
       }
     },
 
