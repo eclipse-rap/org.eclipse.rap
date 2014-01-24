@@ -2390,12 +2390,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testSendDefaultSelectionEventOnDragSource : function() {
-      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
+      var dragSource = this._createDragSource( tree );
       tree.setHasSelectionListener( true );
       tree.setHasDefaultSelectionListener( true );
-      new rwt.widgets.DragSource( tree, [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ] );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       tree.setItemCount( 2 );
       var child0 = this._createItem( tree.getRootItem(), 0 );
       this._createItem( tree.getRootItem(), 1 );
@@ -2413,6 +2411,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( "w2", messages[ 1 ].findNotifyProperty( "w11", "DefaultSelection", "item" ) );
       assertNull( messages[ 1 ].findNotifyOperation( "w11", "Selection" ) );
       assertNull( [ "w2" ], messages[ 1 ].findSetOperation( "w11", "selection" ) );
+      dragSource.dispose();
       tree.destroy();
     },
 
@@ -4461,10 +4460,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testTreeMultiSelectionDrag : function() {
-      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      new rwt.widgets.DragSource( tree, [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ] );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      var dragSource = this._createDragSource( tree );
       tree.setItemCount( 2 );
       var child0 = this._createItem( tree.getRootItem(), 0 );
       var child1 = this._createItem( tree.getRootItem(), 1 );
@@ -4481,14 +4478,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( tree._rowContainer._children[ 1 ], "click" );
       assertFalse( tree.isItemSelected( child0 ) );
       assertTrue( tree.isItemSelected( child1 ) );
+      dragSource.dispose();
       tree.destroy();
     },
 
     testTreeMultiSelectionDragMouseOut : function() {
-      var dndSupport = rwt.remote.DNDSupport.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      new rwt.widgets.DragSource( tree, [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ] );
-      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      var dragSource = this._createDragSource( tree );
       tree.setItemCount( 2 );
       var child0 = this._createItem( tree.getRootItem(), 0 );
       var child1 = this._createItem( tree.getRootItem(), 1 );
@@ -4508,6 +4504,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.fakeMouseEvent( tree._rowContainer._children[ 1 ], "mouseup" );
       assertTrue( tree.isItemSelected( child0 ) );
       assertTrue( tree.isItemSelected( child1 ) );
+      dragSource.dispose();
       tree.destroy();
     },
 
@@ -4771,6 +4768,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.GridItem" );
       rwt.remote.ObjectRegistry.add( "w" + result.toHashCode(), result, handler );
       return result;
+    },
+
+    _createDragSource : function( control ) {
+      var operations = [ "DROP_COPY", "DROP_MOVE", "DROP_LINK" ];
+      var dragSource = new rwt.widgets.DragSource( control, operations );
+      rwt.remote.DNDSupport.getInstance().setDragSourceTransferTypes( control, [ "default" ] );
+      return dragSource;
     }
 
   }
