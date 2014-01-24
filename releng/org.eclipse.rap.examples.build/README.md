@@ -22,22 +22,15 @@ below for instructions on how to add them to the .war files.
 Changing the default p2 repositories
 ------------------------------------
 
-The default build uses the nightly build from the RAP Runtime project,
-the nightly build of the RAP Incubator projects, and the last stable
-Simultaneous Release repository. This default behavior can be changed
-by setting the following properties
+The default build uses the nightly build from the RAP Runtime project and the
+nightly build of the RAP Incubator projects. This default behavior can be
+changed by setting the properties `rap-repository` and `rap-incubator-repository`.
 
-* `rap-repository`,
-* `rap-incubator-repository`, and
-* `eclipse-simultaneous-release-repository`
-
-Example with RAP 2.2M3 and RAP Incubator builds for 2.2 /nightly using the
-Kepler Simultaneous Release:
+Example with RAP 2.2 and RAP Incubator builds for 2.2:
 
     mvn -e \
-      -Drap-repository=http://download.eclipse.org/rt/rap/2.2/M3-20131111-1653/ \
-      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/nightly/ \
-      -Declipse-simultaneous-release-repository=http://download.eclipse.org/releases/kepler/ \
+      -Drap-repository=http://download.eclipse.org/rt/rap/2.2/ \
+      -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.2/ \
       clean install
 
 Adding additional pre-built bundles to .war files

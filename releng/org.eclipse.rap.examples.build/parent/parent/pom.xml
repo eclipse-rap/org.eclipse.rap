@@ -18,7 +18,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <rap-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</rap-repository>
     <rap-incubator-repository>http://download.eclipse.org/rt/rap/incubator/nightly/</rap-incubator-repository>
-    <eclipse-simultaneous-release-repository>http://download.eclipse.org/releases/luna/</eclipse-simultaneous-release-repository>
   </properties>
 
   <repositories>
@@ -31,11 +30,6 @@
       <id>rap-incubator-repository</id>
       <layout>p2</layout>
       <url>${rap-incubator-repository}</url>
-    </repository>
-    <repository>
-      <id>eclipse-simultaneous-release-repository</id>
-      <layout>p2</layout>
-      <url>${eclipse-simultaneous-release-repository}</url>
     </repository>
     <repository>
       <id>local-examples-repository</id>
