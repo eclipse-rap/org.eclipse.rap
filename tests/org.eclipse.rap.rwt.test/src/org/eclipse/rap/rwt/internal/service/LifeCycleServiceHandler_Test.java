@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -366,15 +366,13 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHandlesInvalidRequestContentType() throws IOException {
     // SECURITY: Checking the content-type prevents CSRF attacks, see bug 413668
+    // Also allows application to be started with POST request, see bug 416445
+    StartupPage startupPage = mockStartupPage();
     simulateUiRequestWithIllegalContentType();
 
-    service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
+    service( new LifeCycleServiceHandler( getLifeCycleFactory(), startupPage ) );
 
-    TestResponse response = getResponse();
-    assertEquals( HttpServletResponse.SC_BAD_REQUEST, response.getStatus() );
-    Message message = getMessageFromResponse();
-    assertEquals( "invalid content type", message.getError() );
-    assertEquals( 0, message.getOperationCount() );
+    verify( startupPage ).send( any( HttpServletResponse.class ) );
   }
 
   @Test

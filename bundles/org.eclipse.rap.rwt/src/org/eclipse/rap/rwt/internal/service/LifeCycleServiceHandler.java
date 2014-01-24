@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,9 +71,9 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   void synchronizedService( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    if( HTTP.METHOD_POST.equals( request.getMethod() ) ) {
+    if( HTTP.METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request ) ) {
       try {
-        handlePostRequest( request, response );
+        handleUIRequest( request, response );
       } finally {
         if( !isSessionShutdown() ) {
           markSessionStarted();
@@ -81,7 +81,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       }
     } else {
       try {
-        handleGetRequest( request, response );
+        handleStartupRequest( request, response );
       } finally {
         // The GET request currently creates a dummy UI session needed for accessing the client
         // information. It is not meant to be reused by other requests.
@@ -90,7 +90,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private void handleGetRequest( ServletRequest request, HttpServletResponse response )
+  private void handleStartupRequest( ServletRequest request, HttpServletResponse response )
     throws IOException
   {
     if( RWT.getClient() instanceof WebClient ) {
@@ -100,13 +100,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private void handlePostRequest( HttpServletRequest request, HttpServletResponse response )
+  private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
     setJsonResponseHeaders( response );
-    if( !isContentTypeValid( request ) ) {
-      writeInvalidContentType( response );
-    } else if( isSessionShutdown() ) {
+    if( isSessionShutdown() ) {
       shutdownUISession();
       writeEmptyMessage( response );
     } else if( isSessionTimeout() ) {
@@ -182,11 +180,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static void writeSessionTimeoutError( HttpServletResponse response ) throws IOException {
     String errorType = "session timeout";
     writeError( response, HttpServletResponse.SC_FORBIDDEN, errorType );
-  }
-
-  private static void writeInvalidContentType( HttpServletResponse response ) throws IOException {
-    String errorType = "invalid content type";
-    writeError( response, HttpServletResponse.SC_BAD_REQUEST, errorType );
   }
 
   private static void writeError( HttpServletResponse response,
