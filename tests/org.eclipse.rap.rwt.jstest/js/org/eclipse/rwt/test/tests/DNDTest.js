@@ -26,7 +26,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     TARGETPLATFORM : [ "win", "mac", "unix", "other" ], // touch devices don't support DND (yet)
 
     setUp : function() {
-      dndSupport = new rwt.remote.DNDSupport.getInstance();
+      dndSupport = rwt.remote.DNDSupport.getInstance();
       dndHandler = rwt.event.DragAndDropHandler.getInstance();
       dndHandler.__dragCache = null;
     },
