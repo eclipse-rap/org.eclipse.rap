@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,6 +29,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       rwt.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
       rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       this._applyPatches();
+      this._insertStyleSheets();
       rwt.graphics.GraphicsUtil.init();
       var eventHandler = rwt.event.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
@@ -73,6 +74,16 @@ rwt.qx.Class.define( "rwt.runtime.System", {
         rwt.qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
       }
       rwt.qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
+    },
+
+    _insertStyleSheets : function() {
+      if( rwt.client.Client.getBrowser() === "safari" && rwt.client.Client.getVersion() >= 537 ) {
+        // see Bug 422693 - Invisible Elements in RAP Demo with Safari 7
+        var style = document.createElement( "style" );
+        style.type = 'text/css';
+        style.innerHTML = "div { -webkit-transform: translate3d(0, 0, 0); }";
+        document.getElementsByTagName( "head" )[ 0 ].appendChild( style );
+      }
     },
 
     getStartupTime : function() {
