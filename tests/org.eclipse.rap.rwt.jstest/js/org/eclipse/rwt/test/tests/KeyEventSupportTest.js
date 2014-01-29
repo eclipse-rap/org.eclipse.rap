@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -406,6 +406,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       assertEquals( 0, keyUtil._bufferedEvents.length );
       req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       this._disposeTextWidget( text );
+    },
+
+    testBufferEvents_onDisposedWidget : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+      var req = rwt.remote.Server.getInstance();
+      req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
+      TestUtil.initRequestLog();
+      var text = this._createTextWidget();
+      TestUtil.press( text, "x", false, 0 );
+      assertEquals( 0, keyUtil._bufferedEvents.length );
+      TestUtil.press( text, "y", false, 0 );
+      assertEquals( 1, keyUtil._bufferedEvents.length );
+      TestUtil.press( text, "z", false, 0 );
+      assertEquals( 2, keyUtil._bufferedEvents.length );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+
+      this._disposeTextWidget( text );
+      keyUtil._onRequestReceived();
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+      assertEquals( 0, keyUtil._bufferedEvents.length );
+      req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
     },
 
     testBufferedEventInfo : function() {
