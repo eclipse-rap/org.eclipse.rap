@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2011, 2013 EclipseSource and others.
+  Copyright (C) 2011, 2014 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@
     <surefire-version>2.15</surefire-version>
     <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
     <junit-version>4.11</junit-version>
-    <base-platform-luna>4.4milestones/S-4.4M4-201312121600/</base-platform-luna>
+    <base-platform-luna>4.4milestones/S-4.4M5-201401231600/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
@@ -86,7 +86,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/M0/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/M1/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
