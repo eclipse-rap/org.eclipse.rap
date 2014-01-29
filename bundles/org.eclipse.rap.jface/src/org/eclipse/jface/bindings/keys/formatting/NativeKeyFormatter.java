@@ -19,6 +19,7 @@ import org.eclipse.jface.bindings.keys.KeyLookupFactory;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
 
 /**
  * <p>
@@ -26,10 +27,14 @@ import org.eclipse.jface.util.Util;
  * format. This is typically what you would see on the menus for the given
  * platform and locale.
  * </p>
- * 
+ *
  * @since 1.4
  */
 public final class NativeKeyFormatter extends AbstractKeyFormatter {
+
+	//RAP [if]
+    private static final String RAP_PLATFORM = "rap"; //$NON-NLS-1$
+    // RAPEND [if]
 
 	/**
 	 * The key into the internationalization resource bundle for the delimiter
@@ -85,7 +90,7 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 	 * Formats an individual key into a human readable format. This uses an
 	 * internationalization resource bundle to look up the key. This does the
 	 * platform-specific formatting for Carbon.
-	 * 
+	 *
 	 * @param key
 	 *            The key to format.
 	 * @return The key formatted as a string; should not be <code>null</code>.
@@ -95,7 +100,7 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 		final String name = lookup.formalNameLookup(key);
 
 		// TODO consider platform-specific resource bundles
-		if (Util.isMac()) {    	
+		if (Util.isMac()) {
 			String formattedName = (String) CARBON_KEY_LOOK_UP.get(name);
 			if (formattedName != null) {
 				return formattedName;
@@ -107,7 +112,7 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.bindings.keys.AbstractKeyFormatter#getKeyDelimiter()
 	 */
 	protected String getKeyDelimiter() {
@@ -123,7 +128,7 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.bindings.keys.AbstractKeyFormatter#getKeyStrokeDelimiter()
 	 */
 	protected String getKeyStrokeDelimiter() {
@@ -140,7 +145,7 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.bindings.keys.AbstractKeyFormatter#sortModifierKeys(int)
 	 */
 	protected int[] sortModifierKeys(final int modifierKeys) {
@@ -148,7 +153,8 @@ public final class NativeKeyFormatter extends AbstractKeyFormatter {
 		final int[] sortedKeys = new int[4];
 		int index = 0;
 
-		if (Util.isWindows()) {
+		// RAP [if] Sort modifiers in RAP as in Windows - see bug 410319
+		if (Util.isWindows() || SWT.getPlatform().equals(RAP_PLATFORM)) {
 			if ((modifierKeys & lookup.getCtrl()) != 0) {
 				sortedKeys[index++] = lookup.getCtrl();
 			}
