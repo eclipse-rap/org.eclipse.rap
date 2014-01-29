@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -811,6 +811,29 @@ public class ShellLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "visibility" ) );
+  }
+
+  /*
+   * See 418893: Keylisteners do not fire under certain circumstances
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=418893
+   */
+  @Test
+  public void testRenderFocusControlAfterShellIsActivated() {
+    Shell otherShell = new Shell( display );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( otherShell );
+    Label focusControl = new Label( otherShell, SWT.NONE );
+    otherShell.open();
+    focusControl.forceFocus();
+    shell.open();
+
+    Fixture.fakeNewRequest();
+    Fixture.fakeNotifyOperation( getId( otherShell ), "Activate", new JsonObject() );
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    String actual = message.findSetProperty( getId( display ), "focusControl" ).asString();
+    assertEquals( getId( focusControl ),  actual );
   }
 
   private static Control getActiveControl( Shell shell ) {
