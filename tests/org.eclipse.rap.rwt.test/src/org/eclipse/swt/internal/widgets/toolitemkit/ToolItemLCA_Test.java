@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -637,6 +637,20 @@ public class ToolItemLCA_Test {
 
     toolitem.addSelectionListener( new SelectionAdapter() { } );
     Fixture.preserveWidgets();
+    lca.renderChanges( toolitem );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( toolitem, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderSelectionListener_onSeparator() throws Exception {
+    toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( toolitem );
+    Fixture.preserveWidgets();
+
+    toolitem.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( toolitem );
 
     Message message = Fixture.getProtocolMessage();

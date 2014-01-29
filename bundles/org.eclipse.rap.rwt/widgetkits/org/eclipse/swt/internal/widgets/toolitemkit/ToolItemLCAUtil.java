@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,9 @@ final class ToolItemLCAUtil {
     preserveProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage() );
     preserveProperty( toolItem, PROP_CONTROL, toolItem.getControl() );
     preserveProperty( toolItem, PROP_SELECTION, toolItem.getSelection() );
-    preserveListener( toolItem, PROP_SELECTION_LISTENER, isListening( toolItem, SWT.Selection ) );
+    if( !isSeparator( toolItem ) ) {
+      preserveListener( toolItem, PROP_SELECTION_LISTENER, isListening( toolItem, SWT.Selection ) );
+    }
   }
 
   static void renderInitialization( ToolItem toolItem ) {
@@ -100,10 +102,12 @@ final class ToolItemLCAUtil {
     renderProperty( toolItem, PROP_HOT_IMAGE, toolItem.getHotImage(), null );
     renderProperty( toolItem, PROP_CONTROL, toolItem.getControl(), null );
     renderProperty( toolItem, PROP_SELECTION, toolItem.getSelection(), false );
-    renderListener( toolItem,
-                    PROP_SELECTION_LISTENER,
-                    isListening( toolItem, SWT.Selection ),
-                    false );
+    if( !isSeparator( toolItem ) ) {
+      renderListener( toolItem,
+                      PROP_SELECTION_LISTENER,
+                      isListening( toolItem, SWT.Selection ),
+                      false );
+    }
   }
 
   ////////////
@@ -155,4 +159,9 @@ final class ToolItemLCAUtil {
     }
     return result;
   }
+
+  private static boolean isSeparator( ToolItem toolItem ) {
+    return ( toolItem.getStyle() & SWT.SEPARATOR ) != 0;
+  }
+
 }
