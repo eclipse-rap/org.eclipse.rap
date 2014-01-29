@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
           var bounds = element.getBoundingClientRect();
           // In FF 3.0.x getBoundingClientRect has no width/height properties
           if( bounds.width != null && bounds.height != null ) {
-            result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
+            result = [ Math.ceil( bounds.width ), Math.round( bounds.height ) ];
           } else {
             result = [ element.scrollWidth, element.scrollHeight ];
           }
@@ -86,7 +86,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         var computed = window.getComputedStyle( element, null );
         var result = [
           Math.ceil( parseFloat( computed.width ) ),
-          Math.ceil( parseFloat( computed.height ) )
+          Math.round( parseFloat( computed.height ) )
         ];
         return this._addOffset( result );
       }
