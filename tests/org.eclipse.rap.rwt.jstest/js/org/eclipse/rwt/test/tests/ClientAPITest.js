@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -340,6 +340,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       rap.on( "render", logger.log );
       rap.on( "send", logger.log );
       rap.off( "render", logger.log );
+      rap.getRemoteObject( shell ).call( "foo" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testOff_DeregisterSecondListenerInFirstListener : function() {
+      var logger= TestUtil.getLogger();
+
+      rap.on( "send", function() { rap.off( "send", arguments.callee.caller ); } );
+      rap.on( "send", logger.log );
       rap.getRemoteObject( shell ).call( "foo" );
 
       assertEquals( 1, logger.getLog().length );
