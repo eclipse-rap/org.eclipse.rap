@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -314,7 +314,8 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
     _initMshtml : function() {
       if( this._engineName === null ) {
-        var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( navigator.userAgent );
+        var userAgent = navigator.userAgent;
+        var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( userAgent );
         if( isMshtml ) {
           this._parseVersion( RegExp.$1 );
           if( this._engineVersion >= 9 ) {
@@ -323,6 +324,13 @@ rwt.qx.Class.define( "rwt.client.Client", {
             this._engineName = "mshtml";
           }
           this._browserName = "explorer";
+        } else {
+          // IE11 does not have MSIE in his userAgent string - see bug 421529
+          if( userAgent.indexOf( "Trident" ) != -1 && /rv\:([^\);]+)(\)|;)/.test( userAgent ) ) {
+            this._parseVersion( RegExp.$1 );
+            this._engineName = "newmshtml";
+            this._browserName = "explorer";
+          }
         }
       }
     },
