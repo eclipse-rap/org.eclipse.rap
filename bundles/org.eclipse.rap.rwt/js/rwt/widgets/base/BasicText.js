@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -661,7 +661,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
-      if( !rwt.widgets.util.FocusHandler.mouseFocus ) {
+      if( newValue && !rwt.widgets.util.FocusHandler.mouseFocus ) {
         this._renderSelection();
       }
     },
