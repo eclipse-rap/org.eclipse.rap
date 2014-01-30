@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -130,7 +131,7 @@ public class TextLCA_Test {
 
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
-
+  
   @Test
   public void testModifyEvent() {
     ModifyListener listener = mock( ModifyListener.class );
@@ -219,6 +220,21 @@ public class TextLCA_Test {
 
     assertEquals( new Point( 0, 0 ), text.getSelection() );
     assertEquals( "", text.getText() );
+  }
+
+  @Test
+  public void testSelectionWithVerifyListener_adjustedValueIsNotRenderedBack() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    text.addVerifyListener( mock( VerifyListener.class ) );
+    Fixture.fakeSetProperty( getId( text ), "text", "abc" );
+    Fixture.fakeSetProperty( getId( text ), "selectionStart", 10 );
+    Fixture.fakeSetProperty( getId( text ), "selectionLength", 0 );
+    
+    Fixture.executeLifeCycleFromServerThread();
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "selection" ) );
   }
 
   @Test

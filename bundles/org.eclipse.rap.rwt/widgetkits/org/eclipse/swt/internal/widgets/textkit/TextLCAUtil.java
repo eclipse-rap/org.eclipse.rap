@@ -132,7 +132,7 @@ final class TextLCAUtil {
             adapter.preserve( PROP_TEXT, txt );
             if( selection != null ) {
               text.setSelection( selection );
-              adapter.preserve( PROP_SELECTION, selection );
+              adapter.preserve( PROP_SELECTION, text.getSelection() );
             }
           }
         } );
