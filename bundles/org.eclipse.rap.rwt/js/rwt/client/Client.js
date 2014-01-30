@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -214,8 +214,23 @@ rwt.qx.Class.define( "rwt.client.Client", {
       return result;
     },
 
+    getBasePath : function() {
+      return this._computeBasePath( document.location.href );
+    },
+
     //////////
     // Helper
+
+    _computeBasePath : function( url ) {
+      var result = url;
+      if( result.indexOf( "?" ) !== -1 ) {
+        result = result.slice( 0, result.indexOf( "?" ) );
+      }
+      if( result.indexOf( "#" ) !== -1 ) {
+        result = result.slice( 0, result.indexOf( "#" ) );
+      }
+      return result.slice( 0, result.lastIndexOf( "/" ) + 1 );
+    },
 
     _initOpera : function() {
       if( !this._isBrowserDetected() ) {

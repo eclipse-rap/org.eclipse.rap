@@ -718,10 +718,8 @@ rwt.qx.Class.define( "rwt.html.Style", {
     },
 
     _basePath : ( function() {
-      var href = document.location.href;
-      return href.slice( 0, href.lastIndexOf( "/" ) + 1 );
+      return rwt.client.Client.getBasePath();
     }() )
-
 
   }
 });
