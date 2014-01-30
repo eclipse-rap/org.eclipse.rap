@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,8 +162,11 @@ public class Text extends Scrollable {
     if( ITextAdapter.class.equals( adapter ) ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
-          public void setText( String text, Point selection ) {
-            Text.this.setText( text, selection );
+          public void setText( String text ) {
+            if( internalSetText( text ) ) {
+              adjustSelection();
+              notifyListeners( SWT.Modify, new Event() );
+            }
           }
         };
       }
@@ -1094,15 +1097,21 @@ public class Text extends Scrollable {
     return result;
   }
 
-  private void setText( String text, Point selection ) {
+  private boolean internalSetText( String text ) {
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
-      this.text = verifiedText;
-      if( selection != null ) {
-        setSelection( selection.x, selection.y );
+      if( verifiedText.length() > textLimit ) {
+        this.text = verifiedText.substring( 0, textLimit );
+      } else {
+        this.text = verifiedText;
       }
-      notifyListeners( SWT.Modify, new Event() );
     }
+    return verifiedText != null;
+  }
+
+  private void adjustSelection() {
+    selection.x = Math.min( selection.x, text.length() );
+    selection.y = Math.min( selection.y, text.length() );
   }
 
   ///////////////////////////////////////

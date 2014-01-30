@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,20 +126,18 @@ final class TextLCAUtil {
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
-
           public void run() {
-            text.getAdapter( ITextAdapter.class ).setText( txt, selection );
-            // since text is set in process action, preserved values have to be
-            // replaced
             WidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            getTextAdapter( text ).setText( txt );
             adapter.preserve( PROP_TEXT, txt );
             if( selection != null ) {
+              text.setSelection( selection );
               adapter.preserve( PROP_SELECTION, selection );
             }
           }
         } );
       } else {
-        text.setText( txt );
+        getTextAdapter( text ).setText( txt );
         if( selection != null ) {
           text.setSelection( selection );
         }
@@ -202,6 +200,10 @@ final class TextLCAUtil {
   private static boolean hasModifyListener( Text text ) {
     // NOTE : Client does not support Verify, it is created server-side from Modify
     return isListening( text, SWT.Modify ) || isListening( text, SWT.Verify );
+  }
+
+  private static ITextAdapter getTextAdapter( Text text ) {
+    return text.getAdapter( ITextAdapter.class );
   }
 
 }

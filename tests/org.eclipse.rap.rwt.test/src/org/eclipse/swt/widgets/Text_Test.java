@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -496,6 +497,36 @@ public class Text_Test {
     assertEquals( "s", text.getText( 2, 2 ) );
     assertEquals( "Test Text", text.getText( 0, 25 ) );
     assertEquals( "Test ", text.getText( -3, 4 ) );
+  }
+
+  @Test
+  public void testSetText_resetSelection() {
+    text.setText( "some text" );
+    text.setSelection( 2, 4 );
+
+    text.setText( "other text" );
+
+    assertEquals( new Point( 0, 0 ), text.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_doesNotResetSelection() {
+    text.setText( "some text" );
+    text.setSelection( 2, 4 );
+
+    text.getAdapter( ITextAdapter.class ).setText( "other text" );
+
+    assertEquals( new Point( 2, 4 ), text.getSelection() );
+  }
+
+  @Test
+  public void testAdapterSetText_adjustsSelection() {
+    text.setText( "some text" );
+    text.setSelection( 7, 9 );
+
+    text.getAdapter( ITextAdapter.class ).setText( "text" );
+
+    assertEquals( new Point( 4, 4 ), text.getSelection() );
   }
 
   @Test
