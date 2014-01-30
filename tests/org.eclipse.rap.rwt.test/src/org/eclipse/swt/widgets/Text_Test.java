@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -573,43 +574,33 @@ public class Text_Test {
   }
 
   @Test
-    public void testInternalSetTextChars() {
-      char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
-      text.setTextChars( expected );
-      char[] result = text.getTextChars();
-      assertEquals( expected.length, result.length );
-      for( int i = 0; i < expected.length; i++ ) {
-        assertEquals( expected[ i ], result[ i ] );
-      }
-      assertEquals( "password", text.getText() );
-    }
+  public void testSetTextChars() {
+    char[] textChars = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
+
+    text.setTextChars( textChars );
+
+    assertArrayEquals( textChars, text.getTextChars() );
+    assertEquals( "password", text.getText() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetTextChars_nullValue() {
+    text.setTextChars( null );
+  }
 
   @Test
-    public void testInternalSetTextChars_NullValue() {
-      try {
-        text.setTextChars( null );
-        fail( "No exception thrown for chars == null" );
-      } catch( IllegalArgumentException e ) {
-      }
-    }
+  public void testSetTextChars_emptyArray() {
+    text.setTextChars( new char[ 0 ] );
+
+    assertEquals( 0, text.getTextChars().length );
+    assertEquals( "", text.getText() );
+  }
 
   @Test
-    public void testInternalSetTextChars_EmptyArray() {
-      char[] expected = new char[ 0 ];
-      text.setTextChars( expected );
-      char[] result = text.getTextChars();
-      assertEquals( 0, result.length );
-      assertEquals( "", text.getText() );
-    }
+  public void testGetTextChars_fromText() {
+    text.setText( "password" );
 
-  @Test
-  public void testGetTextChars_FromText() {
-    String string = "new string";
-    text.setText( string );
-    char[]result = text.getTextChars();
-    for( int i = 0; i < string.length(); i++ ) {
-      assertEquals( string.charAt( i ), result[ i ] );
-    }
+    assertArrayEquals( new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' }, text.getTextChars() );
   }
 
   @Test
