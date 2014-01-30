@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
           public void run() {
             combo.setSelection( selection );
             // since selection is set in process action, preserved values have to be replaced
-            getAdapter( combo ).preserve( PROP_SELECTION, selection );
+            getAdapter( combo ).preserve( PROP_SELECTION, combo.getSelection() );
           }
         } );
       } else {
