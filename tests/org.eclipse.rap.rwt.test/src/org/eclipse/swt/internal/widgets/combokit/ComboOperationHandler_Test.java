@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,11 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -94,7 +96,7 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText() {
+  public void testHandleSetText() {
     handler = new ComboOperationHandler( combo );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
@@ -103,7 +105,7 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText_doesNotResetSelection() {
+  public void testHandleSetText_doesNotResetSelection() {
     handler = new ComboOperationHandler( combo );
     combo.setText( "some text" );
     combo.setSelection( new Point( 2, 4 ) );
@@ -114,7 +116,7 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText_withVerifyListener() {
+  public void testHandleSetText_withVerifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new ComboOperationHandler( combo );
     combo.setText( "some text" );
@@ -127,13 +129,37 @@ public class ComboOperationHandler_Test {
   }
 
   @Test
-  public void testHandleSelection() {
+  public void testHandleSetSelection() {
     handler = new ComboOperationHandler( combo );
     combo.setText( "text" );
 
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetSelection_withVerifyListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    handler = new ComboOperationHandler( combo );
+    combo.setText( "abc" );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
+  
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
+  
+    assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetSelection_withVerifyListener_preservesAdjustedSelection() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    handler = new ComboOperationHandler( combo );
+    combo.setText( "abc" );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
+  
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 10 ).add( 12 ) ) );
+  
+    assertEquals( new Point( 3, 3 ), getPreservedSelection( combo ) );
   }
 
   @Test
@@ -189,18 +215,6 @@ public class ComboOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", combo.getText() );
-    assertEquals( new Point( 1, 2 ), combo.getSelection() );
-  }
-
-  @Test
-  public void testHandleSelection_withVerifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    handler = new ComboOperationHandler( combo );
-    combo.setText( "abc" );
-    combo.addListener( SWT.Verify, mock( Listener.class ) );
-
-    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
-
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
 
@@ -425,6 +439,11 @@ public class ComboOperationHandler_Test {
   @Test( expected=UnsupportedOperationException.class )
   public void testHandleNotify_unknownOperation() {
     handler.handleNotify( "Unknown", new JsonObject() );
+  }
+
+  private static Point getPreservedSelection( Combo combo ) {
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( combo );
+    return ( Point )adapter.getPreserved( "selection" );
   }
 
 }

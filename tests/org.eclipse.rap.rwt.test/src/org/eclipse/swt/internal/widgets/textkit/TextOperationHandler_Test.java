@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,11 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -64,7 +66,7 @@ public class TextOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText() {
+  public void testHandleSetText() {
     handler = new TextOperationHandler( text );
 
     handler.handleSet( new JsonObject().add( "text", "abc" ) );
@@ -73,7 +75,7 @@ public class TextOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText_withVerifyListener() {
+  public void testHandleSetText_withVerifyListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     handler = new TextOperationHandler( text );
     text.setText( "some text" );
@@ -85,7 +87,7 @@ public class TextOperationHandler_Test {
   }
 
   @Test
-  public void testHandleText_doesNotResetSelection() {
+  public void testHandleSetText_doesNotResetSelection() {
     handler = new TextOperationHandler( text );
     text.setText( "some text" );
     text.setSelection( new Point( 2, 4 ) );
@@ -96,13 +98,37 @@ public class TextOperationHandler_Test {
   }
 
   @Test
-  public void testHandleSelection() {
+  public void testHandleSetSelection() {
     handler = new TextOperationHandler( text );
     text.setText( "text" );
 
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetSelection_withVerifyListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    handler = new TextOperationHandler( text );
+    text.setText( "abc" );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+  
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
+  
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetSelection_withVerifyListener_preservesAdjustedSelection() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    handler = new TextOperationHandler( text );
+    text.setText( "abc" );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+  
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 10 ).add( 12 ) ) );
+  
+    assertEquals( new Point( 3, 3 ), getPreservedSelection( text ) );
   }
 
   @Test
@@ -158,18 +184,6 @@ public class TextOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( "abc", text.getText() );
-    assertEquals( new Point( 1, 2 ), text.getSelection() );
-  }
-
-  @Test
-  public void testHandleSelection_withVerifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    handler = new TextOperationHandler( text );
-    text.setText( "abc" );
-    text.addListener( SWT.Verify, mock( Listener.class ) );
-
-    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
-
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
 
@@ -248,6 +262,11 @@ public class TextOperationHandler_Test {
     handler.handleNotify( ClientMessageConst.EVENT_MODIFY, new JsonObject() );
 
     verify( mockedText, never() ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
+  }
+
+  private static Point getPreservedSelection( Text text ) {
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( text );
+    return ( Point )adapter.getPreserved( "selection" );
   }
 
 }
