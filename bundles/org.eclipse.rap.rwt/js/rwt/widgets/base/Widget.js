@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -3548,7 +3548,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _styleBackgroundImage : function( value ) {
       if( value ) {
-        this.setStyleProperty( "backgroundImage", "url(" + value + ")");
+        rwt.html.Style.setBackgroundImage( this, value );
         this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
         this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
       } else {

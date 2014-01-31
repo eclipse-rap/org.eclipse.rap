@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2011, 2014 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -19,12 +19,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
       assertFalse( msg, rwt.client.Client.getRunsLocally() );
       // NOTE: If this fails, either getRunsLocally returns the wrong value
       //       or, more likely, you started tests from the filesystem
-    },
-
-    testQuirksmode : function() {
-      // NOTE: RAP should always run in quirksmode in IE7/8
-      var expected = !rwt.client.Client.isNewMshtml();
-      assertIdentical( expected, rwt.client.Client.isInQuirksMode() );
     },
 
     testEngine : function() {
@@ -95,6 +89,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
       assertTrue( !( msafari && androidb ) );
       // NOTE: Since the android browser indentifies itself as safari,
       //       there is a certain risk of confusing the two.
+    },
+
+    testGetBasePath : function() {
+      var compute = rwt.client.Client._computeBasePath;
+      assertEquals( compute( document.location.href ), rwt.client.Client.getBasePath() );
+      assertEquals( "http://eclipse.org/", compute( "http://eclipse.org/" ) );
+      assertEquals( "http://eclipse.org/", compute( "http://eclipse.org/foo" ) );
+      assertEquals( "http://eclipse.org/foo/", compute( "http://eclipse.org/foo/" ) );
+      assertEquals( "http://eclipse.org/foo/", compute( "http://eclipse.org/foo/" ) );
+      assertEquals( "http://eclipse.org/foo/", compute( "http://eclipse.org/foo/?a=b/b" ) );
+      assertEquals( "http://eclipse.org/foo/", compute( "http://eclipse.org/foo/#b/b" ) );
+      assertEquals( "http://eclipse.org/foo/", compute( "http://eclipse.org/foo/?a=b/b#c/c" ) );
     }
 
   }

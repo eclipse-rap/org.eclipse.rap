@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -671,7 +671,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           var content = this.getCellContent( cell );
           var cssImageStr = "";
           if( content ) {
-            cssImageStr = "background-image:url(" + content + ")";
+            var path =  rwt.html.Style._resolveResource( content );
+            cssImageStr = "background-image:url(" + path + ")";
           }
           return   "<div style='position:absolute;border:0 none;line-height:0px;font-size:0px;"
                  + cssImageStr

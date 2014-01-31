@@ -159,6 +159,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       widget.destroy();
     },
 
+    testSetBackgroundImage : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var el = document.createElement( "div" );
+
+      rwt.html.Style.setBackgroundImage( el, "foo.png" );
+
+      var actual = TestUtil.getCssBackgroundImage( el );
+      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isMshtml() ) {
+          assertTrue( actual.indexOf( "http" ) === 0 );
+        }
+        assertTrue( actual.indexOf( "foo.png" ) !== -1 );
+      } else {
+        assertEquals( "foo.png", actual );
+      }
+    },
+
     /////////
    // Helper
 

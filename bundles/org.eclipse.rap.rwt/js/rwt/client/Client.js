@@ -212,8 +212,23 @@ rwt.qx.Class.define( "rwt.client.Client", {
       return result;
     },
 
+    getBasePath : function() {
+      return this._computeBasePath( document.location.href );
+    },
+
     //////////
     // Helper
+
+    _computeBasePath : function( url ) {
+      var result = url;
+      if( result.indexOf( "?" ) !== -1 ) {
+        result = result.slice( 0, result.indexOf( "?" ) );
+      }
+      if( result.indexOf( "#" ) !== -1 ) {
+        result = result.slice( 0, result.indexOf( "#" ) );
+      }
+      return result.slice( 0, result.lastIndexOf( "/" ) + 1 );
+    },
 
     _initOpera : function() {
       if( this._engineName === null ) {
