@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,9 +65,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     testContent : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
-      assertTrue( this.TestUtil.getCssBackgroundImage(
-        widget._getTargetNode().firstChild).search( "test.jpg" ) != -1
-      );
+
+      var url = this.TestUtil.getCssBackgroundImage( widget._getTargetNode().firstChild );
+      if( rwt.client.Client.isMshtml() ) {
+        assertTrue( url.indexOf( "http" ) === 0 );
+      }
+      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
+        assertTrue( url.indexOf( "test.jpg" ) !== -1 );
+      } else {
+        assertEquals( "test.jpg", url );
+      }
       assertEquals( "test text", widget._getTargetNode().lastChild.innerHTML );
       this.disposeWidget( widget );
     },
@@ -165,7 +172,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
     testCenter : function() {
       var widget = this.createDefaultWidget();
-      widget.setDimension( 100, 100 )
+      widget.setDimension( 100, 100 );
       this.initWidget( widget, true );
       widget.set( {
         padding : 0,
@@ -343,7 +350,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
     testOverflow : function() {
       var widget = this.createDefaultWidget();
-      widget.setDimension( 100, 100 )
+      widget.setDimension( 100, 100 );
       this.initWidget( widget, true );
       var cell0 = this.TestUtil.getElementBounds( widget._getTargetNode().firstChild );
       var cell1 = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );

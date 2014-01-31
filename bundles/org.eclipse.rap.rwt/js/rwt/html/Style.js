@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -612,10 +612,8 @@ rwt.qx.Class.define( "rwt.html.Style", {
     // Private
 
     _setCssBackgroundImage : function( target, value ) {
-      var cssImageStr = value ? "URL(" + value + ")" : "none";
+      var cssImageStr = value ? "URL(" + this._resolveResource( value ) + ")" : "none";
       this.setStyleProperty( target, "backgroundImage", cssImageStr );
-      this.setStyleProperty( target, "backgroundRepeat", "no-repeat" );
-      this.setStyleProperty( target, "backgroundPosition", "center" );
     },
 
     _setCssFilterImage : function( target, value ) {
@@ -682,8 +680,8 @@ rwt.qx.Class.define( "rwt.html.Style", {
       "default" : function( target, type, originalEvent ) {
         var newEvent = document.createEvent( "MouseEvents" );
         newEvent.initMouseEvent( type,
-                                 true,  /* can bubble */
-                                 true, /*cancelable */
+                                 true, /* can bubble */
+                                 true, /* cancelable */
                                  originalEvent.view,
                                  originalEvent.detail,
                                  originalEvent.screenX,
@@ -698,8 +696,19 @@ rwt.qx.Class.define( "rwt.html.Style", {
                                  originalEvent.relatedTarget);
         target.dispatchEvent( newEvent );
       }
-    } )
+    } ),
 
+    _resolveResource : function( url ) {
+      if( rwt.client.Client.isMshtml() && !this._isAbsolute( url ) ) {
+        return rwt.client.Client.getBasePath() + url;
+      }
+      return url;
+    },
+
+    _isAbsolute : function( url ) {
+      return url.slice( 0, 7 ) === "http://" || url.slice( 0, 8 ) === "https://";
+    }
 
   }
-});
+
+} );
