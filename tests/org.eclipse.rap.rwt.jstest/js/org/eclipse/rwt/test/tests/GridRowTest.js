@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -573,15 +573,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 2, row._getTargetNode().childNodes.length );
       var node = row._getTargetNode().childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
-
-      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
-        if( rwt.client.Client.isMshtml() ) {
-          assertTrue( url.indexOf( "http" ) === 0 );
-        }
-        assertTrue( url.indexOf( "single.gif" ) !== -1 );
-      } else {
-        assertEquals( "single.gif", url );
-      }
+      assertTrue( url.indexOf( "single.gif" ) != -1 );
       var position = node.style.backgroundPosition;
       assertTrue(    position.indexOf( "center" ) != -1
                   || position.indexOf( "50%" ) != -1 );

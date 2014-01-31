@@ -712,8 +712,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _setImage : function( element, src, enabled ) {
-      var opacity = enabled ? 1 : 0.3;
-      rwt.html.Style.setBackgroundImage( element, src, enabled != null ? opacity : null );
+      element.style.backgroundImage = src ? "URL(" + src + ")" : "none";
+      if( enabled !== null ) {
+        var opacity = enabled ? 1 : 0.3;
+        Style.setOpacity( element, opacity );
+      }
     },
 
     _getTextElement : function( cell, config ) {
