@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2011, 2012 EclipseSource and others.
+  Copyright (C) 2011, 2014 EclipseSource and others.
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@
   <properties>
     <tycho-version>0.16.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <signing-plugin-version>1.0.5</signing-plugin-version>
     <base-platform>4.3/R-4.3-201306052000/</base-platform>
     <base-platform-repository>http://download.eclipse.org/eclipse/updates/${base-platform}</base-platform-repository>
     <base-platform-juno>4.2/R-4.2.1-201209141800/</base-platform-juno>
@@ -103,15 +102,6 @@
               <url>${baseline-repository}</url>
             </repository>
           </baselineRepositories>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.eclipse.dash.maven</groupId>
-        <artifactId>eclipse-signing-maven-plugin</artifactId>
-        <version>${signing-plugin-version}</version>
-        <configuration>
-          <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
         </configuration>
       </plugin>
 
