@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -168,7 +168,7 @@ public final class WidgetLCAUtil {
    * @param widget the widget to process
    */
   public static void processHelp( Widget widget ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
+    if( wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
       widget.notifyListeners( SWT.Help, new Event() );
     }
   }
@@ -377,7 +377,7 @@ public final class WidgetLCAUtil {
    */
   public static void renderCustomVariant( Widget widget ) {
     String newValue = WidgetUtil.getVariant( widget );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
+    if( hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
       String value = null;
       if( newValue != null ) {
         value = "variant_" + newValue;
@@ -479,7 +479,7 @@ public final class WidgetLCAUtil {
    * @see #preserveFont(Widget, Font)
    */
   public static void renderFont( Widget widget, Font font ) {
-    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
+    if( hasChanged( widget, PROP_FONT, font, null ) ) {
       getRemoteObject( widget ).set( PROP_FONT, getJsonForFont( font ) );
     }
   }
@@ -497,7 +497,7 @@ public final class WidgetLCAUtil {
    * @see #preserveForeground(Widget, Color)
    */
   public static void renderForeground( Widget widget, Color newColor ) {
-    if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
+    if( hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       getRemoteObject( widget ).set( PROP_FOREGROUND, getJsonForColor( newColor, false ) );
     }
   }
@@ -533,11 +533,11 @@ public final class WidgetLCAUtil {
    * @see #preserveBackground(Widget, Color, boolean)
    */
   public static void renderBackground( Widget widget, Color background, boolean transparency ) {
-    boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
-                                                            PROP_BACKGROUND_TRANSPARENCY,
-                                                            Boolean.valueOf( transparency ),
-                                                            Boolean.FALSE );
-    boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
+    boolean transparencyChanged = hasChanged( widget,
+                                              PROP_BACKGROUND_TRANSPARENCY,
+                                              Boolean.valueOf( transparency ),
+                                              Boolean.FALSE );
+    boolean colorChanged = hasChanged( widget, PROP_BACKGROUND, background, null );
     if( transparencyChanged || colorChanged ) {
       JsonValue color = JsonValue.NULL;
       if( transparency || background != null ) {
@@ -584,18 +584,18 @@ public final class WidgetLCAUtil {
     Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
     int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
     boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
-    return    WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_COLORS,
-                                        bgGradientColors,
-                                        null )
-           || WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_PERCENTS,
-                                        bgGradientPercents,
-                                        null )
-           || WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_VERTICAL,
-                                        Boolean.valueOf( bgGradientVertical ),
-                                        Boolean.FALSE );
+    return    hasChanged( widget,
+                          PROP_BACKGROUND_GRADIENT_COLORS,
+                          bgGradientColors,
+                          null )
+           || hasChanged( widget,
+                          PROP_BACKGROUND_GRADIENT_PERCENTS,
+                          bgGradientPercents,
+                          null )
+           || hasChanged( widget,
+                          PROP_BACKGROUND_GRADIENT_VERTICAL,
+                          Boolean.valueOf( bgGradientVertical ),
+                          Boolean.FALSE );
   }
 
   /**
@@ -635,18 +635,18 @@ public final class WidgetLCAUtil {
     Color color = graphicsAdapter.getRoundedBorderColor();
     Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
     return
-         WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_WIDTH,
-                                   new Integer( width ),
-                                   new Integer( 0 ) )
-      || WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_COLOR,
-                                   color,
-                                   null )
-      || WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_RADIUS,
-                                   radius,
-                                   DEF_ROUNDED_BORDER_RADIUS );
+         hasChanged( widget,
+                     PROP_ROUNDED_BORDER_WIDTH,
+                     new Integer( width ),
+                     new Integer( 0 ) )
+      || hasChanged( widget,
+                     PROP_ROUNDED_BORDER_COLOR,
+                     color,
+                     null )
+      || hasChanged( widget,
+                     PROP_ROUNDED_BORDER_RADIUS,
+                     radius,
+                     DEF_ROUNDED_BORDER_RADIUS );
   }
 
   //////////////////////////////////////////
@@ -767,8 +767,117 @@ public final class WidgetLCAUtil {
                                      Object newValue,
                                      Object defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       getRemoteObject( widget ).set( property, createJsonValue( newValue ) );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   * @since 2.3
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     String newValue,
+                                     String defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      getRemoteObject( widget ).set( property, newValue );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   * @since 2.3
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Integer newValue,
+                                     Integer defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      JsonValue value = newValue == null ? JsonValue.NULL : JsonValue.valueOf( newValue.intValue() );
+      getRemoteObject( widget ).set( property, value );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   * @since 2.3
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     String[] newValue,
+                                     String[] defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   * @since 2.3
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     boolean[] newValue,
+                                     boolean[] defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   * @since 2.3
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     int[] newValue,
+                                     int[] defaultValue )
+  {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
     }
   }
 
@@ -789,7 +898,9 @@ public final class WidgetLCAUtil {
   {
     Integer newValueObject = Integer.valueOf( newValue );
     Integer defaultValueObject = Integer.valueOf( defaultValue );
-    renderProperty( widget, property, newValueObject, defaultValueObject );
+    if( hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
+      getRemoteObject( widget ).set( property, newValue );
+    }
   }
 
   /**
@@ -809,7 +920,9 @@ public final class WidgetLCAUtil {
   {
     Boolean newValueObject = Boolean.valueOf( newValue );
     Boolean defaultValueObject = Boolean.valueOf( defaultValue );
-    renderProperty( widget, property, newValueObject, defaultValueObject );
+    if( hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
+      getRemoteObject( widget ).set( property, newValue );
+    }
   }
 
   /**
@@ -827,7 +940,7 @@ public final class WidgetLCAUtil {
                                      Image newValue,
                                      Image defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       getRemoteObject( widget ).set( property, getJsonForImage( newValue ) );
     }
   }
@@ -847,7 +960,7 @@ public final class WidgetLCAUtil {
                                      Image[] newValue,
                                      Image[] defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray images = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
         images.add( getJsonForImage( newValue[ i ] ) );
@@ -871,7 +984,7 @@ public final class WidgetLCAUtil {
                                      Color newValue,
                                      Color defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       getRemoteObject( widget ).set( property, getJsonForColor( newValue, false ) );
     }
   }
@@ -891,7 +1004,7 @@ public final class WidgetLCAUtil {
                                      Color[] newValue,
                                      Color[] defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray colors = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
         colors.add( getJsonForColor( newValue[ i ], false ) );
@@ -915,7 +1028,7 @@ public final class WidgetLCAUtil {
                                      Font[] newValue,
                                      Font[] defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray fonts = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
         fonts.add( getJsonForFont( newValue[ i ] ) );
@@ -939,7 +1052,7 @@ public final class WidgetLCAUtil {
                                      Point newValue,
                                      Point defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       getRemoteObject( widget ).set( property, getJsonForPoint( newValue ) );
     }
   }
@@ -959,7 +1072,7 @@ public final class WidgetLCAUtil {
                                      Rectangle newValue,
                                      Rectangle defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       getRemoteObject( widget ).set( property, getJsonForRectangle( newValue ) );
     }
   }
@@ -979,7 +1092,7 @@ public final class WidgetLCAUtil {
                                      Widget newValue,
                                      Widget defaultValue )
   {
-    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+    if( hasChanged( widget, property, newValue, defaultValue ) ) {
       String widgetId = newValue == null ? null : getId( newValue );
       getRemoteObject( widget ).set( property, widgetId );
     }
@@ -1003,7 +1116,7 @@ public final class WidgetLCAUtil {
     String property = LISTENER_PREFIX + listener;
     Boolean newValueObject = Boolean.valueOf( newValue );
     Boolean defaultValueObject = Boolean.valueOf( defaultValue );
-    if( WidgetLCAUtil.hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
+    if( hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
       getRemoteObject( widget ).listen( listener, newValue );
     }
   }
@@ -1056,7 +1169,7 @@ public final class WidgetLCAUtil {
   public static boolean hasChanged( Widget widget, String property, Object newValue ) {
     WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     Object oldValue = adapter.getPreserved( property );
-    return !WidgetLCAUtil.equals( oldValue, newValue );
+    return !equals( oldValue, newValue );
   }
 
   /**

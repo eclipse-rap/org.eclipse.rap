@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
@@ -790,6 +791,102 @@ public class WidgetLCAUtil_Test {
     assertEquals( "removeListener", operation.getMethodName() );
     operation = ( CallOperation )message.getOperation( 2 );
     assertEquals( "addListener", operation.getMethodName() );
+  }
+
+  @Test
+  public void testRenderProperty_string() {
+    WidgetLCAUtil.renderProperty( widget, "foo", "bar", null );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.valueOf( "bar" ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_string_withNull() {
+    WidgetLCAUtil.renderProperty( widget, "foo", null, "" );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_integer() {
+    WidgetLCAUtil.renderProperty( widget, "foo", Integer.valueOf( 23 ), Integer.valueOf( 0 ) );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.valueOf( 23 ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_integer_withNull() {
+    WidgetLCAUtil.renderProperty( widget, "foo", null, Integer.valueOf( 0 ) );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_stringArray() {
+    WidgetLCAUtil.renderProperty( widget, "foo", new String[] { "bar" }, null );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( new JsonArray().add( "bar" ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_stringArray_withNull() {
+    WidgetLCAUtil.renderProperty( widget, "foo", null, new String[ 0 ] );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_booleanArray() {
+    WidgetLCAUtil.renderProperty( widget, "foo", new boolean[] { true }, null );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( new JsonArray().add( true ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_booleanArray_withNull() {
+    WidgetLCAUtil.renderProperty( widget, "foo", null, new boolean[ 0 ] );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_intArray() {
+    WidgetLCAUtil.renderProperty( widget, "foo", new int[] { 23 }, null );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( new JsonArray().add( 23 ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_intArray_withNull() {
+    WidgetLCAUtil.renderProperty( widget, "foo", null, new int[ 0 ] );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_int() {
+    WidgetLCAUtil.renderProperty( widget, "foo", 23, 0 );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.valueOf( 23 ), operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testRenderProperty_boolean() {
+    WidgetLCAUtil.renderProperty( widget, "foo", true, false );
+
+    SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
+    assertEquals( JsonValue.TRUE, operation.getProperty( "foo" ) );
   }
 
 }

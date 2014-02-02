@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,9 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   static final String PROP_STATE = "state";
 
   // Default values
-  private static final Integer DEFAULT_MINIMUM = new Integer( 0 );
-  private static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
-  private static final Integer DEFAULT_SELECTION = new Integer( 0 );
+  private static final int DEFAULT_MINIMUM = 0;
+  private static final int DEFAULT_MAXIMUM = 100;
+  private static final int DEFAULT_SELECTION = 0;
   private static final String DEFAULT_STATE = "normal";
 
   @Override
@@ -73,9 +73,9 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     ProgressBar pBar = ( ProgressBar )widget;
     ControlLCAUtil.renderChanges( pBar );
     WidgetLCAUtil.renderCustomVariant( pBar );
-    renderProperty( pBar, PROP_MINIMUM, new Integer( pBar.getMinimum() ), DEFAULT_MINIMUM );
-    renderProperty( pBar, PROP_MAXIMUM, new Integer( pBar.getMaximum() ), DEFAULT_MAXIMUM );
-    renderProperty( pBar, PROP_SELECTION, new Integer( pBar.getSelection() ), DEFAULT_SELECTION );
+    renderProperty( pBar, PROP_MINIMUM, pBar.getMinimum(), DEFAULT_MINIMUM );
+    renderProperty( pBar, PROP_MAXIMUM, pBar.getMaximum(), DEFAULT_MAXIMUM );
+    renderProperty( pBar, PROP_SELECTION, pBar.getSelection(), DEFAULT_SELECTION );
     renderProperty( pBar, PROP_STATE, getState( pBar ), DEFAULT_STATE );
     renderClientListeners( pBar );
   }
