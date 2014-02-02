@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,11 +99,11 @@ public class TreeItemLCA_Test {
     Image[] images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
     assertEquals( image, images[ 0 ] );
     IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
+    Object background = adapter.getPreserved( "background" );
     assertEquals( colorAdapter.getUserBackground(), background );
-    Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
+    Object foreground = adapter.getPreserved( "foreground" );
     assertEquals( colorAdapter.getUserForeground(), foreground );
-    Font[] fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
+    Font[] fonts = ( Font[] )adapter.getPreserved( "font" );
     assertNull( fonts );
     Color[] backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
     assertTrue( Arrays.equals( new Color[ 3 ], backgrounds ) );
@@ -152,8 +152,8 @@ public class TreeItemLCA_Test {
     assertEquals( image1, images[ 0 ] );
     assertEquals( image2, images[ 1 ] );
     assertEquals( image3, images[ 2 ] );
-    assertEquals( background, adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
+    assertEquals( background, adapter.getPreserved( "background" ) );
+    assertEquals( foreground, adapter.getPreserved( "foreground" ) );
     fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FONTS );
     assertEquals( font1, fonts[ 0 ] );
     assertEquals( font2, fonts[ 1 ] );

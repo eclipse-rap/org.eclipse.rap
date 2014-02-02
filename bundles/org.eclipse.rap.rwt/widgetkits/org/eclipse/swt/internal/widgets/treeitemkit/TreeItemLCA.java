@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   static final String PROP_ITEM_COUNT = "itemCount";
   static final String PROP_TEXTS = "texts";
   static final String PROP_IMAGES = "images";
-  static final String PROP_BACKGROUND = "background";
-  static final String PROP_FOREGROUND = "foreground";
-  static final String PROP_FONT = "font";
   static final String PROP_CELL_BACKGROUNDS = "cellBackgrounds";
   static final String PROP_CELL_FOREGROUNDS = "cellForegrounds";
   static final String PROP_CELL_FONTS = "cellFonts";

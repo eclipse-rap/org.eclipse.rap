@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,9 +91,9 @@ public class TableItemLCA_Test {
     assertEquals( images1[ 0 ], images2[ 0 ] );
     assertEquals( images1[ 1 ], images2[ 1 ] );
     assertEquals( images1[ 2 ], images2[ 2 ] );
-    assertNull( adapter.getPreserved( TableItemLCA.PROP_BACKGROUND ) );
-    assertNull( adapter.getPreserved( TableItemLCA.PROP_FOREGROUND ) );
-    assertNull( adapter.getPreserved( TableItemLCA.PROP_FONT ) );
+    assertNull( adapter.getPreserved( "background" ) );
+    assertNull( adapter.getPreserved( "foreground" ) );
+    assertNull( adapter.getPreserved( "font" ) );
     Color[] preservedCellBackgrounds
       = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_BACKGROUNDS );
     assertNull( preservedCellBackgrounds[ 0 ] );
