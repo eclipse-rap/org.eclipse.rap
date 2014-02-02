@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,9 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -212,12 +213,10 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String id = getId( browser );
     String name = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_NAME + id );
     if( name != null ) {
-      Object result = serviceStore.getAttribute( EXECUTED_FUNCTION_RESULT + id );
+      JsonValue result = ( JsonValue )serviceStore.getAttribute( EXECUTED_FUNCTION_RESULT + id );
       String error = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_ERROR + id );
-      Object[] value = new Object[] {
-        name, result, error
-      };
-      getRemoteObject( browser ).set( PARAM_FUNCTION_RESULT, createJsonArray( value ) );
+      JsonArray array = new JsonArray().add( name ).add( result ).add( error );
+      getRemoteObject( browser ).set( PARAM_FUNCTION_RESULT, array );
     }
   }
 

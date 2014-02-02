@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt;
 
-
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.swt.graphics.Cursor;
-
 
 
 /**
@@ -3222,6 +3220,14 @@ public class SWT {
   public static final int ERROR_FAILED_EVALUATE = 50;
 
   /**
+   * SWT error constant indicating that an invalid value was returned
+   * (value is 51).
+   *
+   * @since 2.3
+   */
+  public static final int ERROR_INVALID_RETURN_VALUE = 51;
+
+  /**
    * The <code>Image</code> constructor argument indicating that
    * the new image should be a copy of the image provided as
    * an argument  (value is 0).
@@ -3671,129 +3677,93 @@ public class SWT {
   }
 
   static String findErrorText( int code ) {
-    String result;
     switch( code ) {
       case ERROR_UNSPECIFIED:
-        result = "Unspecified error"; //$NON-NLS-1$
-      break;
+        return "Unspecified error"; //$NON-NLS-1$
       case ERROR_NO_HANDLES:
-        result = "No more handles"; //$NON-NLS-1$
-      break;
+        return "No more handles"; //$NON-NLS-1$
       case ERROR_NO_MORE_CALLBACKS:
-        result = "No more callbacks"; //$NON-NLS-1$
-      break;
+        return "No more callbacks"; //$NON-NLS-1$
       case ERROR_NULL_ARGUMENT:
-        result = "Argument cannot be null"; //$NON-NLS-1$
-      break;
+        return "Argument cannot be null"; //$NON-NLS-1$
       case ERROR_INVALID_ARGUMENT:
-        result = "Argument not valid"; //$NON-NLS-1$
-      break;
+        return "Argument not valid"; //$NON-NLS-1$
+      case ERROR_INVALID_RETURN_VALUE:
+        return "Return value not valid"; //$NON-NLS-1$
       case ERROR_INVALID_RANGE:
-        result = "Index out of bounds"; //$NON-NLS-1$
-      break;
+        return "Index out of bounds"; //$NON-NLS-1$
       case ERROR_CANNOT_BE_ZERO:
-        result = "Argument cannot be zero"; //$NON-NLS-1$
-      break;
+        return "Argument cannot be zero"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_ITEM:
-        result = "Cannot get item"; //$NON-NLS-1$
-      break;
+        return "Cannot get item"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_SELECTION:
-        result = "Cannot get selection"; //$NON-NLS-1$
-      break;
+        return "Cannot get selection"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_ITEM_HEIGHT:
-        result = "Cannot get item height"; //$NON-NLS-1$
-      break;
+        return "Cannot get item height"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_TEXT:
-        result = "Cannot get text"; //$NON-NLS-1$
-      break;
+        return "Cannot get text"; //$NON-NLS-1$
       case ERROR_CANNOT_SET_TEXT:
-        result = "Cannot set text"; //$NON-NLS-1$
-      break;
+        return "Cannot set text"; //$NON-NLS-1$
       case ERROR_ITEM_NOT_ADDED:
-        result = "Item not added"; //$NON-NLS-1$
-      break;
+        return "Item not added"; //$NON-NLS-1$
       case ERROR_ITEM_NOT_REMOVED:
-        result = "Item not removed"; //$NON-NLS-1$
-      break;
+        return "Item not removed"; //$NON-NLS-1$
       case ERROR_NOT_IMPLEMENTED:
-        result = "Not implemented"; //$NON-NLS-1$
-      break;
+        return "Not implemented"; //$NON-NLS-1$
       case ERROR_MENU_NOT_DROP_DOWN:
-        result = "Menu must be a drop down"; //$NON-NLS-1$
-      break;
+        return "Menu must be a drop down"; //$NON-NLS-1$
       case ERROR_THREAD_INVALID_ACCESS:
-        result = "Invalid thread access"; //$NON-NLS-1$
-      break;
+        return "Invalid thread access"; //$NON-NLS-1$
       case ERROR_WIDGET_DISPOSED:
-        result = "Widget is disposed"; //$NON-NLS-1$
-      break;
+        return "Widget is disposed"; //$NON-NLS-1$
       case ERROR_MENUITEM_NOT_CASCADE:
-        result = "Menu item is not a CASCADE"; //$NON-NLS-1$
-      break;
+        return "Menu item is not a CASCADE"; //$NON-NLS-1$
       case ERROR_CANNOT_SET_SELECTION:
-        result = "Cannot set selection"; //$NON-NLS-1$
-      break;
+        return "Cannot set selection"; //$NON-NLS-1$
       case ERROR_CANNOT_SET_MENU:
-        result = "Cannot set menu"; //$NON-NLS-1$
-      break;
+        return "Cannot set menu"; //$NON-NLS-1$
       case ERROR_CANNOT_SET_ENABLED:
-        result = "Cannot set the enabled state"; //$NON-NLS-1$
-      break;
+        return "Cannot set the enabled state"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_ENABLED:
-        result = "Cannot get the enabled state"; //$NON-NLS-1$
-      break;
+        return "Cannot get the enabled state"; //$NON-NLS-1$
       case ERROR_INVALID_PARENT:
-        result = "Widget has the wrong parent"; //$NON-NLS-1$
-      break;
+        return "Widget has the wrong parent"; //$NON-NLS-1$
       case ERROR_MENU_NOT_BAR:
-        result = "Menu is not a BAR"; //$NON-NLS-1$
-      break;
+        return "Menu is not a BAR"; //$NON-NLS-1$
       case ERROR_CANNOT_GET_COUNT:
-        result = "Cannot get count"; //$NON-NLS-1$
-      break;
+        return "Cannot get count"; //$NON-NLS-1$
       case ERROR_MENU_NOT_POP_UP:
-        result = "Menu is not a POP_UP"; //$NON-NLS-1$
-      break;
+        return "Menu is not a POP_UP"; //$NON-NLS-1$
       case ERROR_UNSUPPORTED_DEPTH:
-        result = "Unsupported color depth"; //$NON-NLS-1$
-      break;
+        return "Unsupported color depth"; //$NON-NLS-1$
       case ERROR_IO:
-        result = "i/o error"; //$NON-NLS-1$
-      break;
+        return "i/o error"; //$NON-NLS-1$
       case ERROR_INVALID_IMAGE:
-        result = "Invalid image"; //$NON-NLS-1$
-      break;
+        return "Invalid image"; //$NON-NLS-1$
       case ERROR_UNSUPPORTED_FORMAT:
-        result = "Unsupported or unrecognized format"; //$NON-NLS-1$
-      break;
+        return "Unsupported or unrecognized format"; //$NON-NLS-1$
       case ERROR_INVALID_SUBCLASS:
-        result = "Subclassing not allowed"; //$NON-NLS-1$
-      break;
+        return "Subclassing not allowed"; //$NON-NLS-1$
       case ERROR_GRAPHIC_DISPOSED:
-        result = "Graphic is disposed"; //$NON-NLS-1$
-      break;
+        return "Graphic is disposed"; //$NON-NLS-1$
       case ERROR_DEVICE_DISPOSED:
-        result = "Device is disposed"; //$NON-NLS-1$
-      break;
+        return "Device is disposed"; //$NON-NLS-1$
+      case ERROR_FUNCTION_DISPOSED:
+        return "BrowserFunction is disposed"; //$NON-NLS-1$
       case ERROR_FAILED_EXEC:
-        result = "Failed to execute runnable"; //$NON-NLS-1$
-      break;
+        return "Failed to execute runnable"; //$NON-NLS-1$
+      case ERROR_FAILED_EVALUATE:
+        return "Failed to evaluate javascript expression"; //$NON-NLS-1$
       case ERROR_FAILED_LOAD_LIBRARY:
-        result = "Unable to load library"; //$NON-NLS-1$
-      break;
+        return "Unable to load library"; //$NON-NLS-1$
       case ERROR_CANNOT_INVERT_MATRIX:
-        result = "Cannot invert matrix"; //$NON-NLS-1$
-      break;
+        return "Cannot invert matrix"; //$NON-NLS-1$
       case ERROR_NO_GRAPHICS_LIBRARY:
-        result = "Unable to load graphics library"; //$NON-NLS-1$
-      break;
+        return "Unable to load graphics library"; //$NON-NLS-1$
       case ERROR_INVALID_FONT:
-        result = "Font not valid"; //$NON-NLS-1$
-      break;
-      default:
-        result = "Unknown error"; //$NON-NLS-1$
+        return "Font not valid"; //$NON-NLS-1$
     }
-    return result;
+    return "Unknown error"; //$NON-NLS-1$
   }
 
   /**
@@ -3842,4 +3812,5 @@ public class SWT {
   private static int getVersion( int major, int minor ) {
       return major * 1000 + minor;
   }
+
 }

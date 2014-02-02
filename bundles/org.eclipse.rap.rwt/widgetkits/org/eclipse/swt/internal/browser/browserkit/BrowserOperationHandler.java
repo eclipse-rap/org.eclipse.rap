@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
@@ -72,25 +73,14 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
    */
   public void handleCallExecuteFunction( final Browser browser, JsonObject properties ) {
     String name = properties.get( PARAM_NAME ).asString();
-    final Object[] arguments = jsonToJava( properties.get( PARAM_ARGUMENTS ).asArray() );
-    BrowserFunction[] functions = getAdapter( browser ).getBrowserFunctions();
-    boolean found = false;
-    for( int i = 0; i < functions.length && !found; i++ ) {
-      final BrowserFunction current = functions[ i ];
-      if( current.getName().equals( name ) ) {
-        ProcessActionRunner.add( new Runnable() {
-          public void run() {
-            try {
-              Object executedFunctionResult = current.function( arguments );
-              setExecutedFunctionResult( browser, executedFunctionResult );
-            } catch( Exception exception ) {
-              setExecutedFunctionError( browser, exception.getMessage() );
-            }
-            setExecutedFunctionName( browser, current.getName() );
-          }
-        } );
-        found = true;
-      }
+    final BrowserFunction function = findBrowserFunction( browser, name );
+    if( function != null ) {
+      final Object[] arguments = jsonToJava( properties.get( PARAM_ARGUMENTS ).asArray() );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          executeFunction( browser, function, arguments );
+        }
+      } );
     }
   }
 
@@ -123,6 +113,27 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
   public void handleNotifyProgress( Browser browser, JsonObject properties ) {
     browser.notifyListeners( PROGRESS_CHANGED, new Event() );
     browser.notifyListeners( PROGRESS_COMPLETED, new Event() );
+  }
+
+  private static BrowserFunction findBrowserFunction( Browser browser, String name ) {
+    BrowserFunction[] functions = getAdapter( browser ).getBrowserFunctions();
+    for( BrowserFunction function : functions ) {
+      if( function.getName().equals( name ) ) {
+        return function;
+      }
+    }
+    return null;
+  }
+
+  private static void executeFunction( Browser browser, BrowserFunction function, Object[] arguments )
+  {
+    try {
+      JsonValue result = javaToJson( function.function( arguments ) );
+      setExecutedFunctionResult( browser, result );
+    } catch( Exception exception ) {
+      setExecutedFunctionError( browser, exception.getMessage() );
+    }
+    setExecutedFunctionName( browser, function.getName() );
   }
 
   private static void setExecutedFunctionResult( Browser browser, Object result ) {
@@ -166,7 +177,35 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
     return result;
   }
 
-  private IBrowserAdapter getAdapter( Browser browser ) {
+  static JsonValue javaToJson( Object value ) {
+    if( value == null ) {
+      return JsonValue.NULL;
+    }
+    if( value instanceof String ) {
+      return JsonObject.valueOf( ( String )value );
+    }
+    if( value instanceof Number ) {
+      return JsonObject.valueOf( ( ( Number )value ).doubleValue() );
+    }
+    if( value instanceof Boolean ) {
+      return JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
+    }
+    if( value instanceof Object[] ) {
+      return javaToJson( ( Object[] )value );
+    }
+    SWT.error( SWT.ERROR_INVALID_RETURN_VALUE );
+    return null;
+  }
+
+  private static JsonValue javaToJson( Object[] array ) {
+    JsonArray jsonArray = new JsonArray();
+    for( int i = 0; i < array.length; i++ ) {
+      jsonArray.add( javaToJson( array[ i ] ) );
+    }
+    return jsonArray;
+  }
+
+  private static IBrowserAdapter getAdapter( Browser browser ) {
     return browser.getAdapter( IBrowserAdapter.class );
   }
 
