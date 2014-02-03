@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Client = rwt.client.Client;
+var Style = rwt.html.Style;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
   extend : rwt.qx.Object,
@@ -16,8 +22,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
   members : {
 
     testSetStylePropertyOnWidget : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget();
       Style.setStyleProperty( widget, "backgroundColor", red);
@@ -26,8 +30,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetStylePropertyOnElement : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
       Style.setStyleProperty( element, "backgroundColor", red );
@@ -35,8 +37,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testRemoveStylePropertyOnWidget : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget();
       Style.setStyleProperty( widget, "backgroundColor", red );
@@ -46,8 +46,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testRemoveStylePropertyOnElement : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var red = "red";
       var element = document.createElement( "div" );
       Style.setStyleProperty( element, "backgroundColor", red );
@@ -56,8 +54,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetStylePropertyOnWidgetBeforeCreate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var widget = this._createWidget( true );
       var red = "red";
       Style.setStyleProperty( widget, "color", red );
@@ -67,20 +63,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var red = "red";
       var widget = this._createWidget( true );
       Style.setStyleProperty( widget, "color", red );
       Style.removeStyleProperty( widget, "color" );
       TestUtil.flush();
-      assertTrue( widget._style.color == "" );
+      assertTrue( widget._style.color === "" );
       widget.destroy();
     },
 
     testSetOpacity : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       Style.setOpacity( element, 0.5 );
@@ -100,7 +92,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetOpacityBeforeWidgetCreation : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widgetNormal = this._createWidget( true );
       var widgetTransp = this._createWidget( true );
       widgetNormal.setOpacity( 0.5 );
@@ -117,8 +108,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetOpacityOnOuterElement : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var Style = rwt.html.Style;
       var element = document.createElement( "div" );
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
@@ -139,15 +128,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetRemoveTextShadow : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createWidget( true );
       var shadow = [ false, 1, 1, 0, 0, "#ff0000", 0.5 ];
       widget.setTextShadow( shadow );
       TestUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
-      var isMshtml = rwt.client.Client.isMshtml() || rwt.client.Client.isNewMshtml();
-      if( isMshtml && rwt.client.Client.getMajor() < 10 ) {
+      var isMshtml = Client.isMshtml() || Client.isNewMshtml();
+      if( isMshtml && Client.getMajor() < 10 ) {
         assertFalse( css.indexOf( "text-shadow:" ) !== -1 );
       } else {
         assertTrue( css.indexOf( "text-shadow:" ) !== -1 );
@@ -160,16 +148,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetBackgroundImage : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var el = document.createElement( "div" );
 
-      rwt.html.Style.setBackgroundImage( el, "foo.png" );
+      Style.setBackgroundImage( el, "foo.png" );
 
       var actual = TestUtil.getCssBackgroundImage( el );
-      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
-        if( rwt.client.Client.isMshtml() ) {
-          assertTrue( actual.indexOf( "http" ) === 0 );
-        }
+      if( Client.isMshtml() ) {
+        assertTrue( actual.indexOf( "http" ) === 0 );
+      }
+      if( Client.isMshtml() || Client.isWebkit() ) {
         assertTrue( actual.indexOf( "foo.png" ) !== -1 );
       } else {
         assertEquals( "foo.png", actual );
@@ -177,17 +164,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     },
 
     testSetBackgroundImage_externalImage : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var el = document.createElement( "div" );
 
-      rwt.html.Style.setBackgroundImage( el, "http://foo.org/bar.png" );
+      Style.setBackgroundImage( el, "http://foo.org/bar.png" );
 
       var actual = TestUtil.getCssBackgroundImage( el );
       assertEquals( "http://foo.org/bar.png", actual );
     },
 
     /////////
-   // Helper
+    // Helper
 
     _createWidget : function( noFlush ) {
       var result = new rwt.widgets.base.MultiCellWidget( [] );
@@ -201,4 +187,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     }
 
   }
+
 } );
+
+}() );

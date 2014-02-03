@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
@@ -585,17 +585,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode().childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
 
+      if( rwt.client.Client.isMshtml() ) {
+        assertTrue( url.indexOf( "http" ) === 0 );
+      }
       if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
-        if( rwt.client.Client.isMshtml() ) {
-          assertTrue( url.indexOf( "http" ) === 0 );
-        }
         assertTrue( url.indexOf( "single.gif" ) !== -1 );
       } else {
         assertEquals( "single.gif", url );
       }
       var position = node.style.backgroundPosition;
-      assertTrue(    position.indexOf( "center" ) != -1
-                  || position.indexOf( "50%" ) != -1 );
+      assertTrue( position.indexOf( "center" ) != -1 || position.indexOf( "50%" ) != -1 );
     },
 
     testRenderIndentSymbolsForParents : function() {
@@ -3210,4 +3209,4 @@ var mockTemplate = function() {
   return new rwt.widgets.util.Template( cells );
 };
 
-}());
+}() );

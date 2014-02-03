@@ -215,7 +215,10 @@ rwt.qx.Class.define( "rwt.client.Client", {
     },
 
     getBasePath : function() {
-      return this._computeBasePath( document.location.href );
+      if( !this._basePath ) {
+        this._basePath = this._computeBasePath( document.location.href );
+      }
+      return this._basePath;
     },
 
     //////////
@@ -234,8 +237,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
     _initOpera : function() {
       if( !this._isBrowserDetected() ) {
-        var isOpera =    window.opera
-                      && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
+        var isOpera = window.opera && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
         if( isOpera ) {
           this._browserName = "opera";
           this._engineName = "opera";

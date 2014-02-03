@@ -686,8 +686,8 @@ rwt.qx.Class.define( "rwt.html.Style", {
       "default" : function( target, type, originalEvent ) {
         var newEvent = document.createEvent( "MouseEvents" );
         newEvent.initMouseEvent( type,
-                                 true,  /* can bubble */
-                                 true, /*cancelable */
+                                 true, /* can bubble */
+                                 true, /* cancelable */
                                  originalEvent.view,
                                  originalEvent.detail,
                                  originalEvent.screenX,
@@ -704,22 +704,16 @@ rwt.qx.Class.define( "rwt.html.Style", {
       }
     } ),
 
-    _resolveResource : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( url ) {
-        return this._isAbsolute( url ) ? url : this._basePath + url;
-      },
-      "default" : function( url ) {
-        return url;
+    _resolveResource : function( url ) {
+      if( rwt.client.Client.isMshtml() && !this._isAbsolute( url ) ) {
+        return rwt.client.Client.getBasePath() + url;
       }
-    } ),
+      return url;
+    },
 
     _isAbsolute : function( url ) {
       return url.slice( 0, 7 ) === "http://" || url.slice( 0, 8 ) === "https://";
-    },
-
-    _basePath : ( function() {
-      return rwt.client.Client.getBasePath();
-    }() )
+    }
 
   }
 });

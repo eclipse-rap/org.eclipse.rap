@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,14 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
   extend : rwt.qx.Object,
-
-  construct : function() {
-    this.base( arguments );
-    this.TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-  },
 
   members : {
 
@@ -66,11 +66,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
 
-      var url = this.TestUtil.getCssBackgroundImage( widget._getTargetNode().firstChild );
+      var url = TestUtil.getCssBackgroundImage( widget._getTargetNode().firstChild );
+      if( rwt.client.Client.isMshtml() ) {
+        assertTrue( url.indexOf( "http" ) === 0 );
+      }
       if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
-        if( rwt.client.Client.isMshtml() ) {
-          assertTrue( url.indexOf( "http" ) === 0 );
-        }
         assertTrue( url.indexOf( "test.jpg" ) !== -1 );
       } else {
         assertEquals( "test.jpg", url );
@@ -131,7 +131,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals(
         "padding left is 23",
         23,
-        this.TestUtil.getElementBounds( firstChild ).left );
+        TestUtil.getElementBounds( firstChild ).left );
       widget.set( {
         paddingRight : 11,
         horizontalChildrenAlign : "right"
@@ -140,7 +140,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals(
         "padding right is 11",
         11,
-        this.TestUtil.getElementBounds( lastChild ).right );
+        TestUtil.getElementBounds( lastChild ).right );
       widget.set( {
         paddingTop : 7,
         verticalChildrenAlign : "top"
@@ -149,11 +149,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals(
         "padding top is 7",
         7,
-        this.TestUtil.getElementBounds( firstChild ).top );
+        TestUtil.getElementBounds( firstChild ).top );
       assertEquals(
         "padding top is 7",
         7,
-        this.TestUtil.getElementBounds( lastChild ).top );
+        TestUtil.getElementBounds( lastChild ).top );
       widget.set( {
         paddingBottom : 19,
         verticalChildrenAlign : "bottom"
@@ -162,17 +162,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals(
         "padding bottom is 10",
         19,
-        this.TestUtil.getElementBounds( firstChild ).bottom );
+        TestUtil.getElementBounds( firstChild ).bottom );
       assertEquals(
         "padding bottom is 19",
         19,
-        this.TestUtil.getElementBounds( lastChild ).bottom );
+        TestUtil.getElementBounds( lastChild ).bottom );
       this.disposeWidget( widget );
     },
 
     testCenter : function() {
       var widget = this.createDefaultWidget();
-      widget.setDimension( 100, 100 )
+      widget.setDimension( 100, 100 );
       this.initWidget( widget, true );
       widget.set( {
         padding : 0,
@@ -181,8 +181,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
         spacing : 5
       } );
       this.initWidget( widget, true );
-      var cell0 = this.TestUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
+      var cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( "1 - horizontal align", this.almostEqual( cell0.left, cell1.right ) );
       assertTrue( "2 - vertical align cell0", this.almostEqual( cell0.top, cell0.bottom ) );
       assertTrue( "3 - vertical align cell1", this.almostEqual( cell1.top, cell1.bottom ) );
@@ -212,8 +212,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setCellDimension( 0, 11, 12 );
       widget.setCellDimension( 1, 13, 14 );
       this.flush();
-      var cell0 = this.TestUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
+      var cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertEquals( 11, cell0.width );
       assertEquals( 12, cell0.height );
       assertEquals( 13, cell1.width );
@@ -261,15 +261,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setFlexibleCell( 1 );
       widget.setCellContent( 1, "some longer text that wraps" );
       this.flush();
-      var originalTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var originalTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       widget.setWidth( 80 );
       this.flush();
-      var newTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( originalTextBounds.width > newTextBounds.width );
       assertTrue( originalTextBounds.height < newTextBounds.height );
       widget.setWidth( 400 );
       this.flush();
-      newTextBounds = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertEquals( originalTextBounds, newTextBounds );
       this.disposeWidget( widget );
     },
@@ -294,7 +294,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.initWidget( widget, true );
       widget.setCellWidth( 0, 10 );
       assertTrue( widget._isInGlobalJobQueue );
-      this.TestUtil.flush();
+      TestUtil.flush();
       widget.setCellWidth( 0, 10 );
       assertIdentical( undefined, widget._isInGlobalJobQueue );
       this.disposeWidget( widget );
@@ -342,18 +342,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setEnabled( false );
       this.initWidget( widget, true );
       var node = widget._getTargetNode().firstChild;
-      assertTrue( this.TestUtil.hasElementOpacity( node ) );
+      assertTrue( TestUtil.hasElementOpacity( node ) );
       widget.setEnabled( true );
-      assertFalse( this.TestUtil.hasElementOpacity( node ) );
+      assertFalse( TestUtil.hasElementOpacity( node ) );
       this.disposeWidget( widget );
     },
 
     testOverflow : function() {
       var widget = this.createDefaultWidget();
-      widget.setDimension( 100, 100 )
+      widget.setDimension( 100, 100 );
       this.initWidget( widget, true );
-      var cell0 = this.TestUtil.getElementBounds( widget._getTargetNode().firstChild );
-      var cell1 = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      var cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
+      var cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertFalse( cell0.left < 0 );
       assertFalse( cell1.right < 0 );
       assertFalse( cell0.top < 0 );
@@ -363,8 +363,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setCellContent( 1, "looooooooooooooooooooooooooooooooooooooong");
       widget.setCellDimension( 0, 16, 150 );
       this.flush();
-      cell0 = this.TestUtil.getElementBounds( widget._getTargetNode().firstChild );
-      cell1 = this.TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
+      cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( cell0.left < 0 );
       assertTrue( cell1.right < 0 );
       assertTrue( cell0.top < 0 );
@@ -419,7 +419,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
         var widget = this.createDefaultWidget();
         this.initWidget( widget, true );
         var parentNode = widget._getTargetNode();
-        assertFalse( this.TestUtil.getElementSelectable( widget._getTargetNode() ) );
+        assertFalse( TestUtil.getElementSelectable( widget._getTargetNode() ) );
         this.disposeWidget( widget );
       }
     } ),
@@ -466,4 +466,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     }
 
   }
+
 } );
+
+}() );
