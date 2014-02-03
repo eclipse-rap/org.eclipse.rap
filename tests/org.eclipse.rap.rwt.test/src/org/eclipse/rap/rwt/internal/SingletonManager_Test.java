@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
@@ -36,11 +37,14 @@ import org.junit.Test;
 public class SingletonManager_Test {
 
   private UISession uiSession;
+  private ApplicationContext applicationContext;
 
   @Before
   public void setUp() {
     uiSession = mock( UISession.class );
     fakeAttributeStore( uiSession );
+    applicationContext = mock( ApplicationContext.class );
+    fakeAttributeStore( applicationContext );
   }
 
   @After
@@ -49,21 +53,35 @@ public class SingletonManager_Test {
   }
 
   @Test( expected = IllegalStateException.class )
-  public void testInstall_failsIfAlreadyInstalled() {
+  public void testInstall_uiSession_failsIfAlreadyInstalled() {
     SingletonManager.install( uiSession );
 
     SingletonManager.install( uiSession );
   }
 
+  @Test( expected = IllegalStateException.class )
+  public void testInstall_applicationContext_failsIfAlreadyInstalled() {
+    SingletonManager.install( applicationContext );
+
+    SingletonManager.install( applicationContext );
+  }
+
   @Test
-  public void testGetInstance_nullIfNotInstalled() {
+  public void testGetInstance_uiSession_nullIfNotInstalled() {
     SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
 
     assertNull( singletonManager );
   }
 
   @Test
-  public void testGetInstance_afterInstall() {
+  public void testGetInstance_applicationContext_nullIfNotInstalled() {
+    SingletonManager singletonManager = SingletonManager.getInstance( applicationContext );
+
+    assertNull( singletonManager );
+  }
+
+  @Test
+  public void testGetInstance_uiSession_afterInstall() {
     SingletonManager.install( uiSession );
 
     SingletonManager singletonManager = SingletonManager.getInstance( uiSession );
@@ -72,11 +90,30 @@ public class SingletonManager_Test {
   }
 
   @Test
-  public void testGetInstance_returnsSameInstance() {
+  public void testGetInstance_applicationContext_afterInstall() {
+    SingletonManager.install( applicationContext );
+
+    SingletonManager singletonManager = SingletonManager.getInstance( applicationContext );
+
+    assertNotNull( singletonManager );
+  }
+
+  @Test
+  public void testGetInstance_uiSession_returnsSameInstance() {
     SingletonManager.install( uiSession );
 
     SingletonManager instance1 = SingletonManager.getInstance( uiSession );
     SingletonManager instance2 = SingletonManager.getInstance( uiSession );
+
+    assertSame( instance1, instance2 );
+  }
+
+  @Test
+  public void testGetInstance_applicationContext_returnsSameInstance() {
+    SingletonManager.install( applicationContext );
+
+    SingletonManager instance1 = SingletonManager.getInstance( applicationContext );
+    SingletonManager instance2 = SingletonManager.getInstance( applicationContext );
 
     assertSame( instance1, instance2 );
   }

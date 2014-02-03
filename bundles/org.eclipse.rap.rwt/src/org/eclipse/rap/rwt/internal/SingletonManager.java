@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
@@ -57,13 +58,29 @@ public class SingletonManager implements SerializableCompatibility {
     uiSession.setAttribute( ATTR_SINGLETON_MANAGER, new SingletonManager() );
   }
 
+  public static void install( ApplicationContext applicationContext ) {
+    checkNotInstalled( applicationContext );
+    applicationContext.setAttribute( ATTR_SINGLETON_MANAGER, new SingletonManager() );
+  }
+
   public static SingletonManager getInstance( UISession uiSession ) {
     return ( SingletonManager )uiSession.getAttribute( ATTR_SINGLETON_MANAGER );
   }
 
+  public static SingletonManager getInstance( ApplicationContext applicationContext ) {
+    return ( SingletonManager )applicationContext.getAttribute( ATTR_SINGLETON_MANAGER );
+  }
+
   private static void checkNotInstalled( UISession uiSession ) {
     if( getInstance( uiSession ) != null ) {
-      String msg = "SingletonManager already installed for session: " + uiSession.getId();
+      String msg = "SingletonManager already installed for UI session: " + uiSession.getId();
+      throw new IllegalStateException( msg );
+    }
+  }
+
+  private static void checkNotInstalled( ApplicationContext applicationContext ) {
+    if( getInstance( applicationContext ) != null ) {
+      String msg = "SingletonManager already installed for application context";
       throw new IllegalStateException( msg );
     }
   }

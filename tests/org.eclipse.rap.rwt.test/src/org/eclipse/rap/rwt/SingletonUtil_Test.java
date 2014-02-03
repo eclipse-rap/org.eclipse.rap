@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
+import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockApplicationContextWithAttributeStore;
+import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockUISessionWithAttributeStore;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,6 +26,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -48,13 +52,99 @@ public class SingletonUtil_Test {
     Fixture.disposeOfApplicationContext();
   }
 
+  @Test( expected = NullPointerException.class )
+  public void testGetUniqueInstance_uiSession_failsWithNullType() {
+    SingletonUtil.getUniqueInstance( null, mock( UISession.class ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testGetUniqueInstance_applicationContext_failsWithNullType() {
+    SingletonUtil.getUniqueInstance( null, mock( ApplicationContext.class ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testGetUniqueInstance_uiSession_failsWithNullUISession() {
+    SingletonUtil.getUniqueInstance( TestSingleton.class, (UISession)null );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testGetUniqueInstance_applicationContext_failsWithNullApplicationContext() {
+    SingletonUtil.getUniqueInstance( TestSingleton.class, (ApplicationContext)null );
+  }
+
   @Test
-  public void testGetSessionInstance_failsWithNullArgument() {
-    try {
-      SingletonUtil.getSessionInstance( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+  public void testGetUniqueInstance_uiSession_returnsInstanceOfGivenClass() {
+    UISession uiSession = mockUISessionWithAttributeStore();
+    SingletonManager.install( uiSession );
+
+    Object instance = SingletonUtil.getUniqueInstance( TestSingleton.class, uiSession );
+
+    assertNotNull( instance );
+    assertSame( TestSingleton.class, instance.getClass() );
+  }
+
+  @Test
+  public void testGetUniqueInstance_applicationContext_returnsInstanceOfGivenClass() {
+    ApplicationContext applicationContext = mockApplicationContextWithAttributeStore();
+    SingletonManager.install( applicationContext );
+
+    Object instance = SingletonUtil.getUniqueInstance( TestSingleton.class, applicationContext );
+
+    assertNotNull( instance );
+    assertSame( TestSingleton.class, instance.getClass() );
+  }
+
+  @Test
+  public void testGetUniqueInstance_uiSession_returnsSameInstanceInSameScope() {
+    UISession uiSession = mockUISessionWithAttributeStore();
+    SingletonManager.install( uiSession );
+
+    Object instance1 = SingletonUtil.getUniqueInstance( TestSingleton.class, uiSession );
+    Object instance2 = SingletonUtil.getUniqueInstance( TestSingleton.class, uiSession );
+
+    assertSame( instance1, instance2 );
+  }
+
+  @Test
+  public void testGetUniqueInstance_applicationContext_returnsSameInstanceInSameScope() {
+    ApplicationContext applicationContext = mockApplicationContextWithAttributeStore();
+    SingletonManager.install( applicationContext );
+
+    Object instance1 = SingletonUtil.getUniqueInstance( TestSingleton.class, applicationContext );
+    Object instance2 = SingletonUtil.getUniqueInstance( TestSingleton.class, applicationContext );
+
+    assertSame( instance1, instance2 );
+  }
+
+  @Test
+  public void testGetUniqueInstance_uiSession_returnsNewInstanceInOtherScope() {
+    UISession uiSession1 = mockUISessionWithAttributeStore();
+    UISession uiSession2 = mockUISessionWithAttributeStore();
+    SingletonManager.install( uiSession1 );
+    SingletonManager.install( uiSession2 );
+
+    Object instance1 = SingletonUtil.getUniqueInstance( TestSingleton.class, uiSession1 );
+    Object instance2 = SingletonUtil.getUniqueInstance( TestSingleton.class, uiSession2 );
+
+    assertNotSame( instance1, instance2 );
+  }
+
+  @Test
+  public void testGetUniqueInstance_applicationContext_returnsNewInstanceInOtherScope() {
+    ApplicationContext applicationContext1 = mockApplicationContextWithAttributeStore();
+    ApplicationContext applicationContext2 = mockApplicationContextWithAttributeStore();
+    SingletonManager.install( applicationContext1 );
+    SingletonManager.install( applicationContext2 );
+
+    Object instance1 = SingletonUtil.getUniqueInstance( TestSingleton.class, applicationContext1 );
+    Object instance2 = SingletonUtil.getUniqueInstance( TestSingleton.class, applicationContext2 );
+
+    assertNotSame( instance1, instance2 );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testGetSessionInstance_failsWithNullType() {
+    SingletonUtil.getSessionInstance( null );
   }
 
   @Test
@@ -89,31 +179,24 @@ public class SingletonUtil_Test {
   }
 
   @Test
-  public void testGetSessionInstance_returnsInstanceWithFakeContext()
-    throws Throwable
-  {
+  public void testGetSessionInstance_returnsInstanceWithFakeContext() throws Throwable {
     final ServiceContext serviceContext = ContextProvider.getContext();
     final Object[] instance = { null };
-    Runnable runnable = new Runnable() {
+
+    Fixture.runInThread( new Runnable() {
       public void run() {
         ContextProvider.setContext( serviceContext );
         instance[ 0 ] = SingletonUtil.getSessionInstance( TestSingleton.class );
       }
-    };
-
-    Fixture.runInThread( runnable );
+    } );
 
     assertNotNull( instance[ 0 ] );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void testGetSessionInstance_failsWithoutContext() {
     ContextProvider.disposeContext();
-    try {
-      SingletonUtil.getSessionInstance( TestSingleton.class );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    SingletonUtil.getSessionInstance( TestSingleton.class );
   }
 
   private static void createUISession() {

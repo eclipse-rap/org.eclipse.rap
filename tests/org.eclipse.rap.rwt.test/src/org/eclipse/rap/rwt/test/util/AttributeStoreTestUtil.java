@@ -12,10 +12,12 @@ package org.eclipse.rap.rwt.test.util;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -27,7 +29,26 @@ public class AttributeStoreTestUtil {
   private AttributeStoreTestUtil() {
   }
 
+  public static UISession mockUISessionWithAttributeStore() {
+    UISession uiSession = mock( UISession.class );
+    fakeAttributeStore( uiSession );
+    return uiSession;
+  }
+
+  public static ApplicationContext mockApplicationContextWithAttributeStore() {
+    ApplicationContext applicationContext = mock( ApplicationContext.class );
+    fakeAttributeStore( applicationContext );
+    return applicationContext;
+  }
+
   public static void fakeAttributeStore( UISession mock ) {
+    StubbedAttributeStore store = new StubbedAttributeStore();
+    Mockito.doAnswer( store.setAttribute ).when( mock ).setAttribute( anyString(), any() );
+    Mockito.doAnswer( store.getAttribute ).when( mock ).getAttribute( anyString() );
+    Mockito.doAnswer( store.removeAttribute ).when( mock ).removeAttribute( anyString() );
+  }
+
+  public static void fakeAttributeStore( ApplicationContext mock ) {
     StubbedAttributeStore store = new StubbedAttributeStore();
     Mockito.doAnswer( store.setAttribute ).when( mock ).setAttribute( anyString(), any() );
     Mockito.doAnswer( store.getAttribute ).when( mock ).getAttribute( anyString() );

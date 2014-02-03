@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ package org.eclipse.rap.rwt;
  * @since 2.0
  * @deprecated use SingletonUtil instead
  */
+@Deprecated
 public abstract class SessionSingletonBase {
 
   /**
@@ -47,6 +48,7 @@ public abstract class SessionSingletonBase {
    *         with the current user session context.
    */
   public static <T> T getInstance( Class<T> type ) {
-    return SingletonUtil.getSessionInstance( type );
+    return SingletonUtil.getUniqueInstance( type, RWT.getUISession() );
   }
+
 }

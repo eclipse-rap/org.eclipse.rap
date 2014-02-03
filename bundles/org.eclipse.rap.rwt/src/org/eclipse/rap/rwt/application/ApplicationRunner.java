@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,9 @@ package org.eclipse.rap.rwt.application;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
-
 import javax.servlet.ServletContext;
 
+import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
@@ -78,6 +77,7 @@ public class ApplicationRunner {
    */
   public void start() {
     applicationContext.attachToServletContext();
+    SingletonManager.install( applicationContext );
     try {
       applicationContext.activate();
     } catch( RuntimeException rte ) {
@@ -99,15 +99,13 @@ public class ApplicationRunner {
   }
 
   /**
-   * @deprecated This method is not part of the RAP API. It will be removed in
-   *             future versions.
-   *             @noreference This method is not intended to be referenced by clients.
+   * @deprecated This method is not part of the RAP API. It will be removed in future versions.
+   * @noreference This method is not intended to be referenced by clients.
    */
   @Deprecated
   public Collection<String> getServletPaths() {
-    Set<String> result = new HashSet<String>();
     Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
-    result.addAll( servletPaths );
-    return Collections.unmodifiableCollection( result );
+    return Collections.unmodifiableCollection( new HashSet<String>( servletPaths ) );
   }
+
 }

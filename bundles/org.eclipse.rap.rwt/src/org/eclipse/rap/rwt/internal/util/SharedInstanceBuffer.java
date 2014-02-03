@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,22 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class SharedInstanceBuffer<K,I> implements Serializable {
-
-  public interface IInstanceCreator<T> {
-    T createInstance();
-  }
+public class SharedInstanceBuffer<K, I> implements Serializable {
 
   private final SerializableLock lock;
-  private final Map<K,I> store;
+  private final Map<K, I> store;
 
   public SharedInstanceBuffer() {
     lock = new SerializableLock();
-    store = new HashMap<K,I>();
+    store = new HashMap<K, I>();
   }
 
   public I get( K key, IInstanceCreator<I> instanceCreator ) {
-    ParamCheck.notNull( instanceCreator, "valueCreator" );
+    ParamCheck.notNull( instanceCreator, "instanceCreator" );
     synchronized( lock ) {
       I result = store.get( key );
       if( result == null ) {
@@ -46,4 +42,9 @@ public class SharedInstanceBuffer<K,I> implements Serializable {
       return store.remove( key );
     }
   }
+
+  public interface IInstanceCreator<T> {
+    T createInstance();
+  }
+
 }
