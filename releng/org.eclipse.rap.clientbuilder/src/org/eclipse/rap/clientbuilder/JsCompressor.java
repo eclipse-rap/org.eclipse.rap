@@ -10,51 +10,77 @@
  ******************************************************************************/
 package org.eclipse.rap.clientbuilder;
 
+import static org.eclipse.rap.clientbuilder.InputListReader.getInputFiles;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-import org.eclipse.swt.internal.widgets.displaykit.JsFilesList;
 
-
+/**
+ * Usage: JSCompressor [--input-path <path>] --input-list <file> --output-file <file>
+ *
+ *   --input-list <file>
+ *       file that includes the names of all input files, one per line
+ *
+ *   --input-path <path>
+ *       path to the directory that contains the input files
+ *
+ *   --output-file <file>
+ *       compressed javascript file
+ */
 public class JsCompressor {
-  private static final String JS_SOURCE_DIR = "js";
-  private static final String TARGET_JS_FILE = "resources/client.js";
+
+  private static final String OPT_INPUT_PATH = "--input-path";
+  private static final String OPT_INPUT_LIST = "--input-list";
+  private static final String OPT_OUTPUT_FILE = "--output-file";
+
   private static final boolean CREATE_DEBUG_FILES
     = "true".equals( System.getProperty( "jscompressor.debug" ) );
   private final DebugFileWriter debugFileWriter;
 
   public static void main( String[] args ) {
-    if( args.length < 1 ) {
-      String message = "Parameter missing (rwt project directory)";
-      throw new IllegalArgumentException( message );
+    File inputPrefix = null;
+    File inputListFile = null;
+    File outputFile = null;
+    String last = null;
+    for( int i = 0; i < args.length; i++ ) {
+      String arg = args[ i ];
+      if( OPT_INPUT_PATH.equals( last ) ) {
+        inputPrefix = new File( arg );
+      } else if( OPT_INPUT_LIST.equals( last ) ) {
+        inputListFile = new File( arg );
+      } else if( OPT_OUTPUT_FILE.equals( last ) ) {
+        outputFile = new File( arg );
+      } else if( !isValidOption( arg ) ) {
+        System.err.println( "Illegal parameter: " + arg );
+      }
+      last = arg;
     }
-    File projectDir = new File( args[ 0 ] );
-    if( !projectDir.exists() ) {
-      String message = "Project directory not found: " + projectDir;
-      throw new IllegalArgumentException( message );
+    if( inputListFile == null ) {
+      System.err.println( "Input list file missing, use parameter " + OPT_INPUT_LIST );
+    } else if( outputFile == null ) {
+      System.err.println( "Output file missing, use parameter " + OPT_OUTPUT_FILE );
+    } else if( !inputListFile.exists() ) {
+      System.err.println( "Input list file not found: " + inputListFile.getAbsolutePath() );
+    } else {
+      List<JSFile> inputFiles = getInputFiles( inputListFile, inputPrefix );
+      JsCompressor compressor = new JsCompressor();
+      compressor.compressFiles( inputFiles, outputFile );
     }
-    File inputDir = new File( projectDir, JS_SOURCE_DIR );
-    if( !inputDir.exists() ) {
-      String message = "Javascript source directory not found: " + inputDir;
-      throw new IllegalArgumentException( message );
-    }
-    JSFile[] inputFiles = getJsFilesList( inputDir );
-    File outputFile = new File( projectDir, TARGET_JS_FILE );
-    JsCompressor compressor = new JsCompressor( projectDir );
-    compressor.compressFiles( inputFiles, outputFile );
   }
 
-  public JsCompressor( File projectDir ) {
-    debugFileWriter = createDebugFileWriter( projectDir );
+  public JsCompressor() {
+    debugFileWriter = createDebugFileWriter();
   }
 
-  public void compressFiles( JSFile[] inputFiles, File outputFile ) {
+  public void compressFiles( List<JSFile> inputFiles, File outputFile ) {
     try {
       long start = System.currentTimeMillis();
       String compressed = compressFiles( inputFiles );
       long time = System.currentTimeMillis() - start;
       JSFile.writeToFile( outputFile, compressed );
-      int count = inputFiles.length;
+      int count = inputFiles.size();
       System.out.println( "Compressed " + count + " files in " + time + " ms" );
       System.out.println( "Result size: " + compressed.length() + " bytes" );
     } catch( IOException e ) {
@@ -62,17 +88,15 @@ public class JsCompressor {
     }
   }
 
-  private String compressFiles( JSFile[] inputFiles ) throws IOException {
+  private String compressFiles( List<JSFile> inputFiles ) throws IOException {
     StringReplacer stringReplacer = new StringReplacer();
-    for( int i = 0; i < inputFiles.length; i++ ) {
-      JSFile inputFile = inputFiles[ i ];
+    for( JSFile inputFile : inputFiles ) {
       stringReplacer.discoverStrings( inputFile.getTokens() );
     }
     stringReplacer.optimize();
     StringBuilder buffer = new StringBuilder();
     buffer.append( "(function($){" );
-    for( int i = 0; i < inputFiles.length; i++ ) {
-      JSFile inputFile = inputFiles[ i ];
+    for( JSFile inputFile : inputFiles ) {
       stringReplacer.replaceStrings( inputFile.getTokens() );
       String result = inputFile.compress( debugFileWriter );
       buffer.append( result );
@@ -90,30 +114,30 @@ public class JsCompressor {
     return buffer.toString();
   }
 
-  private static DebugFileWriter createDebugFileWriter( File projectDir ) {
+  private static boolean isValidOption( String arg ) {
+    return    OPT_INPUT_PATH.equals( arg )
+           || OPT_INPUT_LIST.equals( arg )
+           || OPT_OUTPUT_FILE.equals( arg );
+  }
+
+  private static DebugFileWriter createDebugFileWriter() {
     File debugDir = null;
     if( CREATE_DEBUG_FILES ) {
-      debugDir = new File( projectDir, "tmp" );
-      debugDir.mkdir();
-      System.out.println( "Creating debug files in " + debugDir );
+      try {
+        debugDir = createTempDir();
+        System.out.println( "Creating debug files in " + debugDir );
+      } catch( IOException exception ) {
+        exception.printStackTrace();
+      }
     }
     return new DebugFileWriter( debugDir );
   }
 
-  private static JSFile[] getJsFilesList( File inputDir ) {
-    JSFile[] inputFiles;
-    try {
-      String[] fileNames = JsFilesList.getFiles();
-      inputFiles = new JSFile[ fileNames.length ];
-      for( int i = 0; i < inputFiles.length; i++ ) {
-        File file = new File( inputDir, fileNames[ i ] );
-        inputFiles[ i ] = new JSFile( file );
-      }
-    } catch( Exception e ) {
-      String message = "Failed to get JS files list from rwt project";
-      throw new RuntimeException( message, e );
-    }
-    return inputFiles;
+  private static File createTempDir() throws IOException {
+    File tmpDir = File.createTempFile( "jscompressor-", "" );
+    tmpDir.delete();
+    tmpDir.mkdir();
+    return tmpDir;
   }
 
   private static String createStringArray( String[] strings ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,19 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.displaykit;
+package org.eclipse.rap.rwt.internal.resources;
 
+import static org.eclipse.rap.rwt.internal.resources.TestUtil.readContent;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.resources.ClientResources;
 import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -71,6 +72,15 @@ public class ClientResources_Test {
     assertFalse( resourceManager.isRegistered( "rwt/runtime/System.js" ) );
     Theme defaultTheme = themeManager.getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
+  }
+
+  @Test
+  public void testIncludesDebugSettings() throws IOException {
+    System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
+    clientResources.registerResources();
+
+    String content = readContent( resourceManager.getRegisteredContent( "rap-client.js" ), "UTF-8" );
+    assertTrue( content.contains( "[ \"qx.debug\" ] = \"on\"" ) );
   }
 
   @Test

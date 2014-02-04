@@ -1,0 +1,176 @@
+/*******************************************************************************
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
+ ******************************************************************************/
+package org.eclipse.rap.rwt.internal.resources;
+
+import static org.eclipse.rap.rwt.internal.resources.ClientFilesReader.getInputFiles;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import org.eclipse.rap.rwt.internal.RWTProperties;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
+import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.service.ResourceManager;
+
+
+public final class ClientResources {
+
+  private static final String CLIENT_FILES = "client.files";
+  private static final String CLIENT_JS = "client.js";
+  private static final String JSON_MIN_JS = "json2.min.js";
+
+  private static final List<String> JAVASCRIPT_FILES = getInputFiles( CLIENT_FILES );
+
+  private static final String[] WIDGET_IMAGES = new String[] {
+    "resource/static/image/blank.gif",
+    "resource/static/image/dotted_white.gif",
+    "resource/widget/rap/arrows/chevron-left.png",
+    "resource/widget/rap/arrows/chevron-right.png",
+    "resource/widget/rap/arrows/chevron-left-hover.png",
+    "resource/widget/rap/arrows/chevron-right-hover.png",
+    "resource/widget/rap/tree/loading.gif",
+    "resource/widget/rap/ctabfolder/maximize.gif",
+    "resource/widget/rap/ctabfolder/minimize.gif",
+    "resource/widget/rap/ctabfolder/restore.gif",
+    "resource/widget/rap/ctabfolder/close.gif",
+    "resource/widget/rap/ctabfolder/close_hover.gif",
+    "resource/widget/rap/ctabfolder/ctabfolder-dropdown.png",
+    "resource/widget/rap/cursors/alias.gif",
+    "resource/widget/rap/cursors/copy.gif",
+    "resource/widget/rap/cursors/move.gif",
+    "resource/widget/rap/cursors/nodrop.gif",
+    "resource/widget/rap/cursors/up_arrow.cur",
+    "resource/widget/rap/scale/h_line.gif",
+    "resource/widget/rap/scale/v_line.gif"
+  };
+
+  private final ApplicationContextImpl applicationContext;
+  private final ResourceManager resourceManager;
+  private final ThemeManager themeManager;
+
+  public ClientResources( ApplicationContextImpl applicationContext ) {
+    this.applicationContext = applicationContext;
+    resourceManager = applicationContext.getResourceManager();
+    themeManager = applicationContext.getThemeManager();
+  }
+
+  public void registerResources() {
+    try {
+      registerTextResource( "resource/static/html/blank.html" );
+      registerJavascriptFiles();
+      registerThemeResources();
+      registerWidgetImages();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to register resources", ioe );
+    }
+  }
+
+  private void registerJavascriptFiles()
+    throws IOException
+  {
+    ContentBuffer contentBuffer = new ContentBuffer();
+    String appearanceCode = getQxAppearanceThemeCode();
+    if( RWTProperties.isDevelopmentMode() ) {
+      for( String javascriptFile : JAVASCRIPT_FILES ) {
+        if( "settings.js".equals( javascriptFile ) ) {
+          javascriptFile = "debug-settings.js";
+        }
+        append( contentBuffer, javascriptFile );
+      }
+    } else {
+      append( contentBuffer, CLIENT_JS );
+    }
+    String json2Code = readResourceContent( JSON_MIN_JS );
+    contentBuffer.append( json2Code.getBytes( HTTP.CHARSET_UTF_8 ) );
+    contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
+    registerJavascriptResource( contentBuffer, "rap-client.js" );
+  }
+
+  private String getQxAppearanceThemeCode() {
+    List<String> customAppearances = themeManager.getAppearances();
+    return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
+  }
+
+  private void append( ContentBuffer contentBuffer, String location ) throws IOException {
+    InputStream inputStream = openResourceStream( location );
+    try {
+      contentBuffer.append( inputStream );
+    } catch( Throwable t ) {
+      System.out.println();
+    } finally {
+      inputStream.close();
+    }
+  }
+
+  private void registerThemeResources() {
+    String[] themeIds = themeManager.getRegisteredThemeIds();
+    for( String themeId : themeIds ) {
+      Theme theme = themeManager.getTheme( themeId );
+      theme.registerResources( applicationContext );
+    }
+  }
+
+  private void registerWidgetImages() throws IOException {
+    for( String resourcePath : WIDGET_IMAGES ) {
+      InputStream inputStream = openResourceStream( resourcePath );
+      resourceManager.register( resourcePath, inputStream );
+      inputStream.close();
+    }
+  }
+
+  private void registerTextResource( String name ) throws IOException {
+    InputStream inputStream = openResourceStream( name );
+    try {
+      resourceManager.register( name, inputStream );
+    } finally {
+      inputStream.close();
+    }
+  }
+
+  private void registerJavascriptResource( ContentBuffer buffer, String name ) throws IOException {
+    InputStream inputStream = buffer.getContentAsStream();
+    try {
+      resourceManager.register( name, inputStream );
+    } finally {
+      inputStream.close();
+    }
+    String location = resourceManager.getLocation( name );
+    applicationContext.getStartupPage().setClientJsLibrary( location );
+  }
+
+  private String readResourceContent( String location ) throws IOException {
+    byte[] buffer = new byte[ 40960 ];
+    InputStream inputStream = openResourceStream( location );
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    try {
+      int read = inputStream.read( buffer );
+      while( read != -1 ) {
+        outputStream.write( buffer, 0, read );
+        read = inputStream.read( buffer );
+      }
+    } finally {
+      inputStream.close();
+    }
+    return outputStream.toString( HTTP.CHARSET_UTF_8 );
+  }
+
+  private InputStream openResourceStream( String name ) {
+    return getClass().getClassLoader().getResourceAsStream( name );
+  }
+
+}
