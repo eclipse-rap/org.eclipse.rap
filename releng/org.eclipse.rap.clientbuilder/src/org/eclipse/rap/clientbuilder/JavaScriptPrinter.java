@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ public class JavaScriptPrinter {
   private static final String INDENT = "  ";
   private static final String NEWLINE = "\n";
 
-  private final StringBuffer code;
+  private final StringBuilder code;
 
   private String indent;
   private String nextPrefix;
 
   public JavaScriptPrinter() {
-    code = new StringBuffer();
+    code = new StringBuilder();
     indent = "";
     nextPrefix = "";
   }
@@ -92,7 +92,7 @@ public class JavaScriptPrinter {
   }
 
   public static String escapeString( String value ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     int length = value.length();
     for( int i = 0; i < length; i++ ) {
       char ch = value.charAt( i );

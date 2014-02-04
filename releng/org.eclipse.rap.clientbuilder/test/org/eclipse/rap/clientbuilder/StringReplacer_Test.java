@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,41 +10,58 @@
  ******************************************************************************/
 package org.eclipse.rap.clientbuilder;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class StringReplacer_Test extends TestCase {
+public class StringReplacer_Test {
 
+  private StringReplacer replacer;
+
+  @Before
+  public void setUp() {
+    replacer = new StringReplacer();
+  }
+
+  @Test
   public void testDiscoverStrings() throws IOException {
     TokenList tokens = TestUtil.parse( "var foo = 'foo';" );
-    StringReplacer replacer = new StringReplacer();
+
     replacer.discoverStrings( tokens );
+
     assertEquals( 1, replacer.getStrings().length );
   }
 
+  @Test
   public void testDiscoverStrings_NoMatches() throws IOException {
     TokenList tokens = TestUtil.parse( "var foo = 1; var bar = { 'foo' : 1 };" );
-    StringReplacer replacer = new StringReplacer();
+
     replacer.discoverStrings( tokens );
+
     assertEquals( 0, replacer.getStrings().length );
   }
 
+  @Test
   public void testDiscoverStrings_MultipleOccurences() throws IOException {
     TokenList tokens = TestUtil.parse(   "var foo1 = 'foo';\n"
                                        + "var foo2 = 'foo';\n"
                                        + "var bar1 = 'bar';\n"
                                        + "var bar2 = 'bar';" );
-    StringReplacer replacer = new StringReplacer();
+
     replacer.discoverStrings( tokens );
+
     assertEquals( 2, replacer.getStrings().length );
   }
 
+  @Test
   public void testGetStrings_SortedByFrequency() throws IOException {
     List<String> list  = new ArrayList<String>();
     for( int frequency = 1; frequency <= 10; frequency++ ) {
@@ -53,13 +70,14 @@ public class StringReplacer_Test extends TestCase {
       }
     }
     Collections.shuffle( list, new Random() );
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     for( String string : list ) {
       buffer.append( string );
     }
     TokenList tokens = TestUtil.parse( buffer.toString() );
-    StringReplacer replacer = new StringReplacer();
+
     replacer.discoverStrings( tokens );
+
     assertEquals( 10, replacer.getStrings().length );
     assertEquals( "10x", replacer.getStrings()[ 0 ] );
     assertEquals( "9x", replacer.getStrings()[ 1 ] );
@@ -67,13 +85,15 @@ public class StringReplacer_Test extends TestCase {
     assertEquals( "1x", replacer.getStrings()[ 9 ] );
   }
 
+  @Test
   public void testReplaceStrings() throws IOException {
     TokenList tokens = TestUtil.parse( "var foo = 'foo' + 'foo'; var bar = 'bar';" );
-    StringReplacer replacer = new StringReplacer();
+
     replacer.discoverStrings( tokens );
     replacer.replaceStrings( tokens );
-    String result = JavaScriptPrinter.printTokens( tokens );
+
     String expected = "var  foo = $ [ 0 ] + $ [ 0 ];\n" + "var  bar = $ [ 1 ];";
-    assertEquals( expected, result );
+    assertEquals( expected, JavaScriptPrinter.printTokens( tokens ) );
   }
+
 }

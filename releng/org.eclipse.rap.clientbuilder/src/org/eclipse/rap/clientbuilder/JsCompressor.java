@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class JsCompressor {
       stringReplacer.discoverStrings( inputFile.getTokens() );
     }
     stringReplacer.optimize();
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "(function($){" );
     for( int i = 0; i < inputFiles.length; i++ ) {
       JSFile inputFile = inputFiles[ i ];
@@ -117,7 +117,7 @@ public class JsCompressor {
   }
 
   private static String createStringArray( String[] strings ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "[" );
     for( int i = 0; i < strings.length; i++ ) {
       String string = strings[ i ];
