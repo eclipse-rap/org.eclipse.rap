@@ -26,7 +26,7 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
 
   construct : function() {
     this.base( arguments );
-    this.removeAll();
+    this.__storage = [];
   },
 
   /*
@@ -118,7 +118,10 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
      * @return {String} string representation of the Selection
      */
     getChangeValue : function() {
-      var sb = this.__storage.slice( 0 );
+      var sb = [];
+      for( var i = 0; i < this.__storage.length; i++ ) {
+        sb.push( this.__storage[ i ].toHashCode() );
+      }
       sb.sort();
       return sb.join( ";" );
     },

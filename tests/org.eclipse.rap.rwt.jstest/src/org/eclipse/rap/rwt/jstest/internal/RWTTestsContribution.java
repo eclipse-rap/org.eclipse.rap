@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 
@@ -107,8 +108,7 @@ public class RWTTestsContribution implements TestContribution {
     "tests/EventProxy_Test.js",
     "tests/Synchronizer_Test.js",
     "tests/WidgetProxyFactory_Test.js",
-    "tests/BrowserTest.js",
-    "tests/SelectionTest.js"
+    "tests/BrowserTest.js"
   };
 
   public String getName() {
