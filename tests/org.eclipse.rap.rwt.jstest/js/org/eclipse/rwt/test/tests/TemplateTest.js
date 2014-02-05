@@ -125,8 +125,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       var element = render( template, createGridItem( [ "foo", null, "foo" ] ) );
 
-      assertEquals( 100, element.children[ 0 ].style.zIndex );
-      assertEquals( 102, element.children[ 1 ].style.zIndex );
+      assertEquals( "100", element.children[ 0 ].style.zIndex );
+      assertEquals( "102", element.children[ 1 ].style.zIndex );
     },
 
     testRenderCreatesElements_ReUsesElements : function() {

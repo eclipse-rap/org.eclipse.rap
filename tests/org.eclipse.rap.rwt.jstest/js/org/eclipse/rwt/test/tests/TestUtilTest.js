@@ -721,13 +721,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testResetObjectManager : function() {
-      TestUtil.createShellByProtocol( "w2" );
+      var shell = TestUtil.createShellByProtocol( "w2" );
 
       assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
       TestUtil.resetObjectManager();
 
       assertTrue( null == rwt.remote.ObjectRegistry.getObject( "w2" ) );
       assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
+      shell.destroy();
     },
 
     testProtocolListen : function() {

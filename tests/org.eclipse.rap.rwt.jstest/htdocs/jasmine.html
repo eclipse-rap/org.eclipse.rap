@@ -7,37 +7,28 @@
   <link rel="stylesheet" type="text/css" href="jasmine/jasmine.css">
   <script type="text/javascript" src="jasmine/jasmine.js"></script>
   <script type="text/javascript" src="jasmine/jasmine-html.js"></script>
+  <style>
+    /* Hundreds of suites make the summary way to big, limit to one line */
+    #HTMLReporter .symbolSummary {
+      height: 3em;
+      white-space: nowrap;
+      overflow: auto;
+    }
+    #HTMLReporter .symbolSummary li {
+      float:none;
+      display:inline-block;
+    }
+  </style>
 
   <!-- include source and files -->
   <script src="test?servicehandler=clientResources&amp;contribution=rwt" type="text/javascript"></script>
   <script src="test?servicehandler=clientResources&amp;contribution=test-fixture" type="text/javascript"></script>
   <script src="test?servicehandler=clientResources&amp;jasmine=true" type="text/javascript"></script>
-
+  <script src="test?servicehandler=clientResources" type="text/javascript"></script>
+  <script src="./test?servicehandler=clientResources&amp;contribution=test-runner" type="text/javascript"></script>
   <script type="text/javascript">
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      var htmlReporter = new jasmine.HtmlReporter();
-
-      jasmineEnv.addReporter(htmlReporter);
-
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
-        org.eclipse.rwt.test.fixture.Fixture.setup();
-        execJasmine();
-      } );
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
-    })();
+    org.eclipse.rwt.test.JasmineStartup.run();
   </script>
-
 </head>
 
 <body>

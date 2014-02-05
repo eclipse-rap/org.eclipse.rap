@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 

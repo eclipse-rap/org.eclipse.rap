@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -289,6 +289,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       TestUtil.flush();
       var borderTwo = button.getBorder();
       assertIdentical( borderOne, borderTwo );
+      button.destroy();
     },
 
     testRenderRoundedBorder : function() {
@@ -312,6 +313,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
         assertEquals( expectedWidths, this._getBorderWidths( widget._style ) );
         assertEquals( radii, this._getBorderRadii( widget._style ) );
         border.dispose();
+        widget.destroy();
       }
     },
 
@@ -331,6 +333,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
         assertEquals( [ 0, 0, 0, 0 ], this._getBorderWidths( widget._style ) );
         assertEquals( [ 0, 0, 0, 0 ], this._getBorderRadii( widget._style ) );
         border.dispose();
+        widget.destroy();
       }
     },
 
@@ -348,6 +351,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
         TestUtil.flush();
         assertEquals( [ 0, 0, 0, 0 ], this._getBorderRadii( widget._style ) );
         border.dispose();
+        widget.destroy();
       }
     },
 
@@ -367,6 +371,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
         TestUtil.flush();
         assertEquals( [ 0, 0, 0, 0 ], this._getBorderRadii( widget._style ) );
         border.dispose();
+        widget.destroy();
       }
     },
 

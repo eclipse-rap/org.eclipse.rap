@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( 3, widget._hoursTextField.getText() );
+      assertEquals( "03", widget._hoursTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
@@ -76,7 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( 33, widget._minutesTextField.getText() );
+      assertEquals( "33", widget._minutesTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
@@ -97,7 +97,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( 22, widget._secondsTextField.getText() );
+      assertEquals( "22", widget._secondsTextField.getText() );
       shell.destroy();
       widget.destroy();
     },
@@ -176,6 +176,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       assertEquals( 4, message.findSetProperty( "w3", "hours" ) );
       assertEquals( 34, message.findSetProperty( "w3", "minutes" ) );
       assertEquals( 55, message.findSetProperty( "w3", "seconds" ) );
+      dateTime.destroy();
     },
 
     testSendEvent : function() {

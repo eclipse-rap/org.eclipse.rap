@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -247,6 +247,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
       assertEquals( 2 + parseInt( thumb.style.top, 10 ), bounds.top );
       assertEquals( parseInt( thumb.style.width, 10 ), bounds.width );
       assertEquals( parseInt( thumb.style.height, 10 ), bounds.height );
+      scale.destroy();
     },
 
     testGetToolTipTargetBounds_Vertical : function() {

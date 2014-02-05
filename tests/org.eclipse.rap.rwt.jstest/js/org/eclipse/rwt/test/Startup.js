@@ -8,9 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+namespace( "org.eclipse.rwt.test" );
 
-rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
-  org.eclipse.rwt.test.fixture.Fixture.setup();
-  org.eclipse.rwt.test.Asserts.createShortcuts();
-  org.eclipse.rwt.test.TestRunner.getInstance().run();
-} );
+org.eclipse.rwt.test.Startup = {
+
+  run : function() {
+    rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
+      org.eclipse.rwt.test.fixture.Fixture.setup();
+      org.eclipse.rwt.test.Asserts.createShortcuts();
+      org.eclipse.rwt.test.TestRunner.getInstance().run();
+    } );
+  }
+
+};

@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.jstest.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 
@@ -21,9 +22,11 @@ public class TestRunnerContribution implements TestContribution {
 
   private static final String[] FILES = new String[] {
     "Presenter.js",
-    "TestRunner.js",
     "Asserts.js",
-    "Startup.js"
+    "Startup.js",
+    "JasmineStartup.js",
+    "TestRunner.js",
+    "LegacyAsserts.js"
   };
 
   public String getName() {

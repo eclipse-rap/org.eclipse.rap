@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
                           "Probably the file contains corrupted JavaScript." );
     }
     // helper for debugging
+    /* global getLog:true */
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     };
@@ -69,7 +70,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       this._loopWrapper();
     },
 
+    /*global console:false */
     pause : function( value ) {
+      console.log( value );
+      console.trace();
       this._pause = value;
     },
 
@@ -113,13 +117,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     },
 
     _prepare : function() {
-      // prevent flush by timer
-      this._disableAutoFlush();
-      org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
-      org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
-      // prevent actual dom-events
-      rwt.event.EventHandler.detachEvents();
-      org.eclipse.rwt.test.fixture.TestUtil.initErrorPageLog();
       var that = this;
       this._loopWrapper = function(){ that._loop(); };
       this.info( "Found " + this._testClasses.length + " Tests.", false );
@@ -165,7 +162,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
           teardown = false;
         }
         fun = this._currentInstance[ test[ 0 ] ][ test[ 1 ] ];
-      }  else {
+      } else {
         fun = this._currentInstance[ test ];
       }
       if( this._NOTRYCATCH ) {
@@ -240,26 +237,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
 
     _cleanUp : function() {
       if( this._pause === null ) {
-        org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
-        org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog();
-        org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance();
-        org.eclipse.rwt.test.fixture.TestUtil.emptyDragCache();
-        org.eclipse.rwt.test.fixture.TestUtil.resetEventHandler();
-        org.eclipse.rwt.test.fixture.TestUtil.cleanUpKeyUtil();
-        org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-        org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
-        org.eclipse.rwt.test.fixture.TestUtil.resetWindowManager();
-        org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
-        rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode 
-          = rwt.util.Functions.returnFalse;
-        rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
-        rwt.event.EventHandler.setFocusRoot(
-          rwt.widgets.base.ClientDocument.getInstance()
-        );
-        rwt.widgets.base.WidgetToolTip.getInstance().hide();
-        rwt.widgets.base.WidgetToolTip.getInstance()._hideTimeStamp = ( new Date( 0 ) ).valueOf();
+        org.eclipse.rwt.test.fixture.Fixture.reset();
+      } else {
+        rwt.widgets.base.Widget.flushGlobalQueues();
       }
-      rwt.widgets.base.Widget.flushGlobalQueues();
     },
 
     // called by Asserts.js
@@ -376,18 +357,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       rwt.runtime.MobileWebkitSupport._removeListeners();
     },
 
-    _disableAutoFlush : function() {
-      rwt.widgets.base.Widget._removeAutoFlush();
-      rwt.widgets.base.Widget._initAutoFlush = function(){};
-      rwt.widgets.base.Widget.__orgFlushGlobalQueues = rwt.widgets.base.Widget.flushGlobalQueues;
-      rwt.widgets.base.Widget.flushGlobalQueues = function() {
-        if( this.__allowFlushs ) {
-          rwt.widgets.base.Widget.__orgFlushGlobalQueues();
-        }
-      };
-      rwt.widgets.base.Widget.__allowFlushs = true;
-    },
-
     getLog : function(){
       return this._log;
     },
@@ -472,7 +441,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     _getURLParam : function( name ) {
       var result = null;
       var href = window.location.href;
-      var hashes = href.slice( href.indexOf( "?" ) + 1).split( "&" );
+      var hashes = href.slice( href.indexOf( "?" ) + 1 ).split( "&" );
       for( var i = 0; i < hashes.length; i++ ) {
         var hash = hashes[ i ].split( "=" );
         if( hash[ 0 ] === name ) {

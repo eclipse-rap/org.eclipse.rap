@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -542,7 +542,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var selection = this._getSelection( list );
       assertEquals( 1, selection.length );
       assertEquals( "<i>C</i> something", selection[ 0 ].getLabel() );
-      list.destroy();
+      shell.destroy();
     },
 
     testSelectItems : function() {
@@ -705,6 +705,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         text = text.slice( text.lastIndexOf( "/" ) + 1 );
       }
       assertEquals( "foo", text );
+      list.destroy();
     },
 
     testClickOnRWTHyperlinkWithoutHref : function() {
@@ -724,6 +725,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
       assertEquals( "Test", message.findNotifyProperty( "w3", "Selection", "text" ) );
+      list.destroy();
     },
 
     testClickOnRWTHyperlinkWithInnerHTML : function() {
@@ -748,6 +750,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         text = text.slice( text.lastIndexOf( "/" ) + 1 );
       }
       assertEquals( "foo", text );
+      list.destroy();
     },
 
     testBasicLayout : function() {
