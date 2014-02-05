@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.displaykit;
+package org.eclipse.rap.rwt.internal.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.osgi.framework.Bundle;
@@ -28,14 +29,15 @@ public final class ClientResourcesAdapter {
     // prevent instantiation
   }
 
-  public static String[] getRegisteredClientResources() {
-    String[] result;
+  @SuppressWarnings( "unchecked" )
+  public static List<String> getRegisteredClientResources() {
+    List<String> result;
     try {
-      String name = "org.eclipse.swt.internal.widgets.displaykit.ClientResources";
+      String name = "org.eclipse.rap.rwt.internal.resources.ClientResources";
       Class<?> clazz = rwtBundle.loadClass( name );
       Field field = clazz.getDeclaredField( "JAVASCRIPT_FILES" );
       field.setAccessible( true );
-      result = ( String[] )field.get( null );
+      result = ( List<String> )field.get( null );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to get JS files from RWT ClientResources", exception );
     }
