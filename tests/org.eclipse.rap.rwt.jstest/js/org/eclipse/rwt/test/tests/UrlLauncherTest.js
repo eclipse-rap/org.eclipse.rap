@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -25,7 +25,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.UrlLauncherTest", {
   members : {
 
     setUp : function() {
-      launcher = rwt.client.UrlLauncher.getInstance();
+      launcher = new rwt.client.UrlLauncher();
       logger = TestUtil.getLogger();
       launcher._window = {
         open : function() {
@@ -40,8 +40,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.UrlLauncherTest", {
       launcher._iframe = iframe;
     },
 
+    testGetInstance : function() {
+      var instance = rwt.client.UrlLauncher.getInstance();
+
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.client.UrlLauncher ) );
+    },
+
     testCreateUrlLauncherByProtocol : function() {
-      assertIdentical( launcher, ObjectRegistry.getObject( "rwt.client.UrlLauncher" ) );
+      var instance = rwt.client.UrlLauncher.getInstance();
+
+      assertIdentical( instance, ObjectRegistry.getObject( "rwt.client.UrlLauncher" ) );
     },
 
     testCreatesIFrame : function() {
@@ -97,4 +105,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.UrlLauncherTest", {
 
 } );
 
-}());
+}() );

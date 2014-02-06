@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var Processor = rwt.remote.MessageProcessor;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -23,7 +23,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
   members : {
 
     tearDown : function() {
-      delete ServerPush._instance;
+      rwt.runtime.Singletons.clear();
     },
 
     testServerPushInstance : function() {
@@ -92,4 +92,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
 
 } );
 
-}());
+}() );

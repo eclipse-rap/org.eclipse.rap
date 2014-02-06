@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,6 @@
 namespace( "rwt.client" );
 
 rwt.client.UrlLauncher = function() {
-  if( rwt.client.UrlLauncher._instance !== undefined ) {
-    throw new Error( "UrlLauncher can not be created twice" );
-  } else {
-    rwt.client.UrlLauncher._instance = this;
-  }
   this._window = window;
   var iframe = document.createElement( "iframe" );
   iframe.style.visibility = "hidden";
@@ -29,10 +24,7 @@ rwt.client.UrlLauncher = function() {
 };
 
 rwt.client.UrlLauncher.getInstance = function() {
-  if( rwt.client.UrlLauncher._instance === undefined ) {
-    new rwt.client.UrlLauncher();
-  }
-  return rwt.client.UrlLauncher._instance;
+  return rwt.runtime.Singletons.get( rwt.client.UrlLauncher );
 };
 
 rwt.client.UrlLauncher.prototype = {

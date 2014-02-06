@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
@@ -77,13 +77,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testAdd_FailsForAddingSameCellTypeTwice : function() {
       registry.add( {
-        "cellType" : "text",
+        "cellType" : "foo",
         "contentType" : "foo",
         "renderContent" : function(){}
       } );
       try {
         registry.add( {
-          "cellType" : "text",
+          "cellType" : "foo",
           "contentType" : "foo",
           "renderContent" : function(){}
         } );
@@ -214,6 +214,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       registry.removeRendererFor( "foo" );
 
       assertNull( renderer, registry.getRendererFor( "foo" ) );
+    },
+
+    testGetInstance : function() {
+      var instance = rwt.widgets.util.CellRendererRegistry.getInstance();
+
+      var Singletons = rwt.runtime.Singletons;
+      assertIdentical( instance, Singletons.get( rwt.widgets.util.CellRendererRegistry ) );
     },
 
     testTextRenderer_CreateElementSetsTextOverflow : function() {
@@ -469,4 +476,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
 } );
 
-}());
+}() );

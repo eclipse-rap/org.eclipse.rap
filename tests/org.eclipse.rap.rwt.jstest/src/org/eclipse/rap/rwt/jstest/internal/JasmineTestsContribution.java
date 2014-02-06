@@ -21,6 +21,7 @@ public class JasmineTestsContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rwt/test/";
 
   private static final String[] TEST_FILES = new String[] {
+    "spec/Singletons.spec.js",
     "spec/Selection.spec.js",
     "spec/ServerPush.spec.js",
     "spec/DragSource.spec.js",

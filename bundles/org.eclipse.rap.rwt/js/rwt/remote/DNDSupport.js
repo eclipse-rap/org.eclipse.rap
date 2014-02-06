@@ -30,10 +30,7 @@ rwt.remote.DNDSupport = function() {
 };
 
 rwt.remote.DNDSupport.getInstance = function() {
-  if( rwt.remote.DNDSupport._instance === undefined ) {
-    rwt.remote.DNDSupport._instance = new rwt.remote.DNDSupport();
-  }
-  return rwt.remote.DNDSupport._instance;
+  return rwt.runtime.Singletons.get( rwt.remote.DNDSupport );
 };
 
 rwt.remote.DNDSupport.prototype = {

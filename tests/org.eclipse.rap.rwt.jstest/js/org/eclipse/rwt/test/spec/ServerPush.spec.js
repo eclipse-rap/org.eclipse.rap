@@ -13,29 +13,28 @@ describe( "ServerPush", function() {
 
   var serverPush;
 
-  beforeEach(function() {
-    serverPush = rwt.client.ServerPush.getInstance();
-  });
+  beforeEach( function() {
+    serverPush = new rwt.client.ServerPush();
+  } );
 
   it( "should be inactive by default", function() {
     expect( serverPush._active ).toBeFalsy();
-  });
+  } );
 
   it( "can be activated", function() {
     serverPush.setActive( true );
 
     expect( serverPush._active ).toBe( true );
-  });
+  } );
 
   describe( "getInstance", function() {
 
     it( "should return the same instance", function() {
-      var instance1 = rwt.client.ServerPush.getInstance();
-      var instance2 = rwt.client.ServerPush.getInstance();
+      var instance = rwt.client.ServerPush.getInstance();
 
-      expect( instance1 ).toBe( instance2 );
-    });
+      expect( instance ).toBe( rwt.runtime.Singletons.get( rwt.client.ServerPush ) );
+    } );
 
-  });
+  } );
 
-});
+} );

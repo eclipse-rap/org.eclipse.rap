@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -803,24 +803,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       } );
       var message = {
         "head" : {},
-          "operations" : [
-            [ "create", "dummyId", "dummyType", { "style" : [], "width" : 44 } ],
-            [
-              "call",
-              "rwt.client.JavaScriptExecutor",
-              "execute",
-              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
-            ],
-            [ "set", "dummyId", { "width" : 45 } ]
-          ]
-        };
+        "operations" : [
+          [ "create", "dummyId", "dummyType", { "style" : [], "width" : 44 } ],
+          [
+            "call",
+            "rwt.client.JavaScriptExecutor",
+            "execute",
+            { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
+          ],
+          [ "set", "dummyId", { "width" : 45 } ]
+        ]
+      };
 
-        MessageProcessor.processMessage( message );
-        assertTrue( MessageProcessor.isPaused() );
-        assertEquals( [ "width", 44 ], this._getTargetById( "dummyId" ).getLog() );
-        MessageProcessor.continueExecution();
+      MessageProcessor.processMessage( message );
+      assertTrue( MessageProcessor.isPaused() );
+      assertEquals( [ "width", 44 ], this._getTargetById( "dummyId" ).getLog() );
+      MessageProcessor.continueExecution();
 
-        assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
+      assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
     },
 
     testPauseExecution_doesNotDelaysHeadProcessing : function() {
@@ -829,21 +829,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       connection.setRequestCounter( 2 );
       var message = {
         "head" : { "requestCounter": 33 },
-          "operations" : [
-            [
-              "call",
-              "rwt.client.JavaScriptExecutor",
-              "execute",
-              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
-            ]
+        "operations" : [
+          [
+            "call",
+            "rwt.client.JavaScriptExecutor",
+            "execute",
+            { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
           ]
-        };
+        ]
+      };
 
-        MessageProcessor.processMessage( message );
+      MessageProcessor.processMessage( message );
 
-        assertEquals( 33, connection.getRequestCounter() );
-        MessageProcessor.continueExecution();
-        assertEquals( 33, connection.getRequestCounter() );
+      assertEquals( 33, connection.getRequestCounter() );
+      MessageProcessor.continueExecution();
+      assertEquals( 33, connection.getRequestCounter() );
     },
 
     testPauseExecutionWhileFirstMessageStillPendingFails : function() {
@@ -853,24 +853,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       } );
       var message = {
         "head" : {},
-          "operations" : [
-            [
-              "call",
-              "rwt.client.JavaScriptExecutor",
-              "execute",
-              { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
-            ]
+        "operations" : [
+          [
+            "call",
+            "rwt.client.JavaScriptExecutor",
+            "execute",
+            { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
           ]
-        };
+        ]
+      };
 
+      MessageProcessor.processMessage( message );
+
+      try {
         MessageProcessor.processMessage( message );
-
-        try {
-          MessageProcessor.processMessage( message );
-          fail();
-        } catch( ex ) {
-          MessageProcessor.continueExecution();
-        }
+        fail();
+      } catch( ex ) {
+        MessageProcessor.continueExecution();
+      }
     },
 
     /////////

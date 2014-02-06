@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 namespace( "rwt.widgets.util" );
 
-(function(){
+(function() {
 
 var Variant = rwt.util.Variant;
 
@@ -73,15 +72,13 @@ rwt.widgets.util.CellRendererRegistry = function() {
     return document.createElement( "div" );
   };
 
+  this.add( defaultTextRenderer );
+  this.add( defaultImageRenderer );
+
 };
 
-
 rwt.widgets.util.CellRendererRegistry.getInstance = function() {
-  if( !rwt.widgets.util.CellRendererRegistry._instance ) {
-    rwt.widgets.util.CellRendererRegistry._instance
-      = new rwt.widgets.util.CellRendererRegistry();
-  }
-  return rwt.widgets.util.CellRendererRegistry._instance;
+  return rwt.runtime.Singletons.get( rwt.widgets.util.CellRendererRegistry );
 };
 
 ///////////////////
@@ -104,7 +101,7 @@ var alignmentStyleToCss = {
   "BOTTOM" : "bottom"
 };
 
-rwt.widgets.util.CellRendererRegistry.getInstance().add( {
+var defaultTextRenderer = {
   "cellType" : "text",
   "contentType" : "text",
   "createElement" : function( cellData ) {
@@ -143,7 +140,7 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
       }
     }
   } )
-} );
+};
 
 var setImage = function( element, content, cellData, options ) {
   var opacity = options.enabled ? 1 : 0.3;
@@ -165,7 +162,7 @@ var imgHtml = function( path, left, top, width, height ) {
          + "\">";
 };
 
-rwt.widgets.util.CellRendererRegistry.getInstance().add( {
+var defaultImageRenderer = {
   "cellType" : "image",
   "contentType" : "image",
   "renderContent" : rwt.util.Variant.select( "qx.client", {
@@ -216,6 +213,6 @@ rwt.widgets.util.CellRendererRegistry.getInstance().add( {
     result.style.backgroundPosition = position.join( " " );
     return result;
   }
-} );
+};
 
-}());
+}() );

@@ -12,10 +12,6 @@
 namespace( "rwt.client" );
 
 rwt.client.ServerPush = function() {
-  if( rwt.client.ServerPush._instance !== undefined ) {
-    throw new Error( "ServerPush can not be created twice" );
-  }
-  rwt.client.ServerPush._instance = this;
   this._retryCount = 0;
   this._active = false;
   this._running = false;
@@ -24,10 +20,7 @@ rwt.client.ServerPush = function() {
 };
 
 rwt.client.ServerPush.getInstance = function() {
-  if( rwt.client.ServerPush._instance === undefined ) {
-    new rwt.client.ServerPush();
-  }
-  return rwt.client.ServerPush._instance;
+  return rwt.runtime.Singletons.get( rwt.client.ServerPush );
 };
 
 rwt.client.ServerPush.prototype = {

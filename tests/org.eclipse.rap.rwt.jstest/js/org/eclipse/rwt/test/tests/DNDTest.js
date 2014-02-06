@@ -47,18 +47,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       if( shell ) {
         rwt.remote.MessageProcessor.processOperationArray( [ "destroy", "w2" ] );
       }
-      delete rwt.remote.DNDSupport._instance;
+      rwt.runtime.Singletons.clear();
       TestUtil.flush();
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();
     },
 
     testDNDSupportInstance : function() {
-      var dndSupport1 = rwt.remote.DNDSupport.getInstance();
-      var dndSupport2 = rwt.remote.DNDSupport.getInstance();
+      var instance = rwt.remote.DNDSupport.getInstance();
 
-      assertTrue( dndSupport1 instanceof rwt.remote.DNDSupport );
-      assertIdentical( dndSupport1, dndSupport2 );
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.remote.DNDSupport ) );
     },
 
     testCreateDragSourceByProtocol : function() {

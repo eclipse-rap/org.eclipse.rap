@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,24 +12,13 @@
 namespace( "rwt.client" );
 
 rwt.client.JavaScriptExecutor = function() {
-  if( rwt.client.JavaScriptExecutor._instance !== undefined ) {
-    throw new Error( "JavaScriptExecutor can not be created twice" );
-  } else {
-    rwt.client.JavaScriptExecutor._instance = this;
-  }
+
+  this.execute = function( code ) {
+    eval( code );
+  };
+
 };
 
 rwt.client.JavaScriptExecutor.getInstance = function() {
-  if( rwt.client.JavaScriptExecutor._instance === undefined ) {
-    new rwt.client.JavaScriptExecutor();
-  }
-  return rwt.client.JavaScriptExecutor._instance;
-};
-
-rwt.client.JavaScriptExecutor.prototype = {
-
-  execute : function( code ) {
-    eval( code );
-  }
-
+  return rwt.runtime.Singletons.get( rwt.client.JavaScriptExecutor );
 };
