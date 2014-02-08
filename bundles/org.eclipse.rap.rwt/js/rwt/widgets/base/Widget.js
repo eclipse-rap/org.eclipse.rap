@@ -3907,10 +3907,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this._style.outline = "none";
         this._applyContainerOverflow( this.getContainerOverflow() );
         if( !newElement ) {
-          for( var i in this._htmlProperties ) {
-            switch( i ) {
-              case "unselectable":
-                this._targetNode.unselectable = this._htmlProperties[ i ];
+          for( var name in this._htmlProperties ) {
+            if( name === "unselectable" ) {
+              this._targetNode.unselectable = this._htmlProperties[ name ];
             }
           }
         }
@@ -4105,6 +4104,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // Adapter Support
 
     getAdapter : function( Clazz ) {
+      /*jshint nonew: false */
       if( this._adapters === undefined ) {
         this._adapters = {};
       }
