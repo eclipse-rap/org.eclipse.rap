@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          EclipseSource and others.
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,24 +12,20 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
+/*global alert:false */
+
+
 /**
- * This class is one of the most important parts of qooxdoo's
- * object-oriented features.
+ * Each instance of a class defined by {@link #define} has the following keys attached to the
+ * constructor and the prototype:
  *
- * Its {@link #define} method is used to create qooxdoo classes.
+ * - classname - The fully-qualified name of the class (e.g. <code>"qx.ui.core.Widget"</code>)
+ * - basename - The namespace part of the class name (e.g. <code>"qx.ui.core"</code>)
+ * - constructor - A reference to the constructor of the class
+ * - superclass - A reference to the constructor of the super class
  *
- * Each instance of a class defined by {@link #define} has
- * the following keys attached to the constructor and the prototype:
- *
- * <table>
- * <tr><th><code>classname</code></th><td>The fully-qualified name of the class (e.g. <code>"qx.ui.core.Widget"</code>).</td></tr>
- * <tr><th><code>basename</code></th><td>The namespace part of the class name (e.g. <code>"qx.ui.core"</code>).</td></tr>
- * <tr><th><code>constructor</code></th><td>A reference to the constructor of the class.</td></tr>
- * <tr><th><code>superclass</code></th><td>A reference to the constructor of the super class.</td></tr>
- * </table>
- *
- * Each method may access static members of the same class by using
- * <code>this.self(arguments)</code> ({@link rwt.qx.Object#self}):
+ * Each method may access static members of the same class by using `this.self(arguments)`
+ * ({@link rwt.qx.Object#self}):
  * <pre class='javascript'>
  * statics : { FOO : "bar" },
  * members: {
@@ -40,8 +37,8 @@
  * </pre>
  *
  * Each overriding method may call the overridden method by using
- * <code>this.base(arguments [, ...])</code> ({@link rwt.qx.Object#base}). This is also true for calling
- * the constructor of the superclass.
+ * <code>this.base(arguments [, ...])</code> ({@link rwt.qx.Object#base}). This is also true for
+ * calling the constructor of the superclass.
  * <pre class='javascript'>
  * members: {
  *   foo: function(x) {
@@ -51,9 +48,6 @@
  * }
  * </pre>
  */
-
-/*global alert:false */
-
 rwt.qx.Class.define( "rwt.qx.Class", {
 
   statics : {
@@ -80,14 +74,12 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *
      * Example:
      * <pre class='javascript'>
-     * rwt.qx.Class.define("name",
-     * {
+     * rwt.qx.Class.define( "name", {
      *   extend : Object, // superclass
      *   implement : [Interfaces],
      *   include : [Mixins],
      *
-     *   statics:
-     *   {
+     *   statics: {
      *     CONSTANT : 3.141,
      *
      *     publicMethod: function() {},
@@ -95,14 +87,12 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *     __privateMethod: function() {}
      *   },
      *
-     *   properties:
-     *   {
+     *   properties: {
      *     "tabIndexOld": { type: "number", defaultValue : -1, _legacy : true }
      *     "tabIndex": { check: "Number", init : -1 }
      *   },
      *
-     *   members:
-     *   {
+     *   members: {
      *     publicField: "foo",
      *     publicMethod: function() {},
      *
@@ -112,39 +102,34 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *     __privateField: "baz",
      *     __privateMethod: function() {}
      *   }
-     * });
+     * } );
      * </pre>
      *
-     * @type static
      * @param name {String} Name of the class
-     * @param config {Map ? null} Class definition structure. The configuration map has the following keys:
-     *     <table>
-     *       <tr><th>Name</th><th>Type</th><th>Description</th></tr>
-     *       <tr><th>type</th><td>String</td><td>
-     *           Type of the class. Valid types are "abstract", "static" and "singleton".
-     *           If unset it defaults to a regular non-static class.
-     *       </td></tr>
-     *       <tr><th>extend</th><td>Class</td><td>The super class the current class inherits from.</td></tr>
-     *       <tr><th>implement</th><td>Interface | Interface[]</td><td>Single interface or array of interfaces the class implements.</td></tr>
-     *       <tr><th>include</th><td>Mixin | Mixin[]</td><td>Single mixin or array of mixins, which will be merged into the class.</td></tr>
-     *       <tr><th>construct</th><td>Function</td><td>The constructor of the class.</td></tr>
-     *       <tr><th>statics</th><td>Map</td><td>Map of static members of the class.</td></tr>
-     *       <tr><th>properties</th><td>Map</td><td>Map of property definitions. For a description of the format of a property definition see
-     *           {@link rwt.qx.Property} or the legacy version {@link rwt.qx.LegacyProperty}.</td></tr>
-     *       <tr><th>members</th><td>Map</td><td>Map of instance members of the class.</td></tr>
-     *       <tr><th>settings</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
-     *           {@link rwt.qx.Setting}.</td></tr>
-     *       <tr><th>variants</th><td>Map</td><td>Map of settings for this class. For a description of the format of a setting see
-     *           {@link rwt.util.Variant}</td></tr>
-     *       <tr><th>events</th><td>Map</td><td>
-     *           Map of events the class fires. The keys are the names of the events and the values are the
-     *           corresponding event type class names.
-     *       </td></tr>
-     *       <tr><th>defer</th><td>Function</td><td>Function that is called at the end of processing the class declaration. It allows access to the declared statics, members and properties.</td></tr>
-     *       <tr><th>destruct</th><td>Function</td><td>The destructor of the class.</td></tr>
-     *     </table>
-     * @return {void}
-     * @throws TODOC
+     * @param config {Map ? null} Class definition structure. The configuration map has the
+     *   following keys:
+     *   - type {String}: Type of the class. Valid types are "abstract", "static" and "singleton".
+     *     If unset it defaults to a regular non-static class.
+     *   - extend {Class}: The super class the current class inherits from.
+     *   - implement {Interface | Interface[]}: Single interface or array of interfaces the class
+     *     implements.
+     *   - include {Mixin | Mixin[]}: Single mixin or array of mixins, which will be merged into the
+     *     class.
+     *   - construct {Function</td><td>The constructor of the class.
+     *   - statics {Map</td><td>Map of static members of the class.
+     *   - properties {Map</td><td>Map of property definitions. For a description of the format of a
+     *     property definition see {@link rwt.qx.Property} or the legacy version
+     *     {@link rwt.qx.LegacyProperty}.
+     *   - members {Map}: Map of instance members of the class.
+     *   - settings {Map}: Map of settings for this class. For a description of the format of a
+     *     setting see {@link rwt.qx.Setting}.
+     *   - variants {Map}: Map of settings for this class. For a description of the format of a
+     *     setting see {@link rwt.util.Variant}
+     *   - events {Map}: Map of events the class fires. The keys are the names of the events and the
+     *     values are the corresponding event type class names.
+     *   - defer {Function}: Function that is called at the end of processing the class
+     *     declaration. It allows access to the declared statics, members and properties.
+     *   - destruct {Function}: The destructor of the class.
      */
     define : function( name, config ) {
       if( this._stopLoading ) {
@@ -160,7 +145,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
           if( !config.construct ) {
             config.construct = this.__createDefaultConstructor();
           }
-          clazz = this.__wrapConstructor(config.construct, name, config.type);
+          clazz = this.__wrapConstructor( config.construct, name, config.type );
           if( config.statics ) {
             var key;
             for( var i = 0, a = rwt.util.Objects.getKeys( config.statics ), l = a.length; i < l; i++ ) {
@@ -196,34 +181,36 @@ rwt.qx.Class.define( "rwt.qx.Class", {
           clazz.$$initializer = function() {
             //console.log( "init " + name );
             if( config.properties ) {
-              that.__addProperties(clazz, config.properties, true);
+              that.__addProperties( clazz, config.properties, true );
             }
             if( config.members ) {
-              that.__addMembers(clazz, config.members, true, true, false);
+              that.__addMembers( clazz, config.members, true, true, false );
             }
             if( config.events ) {
-              that.__addEvents(clazz, config.events, true);
+              that.__addEvents( clazz, config.events, true );
             }
             if( config.include ) {
-              for (var i=0, l=config.include.length; i<l; i++) {
-                that.__addMixin(clazz, config.include[i], false);
+              for( var i = 0, l = config.include.length; i < l; i++ ) {
+                that.__addMixin( clazz, config.include[ i ], false );
               }
             }
           };
         }
         if( config.variants ) {
-          for (var key in config.variants) {
-            rwt.util.Variant.define(key, config.variants[key].allowedValues, config.variants[key].defaultValue);
+          for( var key in config.variants ) {
+            rwt.util.Variant.define( key,
+                                     config.variants[ key ].allowedValues,
+                                     config.variants[ key ].defaultValue );
           }
         }
         if( config.defer ) {
           this.__initializeClass( clazz );
           config.defer.self = clazz;
-          config.defer(clazz, clazz.prototype, {
+          config.defer( clazz, clazz.prototype, {
             add : function( name, config ) {
               var properties = {};
-              properties[name] = config;
-              rwt.qx.Class.__addProperties(clazz, properties, true);
+              properties[ name ] = config;
+              rwt.qx.Class.__addProperties( clazz, properties, true );
             }
           } );
         }
@@ -236,87 +223,72 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       }
     },
 
-
     /**
      * Creates a namespace and assigns the given object to it.
      *
-     * @type static
-     * @param name {String} The complete namespace to create. Typically, the last part is the class name itself
+     * @param name {String} The complete namespace to create. Typically, the last part is the class
+     *   name itself
      * @param object {Object} The object to attach to the namespace
      * @return {Object} last part of the namespace (typically the class name)
-     * @throws TODOC
      */
-    createNamespace : function(name, object)
-    {
-      var splits = name.split(".");
+    createNamespace : function( name, object ) {
+      var splits = name.split( "." );
       var parent = window;
-      var part = splits[0];
-
-      for (var i=0, l=splits.length-1; i<l; i++, part=splits[i])
-      {
-        if (!parent[part]) {
-          parent = parent[part] = {};
+      var part = splits[ 0 ];
+      for( var i = 0, l = splits.length - 1; i < l; i++, part = splits[ i ] ) {
+        if( !parent[ part ] ) {
+          parent = parent[ part ] = {};
         } else {
-          parent = parent[part];
+          parent = parent[ part ];
         }
       }
-      if (parent[part] === undefined) {
-        parent[part] = object;
+      if( parent[ part ] === undefined ) {
+        parent[ part ] = object;
       }
       // return last part name (i.e. classname)
       return part;
     },
 
-
     /**
      * Whether the given class exists
      *
-     * @type static
      * @param name {String} class name to check
      * @return {Boolean} true if class exists
      */
-    isDefined : function(name) {
-      return this.getByName(name) !== undefined;
+    isDefined : function( name ) {
+      return this.getByName( name ) !== undefined;
     },
-
 
     /**
      * Determine the total number of classes
      *
-     * @type static
      * @return {Number} the total number of classes
      */
     getTotalNumber : function() {
-      return rwt.util.Objects.getLength(this.__registry);
+      return rwt.util.Objects.getLength( this.__registry );
     },
-
 
     /**
      * Find a class by its name
      *
-     * @type static
      * @param name {String} class name to resolve
      * @return {Class} the class
      */
-    getByName : function(name) {
-      return this.__registry[name];
+    getByName : function( name ) {
+      return this.__registry[ name ];
     },
-
 
     /**
      * Include all features of the given mixin into the class. The mixin must
      * not include any methods or properties that are already available in the
      * class. This would only be possible using the {@link #patch} method.
      *
-     * @type static
      * @param clazz {Class} An existing class which should be modified by including the mixin.
      * @param mixin {Mixin} The mixin to be included.
      */
-    include : function(clazz, mixin)
-    {
-      rwt.qx.Class.__addMixin(clazz, mixin, false);
+    include : function( clazz, mixin ) {
+      rwt.qx.Class.__addMixin( clazz, mixin, false );
     },
-
 
     /**
      * Include all features of the given mixin into the class. The mixin may
@@ -328,42 +300,33 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *
      * <b>WARNING</b>: You may break working classes and features.
      *
-     * @type static
      * @param clazz {Class} An existing class which should be modified by including the mixin.
      * @param mixin {Mixin} The mixin to be included.
      */
-    patch : function(clazz, mixin)
-    {
-      rwt.qx.Class.__addMixin(clazz, mixin, true);
+    patch : function( clazz, mixin ) {
+      rwt.qx.Class.__addMixin( clazz, mixin, true );
     },
-
 
     /**
      * Whether a class is a direct or indirect sub class of another class,
      * or both classes coincide.
      *
-     * @type static
      * @param clazz {Class} the class to check.
      * @param superClass {Class} the potential super class
      * @return {Boolean} whether clazz is a sub class of superClass.
      */
-    isSubClassOf : function(clazz, superClass)
-    {
-      if (!clazz) {
+    isSubClassOf : function( clazz, superClass ) {
+      if( !clazz ) {
         return false;
       }
-
-      if (clazz == superClass) {
+      if( clazz == superClass ) {
         return true;
       }
-
-      if (clazz.prototype instanceof superClass) {
+      if( clazz.prototype instanceof superClass ) {
         return true;
       }
-
       return false;
     },
-
 
     /**
      * Returns the definition of the given property. Returns null
@@ -371,25 +334,19 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *
      * TODO: Correctly support refined properties?
      *
-     * @type member
      * @param clazz {Class} class to check
      * @param name {String} name of the event to check for
      * @return {Map|null} whether the object support the given event.
      */
-    getPropertyDefinition : function(clazz, name)
-    {
-      while (clazz)
-      {
-        if (clazz.$$properties && clazz.$$properties[name]) {
-          return clazz.$$properties[name];
+    getPropertyDefinition : function( clazz, name ) {
+      while( clazz ) {
+        if( clazz.$$properties && clazz.$$properties[ name ] ) {
+          return clazz.$$properties[ name ];
         }
-
         clazz = clazz.superclass;
       }
-
       return null;
     },
-
 
     /**
      * Returns the class or one of its superclasses which contains the
@@ -400,85 +357,67 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param name {String} name of the property
      * @return {Class | null} The class which includes the property
      */
-    getByProperty : function(clazz, name)
-    {
-      while (clazz)
-      {
-        if (clazz.$$properties && clazz.$$properties[name]) {
+    getByProperty : function( clazz, name ) {
+      while( clazz ) {
+        if( clazz.$$properties && clazz.$$properties[ name ] ) {
           return clazz;
         }
-
         clazz = clazz.superclass;
       }
-
       return null;
     },
-
 
     /**
      * Whether a class has the given property
      *
-     * @type member
      * @param clazz {Class} class to check
      * @param name {String} name of the property to check for
      * @return {Boolean} whether the class includes the given property.
      */
-    hasProperty : function(clazz, name) {
-      return !!this.getPropertyDefinition(clazz, name);
+    hasProperty : function( clazz, name ) {
+      return !!this.getPropertyDefinition( clazz, name );
     },
-
 
     /**
      * Returns the event type of the given event. Returns null if
      * the event does not exist.
      *
-     * @type member
      * @param clazz {Class} class to check
      * @param name {String} name of the event
      * @return {Map|null} Event type of the given event.
      */
-    getEventType : function(clazz, name)
-    {
+    getEventType : function( clazz, name ) {
       var clazz = clazz.constructor;
-
-      while (clazz.superclass)
-      {
-        if (clazz.$$events && clazz.$$events[name] !== undefined) {
-          return clazz.$$events[name];
+      while( clazz.superclass ) {
+        if( clazz.$$events && clazz.$$events[ name ] !== undefined ) {
+          return clazz.$$events[ name ];
         }
-
         clazz = clazz.superclass;
       }
-
       return null;
     },
-
 
     /**
      * Whether a class supports the given event type
      *
-     * @type member
      * @param clazz {Class} class to check
      * @param name {String} name of the event to check for
      * @return {Boolean} whether the class supports the given event.
      */
-    supportsEvent : function(clazz, name) {
-      return !!this.getEventType(clazz, name);
+    supportsEvent : function( clazz, name ) {
+      return !!this.getEventType( clazz, name );
     },
-
 
     /**
      * Whether a class directly includes a mixin.
      *
-     * @type static
      * @param clazz {Class} class to check
      * @param mixin {Mixin} the mixin to check for
      * @return {Boolean} whether the class includes the mixin directly.
      */
-    hasOwnMixin: function(clazz, mixin) {
-      return clazz.$$includes && clazz.$$includes.indexOf(mixin) !== -1;
+    hasOwnMixin: function( clazz, mixin ) {
+      return clazz.$$includes && clazz.$$includes.indexOf( mixin ) !== -1;
     },
-
 
     /**
      * Returns the class or one of its superclasses which contains the
@@ -489,30 +428,21 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param mixin {Mixin} mixin to look for
      * @return {Class | null} The class which directly includes the given mixin
      */
-    getByMixin : function(clazz, mixin)
-    {
+    getByMixin : function( clazz, mixin ) {
       var list, i, l;
-
-      while (clazz)
-      {
-        if (clazz.$$includes)
-        {
+      while( clazz ) {
+        if( clazz.$$includes ) {
           list = clazz.$$flatIncludes;
-
-          for (i=0, l=list.length; i<l; i++)
-          {
-            if (list[i] === mixin) {
+          for( i = 0, l = list.length; i < l; i++ ) {
+            if( list[ i ] === mixin ) {
               return clazz;
             }
           }
         }
-
         clazz = clazz.superclass;
       }
-
       return null;
     },
-
 
     /**
      * Returns a list of all mixins available in a given class.
@@ -520,35 +450,27 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param clazz {Class} class which should be inspected
      * @return {Mixin[]} array of mixins this class uses
      */
-    getMixins : function(clazz)
-    {
+    getMixins : function( clazz ) {
       var list = [];
-
-      while (clazz)
-      {
-        if (clazz.$$includes) {
-          list.push.apply(list, clazz.$$flatIncludes);
+      while( clazz ) {
+        if( clazz.$$includes ) {
+          list.push.apply( list, clazz.$$flatIncludes );
         }
-
         clazz = clazz.superclass;
       }
-
       return list;
     },
-
 
     /**
      * Whether a given class or any of its superclasses includes a given mixin.
      *
-     * @type static
      * @param clazz {Class} class to check
      * @param mixin {Mixin} the mixin to check for
      * @return {Boolean} whether the class includes the mixin.
      */
-    hasMixin: function(clazz, mixin) {
-      return !!this.getByMixin(clazz, mixin);
+    hasMixin: function( clazz, mixin ) {
+      return !!this.getByMixin( clazz, mixin );
     },
-
 
     /**
      * Whether a given class directly includes a interface.
@@ -557,15 +479,13 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * in the class declaration (@link rwt.qx.Class#define}) using the "implement"
      * key.
      *
-     * @type static
      * @param clazz {Class} class or instance to check
      * @param iface {Interface} the interface to check for
      * @return {Boolean} whether the class includes the mixin directly.
      */
-    hasOwnInterface : function(clazz, iface) {
-      return clazz.$$implements && clazz.$$implements.indexOf(iface) !== -1;
+    hasOwnInterface : function( clazz, iface ) {
+      return clazz.$$implements && clazz.$$implements.indexOf( iface ) !== -1;
     },
-
 
     /**
      * Returns the class or one of its superclasses which contains the
@@ -576,30 +496,21 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param iface {Interface} interface to look for
      * @return {Class | null} the class which directly implements the given interface
      */
-    getByInterface : function(clazz, iface)
-    {
+    getByInterface : function( clazz, iface ) {
       var list, i, l;
-
-      while (clazz)
-      {
-        if (clazz.$$implements)
-        {
+      while( clazz ) {
+        if( clazz.$$implements ) {
           list = clazz.$$flatImplements;
-
-          for (i=0, l=list.length; i<l; i++)
-          {
-            if (list[i] === iface) {
+          for( i = 0, l = list.length; i < l; i++ ) {
+            if( list[ i ] === iface ) {
               return clazz;
             }
           }
         }
-
         clazz = clazz.superclass;
       }
-
       return null;
     },
-
 
     /**
      * Returns a list of all mixins available in a class.
@@ -607,22 +518,16 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param clazz {Class} class which should be inspected
      * @return {Mixin[]} array of mixins this class uses
      */
-    getInterfaces : function(clazz)
-    {
+    getInterfaces : function( clazz ) {
       var list = [];
-
-      while (clazz)
-      {
-        if (clazz.$$implements) {
-          list.push.apply(list, clazz.$$flatImplements);
+      while( clazz ) {
+        if( clazz.$$implements ) {
+          list.push.apply( list, clazz.$$flatImplements );
         }
-
         clazz = clazz.superclass;
       }
-
       return list;
     },
-
 
     /**
      * Whether a given class or any of its superclasses includes a given interface.
@@ -632,15 +537,13 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * or any of its super classes using the "implement"
      * key.
      *
-     * @type static
      * @param clazz {Class|Object} class or instance to check
      * @param iface {Interface} the interface to check for
      * @return {Boolean} whether the class includes the interface.
      */
-    hasInterface : function(clazz, iface) {
-      return !!this.getByInterface(clazz, iface);
+    hasInterface : function( clazz, iface ) {
+      return !!this.getByInterface( clazz, iface );
     },
-
 
     /**
      * Whether a given class conforms to an interface.
@@ -649,23 +552,16 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * implemented in the class. The class does not need to implement
      * the interface explicitly.
      *
-     * @type static
      * @param clazz {Class} class to check
      * @param iface {Interface} the interface to check for
      * @return {Boolean} whether the class conforms to the interface.
      */
-    implementsInterface : function(clazz, iface)
-    {
+    implementsInterface : function( clazz, iface ) {
       return false;
     },
 
-
     /**
      * Helper method to handle singletons
-     *
-     * @type static
-     * @internal
-     * @return {var} TODOC
      */
     getInstance : function() {
       if( !this.$$instance ) {
@@ -688,16 +584,13 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       return "[Class " + this.classname + "]";
     },
 
-
     /** Stores all defined classes */
     __registry : rwt.runtime.Bootstrap.__registry,
 
 
     /** {Map} allowed keys in non-static class definition */
-    __allowedKeys : rwt.util.Variant.select("qx.debug",
-    {
-      "on":
-      {
+    __allowedKeys : rwt.util.Variant.select( "qx.debug", {
+      "on": {
         "type"       : "string",    // String
         "extend"     : "function",  // Function
         "implement"  : "object",    // Interface[]
@@ -712,135 +605,123 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         "defer"      : "function",  // Function
         "destruct"   : "function"   // Function
       },
-
       "default" : null
-    }),
-
+    } ),
 
     /** {Map} allowed keys in static class definition */
-    __staticAllowedKeys : rwt.util.Variant.select("qx.debug",
-    {
-      "on":
-      {
+    __staticAllowedKeys : rwt.util.Variant.select( "qx.debug", {
+      "on": {
         "type"       : "string",    // String
         "statics"    : "object",    // Map
         "settings"   : "object",    // Map
         "variants"   : "object",    // Map
         "defer"      : "function"   // Function
       },
-
       "default" : null
-    }),
-
+    } ),
 
     /**
      * Validates an incoming configuration and checks for proper keys and values
      *
-     * @type static
      * @param name {String} The name of the class
      * @param config {Map} Configuration map
-     * @return {void}
-     * @throws TODOC
      */
-    __validateConfig : rwt.util.Variant.select("qx.debug",
-    {
-      "on": function(name, config)
-      {
+    __validateConfig : rwt.util.Variant.select( "qx.debug", {
+      "on": function( name, config ) {
         // Validate type
-        if (config.type && !(config.type === "static" || config.type === "abstract" || config.type === "singleton")) {
-          throw new Error('Invalid type "' + config.type + '" definition for class "' + name + '"!');
+        if( config.type
+            && !(    config.type === "static"
+                  || config.type === "abstract"
+                  || config.type === "singleton" ) )
+        {
+          throw new Error( 'Invalid type "' + config.type + '" definition for class "' + name
+                           + '"!' );
         }
-
         // Validate keys
         var allowed = config.type === "static" ? this.__staticAllowedKeys : this.__allowedKeys;
-        for (var key in config)
-        {
-          if (!allowed[key]) {
-            throw new Error('The configuration key "' + key + '" in class "' + name + '" is not allowed!');
+        for( var key in config ) {
+          if( !allowed[ key ] ) {
+            throw new Error( 'The configuration key "' + key + '" in class "' + name
+                             + '" is not allowed!' );
           }
-
-          if (config[key] == null) {
-            throw new Error('Invalid key "' + key + '" in class "' + name + '"! The value is undefined/null!');
+          if( config[ key ] == null ) {
+            throw new Error( 'Invalid key "' + key + '" in class "' + name
+                             + '"! The value is undefined/null!' );
           }
-
-          if (typeof config[key] !== allowed[key]) {
-            throw new Error('Invalid type of key "' + key + '" in class "' + name + '"! The type of the key must be "' + allowed[key] + '"!');
+          if( typeof config[ key ] !== allowed[ key ] ) {
+            throw new Error( 'Invalid type of key "' + key + '" in class "' + name
+                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
           }
         }
 
         // Validate maps
         var maps = [ "statics", "properties", "members", "settings", "variants", "events" ];
-        for (var i=0, l=maps.length; i<l; i++)
-        {
-          var key = maps[i];
-
-          if (config[key] !== undefined && (config[key] instanceof Array || config[key] instanceof RegExp || config[key] instanceof Date || config[key].classname !== undefined)) {
-            throw new Error('Invalid key "' + key + '" in class "' + name + '"! The value needs to be a map!');
+        for( var i = 0, l = maps.length; i < l; i++ ) {
+          var key = maps[ i ];
+          if(    config[ key ] !== undefined
+              && (    config[ key ] instanceof Array
+                   || config[ key ] instanceof RegExp
+                   || config[ key ] instanceof Date
+                   || config[ key ].classname !== undefined ) )
+          {
+            throw new Error( 'Invalid key "' + key + '" in class "' + name
+                             + '"! The value needs to be a map!' );
           }
         }
 
         // Validate include definition
-        if (config.include)
-        {
-          if (config.include instanceof Array)
-          {
-            for (var i=0, a=config.include, l=a.length; i<l; i++)
-            {
-              if (a[i] == null || a[i].$$type !== "Mixin") {
-                throw new Error('The include definition in class "' + name + '" contains an invalid mixin at position ' + i + ': ' + a[i]);
+        if( config.include ) {
+          if( config.include instanceof Array ) {
+            for( var i = 0, a = config.include, l = a.length; i < l; i++ ) {
+              if( a[ i ] == null || a[ i ].$$type !== "Mixin" ) {
+                throw new Error( 'The include definition in class "' + name
+                                 + '" contains an invalid mixin at position ' + i + ': ' + a[ i ] );
               }
             }
-          }
-          else
-          {
-            throw new Error('Invalid include definition in class "' + name + '"! Only mixins and arrays of mixins are allowed!');
+          } else {
+            throw new Error( 'Invalid include definition in class "' + name
+                             + '"! Only mixins and arrays of mixins are allowed!' );
           }
         }
 
         // Validate implement definition
-        if (config.implement)
-        {
-          if (config.implement instanceof Array)
-          {
-            for (var i=0, a=config.implement, l=a.length; i<l; i++)
-            {
-              if (a[i] == null || a[i].$$type !== "Interface") {
-                throw new Error('The implement definition in class "' + name + '" contains an invalid interface at position ' + i + ': ' + a[i]);
+        if( config.implement ) {
+          if( config.implement instanceof Array ) {
+            for( var i = 0, a = config.implement, l = a.length; i < l; i++ ) {
+              if( a[ i ] == null || a[ i ].$$type !== "Interface" ) {
+                throw new Error( 'The implement definition in class "' + name
+                                 + '" contains an invalid interface at position ' + i + ': '
+                                 + a[ i ] );
               }
             }
-          }
-          else
-          {
-            throw new Error('Invalid implement definition in class "' + name + '"! Only interfaces and arrays of interfaces are allowed!');
+          } else {
+            throw new Error( 'Invalid implement definition in class "' + name
+                             + '"! Only interfaces and arrays of interfaces are allowed!' );
           }
         }
 
         // Check mixin compatibility
-        if (config.include)
-        {
+        if( config.include ) {
           try {
-            rwt.qx.Mixin.checkCompatibility(config.include);
-          } catch(ex) {
-            throw new Error('Error in include definition of class "' + name + '"! ' + ex.message);
+            rwt.qx.Mixin.checkCompatibility( config.include );
+          } catch( ex ) {
+            throw new Error( 'Error in include definition of class "' + name + '"! ' + ex.message );
           }
         }
 
         // Validate variants
-        if (config.variants)
-        {
-          for (var key in config.variants)
-          {
-            if (key.substr(0, key.indexOf(".")) != name.substr(0, name.indexOf("."))) {
-              throw new Error('Forbidden variant "' + key + '" found in "' + name + '". It is forbidden to define a variant for an external namespace!');
+        if( config.variants ) {
+          for( var key in config.variants ) {
+            if( key.substr( 0, key.indexOf( "." ) ) != name.substr( 0, name.indexOf( "." ) ) ) {
+              throw new Error( 'Forbidden variant "' + key + '" found in "' + name + '". '
+                               + 'It is forbidden to define a variant for an external namespace!' );
             }
           }
         }
       },
 
       "default" : function() {}
-    }),
-
-
+    } ),
 
     /*
     ---------------------------------------------------------------------------
@@ -855,89 +736,75 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param events {Map} map of event names the class fires.
      * @param patch {Boolean ? false} Enable redefinition of event type?
      */
-    __addEvents : function(clazz, events, patch)
-    {
-
-      if (clazz.$$events)
-      {
-        for (var key in events) {
-          clazz.$$events[key] = events[key];
+    __addEvents : function( clazz, events, patch ) {
+      if( clazz.$$events ) {
+        for( var key in events ) {
+          clazz.$$events[ key ] = events[ key ];
         }
-      }
-      else
-      {
+      } else {
         clazz.$$events = events;
       }
     },
 
-
     /**
      * Attach properties to classes
      *
-     * @type static
      * @param clazz {Class} class to add the properties to
      * @param properties {Map} map of properties
      * @param patch {Boolean ? false} Overwrite property with the limitations of a property
-               which means you are able to refine but not to replace (esp. for new properties)
+     *         which means you are able to refine but not to replace (esp. for new properties)
      */
-    __addProperties : function(clazz, properties, patch)
-    {
+    __addProperties : function( clazz, properties, patch ) {
       var config;
-
-      if (patch === undefined) {
+      if( patch === undefined ) {
         patch = false;
       }
-
       var attach = !!clazz.$$propertiesAttached;
-
-      for (var name in properties)
-      {
-        config = properties[name];
+      for( var name in properties ) {
+        config = properties[ name ];
 
         // Store name into configuration
         config.name = name;
 
         // Add config to local registry
-        if (!config.refine)
-        {
-          if (clazz.$$properties === undefined) {
+        if( !config.refine ) {
+          if( clazz.$$properties === undefined ) {
             clazz.$$properties = {};
           }
-
-          clazz.$$properties[name] = config;
+          clazz.$$properties[ name ] = config;
         }
 
         // Store init value to prototype. This makes it possible to
         // overwrite this value in derived classes.
-        if (config.init !== undefined) {
-          clazz.prototype["__init$" + name] = config.init;
+        if( config.init !== undefined ) {
+          clazz.prototype[ "__init$" + name ] = config.init;
         }
 
         // register event name
-        if (config.event !== undefined) {
+        if( config.event !== undefined ) {
           var event = {};
-          event[config.event] = "rwt.event.ChangeEvent";
-          this.__addEvents(clazz, event, patch);
+          event[ config.event ] = "rwt.event.ChangeEvent";
+          this.__addEvents( clazz, event, patch );
         }
 
         // Remember inheritable properties
-        if (config.inheritable) {
-          rwt.qx.Property.$$inheritable[name] = true;
+        if( config.inheritable ) {
+          rwt.qx.Property.$$inheritable[ name ] = true;
         }
 
         // If instances of this class were already created, we
         // need to attach the new style properties functions, directly.
-        if (attach) {
-          rwt.qx.Property.attachMethods(clazz, name, config);
+        if( attach ) {
+          rwt.qx.Property.attachMethods( clazz, name, config );
         }
 
         // Create old style properties
-        if (config._fast) {
-          rwt.qx.LegacyProperty.addFastProperty(config, clazz.prototype);
-        } else if (config._cached) {
-          rwt.qx.LegacyProperty.addCachedProperty(config, clazz.prototype);
-        } else if (config._legacy) {
-          rwt.qx.LegacyProperty.addProperty(config, clazz.prototype);
+        if( config._fast ) {
+          rwt.qx.LegacyProperty.addFastProperty( config, clazz.prototype );
+        } else if( config._cached ) {
+          rwt.qx.LegacyProperty.addCachedProperty( config, clazz.prototype );
+        } else if( config._legacy ) {
+          rwt.qx.LegacyProperty.addProperty( config, clazz.prototype );
         }
       }
     },
@@ -949,92 +816,97 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param config {Map} configuration map
      * @param patch {Boolean ? false} enable refine/patch?
      */
-    __validateProperty : rwt.util.Variant.select("qx.debug",
-    {
-      "on": function(clazz, name, config, patch)
-      {
-        var has = this.hasProperty(clazz, name);
+    __validateProperty : rwt.util.Variant.select( "qx.debug", {
+      "on": function( clazz, name, config, patch ) {
+        var has = this.hasProperty( clazz, name );
         var compat = config._legacy || config._fast || config._cached;
+        if( has ) {
+          var existingProperty = this.getPropertyDefinition( clazz, name );
+          var existingCompat = existingProperty._legacy ||
+                               existingProperty._fast ||
+                               existingProperty._cached;
 
-        if (has)
-        {
-          var existingProperty = this.getPropertyDefinition(clazz, name);
-          var existingCompat = existingProperty._legacy || existingProperty._fast || existingProperty._cached;
-
-          if (compat != existingCompat) {
-            throw new Error("Could not redefine existing property '" + name + "' of class '" + clazz.classname + "'.");
+          if( compat != existingCompat ) {
+            throw new Error( "Could not redefine existing property '" + name + "' of class '"
+                             + clazz.classname + "'." );
           }
 
-          if (config.refine && existingProperty.init === undefined) {
-            throw new Error("Could not refine a init value if there was previously no init value defined. Property '" + name + "' of class '" + clazz.classname + "'.");
+          if( config.refine && existingProperty.init === undefined ) {
+            throw new Error( "Could not refine a init value if there was previously no init value"
+                             + " defined. Property '" + name + "' of class '"
+                             + clazz.classname + "'." );
           }
         }
 
-        if (!has && config.refine) {
-          throw new Error("Could not refine non-existent property: " + name + "!");
+        if( !has && config.refine ) {
+          throw new Error( "Could not refine non-existent property: " + name + "!" );
         }
 
-        if (has && !patch) {
-          throw new Error("Class " + clazz.classname + " already has a property: " + name + "!");
+        if( has && !patch ) {
+          throw new Error( "Class " + clazz.classname + " already has a property: " + name + "!" );
         }
 
-        if (has && patch && !compat)
-        {
-          if (!config.refine) {
-            throw new Error('Could not refine property "' + name + '" without a "refine" flag in the property definition! This class: ' + clazz.classname + ', original class: ' + this.getByProperty(clazz, name).classname + '.');
+        if( has && patch && !compat ) {
+          if( !config.refine ) {
+            throw new Error( 'Could not refine property "' + name
+                             + '" without a "refine" flag in the property definition! This class: '
+                             + clazz.classname + ', original class: '
+                             + this.getByProperty( clazz, name ).classname + '.' );
           }
-
-          for (var key in config)
-          {
-            if (key !== "init" && key !== "refine") {
-              throw new Error("Class " + clazz.classname + " could not refine property: " + name + "! Key: " + key + " could not be refined!");
+          for( var key in config ) {
+            if( key !== "init" && key !== "refine" ) {
+              throw new Error( "Class " + clazz.classname + " could not refine property: " + name
+                               + "! Key: " + key + " could not be refined!" );
             }
           }
         }
 
-        if (compat) {
+        if( compat ) {
           return;
         }
 
         // Check 0.7 keys
-        var allowed = config.group ? rwt.qx.Property.$$allowedGroupKeys : rwt.qx.Property.$$allowedKeys;
-        for (var key in config)
-        {
-          if (allowed[key] === undefined) {
-            throw new Error('The configuration key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '" is not allowed!');
+        var allowed = config.group ? rwt.qx.Property.$$allowedGroupKeys
+                                   : rwt.qx.Property.$$allowedKeys;
+        for( var key in config ) {
+          if( allowed[ key ] === undefined ) {
+            throw new Error( 'The configuration key "' + key + '" of property "' + name
+                             + '" in class "' + clazz.classname + '" is not allowed!' );
           }
-
-          if (config[key] === undefined) {
-            throw new Error('Invalid key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '"! The value is undefined: ' + config[key]);
+          if( config[ key ] === undefined ) {
+            throw new Error( 'Invalid key "' + key + '" of property "' + name + '" in class "'
+                             + clazz.classname + '"! The value is undefined: ' + config[ key ] );
           }
-
-          if (allowed[key] !== null && typeof config[key] !== allowed[key]) {
-            throw new Error('Invalid type of key "' + key + '" of property "' + name + '" in class "' + clazz.classname + '"! The type of the key must be "' + allowed[key] + '"!');
+          if( allowed[ key ] !== null && typeof config[ key ] !== allowed[ key ] ) {
+            throw new Error( 'Invalid type of key "' + key + '" of property "' + name
+                             + '" in class "' + clazz.classname
+                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
           }
         }
-
         if( config.transform != null ) {
           if( typeof config.transform !== "string" ) {
-            throw new Error( 'Invalid transform definition of property "' + name + '" in class "' + clazz.classname + '"! Needs to be a String.' );
+            throw new Error( 'Invalid transform definition of property "' + name
+                             + '" in class "' + clazz.classname + '"! Needs to be a String.' );
           }
         }
-
-        if (config.check != null)
-        {
-          if (!(typeof config.check == "string" ||config.check instanceof Array || config.check instanceof Function)) {
-            throw new Error('Invalid check definition of property "' + name + '" in class "' + clazz.classname + '"! Needs to be a String, Array or Function.');
+        if( config.check != null ) {
+          if( !(    typeof config.check == "string"
+                 || config.check instanceof Array
+                 || config.check instanceof Function ) )
+          {
+            throw new Error( 'Invalid check definition of property "' + name + '" in class "'
+                             + clazz.classname + '"! Needs to be a String, Array or Function.' );
           }
         }
-
-        if (config.event != null && !this.isSubClassOf(clazz, rwt.qx.Target))
-        {
-          throw new Error("Invalid property '"+name+"' in class '"+clazz.classname+"': Properties defining an event can only be defined in sub classes of 'rwt.qx.Target'!");
+        if( config.event != null && !this.isSubClassOf( clazz, rwt.qx.Target ) ) {
+          throw new Error( "Invalid property '" + name + "' in class '" + clazz.classname
+                           + "': Properties defining an event can only be defined in"
+                           + " sub classes of 'rwt.qx.Target'!" );
         }
       },
 
       "default" : null
-    }),
-
+    } ),
 
     /**
      * Attach members to a class
@@ -1046,7 +918,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *     of this class
      * @param wrap {Boolean ? false} Whether the member method should be wrapped.
      *     this is needed to allow base calls in patched mixin members.
-     * @return {void}
      */
     __addMembers : function( clazz, members, patch, base, wrap ) {
       var proto = clazz.prototype;
@@ -1074,7 +945,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       }
     },
 
-
     /**
      * Wraps a member function of a mixin, which is included using "patch". This
      * allows "base" calls in the mixin member function.
@@ -1088,7 +958,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         return function() {
           var oldBase = member.base;
           member.base = base;
-          var retval = member.apply(this, arguments);
+          var retval = member.apply( this, arguments );
           member.base = oldBase;
           return retval;
         };
@@ -1097,7 +967,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       }
     },
 
-
     /**
      * Include all features of the mixin into the given class (recursive).
      *
@@ -1105,49 +974,39 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param mixin {Mixin} Include all features of this mixin
      * @param patch {Boolean} Overwrite existing fields, functions and properties
      */
-    __addMixin : function(clazz, mixin, patch)
-    {
+    __addMixin : function( clazz, mixin, patch ) {
 
       // Attach content
-      var list = rwt.qx.Mixin.flatten([mixin]);
+      var list = rwt.qx.Mixin.flatten( [ mixin ] );
       var entry;
-
-      for (var i=0, l=list.length; i<l; i++)
-      {
-        entry = list[i];
+      for( var i = 0, l = list.length; i < l; i++ ) {
+        entry = list[ i ];
 
         // Attach events
-        if (entry.$$events) {
-          this.__addEvents(clazz, entry.$$events, patch);
+        if( entry.$$events ) {
+          this.__addEvents( clazz, entry.$$events, patch );
         }
 
         // Attach properties (Properties are already readonly themselve, no patch handling needed)
-        if (entry.$$properties) {
-          this.__addProperties(clazz, entry.$$properties, patch);
+        if( entry.$$properties ) {
+          this.__addProperties( clazz, entry.$$properties, patch );
         }
 
         // Attach members (Respect patch setting, but dont apply base variables)
-        if (entry.$$members) {
-          this.__addMembers(clazz, entry.$$members, patch, patch, patch);
+        if( entry.$$members ) {
+          this.__addMembers( clazz, entry.$$members, patch, patch, patch );
         }
       }
 
       // Store mixin reference
-      if (clazz.$$includes)
-      {
-        clazz.$$includes.push(mixin);
-        clazz.$$flatIncludes.push.apply(clazz.$$flatIncludes, list);
-      }
-      else
-      {
-        clazz.$$includes = [mixin];
+      if( clazz.$$includes ) {
+        clazz.$$includes.push( mixin );
+        clazz.$$flatIncludes.push.apply( clazz.$$flatIncludes, list );
+      } else {
+        clazz.$$includes = [ mixin ];
         clazz.$$flatIncludes = list;
       }
     },
-
-
-
-
 
     /*
     ---------------------------------------------------------------------------
@@ -1159,7 +1018,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * Returns the default constructor.
      * This constructor just calles the constructor of the base class.
      *
-     * @type static
      * @return {Function} The default constructor.
      */
     __createDefaultConstructor : function() {
@@ -1169,11 +1027,9 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       return defaultConstructor;
     },
 
-
     /**
      * Returns an empty function. This is needed to get an empty function with an empty closure.
      *
-     * @type static
      * @return {Function} empty function
      */
     __createEmptyFunction : function() {
@@ -1196,7 +1052,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       }
     },
 
-
     /**
      * Generate a wrapper of the original class constructor in order to enable
      * some of the advanced OO features (e.g. abstract class, singleton, mixins)
@@ -1205,13 +1060,12 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param name {String} name of the class
      * @param type {String} the user specified class type
      */
-    __wrapConstructor : function(construct, name, type)
-    {
+    __wrapConstructor : function( construct, name, type ) {
       var init = this.__initializeClass;
       var wrapper = function() {
 
         // We can access the class/statics using arguments.callee
-        var clazz=arguments.callee.constructor;
+        var clazz = arguments.callee.constructor;
         init( clazz );
 
         // Attach local properties
@@ -1220,12 +1074,17 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         }
 
         // Execute default constructor
-        var retval=clazz.$$original.apply(this,arguments);
+        var retval=clazz.$$original.apply( this, arguments );
 
         // Initialize local mixins
-        if(clazz.$$includes){var mixins=clazz.$$flatIncludes;
-        for(var i=0,l=mixins.length;i<l;i++){
-        if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,arguments);}}}
+        if( clazz.$$includes ) {
+          var mixins = clazz.$$flatIncludes;
+          for( var i = 0, l = mixins.length; i < l; i++ ) {
+            if( mixins[ i ].$$constructor ) {
+              mixins[ i ].$$constructor.apply( this,arguments );
+            }
+          }
+        }
 
         // Mark instance as initialized
         if( this.classname === ', name, ' . classname ) {
@@ -1250,5 +1109,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       // Return generated wrapper
       return wrapper;
     }
+
   }
-});
+
+} );

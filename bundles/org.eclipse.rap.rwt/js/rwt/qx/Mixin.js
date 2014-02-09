@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          EclipseSource and others.
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +12,7 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
+
 /**
  * This class is used to define mixins (similar to mixins in Ruby).
  *
@@ -19,128 +21,78 @@
  *
  * See the description of the {@link #define} method how a mixin is defined.
  */
-rwt.qx.Class.define("rwt.qx.Mixin",
-{
-  statics :
-  {
-    /*
-    ---------------------------------------------------------------------------
-       PUBLIC API
-    ---------------------------------------------------------------------------
-    */
+rwt.qx.Class.define( "rwt.qx.Mixin", {
+
+  statics : {
 
     /**
-     * Define a new mixin.
+     * Defines a new mixin.
      *
-     * Example:
-     * <pre class='javascript'>
-     * rwt.qx.Mixin.define("name",
-     * {
-     *   includes: [SuperMixins],
-     *
-     *   properties: {
-     *     tabIndex: {type: "number", init: -1}
-     *   },
-     *
-     *   members:
-     *   {
-     *     prop1: "foo",
-     *     meth1: function() {},
-     *     meth2: function() {}
-     *   }
-     * });
-     * </pre>
-     *
-     * @type static
      * @param name {String} name of the mixin
-     * @param config {Map ? null} Mixin definition structure. The configuration map has the following keys:
-     *   <table>
-     *     <tr><th>Name</th><th>Type</th><th>Description</th></tr>
-     *     <tr><th>construct</th><td>Function</td><td>An optional mixin constructor. It is called on instantiation each
-     *         class including this mixin. The constructor takes no parameters.</td></tr>
-     *     <tr><th>destruct</th><td>Function</td><td>An optional mixin destructor.</td></tr>
-     *     <tr><th>include</th><td>Mixin[]</td><td>Array of mixins, which will be merged into the mixin.</td></tr>
-     *     <tr><th>statics</th><td>Map</td><td>
-     *         Map of statics of the mixin. The statics will not get copied into the target class. They remain
-     *         acceccible from the mixin. This is the same behaviour as statics in interfaces ({@link qx.Interface#define}).
-     *     </td></tr>
-     *     <tr><th>members</th><td>Map</td><td>Map of members of the mixin.</td></tr>
-     *     <tr><th>properties</th><td>Map</td><td>Map of property definitions. Format of the map: TODOC</td></tr>
-     *     <tr><th>events</th><td>Map</td><td>
-     *         Map of events the mixin fires. The keys are the names of the events and the values are
-     *         corresponding event type classes.
-     *     </td></tr>
-     *   </table>
+     * @param config {Map ? null} Mixin definition structure. The configuration map has the
+     *   following keys:
+     *   - construct {Function} An optional mixin constructor. It is called on instantiation each
+     *         class including this mixin. The constructor takes no parameters.
+     *   - destruct {Function} An optional mixin destructor.
+     *   - include {Mixin[]} Array of mixins, which will be merged into the mixin.
+     *   - statics {Map} Map of statics of the mixin. The statics will not get copied into the
+     *         target class. They remain acceccible from the mixin. This is the same behaviour as
+     *         statics in interfaces ({@link qx.Interface#define}).
+     *   - members {Map} Map of members of the mixin.
+     *   - properties {Map} Map of property definitions.
+     *   - events {Map} Map of events the mixin fires. The keys are the names of the events and the
+     *         values are corresponding event type classes.
      */
-    define : function(name, config)
-    {
-      if (config)
-      {
+    define : function( name, config ) {
+      if( config ) {
         // Normalize include
-        if (config.include && !(config.include instanceof Array)) {
-          config.include = [config.include];
+        if( config.include && !( config.include instanceof Array ) ) {
+          config.include = [ config.include ];
         }
-
         // Create Interface from statics
         var mixin = config.statics ? config.statics : {};
-        for(var key in mixin) {
-          mixin[key].mixin = mixin;
+        for( var key in mixin ) {
+          mixin[ key ].mixin = mixin;
         }
-
         // Attach configuration
-        if (config.construct) {
+        if( config.construct ) {
           mixin.$$constructor = config.construct;
         }
-
-        if (config.include) {
+        if( config.include ) {
           mixin.$$includes = config.include;
         }
-
-        if (config.properties) {
+        if( config.properties ) {
           mixin.$$properties = config.properties;
         }
-
-        if (config.members) {
+        if( config.members ) {
           mixin.$$members = config.members;
         }
-
-        for(var key in mixin.$$members)
-        {
-          if (mixin.$$members[key] instanceof Function) {
-            mixin.$$members[key].mixin = mixin;
+        for( var key in mixin.$$members ) {
+          if( mixin.$$members[ key ] instanceof Function ) {
+            mixin.$$members[ key ].mixin = mixin;
           }
         }
-
-        if (config.events) {
+        if( config.events ) {
           mixin.$$events = config.events;
         }
-
-        if (config.destruct) {
+        if( config.destruct ) {
           mixin.$$destructor = config.destruct;
         }
-      }
-      else
-      {
+      } else {
         var mixin = {};
       }
-
       // Add basics
       mixin.$$type = "Mixin";
       mixin.name = name;
-
       // Attach toString
       mixin.toString = this.genericToString;
-
       // Assign to namespace
-      mixin.basename = rwt.qx.Class.createNamespace(name, mixin);
-
+      mixin.basename = rwt.qx.Class.createNamespace( name, mixin );
       // Store class reference in global mixin registry
-      this.__registry[name] = mixin;
-
+      this.__registry[ name ] = mixin;
       // Return final mixin
       return mixin;
     },
-
 
     /**
      * Check compatiblity between mixins (including their includes)
@@ -148,55 +100,42 @@ rwt.qx.Class.define("rwt.qx.Mixin",
      * @param mixins {Mixin[]} an array of mixins
      * @throws an exception when there is a conflict between the mixins
      */
-    checkCompatibility : function(mixins)
-    {
-      var list = this.flatten(mixins);
+    checkCompatibility : function( mixins ) {
+      var list = this.flatten( mixins );
       var len = list.length;
-
-      if (len < 2) {
+      if( len < 2 ) {
         return true;
       }
-
       var properties = {};
       var members = {};
       var events = {};
       var mixin;
-
-      for (var i=0; i<len; i++)
-      {
-        mixin = list[i];
-
-        for (var key in mixin.events)
-        {
-          if(events[key]) {
-            throw new Error('Conflict between mixin "' + mixin.name + '" and "' + events[key] + '" in member "' + key + '"!');
+      for( var i = 0; i < len; i++ ) {
+        mixin = list[ i ];
+        for( var key in mixin.events ) {
+          if( events[ key ] ) {
+            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "' + events[ key ]
+                             + '" in member "' + key + '"!' );
           }
-
-          events[key] = mixin.name;
+          events[ key ] = mixin.name;
         }
-
-        for (var key in mixin.properties)
-        {
-          if(properties[key]) {
-            throw new Error('Conflict between mixin "' + mixin.name + '" and "' + properties[key] + '" in property "' + key + '"!');
+        for( var key in mixin.properties ) {
+          if( properties[ key ] ) {
+            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "'
+                             + properties[ key ] + '" in property "' + key + '"!' );
           }
-
-          properties[key] = mixin.name;
+          properties[ key ] = mixin.name;
         }
-
-        for (var key in mixin.members)
-        {
-          if(members[key]) {
-            throw new Error('Conflict between mixin "' + mixin.name + '" and "' + members[key] + '" in member "' + key + '"!');
+        for( var key in mixin.members ) {
+          if( members[ key ] ) {
+            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "' + members[ key ]
+                             + '" in member "' + key + '"!' );
           }
-
-          members[key] = mixin.name;
+          members[ key ] = mixin.name;
         }
       }
-
       return true;
     },
-
 
     /**
      * Checks if a class is compatible to the given mixin (no conflicts)
@@ -206,49 +145,41 @@ rwt.qx.Class.define("rwt.qx.Mixin",
      * @throws an exception when the given mixin is incompatible to the class
      * @return {Boolean} true if the mixin is compatible to the given class
      */
-    isCompatible : function(mixin, clazz)
-    {
-      var list = rwt.qx.Class.getMixins(clazz);
-      list.push(mixin);
-      return rwt.qx.Mixin.checkCompatibility(list);
+    isCompatible : function( mixin, clazz ) {
+      var list = rwt.qx.Class.getMixins( clazz );
+      list.push( mixin );
+      return rwt.qx.Mixin.checkCompatibility( list );
     },
-
 
     /**
      * Returns a mixin by name
      *
-     * @type static
      * @param name {String} class name to resolve
      * @return {Class} the class
      */
-    getByName : function(name) {
-      return this.__registry[name];
+    getByName : function( name ) {
+      return this.__registry[ name ];
     },
-
 
     /**
      * Determine if mixin exists
      *
-     * @type static
      * @name isDefined
      * @param name {String} mixin name to check
      * @return {Boolean} true if mixin exists
      */
-    isDefined : function(name) {
-      return this.getByName(name) !== undefined;
+    isDefined : function( name ) {
+      return this.getByName( name ) !== undefined;
     },
-
 
     /**
      * Determine the number of mixins which are defined
      *
-     * @type static
      * @return {Number} the number of classes
      */
     getTotalNumber : function() {
-      return rwt.util.Objects.getLength(this.__registry);
+      return rwt.util.Objects.getLength( this.__registry );
     },
-
 
     /**
      * Generates a list of all mixins given plus all the
@@ -257,36 +188,20 @@ rwt.qx.Class.define("rwt.qx.Mixin",
      * @param mixins {Mixin[] ? []} List of mixins
      * @returns {Array} List of all mixins
      */
-    flatten : function(mixins)
-    {
-      if (!mixins) {
+    flatten : function( mixins ) {
+      if( !mixins ) {
         return [];
       }
-
       // we need to create a copy and not to modify the existing array
       var list = mixins.concat();
-
-      for (var i=0, l=mixins.length; i<l; i++)
-      {
-        if (mixins[i].$$includes) {
-          list.push.apply(list, this.flatten(mixins[i].$$includes));
+      for( var i = 0, l = mixins.length; i < l; i++ ) {
+        if( mixins[ i ].$$includes ) {
+          list.push.apply( list, this.flatten( mixins[ i ].$$includes ) );
         }
       }
-
       // console.log("Flatten: " + mixins + " => " + list);
-
       return list;
     },
-
-
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-       PRIVATE/INTERNAL API
-    ---------------------------------------------------------------------------
-    */
 
     /**
      * This method will be attached to all mixins to return
@@ -299,16 +214,12 @@ rwt.qx.Class.define("rwt.qx.Mixin",
       return "[Mixin " + this.name + "]";
     },
 
-
     /** Registers all defined mixins */
     __registry : {},
 
-
     /** {Map} allowed keys in mixin definition */
-    __allowedKeys : rwt.util.Variant.select("qx.debug",
-    {
-      "on":
-      {
+    __allowedKeys : rwt.util.Variant.select( "qx.debug", {
+      "on": {
         "include"    : "object",   // Mixin | Mixin[]
         "statics"    : "object",   // Map
         "members"    : "object",   // Map
@@ -317,69 +228,68 @@ rwt.qx.Class.define("rwt.qx.Mixin",
         "destruct"   : "function", // Function
         "construct"  : "function"  // Function
       },
-
       "default" : null
-    }),
-
+    } ),
 
     /**
      * Validates incoming configuration and checks keys and values
      *
-     * @type static
      * @param name {String} The name of the class
      * @param config {Map} Configuration map
      */
-    __validateConfig : rwt.util.Variant.select("qx.debug",
-    {
-      "on": function(name, config)
-      {
+    __validateConfig : rwt.util.Variant.select( "qx.debug", {
+      "on": function( name, config ) {
         // Validate keys
         var allowed = this.__allowedKeys;
-        for (var key in config)
-        {
-          if (!allowed[key]) {
-            throw new Error('The configuration key "' + key + '" in mixin "' + name + '" is not allowed!');
+        for( var key in config ) {
+          if( !allowed[ key ] ) {
+            throw new Error( 'The configuration key "' + key + '" in mixin "' + name
+                             + '" is not allowed!' );
           }
-
-          if (config[key] == null) {
-            throw new Error('Invalid key "' + key + '" in mixin "' + name + '"! The value is undefined/null!');
+          if( config[ key ] == null ) {
+            throw new Error( 'Invalid key "' + key + '" in mixin "' + name
+                             + '"! The value is undefined/null!' );
           }
-
-          if (allowed[key] !== null && typeof config[key] !== allowed[key]) {
-            throw new Error('Invalid type of key "' + key + '" in mixin "' + name + '"! The type of the key must be "' + allowed[key] + '"!');
+          if( allowed[ key ] !== null && typeof config[ key ] !== allowed[ key ] ) {
+            throw new Error( 'Invalid type of key "' + key + '" in mixin "' + name
+                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
           }
         }
 
         // Validate maps
         var maps = [ "statics", "members", "properties", "events" ];
-        for (var i=0, l=maps.length; i<l; i++)
-        {
-          var key = maps[i];
-
-          if (config[key] !== undefined && (config[key] instanceof Array || config[key] instanceof RegExp || config[key] instanceof Date || config[key].classname !== undefined)) {
-            throw new Error('Invalid key "' + key + '" in mixin "' + name + '"! The value needs to be a map!');
+        for( var i = 0, l = maps.length; i < l; i++ ) {
+          var key = maps[ i ];
+          if(    config[ key ] !== undefined
+              && (    config[ key ] instanceof Array
+                   || config[ key ] instanceof RegExp
+                   || config[ key ] instanceof Date
+                   || config[ key ].classname !== undefined ) )
+          {
+            throw new Error( 'Invalid key "' + key + '" in mixin "' + name
+                             + '"! The value needs to be a map!' );
           }
         }
 
         // Validate includes
-        if (config.include)
-        {
-          for (var i=0, a=config.include, l=a.length; i<l; i++)
-          {
-            if (a[i] == null) {
-              throw new Error("Includes of mixins must be mixins. The include number '" + (i+1) + "' in mixin '" + name + "'is undefined/null!");
+        if( config.include ) {
+          for( var i = 0, a = config.include, l = a.length; i < l; i++ ) {
+            if( a[ i ] == null ) {
+              throw new Error( "Includes of mixins must be mixins. The include number '"
+                               + ( i + 1 ) + "' in mixin '" + name + "'is undefined/null!" );
             }
-
-            if (a[i].$$type !== "Mixin") {
-              throw new Error("Includes of mixins must be mixins. The include number '" + (i+1) + "' in mixin '" + name + "'is not a mixin!");
+            if( a[ i ].$$type !== "Mixin" ) {
+              throw new Error( "Includes of mixins must be mixins. The include number '"
+                               + ( i + 1 ) + "' in mixin '" + name + "'is not a mixin!" );
             }
           }
-
-          this.checkCompatibility(config.include);
+          this.checkCompatibility( config.include );
         }
       },
 
       "default" : function() {}
-    })
+    } )
+
   }
-});
+
+} );

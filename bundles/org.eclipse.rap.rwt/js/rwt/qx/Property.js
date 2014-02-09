@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          EclipseSource and others.
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +11,7 @@
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
+
 
 /**
  * Internal class for handling of dynamic properties. Should only be used
@@ -26,80 +28,59 @@
  *
  * Valid keys of a property definition are:
  *
- * <table>
- *   <tr><th>Name</th><th>Type</th><th>Description</th></tr>
- *   <tr><th>check</th><td>Array, String, Function</td><td>
- *     The check is used to validate the incoming value of a property. The check can be:
- *     <ul>
- *       <li>a custom check function. The function takes the incoming value as a parameter and must
- *           return a boolean value to indicate whether the values is valid.
- *       </li>
- *       <li>inline check code as a string e.g. <code>"value &gt; 0 && value &lt; 100"</code></li>
- *       <li>a class name e.g. <code>rwt.widgets.base.Button</code></li>
- *       <li>a name of an interface the value must implement, e.g. <code>qx.application.IAplpication</code></li>
- *       <li>an array of all valid values</li>
- *       <li>one of the predefined checks: Boolean, String, Number, Integer, Float, Double,
- *           Object, Array, Map, Class, Mixin, Interface, Theme, Error, RegExp, Function,
- *           Date, Node, Element, Document, Window, Event
- *       </li>
- *     <ul>
- *   </td></tr>
- *   <tr><th>init</th><td>var</td><td>
- *     Sets the default/initial value of the property. If no property value is set or the property
- *     gets reset, the getter will return the <code>init</code> value.
- *   </td></tr>
- *   <tr><th>apply</th><td>String</td><td>
- *     On change of the property value the method of the specified name will be called. The signature of
- *     the method is <code>function(newValue, oldValue)</code>.
- *   </td></tr>
- *   <tr><th>event</th><td>String</td><td>
- *     On change of the property value an event with the given name will be dispached. The event type is
- *     {@link rwt.event.ChangeEvent}.
- *   </td></tr>
- *   <tr><th>themeable</th><td>Boolean</td><td>
- *     Whether this property can be set using themes.
- *   </td></tr>
- *   <tr><th>inheritable</th><td>Boolean</td><td>
- *     Whether the property value should be inheritable. If the property does not have a user defined or an
- *     init value, the property will try to get the value from the parent of the current object.
- *   </td></tr>
- *   <tr><th>nullable</th><td>Boolean</td><td>
- *     Whether <code>null</code> is an allowed value of the property. This is complemental to the check
- *     defined using the <code>check</code> key.
- *   </td></tr>
- *   <tr><th>refine</th><td>Boolean</td><td>
- *     Whether the property definition is a refinemnet of a property in one of the super classes of the class.
- *     Only the <code>init</code> value can be changed using refine.
- *   </td></tr>
- *   <tr><th>transform</th><td>String</td><td>
- *     On setting of the property value the method of the specified name will
- *     be called. The signature of the method is <code>function(value)</code>.
- *     The parameter <code>value</code> is the value passed to the setter.
- *     The function must return the modified or unmodified value.
- *     Transformation occurs before the check function, so both may be
- *     specified if desired.  Alternatively, the transform function may throw
- *     an error if the value passed to it is invalid.
- *   </td></tr>
- * </table>
+ * - check {Array, String, Function}
+ *   The check is used to validate the incoming value of a property. The check can be:
+ *   - a custom check function. The function takes the incoming value as a parameter and must
+ *     return a boolean value to indicate whether the values is valid.
+ *   - inline check code as a string e.g. <code>"value &gt; 0 && value &lt; 100"</code>
+ *   - a class name e.g. <code>rwt.widgets.base.Button</code>
+ *   - a name of an interface the value must implement, e.g. <code>qx.application.IAplpication</code>
+ *   - an array of all valid values</li>
+ *   - one of the predefined checks: Boolean, String, Number, Integer, Float, Double,
+ *     Object, Array, Map, Class, Mixin, Interface, Theme, Error, RegExp, Function,
+ *     Date, Node, Element, Document, Window, Event
+ * - init {var}
+ *   Sets the default/initial value of the property. If no property value is set or the property
+ *   gets reset, the getter will return the <code>init</code> value.
+ * - apply {String}
+ *   On change of the property value the method of the specified name will be called. The
+ *   signature of the method is <code>function(newValue, oldValue)</code>.
+ * - event {String}
+ *   On change of the property value an event with the given name will be dispached. The event
+ *   type is {@link rwt.event.ChangeEvent}.
+ * - themeable {Boolean}
+ *   Whether this property can be set using themes.
+ * - inheritable {Boolean}
+ *   Whether the property value should be inheritable. If the property does not have a user
+ *   defined or an init value, the property will try to get the value from the parent of the
+ *   current object.
+ * - nullable {Boolean}
+ *   Whether <code>null</code> is an allowed value of the property. This is complemental to the
+ *   check defined using the <code>check</code> key.
+ * - refine {Boolean}
+ *   Whether the property definition is a refinemnet of a property in one of the super classes of
+ *   the class. Only the <code>init</code> value can be changed using refine.
+ * - transform {String}
+ *   On setting of the property value the method of the specified name will
+ *   be called. The signature of the method is <code>function(value)</code>.
+ *   The parameter <code>value</code> is the value passed to the setter.
+ *   The function must return the modified or unmodified value.
+ *   Transformation occurs before the check function, so both may be
+ *   specified if desired.  Alternatively, the transform function may throw
+ *   an error if the value passed to it is invalid.
  *
- * *Property groups*
+ * Property groups
+ * ---------------
  *
  * Property groups are defined in a similar way but support a different set of keys:
  *
- * <table>
- *   <tr><th>Name</th><th>Type</th><th>Description</th></tr>
- *   <tr><th>group</th><td>String[]</td><td>
- *     A list of property names which should be set using the propery group.
- *   </td></tr>
- *   <tr><th>mode</th><td>String</td><td>
- *     If mode is set to <code>"shorthand"</code>, the properties can be set using a CSS like shorthand mode.
- *   </td></tr>
- *   <tr><th>themeable</th><td>Boolean</td><td>
- *     Whether this property can be set using themes.
- *   </td></tr>
- * </table>
- *
- * @internal
+ * - group {String[]}
+ *   A list of property names which should be set using the propery group.
+ * - mode {String}
+ *   If mode is set to <code>"shorthand"</code>, the properties can be set using a CSS like
+ *   shorthand mode.
+ * - themeable {Boolean}
+ *   Whether this property can be set using themes.
  */
 rwt.qx.Class.define( "rwt.qx.Property", {
 
@@ -108,8 +89,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Built-in checks
      * The keys could be used in the check of the properties
-     *
-     * @internal
      */
     __checks : {
       "Boolean"   : 'typeof value === "boolean"',
@@ -149,8 +128,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
 
     /**
      * Contains types from {@link #__checks} list which need to be disposed
-     *
-     * @internal
      */
     __dispose : {
       "Object"    : true,
@@ -174,8 +151,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Inherit value, used to override defaults etc. to force inheritance
      * even if property value is not undefined (through multi-values)
-     *
-     * @internal
      */
     $$inherit : "inherit",
 
@@ -186,57 +161,51 @@ rwt.qx.Class.define( "rwt.qx.Property", {
 
     /**
      * Caching field names for each property created
-     *
-     * @internal
      */
     $$store : {
-      user    : {},
-      theme   : {},
+      user : {},
+      theme : {},
       inherit : {},
-      init    : {},
+      init : {},
       useinit : {}
     },
 
     /**
      * Caching function names for each property created
-     *
-     * @internal
      */
     $$method : {
-      get     : {},
-      set     : {},
-      reset   : {},
-      init    : {},
+      get : {},
+      set : {},
+      reset : {},
+      init : {},
       refresh : {},
-      style   : {},
+      style : {},
       unstyle : {}
     },
 
     /**
      * Supported keys for property defintions
-     *
-     * @internal
      */
     $$allowedKeys : {
       name         : "string",   // String
-      dispose      : "boolean",  // Boolean
-      inheritable  : "boolean",  // Boolean
-      nullable     : "boolean",  // Boolean
-      themeable    : "boolean",  // Boolean
-      refine       : "boolean",  // Boolean
-      init         : null,       // var
-      apply        : "string",   // String
-      event        : "string",   // String
-      check        : null,       // Array, String, Function
-      transform    : "string",   // String
+      dispose     : "boolean",  // Boolean
+      inheritable : "boolean",  // Boolean
+      nullable    : "boolean",  // Boolean
+      themeable   : "boolean",  // Boolean
+      refine      : "boolean",  // Boolean
+      init        : null,       // var
+      apply       : "string",   // String
+      event       : "string",   // String
+      check       : null,       // Array, String, Function
+      transform   : "string",   // String
       deferredInit : "boolean"   // Boolean
     },
 
     $$allowedGroupKeys : {
-      name        : "string",   // String
-      group       : "object",   // Array
-      mode        : "string",   // String
-      themeable   : "boolean"   // Boolean
+      name       : "string",   // String
+      group      : "object",   // Array
+      mode       : "string",   // String
+      themeable  : "boolean"   // Boolean
     },
 
     /** Contains names of inheritable properties, filled by {@link rwt.qx.Class.define} */
@@ -245,14 +214,10 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Refreshes widget whose parent has changed (including the children)
      *
-     * @type static
-     * @internal
      * @param widget {rwt.widgets.base.Widget} the widget
-     * @return {void}
      */
     refresh : function( widget ) {
       var parent = widget.getParent();
-
       if( parent ) {
         var clazz = widget.constructor;
         var inherit = this.$$store.inherit;
@@ -277,16 +242,13 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Attach properties to class prototype
      *
-     * @type static
-     * @internal
      * @param clazz {Class} Class to attach properties to
-     * @return {void}
      */
     attach : function( clazz ) {
       var properties = clazz.$$properties;
       if( properties ) {
         for( var name in properties ) {
-          this.attachMethods( clazz, name, properties[name] );
+          this.attachMethods( clazz, name, properties[ name ] );
         }
       }
       clazz.$$propertiesAttached = true;
@@ -295,12 +257,9 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Attach one property to class
      *
-     * @type static
-     * @internal
      * @param clazz {Class} Class to attach properties to
      * @param name {String} Name of property
      * @param config {Map} Configuration map of property
-     * @return {void}
      */
     attachMethods : function( clazz, name, config ) {
       // Filter old properties
@@ -335,13 +294,10 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Attach group methods
      *
-     * @type static
-     * @internal
      * @param clazz {Class} Class to attach properties to
      * @param config {Map} Property configuration
      * @param prefix {String} Prefix of property e.g. "__" or "_" for private or protected properties
      * @param postfix {String} Camelcase name of property e.g. name=width => postfix=Width
-     * @return {void}
      */
     __attachGroupMethods : function( clazz, config, prefix, postfix ) {
       var members = clazz.prototype;
@@ -373,10 +329,10 @@ rwt.qx.Class.define( "rwt.qx.Property", {
         }
       }
 
-      for( var i=0, a=config.group, l=a.length; i<l; i++ ) {
+      for( var i = 0, a = config.group, l = a.length; i < l; i++ ) {
         if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
-          if( !this.$$method.set[a[i]] || !this.$$method.reset[a[i]] ) {
-            throw new Error( "Cannot create property group '" + name + "' including non-existing property '" + a[i] + "'!" );
+          if( !this.$$method.set[ a[ i ] ] || !this.$$method.reset[ a[ i ] ] ) {
+            throw new Error( "Cannot create property group '" + name + "' including non-existing property '" + a[ i ] + "'!" );
           }
         }
 
@@ -416,31 +372,28 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Attach property methods
      *
-     * @type static
-     * @internal
      * @param clazz {Class} Class to attach properties to
      * @param config {Map} Property configuration
      * @param prefix {String} Prefix of property e.g. "__" or "_" for private or protected properties
      * @param postfix {String} Camelcase name of property e.g. name=width => postfix=Width
-     * @return {void}
      */
-    __attachPropertyMethods : function(clazz, config, prefix, postfix ) {
+    __attachPropertyMethods : function( clazz, config, prefix, postfix ) {
       var members = clazz.prototype;
       var name = config.name;
 
       // Fill dispose value
       if( config.dispose === undefined && typeof config.check === "string" ) {
-        config.dispose = this.__dispose[config.check] || rwt.qx.Class.isDefined( config.check );
+        config.dispose = this.__dispose[ config.check ] || rwt.qx.Class.isDefined( config.check );
       }
 
       var method = this.$$method;
       var store = this.$$store;
 
-      store.user[name] = "__user$" + name;
-      store.theme[name] = "__theme$" + name;
-      store.init[name] = "__init$" + name;
-      store.inherit[name] = "__inherit$" + name;
-      store.useinit[name] = "__useinit$" + name;
+      store.user[ name ] = "__user$" + name;
+      store.theme[ name ] = "__theme$" + name;
+      store.init[ name ] = "__init$" + name;
+      store.inherit[ name ] = "__inherit$" + name;
+      store.useinit[ name ] = "__useinit$" + name;
 
       method.get[name] = prefix + "get" + postfix;
       members[method.get[name]] = function() {
@@ -502,15 +455,13 @@ rwt.qx.Class.define( "rwt.qx.Property", {
     /**
      * Error method used by the property system to report errors.
      *
-     * @type static
-     * @internal
      * @param obj {rwt.qx.Object} Any qooxdoo object
      * @param id {Integer} Numeric error identifier
      * @param property {String} Name of the property
      * @param variant {String} Name of the method variant e.g. "set", "reset", ...
      * @param value {var} Incoming value
      */
-    error : function(obj, id, property, variant, value ) {
+    error : function( obj, id, property, variant, value ) {
       var classname = obj.constructor.classname;
       var msg = "Error in property " + property + " of class " + classname + " in method " + this.$$method[variant][property] + " with incoming value '" + value + "': ";
 
@@ -524,8 +475,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
      * Compiles a string builder object to a function, executes the function and
      * returns the return value.
      *
-     * @type static
-     * @internal
      * @param instance {Object} Instance which have called the original method
      * @param members {Object} Prototype members map where the new function should be stored
      * @param name {String} Name of the property
@@ -567,8 +516,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
      * Generates the optimized getter
      * Supported variants: get
      *
-     * @type static
-     * @internal
      * @param instance {Object} the instance which calls the method
      * @param clazz {Class} the class which originally defined the property
      * @param name {String} name of the property
@@ -616,8 +563,6 @@ rwt.qx.Class.define( "rwt.qx.Property", {
      * Generates the optimized setter
      * Supported variants: set, reset, init, refresh, style, unstyle
      *
-     * @type static
-     * @internal
      * @param instance {Object} the instance which calls the method
      * @param clazz {Class} the class which originally defined the property
      * @param name {String} name of the property
