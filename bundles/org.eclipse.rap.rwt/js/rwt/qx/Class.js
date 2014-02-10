@@ -88,7 +88,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *   },
      *
      *   properties: {
-     *     "tabIndexOld": { type: "number", defaultValue : -1, _legacy : true }
+     *     "tabIndexOld": { type: "number", defaultValue : -1 }
      *     "tabIndex": { check: "Number", init : -1 }
      *   },
      *
@@ -118,8 +118,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *   - construct {Function</td><td>The constructor of the class.
      *   - statics {Map</td><td>Map of static members of the class.
      *   - properties {Map</td><td>Map of property definitions. For a description of the format of a
-     *     property definition see {@link rwt.qx.Property} or the legacy version
-     *     {@link rwt.qx.LegacyProperty}.
+     *     property definition see {@link rwt.qx.Property}
      *   - members {Map}: Map of instance members of the class.
      *   - settings {Map}: Map of settings for this class. For a description of the format of a
      *     setting see {@link rwt.qx.Setting}.
@@ -803,8 +802,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
           rwt.qx.LegacyProperty.addFastProperty( config, clazz.prototype );
         } else if( config._cached ) {
           rwt.qx.LegacyProperty.addCachedProperty( config, clazz.prototype );
-        } else if( config._legacy ) {
-          rwt.qx.LegacyProperty.addProperty( config, clazz.prototype );
         }
       }
     },
@@ -819,12 +816,10 @@ rwt.qx.Class.define( "rwt.qx.Class", {
     __validateProperty : rwt.util.Variant.select( "qx.debug", {
       "on": function( clazz, name, config, patch ) {
         var has = this.hasProperty( clazz, name );
-        var compat = config._legacy || config._fast || config._cached;
+        var compat = config._fast || config._cached;
         if( has ) {
           var existingProperty = this.getPropertyDefinition( clazz, name );
-          var existingCompat = existingProperty._legacy ||
-                               existingProperty._fast ||
-                               existingProperty._cached;
+          var existingCompat = existingProperty._fast || existingProperty._cached;
 
           if( compat != existingCompat ) {
             throw new Error( "Could not redefine existing property '" + name + "' of class '"

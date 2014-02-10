@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          EclipseSource and others.
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +12,7 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
+
 /**
  * Internal class for handling dynamic properties.
  *
@@ -19,60 +21,15 @@
  *
  * @deprecated This class is supposed to be removed in qooxdoo 0.7
  */
-rwt.qx.Class.define("rwt.qx.LegacyProperty",
-{
-  statics :
-  {
-    /**
-     * Converts the property name to the setter name
-     *
-     * @type static
-     * @param name {String} name of a property
-     * @return {String} name of the setter for this property
-     */
-    getSetterName : function(name) {
-      return rwt.qx.Property.$$method.set[name];
-    },
+rwt.qx.Class.define( "rwt.qx.LegacyProperty", {
 
-
-    /**
-     * Converts the property name to the getter name
-     *
-     * @type static
-     * @param name {String} name of a property
-     * @return {String} name of the setter for this property
-     */
-    getGetterName : function(name) {
-      return rwt.qx.Property.$$method.get[name];
-    },
-
-
-    /**
-     * Converts the property name to the resetter name
-     *
-     * @type static
-     * @param name {String} name of a property
-     * @return {String} name of the setter for this property
-     */
-    getResetterName : function(name) {
-      return rwt.qx.Property.$$method.reset[name];
-    },
-
-
-    /*
-    ---------------------------------------------------------------------------
-      OBJECT PROPERTY EXTENSION
-    ---------------------------------------------------------------------------
-    */
+  statics : {
 
     /**
      * Adds a so-named fast property to a prototype.
      *
-     * @deprecated
-     * @type static
      * @param config {Map} Configuration structure
      * @param proto {Object} Prototype where the methods should be attached
-     * @return {void}
      */
     addFastProperty : function(config, proto)
     {
@@ -134,11 +91,8 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
     /**
      * Adds a so-named cached property to a prototype
      *
-     * @deprecated
-     * @type static
      * @param config {Map} Configuration structure
      * @param proto {Object} Prototype where the methods should be attached
-     * @return {void}
      */
     addCachedProperty : function(config, proto)
     {
@@ -199,316 +153,8 @@ rwt.qx.Class.define("rwt.qx.LegacyProperty",
       proto["get" + vUpName].self = proto.constructor;
       proto["_invalidate" + vUpName].self = proto.constructor;
       proto["_recompute" + vUpName].self = proto.constructor;
-    },
-
-
-    /**
-     * Adds a property to a prototype
-     *
-     * @deprecated
-     * @type static
-     * @param config {Map} Configuration structure
-     * @param proto {Object} Prototype where the methods should be attached
-     * @return {void}
-     * @throws TODOC
-     */
-    addProperty : function(config, proto)
-    {
-      if (typeof config !== "object") {
-        throw new Error("AddProperty: Param should be an object!");
-      }
-
-      if (typeof config.name !== "string") {
-        throw new Error("AddProperty: Malformed input parameters: name needed!");
-      }
-
-      // Auto-detect dispose properties
-      if (config.dispose === undefined && (config.type == "function" || config.type == "object")) {
-        config.dispose = true;
-      }
-
-      config.method = rwt.util.Strings.toFirstUp(config.name);
-      config.implMethod = config.impl ? rwt.util.Strings.toFirstUp(config.impl) : config.method;
-
-      if (config.defaultValue === undefined) {
-        config.defaultValue = null;
-      }
-
-      config.allowNull = config.allowNull !== false;
-      config.allowMultipleArguments = config.allowMultipleArguments === true;
-
-      if (typeof config.type === "string") {
-        config.hasType = true;
-      } else if (typeof config.type !== "undefined") {
-        throw new Error("AddProperty: Invalid type definition for property " + config.name + ": " + config.type);
-      } else {
-        config.hasType = false;
-      }
-
-      if (typeof config.instance === "string") {
-        config.hasInstance = true;
-      } else if (typeof config.instance !== "undefined") {
-        throw new Error("AddProperty: Invalid instance definition for property " + config.name + ": " + config.instance);
-      } else {
-        config.hasInstance = false;
-      }
-
-      if (typeof config.classname === "string") {
-        config.hasClassName = true;
-      } else if (typeof config.classname !== "undefined") {
-        throw new Error("AddProperty: Invalid classname definition for property " + config.name + ": " + config.classname);
-      } else {
-        config.hasClassName = false;
-      }
-
-      config.hasConvert = config.convert != null;
-      config.hasPossibleValues = config.possibleValues != null;
-
-      config.addToQueue = config.addToQueue || false;
-      config.addToQueueRuntime = config.addToQueueRuntime || false;
-
-      // upper-case name
-      config.up = config.name.toUpperCase();
-
-      // new style keys (compatible to rwt.qx.Property)
-      var valueKey = rwt.qx.Property.$$store.user[config.name] = "__user$" + config.name;
-
-      // old style keys
-      var changeKey = "change" + config.method;
-      var modifyKey = "_modify" + config.implMethod;
-      var checkKey = "_check" + config.implMethod;
-
-      var method = rwt.qx.Property.$$method;
-      if (!method.set[config.name])
-      {
-        method.set[config.name] = "set" + config.method;
-        method.get[config.name] = "get" + config.method;
-        method.reset[config.name] = "reset" + config.method;
-      }
-
-      // apply default value
-      proto[valueKey] = config.defaultValue;
-
-      // building getFoo(): Returns current stored value
-      proto["get" + config.method] = function() {
-        return this[valueKey];
-      };
-
-      // building forceFoo(): Set (override) without do anything else
-      proto["force" + config.method] = function(newValue) {
-        return this[valueKey] = newValue;
-      };
-
-      // building resetFoo(): Reset value to default value
-      proto["reset" + config.method] = function() {
-        return this["set" + config.method](config.defaultValue);
-      };
-
-      // building toggleFoo(): Switching between two boolean values
-      if (config.type === "boolean")
-      {
-        proto["toggle" + config.method] = function(newValue) {
-          return this["set" + config.method](!this[valueKey]);
-        };
-      }
-
-      if (config.allowMultipleArguments || config.hasConvert || config.hasInstance || config.hasClassName || config.hasPossibleValues || config.hasUnitDetection || config.addToQueue || config.addToQueueRuntime || config.addToStateQueue)
-      {
-        // building setFoo(): Setup new value, do type and change detection, converting types, call unit detection, ...
-        proto["set" + config.method] = function(newValue)
-        {
-          // convert multiple arguments to array
-          if (config.allowMultipleArguments && arguments.length > 1) {
-            newValue = rwt.util.Arrays.fromArguments(arguments);
-          }
-
-          // support converter methods
-          if (config.hasConvert)
-          {
-            try {
-              newValue = config.convert.call(this, newValue, config);
-            } catch(ex) {
-              throw new Error("Attention! Could not convert new value for " + config.name + ": " + newValue + ": " + ex);
-            }
-          }
-
-          var oldValue = this[valueKey];
-
-          if (newValue === oldValue) {
-            return newValue;
-          }
-
-          if (!(config.allowNull && newValue == null))
-          {
-            if (config.hasType && typeof newValue !== config.type) {
-              throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be typeof \"" + config.type + "\" but is typeof \"" + typeof newValue + "\"!");
-            }
-
-            if (rwt.qx.Class.getByName(config.instance))
-            {
-              if (config.hasInstance && !(newValue instanceof rwt.qx.Class.getByName(config.instance))) {
-                throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an instance of \"" + config.instance + "\"!");
-              }
-            }
-            else if (rwt.util.Variant.isSet("qx.compatibility", "on"))
-            {
-              if (config.hasInstance && !(newValue instanceof qx.OO.classes[config.instance])) {
-                throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an instance of \"" + config.instance + "\"!");
-              }
-            }
-
-            if (config.hasClassName && newValue.classname != config.classname) {
-              throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be an object with the classname \"" + config.classname + "\"!");
-            }
-
-            if (config.hasPossibleValues && newValue != null && !rwt.util.Arrays.contains(config.possibleValues, newValue)) {
-              throw new Error("Failed to save value for " + config.name + ". '" + newValue + "' is not a possible value!");
-            }
-          }
-
-          // Allow to check and transform the new value before storage
-          if (this[checkKey])
-          {
-            try
-            {
-              newValue = this[checkKey](newValue, config);
-
-              // Don't do anything if new value is indentical to old value
-              if (newValue === oldValue) {
-                return newValue;
-              }
-            }
-            catch(ex)
-            {
-              throw new Error( "Failed to check property " + config.name + " " + ex );
-            }
-          }
-
-          // Store new value
-          this[valueKey] = newValue;
-
-          // Check if there is a modifier implementation
-          if (this[modifyKey])
-          {
-            try
-            {
-              this[modifyKey](newValue, oldValue, config);
-            }
-            catch(ex)
-            {
-              throw new Error( "Modification of property \"" + config.name + "\" failed with exception " + ex );
-            }
-          }
-
-          // Auto queue addition support
-          if (config.addToQueue) {
-            this.addToQueue(config.name);
-          }
-
-          if (config.addToQueueRuntime) {
-            this.addToQueueRuntime(config.name);
-          }
-
-          // Auto state queue addition support
-          if (config.addToStateQueue) {
-            this.addToStateQueue();
-          }
-
-          // Create Event
-          if (this.hasEventListeners && this.hasEventListeners(changeKey))
-          {
-            try {
-              this.createDispatchDataEvent(changeKey, newValue);
-            } catch(ex) {
-              throw new Error("Property " + config.name + " modified: Failed to dispatch change event: " + ex);
-            }
-          }
-
-          return newValue;
-        };
-      }
-      else
-      {
-        // building setFoo(): Setup new value, do type and change detection, converting types, call unit detection, ...
-        proto["set" + config.method] = function(newValue)
-        {
-          var oldValue = this[valueKey];
-
-          if (newValue === oldValue) {
-            return newValue;
-          }
-
-          if (!(config.allowNull && newValue == null))
-          {
-            if (config.hasType && typeof newValue !== config.type) {
-              throw new Error("Attention! The value \"" + newValue + "\" is an invalid value for the property \"" + config.name + "\" which must be typeof \"" + config.type + "\" but is typeof \"" + typeof newValue + "\"!");
-            }
-          }
-
-          // Allow to check and transform the new value before storage
-          if (this[checkKey])
-          {
-            try
-            {
-              newValue = this[checkKey](newValue, config);
-
-              // Don't do anything if new value is indentical to old value
-              if (newValue === oldValue) {
-                return newValue;
-              }
-            }
-            catch(ex)
-            {
-              throw new Error( "Failed to check property " + config.name + " " + ex );
-            }
-          }
-
-          // Store new value
-          this[valueKey] = newValue;
-
-          // Check if there is a modifier implementation
-          if (this[modifyKey])
-          {
-            try
-            {
-              this[modifyKey](newValue, oldValue, config);
-            }
-            catch(ex)
-            {
-              throw new Error( "Setting property \"" + config.name + "\" to \"" + newValue + "\" failed with exception " + ex );
-            }
-          }
-
-          // Create Event
-          if (this.hasEventListeners && this.hasEventListeners(changeKey))
-          {
-            var vEvent = new rwt.event.DataEvent(changeKey, newValue, oldValue, false);
-
-            vEvent.setTarget(this);
-
-            try {
-              this.dispatchEvent(vEvent, true);
-            } catch(ex) {
-              throw new Error("Property " + config.name + " modified: Failed to dispatch change event: " + ex);
-            }
-          }
-
-          return newValue;
-        };
-      }
-
-      // Attach self to handle protected protection
-      proto["set" + config.method].self = proto.constructor;
-
-      // building user configured get alias for property
-      if (typeof config.getAlias === "string") {
-        proto[config.getAlias] = proto["get" + config.method];
-      }
-
-      // building user configured set alias for property
-      if (typeof config.setAlias === "string") {
-        proto[config.setAlias] = proto["set" + config.method];
-      }
     }
+
   }
-});
+
+} );
