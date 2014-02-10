@@ -47,7 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       if( shell ) {
         rwt.remote.MessageProcessor.processOperationArray( [ "destroy", "w2" ] );
       }
-      rwt.runtime.Singletons.clear();
+      rwt.runtime.Singletons.clear( rwt.remote.DNDSupport );
       TestUtil.flush();
       TestUtil.clearTimerOnceLog();
       TestUtil.clearRequestLog();

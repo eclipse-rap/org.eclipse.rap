@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
@@ -21,6 +21,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    testGetInstance : function() {
+      var instance = rwt.remote.Connection.getInstance();
+
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.remote.Connection ) );
+    },
 
     testSendRequestCounter : function() {
       connection.send();
@@ -163,4 +169,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
 
 } );
 
-}());
+}() );

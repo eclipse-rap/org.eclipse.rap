@@ -35,13 +35,17 @@
  * The original code is licensed under a BSD license
  * (http://developer.yahoo.com/yui/license.txt).
  */
-rwt.qx.Class.define("rwt.client.BrowserNavigation",
-{
-  type : "singleton",
+rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
+
   extend : rwt.qx.Target,
 
+  statics : {
 
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.client.BrowserNavigation );
+    }
 
+  },
 
   /*
   *****************************************************************************

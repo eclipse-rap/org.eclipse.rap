@@ -12,7 +12,8 @@
 describe( "Singletons", function() {
 
   var Singletons = rwt.runtime.Singletons;
-  var SingletonObject = function() {};
+  var Foo = function() {};
+  var Bar = function() {};
 
   beforeEach( function() {
     Singletons.clear();
@@ -21,22 +22,19 @@ describe( "Singletons", function() {
   describe( "get", function() {
 
     it( "should create an instance of a given type", function() {
-      var instance = Singletons.get( SingletonObject );
+      var instance = Singletons.get( Foo );
 
-      expect( instance instanceof SingletonObject ).toBe( true );
+      expect( instance instanceof Foo ).toBe( true );
     } );
 
     it( "should always return the same instance", function() {
-      var instance1 = Singletons.get( SingletonObject );
-      var instance2 = Singletons.get( SingletonObject );
+      var instance1 = Singletons.get( Foo );
+      var instance2 = Singletons.get( Foo );
 
       expect( instance1 ).toBe( instance2 );
     } );
 
     it( "should return different instances for different types", function() {
-      var Foo = function() {};
-      var Bar = function() {};
-
       var foo = Singletons.get( Foo );
       var bar = Singletons.get( Bar );
 
@@ -50,24 +48,35 @@ describe( "Singletons", function() {
 
     it( "should not overwrite instances for different types", function() {
       // This test fails if internal sequence counter is reset in clear().
-      // Do not move Foo and Bar out of this function, because Singletons.get() attaches an id to it.
-      var Foo = function() {};
-      var Bar = function() {};
-      Singletons.get( Foo );
+      // Do not move Abc and Xyz out of this function, because Singletons.get() attaches an id to it.
+      var Abc = function() {};
+      var Xyz = function() {};
+      Singletons.get( Abc );
 
       Singletons.clear();
 
-      expect( Singletons.get( Bar ) instanceof Bar ).toBe( true );
-      expect( Singletons.get( Foo ) instanceof Foo ).toBe( true );
+      expect( Singletons.get( Xyz ) instanceof Xyz ).toBe( true );
+      expect( Singletons.get( Abc ) instanceof Abc ).toBe( true );
     } );
 
-    it( "should clear existing instances", function() {
-      var instance1 = Singletons.get( SingletonObject );
+    it( "should clear all existing instances", function() {
+      var fooInstance = Singletons.get( Foo );
+      var barInstance = Singletons.get( Bar );
 
       Singletons.clear();
 
-      var instance2 = Singletons.get( SingletonObject );
-      expect( instance1 ).not.toBe( instance2 );
+      expect( Singletons.get( Foo ) ).not.toBe( fooInstance );
+      expect( Singletons.get( Bar ) ).not.toBe( barInstance );
+    } );
+
+    it( "should clear only existing instance for a given type", function() {
+      var fooInstance = Singletons.get( Foo );
+      var barInstance = Singletons.get( Bar );
+
+      Singletons.clear( Foo );
+
+      expect( Singletons.get( Foo ) ).not.toBe( fooInstance );
+      expect( Singletons.get( Bar ) ).toBe( barInstance );
     } );
 
   } );

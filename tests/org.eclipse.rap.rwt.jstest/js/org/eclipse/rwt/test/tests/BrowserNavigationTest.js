@@ -15,6 +15,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
 
   members : {
 
+    testGetInstance : function() {
+      var instance = rwt.client.BrowserNavigation.getInstance();
+
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.client.BrowserNavigation ) );
+    },
+
     testCreateBrowserNavigationByProtocol : function() {
       var browserNavigation = this._createBrowserNavigationByProtocol();
       assertTrue( browserNavigation instanceof rwt.client.BrowserNavigation );

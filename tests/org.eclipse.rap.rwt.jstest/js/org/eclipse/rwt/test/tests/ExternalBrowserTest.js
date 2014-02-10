@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
 
   members : {
 
+    testGetInstance : function() {
+      var instance = rwt.widgets.ExternalBrowser.getInstance();
+
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.widgets.ExternalBrowser ) );
+    },
+
     testCreateExternalBrowserByProtocol : function() {
       var externalBrowser = this._createExternalBrowser();
       assertTrue( externalBrowser instanceof rwt.widgets.ExternalBrowser );
@@ -34,15 +40,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
       assertEquals( -1, escapedId.indexOf( " " ) );
       escapedId = externalBrowser._escapeId( "my-id" );
       assertEquals( -1, escapedId.indexOf( "-" ) );
-  
+
       var escapedId1 = externalBrowser._escapeId( "my_id" );
       var escapedId2 = externalBrowser._escapeId( "my.id" );
       assertFalse( escapedId1 == escapedId2 );
-  
+
       escapedId1 = externalBrowser._escapeId( "my_id_0" );
       escapedId2 = externalBrowser._escapeId( "my.id_0" );
       assertFalse( escapedId1 == escapedId2 );
-  
+
       escapedId1 = externalBrowser._escapeId( "1" );
       assertEquals( "1", escapedId1 );
       escapedId2 = externalBrowser._escapeId( "2" );
@@ -59,7 +65,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExternalBrowserTest", {
     }
 
   }
-  
+
 } );
 
 }());

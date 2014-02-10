@@ -22,8 +22,16 @@ var ClientDocument = rwt.widgets.base.ClientDocument;
 var Widget = rwt.widgets.base.Widget;
 
 rwt.qx.Class.define( "rwt.remote.Connection", {
-  type : "singleton",
+
   extend : rwt.qx.Target,
+
+  statics : {
+
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.remote.Connection );
+    }
+
+  },
 
   construct : function() {
     this.base( arguments );

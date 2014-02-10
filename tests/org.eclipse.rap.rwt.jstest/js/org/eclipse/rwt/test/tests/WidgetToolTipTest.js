@@ -1,8 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2014 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
@@ -70,6 +71,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
 
     /////////
     // Tests:
+
+    testGetInstance : function() {
+      var instance = rwt.widgets.base.WidgetToolTip.getInstance();
+
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.widgets.base.WidgetToolTip ) );
+    },
 
     testUpdateWidgetToolTipText_HoverFromDocument : function() {
       WidgetToolTip.setToolTipText( widget, "test1" );

@@ -10,8 +10,16 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
+
   extend : rwt.qx.Target,
-  type : "singleton",
+
+  statics : {
+
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( org.eclipse.rwt.test.TestRunner );
+    }
+
+  },
 
   construct : function() {
     this.base( arguments );

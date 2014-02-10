@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,13 +14,17 @@
 /**
  * This manager (singleton) manage all drag and drop handling of a rwt.qx.Init instance.
  */
-rwt.qx.Class.define("rwt.event.DragAndDropHandler",
-{
-  type : "singleton",
+rwt.qx.Class.define( "rwt.event.DragAndDropHandler", {
+
   extend : rwt.util.ObjectManager,
 
+  statics : {
 
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.event.DragAndDropHandler );
+    }
 
+  },
 
   /*
   *****************************************************************************

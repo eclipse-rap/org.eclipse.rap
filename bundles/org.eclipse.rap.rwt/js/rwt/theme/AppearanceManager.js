@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,8 +13,15 @@
 
 rwt.qx.Class.define( "rwt.theme.AppearanceManager", {
 
-  type : "singleton",
   extend : rwt.util.ObjectManager,
+
+  statics : {
+
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.theme.AppearanceManager );
+    }
+
+  },
 
   construct : function() {
     this.base( arguments );

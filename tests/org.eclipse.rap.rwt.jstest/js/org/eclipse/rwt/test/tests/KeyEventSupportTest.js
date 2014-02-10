@@ -9,22 +9,32 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = rwt.remote.MessageProcessor;
+
+var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
   extend : rwt.qx.Object,
 
   construct : function() {
     this.base( arguments );
-    org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
+    TestUtil.prepareTimerUse();
   },
 
   members : {
 
-    testSetActiveKeysByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+    testGetInstance : function() {
+      var instance = rwt.remote.KeyEventSupport.getInstance();
 
-      processor.processOperation( {
+      assertIdentical( instance, rwt.runtime.Singletons.get( rwt.remote.KeyEventSupport ) );
+    },
+
+    testSetActiveKeysByProtocol : function() {
+      Processor.processOperation( {
         "target" : "w1",
         "action" : "set",
         "properties" : {
@@ -38,10 +48,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testSetCancelKeysByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
-
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w1",
         "action" : "set",
         "properties" : {
@@ -55,9 +62,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingSingleCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "#66" : true } );
       TestUtil.press( widget, "b" );
@@ -71,9 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingWithMissingKeypressEventUpperCase : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "CTRL+SHIFT+#66" : true } );
       var dom = rwt.event.DomEvent;
@@ -89,9 +92,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingWithMissingKeypressEventLowerCase : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "CTRL+#66" : true } );
       var dom = rwt.event.DomEvent;
@@ -106,9 +107,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingSingleCharacterHold : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "#66" : true } );
 
@@ -127,9 +126,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingSingleCharacterHoldAndCancel : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "#66" : true } );
       keyUtil.setCancelKeys( { "#66" : true } );
@@ -149,9 +146,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingSpecialCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "/" : true } );
 
@@ -164,9 +159,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingPointCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "." : true } );
 
@@ -179,8 +172,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingsPreventDefaultNotCalled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var prevented = false;
       var preventDefault = function() {
         prevented = true;
@@ -196,8 +187,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingWithServerKeyListener : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       widget.setUserData( "isControl", true );
       widget.setUserData( "keyListener", true );
@@ -212,8 +201,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingWithClientKeyListener : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       var log = [];
       var logger = function( event ) {
@@ -236,8 +223,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingsNoModifiersAllowed : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( {
         "66" : true
@@ -253,8 +238,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingsModifiersNeeded : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( {
         "SHIFT+#66" : true
@@ -269,8 +252,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingsModifiersOrder : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "ALT+CTRL+SHIFT+#66" : true } );
       var dom = rwt.event.DomEvent;
@@ -286,9 +267,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyBindingShiftAndNumberOnKeypress : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.initRequestLog();
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( { "SHIFT+#53" : true } );
       var dom = rwt.event.DomEvent;
@@ -305,8 +284,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeysPreventDefaultNotCalled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var prevented = false;
       var preventDefault = function() {
         prevented = true;
@@ -322,8 +299,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeysPreventDefaultCalled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var preventedDown = false;
       var preventedPress = false;
       var widget = this._createWidget();
@@ -345,8 +320,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeysPreventDefaultCalledIfSent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var preventedDown = false;
       var preventedPress = false;
       var widget = this._createWidget();
@@ -369,8 +342,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeysNotProcessed : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var widget = this._createWidget();
       keyUtil.setCancelKeys( { "#66" : true } );
       var listener = function() {
@@ -385,8 +356,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testBufferEvents : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var req = rwt.remote.Connection.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
@@ -409,8 +378,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testBufferEvents_onDisposedWidget : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var req = rwt.remote.Connection.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
@@ -432,8 +399,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testBufferedEventInfo : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = rwt.remote.KeyEventSupport.getInstance();
       var req = rwt.remote.Connection.getInstance();
       req.removeEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       TestUtil.initRequestLog();
@@ -456,7 +421,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyEventListenerUntrustedKey : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       var node = text._inputElement;
       // cancel event
@@ -466,7 +430,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testNotifyTraverse : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
 
       TestUtil.press( text, 9, false );
@@ -478,7 +441,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyCodeLowerCase : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
 
       TestUtil.press( text, "a", 0 );
@@ -490,7 +452,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testKeyCodeUpperCase : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
 
       TestUtil.press( text, "A", 0 );
@@ -502,7 +463,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testSendModifier : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       var shift = rwt.event.DomEvent.SHIFT_MASK;
 
@@ -516,7 +476,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testShiftCharacter : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       var shift = rwt.event.DomEvent.SHIFT_MASK;
       TestUtil.keyDown( text.getElement(), "Shift", shift );
@@ -538,7 +497,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testNonActiveCharKeysNotSent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [] );
 
@@ -552,7 +510,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveLowerCharKeySent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#90" ] );
 
@@ -567,7 +524,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveUpperCharKeySent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#90" ] );
 
@@ -581,7 +537,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveSpecialKeySent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#40" ] );
 
@@ -596,7 +551,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testDontSendCtrlTab : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "CTRL+#9", "CTRL+SHIFT+#9" ] );
       var dom = rwt.event.DomEvent;
@@ -609,7 +563,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveSpecialCharKeySent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "/" ] );
 
@@ -623,7 +576,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveKeySequenceSent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "ALT+CTRL+#90" ] );
       var dom = rwt.event.DomEvent;
@@ -642,7 +594,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testActiveCancelKeySequence_Bug399989 : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "#90", "SHIFT+#90" ] );
       this._setCancelKeys( text, [ "#90", "SHIFT+#90" ] );
@@ -660,7 +611,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeySequenceNotProcessed : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setCancelKeys( text, [
         "#90",
@@ -689,7 +639,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     testCancelKeySequenceSent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = this._createTextWidget();
       this._setCancelKeys( text, [
         "#90",
@@ -726,10 +675,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _createTextWidget : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Text",
@@ -738,7 +685,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
           "parent" : "w2"
         }
       } );
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "listen",
         "properties" : {
@@ -754,7 +701,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     _disposeTextWidget : function( text ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.clearRequestLog();
       text.blur(); // otherwise TextUtil will crash on next server-request.
       text.getParent().destroy();
@@ -763,8 +709,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
     _setActiveKeys : function( widget, activeKeys ) {
       var id = rwt.remote.ObjectRegistry.getId( widget );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "set",
         "properties" : {
@@ -775,8 +720,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
     _setCancelKeys : function( widget, cancelKeys ) {
       var id = rwt.remote.ObjectRegistry.getId( widget );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "set",
         "properties" : {
@@ -788,3 +732,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
   }
 
 } );
+
+}() );
+

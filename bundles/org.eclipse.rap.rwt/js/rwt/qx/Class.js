@@ -108,7 +108,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param name {String} Name of the class
      * @param config {Map ? null} Class definition structure. The configuration map has the
      *   following keys:
-     *   - type {String}: Type of the class. Valid types are "abstract", "static" and "singleton".
+     *   - type {String}: Type of the class. Valid types are "abstract" and "static".
      *     If unset it defaults to a regular non-static class.
      *   - extend {Class}: The super class the current class inherits from.
      *   - implement {Interface | Interface[]}: Single interface or array of interfaces the class
@@ -560,19 +560,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
     },
 
     /**
-     * Helper method to handle singletons
-     */
-    getInstance : function() {
-      if( !this.$$instance ) {
-        this.$$allowconstruct = true;
-        var Constructor = this;
-        this.$$instance = new Constructor();
-        delete this.$$allowconstruct;
-      }
-      return this.$$instance;
-    },
-
-    /**
      * This method will be attached to all classes to return
      * a nice identifier for them.
      *
@@ -630,8 +617,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         // Validate type
         if( config.type
             && !(    config.type === "static"
-                  || config.type === "abstract"
-                  || config.type === "singleton" ) )
+                  || config.type === "abstract" ) )
         {
           throw new Error( 'Invalid type "' + config.type + '" definition for class "' + name
                            + '"!' );
@@ -1089,11 +1075,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         // Return optional return value
         return retval;
       };
-
-      // Add singleton getInstance()
-      if( type === "singleton" ) {
-        wrapper.getInstance = this.getInstance;
-      }
 
       // Store original constructor
       wrapper.$$original = construct;

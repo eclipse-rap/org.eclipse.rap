@@ -28,8 +28,14 @@ rwt.runtime.Singletons = {
     return this._holder[ id ];
   },
 
-  clear : function() {
-    this._holder = {};
+  clear : function( type ) {
+    if( type ) {
+      if( typeof type.__singleton !== "undefined" ) {
+        delete this._holder[ type.__singleton ];
+      }
+    } else {
+      this._holder = {};
+    }
   }
 
 };

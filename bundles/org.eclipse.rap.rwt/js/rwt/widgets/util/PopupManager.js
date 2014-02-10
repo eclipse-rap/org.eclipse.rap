@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,26 +12,17 @@
  ******************************************************************************/
 
 /** This singleton is used to manager multiple instances of popups and their state. */
-rwt.qx.Class.define("rwt.widgets.util.PopupManager",
-{
-  type : "singleton",
+rwt.qx.Class.define( "rwt.widgets.util.PopupManager", {
+
   extend : rwt.util.ObjectManager,
 
+  statics : {
 
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.widgets.util.PopupManager );
+    }
 
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  construct : function() {
-    this.base(arguments);
   },
-
-
-
 
   /*
   *****************************************************************************

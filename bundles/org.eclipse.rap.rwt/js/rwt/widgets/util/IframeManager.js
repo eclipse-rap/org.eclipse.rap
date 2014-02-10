@@ -20,13 +20,17 @@
  * The solution: In order to be able to track mouse events over iframes, this
  * manager will block all iframes during a drag with a glasspane.
  */
-rwt.qx.Class.define("rwt.widgets.util.IframeManager",
-{
-  type : "singleton",
+rwt.qx.Class.define( "rwt.widgets.util.IframeManager", {
+
   extend : rwt.util.ObjectManager,
 
+  statics : {
 
+    getInstance : function() {
+      return rwt.runtime.Singletons.get( rwt.widgets.util.IframeManager );
+    }
 
+  },
 
   /*
   *****************************************************************************

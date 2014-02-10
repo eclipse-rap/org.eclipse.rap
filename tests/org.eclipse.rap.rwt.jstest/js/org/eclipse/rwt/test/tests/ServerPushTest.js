@@ -23,7 +23,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ServerPushTest", {
   members : {
 
     tearDown : function() {
-      rwt.runtime.Singletons.clear();
+      rwt.runtime.Singletons.clear( rwt.client.ServerPush );
     },
 
     testServerPushInstance : function() {
