@@ -174,16 +174,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
-    if( tree.getSelectionCount() > 0 ) {
-      renderProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ), null );
-    }
-    renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
-    renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
     renderAfterItems( tree, new IRenderRunnable() {
       public void afterRender() throws IOException {
         renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
         renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
+        if( tree.getSelectionCount() > 0 ) {
+          renderProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ), null );
+        }
+        renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
+        renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
       }
     } );
     renderListener( tree, PROP_SELECTION_LISTENER, isListening( tree, SWT.Selection ), false );

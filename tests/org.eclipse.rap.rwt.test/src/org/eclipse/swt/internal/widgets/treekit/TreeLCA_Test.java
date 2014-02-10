@@ -1112,7 +1112,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialSelection() throws IOException {
-    lca.render( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -1127,7 +1127,7 @@ public class TreeLCA_Test {
     TreeItem item3 = new TreeItem( tree, SWT.NONE );
 
     tree.setSelection( new TreeItem[] { item1, item3 } );
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     JsonArray expected = new JsonArray();
@@ -1147,7 +1147,7 @@ public class TreeLCA_Test {
 
     tree.setSelection( new TreeItem[] { item1, item3 } );
     Fixture.preserveWidgets();
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "selection" ) );
@@ -1513,7 +1513,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialSortColumn() throws IOException {
-    lca.render( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -1525,7 +1525,7 @@ public class TreeLCA_Test {
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
 
     tree.setSortColumn( column );
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( getId( column ), message.findSetProperty( tree, "sortColumn" ).asString() );
@@ -1539,7 +1539,7 @@ public class TreeLCA_Test {
 
     tree.setSortColumn( column );
     Fixture.preserveWidgets();
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "sortColumn" ) );
@@ -1547,7 +1547,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderInitialFocusItem() throws IOException {
-    lca.render( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
@@ -1561,7 +1561,7 @@ public class TreeLCA_Test {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     tree.setSelection( item );
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( getId( item ), message.findSetProperty( tree, "focusItem" ).asString() );
@@ -1577,7 +1577,7 @@ public class TreeLCA_Test {
 
     tree.setSelection( item );
     Fixture.preserveWidgets();
-    lca.renderChanges( tree );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "focusItem" ) );
