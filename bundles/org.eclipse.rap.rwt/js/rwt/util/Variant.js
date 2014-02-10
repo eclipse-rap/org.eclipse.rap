@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          EclipseSource and others.
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
+
+/*global qxvariants:false*/
+
 
 /**
  * Manage variants of source code. May it be for different debug options,
@@ -29,20 +32,15 @@
  * debugging code from the build version. It is very similar to conditional
  * compilation in C/C++.
  */
+rwt.qx.Class.define( "rwt.util.Variant", {
 
-/*global qxvariants:false*/
+  statics : {
 
-rwt.qx.Class.define("rwt.util.Variant",
-{
-  statics :
-  {
     /** {Map} stored variants */
     __variants : {},
 
-
     /** {Map} cached results */
     __cache : {},
-
 
     /**
      * Pseudo function as replacement for isSet() which will only be handled by the optimizer
@@ -53,7 +51,6 @@ rwt.qx.Class.define("rwt.util.Variant",
       return true;
     },
 
-
     /**
      * Define a variant
      *
@@ -63,34 +60,25 @@ rwt.qx.Class.define("rwt.util.Variant",
      * @param defaultValue {String} Default value for the variant. Must be one of the values
      *   defined in <code>defaultValues</code>.
      */
-    define : function(key, allowedValues, defaultValue)
-    {
-      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-      {
-        if (!this.__isValidArray(allowedValues)) {
-          throw new Error('Allowed values of variant "' + key + '" must be defined!');
+    define : function( key, allowedValues, defaultValue ) {
+      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
+        if( !this.__isValidArray( allowedValues ) ) {
+          throw new Error( 'Allowed values of variant "' + key + '" must be defined!' );
         }
-
-        if (defaultValue === undefined) {
-          throw new Error('Default value of variant "' + key + '" must be defined!');
+        if( defaultValue === undefined ) {
+          throw new Error( 'Default value of variant "' + key + '" must be defined!' );
         }
       }
-
-      if (!this.__variants[key])
-      {
-        this.__variants[key] = {};
-      }
-      else if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-      {
-        if (this.__variants[key].defaultValue !== undefined) {
-          throw new Error('Variant "' + key + '" is already defined!');
+      if( !this.__variants[ key ] ) {
+        this.__variants[ key ] = {};
+      } else if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
+        if( this.__variants[ key ].defaultValue !== undefined ) {
+          throw new Error( 'Variant "' + key + '" is already defined!' );
         }
       }
-
-      this.__variants[key].allowedValues = allowedValues;
-      this.__variants[key].defaultValue = defaultValue;
+      this.__variants[ key ].allowedValues = allowedValues;
+      this.__variants[ key ].defaultValue = defaultValue;
     },
-
 
     /**
      * Get the current value of a variant.
@@ -98,52 +86,37 @@ rwt.qx.Class.define("rwt.util.Variant",
      * @param key {String} name of the variant
      * @return {String} current value of the variant
      */
-    get : function(key)
-    {
-      var data = this.__variants[key];
-
-      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-      {
-        if (data === undefined) {
-          throw new Error('Variant "' + key + '" is not defined.');
+    get : function( key ) {
+      var data = this.__variants[ key ];
+      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
+        if( data === undefined ) {
+          throw new Error( 'Variant "' + key + '" is not defined.' );
         }
       }
-
-      if (data.value !== undefined) {
+      if( data.value !== undefined ) {
         return data.value;
       }
-
       return data.defaultValue;
     },
 
-
     /**
      * Import settings from global qxvariants into current environment
-     *
-     * @return {void}
      */
-    __init : function()
-    {
-      if (window.qxvariants)
-      {
-        for (var key in qxvariants)
-        {
-          if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-          {
-            if ((key.split(".")).length < 2) {
-              throw new Error('Malformed settings key "' + key + '". Must be following the schema "namespace.key".');
+    __init : function() {
+      if( window.qxvariants ) {
+        for( var key in qxvariants ) {
+          if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
+            if( ( key.split( "." ) ).length < 2 ) {
+              throw new Error( 'Malformed settings key "' + key
+                               + '". Must be following the schema "namespace.key".' );
             }
           }
-
-          if (!this.__variants[key]) {
-            this.__variants[key] = {};
+          if( !this.__variants[ key ] ) {
+            this.__variants[ key ] = {};
           }
-
-          this.__variants[key].value = qxvariants[key];
+          this.__variants[ key ].value = qxvariants[ key ];
         }
-
         window.qxvariants = undefined;
-
         try {
           delete window.qxvariants;
         } catch( ex ) {
@@ -174,40 +147,31 @@ rwt.qx.Class.define("rwt.util.Variant",
      * @param variantFunctionMap {Map} map with variant names as keys and functions as values.
      * @return {Function} The selected function from the map.
      */
-    select : function(key, variantFunctionMap)
-    {
-      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-      {
+    select : function( key, variantFunctionMap ) {
+      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
         // WARINING: all changes to this function must be duplicated in the generator!!
         // modules/variantoptimizer.py (processVariantSelect)
-        if (!this.__isValidObject(this.__variants[key])) {
-          throw new Error("Variant \"" + key + "\" is not defined");
+        if( !this.__isValidObject( this.__variants[ key ] ) ) {
+          throw new Error( "Variant \"" + key + "\" is not defined" );
         }
-
-        if (!this.__isValidObject(variantFunctionMap)) {
-          throw new Error("the second parameter must be a map!");
-        }
-      }
-
-      for (var variant in variantFunctionMap)
-      {
-        if (this.isSet(key, variant)) {
-          return variantFunctionMap[variant];
+        if( !this.__isValidObject( variantFunctionMap ) ) {
+          throw new Error( "the second parameter must be a map!" );
         }
       }
-
-      if (variantFunctionMap["default"] !== undefined) {
-        return variantFunctionMap["default"];
+      for( var variant in variantFunctionMap ) {
+        if( this.isSet( key, variant ) ) {
+          return variantFunctionMap[ variant ];
+        }
       }
-
-      if (rwt.util.Variant.compilerIsSet("qx.debug", "on"))
-      {
-        throw new Error('No match for variant "' + key +
-          '" in variants [' + rwt.util.Objects.getKeysAsString(variantFunctionMap) +
-          '] found, and no default ("default") given');
+      if( variantFunctionMap[ "default" ] !== undefined ) {
+        return variantFunctionMap[ "default" ];
+      }
+      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
+        throw new Error( 'No match for variant "' + key + '" in variants ['
+                         + rwt.util.Objects.getKeysAsString( variantFunctionMap )
+                         + '] found, and no default ("default") given' );
       }
     },
-
 
     /**
      * Check whether a variant is set to a given value. To enable the generator to optimize
@@ -230,115 +194,50 @@ rwt.qx.Class.define("rwt.util.Variant",
      * </pre>
      *
      * @param key {String} name of the variant
-     * @param variants {String} value to check for. Several values can be "or"-combined by separating
-     *   them with a "|" character. A value of "mshtml|opera" would for example check if the variant is
-     *   set to "mshtml" or "opera"
+     * @param variants {String} value to check for. Several values can be "or"-combined by
+     *   separating them with a "|" character. A value of "mshtml|opera" would for example
+     *   check if the variant is set to "mshtml" or "opera"
      * @return {Boolean} whether the variant is set to the given value
      */
-    isSet : function(key, variants)
-    {
+    isSet : function( key, variants ) {
       var access = key + "$" + variants;
-      if (this.__cache[access] !== undefined) {
-        return this.__cache[access];
+      if( this.__cache[ access ] !== undefined ) {
+        return this.__cache[ access ];
       }
-
       var retval = false;
-
       // fast path
-      if (variants.indexOf("|") < 0)
-      {
-        retval = this.get(key) === variants;
-      }
-      else
-      {
-        var keyParts = variants.split("|");
-
-        for (var i=0, l=keyParts.length; i<l; i++)
-        {
-          if (this.get(key) === keyParts[i])
-          {
+      if( variants.indexOf( "|" ) < 0 ) {
+        retval = this.get( key ) === variants;
+      } else {
+        var keyParts = variants.split( "|" );
+        for( var i = 0, l = keyParts.length; i < l; i++ ) {
+          if( this.get( key ) === keyParts[ i ] ) {
             retval = true;
             break;
           }
         }
       }
-
-      this.__cache[access] = retval;
+      this.__cache[ access ] = retval;
       return retval;
     },
 
-
-    /**
-     * Whether a value is a valid array. Valid arrays are:
-     *
-     * * type is object
-     * * instance is Array
-     *
-     * @type static
-     * @name __isValidArray
-     * @param v {var} the value to validate.
-     * @return {Boolean} whether the variable is valid
-     */
-    __isValidArray : function(v) {
-      return typeof v === "object" && v !== null && v instanceof Array;
+    __isValidArray : function( value ) {
+      return typeof value === "object" && value !== null && value instanceof Array;
     },
 
-
-    /**
-     * Whether a value is a valid object. Valid object are:
-     *
-     * * type is object
-     * * instance != Array
-     *
-     * @type static
-     * @name __isValidObject
-     * @param v {var} the value to validate.
-     * @return {Boolean} whether the variable is valid
-     */
-    __isValidObject : function(v) {
-      return typeof v === "object" && v !== null && !(v instanceof Array);
-    },
-
-
-    /**
-     * Whether the array contains the given element
-     *
-     * @type static
-     * @name __arrayContains
-     * @param arr {Array} the array
-     * @param obj {var} object to look for
-     * @return {Boolean} whether the array contains the element
-     */
-    __arrayContains : function(arr, obj)
-    {
-      for (var i=0, l=arr.length; i<l; i++)
-      {
-        if (arr[i] == obj) {
-          return true;
-        }
-      }
-
-      return false;
+    __isValidObject : function( value ) {
+      return typeof value === "object" && value !== null && !( value instanceof Array );
     }
+
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     DEFER
-  *****************************************************************************
-  */
-
-  defer : function(statics)
-  {
-    statics.define("qx.debug", [ "on", "off" ], "on");
-    statics.define("qx.compatibility", [ "on", "off" ], "on");
-    statics.define("qx.eventMonitorNoListeners", [ "on", "off" ], "off");
-    statics.define("qx.aspects", [ "on", "off" ], "off");
-    statics.define("qx.deprecationWarnings", [ "on", "off" ], "on");
-
+  defer : function( statics ) {
+    statics.define( "qx.debug", [ "on", "off" ], "on" );
+    statics.define( "qx.compatibility", [ "on", "off" ], "on" );
+    statics.define( "qx.eventMonitorNoListeners", [ "on", "off" ], "off" );
+    statics.define( "qx.aspects", [ "on", "off" ], "off" );
+    statics.define( "qx.deprecationWarnings", [ "on", "off" ], "on" );
     statics.__init();
   }
-});
+
+} );
