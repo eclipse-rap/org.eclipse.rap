@@ -974,7 +974,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialFocusItem() throws IOException {
-    lca.render( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
@@ -987,7 +987,7 @@ public class TableLCA_Test {
     TableItem item = new TableItem( table, SWT.NONE );
 
     table.getAdapter( ITableAdapter.class ).setFocusIndex( 2 );
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( getId( item ), message.findSetProperty( table, "focusItem" ).asString() );
@@ -1001,7 +1001,7 @@ public class TableLCA_Test {
 
     table.getAdapter( ITableAdapter.class ).setFocusIndex( 2 );
     Fixture.preserveWidgets();
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "focusItem" ) );
@@ -1057,7 +1057,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialSelection() throws IOException {
-    lca.render( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
@@ -1070,7 +1070,7 @@ public class TableLCA_Test {
     createTableItems( table, 3 );
 
     table.setSelection( new int[] { 0, 2 } );
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     JsonArray expected = new JsonArray();
@@ -1088,7 +1088,7 @@ public class TableLCA_Test {
 
     table.setSelection( new int[] { 0, 2 } );
     Fixture.preserveWidgets();
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "selection" ) );
@@ -1132,7 +1132,7 @@ public class TableLCA_Test {
 
   @Test
   public void testRenderInitialSortColumn() throws IOException {
-    lca.render( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
@@ -1144,7 +1144,7 @@ public class TableLCA_Test {
     TableColumn column = new TableColumn( table, SWT.NONE );
 
     table.setSortColumn( column );
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( getId( column ), message.findSetProperty( table, "sortColumn" ).asString() );
@@ -1158,7 +1158,7 @@ public class TableLCA_Test {
 
     table.setSortColumn( column );
     Fixture.preserveWidgets();
-    lca.renderChanges( table );
+    getLCA( display ).render( display );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( table, "sortColumn" ) );

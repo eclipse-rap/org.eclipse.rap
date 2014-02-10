@@ -33,7 +33,6 @@ import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -167,14 +166,14 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
-    renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
-    renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
-    renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
     renderAfterItems( table, new IRenderRunnable() {
       public void afterRender() throws IOException {
         renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
         renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
+        renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
+        renderProperty( table, PROP_SELECTION, getSelection( table ), DEFAULT_SELECTION );
+        renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
       }
     } );
     renderListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ), false );
@@ -202,7 +201,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     return toolTipText;
   }
 
-  private boolean listensToSetData( Table table ) {
+  private static boolean listensToSetData( Table table ) {
     return ( table.getStyle() & SWT.VIRTUAL ) != 0;
   }
 
@@ -210,7 +209,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     TableItem[] selection = table.getSelection();
     String[] result = new String[ selection.length ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = WidgetUtil.getId( selection[ i ] );
+      result[ i ] = getId( selection[ i ] );
     }
     return result;
   }
