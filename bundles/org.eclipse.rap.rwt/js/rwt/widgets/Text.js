@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 rwt.qx.Class.define( "rwt.widgets.Text", {
 
@@ -67,7 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     setPasswordMode : function( value ) {
       var type = value ? "password" : "text";
-      if( this._inputTag != "textarea" && this._inputType != type ) {
+      if( !this._isTextArea() && this._inputType != type ) {
         this._inputType = type;
         if( this._isCreated ) {
           if( rwt.client.Client.getEngine() === "mshtml" ) {
@@ -186,12 +186,16 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     _applyElement : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
-      if( this._inputTag == "textarea" ) {
+      if( this._isTextArea() ) {
         this._styleWrap();
-        if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getVersion() === 9 ) {
-          // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
-          rwt.html.Style.setBackgroundImage( this._inputElement, "static/image/blank.gif" );
-        }
+      }
+      var client = rwt.client.Client;
+      if(    client.isMshtml()
+          || client.isNewMshtml() && client.getVersion() === 9 && this._isTextArea() )
+      {
+        // Bug 427828 - [Text] Loses focus on click in IE8
+        // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
+        rwt.html.Style.setBackgroundImage( this._inputElement, "static/image/blank.gif" );
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";
@@ -200,13 +204,13 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _webkitMultilineFix : function() {
-      if( this._inputTag !== "textarea" ) {
+      if( !this._isTextArea() ) {
         this.base( arguments );
       }
     },
 
     _applyWrap : function( value, oldValue ) {
-      if( this._inputTag == "textarea" ) {
+      if( this._isTextArea() ) {
         this._styleWrap();
       }
     },
@@ -234,7 +238,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     } ),
 
     _applyMaxLength : function( value, oldValue ) {
-      if( this._inputTag != "textarea" ) {
+      if( !this._isTextArea() ) {
         this.base( arguments, value, oldValue );
       }
     },
@@ -268,6 +272,10 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       if( fireEvents ) {
         this._oninputDom( event );
       }
+    },
+
+    _isTextArea : function() {
+      return this._inputTag === "textarea";
     },
 
     ////////////////
@@ -463,7 +471,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     // Overwritten
     _preventEnter : function( event ) {
-      if( this._inputTag !== "textarea" ) {
+      if( !this._isTextArea() ) {
         this.base( arguments, event );
       }
     },
@@ -504,7 +512,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
                     - this._getIconOuterWidth( "cancel" );
         style.width = Math.max( 0, width ) + "px";
         var messageHeight = parseInt( style.height, 10 );
-        if( this._inputTag == "textarea" ) {
+        if( this._isTextArea() ) {
           // The text-area padding is hard codded in the appearances
           style.top = "0px";
           style.left = "3px";
@@ -550,5 +558,5 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
 } );
 
-}());
+}() );
 

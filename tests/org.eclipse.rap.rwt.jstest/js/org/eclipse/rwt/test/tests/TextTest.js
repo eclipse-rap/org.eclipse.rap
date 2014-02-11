@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
@@ -388,7 +388,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testRenderPaddingWithRoundedBorder : function() {
-      if( !rwt.client.Client.supportsCss3() ) {
+      if( !Client.supportsCss3() ) {
         createText();
         text.setPadding( 3 );
         text.setBorder( new Border( 1, "rounded", "black", 0 ) );
@@ -1399,12 +1399,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
 
       var textHeight= text.getInputElement().offsetHeight;
-      if( rwt.client.Client.isMshtml() ) {
+      if( Client.isMshtml() ) {
         textHeight -= 2;
       }
       var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
       assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( Client.isNewMshtml() ) {
         assertEquals( "top", text._inputElement.style.verticalAlign );
       } else {
         assertEquals( "", text._inputElement.style.verticalAlign );
@@ -1432,8 +1432,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       var element = text._getTargetNode().firstChild;
       var image = TestUtil.getCssBackgroundImage( element );
+
+      // Bug 427828 - [Text] Loses focus on click in IE8
       // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
-      var expected = rwt.client.Client.isNewMshtml() && rwt.client.Client.getVersion() === 9;
+      var expected = Client.isMshtml() || Client.isNewMshtml() && Client.getVersion() === 9;
       assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
     },
 
@@ -1442,7 +1444,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       var element = text._getTargetNode().firstChild;
       var image = TestUtil.getCssBackgroundImage( element );
-      assertTrue( image.indexOf( "blank.gif" ) === -1 );
+
+      // Bug 427828 - [Text] Loses focus on click in IE8
+      var expected = Client.isMshtml();
+      assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
     },
 
     /////////
@@ -1511,4 +1516,4 @@ var setSelection = function( selection ) {
   text._setSelectionLength( selection[ 1 ] - selection[ 0 ] );
 };
 
-}());
+}() );
