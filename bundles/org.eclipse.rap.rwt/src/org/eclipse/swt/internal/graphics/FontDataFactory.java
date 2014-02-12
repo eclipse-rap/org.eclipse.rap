@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,11 @@ import org.eclipse.swt.graphics.FontData;
 
 
 public class FontDataFactory {
-  private final SharedInstanceBuffer<Integer,FontData> cache;
+
+  private final SharedInstanceBuffer<FontData, FontData> cache;
 
   public FontDataFactory() {
-    cache = new SharedInstanceBuffer<Integer,FontData>();
+    cache = new SharedInstanceBuffer<FontData, FontData>();
   }
 
   public FontData findFontData( final FontData fontData ) {
@@ -29,8 +30,7 @@ public class FontDataFactory {
     //             can at worst lead to one FontData instance overwriting the
     //             other. In this rare case, two equal internal FontData
     //             instances would be in use in the system, which is harmless.
-    Integer key = new Integer( fontData.hashCode() );
-    FontData result = cache.get( key, new IInstanceCreator<FontData>() {
+    FontData result = cache.get( fontData, new IInstanceCreator<FontData>() {
       public FontData createInstance() {
         return cloneFontData( fontData );
       }
@@ -44,4 +44,5 @@ public class FontDataFactory {
     int style = fontData.getStyle();
     return new FontData( name, height, style );
   }
+
 }
