@@ -10,7 +10,6 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.LegacyAsserts", {
-  type : "static",
 
   statics : {
 
