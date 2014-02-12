@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,8 +121,7 @@ public class CommandContributionItem extends ContributionItem {
 
 	private IHandlerService handlerService;
 
-	// RAP [bm]: 
-//	private IBindingService bindingService;
+	private IBindingService bindingService;
 	
 	// RAP [hs]:
 	// necessary to access the menu within the getMenuManager method to style 
@@ -212,9 +211,8 @@ public class CommandContributionItem extends ContributionItem {
 				.getService(ICommandService.class);
 		handlerService = (IHandlerService) serviceLocator
 				.getService(IHandlerService.class);
-		// RAP [bm]: Bindings
-//		bindingService = (IBindingService) contributionParameters.serviceLocator
-//				.getService(IBindingService.class);
+		bindingService = (IBindingService) contributionParameters.serviceLocator
+				.getService(IBindingService.class);
 		IWorkbenchLocationService workbenchLocationService = (IWorkbenchLocationService) contributionParameters.serviceLocator.getService(IWorkbenchLocationService.class);
 		display = workbenchLocationService.getWorkbench().getDisplay();
 		
@@ -497,8 +495,7 @@ public class CommandContributionItem extends ContributionItem {
 		update(null);
 		updateIcons();
 
-		// RAP [bm] Bindings
-//		bindingService.addBindingManagerListener(bindingManagerListener);
+		bindingService.addBindingManagerListener(bindingManagerListener);
 
 	}
 	
@@ -530,8 +527,7 @@ public class CommandContributionItem extends ContributionItem {
 		update(null);
 		updateIcons();
 
-		// RAP [bm] Bindings
-//		bindingService.addBindingManagerListener(bindingManagerListener);
+		bindingService.addBindingManagerListener(bindingManagerListener);
 
 	}
 
@@ -566,8 +562,7 @@ public class CommandContributionItem extends ContributionItem {
 		update(null);
 		updateIcons();
 
-		// RAP [bm] binding manager
-//		bindingService.addBindingManagerListener(bindingManagerListener);
+		bindingService.addBindingManagerListener(bindingManagerListener);
 	}
 
 	/*
@@ -614,22 +609,21 @@ public class CommandContributionItem extends ContributionItem {
 		}
 		text = updateMnemonic(text);
 
-		// [bm] no binding manager
-//		String keyBindingText = null;
-//		if (command != null) {
-//			TriggerSequence binding = bindingService
-//					.getBestActiveBindingFor(command);
-//			if (binding != null) {
-//				keyBindingText = binding.format();
-//			}
-//		}
-//		if (text != null) {
-//			if (keyBindingText == null) {
+		String keyBindingText = null;
+		if (command != null) {
+			TriggerSequence binding = bindingService
+					.getBestActiveBindingFor(command);
+			if (binding != null) {
+				keyBindingText = binding.format();
+			}
+		}
+		if (text != null) {
+			if (keyBindingText == null) {
 				item.setText(text);
-//			} else {
-//				item.setText(text + '\t' + keyBindingText);
-//			}
-//		}
+			} else {
+				item.setText(text + '\t' + keyBindingText);
+			}
+		}
 
 		if (item.getSelection() != checkedState) {
 			item.setSelection(checkedState);
@@ -729,17 +723,16 @@ public class CommandContributionItem extends ContributionItem {
 			else
 				tooltipText = ""; //$NON-NLS-1$
 
-		// RAP [bm] Bindings
-//		TriggerSequence activeBinding = bindingService
-//				.getBestActiveBindingFor(command);
-//		if (activeBinding != null && !activeBinding.isEmpty()) {
-//			String acceleratorText = activeBinding.format();
-//			if (acceleratorText != null
-//					&& acceleratorText.length() != 0) {
-//				tooltipText = NLS.bind(CommandMessages.Tooltip_Accelerator,
-//						tooltipText, acceleratorText);
-//			}
-//		}
+		TriggerSequence activeBinding = bindingService
+				.getBestActiveBindingFor(command);
+		if (activeBinding != null && !activeBinding.isEmpty()) {
+			String acceleratorText = activeBinding.format();
+			if (acceleratorText != null
+					&& acceleratorText.length() != 0) {
+				tooltipText = NLS.bind(CommandMessages.get().Tooltip_Accelerator,
+						tooltipText, acceleratorText);
+			}
+		}
 
 		return tooltipText;
 	}
@@ -784,15 +777,13 @@ public class CommandContributionItem extends ContributionItem {
 			commandListener = null;
 		}
 
-		// RAP [bm]: Bindings
-//		if (bindingService != null) {
-//			bindingService.removeBindingManagerListener(bindingManagerListener);
-//		}
+		if (bindingService != null) {
+			bindingService.removeBindingManagerListener(bindingManagerListener);
+		}
 
 		command = null;
 		commandService = null;
-		// RAP [bm]: Bindings
-//		bindingService = null;
+		bindingService = null;
 		menuService = null;
 		handlerService = null;
 		disposeOldImages();
