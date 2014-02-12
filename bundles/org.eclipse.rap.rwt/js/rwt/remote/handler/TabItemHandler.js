@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
   },
 
   destructor : function( widget ) {
+    var control = widget.getUserData( "control" );
+    if( control ) {
+      control.setParent( null );
+      widget.setUserData( "control", null );
+    }
     rwt.widgets.util.TabUtil.releaseTabItem( widget );
     var parent = widget.getUserData( "protocolParent" );
     if( parent ) {
@@ -56,6 +61,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
           var id = widgetManager.findIdByWidget( widget ) + "pg";
           rwt.remote.HandlerUtil.callWithTarget( id, function( parent ) {
             control.setParent( parent );
+            widget.setUserData( "control", control );
           } );
         } );
       }

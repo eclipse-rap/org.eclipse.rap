@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = rwt.remote.MessageProcessor;
+var ObjectManager = rwt.remote.ObjectRegistry;
 
 var shell;
 
@@ -22,8 +24,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
   members : {
 
     testCreateTabFolderOnTopByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -32,7 +33,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.TabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -42,8 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testCreateTabFolderOnBottomByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -52,7 +51,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.TabFolder );
       assertIdentical( shell, widget.getParent() );
@@ -62,8 +60,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -76,7 +73,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var item2 = this._createTabItemByProtocol( "w5", "w3" );
       var item3 = this._createTabItemByProtocol( "w6", "w3" );
       TestUtil.protocolSet( "w3", { "selection" : "w5" } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertFalse( item1.getChecked() );
       assertTrue( item2.getChecked() );
@@ -84,8 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testSetBoundsByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -100,7 +95,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       TestUtil.protocolSet( "w3", { "bounds" : [ 20, 30, 120, 130 ] } );
       TestUtil.flush();
 
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var style = widget.getElement().style;
       var paneStyle = widget.getPane().getElement().style;
@@ -112,8 +106,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     testInternalLayoutChange : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -130,7 +123,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       TestUtil.flush();
 
       var gecko = rwt.client.Client.isGecko();
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       var paneStyle = widget.getPane().getElement().style;
       var barStyle = widget.getBar().getElement().style;
@@ -150,7 +142,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( item instanceof rwt.widgets.TabItem );
       assertIdentical( folder.getBar(), item.getParent() );
       assertNull( item.getUserData( "isControl") );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var page = ObjectManager.getObject( "w4pg" );
       assertTrue( page instanceof rwt.widgets.base.TabFolderPage );
       folder.destroy();
@@ -159,9 +150,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testDestroyTabItemByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var page = ObjectManager.getObject( "w4pg" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "destroy"
       } );
@@ -178,18 +168,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var item = this._createTabItemByProtocol( "w4", "w3" );
       var ObjectRegistry = rwt.remote.ObjectRegistry;
       var page = ObjectRegistry.getObject( "w4pg" );
-      var MessageProcessor = rwt.remote.MessageProcessor;
-      MessageProcessor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
+      Processor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
           "style" : [ "BORDER" ],
           "parent" : "w3"
         }
       ] );
       var control = ObjectRegistry.getObject( "w4" );
 
-      MessageProcessor.processOperation( {
-        "target" : "w3",
-        "action" : "destroy"
-      } );
+      Processor.processOperation( { "target" : "w3", "action" : "destroy" } );
       TestUtil.flush();
 
       assertTrue( folder.isDisposed() );
@@ -205,7 +191,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testSetTextByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "set",
         "properties" : {
@@ -241,7 +227,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testSetImageByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "set",
         "properties" : {
@@ -258,7 +244,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       var control =  new rwt.widgets.Button( "push" );
       var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.add( control, "w5", true, "rwt.widgets.Button" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "set",
         "properties" : {
@@ -267,6 +253,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       } );
       assertTrue( control.getParent() instanceof rwt.widgets.base.TabFolderPage );
       assertIdentical( widgetManager.findWidgetById( "w4pg" ), control.getParent() );
+      folder.destroy();
+    },
+
+    testControlSurvivesItemDisposal : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      var control =  new rwt.widgets.Button( "push" );
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
+      widgetManager.add( control, "w5", true, "rwt.widgets.Button" );
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "set",
+        "properties" : {
+          "control" : "w5"
+        }
+      } );
+
+      Processor.processOperation( { "target" : "w4", "action" : "destroy" } );
+      TestUtil.flush();
+
+      assertFalse( control.isDisposed() );
+      assertNull( control.getParent() );
       folder.destroy();
     },
 
@@ -283,7 +291,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testSetToolTipByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "set",
         "properties" : {
@@ -297,7 +305,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testSetCustomVariantByProtocol : function() {
       this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "set",
         "properties" : {
@@ -374,10 +382,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       TestUtil.flush();
       var success = false;
 
-      rwt.remote.MessageProcessor.processOperation( {
-        "target" : "w4",
-        "action" : "destroy"
-      } );
+      Processor.processOperation( { "target" : "w4", "action" : "destroy" } );
       TestUtil.flush();
       assertTrue( item.isDisposed() );
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
@@ -400,7 +405,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     _createTabFolderByProtocol : function( id, parentId ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.TabFolder",
@@ -413,7 +418,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     },
 
     _createTabItemByProtocol : function( id, parentId ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.TabItem",
@@ -431,4 +436,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
 
 } );
 
-}());
+}() );
