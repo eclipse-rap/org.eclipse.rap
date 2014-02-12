@@ -115,9 +115,9 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *     implements.
      *   - include {Mixin | Mixin[]}: Single mixin or array of mixins, which will be merged into the
      *     class.
-     *   - construct {Function</td><td>The constructor of the class.
-     *   - statics {Map</td><td>Map of static members of the class.
-     *   - properties {Map</td><td>Map of property definitions. For a description of the format of a
+     *   - construct {Function} The constructor of the class.
+     *   - statics {Map} Map of static members of the class.
+     *   - properties {Map} Map of property definitions. For a description of the format of a
      *     property definition see {@link rwt.qx.Property}
      *   - members {Map}: Map of instance members of the class.
      *   - settings {Map}: Map of settings for this class. For a description of the format of a
@@ -136,7 +136,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       }
       try {
         config = this._normalizeConfig( config );
-        this.__validateConfig( name, config );
         var clazz;
         if( !config.extend ) {
           clazz = config.statics || {};
@@ -573,147 +572,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
     /** Stores all defined classes */
     __registry : rwt.runtime.Bootstrap.__registry,
 
-
-    /** {Map} allowed keys in non-static class definition */
-    __allowedKeys : rwt.util.Variant.select( "qx.debug", {
-      "on": {
-        "type"       : "string",    // String
-        "extend"     : "function",  // Function
-        "implement"  : "object",    // Interface[]
-        "include"    : "object",    // Mixin[]
-        "construct"  : "function",  // Function
-        "statics"    : "object",    // Map
-        "properties" : "object",    // Map
-        "members"    : "object",    // Map
-        "settings"   : "object",    // Map
-        "variants"   : "object",    // Map
-        "events"     : "object",    // Map
-        "defer"      : "function",  // Function
-        "destruct"   : "function"   // Function
-      },
-      "default" : null
-    } ),
-
-    /** {Map} allowed keys in static class definition */
-    __staticAllowedKeys : rwt.util.Variant.select( "qx.debug", {
-      "on": {
-        "type"       : "string",    // String
-        "statics"    : "object",    // Map
-        "settings"   : "object",    // Map
-        "variants"   : "object",    // Map
-        "defer"      : "function"   // Function
-      },
-      "default" : null
-    } ),
-
-    /**
-     * Validates an incoming configuration and checks for proper keys and values
-     *
-     * @param name {String} The name of the class
-     * @param config {Map} Configuration map
-     */
-    __validateConfig : rwt.util.Variant.select( "qx.debug", {
-      "on": function( name, config ) {
-        // Validate type
-        if( config.type
-            && !(    config.type === "static"
-                  || config.type === "abstract" ) )
-        {
-          throw new Error( 'Invalid type "' + config.type + '" definition for class "' + name
-                           + '"!' );
-        }
-        // Validate keys
-        var allowed = config.type === "static" ? this.__staticAllowedKeys : this.__allowedKeys;
-        for( var key in config ) {
-          if( !allowed[ key ] ) {
-            throw new Error( 'The configuration key "' + key + '" in class "' + name
-                             + '" is not allowed!' );
-          }
-          if( config[ key ] == null ) {
-            throw new Error( 'Invalid key "' + key + '" in class "' + name
-                             + '"! The value is undefined/null!' );
-          }
-          if( typeof config[ key ] !== allowed[ key ] ) {
-            throw new Error( 'Invalid type of key "' + key + '" in class "' + name
-                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
-          }
-        }
-
-        // Validate maps
-        var maps = [ "statics", "properties", "members", "settings", "variants", "events" ];
-        for( var i = 0, l = maps.length; i < l; i++ ) {
-          var key = maps[ i ];
-          if(    config[ key ] !== undefined
-              && (    config[ key ] instanceof Array
-                   || config[ key ] instanceof RegExp
-                   || config[ key ] instanceof Date
-                   || config[ key ].classname !== undefined ) )
-          {
-            throw new Error( 'Invalid key "' + key + '" in class "' + name
-                             + '"! The value needs to be a map!' );
-          }
-        }
-
-        // Validate include definition
-        if( config.include ) {
-          if( config.include instanceof Array ) {
-            for( var i = 0, a = config.include, l = a.length; i < l; i++ ) {
-              if( a[ i ] == null || a[ i ].$$type !== "Mixin" ) {
-                throw new Error( 'The include definition in class "' + name
-                                 + '" contains an invalid mixin at position ' + i + ': ' + a[ i ] );
-              }
-            }
-          } else {
-            throw new Error( 'Invalid include definition in class "' + name
-                             + '"! Only mixins and arrays of mixins are allowed!' );
-          }
-        }
-
-        // Validate implement definition
-        if( config.implement ) {
-          if( config.implement instanceof Array ) {
-            for( var i = 0, a = config.implement, l = a.length; i < l; i++ ) {
-              if( a[ i ] == null || a[ i ].$$type !== "Interface" ) {
-                throw new Error( 'The implement definition in class "' + name
-                                 + '" contains an invalid interface at position ' + i + ': '
-                                 + a[ i ] );
-              }
-            }
-          } else {
-            throw new Error( 'Invalid implement definition in class "' + name
-                             + '"! Only interfaces and arrays of interfaces are allowed!' );
-          }
-        }
-
-        // Check mixin compatibility
-        if( config.include ) {
-          try {
-            rwt.qx.Mixin.checkCompatibility( config.include );
-          } catch( ex ) {
-            throw new Error( 'Error in include definition of class "' + name + '"! ' + ex.message );
-          }
-        }
-
-        // Validate variants
-        if( config.variants ) {
-          for( var key in config.variants ) {
-            if( key.substr( 0, key.indexOf( "." ) ) != name.substr( 0, name.indexOf( "." ) ) ) {
-              throw new Error( 'Forbidden variant "' + key + '" found in "' + name + '". '
-                               + 'It is forbidden to define a variant for an external namespace!' );
-            }
-          }
-        }
-      },
-
-      "default" : function() {}
-    } ),
-
-    /*
-    ---------------------------------------------------------------------------
-       PRIVATE ADD HELPERS
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * Attach events to the class
      *
@@ -791,103 +649,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         }
       }
     },
-
-    /**
-     *
-     * @param clazz {Class} class to add property to
-     * @param name {String} name of the property
-     * @param config {Map} configuration map
-     * @param patch {Boolean ? false} enable refine/patch?
-     */
-    __validateProperty : rwt.util.Variant.select( "qx.debug", {
-      "on": function( clazz, name, config, patch ) {
-        var has = this.hasProperty( clazz, name );
-        var compat = config._fast || config._cached;
-        if( has ) {
-          var existingProperty = this.getPropertyDefinition( clazz, name );
-          var existingCompat = existingProperty._fast || existingProperty._cached;
-
-          if( compat != existingCompat ) {
-            throw new Error( "Could not redefine existing property '" + name + "' of class '"
-                             + clazz.classname + "'." );
-          }
-
-          if( config.refine && existingProperty.init === undefined ) {
-            throw new Error( "Could not refine a init value if there was previously no init value"
-                             + " defined. Property '" + name + "' of class '"
-                             + clazz.classname + "'." );
-          }
-        }
-
-        if( !has && config.refine ) {
-          throw new Error( "Could not refine non-existent property: " + name + "!" );
-        }
-
-        if( has && !patch ) {
-          throw new Error( "Class " + clazz.classname + " already has a property: " + name + "!" );
-        }
-
-        if( has && patch && !compat ) {
-          if( !config.refine ) {
-            throw new Error( 'Could not refine property "' + name
-                             + '" without a "refine" flag in the property definition! This class: '
-                             + clazz.classname + ', original class: '
-                             + this.getByProperty( clazz, name ).classname + '.' );
-          }
-          for( var key in config ) {
-            if( key !== "init" && key !== "refine" ) {
-              throw new Error( "Class " + clazz.classname + " could not refine property: " + name
-                               + "! Key: " + key + " could not be refined!" );
-            }
-          }
-        }
-
-        if( compat ) {
-          return;
-        }
-
-        // Check 0.7 keys
-        var allowed = config.group ? rwt.qx.Property.$$allowedGroupKeys
-                                   : rwt.qx.Property.$$allowedKeys;
-        for( var key in config ) {
-          if( allowed[ key ] === undefined ) {
-            throw new Error( 'The configuration key "' + key + '" of property "' + name
-                             + '" in class "' + clazz.classname + '" is not allowed!' );
-          }
-          if( config[ key ] === undefined ) {
-            throw new Error( 'Invalid key "' + key + '" of property "' + name + '" in class "'
-                             + clazz.classname + '"! The value is undefined: ' + config[ key ] );
-          }
-          if( allowed[ key ] !== null && typeof config[ key ] !== allowed[ key ] ) {
-            throw new Error( 'Invalid type of key "' + key + '" of property "' + name
-                             + '" in class "' + clazz.classname
-                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
-          }
-        }
-        if( config.transform != null ) {
-          if( typeof config.transform !== "string" ) {
-            throw new Error( 'Invalid transform definition of property "' + name
-                             + '" in class "' + clazz.classname + '"! Needs to be a String.' );
-          }
-        }
-        if( config.check != null ) {
-          if( !(    typeof config.check == "string"
-                 || config.check instanceof Array
-                 || config.check instanceof Function ) )
-          {
-            throw new Error( 'Invalid check definition of property "' + name + '" in class "'
-                             + clazz.classname + '"! Needs to be a String, Array or Function.' );
-          }
-        }
-        if( config.event != null && !this.isSubClassOf( clazz, rwt.qx.Target ) ) {
-          throw new Error( "Invalid property '" + name + "' in class '" + clazz.classname
-                           + "': Properties defining an event can only be defined in"
-                           + " sub classes of 'rwt.qx.Target'!" );
-        }
-      },
-
-      "default" : null
-    } ),
 
     /**
      * Attach members to a class
@@ -988,12 +749,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         clazz.$$flatIncludes = list;
       }
     },
-
-    /*
-    ---------------------------------------------------------------------------
-       PRIVATE FUNCTION HELPERS
-    ---------------------------------------------------------------------------
-    */
 
     /**
      * Returns the default constructor.
