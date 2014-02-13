@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 namespace( "rwt.remote" );
 
@@ -203,7 +203,8 @@ rwt.remote.MessageProcessor = {
           remoteObject._.listen[ type ] = false;
         }
       }
-    } else if( handler.listeners instanceof Array ) {
+    }
+    if( handler.listeners instanceof Array ) {
       for( var i = 0; i < handler.listeners.length; i++ ) {
         var type = handler.listeners[ i ];
         if( properties[ type ] === true ) {
@@ -304,4 +305,4 @@ rwt.remote.MessageProcessor = {
 
 };
 
-}());
+}() );

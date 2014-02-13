@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.remote.MessageProcessor;
@@ -225,8 +225,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
           "parent" : "w3"
         }
       } );
+      TestUtil.protocolListen( "w4", { "Selection" : true } );
       var button = ObjectRegistry.getObject( "w4" );
-      button.setHasSelectionListener( true );
       shell.setDefaultButton( button );
       TestUtil.flush();
       TestUtil.clearRequestLog();
@@ -251,8 +251,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
           "enabled" : false
         }
       } );
+      TestUtil.protocolListen( "w4", { "Selection" : true } );
       var button = ObjectRegistry.getObject( "w4" );
-      button.setHasSelectionListener( true );
       shell.setDefaultButton( button );
       TestUtil.flush();
       TestUtil.clearRequestLog();
@@ -282,11 +282,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testSendBounds : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      MessageProcessor.processOperation( {
-        "target" : "w2",
-        "action" : "listen",
-        "properties" : { "Move" : true, "Resize" : true }
-      } );
+      TestUtil.protocolListen( "w2", { "Move" : true, "Resize" : true } );
 
       shell.setLeft( 51 );
       shell.setTop( 52 );
@@ -301,11 +297,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testSendResize : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      MessageProcessor.processOperation( {
-        "target" : "w2",
-        "action" : "listen",
-        "properties" : { "Resize" : true }
-      } );
+      TestUtil.protocolListen( "w2", { "Resize" : true } );
 
       shell.setLeft( 51 );
       shell.setTop( 52 );
@@ -322,11 +314,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testSendResize_onMaximizedShell : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      MessageProcessor.processOperation( {
-        "target" : "w2",
-        "action" : "listen",
-        "properties" : { "Resize" : true }
-      } );
+      TestUtil.protocolListen( "w2", { "Resize" : true } );
       shell.setMode( "maximized" );
       TestUtil.clearRequestLog();
 
@@ -343,11 +331,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testSendMove : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      MessageProcessor.processOperation( {
-        "target" : "w2",
-        "action" : "listen",
-        "properties" : { "Move" : true }
-      } );
+      TestUtil.protocolListen( "w2", { "Move" : true } );
 
       shell.setLeft( 51 );
       shell.setTop( 52 );
@@ -593,4 +577,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
 } );
 
-}());
+}() );

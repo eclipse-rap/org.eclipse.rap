@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
 
   construct : function( buttonType, noKeyControl ) {
     this.base( arguments, this._CELLORDER );
-    this._hasSelectionListener = false;
     this._selected = false;
     this._image = [ null, null, null ] ;
     this._hotImage = [ null, null, null ];
@@ -127,10 +126,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       this.setCellDimension( 0, width, height );
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
     setGrayed : function( value ) {
       if( value ) {
         this.addState( "grayed" );
@@ -180,9 +175,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
     },
 
     _notifySelected : function() {
-      if( !rwt.remote.EventUtil.getSuspended() && this._hasSelectionListener ) {
-        rwt.remote.EventUtil.notifySelected( this );
-      }
+      // subclasses may overwrite
     },
 
     _onMouseOver : function( event ) {

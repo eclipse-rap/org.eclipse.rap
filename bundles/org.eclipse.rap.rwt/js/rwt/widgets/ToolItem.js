@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,10 +146,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     _onDropDownClick : function() {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && this._hasSelectionListener
-          && this._sendEvent )
-      {
+      if( this._sendEvent ) {
         rwt.remote.EventUtil.notifySelected( this, 0, 0, 0, 0, "arrow" );
       }
       this.dispatchSimpleEvent( "dropDownClicked" );
@@ -220,6 +217,11 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       if( this._isDropDown && cell == 3 ) {
         this.getCellNode( cell ).style.top = 0;
       }
+    },
+
+    // overwritten:
+    _notifySelected : function() {
+      rwt.remote.EventUtil.notifySelected( this );
     }
 
   }

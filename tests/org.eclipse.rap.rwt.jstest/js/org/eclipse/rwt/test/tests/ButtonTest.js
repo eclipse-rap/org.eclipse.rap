@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectManager = rwt.remote.ObjectRegistry;
@@ -401,12 +401,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
     testExecuteCheckButton : function() {
       //this test is also valid for toggle button
-      var button = new rwt.widgets.Button( "check" );
-      button.addState( "rwt_CHECK" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addToDocument();
-      TestUtil.flush();
+      var button = this.createButton( "w11", "check" );
 
       TestUtil.click( button );
 
@@ -418,14 +413,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
     testExecuteCheckButtonWithSelectionListener : function() {
       //this test is also valid for toggle button
-      var button = new rwt.widgets.Button( "check" );
-      button.addState( "rwt_CHECK" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addToDocument();
-      TestUtil.flush();
+      var button = this.createButton( "w11", "check" );
       TestUtil.clearRequestLog();
-      button.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
 
       TestUtil.click( button );
 
@@ -440,21 +430,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testExecuteRadioButton_ByMouse : function() {
-      var button = new rwt.widgets.Button( "radio" );
-      button.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addToDocument();
-      TestUtil.flush();
+      var button = this.createButton( "w11", "radio" );
       button.setSelection( true );
-      var button2 = new rwt.widgets.Button( "radio" );
-      button.setHasSelectionListener( true );
-      button2.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
-      button2.addToDocument();
-      TestUtil.flush();
-      button2.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
+      var button2 = this.createButton( "w2", "radio" );
+      TestUtil.fakeListener( button2, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.click( button2 );
@@ -471,21 +451,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testExecuteRadioButton_ByKeyboard : function() {
-      var button = new rwt.widgets.Button( "radio" );
-      button.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addToDocument();
-      TestUtil.flush();
+      var button = this.createButton( "w11", "radio" );
       button.setSelection( true );
-      var button2 = new rwt.widgets.Button( "radio" );
-      button.setHasSelectionListener( true );
-      button2.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
-      button2.addToDocument();
-      TestUtil.flush();
-      button2.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
+      var button2 = this.createButton( "w2", "radio" );
+      TestUtil.fakeListener( button2, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.press( button, "Down" );
@@ -502,14 +472,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testExecuteSelectedRadioButton : function() {
-      var button = new rwt.widgets.Button( "radio" );
-      button.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addToDocument();
-      TestUtil.flush();
+      var button = this.createButton( "w11", "radio" );
       button.setSelection( true );
-      button.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.click( button );
@@ -522,21 +487,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testExecuteRadioButton_NoRadioGroup : function() {
-      var button1 = new rwt.widgets.Button( "radio" );
-      button1.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button1, handler );
+      var button1 = this.createButton( "w11", "radio" );
       button1.setNoRadioGroup( true );
-      button1.setHasSelectionListener( true );
-      button1.addToDocument();
-      var button2 = new rwt.widgets.Button( "radio" );
-      button2.addState( "rwt_RADIO" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w2", button2, handler );
+      TestUtil.fakeListener( button1, "Selection", true );
+      var button2 = this.createButton( "w2", "radio" );
       button2.setNoRadioGroup( true );
-      button2.setHasSelectionListener( true );
-      button2.addToDocument();
-      TestUtil.flush();
+      TestUtil.fakeListener( button2, "Selection", true );
       TestUtil.clearRequestLog();
       TestUtil.click( button1 );
       assertTrue( button1.hasState( "selected" ) );
@@ -562,11 +518,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testSelectNextRadioButtonByKeyboard : function() {
       var radios = [];
       for( var i = 0; i < 3; i++ ) {
-        radios[ i ] = new rwt.widgets.Button( "radio" );
-        radios[ i ].addState( "rwt_RADIO" );
-        radios[ i ].addToDocument();
-        var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-        rwt.remote.ObjectRegistry.add( "w1" + i, radios[ i ], handler );
+        radios[ i ] = this.createButton( "w1" + i, "radio" );
       }
       TestUtil.flush();
       radios[ 0 ].setSelection( true );
@@ -589,11 +541,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testSelectPreviousRadioButtonByKeyboard : function() {
       var radios = [];
       for( var i = 0; i < 3; i++ ) {
-        radios[ i ] = new rwt.widgets.Button( "radio" );
-        radios[ i ].addState( "rwt_RADIO" );
-        radios[ i ].addToDocument();
-        var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-        rwt.remote.ObjectRegistry.add( "w1" + i, radios[ i ], handler );
+        radios[ i ] = this.createButton( "w1" + i, "radio" );
       }
       TestUtil.flush();
       radios[ 2 ].setSelection( true );
@@ -614,16 +562,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testExecutePushButton : function() {
-      var button = new rwt.widgets.Button( "push" );
-      button.addState( "rwt_PUSH" );
-      button.addToDocument();
-      TestUtil.flush();
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      var button = this.createButton( "w11", "push" );
       TestUtil.clearRequestLog();
       TestUtil.click( button );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      button.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
       TestUtil.clearRequestLog();
       TestUtil.click( button );
       assertEquals( 1, TestUtil.getRequestsSend() );
@@ -637,13 +580,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testSendModifier : function() {
-      var button = new rwt.widgets.Button( "push" );
-      button.addState( "rwt_PUSH" );
-      button.addToDocument();
-      button.setHasSelectionListener( true );
-      TestUtil.flush();
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
+      var button = this.createButton( "w11", "push" );
+      TestUtil.fakeListener( button, "Selection", true );
 
       TestUtil.shiftClick( button );
 
@@ -739,9 +677,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testTriggerMnemonic_FocusesButton : function() {
-      var button = new rwt.widgets.Button( "push" );
-      button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      var button = this.createButton( "w11", "push" );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
@@ -755,14 +691,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testTriggerMnemonic_SendsSelection : function() {
-      var button = new rwt.widgets.Button( "push" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
-      rwt.remote.ObjectRegistry.add( "w11", button, handler );
-      button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      var button = this.createButton( "w11", "push" );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
-      button.setHasSelectionListener( true );
+      TestUtil.fakeListener( button, "Selection", true );
       TestUtil.flush();
       var success = false;
 
@@ -835,10 +767,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
       assertFalse( button._animation.isStarted() );
       button.destroy();
+    },
+
+    createButton : function( id, type ) {
+      var button = new rwt.widgets.Button( type );
+      button.addState( "rwt_" + type.toUpperCase() );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+      rwt.remote.ObjectRegistry.add( id, button, handler );
+      button.addToDocument();
+      TestUtil.flush();
+      return button;
     }
 
   }
 
 } );
 
-}());
+}() );
