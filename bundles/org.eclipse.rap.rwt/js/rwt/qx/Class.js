@@ -62,9 +62,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       if( config.implement && !( config.implement instanceof Array ) ) {
         config.implement = [ config.implement ];
       }
-      if( !config.hasOwnProperty( "extend" ) && !config.type ) {
-        config.type = "static";
-      }
       return config;
     },
 
@@ -108,8 +105,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param name {String} Name of the class
      * @param config {Map ? null} Class definition structure. The configuration map has the
      *   following keys:
-     *   - type {String}: Type of the class. Valid types are "abstract" and "static".
-     *     If unset it defaults to a regular non-static class.
      *   - extend {Class}: The super class the current class inherits from.
      *   - implement {Interface | Interface[]}: Single interface or array of interfaces the class
      *     implements.
@@ -143,7 +138,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
           if( !config.construct ) {
             config.construct = this.__createDefaultConstructor();
           }
-          clazz = this.__wrapConstructor( config.construct, name, config.type );
+          clazz = this.__wrapConstructor( config.construct, name );
           if( config.statics ) {
             var key;
             for( var i = 0, a = rwt.util.Objects.getKeys( config.statics ), l = a.length; i < l; i++ ) {
@@ -794,9 +789,8 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *
      * @param construct {Function} the original constructor
      * @param name {String} name of the class
-     * @param type {String} the user specified class type
      */
-    __wrapConstructor : function( construct, name, type ) {
+    __wrapConstructor : function( construct, name ) {
       var init = this.__initializeClass;
       var wrapper = function() {
 
