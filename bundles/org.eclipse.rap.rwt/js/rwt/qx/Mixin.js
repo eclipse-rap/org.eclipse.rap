@@ -95,63 +95,6 @@ rwt.qx.Class.define( "rwt.qx.Mixin", {
     },
 
     /**
-     * Check compatiblity between mixins (including their includes)
-     *
-     * @param mixins {Mixin[]} an array of mixins
-     * @throws an exception when there is a conflict between the mixins
-     */
-    checkCompatibility : function( mixins ) {
-      var list = this.flatten( mixins );
-      var len = list.length;
-      if( len < 2 ) {
-        return true;
-      }
-      var properties = {};
-      var members = {};
-      var events = {};
-      var mixin;
-      for( var i = 0; i < len; i++ ) {
-        mixin = list[ i ];
-        for( var key in mixin.events ) {
-          if( events[ key ] ) {
-            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "' + events[ key ]
-                             + '" in member "' + key + '"!' );
-          }
-          events[ key ] = mixin.name;
-        }
-        for( var key in mixin.properties ) {
-          if( properties[ key ] ) {
-            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "'
-                             + properties[ key ] + '" in property "' + key + '"!' );
-          }
-          properties[ key ] = mixin.name;
-        }
-        for( var key in mixin.members ) {
-          if( members[ key ] ) {
-            throw new Error( 'Conflict between mixin "' + mixin.name + '" and "' + members[ key ]
-                             + '" in member "' + key + '"!' );
-          }
-          members[ key ] = mixin.name;
-        }
-      }
-      return true;
-    },
-
-    /**
-     * Checks if a class is compatible to the given mixin (no conflicts)
-     *
-     * @param mixin {Mixin} mixin to check
-     * @param clazz {Class} class to check
-     * @throws an exception when the given mixin is incompatible to the class
-     * @return {Boolean} true if the mixin is compatible to the given class
-     */
-    isCompatible : function( mixin, clazz ) {
-      var list = rwt.qx.Class.getMixins( clazz );
-      list.push( mixin );
-      return rwt.qx.Mixin.checkCompatibility( list );
-    },
-
-    /**
      * Returns a mixin by name
      *
      * @param name {String} class name to resolve
@@ -215,80 +158,7 @@ rwt.qx.Class.define( "rwt.qx.Mixin", {
     },
 
     /** Registers all defined mixins */
-    __registry : {},
-
-    /** {Map} allowed keys in mixin definition */
-    __allowedKeys : rwt.util.Variant.select( "qx.debug", {
-      "on": {
-        "include"    : "object",   // Mixin | Mixin[]
-        "statics"    : "object",   // Map
-        "members"    : "object",   // Map
-        "properties" : "object",   // Map
-        "events"     : "object",   // Map
-        "destruct"   : "function", // Function
-        "construct"  : "function"  // Function
-      },
-      "default" : null
-    } ),
-
-    /**
-     * Validates incoming configuration and checks keys and values
-     *
-     * @param name {String} The name of the class
-     * @param config {Map} Configuration map
-     */
-    __validateConfig : rwt.util.Variant.select( "qx.debug", {
-      "on": function( name, config ) {
-        // Validate keys
-        var allowed = this.__allowedKeys;
-        for( var key in config ) {
-          if( !allowed[ key ] ) {
-            throw new Error( 'The configuration key "' + key + '" in mixin "' + name
-                             + '" is not allowed!' );
-          }
-          if( config[ key ] == null ) {
-            throw new Error( 'Invalid key "' + key + '" in mixin "' + name
-                             + '"! The value is undefined/null!' );
-          }
-          if( allowed[ key ] !== null && typeof config[ key ] !== allowed[ key ] ) {
-            throw new Error( 'Invalid type of key "' + key + '" in mixin "' + name
-                             + '"! The type of the key must be "' + allowed[ key ] + '"!' );
-          }
-        }
-
-        // Validate maps
-        var maps = [ "statics", "members", "properties", "events" ];
-        for( var i = 0, l = maps.length; i < l; i++ ) {
-          var key = maps[ i ];
-          if(    config[ key ] !== undefined
-              && (    config[ key ] instanceof Array
-                   || config[ key ] instanceof RegExp
-                   || config[ key ] instanceof Date
-                   || config[ key ].classname !== undefined ) )
-          {
-            throw new Error( 'Invalid key "' + key + '" in mixin "' + name
-                             + '"! The value needs to be a map!' );
-          }
-        }
-
-        // Validate includes
-        if( config.include ) {
-          for( var i = 0, a = config.include, l = a.length; i < l; i++ ) {
-            if( a[ i ] == null ) {
-              throw new Error( "Includes of mixins must be mixins. The include number '"
-                               + ( i + 1 ) + "' in mixin '" + name + "'is undefined/null!" );
-            }
-            if( a[ i ].$$type !== "Mixin" ) {
-              throw new Error( "Includes of mixins must be mixins. The include number '"
-                               + ( i + 1 ) + "' in mixin '" + name + "'is not a mixin!" );
-            }
-          }
-          this.checkCompatibility( config.include );
-        }
-      },
-
-      "default" : function() {}
-    } )
+    __registry : {}
 
   }
 
