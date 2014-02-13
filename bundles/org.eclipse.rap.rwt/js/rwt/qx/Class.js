@@ -59,9 +59,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
       if( config.include && !( config.include instanceof Array ) ) {
         config.include = [ config.include ];
       }
-      if( config.implement && !( config.implement instanceof Array ) ) {
-        config.implement = [ config.implement ];
-      }
       return config;
     },
 
@@ -73,7 +70,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * <pre class='javascript'>
      * rwt.qx.Class.define( "name", {
      *   extend : Object, // superclass
-     *   implement : [Interfaces],
      *   include : [Mixins],
      *
      *   statics: {
@@ -106,8 +102,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param config {Map ? null} Class definition structure. The configuration map has the
      *   following keys:
      *   - extend {Class}: The super class the current class inherits from.
-     *   - implement {Interface | Interface[]}: Single interface or array of interfaces the class
-     *     implements.
      *   - include {Mixin | Mixin[]}: Single mixin or array of mixins, which will be merged into the
      *     class.
      *   - construct {Function} The constructor of the class.
@@ -115,10 +109,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      *   - properties {Map} Map of property definitions. For a description of the format of a
      *     property definition see {@link rwt.qx.Property}
      *   - members {Map}: Map of instance members of the class.
-     *   - settings {Map}: Map of settings for this class. For a description of the format of a
-     *     setting see {@link rwt.qx.Setting}.
-     *   - variants {Map}: Map of settings for this class. For a description of the format of a
-     *     setting see {@link rwt.util.Variant}
      *   - events {Map}: Map of events the class fires. The keys are the names of the events and the
      *     values are the corresponding event type class names.
      *   - defer {Function}: Function that is called at the end of processing the class
@@ -188,13 +178,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
               }
             }
           };
-        }
-        if( config.variants ) {
-          for( var key in config.variants ) {
-            rwt.util.Variant.define( key,
-                                     config.variants[ key ].allowedValues,
-                                     config.variants[ key ].defaultValue );
-          }
         }
         if( config.defer ) {
           this.__initializeClass( clazz );
@@ -463,94 +446,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      */
     hasMixin: function( clazz, mixin ) {
       return !!this.getByMixin( clazz, mixin );
-    },
-
-    /**
-     * Whether a given class directly includes a interface.
-     *
-     * This function will only return "true" if the interface was defined
-     * in the class declaration (@link rwt.qx.Class#define}) using the "implement"
-     * key.
-     *
-     * @param clazz {Class} class or instance to check
-     * @param iface {Interface} the interface to check for
-     * @return {Boolean} whether the class includes the mixin directly.
-     */
-    hasOwnInterface : function( clazz, iface ) {
-      return clazz.$$implements && clazz.$$implements.indexOf( iface ) !== -1;
-    },
-
-    /**
-     * Returns the class or one of its superclasses which contains the
-     * declaration of the given interface. Returns null if the interface is not
-     * specified anywhere.
-     *
-     * @param clazz {Class} class to look for the interface
-     * @param iface {Interface} interface to look for
-     * @return {Class | null} the class which directly implements the given interface
-     */
-    getByInterface : function( clazz, iface ) {
-      var list, i, l;
-      while( clazz ) {
-        if( clazz.$$implements ) {
-          list = clazz.$$flatImplements;
-          for( i = 0, l = list.length; i < l; i++ ) {
-            if( list[ i ] === iface ) {
-              return clazz;
-            }
-          }
-        }
-        clazz = clazz.superclass;
-      }
-      return null;
-    },
-
-    /**
-     * Returns a list of all mixins available in a class.
-     *
-     * @param clazz {Class} class which should be inspected
-     * @return {Mixin[]} array of mixins this class uses
-     */
-    getInterfaces : function( clazz ) {
-      var list = [];
-      while( clazz ) {
-        if( clazz.$$implements ) {
-          list.push.apply( list, clazz.$$flatImplements );
-        }
-        clazz = clazz.superclass;
-      }
-      return list;
-    },
-
-    /**
-     * Whether a given class or any of its superclasses includes a given interface.
-     *
-     * This function will return "true" if the interface was defined
-     * in the class declaration (@link rwt.qx.Class#define}) of the class
-     * or any of its super classes using the "implement"
-     * key.
-     *
-     * @param clazz {Class|Object} class or instance to check
-     * @param iface {Interface} the interface to check for
-     * @return {Boolean} whether the class includes the interface.
-     */
-    hasInterface : function( clazz, iface ) {
-      return !!this.getByInterface( clazz, iface );
-    },
-
-    /**
-     * Whether a given class conforms to an interface.
-     *
-     * Checks whether all methods defined in the interface are
-     * implemented in the class. The class does not need to implement
-     * the interface explicitly.
-     *
-     * @param clazz {Class} class to check
-     * @param iface {Interface} the interface to check for
-     * @return {Boolean} whether the class conforms to the interface.
-     */
-    implementsInterface : function( clazz, iface ) {
-      return false;
     },
 
     /**
