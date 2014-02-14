@@ -22,8 +22,8 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
   extend : rwt.widgets.base.Atom,
 
-  construct : function( vText, vIcon, vIconWidth, vIconHeight, vFlash ) {
-    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash );
+  construct : function( vText, vIcon, vIconWidth, vIconHeight ) {
+    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight );
     this.initChecked();
     this.initTabIndex();
     this._rawText = null;

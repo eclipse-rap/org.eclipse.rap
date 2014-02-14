@@ -32,10 +32,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Atom", {
    * @param vIcon {String?null} Icon URL of the atom
    * @param vIconWidth {Integer?null} desired width of the icon (icon will be scaled to this size)
    * @param vIconHeight {Integer?null} desired height of the icon (icon will be scaled to this size)
-   * @param vFlash {qx.ui.embed.Flash?null} optional flash animation for the Atom. Needs valid width
-   *  and height values.
    */
-  construct : function( vLabel, vIcon, vIconWidth, vIconHeight, vFlash ) {
+  construct : function( vLabel, vIcon, vIconWidth, vIconHeight ) {
     this.base( arguments );
     // disable flex support
     this.getLayoutImpl().setEnableFlexSupport( false );
@@ -43,16 +41,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Atom", {
     if( vLabel !== undefined ) {
       this.setLabel( vLabel );
     }
-    // Simple flash wrapper
-    if( rwt.qx.Class.isDefined( "qx.ui.embed.Flash" ) && vFlash != null && vIconWidth != null &&
-        vIconHeight != null && qx.ui.embed.Flash.getPlayerVersion().getMajor() > 0 )
-    {
-      this._flashMode = true;
-      this.setIcon( vFlash );
-    } else if ( vIcon != null ) {
+    if ( vIcon != null ) {
       this.setIcon( vIcon );
     }
-    if( vIcon || vFlash ) {
+    if( vIcon ) {
       if( vIconWidth != null ) {
         this.setIconWidth( vIconWidth );
       }
@@ -204,8 +196,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Atom", {
 
     // SUB WIDGETS
 
-    _flashMode : false,
-
     _labelObject : null,
     _iconObject : null,
 
@@ -218,11 +208,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Atom", {
     },
 
     _createIcon : function() {
-      if( this._flashMode && rwt.qx.Class.isDefined( "qx.ui.embed.Flash" ) ) {
-        var icon = this._iconObject = new qx.ui.embed.Flash( this.getIcon() );
-      } else {
-        var icon = this._iconObject = new rwt.widgets.base.Image();
-      }
+      var icon = this._iconObject = new rwt.widgets.base.Image();
       icon.setAnonymous( true );
       var width = this.getIconWidth();
       if( width !== null ) {
@@ -280,7 +266,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Atom", {
     /**
      * Get the icon widget of the atom.
      *
-     * @return {rwt.widgets.base.Image|qx.ui.embed.Flash} The icon widget of the atom.
+     * @return {rwt.widgets.base.Image} The icon widget of the atom.
      */
     getIconObject : function() {
       return this._iconObject;

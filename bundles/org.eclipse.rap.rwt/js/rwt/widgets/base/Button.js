@@ -25,8 +25,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Button", {
 
   extend : rwt.widgets.base.Atom,
 
-  construct : function( vText, vIcon, vIconWidth, vIconHeight, vFlash ) {
-    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight, vFlash );
+  construct : function( vText, vIcon, vIconWidth, vIconHeight ) {
+    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight );
     this.initTabIndex();
     this.addEventListener( "mouseover", this._onmouseover );
     this.addEventListener( "mouseout", this._onmouseout );
