@@ -49,7 +49,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
     this.addEventListener( "windowresize", this._onwindowresize );
     // dialog support
     this._modalWidgets = [];
-    this._modalNativeWindow = null;
     // enable as focus root behavior
     this.activateFocusRoot();
     // initialize properties
@@ -184,23 +183,10 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
       if( !this._blocker ) {
         // Create blocker instance
         this._blocker = new rwt.widgets.base.ClientDocumentBlocker();
-        // Add blocker events
-        this._blocker.addEventListener( "mousedown", this.blockHelper, this );
-        this._blocker.addEventListener( "mouseup", this.blockHelper, this );
         // Add blocker to client document
         this.add( this._blocker );
       }
       return this._blocker;
-    },
-
-    blockHelper : function() {
-      if( this._modalNativeWindow ) {
-        if( !this._modalNativeWindow.isClosed() ) {
-          this._modalNativeWindow.focus();
-        } else {
-          this.release( this._modalNativeWindow );
-        }
-      }
     },
 
     block : function( vActiveChild ) {
@@ -212,23 +198,12 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
         var vOrigIndex = vActiveChild.getZIndex();
         this._getBlocker().setZIndex( vOrigIndex );
         vActiveChild.setZIndex( vOrigIndex + 1 );
-      } else if(    rwt.qx.Class.isDefined( "qx.client.NativeWindow" )
-                 && vActiveChild instanceof qx.client.NativeWindow )
-      {
-        this._modalNativeWindow = vActiveChild;
-        this._getBlocker().setZIndex( 1e7 );
       }
     },
 
     release : function( vActiveChild ) {
       if( vActiveChild ) {
-        if(    rwt.qx.Class.isDefined( "qx.client.NativeWindow" )
-            && vActiveChild instanceof qx.client.NativeWindow )
-        {
-          this._modalNativeWindow = null;
-        } else {
-          rwt.util.Arrays.remove( this._modalWidgets, vActiveChild );
-        }
+        rwt.util.Arrays.remove( this._modalWidgets, vActiveChild );
       }
       var l = this._modalWidgets.length;
       if( l === 0 ) {
@@ -364,8 +339,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
 
   destruct : function() {
     this._disposeObjects( "_blocker" );
-    this._disposeFields( "_window", "_document", "_modalWidgets", "_modalNativeWindow",
-                         "_globalCursorStyleSheet" );
+    this._disposeFields( "_window", "_document", "_modalWidgets", "_globalCursorStyleSheet" );
   }
 
 } );
