@@ -1,15 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
- *                          and EclipseSource
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                          EclipseSource, and others.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   1&1 Internet AG and others - original API and implementation
- *   EclipseSource - adaptation for the Eclipse Remote Application Platform
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
+
 
 /**
  * @appearance tab-view-button
@@ -26,11 +28,11 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
     this.initTabIndex();
     this._rawText = null;
     this._mnemonicIndex = null;
-    this.addEventListener("mouseover", this._onmouseover);
-    this.addEventListener("mouseout", this._onmouseout);
-    this.addEventListener("mousedown", this._onmousedown);
-    this.addEventListener("keydown", this._onkeydown);
-    this.addEventListener("keypress", this._onkeypress);
+    this.addEventListener( "mouseover", this._onmouseover );
+    this.addEventListener( "mouseout", this._onmouseout );
+    this.addEventListener( "mousedown", this._onmousedown );
+    this.addEventListener( "keydown", this._onkeydown );
+    this.addEventListener( "keypress", this._onkeypress );
   },
 
   events: {
@@ -79,7 +81,10 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       nullable : true
     },
 
-    /** The assigned rwt.widgets.util.RadioManager which handles the switching between registered buttons */
+    /**
+     * The assigned rwt.widgets.util.RadioManager which handles the switching between registered
+     * buttons
+     */
     manager : {
       check  : "rwt.widgets.util.RadioManager",
       nullable : true,
@@ -87,8 +92,8 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
     },
 
     /**
-     * The name of the radio group. All the radio elements in a group (registered by the same manager)
-     *  have the same name (and could have a different value).
+     * The name of the radio group. All the radio elements in a group (registered by the same
+     * manager) have the same name (and could have a different value).
      */
     name : {
       check : "String",
@@ -147,77 +152,49 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onkeydown : function( e ) {
-      var identifier = e.getKeyIdentifier();
-      if( identifier == "Enter" || identifier == "Space" ) {
+    _onkeydown : function( event ) {
+      var identifier = event.getKeyIdentifier();
+      if( identifier === "Enter" || identifier === "Space" ) {
         // there is no toggeling, just make it checked
         this.setChecked( true );
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onkeypress : function( e ) {
-      switch( e.getKeyIdentifier() ) {
+    _onkeypress : function( event ) {
+      switch( event.getKeyIdentifier() ) {
         case "Left":
           var vPrev = this.getPreviousActiveSibling();
-          if ( vPrev && vPrev != this ) {
+          if ( vPrev && vPrev !== this ) {
             // we want to enable the outline border, because
             // the user used the keyboard for activation
             delete rwt.widgets.util.FocusHandler.mouseFocus;
             // focus previous tab
-            vPrev.setFocused(true);
+            vPrev.setFocused( true );
             // and naturally make it also checked
-            vPrev.setChecked(true);
+            vPrev.setChecked( true );
           }
         break;
         case "Right":
           var vNext = this.getNextActiveSibling();
-          if( vNext && vNext != this ) {
+          if( vNext && vNext !== this ) {
             // we want to enable the outline border, because
             // the user used the keyboard for activation
             delete rwt.widgets.util.FocusHandler.mouseFocus;
             // focus next tab
-            vNext.setFocused(true);
+            vNext.setFocused( true );
             // and naturally make it also checked
-            vNext.setChecked(true);
+            vNext.setChecked( true );
           }
         break;
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _ontabclose : function( e ) {
+    _ontabclose : function( event ) {
       this.createDispatchDataEvent( "closetab", this );
-      e.stopPropagation();
+      event.stopPropagation();
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyShowCloseButton : function( value, old ) {
+    _applyShowCloseButton : function( value ) {
       // if no image exists, then create one
       if( !this._closeButtonImage ) {
         this._closeButtonImage = new rwt.widgets.base.Image( this.getCloseButtonImage() );
@@ -231,25 +208,12 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyCloseButtonImage : function( value, old ) {
+    _applyCloseButtonImage : function( value ) {
       if( this._closeButtonImage ) {
         this._closeButtonImage.setSource( value );
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {void}
-     */
     _renderAppearance : function() {
       if( this.getView() ) {
         if( this.isFirstVisibleChild() ) {
@@ -286,24 +250,11 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       this.base( arguments );
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     */
     getView : function() {
-      var pa = this.getParent();
-      return pa ? pa.getParent() : null;
+      var parent = this.getParent();
+      return parent ? parent.getParent() : null;
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
     _applyManager : function( value, old ) {
       if( old ) {
         old.remove( this );
@@ -313,14 +264,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     * @return {var} TODOC
-     */
     _applyParent : function( value, old ) {
       this.base( arguments, value, old );
       if ( old ) {
@@ -331,13 +274,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
     _applyPage : function( value, old ) {
       if( old ) {
         old.setButton( null );
@@ -352,20 +288,11 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-
-    _applyChecked : function( value, old )
-    {
+    _applyChecked : function( value ) {
       if( this._hasParent ) {
         var vManager = this.getManager();
         if( vManager ) {
-          vManager.handleItemChecked(this, value);
+          vManager.handleItemChecked( this, value );
         }
       }
       if( value ) {
@@ -384,49 +311,21 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       this.setZIndex( value ? 1 : 0 );
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyName : function( value, old ) {
+    _applyName : function( value ) {
       if( this.getManager() ) {
-        this.getManager().setName(value);
+        this.getManager().setName( value );
       }
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onmousedown : function( e ) {
+    _onmousedown : function() {
       this.setChecked( true );
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onmouseover : function( e ) {
+    _onmouseover : function() {
       this.addState( "over" );
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onmouseout : function( e ) {
+    _onmouseout : function() {
       this.removeState( "over" );
     }
 
