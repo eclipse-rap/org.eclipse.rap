@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.resources;
 
-import static org.eclipse.rap.rwt.internal.resources.TestUtil.readContent;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -79,7 +78,7 @@ public class ClientResources_Test {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
 
-    String content = readContent( resourceManager.getRegisteredContent( "rap-client.js" ), "UTF-8" );
+    String content = getRegisteredContent( "rap-client.js" );
     assertTrue( content.contains( "[ \"qx.debug\" ] = \"on\"" ) );
   }
 
