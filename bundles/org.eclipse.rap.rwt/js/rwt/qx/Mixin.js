@@ -95,16 +95,6 @@ rwt.qx.Class.define( "rwt.qx.Mixin", {
     },
 
     /**
-     * Returns a mixin by name
-     *
-     * @param name {String} class name to resolve
-     * @return {Class} the class
-     */
-    getByName : function( name ) {
-      return this.__registry[ name ];
-    },
-
-    /**
      * Determine if mixin exists
      *
      * @name isDefined
@@ -112,16 +102,7 @@ rwt.qx.Class.define( "rwt.qx.Mixin", {
      * @return {Boolean} true if mixin exists
      */
     isDefined : function( name ) {
-      return this.getByName( name ) !== undefined;
-    },
-
-    /**
-     * Determine the number of mixins which are defined
-     *
-     * @return {Number} the number of classes
-     */
-    getTotalNumber : function() {
-      return rwt.util.Objects.getLength( this.__registry );
+      return this.__registry[ name ] !== undefined;
     },
 
     /**

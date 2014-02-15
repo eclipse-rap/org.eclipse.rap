@@ -232,26 +232,7 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @return {Boolean} true if class exists
      */
     isDefined : function( name ) {
-      return this.getByName( name ) !== undefined;
-    },
-
-    /**
-     * Determine the total number of classes
-     *
-     * @return {Number} the total number of classes
-     */
-    getTotalNumber : function() {
-      return rwt.util.Objects.getLength( this.__registry );
-    },
-
-    /**
-     * Find a class by its name
-     *
-     * @param name {String} class name to resolve
-     * @return {Class} the class
-     */
-    getByName : function( name ) {
-      return this.__registry[ name ];
+      return this.__registry[ name ] !== undefined;
     },
 
     /**
@@ -302,150 +283,6 @@ rwt.qx.Class.define( "rwt.qx.Class", {
         return true;
       }
       return false;
-    },
-
-    /**
-     * Returns the definition of the given property. Returns null
-     * if the property does not exist.
-     *
-     * TODO: Correctly support refined properties?
-     *
-     * @param clazz {Class} class to check
-     * @param name {String} name of the event to check for
-     * @return {Map|null} whether the object support the given event.
-     */
-    getPropertyDefinition : function( clazz, name ) {
-      while( clazz ) {
-        if( clazz.$$properties && clazz.$$properties[ name ] ) {
-          return clazz.$$properties[ name ];
-        }
-        clazz = clazz.superclass;
-      }
-      return null;
-    },
-
-    /**
-     * Returns the class or one of its superclasses which contains the
-     * declaration for the given property in its class definition. Returns null
-     * if the property is not specified anywhere.
-     *
-     * @param clazz {Class} class to look for the property
-     * @param name {String} name of the property
-     * @return {Class | null} The class which includes the property
-     */
-    getByProperty : function( clazz, name ) {
-      while( clazz ) {
-        if( clazz.$$properties && clazz.$$properties[ name ] ) {
-          return clazz;
-        }
-        clazz = clazz.superclass;
-      }
-      return null;
-    },
-
-    /**
-     * Whether a class has the given property
-     *
-     * @param clazz {Class} class to check
-     * @param name {String} name of the property to check for
-     * @return {Boolean} whether the class includes the given property.
-     */
-    hasProperty : function( clazz, name ) {
-      return !!this.getPropertyDefinition( clazz, name );
-    },
-
-    /**
-     * Returns the event type of the given event. Returns null if
-     * the event does not exist.
-     *
-     * @param clazz {Class} class to check
-     * @param name {String} name of the event
-     * @return {Map|null} Event type of the given event.
-     */
-    getEventType : function( clazz, name ) {
-      var clazz = clazz.constructor;
-      while( clazz.superclass ) {
-        if( clazz.$$events && clazz.$$events[ name ] !== undefined ) {
-          return clazz.$$events[ name ];
-        }
-        clazz = clazz.superclass;
-      }
-      return null;
-    },
-
-    /**
-     * Whether a class supports the given event type
-     *
-     * @param clazz {Class} class to check
-     * @param name {String} name of the event to check for
-     * @return {Boolean} whether the class supports the given event.
-     */
-    supportsEvent : function( clazz, name ) {
-      return !!this.getEventType( clazz, name );
-    },
-
-    /**
-     * Whether a class directly includes a mixin.
-     *
-     * @param clazz {Class} class to check
-     * @param mixin {Mixin} the mixin to check for
-     * @return {Boolean} whether the class includes the mixin directly.
-     */
-    hasOwnMixin: function( clazz, mixin ) {
-      return clazz.$$includes && clazz.$$includes.indexOf( mixin ) !== -1;
-    },
-
-    /**
-     * Returns the class or one of its superclasses which contains the
-     * declaration for the given mixin. Returns null if the mixin is not
-     * specified anywhere.
-     *
-     * @param clazz {Class} class to look for the mixin
-     * @param mixin {Mixin} mixin to look for
-     * @return {Class | null} The class which directly includes the given mixin
-     */
-    getByMixin : function( clazz, mixin ) {
-      var list, i, l;
-      while( clazz ) {
-        if( clazz.$$includes ) {
-          list = clazz.$$flatIncludes;
-          for( i = 0, l = list.length; i < l; i++ ) {
-            if( list[ i ] === mixin ) {
-              return clazz;
-            }
-          }
-        }
-        clazz = clazz.superclass;
-      }
-      return null;
-    },
-
-    /**
-     * Returns a list of all mixins available in a given class.
-     *
-     * @param clazz {Class} class which should be inspected
-     * @return {Mixin[]} array of mixins this class uses
-     */
-    getMixins : function( clazz ) {
-      var list = [];
-      while( clazz ) {
-        if( clazz.$$includes ) {
-          list.push.apply( list, clazz.$$flatIncludes );
-        }
-        clazz = clazz.superclass;
-      }
-      return list;
-    },
-
-    /**
-     * Whether a given class or any of its superclasses includes a given mixin.
-     *
-     * @param clazz {Class} class to check
-     * @param mixin {Mixin} the mixin to check for
-     * @return {Boolean} whether the class includes the mixin.
-     */
-    hasMixin: function( clazz, mixin ) {
-      return !!this.getByMixin( clazz, mixin );
     },
 
     /**
@@ -607,29 +444,24 @@ rwt.qx.Class.define( "rwt.qx.Class", {
      * @param patch {Boolean} Overwrite existing fields, functions and properties
      */
     __addMixin : function( clazz, mixin, patch ) {
-
       // Attach content
       var list = rwt.qx.Mixin.flatten( [ mixin ] );
       var entry;
       for( var i = 0, l = list.length; i < l; i++ ) {
         entry = list[ i ];
-
         // Attach events
         if( entry.$$events ) {
           this.__addEvents( clazz, entry.$$events, patch );
         }
-
         // Attach properties (Properties are already readonly themselve, no patch handling needed)
         if( entry.$$properties ) {
           this.__addProperties( clazz, entry.$$properties, patch );
         }
-
         // Attach members (Respect patch setting, but dont apply base variables)
         if( entry.$$members ) {
           this.__addMembers( clazz, entry.$$members, patch, patch, patch );
         }
       }
-
       // Store mixin reference
       if( clazz.$$includes ) {
         clazz.$$includes.push( mixin );
@@ -688,19 +520,15 @@ rwt.qx.Class.define( "rwt.qx.Class", {
     __wrapConstructor : function( construct, name ) {
       var init = this.__initializeClass;
       var wrapper = function() {
-
         // We can access the class/statics using arguments.callee
         var clazz = arguments.callee.constructor;
         init( clazz );
-
         // Attach local properties
         if( !clazz.$$propertiesAttached ) {
           rwt.qx.Property.attach( clazz );
         }
-
         // Execute default constructor
         var retval=clazz.$$original.apply( this, arguments );
-
         // Initialize local mixins
         if( clazz.$$includes ) {
           var mixins = clazz.$$flatIncludes;
@@ -710,22 +538,17 @@ rwt.qx.Class.define( "rwt.qx.Class", {
             }
           }
         }
-
         // Mark instance as initialized
         if( this.classname === ', name, ' . classname ) {
           this.$$initialized = true;
         }
-
         // Return optional return value
         return retval;
       };
-
       // Store original constructor
       wrapper.$$original = construct;
-
       // Store wrapper into constructor (needed for base calls etc.)
       construct.wrapper = wrapper;
-
       // Return generated wrapper
       return wrapper;
     }
