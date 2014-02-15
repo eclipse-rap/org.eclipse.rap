@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
@@ -265,7 +264,8 @@ public class TreeOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyMouseDown_coordinatesOutOfClientArea() {
+  public void testHandleNotifyMouseDown_skippedOnHeader() {
+    tree.setHeaderVisible( true );
     Tree spyTree = spy( tree );
     handler = new TreeOperationHandler( spyTree );
 
@@ -273,12 +273,12 @@ public class TreeOperationHandler_Test {
       .add( "altKey", true )
       .add( "shiftKey", true )
       .add( "button", 1 )
-      .add( "x", 110 )
-      .add( "y", 3 )
+      .add( "x", 2 )
+      .add( "y", 10 )
       .add( "time", 4 );
     handler.handleNotify( EVENT_MOUSE_DOWN, properties );
 
-    verify( spyTree, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+    verify( spyTree, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
   }
 
   @Test
@@ -355,7 +355,7 @@ public class TreeOperationHandler_Test {
       .add( "charCode", 0 );
     handler.handleNotify( EVENT_TRAVERSE, properties );
 
-    verify( mockedTree, times( 0 ) ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
+    verify( mockedTree, never() ).notifyListeners( eq( SWT.Traverse ), any( Event.class ) );
   }
 
   @Test

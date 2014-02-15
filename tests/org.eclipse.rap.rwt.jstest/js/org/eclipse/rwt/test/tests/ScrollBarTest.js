@@ -288,6 +288,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       };
       TestUtil.getDocument().addEventListener( "dblclick", fail );
       TestUtil.getDocument().addEventListener( "click", fail );
+      TestUtil.getDocument().addEventListener( "mousedown", fail );
+      TestUtil.getDocument().addEventListener( "mouseup", fail );
       TestUtil.doubleClick( vBar );
       assertTrue( ok );
       vBar.destroy();

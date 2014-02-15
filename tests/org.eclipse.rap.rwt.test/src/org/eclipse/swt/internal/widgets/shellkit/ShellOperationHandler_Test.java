@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.widgets.shellkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_CLOSE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOVE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -36,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -53,6 +55,7 @@ public class ShellOperationHandler_Test {
     Fixture.setUp();
     display = new Display();
     shell = spy( new Shell( display ) );
+    shell.setMenuBar( new Menu( shell, SWT.BAR ) );
     handler = new ShellOperationHandler( shell );
   }
 
@@ -170,6 +173,48 @@ public class ShellOperationHandler_Test {
     handler.handleNotify( EVENT_ACTIVATE, new JsonObject() );
 
     assertTrue( getDisplayAdapter( display ).isFocusInvalidated() );
+  }
+
+  @Test
+  public void testHandleNotifyMouseDown_skippedOnBorder() {
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 5 )
+      .add( "y", 0 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    verify( shell, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotifyMouseDown_skippedOnTitlebar() {
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 5 )
+      .add( "y", 3 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    verify( shell, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
+  }
+
+  @Test
+  public void testHandleNotifyMouseDown_skippedOnMenubar() {
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 5 )
+      .add( "y", 40 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    verify( shell, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
   }
 
   @Test

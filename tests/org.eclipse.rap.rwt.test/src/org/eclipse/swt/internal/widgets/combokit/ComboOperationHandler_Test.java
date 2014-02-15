@@ -144,9 +144,9 @@ public class ComboOperationHandler_Test {
     handler = new ComboOperationHandler( combo );
     combo.setText( "abc" );
     combo.addListener( SWT.Verify, mock( Listener.class ) );
-  
+
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
-  
+
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
   }
 
@@ -156,9 +156,9 @@ public class ComboOperationHandler_Test {
     handler = new ComboOperationHandler( combo );
     combo.setText( "abc" );
     combo.addListener( SWT.Verify, mock( Listener.class ) );
-  
+
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 10 ).add( 12 ) ) );
-  
+
     assertEquals( new Point( 3, 3 ), getPreservedSelection( combo ) );
   }
 
@@ -284,23 +284,6 @@ public class ComboOperationHandler_Test {
     assertEquals( 2, event.y );
     assertEquals( 4, event.time );
     assertEquals( 1, event.count );
-  }
-
-  @Test
-  public void testHandleNotifyMouseDown_coordinatesOutOfClientArea() {
-    Combo spyCombo = spy( combo );
-    handler = new ComboOperationHandler( spyCombo );
-    JsonObject properties = new JsonObject()
-      .add( "altKey", true )
-      .add( "shiftKey", true )
-      .add( "button", 1 )
-      .add( "x", 110 )
-      .add( "y", 3 )
-      .add( "time", 4 );
-
-    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
-
-    verify( spyCombo, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
   }
 
   @Test

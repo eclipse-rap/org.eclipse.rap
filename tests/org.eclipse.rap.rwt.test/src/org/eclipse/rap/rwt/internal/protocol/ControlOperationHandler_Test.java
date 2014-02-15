@@ -283,34 +283,6 @@ public class ControlOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotify_processesMouseDown_onScrollable_valid() {
-    Control spyControl = spy( shell );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", 20 )
-      .add( "y", 60 )
-      .add( "time", 4 );
-
-    handler.handleNotifyMouseDown( spyControl, properties );
-
-    verify( spyControl ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
-  public void testHandleNotify_processesMouseDown_onScrollable_invalid() {
-    Control spyControl = spy( shell );
-    JsonObject properties = new JsonObject()
-      .add( "button", 1 )
-      .add( "x", 2 )
-      .add( "y", 3 )
-      .add( "time", 4 );
-
-    handler.handleNotifyMouseDown( spyControl, properties );
-
-    verify( spyControl, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
-  }
-
-  @Test
   public void testHandleNotify_processesKeyDown() {
     JsonObject properties = new JsonObject()
       .add( "shiftKey", true )

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -236,6 +236,11 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
     }
+  }
+
+  @Override
+  protected boolean allowMouseEvent( Tree tree, int x, int y ) {
+    return super.allowMouseEvent( tree, x, y ) && y >= tree.getHeaderHeight();
   }
 
   private static ITreeAdapter getTreeAdapter( Tree tree ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
@@ -387,6 +388,24 @@ public class TableOperationHandler_Test {
     Event event = captor.getValue();
     assertEquals( SWT.ALT | SWT.SHIFT, event.stateMask );
     assertSame( item, event.item );
+  }
+
+  @Test
+  public void testHandleNotifyMouseDown_skippedOnHeader() {
+    table.setHeaderVisible( true );
+    Table spyTable = spy( table );
+    handler = new TableOperationHandler( spyTable );
+
+    JsonObject properties = new JsonObject()
+      .add( "altKey", true )
+      .add( "shiftKey", true )
+      .add( "button", 1 )
+      .add( "x", 2 )
+      .add( "y", 10 )
+      .add( "time", 4 );
+    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
+
+    verify( spyTable, never() ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
   }
 
   @Test

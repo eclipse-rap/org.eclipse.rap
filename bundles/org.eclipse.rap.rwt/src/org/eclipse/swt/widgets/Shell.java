@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -140,6 +140,10 @@ public class Shell extends Decorations {
 
     public Rectangle getMenuBounds() {
       return Shell.this.getMenuBounds();
+    }
+
+    public int getTopTrim() {
+      return Shell.this.getTopTrim();
     }
 
     public void setBounds( Rectangle bounds ) {
@@ -511,10 +515,7 @@ public class Shell extends Decorations {
   @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
-    int hTopTrim;
-    hTopTrim = getTitleBarMargin().height;
-    hTopTrim += getTitleBarHeight();
-    hTopTrim += getMenuBarHeight();
+    int hTopTrim = getTopTrim();
     Rectangle padding = getPadding();
     int border = getBorderWidth();
     Rectangle rect = new Rectangle( x - padding.x - border,
@@ -558,6 +559,10 @@ public class Shell extends Decorations {
   @Override
   public int getBorderWidth() {
     return getFullScreen() ? 0 : super.getBorderWidth();
+  }
+
+  private int getTopTrim() {
+    return getTitleBarMargin().height + getTitleBarHeight() + getMenuBarHeight();
   }
 
   private int getTitleBarHeight() {

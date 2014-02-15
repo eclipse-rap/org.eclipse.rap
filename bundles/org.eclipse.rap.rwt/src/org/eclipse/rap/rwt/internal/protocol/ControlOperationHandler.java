@@ -38,10 +38,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Scrollable;
 
 
 public abstract class ControlOperationHandler<T extends Control> extends WidgetOperationHandler<T> {
@@ -215,7 +213,10 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseDown( T control, JsonObject properties ) {
-    processMouseEvent( SWT.MouseDown, control, properties );
+    Event event = createMouseEvent( SWT.MouseDown, control, properties );
+    if( allowMouseEvent( control, event.x, event.y ) ) {
+      control.notifyListeners( event.type, event );
+    }
   }
 
   /*
@@ -230,7 +231,10 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseDoubleClick( T control, JsonObject properties ) {
-    processMouseEvent( SWT.MouseDoubleClick, control, properties );
+    Event event = createMouseEvent( SWT.MouseDoubleClick, control, properties );
+    if( allowMouseEvent( control, event.x, event.y ) ) {
+      control.notifyListeners( event.type, event );
+    }
   }
 
   /*
@@ -245,7 +249,10 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    * @param time (int) the time when the event occurred
    */
   public void handleNotifyMouseUp( T control, JsonObject properties ) {
-    processMouseEvent( SWT.MouseUp, control, properties );
+    Event event = createMouseEvent( SWT.MouseUp, control, properties );
+    if( allowMouseEvent( control, event.x, event.y ) ) {
+      control.notifyListeners( event.type, event );
+    }
   }
 
   /*
@@ -308,21 +315,6 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   public void handleNotifyDeactivate( T control, JsonObject properties ) {
   }
 
-  private static void processMouseEvent( int eventType, Control control, JsonObject properties ) {
-    Event event = createMouseEvent( eventType, control, properties );
-    boolean pass = false;
-    if( control instanceof Scrollable ) {
-      Scrollable scrollable = ( Scrollable )control;
-      Rectangle clientArea = scrollable.getClientArea();
-      pass = clientArea.contains( event.x, event.y );
-    } else {
-      pass = event.x >= 0 && event.y >= 0;
-    }
-    if( pass ) {
-      control.notifyListeners( event.type, event );
-    }
-  }
-
   static Event createMouseEvent( int eventType, Control control, JsonObject properties ) {
     Event event = new Event();
     event.type = eventType;
@@ -338,6 +330,10 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     // TODO: send count by the client
     event.count = determineCount( eventType, control );
     return event;
+  }
+
+  protected boolean allowMouseEvent( T control, int x, int y ) {
+    return x >= 0 && y >= 0;
   }
 
   private static int determineCount( int eventType, Control control ) {

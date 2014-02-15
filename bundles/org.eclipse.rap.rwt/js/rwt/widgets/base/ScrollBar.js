@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
     this._hasSelectionListener = false;
     this._minThumbSize = this._getMinThumbSize();
     this.setIncrement( 20 );
+    this.addEventListener( "mousedown", this._stopEvent, this );
+    this.addEventListener( "mouseup", this._stopEvent, this );
     this.addEventListener( "click", this._stopEvent, this );
     this.addEventListener( "dblclick", this._stopEvent, this );
     this._eventTimer = null;

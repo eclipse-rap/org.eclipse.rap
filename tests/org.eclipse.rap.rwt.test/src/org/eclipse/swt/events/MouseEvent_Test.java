@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,13 +30,11 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.internal.widgets.tablekit.TableOperationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -287,50 +285,6 @@ public class MouseEvent_Test {
     assertEquals( 1, mouseUp.button );
     assertEquals( 15, mouseUp.x );
     assertEquals( 53, mouseUp.y );
-  }
-
-  @Test
-  public void testNoMouseEventOutsideClientArea() {
-    Menu menuBar = new Menu( shell, SWT.BAR );
-    shell.setMenuBar( menuBar );
-    shell.setLocation( 100, 100 );
-    shell.open();
-    shell.addMouseListener( new LoggingMouseListener( events ) );
-    int shellX = shell.getLocation().x;
-    int shellY = shell.getLocation().y;
-    // Simulate request that sends a mouseDown + mouseUp on shell border
-    Fixture.fakeNewRequest();
-    fakeMouseDownRequest( shell, shellX + 1, shellY + 1 );
-    fakeMouseUpRequest( shell, shellX + 1, shellY + 1 );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 1, shell.getBorderWidth() );
-    assertEquals( 0, events.size() );
-    events.clear();
-    // Simulate request that sends a mouseDown + mouseUp on shell titlebar
-    Fixture.fakeNewRequest();
-    fakeMouseDownRequest( shell, shellX + 10, shellY + 10 );
-    fakeMouseUpRequest( shell, shellX + 10, shellY + 10 );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 0, events.size() );
-    events.clear();
-    // Simulate request that sends a mouseDown + mouseUp on shell menubar
-    Fixture.fakeNewRequest();
-    fakeMouseDownRequest( shell, shellX + 24, shellY + 24 );
-    fakeMouseUpRequest( shell, shellX + 24, shellY + 24 );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 0, events.size() );
-  }
-
-  @Test
-  public void testNoMouseEventOnScrollBars() {
-    Table table = createTableWithMouseListener();
-    assertEquals( new Rectangle( 0, 0, 90, 100 ), table.getClientArea() );
-    // Simulate request that sends a mouseDown + mouseUp on scrollbar
-    Fixture.fakeNewRequest();
-    fakeMouseDownRequest( table, 93, 50 );
-    fakeMouseUpRequest( table, 93, 50 );
-    Fixture.readDataAndProcessAction( display );
-    assertEquals( 0, events.size() );
   }
 
   @Test
