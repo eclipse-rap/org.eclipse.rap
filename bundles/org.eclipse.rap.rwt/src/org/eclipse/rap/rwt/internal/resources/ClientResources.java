@@ -86,10 +86,8 @@ public final class ClientResources {
     ContentBuffer contentBuffer = new ContentBuffer();
     String appearanceCode = getQxAppearanceThemeCode();
     if( RWTProperties.isDevelopmentMode() ) {
+      append( contentBuffer, "debug-settings.js" );
       for( String javascriptFile : JAVASCRIPT_FILES ) {
-        if( "settings.js".equals( javascriptFile ) ) {
-          javascriptFile = "debug-settings.js";
-        }
         append( contentBuffer, javascriptFile );
       }
     } else {

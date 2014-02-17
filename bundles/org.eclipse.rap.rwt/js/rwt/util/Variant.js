@@ -39,82 +39,13 @@ rwt.qx.Class.define( "rwt.util.Variant", {
     /** {Map} stored variants */
     __variants : {},
 
-    /** {Map} cached results */
-    __cache : {},
-
-    /**
-     * Pseudo function as replacement for isSet() which will only be handled by the optimizer
-     *
-     * @return {Boolean}
-     */
-    compilerIsSet : function() {
-      return true;
-    },
-
-    /**
-     * Define a variant
-     *
-     * @param key {String} An Unique key for the variant. The key must be prefixed with a
-     *   namespace identifier (e.g. <code>"qx.debug"</code>)
-     * @param allowedValues {String[]} An array of all allowed values for this variant.
-     * @param defaultValue {String} Default value for the variant. Must be one of the values
-     *   defined in <code>defaultValues</code>.
-     */
-    define : function( key, allowedValues, defaultValue ) {
-      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-        if( !this.__isValidArray( allowedValues ) ) {
-          throw new Error( 'Allowed values of variant "' + key + '" must be defined!' );
-        }
-        if( defaultValue === undefined ) {
-          throw new Error( 'Default value of variant "' + key + '" must be defined!' );
-        }
-      }
-      if( !this.__variants[ key ] ) {
-        this.__variants[ key ] = {};
-      } else if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-        if( this.__variants[ key ].defaultValue !== undefined ) {
-          throw new Error( 'Variant "' + key + '" is already defined!' );
-        }
-      }
-      this.__variants[ key ].allowedValues = allowedValues;
-      this.__variants[ key ].defaultValue = defaultValue;
-    },
-
-    /**
-     * Get the current value of a variant.
-     *
-     * @param key {String} name of the variant
-     * @return {String} current value of the variant
-     */
-    get : function( key ) {
-      var data = this.__variants[ key ];
-      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-        if( data === undefined ) {
-          throw new Error( 'Variant "' + key + '" is not defined.' );
-        }
-      }
-      if( data.value !== undefined ) {
-        return data.value;
-      }
-      return data.defaultValue;
-    },
-
     /**
      * Import settings from global qxvariants into current environment
      */
     __init : function() {
       if( window.qxvariants ) {
-        for( var key in qxvariants ) {
-          if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-            if( ( key.split( "." ) ).length < 2 ) {
-              throw new Error( 'Malformed settings key "' + key
-                               + '". Must be following the schema "namespace.key".' );
-            }
-          }
-          if( !this.__variants[ key ] ) {
-            this.__variants[ key ] = {};
-          }
-          this.__variants[ key ].value = qxvariants[ key ];
+        for( var name in qxvariants ) {
+          this.__variants[ name ] = qxvariants[ name ];
         }
         window.qxvariants = undefined;
         try {
@@ -125,52 +56,68 @@ rwt.qx.Class.define( "rwt.util.Variant", {
     },
 
     /**
+     * Define a variant
+     *
+     * @param name {String} unique name for the variant
+     * @param value {String} value for the variant
+     */
+    define : function( name, value ) {
+      if( name in this.__variants ) {
+        throw new Error( "Variant already defined: '" + name + "'" );
+      }
+      this.__variants[ name ] = value;
+    },
+
+    /**
+     * Get the current value of a variant.
+     *
+     * @param name {String} name of the variant
+     * @return {String} current value of the variant
+     */
+    get : function( name ) {
+      var data = this.__variants[ name ];
+      if( data === undefined ) {
+        throw new Error( 'Undefined variant "' + name + '"' );
+      }
+      return data;
+    },
+
+    /**
      * Select a function depending on the value of the variant.
      *
      * Example:
      *
      * <pre class='javascript'>
-     * var f = qx.Variant.select("qx.client", {
-     *   "gecko": fucntion() { ... },
+     * var f = rwt.util.Variant.select( "qx.client", {
+     *   "gecko": function() { ... },
      *   "mshtml|opera": function() { ... },
      *   "default": function() { ... }
      * });
      * </pre>
      *
-     * Depending on the value of the <code>"qx.client"</code> variant whit will select the
+     * Depending on the value of the <code>"qx.client"</code> variant this will select the
      * corresponding function. The first case is selected if the variant is "gecko", the second
      * is selected if the variant is "mshtml" or "opera" and the third function is selected if
-     * none of the other keys match the variant. "default" is the default case.
+     * none of the other names match the variant.
      *
-     * @param key {String} name of the variant. To enable the generator to optimize
-     *   this selection, the key must be a string literal.
-     * @param variantFunctionMap {Map} map with variant names as keys and functions as values.
+     * @param name {String} name of the variant. To enable the generator to optimize
+     *   this selection, the name must be a string literal.
+     * @param functions {Map} map with variant names as names and functions as values.
      * @return {Function} The selected function from the map.
      */
-    select : function( key, variantFunctionMap ) {
-      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-        // WARINING: all changes to this function must be duplicated in the generator!!
-        // modules/variantoptimizer.py (processVariantSelect)
-        if( !this.__isValidObject( this.__variants[ key ] ) ) {
-          throw new Error( "Variant \"" + key + "\" is not defined" );
-        }
-        if( !this.__isValidObject( variantFunctionMap ) ) {
-          throw new Error( "the second parameter must be a map!" );
+    select : function( name, functions ) {
+      if( typeof this.__variants[ name ] === "undefined" ) {
+        throw new Error( "Variant not defined: '" + name + "'" );
+      }
+      for( var variant in functions ) {
+        if( this.isSet( name, variant ) ) {
+          return functions[ variant ];
         }
       }
-      for( var variant in variantFunctionMap ) {
-        if( this.isSet( key, variant ) ) {
-          return variantFunctionMap[ variant ];
-        }
+      if( functions[ "default" ] !== undefined ) {
+        return functions[ "default" ];
       }
-      if( variantFunctionMap[ "default" ] !== undefined ) {
-        return variantFunctionMap[ "default" ];
-      }
-      if( rwt.util.Variant.compilerIsSet( "qx.debug", "on" ) ) {
-        throw new Error( 'No match for variant "' + key + '" in variants ['
-                         + rwt.util.Objects.getKeysAsString( variantFunctionMap )
-                         + '] found, and no default ("default") given' );
-      }
+      throw new Error( "No match for variant: '" + name + "'" );
     },
 
     /**
@@ -193,50 +140,31 @@ rwt.qx.Class.define( "rwt.util.Variant", {
      * }
      * </pre>
      *
-     * @param key {String} name of the variant
+     * @param name {String} name of the variant
      * @param variants {String} value to check for. Several values can be "or"-combined by
      *   separating them with a "|" character. A value of "mshtml|opera" would for example
      *   check if the variant is set to "mshtml" or "opera"
      * @return {Boolean} whether the variant is set to the given value
      */
-    isSet : function( key, variants ) {
-      var access = key + "$" + variants;
-      if( this.__cache[ access ] !== undefined ) {
-        return this.__cache[ access ];
-      }
-      var retval = false;
+    isSet : function( name, variants ) {
       // fast path
+      var actual = this.get( name );
       if( variants.indexOf( "|" ) < 0 ) {
-        retval = this.get( key ) === variants;
-      } else {
-        var keyParts = variants.split( "|" );
-        for( var i = 0, l = keyParts.length; i < l; i++ ) {
-          if( this.get( key ) === keyParts[ i ] ) {
-            retval = true;
-            break;
-          }
+        return actual === variants;
+      }
+      var nameParts = variants.split( "|" );
+      for( var i = 0, l = nameParts.length; i < l; i++ ) {
+        if( actual === nameParts[ i ] ) {
+          return true;
         }
       }
-      this.__cache[ access ] = retval;
-      return retval;
-    },
-
-    __isValidArray : function( value ) {
-      return typeof value === "object" && value !== null && value instanceof Array;
-    },
-
-    __isValidObject : function( value ) {
-      return typeof value === "object" && value !== null && !( value instanceof Array );
+      return false;
     }
 
   },
 
   defer : function( statics ) {
-    statics.define( "qx.debug", [ "on", "off" ], "on" );
-    statics.define( "qx.compatibility", [ "on", "off" ], "on" );
-    statics.define( "qx.eventMonitorNoListeners", [ "on", "off" ], "off" );
-    statics.define( "qx.aspects", [ "on", "off" ], "off" );
-    statics.define( "qx.deprecationWarnings", [ "on", "off" ], "on" );
+    statics.define( "qx.debug", "off" );
     statics.__init();
   }
 

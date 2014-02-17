@@ -27,7 +27,8 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/DragSource.spec.js",
     "spec/DropTarget.spec.js",
     "spec/DragSourceHandler.spec.js",
-    "spec/DropTargetHandler.spec.js"
+    "spec/DropTargetHandler.spec.js",
+    "spec/Variant.spec.js"
   };
 
   public String getName() {

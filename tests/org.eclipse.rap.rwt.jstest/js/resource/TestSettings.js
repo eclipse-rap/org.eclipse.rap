@@ -24,10 +24,8 @@
     return result;
   };
 
-  qxsettings = {};
-  qxvariants = {};
-  qxvariants[ "qx.compatibility" ] = "off";
-  qxvariants[ "qx.aspects" ] = "off";
-  qxvariants[ "qx.debug" ] = getURLParam( "debug" ) === "off" ? "off" : "on";
+  qxvariants = {
+    "qx.debug" : getURLParam( "debug" ) === "off" ? "off" : "on"
+  };
 
 } )();

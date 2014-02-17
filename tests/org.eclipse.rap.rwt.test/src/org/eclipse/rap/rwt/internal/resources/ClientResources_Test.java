@@ -79,7 +79,8 @@ public class ClientResources_Test {
     clientResources.registerResources();
 
     String content = getRegisteredContent( "rap-client.js" );
-    assertTrue( content.contains( "[ \"qx.debug\" ] = \"on\"" ) );
+
+    assertTrue( content.contains( "qxvariants = {\n  \"qx.debug\" : \"on\"\n};" ) );
   }
 
   @Test

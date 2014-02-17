@@ -1,6 +1,5 @@
 # Contains all files to be included in client.js, in build order
 
-settings.js
 rwt/runtime/Bootstrap.js
 rwt/runtime/BrowserFixes.js
 rwt/util/Arrays.js

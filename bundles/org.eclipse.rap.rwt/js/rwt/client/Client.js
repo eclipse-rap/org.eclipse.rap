@@ -432,9 +432,7 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
   defer : function( statics, members, properties ) {
     statics.__init();
-    rwt.util.Variant.define( "qx.client",
-                            [ "gecko", "mshtml", "opera", "webkit" ],
-                            rwt.client.Client.getEngine() );
+    rwt.util.Variant.define( "qx.client", rwt.client.Client.getEngine() );
   }
 
 } );
