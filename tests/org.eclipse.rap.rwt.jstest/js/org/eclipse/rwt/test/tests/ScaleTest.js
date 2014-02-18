@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
 
   extend : rwt.qx.Object,
@@ -16,10 +22,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
   members : {
 
     testCreateScaleByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -28,7 +32,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Scale );
       assertIdentical( shell, widget.getParent() );
@@ -40,10 +43,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testCreateScaleHorizontalByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -52,7 +53,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Scale );
       assertIdentical( shell, widget.getParent() );
@@ -64,10 +64,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetMinimumByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -77,7 +75,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._minimum );
       shell.destroy();
@@ -85,10 +82,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetMaximumByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -98,7 +93,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._maximum );
       shell.destroy();
@@ -106,10 +100,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -119,7 +111,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._selection );
       shell.destroy();
@@ -127,10 +118,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetIncrementByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -140,7 +129,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "increment" : 5
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget._increment );
       shell.destroy();
@@ -148,10 +136,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetPageIncrementByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -161,18 +147,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "pageIncrement" : 20
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._pageIncrement );
       shell.destroy();
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Scale",
@@ -181,16 +164,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasSelectionListener );
+
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testFiresSelectionChangedEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
       TestUtil.flush();
 
@@ -204,7 +188,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testFiresMinimumChangedEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
       TestUtil.flush();
 
@@ -218,7 +201,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testFiresMaximumChangedEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale();
       TestUtil.flush();
 
@@ -232,7 +214,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testGetToolTipTargetBounds_Horizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale( true );
       scale.setDimension( 100, 20 );
       scale.setSelection( 30 );
@@ -251,7 +232,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testGetToolTipTargetBounds_Vertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale( false );
       scale.setDimension( 20, 100 );
       scale.setSelection( 30 );
@@ -270,7 +250,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
     },
 
     testSetSelection_FiresUpdateToolTip : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var scale = new rwt.widgets.Scale( false );
       scale.setDimension( 20, 100 );
       scale.setSelection( 30 );
@@ -291,3 +270,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
   }
 
 } );
+
+}() );

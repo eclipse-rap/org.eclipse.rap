@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
   extend : rwt.qx.Object,
@@ -20,10 +26,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
   members : {
 
     testCreateSliderByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -32,7 +36,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Slider );
       assertIdentical( shell, widget.getParent() );
@@ -44,10 +47,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testCreateSliderHorizontalByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -56,7 +57,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Slider );
       assertIdentical( shell, widget.getParent() );
@@ -68,10 +68,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetMinimumByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -81,7 +79,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "minimum" : 50
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._minimum );
       shell.destroy();
@@ -89,10 +86,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetMaximumByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -102,7 +97,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "maximum" : 150
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 150, widget._maximum );
       shell.destroy();
@@ -110,10 +104,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetSelectionByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -123,7 +115,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "selection" : 50
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 50, widget._selection );
       shell.destroy();
@@ -131,10 +122,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetIncrementByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -144,7 +133,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "increment" : 5
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 5, widget._increment );
       shell.destroy();
@@ -152,10 +140,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetPageIncrementByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -165,7 +151,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "pageIncrement" : 20
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._pageIncrement );
       shell.destroy();
@@ -173,10 +158,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSetThumbByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -186,18 +169,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "thumb" : 20
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertEquals( 20, widget._thumbLength );
       shell.destroy();
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Slider",
@@ -206,16 +186,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasSelectionListener );
+
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
       shell.destroy();
       widget.destroy();
     },
 
     testCreateDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider();
       assertTrue( slider.isSeeable() );
       slider.destroy();
@@ -234,7 +215,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testStatesHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( true );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget._minButton.hasState( "horizontal" ) );
@@ -253,7 +233,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testStatesVertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( false );
       assertTrue( widget.hasState( "rwt_VERTICAL" ) );
       assertTrue( widget._minButton.hasState( "vertical" ) );
@@ -271,7 +250,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testBasicLayoutVertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( false );
       var slider = TestUtil.getElementLayout( widget.getElement() );
       var min = TestUtil.getElementLayout( widget._minButton.getElement() );
@@ -285,7 +263,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testBasicLayoutHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( true );
       var slider = TestUtil.getElementLayout( widget.getElement() );
       var min = TestUtil.getElementLayout( widget._minButton.getElement() );
@@ -299,7 +276,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testGetToolTipTargetBoundsVertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( false );
       widget.setBorder( new rwt.html.Border( 1 ) );
 
@@ -313,7 +289,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testGetToolTipTargetBoundsHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( true );
       widget.setBorder( new rwt.html.Border( 1 ) );
 
@@ -327,7 +302,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testFireToolTipUpdate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( true );
       var fired = false;
       widget.addEventListener( "updateToolTip", function( arg ) {
@@ -341,7 +315,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testThumbPositionNoScaling : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var thumb = slider._thumb;
       // With minimum/maximum initially set to 0/100:
@@ -353,7 +326,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testThumbSizeNoScaling : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var thumb = slider._thumb;
       slider.setHeight( 100 + 2 * 16 );
@@ -364,7 +336,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testThumbPositionWithScaling : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var thumb = slider._thumb;
       slider.setHeight( 100 + 2 * 16 );
@@ -378,7 +349,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testThumbSizeWithScaling : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var thumb = slider._thumb;
       slider.setHeight( 100 + 2 * 16 ); // to exclude the buttons
@@ -393,7 +363,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickOnMaxButton : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       assertEquals( 0, slider._selection );
       TestUtil.click( slider._maxButton );
@@ -403,7 +372,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickOnMinButton : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setSelection( 50 );
       assertEquals( 50, slider._selection );
@@ -414,7 +382,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickOnMinButtonLimit : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setSelection( 5 );
       assertEquals( 5, slider._selection );
@@ -429,7 +396,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickOnMaxButtonLimit : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setThumb( 7 );
       slider.setSelection( 90 );
@@ -444,10 +410,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testSendEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Slider" );
-      rwt.remote.ObjectRegistry.add( "w99", slider, handler );
+      ObjectManager.add( "w99", slider, handler );
       TestUtil.click( slider._maxButton );
       assertTrue( slider._requestScheduled );
       TestUtil.forceTimerOnce();
@@ -456,7 +421,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       rwt.remote.Connection.getInstance().send();
       assertEquals( 5, TestUtil.getMessageObject().findSetProperty( "w99", "selection" ) );
       TestUtil.clearRequestLog();
-      slider.setHasSelectionListener( true );
+      TestUtil.fakeListener( slider, "Selection", true );
       TestUtil.click( slider._maxButton );
       assertTrue( slider._requestScheduled );
       TestUtil.forceTimerOnce();
@@ -468,7 +433,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMaxButton : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider._maxButton.getElement();
       TestUtil.fakeMouseEventDOM( node, "mousedown" );
@@ -490,7 +454,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMaxButtonAbort : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider._maxButton.getElement();
       TestUtil.fakeMouseEventDOM( node, "mousedown" );
@@ -507,7 +470,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMinButton : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setMaximum( 110 ); // the place needed by thumb
       slider.setSelection( 100 );
@@ -532,7 +494,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMinButtonAbort : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setMaximum( 110 ); // the place needed by thumb
       slider.setSelection( 100 );
@@ -551,7 +512,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMinButtonContinue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setMaximum( 110 ); // the place needed by thumb
       slider.setSelection( 100 );
@@ -568,7 +528,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldMinButtonDontContinue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setMaximum( 110 ); // the place needed by thumb
       slider.setSelection( 100 );
@@ -589,7 +548,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickLineVertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection );
@@ -612,7 +570,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testClickLineHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection );
@@ -635,7 +592,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldOnLine : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -666,7 +622,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldOnLineAbort : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -684,7 +639,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldOnLineMouseUpOnThumb : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -702,7 +656,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldOnLineMouseOut : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -722,7 +675,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testHoldOnLineMouseOutAbort : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       var node = slider.getElement();
       var left = rwt.event.MouseEvent.buttons.left;
@@ -742,7 +694,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testKeyControlVertical : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
       assertEquals( 0, slider._selection );
       TestUtil.press( slider, "Right" );
@@ -769,7 +720,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testKeyControlHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       assertEquals( 0, slider._selection );
       TestUtil.press( slider, "Right" );
@@ -796,7 +746,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testMouseWheel : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       assertEquals( 0, slider._selection );
       TestUtil.fakeWheel( slider, 1 );
@@ -816,7 +765,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testDragThumb : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
@@ -839,7 +787,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testDragThumbMouseOut : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
@@ -859,7 +806,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testDragThumbLimit : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
@@ -877,7 +823,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     },
 
     testDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       var thumb = slider._thumb;
       var minButton = slider._minButton;
@@ -903,10 +848,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     // Helper
 
     _createSlider : function( horizontal ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new rwt.widgets.Slider( horizontal );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Slider" );
-      rwt.remote.ObjectRegistry.add( "w3", result, handler );
+      ObjectManager.add( "w3", result, handler );
       result.addToDocument();
       result.setLeft( 10 );
       result.setTop( 10 );
@@ -925,3 +869,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
   }
 
 } );
+
+}() );
