@@ -63,18 +63,37 @@ org.eclipse.rwt.test.JasmineStartup = {
       }, 0 );
     } );
 
+    /////////////////
+    // Global Helpers
+
+    window.any = jasmine.any;
+
+    window.mock = function( constr, name ) {
+      return jasmine.createSpyObj( name || "mock", rwt.util.Objects.getKeys( constr.prototype ) );
+    };
+
+    window.same = function( expected ) {
+      return {
+        jasmineMatches : function( actual ) {
+          return expected === actual;
+        }
+      };
+    };
+
     /////////
     // Helper
 
     function updateScrollPositions() {
       // Some tests focus something off-screen, causing scrolling away form the stats
       document.getElementById( "HTMLReporter" ).scrollIntoView();
-      // This lets the summary work as a progress indicator even when formatted to into one line
-      var summary = document.getElementsByClassName( "symbolSummary" )[ 0 ];
-      var passed = summary.getElementsByClassName( "passed" );
-      if( passed.length > 1 ) {
-        var lastPassed = passed[ passed.length - 1 ];
-        summary.scrollLeft = lastPassed.offsetLeft - Math.round( summary.clientWidth / 2 );
+      if( document.getElementsByClassName ) {
+        // This lets the summary work as a progress indicator even when formatted to into one line
+        var summary = document.getElementsByClassName( "symbolSummary" )[ 0 ];
+        var passed = summary.getElementsByClassName( "passed" );
+        if( passed.length > 1 ) {
+          var lastPassed = passed[ passed.length - 1 ];
+          summary.scrollLeft = lastPassed.offsetLeft - Math.round( summary.clientWidth / 2 );
+        }
       }
     }
 
@@ -171,9 +190,15 @@ org.eclipse.rwt.test.JasmineStartup = {
     }
 
     function abort() {
+      rwt.qx.Class.__initializeClass( org.eclipse.rwt.test.TestRunner );
       var runnerProto = org.eclipse.rwt.test.TestRunner.prototype;
       runnerProto._freezeQooxdoo();
-      throw new Error( "Abort Jasmine Runner" );
+      window.setTimeout( function() {
+        if( document.getElementsByClassName ) {
+          document.getElementsByClassName( "detailsMenuItem" )[ 0 ].click();
+        }
+      }, 0 );
+      throw new Error( "Abort Jasmine Runner" ); // Is there a better method to stop jasmine?
     }
 
   }

@@ -40,6 +40,9 @@
     "it": false,
     "expect": false,
     "spyOn": false,
+    "any" : false,
+    "same" : false,
+    "mock" : false,
 
     // asserts
     "assertTrue": true,
