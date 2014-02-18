@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,6 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
     this.base( arguments );
     this.setOverflow( "hidden" );
     this.setAppearance( "datetime-calendar" );
-
-    // Has selection listener
-    this._hasSelectionListener = false;
 
     // Get names of weekdays and months
     rwt.widgets.base.Calendar.MONTH_NAMES = monthNames;
@@ -114,9 +111,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
         remoteObject.set( "day", date );
         remoteObject.set( "month", month );
         remoteObject.set( "year", year );
-        if( this._hasSelectionListener ) {
-          rwt.remote.EventUtil.notifySelected( this );
-        }
+        rwt.remote.EventUtil.notifySelected( this );
       }
     },
 
@@ -136,10 +131,6 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       var date = this._calendar.getDate();
       date.setYear( value );
       this._calendar.setDate( date );
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
     },
 
     setFont : function() {

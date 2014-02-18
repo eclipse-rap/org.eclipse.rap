@@ -8,7 +8,15 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
+
   extend : rwt.qx.Object,
 
   members : {
@@ -46,7 +54,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     datePattern : "MDY",
 
     testCreateDateTimeDateByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       assertTrue( widget instanceof rwt.widgets.DateTimeDate );
@@ -68,7 +75,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetYearByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       TestUtil.protocolSet( "w3", { "year" : 2000 } );
@@ -78,7 +84,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetMonthByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       TestUtil.protocolSet( "w3", { "month" : 6 } );
@@ -88,7 +93,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetDayByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       TestUtil.protocolSet( "w3", { "day" : 10 } );
@@ -98,7 +102,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSetSubWidgetsBoundsByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
       TestUtil.protocolSet( "w3", { "subWidgetsBounds" : [ [ 0, 3, 5, 0, 18 ],
@@ -115,12 +118,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2", true );
+
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      assertTrue( widget._hasSelectionListener );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -134,7 +139,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSendAllFieldsTogether : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var dateTime = this._createDefaultDateTime();
       dateTime.setDay( 10 );
@@ -142,8 +146,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       dateTime.setYear( 2010 );
       TestUtil.clearRequestLog();
       dateTime._sendChanges();
-      var req = rwt.remote.Connection.getInstance();
-      req.send();
+
+      rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -154,10 +158,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSendEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.prepareTimerUse();
       var dateTime = this._createDefaultDateTime();
-      dateTime.setHasSelectionListener( true );
+      TestUtil.fakeListener( dateTime, "Selection", true );
       dateTime.setDay( 10 );
       dateTime.setMonth( 10 );
       dateTime.setYear( 2010 );
@@ -173,7 +176,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testDropDownCalendar : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
       TestUtil.click( dateTime._dropDownButton );
       TestUtil.flush();
@@ -185,7 +187,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testDropDownCalendarNotEnoughSpace : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
       var browserHeight = rwt.html.Window.getInnerHeight( window );
       dateTime.setTop( browserHeight - 40 );
@@ -202,7 +203,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
 
     // see bug 358531
     testEditingWithKeyboard_InitialEditing : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime();
       dateTime._setDate( new Date( 2011, 8, 2 ) );
       TestUtil.click( dateTime._dayTextField );
@@ -214,7 +214,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testEditingWithKeyboard_ContinualEditing : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime();
       dateTime._setDate( new Date( 2011, 8, 2 ) );
       TestUtil.click( dateTime._dayTextField );
@@ -234,7 +233,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       if( dropdown ) {
         styles[ 2 ] = "DROP_DOWN";
       }
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -249,23 +248,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
           "datePattern" : this.datePattern
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( "w3" );
+      return ObjectManager.getObject( "w3" );
     },
 
     _createDefaultDateTime : function( dropdown ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = "medium";
       if( dropdown ) {
         style +=  "|drop_down";
       }
       var dateTime = new rwt.widgets.DateTimeDate( style,
-                                                               this.monthNames,
-                                                               this.weekdayNames,
-                                                               this.weekdayShortNames,
-                                                               this.dateSeparator,
-                                                               this.datePattern);
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      widgetManager.add( dateTime, "w3", true, rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" ) );
+                                                   this.monthNames,
+                                                   this.weekdayNames,
+                                                   this.weekdayShortNames,
+                                                   this.dateSeparator,
+                                                   this.datePattern);
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" );
+      ObjectManager.add( "w3", dateTime, handler );
       dateTime.setSpace( 3, 115, 3, 20 );
       dateTime.addToDocument();
       TestUtil.flush();
@@ -275,3 +273,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
   }
 
 } );
+
+}() );

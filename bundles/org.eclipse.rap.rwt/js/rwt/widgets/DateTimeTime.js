@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
     this._medium = rwt.util.Strings.contains( style, "medium" );
     this._long = rwt.util.Strings.contains( style, "long" );
 
-    // Has selection listener
-    this._hasSelectionListener = false;
-    this._requestTimer = null;
+    this._requestTimer = new rwt.client.Timer( 110 );
+    this._requestTimer.addEventListener( "interval", this._onInterval, this );
 
     // Add listener for font change
     this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
@@ -116,7 +115,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
                           "_focusedTextField",
                           "_spinner",
                           "_separator3",
-                          "_separator4" );
+                          "_separator4",
+                          "_requestTimer" );
   },
 
   statics : {
@@ -370,7 +370,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
         remoteObject.set( "minutes", minutes );
         var seconds = parseInt( this._removeLeadingZero( this._secondsTextField.getText() ), 10 );
         remoteObject.set( "seconds", seconds );
-        if( this._hasSelectionListener ) {
+        if( remoteObject.isListening( "Selection" ) ) {
           this._requestTimer.restart();
         }
       }
@@ -400,12 +400,6 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       if( this._focusedTextField === this._secondsTextField ) {
         this._spinner.setValue( value );
       }
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-      this._requestTimer = new rwt.client.Timer( 110 );
-      this._requestTimer.addEventListener( "interval", this._onInterval, this );
     },
 
     setBounds : function( ind, x, y, width, height ) {

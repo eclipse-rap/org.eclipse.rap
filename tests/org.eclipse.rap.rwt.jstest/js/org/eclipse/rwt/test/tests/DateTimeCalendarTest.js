@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,11 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectRegistry = rwt.remote.ObjectRegistry;
-var MessageProcessor = rwt.remote.MessageProcessor;
+var ObjectManager = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
@@ -85,11 +85,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      assertTrue( widget._hasSelectionListener );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -128,7 +131,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       var days = [ "", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ];
       var calendar = new rwt.widgets.DateTimeCalendar( "medium", months, days );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" );
-      ObjectRegistry.add( "w3", calendar, handler );
+      ObjectManager.add( "w3", calendar, handler );
       calendar.addToDocument();
       calendar.setSpace( 3, 194, 3, 138 );
       calendar.setZIndex( 300 );
@@ -147,7 +150,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
 
     _createDefaultDateTimeByProtocol : function( id, parentId ) {
       var styles =  [ "CALENDAR", "MEDIUM" ];
-      MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.DateTime",
@@ -159,11 +162,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "weekdayShortNames" : this.weekdayShortNames
         }
       } );
-      return ObjectRegistry.getObject( "w3" );
+      return ObjectManager.getObject( "w3" );
     }
 
   }
 
 } );
 
-}());
+}() );

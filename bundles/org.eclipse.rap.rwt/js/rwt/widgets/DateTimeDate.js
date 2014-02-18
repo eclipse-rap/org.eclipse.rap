@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     this._long = rwt.util.Strings.contains( style, "long" );
     this._drop_down = rwt.util.Strings.contains( style, "drop_down" );
 
-    // Has selection listener
-    this._hasSelectionListener = false;
-    this._requestTimer = null;
+    this._requestTimer = new rwt.client.Timer( 110 );
+    this._requestTimer.addEventListener( "interval", this._onInterval, this );
 
     // Flag that indicates that the next request can be sent
     this._readyToSendChanges = true;
@@ -203,7 +202,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
                           "_spinner",
                           "_separator0",
                           "_separator1",
-                          "_separator2" );
+                          "_separator2",
+                          "_requestTimer" );
     if( this._drop_down ) {
       var cDocument = rwt.widgets.base.ClientDocument.getInstance();
       cDocument.removeEventListener( "windowblur", this._onWindowBlur, this );
@@ -665,7 +665,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
         remoteObject.set( "day", day );
         remoteObject.set( "month", this._monthInt - 1 );
         remoteObject.set( "year", this._lastValidYear );
-        if( this._hasSelectionListener ) {
+        if( remoteObject.isListening( "Selection" ) ) {
           this._requestTimer.restart();
         }
       }
@@ -713,12 +713,6 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this.setYear( date.getFullYear() );
       this.setMonth( date.getMonth() );
       this.setDay( date.getDate() );
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-      this._requestTimer = new rwt.client.Timer( 110 );
-      this._requestTimer.addEventListener( "interval", this._onInterval, this );
     },
 
     setBounds : function( ind, x, y, width, height ) {
