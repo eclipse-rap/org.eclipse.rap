@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
@@ -365,7 +365,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {
         "target" : "w3",
@@ -376,14 +376,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertTrue( widget._hasSelectionListener );
+
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
       shell.destroy();
       widget.destroy();
     },
 
-    testSetHasDefaultSelectionListenerByProtocol : function() {
+    testSetDefaultSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       MessageProcessor.processOperation( {
         "target" : "w3",
@@ -394,9 +397,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "parent" : "w2"
         }
       } );
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertTrue( widget._hasDefaultSelectionListener );
+
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "DefaultSelection" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -584,7 +590,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       this._addItems( list, 300 );
       TestUtil.flush();
-      list.getVerticalBar().setHasSelectionListener( true );
+      TestUtil.fakeListener( list.getVerticalBar(), "Selection", true );
 
       list.getVerticalBar().setValue( 40 );
 
@@ -596,7 +602,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       this._addItems( list, 300 );
       TestUtil.flush();
-      list.getVerticalBar().setHasSelectionListener( true );
+      TestUtil.fakeListener( list.getVerticalBar(), "Selection", true );
 
       list.getVerticalBar().setValue( 40 );
       rwt.remote.Connection.getInstance().send();
@@ -611,9 +617,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItems( [ "item0", "item1", "item2" ] );
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
-      list.setHasSelectionListener( true );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.fakeListener( list, "Selection", true );
 
       TestUtil.click( item );
 
@@ -671,9 +675,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setItems( [ "item0", "item1", "item2" ] );
       TestUtil.flush();
       var item = this._getItems( list )[ 1 ];
-      list.setHasDefaultSelectionListener( true );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.fakeListener( list, "DefaultSelection", true );
 
       TestUtil.doubleClick( item );
 
@@ -688,9 +690,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       list.setMarkupEnabled( true );
       list.setItems( [ "<a href=\"foo\" target=\"_rwt\">Test</a>" ] );
-      list.setHasSelectionListener( true );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.fakeListener( list, "Selection", true );
       TestUtil.flush();
       TestUtil.initRequestLog();
       var node = this._getItems( list )[ 0 ]._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
@@ -712,9 +712,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       list.setMarkupEnabled( true );
       list.setItems( [ "<a target=\"_rwt\">Test</a>" ] );
-      list.setHasSelectionListener( true );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.fakeListener( list, "Selection", true );
       TestUtil.flush();
       TestUtil.initRequestLog();
       var node = this._getItems( list )[ 0 ]._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
@@ -732,9 +730,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var list = this._createDefaultList();
       list.setMarkupEnabled( true );
       list.setItems( [ "<a href=\"foo\" target=\"_rwt\"><b>Test</b></a>" ] );
-      list.setHasSelectionListener( true );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.List" );
-      ObjectRegistry.add( "w3", list, handler );
+      TestUtil.fakeListener( list, "Selection", true );
       TestUtil.flush();
       TestUtil.initRequestLog();
       var itemNode = this._getItems( list )[ 0 ]._getTargetNode();
@@ -1177,7 +1173,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     },
 
     _createProtocolScrollBars : function( id ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id + "_vscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1187,7 +1183,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
           "visibility" : true
         }
       } );
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id + "_hscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1203,4 +1199,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
 
 } );
 
-}());
+}() );

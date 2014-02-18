@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     this.base( arguments, multiSelection );
     this.setScrollBarsVisible( false, false );
     this._topIndex = 0;
-    this._hasSelectionListener = false;
-    this._hasDefaultSelectionListener = false;
-    // Listen to send event of request to report topIndex
-    var req = rwt.remote.Connection.getInstance();
     var selMgr = this.getManager();
     selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
@@ -32,7 +28,6 @@ rwt.qx.Class.define( "rwt.widgets.List", {
   },
 
   destruct : function() {
-    var req = rwt.remote.Connection.getInstance();
     var selMgr = this.getManager();
     selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
@@ -82,14 +77,6 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       this._applyTopIndex( this._topIndex );
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    setHasDefaultSelectionListener : function( value ) {
-      this._hasDefaultSelectionListener = value;
-    },
-
     _onChangeLeadItem : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var focusIndex = this._clientArea.indexOf( this.getManager().getLeadItem() );
@@ -100,9 +87,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     _onSelectionChange : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendSelectionChange();
-        if( this._hasSelectionListener ) {
-          rwt.remote.EventUtil.notifySelected( this );
-        }
+        rwt.remote.EventUtil.notifySelected( this );
       }
       this._updateSelectedItemState();
     },
@@ -123,24 +108,20 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     },
 
     _onDblClick : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() && this._hasDefaultSelectionListener ) {
-        rwt.remote.EventUtil.notifyDefaultSelected( this );
-      }
+      rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
     _onActivateHyperlink : function( event ) {
-      if( this._hasSelectionListener ) {
-        var hyperlink = event.target;
-        var text = hyperlink.getAttribute( "href" );
-        if( !text ) {
-          text = hyperlink.innerHTML;
-        }
-        var properties = {
-          "detail" : "hyperlink",
-          "text" : text
-        };
-        rwt.remote.EventUtil.notifySelected( this, properties );
+      var hyperlink = event.target;
+      var text = hyperlink.getAttribute( "href" );
+      if( !text ) {
+        text = hyperlink.innerHTML;
       }
+      var properties = {
+        "detail" : "hyperlink",
+        "text" : text
+      };
+      rwt.remote.EventUtil.notifySelected( this, properties );
     },
 
     _onFocusIn : function( evt ) {
@@ -163,4 +144,5 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     }
 
   }
+
 } );
