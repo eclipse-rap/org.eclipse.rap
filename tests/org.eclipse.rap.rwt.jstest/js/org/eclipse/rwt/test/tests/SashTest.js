@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,12 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
 
   extend : rwt.qx.Object,
@@ -16,10 +22,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
   members : {
 
     testCreateSashByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Sash",
@@ -28,7 +32,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertIdentical( shell, widget.getParent() );
@@ -40,10 +43,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
     },
 
     testCreateSashHorizontalByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Sash",
@@ -52,7 +53,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertEquals( "horizontal", widget.getOrientation() );
@@ -60,11 +60,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
       widget.destroy();
     },
 
-    testSendWidgetSelected : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testSetSelectionListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Sash",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var widget = ObjectManager.getObject( "w3" );
+
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Selection" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSendWidgetSelected : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Sash",
@@ -74,8 +93,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "bounds" : [ 10, 20 , 10, 100 ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
 
       this.fakeDrag( widget, 5, 0 );
 
@@ -97,3 +116,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
   }
 
 } );
+
+}() );

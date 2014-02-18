@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.widgets.sashkit;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
@@ -30,12 +33,14 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Sash;
@@ -197,6 +202,48 @@ public class SashLCA_Test {
     CreateOperation operation = message.findCreateOperation( sash );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
+  }
+
+  @Test
+  public void testRenderAddSelectionListener() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( sash );
+    Fixture.preserveWidgets();
+
+    sash.addListener( SWT.Selection, mock( Listener.class ) );
+    lca.renderChanges( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( sash, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Listener listener = mock( Listener.class );
+    sash.addListener( SWT.Selection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( sash );
+    Fixture.preserveWidgets();
+
+    sash.removeListener( SWT.Selection, listener );
+    lca.renderChanges( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( sash, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( sash );
+    Fixture.preserveWidgets();
+
+    sash.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( sash, "Selection" ) );
   }
 
 }

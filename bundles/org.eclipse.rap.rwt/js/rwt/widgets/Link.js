@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     this.base( arguments );
     this.setAppearance( "link" );
     this._text = "";
-    this._hasSelectionListener = false;
     this._hyperlinksHaveListeners = false;
     this._readyToSendChanges = true;
     this._focusedLinkIndex = -1;
@@ -94,10 +93,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     removeState : function( state ) {
       this.base( arguments, state );
       this._link.removeState( state );
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
     },
 
     addText : function( text ) {
@@ -342,9 +337,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     },
 
     _sendChanges : function( index ) {
-      if( this._hasSelectionListener ) {
-        rwt.remote.EventUtil.notifySelected( this, { "index" : index } );
-      }
+      rwt.remote.EventUtil.notifySelected( this, { "index" : index } );
       this._readyToSendChanges = true;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -225,19 +225,16 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
     },
 
     _sendWidgetSelected : function() {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        // TODO [rst] Clarify what the getOffsetLeft() does
-        var leftOffset = this._slider.getLeft() + this._frameOffset;
-        var topOffset = this._slider.getTop() + this._frameOffset;
-        rwt.remote.EventUtil.notifySelected(
-            this,
-            this.getLeft() + leftOffset,
-            this.getTop() + topOffset,
-            this.getWidth(),
-            this.getHeight(),
-            this.getCapture() ? "drag" : null
-         );
-      }
+      var leftOffset = this._slider.getLeft() + this._frameOffset;
+      var topOffset = this._slider.getTop() + this._frameOffset;
+      rwt.remote.EventUtil.notifySelected(
+        this,
+        this.getLeft() + leftOffset,
+        this.getTop() + topOffset,
+        this.getWidth(),
+        this.getHeight(),
+        this.getCapture() ? "drag" : null
+       );
     },
 
     _onMouseOver : function( evt ) {
@@ -247,5 +244,7 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
     _onMouseOut : function( evt ) {
       this.removeState( "over" );
     }
+
   }
-});
+
+} );
