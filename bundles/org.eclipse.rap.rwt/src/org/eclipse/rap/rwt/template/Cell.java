@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -277,7 +277,7 @@ public abstract class Cell<T extends Cell> implements Serializable  {
 
   /**
    * Sets the height of the cell, i.e. the distance from the bottom edge of the template.
-   * A value of <code>SWT.DEFAULT</code> resets the width.
+   * A value of <code>SWT.DEFAULT</code> resets the height.
    *
    * @param height the height in px, must not be negative
    * @return the cell itself, to enable method chaining
