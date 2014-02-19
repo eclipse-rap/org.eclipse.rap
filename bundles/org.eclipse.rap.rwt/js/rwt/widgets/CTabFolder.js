@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,6 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     this.setHideFocus( true );
     this.setAppearance( "ctabfolder" );
     this.setOverflow( "hidden" );
-    this._hasFolderListener = false;
-    this._hasSelectionListener = false;
-    this._hasDefaultSelectionListener = false;
     this._tabPosition = "top";
     this._tabHeight = 0;
     this._selectionForeground = null;
@@ -396,18 +393,6 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       }
     },
 
-    setHasFolderListener : function( hasFolderListener ) {
-      this._hasFolderListener = hasFolderListener;
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    setHasDefaultSelectionListener : function( value ) {
-      this._hasDefaultSelectionListener = value;
-    },
-
     deselectAll : function() {
       this._mapItems( function( item ) {
         item.setSelected( false );
@@ -478,9 +463,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "minimized", this._minMaxState == "min" );
         remoteObject.set( "maximized", this._minMaxState == "max" );
-        if( this._hasFolderListener ) {
-          remoteObject.notify( "Folder", { "detail" : detail } );
-        }
+        remoteObject.notify( "Folder", { "detail" : detail } );
       }
     },
 
@@ -507,9 +490,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       }
     },
 
-    // TODO [rst] Change to respect _hasSelectionListener as soon as server-side
-    // code is revised accordingly -> CTabFolderLCA.readData().
-    _notifyItemClick : function( item ) {
+    _notifySelection : function( item ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         if( !item.isSelected() ) {
           this.deselectAll();
@@ -517,26 +498,15 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
           var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
           var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
           remoteObject.set( "selection", itemId );
-          rwt.remote.EventUtil.notifySelected( this, {
-            "item" : itemId
-          } );
+          rwt.remote.EventUtil.notifySelected( this, { "item" : itemId } );
         }
       }
     },
 
-    _notifyItemDblClick : function( evt ) {
+    _notifyDefaultSelection : function( item ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        if( this._hasDefaultSelectionListener ) {
-          var item = evt.getTarget();
-          // TODO [rst] remove this parameter as soon as server-side code is revised
-          //      -> CTabFolderLCA.readData()
-          var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
-          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-          remoteObject.set( "selection", itemId );
-          rwt.remote.EventUtil.notifyDefaultSelected( this, {
-            "item" : itemId
-          } );
-        }
+        var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
+        rwt.remote.EventUtil.notifyDefaultSelected( this, { "item" : itemId } );
       }
     }
   }

@@ -105,7 +105,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       getSelectionBackgroundImage( folder ) );
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
-    preserveListener( folder, PROP_SELECTION_LISTENER, isListening( folder, SWT.Selection ) );
     preserveListener( folder,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       isListening( folder, SWT.DefaultSelection ) );
@@ -126,6 +125,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       .add( SWT.getMessage( "SWT_ShowList" ) )
       .add( SWT.getMessage( "SWT_Close" ) );
     remoteObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
+    // Always listen for Selection.
+    // Currently required for item's control visibility and bounds update.
+    remoteObject.listen( PROP_SELECTION_LISTENER, true );
   }
 
   @Override
@@ -155,7 +157,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                     null);
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
-    renderListener( folder, PROP_SELECTION_LISTENER, isListening( folder, SWT.Selection ), false );
     renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
                     isListening( folder, SWT.DefaultSelection ),
                     false );

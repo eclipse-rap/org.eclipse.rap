@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,11 +112,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.CTabFolder", {
     }
   } ),
 
-  listeners : rwt.remote.HandlerUtil.extendControlListeners( [
-    "Folder",
-    "Selection",
-    "DefaultSelection"
-  ] ),
+  events : [ "Folder", "Selection", "DefaultSelection" ],
+
+  listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
   listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
 

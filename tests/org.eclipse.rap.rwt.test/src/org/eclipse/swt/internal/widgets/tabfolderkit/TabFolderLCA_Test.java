@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,10 +24,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -88,29 +89,29 @@ public class TabFolderLCA_Test {
     Fixture.markInitialized( display );
     //control: enabled
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( folder );
+    WidgetAdapter adapter = getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     folder.setEnabled( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     folder.setEnabled( true );
     //visible
     folder.setSize( 10, 10 );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
     folder.setVisible( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
     //menu
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
     Menu menu = new Menu( folder );
@@ -118,14 +119,14 @@ public class TabFolderLCA_Test {
     item.setText( "1 Item" );
     folder.setMenu( menu );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     //foreground background font
@@ -136,19 +137,19 @@ public class TabFolderLCA_Test {
     Font font = new Font( display, "font", 12, SWT.BOLD );
     folder.setFont( font );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
     //tooltiptext
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( null, folder.getToolTipText() );
     Fixture.clearPreserved();
     folder.setToolTipText( "some text" );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( "some text", folder.getToolTipText() );
   }
 
@@ -186,6 +187,14 @@ public class TabFolderLCA_Test {
   }
 
   @Test
+  public void testRenderInitialization_rendersSelectionListener() throws Exception {
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Selection" ) );
+  }
+
+  @Test
   public void testReadData_usesOperationHandler() {
     TabFolderOperationHandler handler = spy( new TabFolderOperationHandler( folder ) );
     getRemoteObject( getId( folder ) ).setHandler( handler );
@@ -202,7 +211,7 @@ public class TabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
+    assertEquals( getId( folder.getParent() ), operation.getParent() );
   }
 
   @Test
@@ -210,8 +219,7 @@ public class TabFolderLCA_Test {
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( folder );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertNull( message.findSetOperation( folder, "selection" ) );
   }
 
   @Test
@@ -223,8 +231,7 @@ public class TabFolderLCA_Test {
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( getId( item ), operation.getProperty( "selection" ).asString() );
+    assertEquals( getId( item ), message.findSetProperty( folder, "selection" ).asString() );
   }
 
   @Test

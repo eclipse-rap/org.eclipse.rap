@@ -23,6 +23,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
 
   members : {
 
+    testTabFolderHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.CTabFolder" );
+
+      assertTrue( rwt.util.Arrays.contains( handler.events, "Selection" ) );
+    },
+
     testCreateTabFolderOnTopByProtocol : function() {
       Processor.processOperation( {
         "target" : "w3",
@@ -315,15 +321,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( item.hasState( "variant_blue" ) );
     },
 
-    testSelectedEvent : function() {
+    testSendSelection : function() {
       this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       TestUtil.flush();
 
       item.setChecked( true );
 
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findSetProperty( "w3", "selection" ) );
+    },
+
+    testSendSelectionEvent : function() {
+      this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+      TestUtil.flush();
+
+      item.setChecked( true );
+
+      var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Selection", "item" ) );
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +48,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -122,12 +123,12 @@ public class CTabFolderLCA_Test {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( folder );
+    WidgetAdapter adapter = getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // menu
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
     Menu menu = new Menu( folder );
@@ -135,26 +136,26 @@ public class CTabFolderLCA_Test {
     item.setText( "1 Item" );
     folder.setMenu( menu );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     // visible
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
     folder.setVisible( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
     // enabled
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     folder.setEnabled( false );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     folder.setEnabled( true );
@@ -166,19 +167,19 @@ public class CTabFolderLCA_Test {
     Font font = new Font( display, "font", 12, SWT.BOLD );
     folder.setFont( font );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( controlBackground, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( controlForeground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
     // tooltiptext
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( null, folder.getToolTipText() );
     Fixture.clearPreserved();
     folder.setToolTipText( "some text" );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    adapter = getAdapter( folder );
     assertEquals( "some text", folder.getToolTipText() );
   }
 
@@ -230,7 +231,7 @@ public class CTabFolderLCA_Test {
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertFalse( styles.contains( "BOTTOM" ) );
     assertTrue( styles.contains( "MULTI" ) );
-    assertEquals( "bottom", message.findCreateProperty( folder, "tabPosition" ).asString() );
+    assertEquals( "bottom", message.findSetProperty( folder, "tabPosition" ).asString() );
   }
 
   @Test
@@ -240,6 +241,14 @@ public class CTabFolderLCA_Test {
 
     OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
     assertTrue( handler instanceof CTabFolderOperationHandler );
+  }
+
+  @Test
+  public void testRenderInitialization_rendersSelectionListener() throws Exception {
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Selection" ) );
   }
 
   @Test
@@ -273,7 +282,7 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
+    assertEquals( getId( folder.getParent() ), operation.getParent() );
   }
 
   @Test
@@ -292,7 +301,7 @@ public class CTabFolderLCA_Test {
     Message message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
-    assertEquals( WidgetUtil.getId( folder ), operation.getTarget() );
+    assertEquals( getId( folder ), operation.getTarget() );
   }
 
   @Test
@@ -331,8 +340,7 @@ public class CTabFolderLCA_Test {
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( folder );
-    assertTrue( operation.getPropertyNames().contains( "tabHeight" ) );
+    assertNotNull( message.findSetOperation( folder, "tabHeight" ) );
   }
 
   @Test
@@ -761,20 +769,6 @@ public class CTabFolderLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( folder );
-    Fixture.preserveWidgets();
-
-    folder.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( folder );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Selection" ) );
-    assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
-  }
-
-  @Test
   public void testRenderAddDefaultSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -785,23 +779,6 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "DefaultSelection" ) );
-    assertNull( message.findListenOperation( folder, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    Listener listener = mock( Listener.class );
-    folder.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( folder );
-    Fixture.preserveWidgets();
-
-    folder.removeListener( SWT.Selection, listener );
-    lca.renderChanges( folder );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( folder, "Selection" ) );
-    assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 
   @Test
@@ -817,21 +794,20 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( folder, "DefaultSelection" ) );
-    assertNull( message.findListenOperation( folder, "Selection" ) );
   }
 
   @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
+  public void testRenderDefaultSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
 
-    folder.addSelectionListener( new SelectionAdapter() { } );
+    folder.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( folder, "Selection" ) );
+    assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 
   @Test
@@ -840,7 +816,7 @@ public class CTabFolderLCA_Test {
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
 
-    folder.addCTabFolder2Listener( new CTabFolder2Adapter() { } );
+    folder.addCTabFolder2Listener( mock( CTabFolder2Adapter.class ) );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
@@ -849,7 +825,7 @@ public class CTabFolderLCA_Test {
 
   @Test
   public void testRenderRemoveFolderListener() throws Exception {
-    CTabFolder2Adapter listener = new CTabFolder2Adapter() { };
+    CTabFolder2Adapter listener = mock( CTabFolder2Adapter.class );
     folder.addCTabFolder2Listener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( folder );
@@ -868,7 +844,7 @@ public class CTabFolderLCA_Test {
     Fixture.markInitialized( folder );
     Fixture.preserveWidgets();
 
-    folder.addCTabFolder2Listener( new CTabFolder2Adapter() { } );
+    folder.addCTabFolder2Listener( mock( CTabFolder2Adapter.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 

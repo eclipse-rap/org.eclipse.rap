@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,7 +150,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
         case "trigger":
           var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
           if( event.charCode === charCode ) {
-            this._parent._notifyItemClick( this );
+            this._parent._notifySelection( this );
             event.success = true;
           }
         break;
@@ -247,16 +247,16 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onClick : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        if( evt.getTarget() != this._closeButton ) {
-          evt.getTarget().getParent()._notifyItemClick( evt.getTarget() );
-        }
+      var target = evt.getTarget();
+      if( target != this._closeButton ) {
+        target.getParent()._notifySelection( target );
       }
     },
 
     _onDblClick : function( evt ) {
-      if( evt.getTarget() != this._closeButton ) {
-        evt.getTarget().getParent()._notifyItemDblClick( evt );
+      var target = evt.getTarget();
+      if( target != this._closeButton ) {
+        target.getParent()._notifyDefaultSelection( target );
       }
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   };
 
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -52,6 +53,9 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new TabFolderOperationHandler( folder ) );
     remoteObject.set( "parent", getId( folder.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( folder, ALLOWED_STYLES ) ) );
+    // Always listen for Selection.
+    // Currently required for item's control visibility and bounds update.
+    remoteObject.listen( PROP_SELECTION_LISTENER, true );
   }
 
   @Override

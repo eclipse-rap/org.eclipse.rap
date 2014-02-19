@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,20 +9,30 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 var shell;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
+
   extend : rwt.qx.Object,
 
   members : {
 
+    testCTabFolderHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.CTabFolder" );
+
+      assertTrue( rwt.util.Arrays.contains( handler.events, "Folder" ) );
+      assertTrue( rwt.util.Arrays.contains( handler.events, "Selection" ) );
+      assertTrue( rwt.util.Arrays.contains( handler.events, "DefaultSelection" ) );
+    },
+
     testCreateCTabFolderOnTopByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.CTabFolder",
@@ -32,8 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts" : [ "a", "b", "c", "d", "e" ]
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -47,8 +56,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     },
 
     testCreateCTabFolderOnBottomByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.CTabFolder",
@@ -59,8 +67,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "tabPosition" : "bottom"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.CTabFolder );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -70,8 +77,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
 
     testDestroyByProtocol : function() {
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
       } );
@@ -80,19 +86,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     },
 
     testDestroyWithChildrenByProtocol : function() {
-      var ObjectRegistry = rwt.remote.ObjectRegistry;
-      var MessageProcessor = rwt.remote.MessageProcessor;
       var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      var processor = rwt.remote.MessageProcessor;
       var item = this._createCTabItemByProtocol( "w4", "w3" );
-      MessageProcessor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
+      Processor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
           "style" : [ "BORDER" ],
           "parent" : "w3"
         }
       ] );
       var control = ObjectRegistry.getObject( "w5" );
 
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
       } );
@@ -227,31 +230,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
-      var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-      assertTrue( widget._hasSelectionListener );
-      widget.destroy();
-    },
-
-    testSetHasDefaultSelectionListenerByProtocol : function() {
-      var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      assertTrue( widget._hasDefaultSelectionListener );
-      widget.destroy();
-    },
-
-    testSetHasFolderListenerByProtocol : function() {
-      var widget = this._createCTabFolderByProtocol( "w3", "w2" );
-      TestUtil.protocolListen( "w3", { "Folder" : true } );
-      assertTrue( widget._hasFolderListener );
-      widget.destroy();
-    },
-
     testCreateCTabItemByProtocol : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
         "type" : "rwt.widgets.CTabItem",
@@ -261,8 +242,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w4" );
+      var widget = ObjectRegistry.getObject( "w4" );
       assertTrue( widget instanceof rwt.widgets.CTabItem );
       assertIdentical( folder, widget.getParent() );
       assertFalse( widget._canClose );
@@ -273,8 +253,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     testCreateCTabItemWithCloseByProtocol : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       folder.addState( "rwt_CLOSE" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w4",
         "action" : "create",
         "type" : "rwt.widgets.CTabItem",
@@ -284,8 +263,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w4" );
+      var widget = ObjectRegistry.getObject( "w4" );
       assertTrue( widget._canClose );
       folder.destroy();
       widget.destroy();
@@ -419,88 +397,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     },
 
     testSendSelection : function() {
-      this._createCTabFolderByProtocol( "w3", "w2" );
-      var MessageProcessor = rwt.remote.MessageProcessor;
-      MessageProcessor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.CTabItem",
-        "properties" : {
-          "style" : [],
-          "parent" : "w3",
-          "index" : 0
-        }
-      } );
-      var widget = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item =  this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
       TestUtil.flush();
 
-      TestUtil.click( widget );
-      rwt.remote.Connection.getInstance().send();
+      TestUtil.click( item );
 
-      //assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findSetProperty( "w3", "selection" ) );
+      folder.destroy();
+    },
+
+    testSendSelectionEvent : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "Selection" : true } );
+      TestUtil.flush();
+
+      TestUtil.click( item );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+      folder.destroy();
     },
 
     testItemDefaultSelected : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       folder.addState( "rwt_CLOSE" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.CTabItem",
-        "properties" : {
-          "style" : [],
-          "parent" : "w3",
-          "index" : 0
-        }
-      } );
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "listen",
-        "properties" : {
-          "DefaultSelection" : true
-        }
-      } );
-      var widget = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       TestUtil.flush();
 
-      TestUtil.doubleClick( widget );
+      TestUtil.doubleClick( item );
 
       var message = TestUtil.getLastMessage();
       assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
-      // NOTE [tb] : current CTabFolderLCA#readData always requires "selection" property
-      //             when firing selection event
-      assertNotNull( message.findSetProperty( "w3", "selection" ) );
+      folder.destroy();
     },
 
     testItemDefaultSelectedModifier : function() {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       folder.addState( "rwt_CLOSE" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.CTabItem",
-        "properties" : {
-          "style" : [],
-          "parent" : "w3",
-          "index" : 0
-        }
-      } );
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "listen",
-        "properties" : {
-          "DefaultSelection" : true
-        }
-      } );
-      var widget = rwt.remote.ObjectRegistry.getObject( "w4" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
       TestUtil.flush();
 
       TestUtil.fakeMouseEventDOM(
-          widget.getElement(),
+          item.getElement(),
           "dblclick",
           rwt.event.MouseEvent.buttons.left,
           0,
@@ -512,6 +456,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "shiftKey" ) );
       assertTrue( message.findNotifyProperty( "w3", "DefaultSelection", "ctrlKey" ) );
       assertFalse( message.findNotifyProperty( "w3", "DefaultSelection", "altKey" ) );
+      folder.destroy();
     },
 
     testSendMaximize : function() {
@@ -525,6 +470,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "maximize", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      folder.destroy();
     },
 
     testSendMinimize : function() {
@@ -538,6 +484,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "minimize", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      folder.destroy();
     },
 
     testSendRestoreFromMinimize : function() {
@@ -554,6 +501,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "restore", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      folder.destroy();
     },
 
     testSendRestoreFromMaximize : function() {
@@ -570,6 +518,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "restore", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      folder.destroy();
     },
 
     testSendShowList : function() {
@@ -583,6 +532,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "showList", message.findNotifyProperty( "w3", "Folder", "detail" ) );
+      folder.destroy();
     },
 
     testSendClose : function() {
@@ -599,6 +549,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "close", message.findNotifyProperty( "w3", "Folder", "detail" ) );
       assertEquals( "w4", message.findNotifyProperty( "w3", "Folder", "item" ) );
+      folder.destroy();
     },
 
     testRenderMnemonic_OnActivate : function() {
@@ -613,6 +564,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.flush();
 
       assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getLabel() );
+      folder.destroy();
     },
 
     testRenderMnemonic_OnDeactivate : function() {
@@ -628,6 +580,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.flush();
 
       assertEquals( "foo", item.getLabel() );
+      folder.destroy();
     },
 
     testRenderMnemonic_Trigger : function() {
@@ -647,6 +600,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       assertTrue( success );
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findSetProperty( "w3", "selection" ) );
+      folder.destroy();
     },
 
     testUpdateNextSelected : function() {
@@ -660,6 +614,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
 
       assertTrue( item0.hasState( "nextSelected" ) );
       assertFalse( item2.hasState( "nextSelected" ) );
+      folder.destroy();
     },
 
     /////////
@@ -675,7 +630,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
     },
 
     _createCTabFolderByProtocol : function( id, parentId ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.CTabFolder",
@@ -685,11 +640,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "toolTipTexts": [ "Minimize", "Maximize", "Restore", "Show List", "Close" ]
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     },
 
     _createCTabItemByProtocol : function( id, parentId ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.CTabItem",
@@ -699,11 +654,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
           "index" : 0
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     }
 
   }
 
 } );
 
-}());
+}() );
