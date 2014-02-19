@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,13 @@
  ******************************************************************************/
 
 /*global foo:true */
-/*jshint scripturl:true, delete:false */
+/*jshint scripturl:true */
 
-
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = rwt.remote.MessageProcessor;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
@@ -28,8 +29,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     testCreateBrowserByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Browser",
@@ -38,8 +38,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : "w2"
         }
       } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Browser );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -47,10 +46,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       widget.destroy();
     },
 
-    testSetHasProgressListenerByProtocol : function() {
+    testSetProgressListenerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Browser",
@@ -59,10 +57,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : "w2"
         }
       } );
+      var widget = ObjectRegistry.getObject( "w3" );
+
       TestUtil.protocolListen( "w3", { "Progress" : true } );
-      var ObjectManager = rwt.remote.ObjectRegistry;
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasProgressListener );
+
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+      assertTrue( remoteObject.isListening( "Progress" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -70,8 +70,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testSetUrlByProtocol :  [
       function() {
         TestUtil.createShellByProtocol( "w2" );
-        var processor = rwt.remote.MessageProcessor;
-        processor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "create",
           "type" : "rwt.widgets.Browser",
@@ -82,7 +81,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 7000 );
-        var browser = rwt.remote.ObjectRegistry.getObject( "w3" );
+        var browser = ObjectRegistry.getObject( "w3" );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -149,7 +148,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateByProtocol :  [
       function() {
         TestUtil.createShellByProtocol( "w2" );
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "create",
           "type" : "rwt.widgets.Browser",
@@ -159,13 +158,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           }
         } );
         TestUtil.delayTest( 1000 );
-        var browser = rwt.remote.ObjectRegistry.getObject( "w3" );
+        var browser = ObjectRegistry.getObject( "w3" );
         TestUtil.store( browser );
       },
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "evaluate",
@@ -189,7 +188,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "createFunctions",
@@ -200,7 +199,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var win = browser.getContentWindow();
         assertTrue( typeof( win.abc ) === "function" );
         assertTrue( typeof( win.abc_impl ) === "function" );
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "destroyFunctions",
@@ -314,6 +313,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           error = ex;
         }
         assertTrue( error !== null );
+        browser.destroy();
       }
     ],
 
@@ -335,6 +335,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         }
         rwt.remote.EventUtil.setSuspended( false );
         assertTrue( error !== null );
+        browser.destroy();
       }
     ],
 
@@ -498,6 +499,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           error = ex;
         }
         assertNotNull( error );
+        browser.destroy();
       }
     ],
 
@@ -586,7 +588,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "createFunctions",
@@ -620,7 +622,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
-        rwt.remote.MessageProcessor.processOperation( {
+        Processor.processOperation( {
           "target" : "w3",
           "action" : "call",
           "method" : "createFunctions",
@@ -682,6 +684,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "disposed?", browser.isDisposed() );
         assertTrue( el.innerHTML === "" );
         assertTrue( iframe.parentNode == null );
+        browser.destroy();
       }
     ],
 
@@ -714,6 +717,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       object[ 4 ] = "double \" \" quotes";
       var ecpected = [ 12, false, null, "eclipse", "double \" \" quotes" ];
       assertEquals( ecpected, browser.toJSON( object ) );
+      browser.destroy();
     },
 
     testToJSON_SpecialCases : function() {
@@ -729,12 +733,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       assertEquals( [ 'swt', true ], actual[ 0 ][ 1 ] );
       assertEquals( "string", typeof actual[ 1 ] );
       assertTrue( actual[ 2 ] instanceof Array );
+      browser.destroy();
     },
 
     testProgressEvent :  [
       function() {
         var browser = this._createBrowser();
-        browser.setHasProgressListener( true );
+        TestUtil.fakeListener( browser, "Progress", true );
         TestUtil.initRequestLog();
         browser.setSource( this.URL1 );
         browser.syncSource();
@@ -753,7 +758,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     // helper
 
     _createBrowserByProtocol : function( id, parentId ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Browser",
@@ -762,7 +767,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           "parent" : parentId
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     },
 
     _createBrowser : function() {
@@ -772,7 +777,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       browser.setSource( this.BLANK );
       browser.syncSource();
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Browser" );
-      rwt.remote.ObjectRegistry.add( "w6", browser, handler );
+      ObjectRegistry.add( "w6", browser, handler );
       TestUtil.flush();
       return browser;
     }
@@ -781,4 +786,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
 } );
 
-}());
+}() );
