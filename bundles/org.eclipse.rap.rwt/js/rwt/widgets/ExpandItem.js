@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,16 +111,11 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     _onClick : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this.setExpanded( !this._expanded );
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-        remoteObject.set( "expanded", this._expanded );
-        if(    ( this._expandBar._hasExpandListener && this._expanded )
-            || ( this._expandBar._hasCollapseListener && !this._expanded ) )
-        {
-          var serverBar = rwt.remote.Connection.getInstance().getRemoteObject( this._expandBar );
-          var itemId = rwt.remote.ObjectRegistry.getId( this );
-          var eventName = this._expanded ? "Expand" : "Collapse";
-          serverBar.notify( eventName, { "item" : itemId } );
-        }
+        var connection = rwt.remote.Connection.getInstance();
+        connection.getRemoteObject( this ).set( "expanded", this._expanded );
+        var eventName = this._expanded ? "Expand" : "Collapse";
+        var itemId = rwt.remote.ObjectRegistry.getId( this );
+        connection.getRemoteObject( this._expandBar ).notify( eventName, { "item" : itemId } );
       }
     },
 
@@ -131,5 +126,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     _onHandleMouseOut : function( evt ) {
       this._chevron.removeState( rwt.widgets.ExpandItem.STATE_OVER );
     }
+
   }
+
 } );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,6 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
     this._bottomSpacing = new rwt.widgets.base.Parent();
     rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
     this._clientArea.add( this._bottomSpacing );
-    this._hasExpandListener = false;
-    this._hasCollapseListener = false;
   },
 
   destruct : function() {
@@ -52,15 +50,8 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
 
     setVScrollBarMax : function( value ) {
       this._vertScrollBar.setMaximum( value );
-    },
-
-    setHasExpandListener : function( value ) {
-      this._hasExpandListener = value;
-    },
-
-    setHasCollapseListener : function( value ) {
-      this._hasCollapseListener = value;
     }
 
   }
+
 } );
