@@ -962,11 +962,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       }
     },
 
-    setHasScrollBarsSelectionListener : function( value ) {
-      this._vertScrollBar.setHasSelectionListener( true );
-      this._horzScrollBar.setHasSelectionListener( true );
-    },
-
     //////////////
     // Send events
 

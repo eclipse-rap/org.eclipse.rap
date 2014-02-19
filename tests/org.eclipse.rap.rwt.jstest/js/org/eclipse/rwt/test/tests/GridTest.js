@@ -4555,7 +4555,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._createTreeItemByProtocol( "w4", "w3", 0 );
       tree.setItemHeight( 20 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
-      tree.setHasScrollBarsSelectionListener( true );
+      tree._vertScrollBar.setHasSelectionListener( true );
+      tree._horzScrollBar.setHasSelectionListener( true );
       TestUtil.flush();
 
       tree.setScrollLeft( 30 );
@@ -4583,7 +4584,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 10 );
       tree.setItemHeight( 20 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500, 0, 10 );
-      tree.setHasScrollBarsSelectionListener( true );
+      tree._vertScrollBar.setHasSelectionListener( true );
+      tree._horzScrollBar.setHasSelectionListener( true );
       TestUtil.flush();
 
       tree.setTopItemIndex( 3 );
