@@ -20,6 +20,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
   members : {
 
+    testExpandBarHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Shell" );
+
+      assertEquals( [ "Activate", "Close", "Resize", "Move" ], handler.events );
+    },
+
     testDisplayOverlayBackground : function() {
       // first check that the default theme for overlay has no background set
       var tv = new rwt.theme.ThemeValues( {} );
@@ -452,12 +458,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       rwt.remote.ObjectRegistry.add( "w222", shell, handler );
       shell.initialize();
       shell.open();
+      TestUtil.fakeListener( shell, "Activate", true );
       rwt.remote.EventUtil.setSuspended( false );
 
       shell.setActive( true );
 
-      var messages = TestUtil.getMessages();
-      assertNotNull( messages[ 0 ].findNotifyOperation( "w222", "Activate" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w222", "Activate" ) );
       shell.destroy();
     },
 
@@ -468,12 +474,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       rwt.remote.ObjectRegistry.add( "w222", shell, handler );
       shell.initialize();
       shell.open();
+      TestUtil.fakeListener( shell, "Close", true );
       rwt.remote.EventUtil.setSuspended( false );
 
       shell.close();
 
-      var messages = TestUtil.getMessages();
-      assertNotNull( messages[ 0 ].findNotifyOperation( "w222", "Close" ) );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w222", "Close" ) );
       shell.destroy();
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,6 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     this._renderZIndex = true;
     this._sendBoundsTimer = new rwt.client.Timer( 0 );
     this._sendBoundsTimer.addEventListener( "interval", this._sendBounds, this );
-    this._hasResizeListener = false;
-    this._hasMoveListener = false;
     this._sendMoveFlag  = false;
     this._sendResizeFlag = false;
     this._sendResizeDelayed = false;
@@ -232,22 +230,6 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
 
     isDisableResize : function() {
       return this._disableResize ? true : false;
-    },
-
-    setHasActivateListener : function( hasListener ) {
-      // [if] Do nothing. Shell "Activate" event is always sent by the client
-    },
-
-    setHasCloseListener : function( hasListener ) {
-      // [if] Do nothing. Shell "Close" event is always sent by the client
-    },
-
-    setHasResizeListener : function( hasListener ) {
-      this._hasResizeListener = hasListener;
-    },
-
-    setHasMoveListener : function( hasListener ) {
-      this._hasMoveListener = hasListener;
     },
 
     setActiveControl : function( control ) {
@@ -469,10 +451,10 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       var width = this._parseNumber( this.getWidthValue() );
       var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
       remoteObject.set( "bounds", [ left, top, width, height ] );
-      if( this._hasMoveListener && this._sendMoveFlag ) {
+      if( this._sendMoveFlag ) {
         remoteObject.notify( "Move", {} );
       }
-      if( this._hasResizeListener && this._sendResizeFlag ) {
+      if( this._sendResizeFlag ) {
         remoteObject.notify( "Resize", {}, this._sendResizeDelayed ? 500 : undefined );
       }
       this._sendMoveFlag  = false;
