@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,7 @@ package org.eclipse.swt.internal.widgets.expandbarkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
@@ -52,8 +50,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( expandBar );
     preserveProperty( expandBar, PROP_BOTTOM_SPACING_BOUNDS, getBottomSpacingBounds( expandBar ) );
     preserveProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ) );
-    preserveListener( expandBar, PROP_EXPAND_LISTENER, hasExpandListener( expandBar ) );
-    preserveListener( expandBar, PROP_COLLAPSE_LISTENER, hasCollapseListener( expandBar ) );
     ScrollBarLCAUtil.preserveValues( expandBar );
   }
 
@@ -70,6 +66,10 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new ExpandBarOperationHandler( expandBar ) );
     remoteObject.set( "parent", getId( expandBar.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( expandBar, ALLOWED_STYLES ) ) );
+    // Always listen for Expand and Collapse.
+    // Currently required for item's control visibility and bounds update.
+    remoteObject.listen( PROP_EXPAND_LISTENER, true );
+    remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
     ScrollBarLCAUtil.renderInitialization( expandBar );
   }
 
@@ -83,8 +83,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
                     getBottomSpacingBounds( expandBar ),
                     null );
     renderProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ), 0 );
-    renderListener( expandBar, PROP_EXPAND_LISTENER, hasExpandListener( expandBar ), false );
-    renderListener( expandBar, PROP_COLLAPSE_LISTENER, hasCollapseListener( expandBar ), false );
     ScrollBarLCAUtil.renderChanges( expandBar );
   }
 
@@ -106,18 +104,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
       result += bar.getSpacing() * ( items.length + 1 );
     }
     return result;
-  }
-
-  private static boolean hasExpandListener( ExpandBar bar ) {
-    // Always render listen for Expand and Collapse, currently required for item's control
-    // visibility and bounds update.
-    return true;
-  }
-
-  private static boolean hasCollapseListener( ExpandBar bar ) {
-    // Always render listen for Expand and Collapse, currently required for item's control
-    // visibility and bounds update.
-    return true;
   }
 
   public static IExpandBarAdapter getExpandBarAdapter( ExpandBar bar ) {

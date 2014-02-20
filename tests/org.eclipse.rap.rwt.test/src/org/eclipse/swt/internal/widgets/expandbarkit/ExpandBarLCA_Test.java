@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,6 +173,22 @@ public class ExpandBarLCA_Test {
   }
 
   @Test
+  public void testRenderInitialization_rendersExpandListener() throws Exception {
+    lca.renderInitialization( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Expand" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_rendersCollapseListener() throws Exception {
+    lca.renderInitialization( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
+  }
+
+  @Test
   public void testReadData_usesOperationHandler() {
     ExpandBarOperationHandler handler = spy( new ExpandBarOperationHandler( expandBar ) );
     getRemoteObject( getId( expandBar ) ).setHandler( handler );
@@ -207,7 +223,7 @@ public class ExpandBarLCA_Test {
     lca.render( expandBar );
 
     Message message = Fixture.getProtocolMessage();
-    JsonArray bounds = ( JsonArray )message.findCreateProperty( expandBar, "bottomSpacingBounds" );
+    JsonArray bounds = ( JsonArray )message.findSetProperty( expandBar, "bottomSpacingBounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
   }
@@ -319,22 +335,6 @@ public class ExpandBarLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandBar, "vScrollBarMax" ) );
-  }
-
-  @Test
-  public void testRenderAddExpandListener() throws Exception {
-    lca.renderChanges( expandBar );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Expand" ) );
-  }
-
-  @Test
-  public void testRenderAddCollapseListener() throws Exception {
-    lca.renderChanges( expandBar );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( expandBar, "Collapse" ) );
   }
 
   @Test
