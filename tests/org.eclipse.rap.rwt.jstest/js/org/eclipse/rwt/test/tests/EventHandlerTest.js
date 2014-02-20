@@ -717,6 +717,57 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       text.destroy();
     },
 
+    testDragEvent_cancelDragEvents : function() {
+      this.paramTestCancelDragEvent( "dragstart", true );
+      this.paramTestCancelDragEvent( "dragover", true );
+      this.paramTestCancelDragEvent( "drop", true );
+      this.paramTestCancelDragEvent( "dragenter", false );
+    },
+
+    paramTestCancelDragEvent : function( type, expected ) {
+      var cancel = false;
+      var event = {
+        "type" : type,
+        "preventDefault" : function() {
+          cancel = true;
+        }
+      };
+
+      EventHandler._ondragevent( event );
+
+      assertIdentical( expected, cancel );
+    },
+
+    testDragEvent_setFeedbackToNoneOnDragEnter : function() {
+      var cancel = false;
+      var event = {
+        "type" : "dragenter",
+        "preventDefault" : function() {
+          cancel = true;
+        },
+        "dataTransfer" : {}
+      };
+
+      EventHandler._ondragevent( event );
+
+      assertEquals( "none", event.dataTransfer.dropEffect );
+    },
+
+    testDragEvent_setFeedbackToNoneOnDragOver : function() {
+      var cancel = false;
+      var event = {
+        "type" : "dragover",
+        "preventDefault" : function() {
+          cancel = true;
+        },
+        "dataTransfer" : {}
+      };
+
+      EventHandler._ondragevent( event );
+
+      assertEquals( "none", event.dataTransfer.dropEffect );
+    },
+
     /////////
     // Helper
 

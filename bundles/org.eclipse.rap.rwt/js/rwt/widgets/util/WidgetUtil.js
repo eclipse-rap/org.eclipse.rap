@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,18 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
         widget.setUserData( "rwt.widgets.GC", gc );
       }
       return gc;
+    },
+
+    callWithElement : function( widget, callback ) {
+      if( widget.getElement() ) {
+        callback( widget.getElement() );
+      } else {
+        var listener = function listener(){
+          callback( widget.getElement() );
+          widget.removeEventListener( "create", listener );
+        };
+        widget.addEventListener( "create", listener );
+      }
     },
 
     /**

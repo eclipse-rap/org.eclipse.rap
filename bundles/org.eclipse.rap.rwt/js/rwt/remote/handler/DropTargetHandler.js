@@ -23,7 +23,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DropTarget", {
     target.dispose();
   },
 
-  properties : [ "transfer" ],
+  properties : [ "transfer", "fileDropEnabled" ],
 
   events : [ "DragEnter", "DragOver", "DragLeave", "DragOperationChanged", "DropAccept" ],
 

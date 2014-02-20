@@ -479,18 +479,22 @@ rwt.event.EventHandler = {
     }
     rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
     this._ignoreWindowBlur = vType === "mousedown";
-    if( rwt.qx.Class.isDefined("rwt.event.DragAndDropHandler" ) && vTarget ) {
+    if( rwt.qx.Class.isDefined( "rwt.event.DragAndDropHandler" ) && vTarget ) {
       rwt.event.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
     }
   },
 
-  _ondragevent : function( vEvent ) {
+  _ondragevent : function( event ) {
     try {
-      var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      if( !vEvent ) {
-        vEvent = window.event;
+      if( !event ) {
+        event = window.event;
       }
-      EventHandlerUtil.stopDomEvent( vEvent );
+      if( event.type === "dragstart" || event.type === "dragover" || event.type === "drop" ) {
+        rwt.event.EventHandlerUtil.stopDomEvent( event );
+      }
+      if( ( event.type === "dragover" || event.type === "dragenter" ) && event.dataTransfer ) {
+        event.dataTransfer.dropEffect = "none";  // has no effect in IE
+      }
     } catch( ex ) {
       rwt.runtime.ErrorHandler.processJavaScriptError( ex );
     }
@@ -589,33 +593,13 @@ rwt.event.EventHandler = {
     "keyup"
   ],
 
-  _dragEventTypes : rwt.util.Variant.select("qx.client", {
-    "gecko" : [
-      "dragdrop",
-      "dragover",
-      "dragenter",
-      "dragexit",
-      "draggesture"
-     ],
-    "mshtml" : [
-      "dragend",
-      "dragover",
-      "dragstart",
-      "drag",
-      "dragenter",
-      "dragleave"
-    ],
-    "default" : [
-      "dragstart",
-      "dragdrop",
-      "dragover",
-      "drag",
-      "dragleave",
-      "dragenter",
-      "dragexit",
-      "draggesture"
-    ]
-  } ),
+  _dragEventTypes : [
+    "dragstart",
+    "drop",
+    "dragover",
+    "dragleave",
+    "dragenter"
+  ],
 
   ////////////////////
   // Helper-functions:

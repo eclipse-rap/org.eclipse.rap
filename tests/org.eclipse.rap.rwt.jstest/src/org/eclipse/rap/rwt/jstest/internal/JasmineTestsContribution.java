@@ -29,6 +29,7 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/DropTarget.spec.js",
     "spec/DragSourceHandler.spec.js",
     "spec/DropTargetHandler.spec.js",
+    "spec/WidgetUtil.spec.js",
     "spec/Variant.spec.js"
   };
 

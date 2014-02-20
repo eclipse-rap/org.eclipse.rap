@@ -155,6 +155,10 @@ rwt.qx.Class.define( "rwt.client.Client", {
       return ( this.getEngine() === "mshtml" ) && ( this.getVersion() >= 5.5 );
     },
 
+    supportsFileDrop : function() {
+      return !!window.FormData;
+    },
+
     supportsTouch : function() {
       return    this.isMobileSafari()
              || this.isAndroidBrowser()

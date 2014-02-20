@@ -67,6 +67,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
       assertTrue( "Theming support", svg || vml || css3 );
     },
 
+    testSupportsFileDrop : function() {
+      var expected = typeof window.FormData === "function";
+      assertIdentical( expected, rwt.client.Client.supportsFileDrop() );
+    },
+
     testLocale : function() {
       assertEquals( "string", typeof Client.getLocale() );
       assertEquals( "string", typeof Client.getLanguage() );
