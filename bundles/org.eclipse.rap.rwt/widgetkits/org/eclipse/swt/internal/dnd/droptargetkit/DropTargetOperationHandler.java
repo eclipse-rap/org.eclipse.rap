@@ -28,8 +28,11 @@ import static org.eclipse.swt.internal.dnd.DNDUtil.setFeedbackChanged;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
@@ -56,6 +59,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   private static final String EVENT_PARAM_FEEDBACK = "feedback";
   private static final String EVENT_PARAM_SOURCE = "source";
   private static final String EVENT_PARAM_DATATYPE = "dataType";
+  private static final String EVENT_PARAM_FILES = "files";
 
   public DropTargetOperationHandler( DropTarget dropTarget ) {
     super( dropTarget );
@@ -259,40 +263,112 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   public void handleNotifyDropAccept( final DropTarget dropTarget, final JsonObject properties ) {
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        int x = properties.get( EVENT_PARAM_X ).asInt();
-        int y = properties.get( EVENT_PARAM_Y ).asInt();
-        int time = properties.get( EVENT_PARAM_TIME ).asInt();
-        int detail = getOperation( properties.get( EVENT_PARAM_OPERATION ) );
-        TransferData dataType = getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
-        Item item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
-        Control sourceControl = getWidget( Control.class, properties.get( EVENT_PARAM_SOURCE ) );
-        DragSource dragSource = getDragSource( sourceControl );
-        int operations = getOperations( dragSource, dropTarget );
-        // fire DRAG_LEAVE, which is suppressed by the client
-        DNDEvent leaveEvent = createDropTargetEvent( x, y, time, detail, 0, 0, null, null, null );
-        dropTarget.notifyListeners( DND.DragLeave, leaveEvent );
-        // fire DROP_ACCEPT
-        DNDEvent acceptEvent
-          = createDropTargetEvent( x, y, time, detail, 0, operations, null, dataType, item );
-        dropTarget.notifyListeners( DND.DropAccept, acceptEvent );
-        detail = changeOperation( dragSource, dropTarget, acceptEvent.detail );
-        TransferData[] dataTypes = determineDataTypes( dragSource, dropTarget );
-        dataType = checkDataType( acceptEvent.dataType, dataTypes );
-        if( detail != DND.DROP_NONE && dataType != null ) {
-          // fire DRAG_SET_DATA
-          DNDEvent setDataEvent = createDragSetDataEvent( x, y, dataType );
-          dragSource.notifyListeners( DND.DragSetData, setDataEvent );
-          // Check data
-          Object data = transferData( dropTarget, dataType, setDataEvent );
-          // fire DROP
-          DNDEvent dropEvent
-            = createDropTargetEvent( x, y, 0, detail, 0, operations, dataTypes, dataType, item );
-          dropEvent.data = data;
-          dropTarget.notifyListeners( DND.Drop, dropEvent );
-          changeOperation( dragSource, dropTarget, dropEvent.detail );
+        DropData dropData = createDropData( dropTarget, properties );
+        if( !isFileDrop( dropData ) ) { // In this case no DRAG_ENTER was fired by the client
+          fireDragLeave( dropTarget, dropData ); // DRAG_LEAVE was suppressed by the client
+        }
+        fireDropAccept( dropTarget, dropData );
+        if( dropData.detail != DND.DROP_NONE && dropData.dataType != null ) {
+          if( !isFileDrop( dropData ) ) {
+            fireSetData( dropTarget, dropData );
+          }
+          fireDrop( dropTarget, dropData );
         }
       }
     } );
+  }
+
+  private static void fireDragLeave( DropTarget dropTarget, DropData dropData ) {
+    DNDEvent leaveEvent = createDropTargetEvent( dropData.x,
+                                                 dropData.y,
+                                                 dropData.time,
+                                                 dropData.detail,
+                                                 0,
+                                                 0,
+                                                 null,
+                                                 null,
+                                                 null );
+    dropTarget.notifyListeners( DND.DragLeave, leaveEvent );
+  }
+
+  private void fireDropAccept( DropTarget dropTarget, DropData dropData ) {
+    DNDEvent acceptEvent = createDropTargetEvent( dropData.x,
+                                                  dropData.y,
+                                                  dropData.time,
+                                                  dropData.detail,
+                                                  0,
+                                                  dropData.operations,
+                                                  null,
+                                                  dropData.dataType,
+                                                  dropData.item );
+    dropTarget.notifyListeners( DND.DropAccept, acceptEvent );
+    dropData.detail = changeOperation( dropData.dragSource, dropTarget, acceptEvent.detail );
+    dropData.dataTypes = determineDataTypes( dropData.dragSource, dropTarget );
+    dropData.dataType = checkDataType( acceptEvent.dataType, dropData.dataTypes );
+  }
+
+  private static void fireSetData( DropTarget dropTarget, DropData dropData ) {
+    DNDEvent setDataEvent = createDragSetDataEvent( dropData.x, dropData.y, dropData.dataType );
+    dropData.dragSource.notifyListeners( DND.DragSetData, setDataEvent );
+    dropData.data = transferData( dropTarget, dropData.dataType, setDataEvent );
+  }
+
+  private static void fireDrop( DropTarget dropTarget, DropData dropData ) {
+    DNDEvent dropEvent = createDropEvent( dropData );
+    dropEvent.data = dropData.data;
+    dropTarget.notifyListeners( DND.Drop, dropEvent );
+    changeOperation( dropData.dragSource, dropTarget, dropEvent.detail ); // needed for DRAG_END
+  }
+
+  private boolean isFileDrop( DropData dropData ) {
+    return dropData.data instanceof RemoteFile[];
+  }
+
+  private static DNDEvent createDropEvent( DropData dropData ) {
+    return createDropTargetEvent( dropData.x,
+                                  dropData.y, 0,
+                                  dropData.detail,
+                                  0,
+                                  dropData.operations,
+                                  dropData.dataTypes,
+                                  dropData.dataType,
+                                  dropData.item );
+  }
+
+  private static DropData createDropData( DropTarget dropTarget, JsonObject properties ) {
+    DropData dropData = new DropData();
+    dropData.data = getRemoteFiles( properties.get( EVENT_PARAM_FILES ) );
+    dropData.x = properties.get( EVENT_PARAM_X ).asInt();
+    dropData.y = properties.get( EVENT_PARAM_Y ).asInt();
+    dropData.time = properties.get( EVENT_PARAM_TIME ).asInt();
+    dropData.detail = getOperation( properties.get( EVENT_PARAM_OPERATION ) );
+    dropData.dataType =   dropData.data != null
+                        ? getRemoteFileDataType()
+                        : getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
+    dropData.dragSource = getDragSource( properties.get( EVENT_PARAM_SOURCE ) );
+    dropData.dataTypes = determineDataTypes( dropData.dragSource, dropTarget );
+    dropData.item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
+    dropData.operations = getOperations( dropData.dragSource, dropTarget );
+    return dropData;
+  }
+
+  private static RemoteFile[] getRemoteFiles( JsonValue value ) {
+    if( value != null ) {
+      JsonArray fileIdArray = value.asArray();
+      int size = fileIdArray.size();
+      RemoteFile[] result = new RemoteFile[ size ];
+      for( int i = 0; i < size; i++ ) {
+        result[ i ] = new RemoteFile( fileIdArray.get( i ).asString() );
+      }
+      return result;
+    }
+    return null;
+  }
+
+  private static DragSource getDragSource( JsonValue sourceId ) {
+    Control sourceControl = getWidget( Control.class, sourceId );
+    DragSource dragSource = sourceControl != null ? getDragSource( sourceControl ) : null;
+    return dragSource;
   }
 
   private static DNDEvent createDropTargetEvent( int x,
@@ -364,7 +440,10 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   }
 
   private static int getOperations( DragSource dragSource, DropTarget dropTarget ) {
-    return dragSource.getStyle() & dropTarget.getStyle();
+    if( dragSource == null ) {
+      return dropTarget.getStyle();
+    }
+    return( dragSource.getStyle() & dropTarget.getStyle() );
   }
 
   private static TransferData getDataType( JsonValue dataType ) {
@@ -375,6 +454,12 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
       result = new TransferData();
       result.type = dataType.asInt();
     }
+    return result;
+  }
+
+  private static TransferData getRemoteFileDataType() {
+    TransferData result = new TransferData();
+    result.type = RemoteFileTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     return result;
   }
 
@@ -395,18 +480,24 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
 
   static TransferData[] determineDataTypes( DragSource dragSource, DropTarget dropTarget ) {
     List<TransferData> supportedTypes = new ArrayList<TransferData>();
-    Transfer[] dropTargetTransfers = dropTarget.getTransfer();
-    for( Transfer dragSourceTransfer : dragSource.getTransfer() ) {
-      TransferData[] dataTypes = dragSourceTransfer.getSupportedTypes();
-      for( Transfer dropTargetTransfer : dropTargetTransfers ) {
-        for( TransferData dataType : dataTypes ) {
-          if( dropTargetTransfer.isSupportedType( dataType ) ) {
-            supportedTypes.add( dataType );
-          }
+    for( Transfer dropTargetTransfer : dropTarget.getTransfer() ) {
+      TransferData[] dataTypes = dropTargetTransfer.getSupportedTypes();
+      for( TransferData dataType : dataTypes ) {
+        if( dragSource == null || transfersSupport( dragSource.getTransfer(), dataType ) ) {
+          supportedTypes.add( dataType );
         }
       }
     }
     return supportedTypes.toArray( new TransferData[ 0 ] );
+  }
+
+  private static boolean transfersSupport( Transfer[] transfers, TransferData dataType ) {
+    for( Transfer dropTargetTransfer : transfers ) {
+      if( dropTargetTransfer.isSupportedType( dataType ) ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static TransferData checkDataType( TransferData dataType, TransferData[] validTypes ) {
@@ -469,6 +560,19 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
       }
     }
     return null;
+  }
+
+  private static class DropData {
+    int x;
+    int y;
+    int operations;
+    Item item;
+    DragSource dragSource;
+    TransferData dataType;
+    TransferData[] dataTypes;
+    int detail;
+    int time;
+    Object data;
   }
 
 }

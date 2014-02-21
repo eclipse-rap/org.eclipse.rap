@@ -20,13 +20,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -438,6 +443,50 @@ public class DropTargetOperationHandler_Test {
   }
 
   @Test
+  public void testHandleNotifyDragAccept_filesPropertySetsRemoteFileTransfer() {
+    JsonObject properties = createFileDropProperties();
+
+    handler.handleNotify( "DropAccept", properties );
+
+    ArgumentCaptor<DNDEvent> captor = ArgumentCaptor.forClass( DNDEvent.class );
+    verify( dropTarget ).notifyListeners( eq( DND.DropAccept ), captor.capture() );
+    assertTrue( RemoteFileTransfer.getInstance().isSupportedType( captor.getValue().dataType ) );
+  }
+
+  @Test
+  public void testHandleNotifyDragAccept_filesPropertyPreventsDragLeave() {
+    JsonObject properties = createFileDropProperties();
+
+    handler.handleNotify( "DropAccept", properties );
+
+    verify( dropTarget, never() ).notifyListeners( eq( DND.DragLeave ), any( DNDEvent.class ) );
+  }
+
+  @Test
+  public void testHandleNotifyDragAccept_filesPropertyIsConvertedToRemoteFiles() {
+    dropTarget.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+    JsonObject properties = createFileDropProperties();
+
+    handler.handleNotify( "DropAccept", properties );
+
+    ArgumentCaptor<DNDEvent> captor = ArgumentCaptor.forClass( DNDEvent.class );
+    verify( dropTarget ).notifyListeners( eq( DND.Drop ), captor.capture() );
+    RemoteFile[] remoteFiles = ( RemoteFile[] )captor.getValue().data;
+    assertEquals( 2, remoteFiles.length );
+    assertEquals( "file1", remoteFiles[ 0 ].getFileId() );
+    assertEquals( "file2", remoteFiles[ 1 ].getFileId() );
+  }
+
+  private JsonObject createFileDropProperties() {
+    return new JsonObject()
+      .add( "x", 10 )
+      .add( "y", 20 )
+      .add( "time", 3 )
+      .add( "operation", "move" )
+      .add( "files", new JsonArray().add( "file1" ).add( "file2" ) );
+  }
+
+  @Test
   public void testDetermineDataType() {
     dropTarget.setTransfer( new Transfer[]{
       RTFTransfer.getInstance(),
@@ -448,6 +497,20 @@ public class DropTargetOperationHandler_Test {
 
     assertEquals( 1, dataTypes.length );
     assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
+  }
+
+  @Test
+  public void testDetermineDataType_withoutDragSource() {
+    dropTarget.setTransfer( new Transfer[]{
+      RTFTransfer.getInstance(),
+      HTMLTransfer.getInstance()
+    } );
+
+    TransferData[] dataTypes = determineDataTypes( null, dropTarget );
+
+    assertEquals( 2, dataTypes.length );
+    assertTrue( RTFTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
+    assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 1 ] ) );
   }
 
   private static int getHTMLTransferDataType() {
