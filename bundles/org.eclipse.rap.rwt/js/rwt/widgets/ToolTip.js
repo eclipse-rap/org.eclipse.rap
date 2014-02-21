@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     this.addToDocument();
     this.addEventListener( "click", this._onClick, this );
     this._hideAfterTimeout = false;
-    this._hasSelectionListener = false;
     this._messageFont = this._getMessageFont();
     this._contentArea = null;
     this._textArea = null;
@@ -85,10 +84,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
 
     setHideAfterTimeout : function( value ) {
       this._hideAfterTimeout = value;
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
     },
 
     setVisible : function( visible ) {
@@ -178,9 +173,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
 
     _onClick : function( evt ) {
       this._hide();
-      if( this._hasSelectionListener ) {
-        rwt.remote.EventUtil.notifySelected( this );
-      }
+      rwt.remote.EventUtil.notifySelected( this );
     },
 
     _hide : function() {
@@ -197,4 +190,5 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
     }
 
   }
+
 } );

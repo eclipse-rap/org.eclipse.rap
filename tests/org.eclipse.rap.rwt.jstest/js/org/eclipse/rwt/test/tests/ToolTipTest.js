@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,14 +9,25 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
+var Processor = rwt.remote.MessageProcessor;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
 
   extend : rwt.qx.Object,
 
   members : {
 
+    testToolTipHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ToolTip" );
+
+      assertEquals( [ "Selection" ], handler.events );
+    },
+
     testCreateToolTipByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ], false );
       assertTrue( widget instanceof rwt.widgets.ToolTip );
@@ -29,7 +40,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testCreateToolTipByProtocol_withMarkupEnabled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ], true );
       assertTrue( widget instanceof rwt.widgets.ToolTip );
@@ -42,13 +52,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testDestroyToolTipWithParent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var ObjectRegistry = rwt.remote.ObjectRegistry;
-      var MessageProcessor = rwt.remote.MessageProcessor;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 
-      MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+      Processor.processOperationArray( [ "destroy", "w2"] );
       TestUtil.flush();
 
       assertTrue( ObjectRegistry.getObject( "w2" ) == null );
@@ -58,7 +65,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testCreateToolTipWithIconErrorByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_ERROR" ] );
       assertTrue( widget instanceof rwt.widgets.ToolTip );
@@ -71,7 +77,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testCreateToolTipWithIconWarningByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_WARNING" ] );
       assertTrue( widget instanceof rwt.widgets.ToolTip );
@@ -84,7 +89,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testCreateToolTipWithIconInformationByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON", "ICON_INFORMATION" ] );
       assertTrue( widget instanceof rwt.widgets.ToolTip );
@@ -97,7 +101,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetCustomVariantByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       TestUtil.protocolSet( "w3", { "customVariant" : "variant_blue" } );
@@ -107,7 +110,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetRoundedBorderByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       TestUtil.protocolSet( "w3", { "roundedBorder" : [ 2, [ 0, 255, 0, 255 ], 1, 2, 3, 4 ] } );
@@ -119,7 +121,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetBackgroundGradientByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       var gradient
@@ -135,7 +136,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetAutoHideByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       TestUtil.protocolSet( "w3", { "autoHide" : true } );
@@ -145,7 +145,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 
@@ -157,7 +156,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetTextByProtocol_withMarkupEnabled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       widget.setMarkupEnabled( true );
@@ -170,7 +168,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetMessageByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 
@@ -182,7 +179,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetMessageByProtocol_withMarkupEnabled : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       widget.setMarkupEnabled( true );
@@ -195,7 +191,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetLocationByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       TestUtil.protocolSet( "w3", { "location" : [ 1, 2 ] } );
@@ -206,7 +201,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testSetVisibleByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       TestUtil.protocolSet( "w3", { "visible" : true } );
@@ -215,18 +209,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       widget.destroy();
     },
 
-    testSetHasSelectionListenerByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-      assertTrue( widget._hasSelectionListener );
-      shell.destroy();
-      widget.destroy();
-    },
-
     testClienAreaOverflow : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 
@@ -236,7 +219,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testHideToolTip_onClick : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       widget.setVisible( true );
@@ -253,7 +235,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     },
 
     testHideToolTip_withAutohide : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
       widget.setHideAfterTimeout( 1000 );
@@ -274,7 +255,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     // Helper
 
     _createToolTipByProtocol : function( id, parentId, style, markupEnabled ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      Processor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.ToolTip",
@@ -290,3 +271,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
   }
 
 } );
+
+}() );
