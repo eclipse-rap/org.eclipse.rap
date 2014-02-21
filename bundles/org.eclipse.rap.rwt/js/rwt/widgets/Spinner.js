@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,6 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
 
   construct : function() {
     this.base( arguments );
-    //this._hasModifyListener = false;
-    this._hasSelectionListener = false;
-    this._hasDefaultSelectionListener = false;
     this.setWrap( false );
     // Hack to prevent the spinner text field to request the focus
     this._textfield.setFocused = function() {};
@@ -90,14 +87,6 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    setHasDefaultSelectionListener : function( value ) {
-      this._hasDefaultSelectionListener = value;
-    },
-
     _visualizeFocus : function() {
       this._textfield._visualizeFocus();
       if( this._textfield.isCreated() ) {
@@ -122,11 +111,12 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
 
     _onChangeValue : function( evt ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        server.getRemoteObject( this ).set( "selection", this.getManager().getValue() );
-        if( this._hasSelectionListener ) {
-          server.onNextSend( this._sendWidgetSelected, this );
-          server.sendDelayed( 500 );
+        var connection = rwt.remote.Connection.getInstance();
+        var remoteObject = connection.getRemoteObject( this );
+        remoteObject.set( "selection", this.getManager().getValue() );
+        if( remoteObject.isListening( "Selection" ) ) {
+          connection.onNextSend( this._sendWidgetSelected, this );
+          connection.sendDelayed( 500 );
         }
       }
     },
@@ -139,17 +129,14 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     _onKeyDown : function( event ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        if(    event.getKeyIdentifier() == "Enter"
-            && !event.isShiftPressed()
-            && !event.isAltPressed()
-            && !event.isCtrlPressed()
-            && !event.isMetaPressed()
-            && this._hasDefaultSelectionListener )
-        {
-          event.stopPropagation();
-          this._sendWidgetDefaultSelected();
-        }
+      if(    event.getKeyIdentifier() == "Enter"
+          && !event.isShiftPressed()
+          && !event.isAltPressed()
+          && !event.isCtrlPressed()
+          && !event.isMetaPressed() )
+      {
+        event.stopPropagation();
+        rwt.remote.EventUtil.notifyDefaultSelected( this );
       }
     },
 
@@ -161,10 +148,6 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
 
     _sendWidgetSelected : function() {
       rwt.remote.EventUtil.notifySelected( this );
-    },
-
-    _sendWidgetDefaultSelected : function() {
-      rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
     /////////////////
@@ -292,5 +275,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
         }
       }
     }
+
   }
-});
+
+} );
