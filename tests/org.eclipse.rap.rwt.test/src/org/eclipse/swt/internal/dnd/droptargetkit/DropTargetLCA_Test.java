@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.dnd.DNDUtil.setDataTypeChanged;
 import static org.eclipse.swt.internal.dnd.DNDUtil.setDetailChanged;
 import static org.eclipse.swt.internal.dnd.DNDUtil.setFeedbackChanged;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -24,6 +25,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -289,6 +291,37 @@ public class DropTargetLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDetail" );
     assertEquals( "DROP_NONE", call.getProperty( "detail" ).asString() );
+  }
+
+  @Test
+  public void testRenderFileDropEnabled_initialFalseRendersNothing() throws IOException {
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( target, "fileDropEnabled" ) );
+  }
+
+  @Test
+  public void testRenderFileDropEnabled_initialTrueRendersTrue() throws IOException {
+    target.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.findSetProperty( target, "fileDropEnabled" ).asBoolean() );
+  }
+
+  @Test
+  public void testRenderFileDropEnabled_setBackToFalseRendersFalse() throws IOException {
+    Fixture.markInitialized( target );
+    target.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+    Fixture.preserveWidgets();
+    target.setTransfer( new Transfer[ 0 ] );
+
+    lca.renderChanges( target );
+
+    Message message = Fixture.getProtocolMessage();
+    assertFalse( message.findSetProperty( target, "fileDropEnabled" ).asBoolean() );
   }
 
 }

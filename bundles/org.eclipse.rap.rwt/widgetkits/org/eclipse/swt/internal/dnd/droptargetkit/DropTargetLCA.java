@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.dnd.DNDUtil.convertOperations;
 import static org.eclipse.swt.internal.dnd.DNDUtil.convertTransferTypes;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
@@ -52,6 +54,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   private static final String PROP_DRAG_LEAVE_LISTENER = "DragLeave";
   private static final String PROP_DRAG_OPERATION_CHANGED_LISTENER = "DragOperationChanged";
   private static final String PROP_DROP_ACCEPT_LISTENER = "DropAccept";
+  private static final String PROP_FILE_DROP_ENABLED = "fileDropEnabled";
 
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
@@ -59,6 +62,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     DropTarget dropTarget = ( DropTarget )widget;
     preserveProperty( dropTarget, PROP_TRANSFER, dropTarget.getTransfer() );
+    preserveProperty( dropTarget, PROP_FILE_DROP_ENABLED, isFileDropEnabled( dropTarget ) );
     preserveListener( dropTarget,
                       PROP_DRAG_ENTER_LISTENER,
                       isListening( dropTarget, DND.DragEnter ) );
@@ -96,6 +100,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     renderDetail( dropTarget );
     renderFeedback( dropTarget );
     renderDataType( dropTarget );
+    renderFileDropEnabled( dropTarget );
     renderListener( dropTarget,
                     PROP_DRAG_ENTER_LISTENER,
                     isListening( dropTarget, DND.DragEnter ),
@@ -154,6 +159,11 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void renderFileDropEnabled( DropTarget dropTarget ) {
+    boolean value = isFileDropEnabled( dropTarget );
+    renderProperty( dropTarget, PROP_FILE_DROP_ENABLED, value, false );
+  }
+
   private static JsonArray convertFeedback( int feedback ) {
     JsonArray feedbackNames = new JsonArray();
     if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
@@ -172,6 +182,16 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
       feedbackNames.add( "FEEDBACK_SELECT" );
     }
     return feedbackNames;
+  }
+
+  private static boolean isFileDropEnabled( DropTarget target ) {
+    Transfer[] transfers = target.getTransfer();
+    for( Transfer transfer : transfers ) {
+      if( transfer instanceof RemoteFileTransfer ) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
