@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.remote.MessageProcessor;
@@ -23,11 +23,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
   members : {
 
+    testGridColumnHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.GridColumn" );
+
+      assertEquals( [ "Selection" ], handler.events );
+    },
+
+    testGridColumnGroupHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.GridColumnGroup" );
+
+      assertEquals( [ "Expand", "Collapse" ], handler.events );
+    },
+
     testCreateTableColumnByProtocol : function() {
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = rwt.remote.MessageProcessor;
-      Processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w4",
         "action" : "create",
         "type" : "rwt.widgets.GridColumn",
@@ -37,7 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       TestUtil.flush();
-      var column = ObjectManager.getObject( "w4" );
+      var column = ObjectRegistry.getObject( "w4" );
       assertTrue( column instanceof rwt.widgets.GridColumn );
       var label = this._getColumnLabel( tree, column );
       assertIdentical( tree._header, label.getParent() );
@@ -110,28 +120,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "text" : "foo<>\" bar" } );
 
       assertEquals( "foo<>\" bar", column.getText().toString() );
-      column.dispose();
-      tree.destroy();
-    },
-
-    testSetHasExpandListenerByProtocol : function() {
-      var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
-
-      TestUtil.protocolListen( "w4", { "Expand" : true } );
-
-      assertTrue( column.getHasExpandListener() );
-      column.dispose();
-      tree.destroy();
-    },
-
-    testSetHasCollapseListenerByProtocol : function() {
-      var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var column = this._createColumnGroupByProtocol( "w4", "w3", [] );
-
-      TestUtil.protocolListen( "w4", { "Collapse" : true } );
-
-      assertTrue( column.getHasCollapseListener() );
       column.dispose();
       tree.destroy();
     },
@@ -1046,7 +1034,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderVisible( true );
       TestUtil.initRequestLog();
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      column.setHasSelectionListener( true );
+      TestUtil.fakeListener( column, "Selection", true );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
       TestUtil.flush();
       var label = this._getColumnLabel( tree, column );
@@ -1065,7 +1053,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderVisible( true );
       TestUtil.initRequestLog();
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      column.setHasSelectionListener( true );
+      TestUtil.fakeListener( column, "Selection", true );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20 } );
       TestUtil.flush();
       var label = this._getColumnLabel( tree, column );
@@ -1084,7 +1072,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.setHeaderVisible( true );
       TestUtil.initRequestLog();
       var column = this._createColumnByProtocol( "w4", "w3", [] );
-      column.setHasSelectionListener( true );
+      TestUtil.fakeListener( column, "Selection", true );
       TestUtil.protocolSet( "w4", { "left" : 3, "width" : 20, "moveable" : true } );
       TestUtil.flush();
       var button = rwt.event.MouseEvent.buttons.left;
@@ -1127,11 +1115,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     },
 
     testCreateColumnGroupByProtocol : function() {
-      var ObjectManager = rwt.remote.ObjectRegistry;
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
-      var Processor = rwt.remote.MessageProcessor;
 
-      Processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w4",
         "action" : "create",
         "type" : "rwt.widgets.GridColumnGroup",
@@ -1142,7 +1128,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       } );
       TestUtil.flush();
 
-      var column = ObjectManager.getObject( "w4" );
+      var column = ObjectRegistry.getObject( "w4" );
       assertTrue( column instanceof rwt.widgets.GridColumn );
       assertTrue( column.isGroup() );
       var label = this._getColumnLabel( tree, column );
@@ -1636,7 +1622,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
     // Helping methods
 
     _createTreeByProtocol : function( id, parentId, styles ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -1652,7 +1638,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "headerVisible" : true
         }
       } );
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id + "_vscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1661,7 +1647,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "style" : [ "VERTICAL" ]
         }
       } );
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id + "_hscroll",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -1670,11 +1656,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           "style" : [ "HORIZONTAL" ]
         }
       } );
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     },
 
     _createColumnByProtocol : function( id, parentId, styles ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumn",
@@ -1684,11 +1670,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
         }
       } );
       TestUtil.flush( true );
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     },
 
     _createColumnGroupByProtocol : function( id, parentId, styles, noFlush ) {
-      rwt.remote.MessageProcessor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : id,
         "action" : "create",
         "type" : "rwt.widgets.GridColumnGroup",
@@ -1700,7 +1686,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       if( !noFlush ) {
         TestUtil.flush( true );
       }
-      return rwt.remote.ObjectRegistry.getObject( id );
+      return ObjectRegistry.getObject( id );
     },
 
     setUp : function() {
@@ -1745,4 +1731,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
 } );
 
-}());
+}() );

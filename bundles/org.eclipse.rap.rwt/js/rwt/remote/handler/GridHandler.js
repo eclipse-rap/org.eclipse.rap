@@ -115,13 +115,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     }
   } ),
 
-  listeners : rwt.remote.HandlerUtil.extendControlListeners( [
-    "Selection",
-    "DefaultSelection",
-    "Expand",
-    "Collapse",
-    "SetData"
-  ] ),
+  events : [ "Selection", "DefaultSelection", "Expand", "Collapse", "SetData" ],
+
+  listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 
   listenerHandler : rwt.remote.HandlerUtil.extendControlListenerHandler( {} )
 

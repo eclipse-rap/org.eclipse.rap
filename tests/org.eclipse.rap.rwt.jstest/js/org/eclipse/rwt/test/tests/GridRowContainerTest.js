@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
 var register = function( widget ) {
   var handler = rwt.remote.HandlerRegistry.getHandler( widget.classname );
@@ -93,7 +95,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testTreeRowBounds : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 10 ];
       var bounds = TestUtil.getElementBounds( sample );
@@ -106,7 +107,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
     testRenderEmptyRowOnHoverBug : function() {
       // See Bug 349310 - Mouseover on invisible items in SWT Tree
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
       var root = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
@@ -131,7 +131,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testRenderEmptyRowsBackground : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var grad1 = [ [ 0, "red" ], [ 1, "yellow" ] ];
       var grad2 = [ [ 0, "yellow" ], [ 1, "red" ] ];
@@ -177,7 +176,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testChangeTreeRowBounds : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 10 ];
       tree.setWidth( 400 );
@@ -192,7 +190,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testGridLinesState : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setLinesVisible( true );
       TestUtil.flush();
@@ -204,7 +201,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testZIndex : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setLinesVisible( true );
       TestUtil.flush();
@@ -215,7 +211,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testGridLinesStateOnNewRows : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       TestUtil.flush();
       tree.setLinesVisible( true );
@@ -228,7 +223,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testGridLinesHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       var row = tree._rowContainer._children[ 0 ];
       assertFalse( TestUtil.hasCssBorder( row.getElement() ) );
@@ -240,7 +234,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     testInitialGridLinesHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
       tree.setHeight( 0 );
       tree.setLinesVisible( true );
@@ -313,7 +306,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
     // TODO [tb] : refactor to create TreeRowContainer
     _createDefaultTree : function( noflush ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var tree = new rwt.widgets.Grid( {
         "appearance": "tree",
@@ -330,6 +322,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.setColumnCount( 1 );
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Grid" );
+      rwt.remote.ObjectRegistry.add( "w" + tree.toHashCode(), tree, handler );
       tree.addToDocument();
       if( !noflush ) {
         TestUtil.flush();
@@ -338,7 +332,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
     },
 
     _fakeAppearance : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var empty = {
         style : function( states ) {
           return {
@@ -364,5 +357,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
 
 } );
 
-}());
+}() );
 

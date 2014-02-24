@@ -20,12 +20,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // Style-Flags:
     this._hasMultiSelection = false;
     // Internal State:
-    this._hasSelectionListener = false;
-    this._hasDefaultSelectionListener = false;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._topItem = null;
-    this._hasSetDataListener = false;
     this._selection = [];
     this._focusItem = null;
     this._renderQueue = {};
@@ -36,8 +33,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._sortDirection = null;
     this._sortColumn = null;
     this._hasFixedColumns = false;
-    this._hasExpandListener = false;
-    this._hasCollapseListener = false;
     // Layout:
     this._headerHeight = 0;
     this._footerHeight = 0;
@@ -338,26 +333,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     isHorizontalBarVisible : function() {
       return this._horzScrollBar.getVisibility();
-    },
-
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    setHasDefaultSelectionListener : function( value ) {
-      this._hasDefaultSelectionListener = value;
-    },
-
-    setHasExpandListener : function( value ) {
-      this._hasExpandListener = value;
-    },
-
-    setHasCollapseListener : function( value ) {
-      this._hasCollapseListener = value;
-    },
-
-    setHasSetDataListener : function( value ) {
-      this._hasSetDataListener = value;
     },
 
     setAlignment : function( column, value ) {
@@ -1001,11 +976,17 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _sendTopItemIndexChange : function() {
-      var server = rwt.remote.Connection.getInstance();
-      var remoteObject = server.getRemoteObject( this );
+      var connection = rwt.remote.Connection.getInstance();
+      var remoteObject = connection.getRemoteObject( this );
       remoteObject.set( "topItemIndex", this._topItemIndex );
-      if( this._hasSetDataListener || this._vertScrollBar.getHasSelectionListener() ) {
-        this._startScrollBarChangesTimer( false );
+      if( this._vertScrollBar.getHasSelectionListener() ) {
+        connection.onNextSend( this._sendVerticalScrolled, this );
+      }
+      if( remoteObject.isListening( "SetData" ) ) {
+        connection.onNextSend( this._sendSetData, this );
+      }
+      if( this._vertScrollBar.getHasSelectionListener() || remoteObject.isListening( "SetData" ) ) {
+        connection.sendDelayed( 400 );
       }
     },
 
@@ -1013,77 +994,54 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
-      var server = rwt.remote.Connection.getInstance();
-      var remoteObject = server.getRemoteObject( this );
+      var connection = rwt.remote.Connection.getInstance();
+      var remoteObject = connection.getRemoteObject( this );
       remoteObject.set( "scrollLeft", this._horzScrollBar.getValue() );
-      if( this._hasSetDataListener || this._horzScrollBar.getHasSelectionListener() ) {
-        this._startScrollBarChangesTimer( true );
+      if( this._horzScrollBar.getHasSelectionListener() ) {
+        connection.onNextSend( this._sendHorizontalScrolled, this );
+        connection.sendDelayed( 400 );
       }
-    },
-
-    _startScrollBarChangesTimer : function( horizontal ) {
-      var server = rwt.remote.Connection.getInstance();
-      if( horizontal && this._horzScrollBar.getHasSelectionListener() ) {
-        server.onNextSend( this._sendHorizontalScrolled, this );
-      } else {
-        if( this._vertScrollBar.getHasSelectionListener() ) {
-          server.onNextSend( this._sendVerticalScrolled, this );
-        }
-        if( this._hasSetDataListener ) {
-          server.onNextSend( this._sendSetData, this );
-        }
-      }
-      server.sendDelayed( 400 );
     },
 
     _sendVerticalScrolled : function() {
-      var server = rwt.remote.Connection.getInstance();
-      server.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
+      var connection = rwt.remote.Connection.getInstance();
+      connection.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
     },
 
     _sendHorizontalScrolled : function() {
-      var server = rwt.remote.Connection.getInstance();
-      server.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
+      var connection = rwt.remote.Connection.getInstance();
+      connection.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
     },
 
     _sendSetData : function() {
-      var server = rwt.remote.Connection.getInstance();
-      server.getRemoteObject( this ).notify( "SetData" );
+      var connection = rwt.remote.Connection.getInstance();
+      connection.getRemoteObject( this ).notify( "SetData" );
     },
 
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
         if( event.msg === "expanded" || event.msg === "collapsed" ) {
           var expanded = event.msg === "expanded";
-          rwt.remote.Connection.getInstance().getRemoteObject( item ).set( "expanded", expanded );
-          if( expanded && this._hasExpandListener ) {
-            rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Expand", {
-              "item" : rwt.remote.ObjectRegistry.getId( item )
-            } );
-          } else if( !expanded && this._hasCollapseListener ) {
-            rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Collapse", {
-              "item" : rwt.remote.ObjectRegistry.getId( item )
-            } );
-          }
+          var connection = rwt.remote.Connection.getInstance();
+          connection.getRemoteObject( item ).set( "expanded", expanded );
+          connection.getRemoteObject( this ).notify( expanded ? "Expand" : "Collapse", {
+            "item" : rwt.remote.ObjectRegistry.getId( item )
+          } );
         }
       }
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail, index, text ) {
-      if(    ( this._hasSelectionListener && !defaultSelected )
-          || ( this._hasDefaultSelectionListener && defaultSelected ) )
-      {
-        var properties = {
-          "item" : this._getItemId( item ),
-          "detail" : detail,
-          "index" : !isNaN( index ) ? index : undefined,
-          "text" : text != null ? text : undefined
-        };
-        if( defaultSelected ) {
-          rwt.remote.EventUtil.notifyDefaultSelected( this, properties );
-        } else {
-          rwt.remote.EventUtil.notifySelected( this, properties );
-        }
+      var properties = {
+        "item" : this._getItemId( item ),
+        "detail" : detail,
+        "index" : !isNaN( index ) ? index : undefined,
+        "text" : text != null ? text : undefined
+      };
+      if( defaultSelected ) {
+        rwt.remote.EventUtil.notifyDefaultSelected( this, properties );
+      } else {
+        rwt.remote.EventUtil.notifySelected( this, properties );
       }
     },
 

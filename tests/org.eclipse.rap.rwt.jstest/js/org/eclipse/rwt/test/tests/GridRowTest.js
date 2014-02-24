@@ -3021,6 +3021,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       if( isTable ) {
         result.setTreeColumn( -1 );
       }
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Grid" );
+      rwt.remote.ObjectRegistry.add( "w" + result.toHashCode(), result, handler );
       tree = result;
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,6 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     this._height = 0;
     this._visibility = true;
     this._expanded = true;
-    this._hasSelectionListener = false;
-    this._hasExpandListener = false;
-    this._hasCollapseListener = false;
     this._width = 0;
     this._toolTip = null;
     this._customVariant = null;
@@ -230,45 +227,14 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       return this._check;
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    getHasSelectionListener : function() {
-      return this._hasSelectionListener;
-    },
-
-    setHasExpandListener : function( value ) {
-      this._hasExpandListener = value;
-    },
-
-    getHasExpandListener : function() {
-      return this._hasExpandListener;
-    },
-
-    setHasCollapseListener : function( value ) {
-      this._hasCollapseListener = value;
-    },
-
-    getHasCollapseListener : function() {
-      return this._hasCollapseListener;
-    },
-
     handleSelectionEvent : function( event ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var isTreeEvent = this._isGroup && event.chevron;
-        if( this._hasSelectionListener || isTreeEvent ) {
-          if( isTreeEvent ) {
-            var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-            remoteObject.set( "expanded", !this._expanded );
-            if(    ( this._hasCollapseListener && this._expanded )
-                || ( this._hasExpandListener && !this._expanded )  )
-            {
-              remoteObject.notify( this._expanded ? "Collapse" : "Expand" );
-            }
-          } else {
-            rwt.remote.EventUtil.notifySelected( this );
-          }
+        if( this._isGroup && event.chevron ) {
+          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+          remoteObject.set( "expanded", !this._expanded );
+          remoteObject.notify( this._expanded ? "Collapse" : "Expand" );
+        } else {
+          rwt.remote.EventUtil.notifySelected( this );
         }
       }
     },
