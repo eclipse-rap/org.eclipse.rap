@@ -20,7 +20,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
   members : {
 
-    testExpandBarHandlerEventsList : function() {
+    testShellHandlerEventsList : function() {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Shell" );
 
       assertEquals( [ "Activate", "Close", "Resize", "Move" ], handler.events );

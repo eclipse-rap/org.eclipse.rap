@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    testMenuHandlerEventsList : function() {
+      assertEquals( [ "Show", "Hide" ], menuHandler.events );
+    },
+
+    testMenuItemHandlerEventsList : function() {
+      assertEquals( [ "Selection" ], menuItemHandler.events );
+    },
 
     testCreateMenuBarByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -145,7 +153,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testCallUnhideItemsByProtocol : function() {
       var widget = createPopUpMenuByProtocol( "w3" );
-      widget.setHasShowListener( true );
+      TestUtil.fakeListener( widget, "Show", true );
       widget._menuShown();
       assertTrue( widget._itemsHiddenFlag );
       MessageProcessor.processOperation( {
@@ -172,7 +180,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testCreateMenuItemByProtocolAtPosition : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
-      menu.setHasShowListener( true );
+      TestUtil.fakeListener( menu, "Show", true );
       menu._menuShown();
 
       createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -343,29 +351,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
-    testSetMenuItemSelectionListenerByProtocol : function() {
-      var menu = createPopUpMenuByProtocol( "w3" );
-      var widget = createMenuItemByProtocol( "w4", "w3", [ "CHECK" ] );
-      TestUtil.protocolListen( "w4", { "Selection" : true } );
-      assertTrue( widget._hasSelectionListener );
-      menu.destroy();
-      widget.destroy();
-    },
-
-    testSetShowListenerByProtocol : function() {
-      var menu = createPopUpMenuByProtocol( "w3" );
-      TestUtil.protocolListen( "w3", { "Show" : true } );
-      assertTrue( menu._hasShowListener );
-      menu.destroy();
-    },
-
-    testSetHideListenerByProtocol : function() {
-      var menu = createPopUpMenuByProtocol( "w3" );
-      TestUtil.protocolListen( "w3", { "Hide" : true } );
-      assertTrue( menu._hasHideListener );
-      menu.destroy();
-    },
-
     testTextOnly : function() {
       createSimpleMenu( "push" );
       menuItem.setText( "Hello World!" );
@@ -525,18 +510,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testOpenMenuByMenuBar : function() {
       createMenuBar( "push" );
       TestUtil.flush();
-      var bar = menuBar;
-      var barItem = menuBarItem;
-      assertTrue( bar.isSeeable() );
-      assertTrue( barItem.isSeeable() );
+      assertTrue( menuBar.isSeeable() );
+      assertTrue( menuBarItem.isSeeable() );
       assertFalse( menu.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
       TestUtil.click( TestUtil.getDocument() );
       TestUtil.flush();
       assertFalse( menu.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
       TestUtil.click( TestUtil.getDocument() );
@@ -926,7 +909,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem.setText( "foo" );
       menuItem.setMnemonicIndex( 1 );
       rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       TestUtil.flush();
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
@@ -964,7 +947,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem.setText( "foo" );
       menuItem.setMnemonicIndex( 1 );
       rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       TestUtil.flush();
 
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
@@ -980,6 +963,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testMenuWithMnemonic_TriggerOpensCascade : function() {
       createMenuBar( "cascade" );
       var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
       var subMenuItem = new MenuItem( "push" );
       subMenu.addMenuItemAt( subMenuItem, 0 );
       subMenuItem.setText( "bar" );
@@ -1005,6 +989,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testMenuWithMnemonic_CascadeMenuIsHovered : function() {
       createMenuBar( "cascade" );
       var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
       var subMenuItem = new MenuItem( "push" );
       subMenu.addMenuItemAt( subMenuItem, 0 );
       subMenuItem.setText( "bar" );
@@ -1030,6 +1015,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testMenuWithMnemonic_CascadeMenuRendersMnemonics : function() {
       createMenuBar( "cascade" );
       var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
       var subMenuItem = new MenuItem( "push" );
       subMenu.addMenuItemAt( subMenuItem, 0 );
       subMenuItem.setText( "bar" );
@@ -1057,6 +1043,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testOpenMenuAsContextmenu : function() {
       menu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menuItem = new MenuItem( "push" );
       menuItem.setText( "bla" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -1086,6 +1073,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var widget1 = createControl();
       widget1.addToDocument();
       var menu = new rwt.widgets.Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menu.addToDocument();
       var menuItem = new MenuItem( "PUSH" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -1114,6 +1102,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var widget = new rwt.widgets.base.Atom( "foo" );
       widget.setParent( parent );
       var menu = new rwt.widgets.Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menu.addToDocument();
       var menuItem = new MenuItem( "PUSH" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -1133,7 +1122,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testContextMenuOpenOnText : function() {
       TestUtil.fakeResponse( true );
       var menu = new rwt.widgets.Menu();
-      menu.setHasShowListener( true );
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
+      TestUtil.fakeListener( menu, "Show", true );
       var text = new rwt.widgets.Text( false );
       text.addToDocument();
       text.setUserData( "isControl", true );
@@ -1155,19 +1145,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testContextmenuNotOpenOnParentControl : function() {
-      var menu1 = new rwt.widgets.Menu();
-      menu1.setHasShowListener( true );
+      var menu = new rwt.widgets.Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
+      TestUtil.fakeListener( menu, "Show", true );
       var parent = createControl();
       parent.addToDocument();
-      parent.setContextMenu( menu1 );
+      parent.setContextMenu( menu );
       addContextMenuListener( parent );
       var widget = createControl();
       widget.setParent( parent );
       TestUtil.flush();
-      assertFalse( menu1.isSeeable() );
+      assertFalse( menu.isSeeable() );
       TestUtil.rightClick( widget );
-      assertFalse( menu1.isSeeable() );
-      menu1.destroy();
+      assertFalse( menu.isSeeable() );
+      menu.destroy();
       widget.destroy();
       parent.destroy();
     },
@@ -1213,7 +1204,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.prepareTimerUse();
       createMenuBar( "cascade" );
       var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
       var subMenuItem = new MenuItem( "push" );
+      rwt.remote.ObjectRegistry.add( "w8", subMenuItem, menuItemHandler );
       subMenu.addMenuItemAt( subMenuItem, 0 );
       menuItem.setSubMenu( subMenu );
       var item2 = new MenuItem( "push" );
@@ -1332,8 +1325,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.flush();
       assertEquals( 0, TestUtil.getRequestsSend() );
       assertFalse( menu.isSeeable() );
-      menu.setHasShowListener( true );
-      menu.setHasHideListener( true );
+      TestUtil.fakeListener( menu, "Show", true );
+      TestUtil.fakeListener( menu, "Hide", true );
       TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
@@ -1360,7 +1353,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       TestUtil.clearRequestLog();
       TestUtil.click( menuItem );
       assertEquals( 1, TestUtil.getRequestsSend() );
@@ -1378,7 +1371,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.clearRequestLog();
       TestUtil.click( menuBarItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
-      menuBarItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuBarItem, "Selection", true );
       TestUtil.clearRequestLog();
       TestUtil.click( menuBarItem );
       assertEquals( 1, TestUtil.getRequestsSend() );
@@ -1396,7 +1389,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertEquals( 0, TestUtil.getRequestsSend() );
       assertTrue( menuItem.hasState( "selected" ) );
       TestUtil.clearRequestLog();
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       menuItem.setSelection( false );
       assertFalse( menuItem.hasState( "selected" ) );
       TestUtil.clearRequestLog();
@@ -1420,7 +1413,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
       menuItem.setSelection( false );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.click( menuItem );
@@ -1440,12 +1433,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
       menuItem.setSelection( false );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       var item2 = new MenuItem( "radio" );
       menu.addMenuItemAt( item2, 0 );
       rwt.remote.ObjectRegistry.add( "w2", item2, menuItemHandler );
       item2.setSelection( true );
-      item2.setHasSelectionListener( true );
+      TestUtil.fakeListener( item2, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.click( menuItem );
@@ -1468,7 +1461,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.click( menuItem );
       assertEquals( 0, TestUtil.getRequestsSend() );
       menuItem.setSelection( true );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       TestUtil.clearRequestLog();
 
       TestUtil.click( menuItem );
@@ -1484,12 +1477,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       createSimpleMenu( "radio" );
       rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
       menuItem.setNoRadioGroup( true );
-      menuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem, "Selection", true );
       var menuItem2 = new MenuItem( "radio" );
       menu.addMenuItemAt( menuItem2, 0 );
       rwt.remote.ObjectRegistry.add( "w2", menuItem2, menuItemHandler );
       menuItem2.setNoRadioGroup( true );
-      menuItem2.setHasSelectionListener( true );
+      TestUtil.fakeListener( menuItem2, "Selection", true );
       TestUtil.clearRequestLog();
       TestUtil.flush();
       TestUtil.click( menuItem );
@@ -1519,6 +1512,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.prepareTimerUse();
       createMenuBar( "cascade" );
       var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
       this.subMenu = subMenu;
       var subMenuItem = new MenuItem( "push" );
       subMenuItem.setText( "gnasdlkfn" );
@@ -1536,7 +1530,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       item3.setText( "blub" );
       item3.setSubMenu( subMenu );
       menu.addMenuItemAt( item3, 0 );
-      menu.setHasShowListener( true ); // force creation of preItem
+      TestUtil.fakeListener( menu, "Show", true ); // force creation of preItem
       TestUtil.flush();
       assertFalse( menu.isSeeable() );
       assertFalse( subMenu.isSeeable() );
@@ -1599,7 +1593,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( TestUtil.isActive( subMenu ) );
       assertTrue( subMenuItem.hasState( "over" ) );
       rwt.remote.ObjectRegistry.add( "w3", subMenuItem, menuItemHandler );
-      subMenuItem.setHasSelectionListener( true );
+      TestUtil.fakeListener( subMenuItem, "Selection", true );
       rwt.remote.Connection.getInstance().send();
       TestUtil.clearRequestLog();
       TestUtil.press( subMenu, "Enter", true );
@@ -1633,6 +1627,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testContextMenuCloseOnOpenerClick : function() {
       menu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menuItem = new MenuItem( "push" );
       menuItem.setText( "bla" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -1660,6 +1655,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testContextMenuCloseOnOtherContextMenu : function() {
       menu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menuItem = new MenuItem( "push" );
       menuItem.setText( "bla" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -1670,6 +1666,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setContextMenu( menu );
       addContextMenuListener( widget );
       var menu2 = new Menu();
+      rwt.remote.ObjectRegistry.add( "w4", menu2, menuHandler );
       var menuItem2 = new MenuItem( "push" );
       menuItem2.setText( "bla2" );
       menu2.addMenuItemAt( menuItem2, 0 );
@@ -1708,9 +1705,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testContextMenuCloseOnMenuBarClick : function() {
       createMenuBar( "push" );
-      var bar = menuBar;
-      var barItem = menuBarItem;
       var menu2 = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", menu2, menuHandler );
       var menuItem2 = new MenuItem( "push" );
       menuItem2.setText( "bla" );
       menu2.addMenuItemAt( menuItem2, 0 );
@@ -1722,14 +1718,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       addContextMenuListener( widget );
       TestUtil.flush();
       assertTrue( widget.isSeeable() );
-      assertTrue( bar.isSeeable() );
-      assertTrue( barItem.isSeeable() );
+      assertTrue( menuBar.isSeeable() );
+      assertTrue( menuBarItem.isSeeable() );
       assertFalse( menu.isSeeable() );
       assertFalse( menu2.isSeeable() );
       TestUtil.rightClick( widget );
       TestUtil.flush();
       assertTrue( menu2.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
       assertFalse( menu2.isSeeable() );
@@ -1747,15 +1743,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testDropDownMenuCloseOnOpenerClick : function() {
       createMenuBar( "push" );
       TestUtil.flush();
-      var bar = menuBar;
-      var barItem = menuBarItem;
-      assertTrue( bar.isSeeable() );
-      assertTrue( barItem.isSeeable() );
+      assertTrue( menuBar.isSeeable() );
+      assertTrue( menuBarItem.isSeeable() );
       assertFalse( menu.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertFalse( menu.isSeeable() );
       disposeMenuBar();
@@ -1763,22 +1757,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testDropDownMenuCloseOnSameMenuBarClick : function() {
       createMenuBar( "push" );
-      var bar = menuBar;
-      var barItem = menuBarItem;
       var menu2 = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", menu2, menuHandler );
       var menuItem2 = new MenuItem( "push" );
       menuItem2.setText( "bla" );
       menu2.addMenuItemAt( menuItem2, 0 );
       var barItem2 = new MenuItem( "bar" );
+      rwt.remote.ObjectRegistry.add( "w8", barItem2, menuItemHandler );
       barItem2.setMenu( menu2 );
       menuBar.addMenuItemAt( barItem2, 1 );
       TestUtil.flush();
-      assertTrue( bar.isSeeable() );
-      assertTrue( barItem.isSeeable() );
+      assertTrue( menuBar.isSeeable() );
+      assertTrue( menuBarItem.isSeeable() );
       assertTrue( barItem2.isSeeable() );
       assertFalse( menu.isSeeable() );
       assertFalse( menu2.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
       TestUtil.click( barItem2 );
@@ -1793,25 +1787,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testDropDownMenuCloseOnOtherMenuBarClick : function() {
       createMenuBar( "push" );
-      var bar = menuBar;
-      var barItem = menuBarItem;
       var menuBar2 = new MenuBar();
       menuBar2.addToDocument();
       var menu2 = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", menu2, menuHandler );
       var menuItem2 = new MenuItem( "push" );
       menuItem2.setText( "bla" );
       menu2.addMenuItemAt( menuItem2, 0 );
       var barItem2 = new MenuItem( "bar" );
+      rwt.remote.ObjectRegistry.add( "w8", barItem2, menuItemHandler );
       barItem2.setMenu( menu2 );
       menuBar2.addMenuItemAt( barItem2, 0 );
       TestUtil.flush();
-      assertTrue( bar.isSeeable() );
+      assertTrue( menuBar.isSeeable() );
       assertTrue( menuBar2.isSeeable() );
-      assertTrue( barItem.isSeeable() );
+      assertTrue( menuBarItem.isSeeable() );
       assertTrue( barItem2.isSeeable() );
       assertFalse( menu.isSeeable() );
       assertFalse( menu2.isSeeable() );
-      TestUtil.click( barItem );
+      TestUtil.click( menuBarItem );
       TestUtil.flush();
       assertTrue( menu.isSeeable() );
       TestUtil.click( barItem2 );
@@ -1831,7 +1825,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu.setAnimation( {
         "slideIn" : [ 100, "easeIn" ]
       } );
-      menu.setHasShowListener( true );
+      TestUtil.fakeListener( menu, "Show", true );
       assertNotNull( menu._appearAnimation );
       var animation = menu._appearAnimation;
       var renderer = menu._appearAnimation.getDefaultRenderer();
@@ -1848,14 +1842,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testDisposeWithRunningAnimaton : function() {
       createSimpleMenu( "push" );
-      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
-      rwt.remote.ObjectRegistry.add( "w321", menu, handler );
+      rwt.remote.ObjectRegistry.add( "w321", menu, menuHandler );
       menu.hide();
       TestUtil.flush();
       menu.setAnimation( {
         "slideIn" : [ 100, "easeIn" ]
       } );
-      menu.setHasShowListener( true );
+      TestUtil.fakeListener( menu, "Show", true );
       assertNotNull( menu._appearAnimation );
       var animation = menu._appearAnimation;
       var renderer = menu._appearAnimation.getDefaultRenderer();
@@ -1877,6 +1870,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testOpenContextmenuByClickOnSubwidget : function() {
       menu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
       menuItem = new MenuItem( "push" );
       menuItem.setText( "bla" );
       menu.addMenuItemAt( menuItem, 0 );
@@ -2131,8 +2125,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
 var createMenuWithItems = function( itemType, itemCount ) {
   var menu = new rwt.widgets.Menu();
-  var menuHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
-  var menuItemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.MenuItem" );
   ObjectRegistry.add( "w3", menu, menuHandler );
   for( var i = 0; i < itemCount; i++ ) {
     var menuItem = new rwt.widgets.MenuItem( itemType );
@@ -2178,10 +2170,8 @@ var createMenuItemByProtocol = function( id, parentId, style, index ) {
 
 var createSimpleMenu = function( type ) {
   menu = new Menu();
-  var menuHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Menu" );
   ObjectRegistry.add( "w3", menu, menuHandler );
   menuItem = new MenuItem( type );
-  var menuItemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.MenuItem" );
   ObjectRegistry.add( "w4", menuItem, menuItemHandler );
   menu.addMenuItemAt( menuItem, 0 );
   menu.show();
@@ -2189,12 +2179,16 @@ var createSimpleMenu = function( type ) {
 
 var createMenuBar = function( type, barItemType ) {
   menuBar = new MenuBar();
+  ObjectRegistry.add( "w3", menuBar, menuHandler );
   menuBar.addToDocument();
   menu = new Menu();
+  ObjectRegistry.add( "w4", menu, menuHandler );
   menuItem = new MenuItem( type );
+  ObjectRegistry.add( "w5", menuItem, menuItemHandler );
   menuItem.setText( "bla" );
   menu.addMenuItemAt( menuItem, 0 );
   menuBarItem = new MenuItem( barItemType ? barItemType : "cascade" );
+  ObjectRegistry.add( "w6", menuBarItem, menuItemHandler );
   menuBarItem.setMenu( menu );
   menuBar.addMenuItemAt( menuBarItem, 0 );
 };

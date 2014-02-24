@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
   construct : function( menuItemType ) {
     this.base( arguments, [ "image", "image", "label", "label", "image" ] );
-    this._hasSelectionListener = false;
     this._selected = false;
     this._parentMenu = null;
     this._rawText = null;
@@ -279,10 +278,6 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       }
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
     setSubMenu : function( value ) {
       this._subMenu = value;
       this.createDispatchEvent( "subMenuChanged" );
@@ -332,10 +327,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     },
 
     _notifySelected : function() {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && this._hasSelectionListener
-          && this._shouldSendEvent() )
-      {
+      if( this._shouldSendEvent() ) {
         rwt.remote.EventUtil.notifySelected( this );
       }
     },

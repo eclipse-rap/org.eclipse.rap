@@ -775,6 +775,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     _createMenuWithItems : function( itemCount ) {
       var menu = new rwt.widgets.Menu();
+      rwt.remote.ObjectRegistry.add( "m1", menu );
       for( var i = 0; i < itemCount; i++ ) {
         var menuItem = new rwt.widgets.MenuItem( "push" );
         menu.addMenuItemAt( menuItem, i );

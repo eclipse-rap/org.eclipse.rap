@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     this.base( arguments );
     this._layout = null;
     this._preItem = null;
-    this._hasShowListener = false;
-    this._hasHideListener = false;
     this._maxCellWidths = null;
     this._menuLayoutScheduled = false;
     this._opener = null;
@@ -490,42 +488,42 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       }
     },
 
-   _onMouseOver : function( event ) {
-     var target = event.getTarget();
-     if( target != this ) {
-       this.setHoverItem( target );
-     }
-     this._unhoverSubMenu();
-   },
+    _onMouseOver : function( event ) {
+      var target = event.getTarget();
+      if( target != this ) {
+        this.setHoverItem( target );
+      }
+      this._unhoverSubMenu();
+    },
 
-   _unhoverSubMenu : function() {
-     if( this._openItem ) {
-       var subMenu = this._openItem.getMenu();
-       subMenu.setOpenItem( null );
-       subMenu.setHoverItem( null );
-     }
-   },
+    _unhoverSubMenu : function() {
+      if( this._openItem ) {
+        var subMenu = this._openItem.getMenu();
+        subMenu.setOpenItem( null );
+        subMenu.setHoverItem( null );
+      }
+    },
 
-   _onKeyDown :function( event ) {
-     if( this._mnemonics ) {
-       var keyCode = event.getKeyCode();
-       var isChar =    !isNaN( keyCode )
-                    && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
-       if( isChar ) {
-         var event = {
-           "type" : "trigger",
-           "charCode" : keyCode,
-           "success" : false
-         };
-         var items = this._layout.getChildren();
-         for( var i = 0; i < items.length; i++ ) {
-           if( items[ i ].handleMnemonic ) {
-             items[ i ].handleMnemonic( event );
-           }
-         }
-       }
-     }
-   },
+    _onKeyDown :function( event ) {
+      if( this._mnemonics ) {
+        var keyCode = event.getKeyCode();
+        var isChar =    !isNaN( keyCode )
+                     && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
+        if( isChar ) {
+          var event = {
+            "type" : "trigger",
+            "charCode" : keyCode,
+            "success" : false
+          };
+          var items = this._layout.getChildren();
+          for( var i = 0; i < items.length; i++ ) {
+            if( items[ i ].handleMnemonic ) {
+              items[ i ].handleMnemonic( event );
+            }
+          }
+        }
+      }
+    },
 
     _onKeyPress : function( event ) {
       switch( event.getKeyIdentifier() ) {
@@ -603,24 +601,13 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       event.stopPropagation();
     },
 
-   ////////////////
-   // Client-Server
+    ////////////////
+    // Client-Server
 
-    setHasShowListener : function( value ) {
-      if( !this.hasState( "rwt_BAR" ) ) {
-        this._hasShowListener = value;
-      }
-    },
-
-    setHasHideListener : function( value ) {
-      if( !this.hasState( "rwt_BAR" ) ) {
-        this._hasHideListener = value;
-      }
-    },
-
-   _menuShown : function() {
+    _menuShown : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        if( this._hasShowListener ) {
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+        if( remoteObject.isListening( "Show" ) ) {
           // create preliminary item
           if( this._preItem == null ) {
             this._preItem = new rwt.widgets.MenuItem( "push" );
@@ -641,7 +628,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
           }
           //this.setDisplay( true ); //wouldn't be called if display was false
           // send event
-          rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Show" );
+          remoteObject.notify( "Show" );
         } else {
           var display = this._layout.getChildren().length !== 0;
           //no items and no listener to add some:
@@ -657,9 +644,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     _menuHidden : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        if( this._hasHideListener ) {
-          rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Hide" );
-        }
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Hide" );
       }
     },
 
@@ -692,4 +677,5 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     }
 
   }
+
 } );
