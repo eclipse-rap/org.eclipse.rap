@@ -25,8 +25,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this.setAllowStretchY( true );
       this.__oninput = rwt.util.Functions.bindEvent( this._oninputDomTextarea, this );
     }
-    this._hasDefaultSelectionListener = false;
-    this._hasModifyListener = false;
     this._modifyScheduled = false;
     this._message = null;
     this._messageElement = null;
@@ -79,31 +77,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    setHasDefaultSelectionListener : function( value ) {
-      if( !this.hasState( "rwt_MULTI" ) ) {
-        this._hasDefaultSelectionListener = value;
-      }
-    },
-
-    hasSelectionListener : function() {
-      // Emulate SWT (on Windows) where a default button takes precedence over
-      // a SelectionListener on a text field when both are on the same shell.
-      var shell = rwt.remote.HandlerUtil.getShell( this );
-      var defButton = shell ? shell.getDefaultButton() : null;
-      // TODO [rst] On GTK, the SelectionListener is also off when the default
-      //      button is invisible or disabled. Check with Windows and repair.
-      var hasDefaultButton = defButton != null && defButton.isSeeable();
-      return !hasDefaultButton && this._hasDefaultSelectionListener;
-    },
-
-    setHasModifyListener : function( value ) {
-      this._hasModifyListener = value;
-    },
-
-    hasModifyListener : function() {
-      return this._hasModifyListener;
-    },
-
     ////////////////
     // event handler
 
@@ -119,13 +92,22 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           && !event.isCtrlPressed()
           && !event.isMetaPressed() )
       {
-        if( this.hasState( "rwt_MULTI" ) ) {
+        if( this._isTextArea() ) {
           event.stopPropagation();
         }
-        if( this.hasSelectionListener() ) {
-          this._sendWidgetDefaultSelected();
+        if( this._shouldNotifyDefaultSelection() ) {
+          rwt.remote.EventUtil.notifyDefaultSelected( this );
         }
       }
+    },
+
+    _shouldNotifyDefaultSelection : function() {
+      // Emulate SWT (on Windows) where a default button takes precedence over
+      // a SelectionListener on a text field when both are on the same shell.
+      var shell = rwt.remote.HandlerUtil.getShell( this );
+      var defButton = shell ? shell.getDefaultButton() : null;
+      var hasDefaultButton = defButton != null && defButton.isSeeable() && defButton.getEnabled();
+      return !hasDefaultButton && !this._isTextArea();
     },
 
     _onMouseDownUp : function( event ) {
@@ -139,8 +121,8 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           this.setValue( "" );
           detail = "cancel";
         }
-        if( this._hasDefaultSelectionListener && detail != null ) {
-          this._sendWidgetDefaultSelected( detail );
+        if( detail != null ) {
+          rwt.remote.EventUtil.notifyDefaultSelected( this, 0, 0, 0, 0, detail );
         }
       }
     },
@@ -157,13 +139,14 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _handleModification : function() {
-      var server = rwt.remote.Connection.getInstance();
-      if( !this._modifyScheduled && this.hasModifyListener() ) {
+      var connection = rwt.remote.Connection.getInstance();
+      var remoteObject = connection.getRemoteObject( this );
+      if( !this._modifyScheduled && remoteObject.isListening( "Modify" ) ) {
         this._modifyScheduled = true;
-        server.sendDelayed( 500 );
-        server.onNextSend( this._onSend, this );
+        connection.onNextSend( this._onSend, this );
+        connection.sendDelayed( 500 );
       }
-      server.getRemoteObject( this ).set( "text", this.getComputedValue() );
+      remoteObject.set( "text", this.getComputedValue() );
       this._detectSelectionChange();
     },
 
@@ -172,13 +155,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
         rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
         this._modifyScheduled = false;
       }
-    },
-
-    /*
-     * Sends a widget default selected event to the server.
-     */
-    _sendWidgetDefaultSelected : function( detail ) {
-      rwt.remote.EventUtil.notifyDefaultSelected( this, 0, 0, 0, 0, detail );
     },
 
     ///////////////////

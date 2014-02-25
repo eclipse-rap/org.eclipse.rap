@@ -17,7 +17,7 @@ var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Font = rwt.html.Font;
 var Border = rwt.html.Border;
 var Client = rwt.client.Client;
-var Server = rwt.remote.Connection;
+var Connection = rwt.remote.Connection;
 
 var shell;
 var text;
@@ -28,6 +28,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    testTextHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Text" );
+
+      assertEquals( [ "DefaultSelection", "Modify" ], handler.events );
+    },
 
     testCreateSingleTextByProtocol : function() {
       Processor.processOperation( {
@@ -283,78 +289,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       text = ObjectRegistry.getObject( "w3" );
       assertEquals( 30, text.getMaxLength() );
-    },
-
-    testsetHasDefaultSelectionListenerByProtocol : function() {
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "SINGLE" ],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      text = ObjectRegistry.getObject( "w3" );
-      assertTrue( text.hasSelectionListener() );
-    },
-
-    testsetHasDefaultSelectionListenerOnMultiByProtocol : function() {
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "MULTI" ],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      text = ObjectRegistry.getObject( "w3" );
-      assertFalse( text.hasSelectionListener() );
-    },
-
-    testsetHasDefaultSelectionListenerWithDefaultButtonByProtocol : function() {
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.Button",
-        "properties" : {
-          "style" : [ "PUSH" ],
-          "parent" : "w2"
-        }
-      } );
-      var defaultButton = ObjectRegistry.getObject( "w4" );
-      shell.setDefaultButton( defaultButton );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "SINGLE" ],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-      TestUtil.flush();
-      text = ObjectRegistry.getObject( "w3" );
-      assertFalse( text.hasSelectionListener() );
-    },
-
-    testSetHasModifyListenerByProtocol : function() {
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "SINGLE" ],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "Modify" : true } );
-      text = ObjectRegistry.getObject( "w3" );
-      assertTrue( text.hasModifyListener() );
     },
 
     testSetTextByProtocol : function() {
@@ -708,6 +642,66 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ "A" ], log );
     },
 
+    testSendDefaultSelectionOnEnter : function() {
+      createText();
+      text.setValue( "foobar" );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
+
+      TestUtil.keyDown( text, "Enter" );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+    },
+
+    testSendDefaultSelectionOnEnter_withMutli : function() {
+      createText( true );
+      text.setValue( "foobar" );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
+
+      TestUtil.keyDown( text, "Enter" );
+      Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+    },
+
+    testSendDefaultSelectionOnEnter_withDefaultButton : function() {
+      shell.setDefaultButton( createButton( true, true ) );
+      createText();
+      text.setValue( "foobar" );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
+
+      TestUtil.keyDown( text, "Enter" );
+      Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+    },
+
+    testSendDefaultSelectionOnEnter_withInvisibleDefaultButton : function() {
+      shell.setDefaultButton( createButton( false, true ) );
+      createText();
+      text.setValue( "foobar" );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
+
+      TestUtil.keyDown( text, "Enter" );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+    },
+
+    testSendDefaultSelectionOnEnter_withDisabledDefaultButton : function() {
+      shell.setDefaultButton( createButton( true, false ) );
+      createText();
+      text.setValue( "foobar" );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
+
+      TestUtil.keyDown( text, "Enter" );
+
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+    },
+
     testSendSelectionChangeOnMouseDown : function() {
       createText();
       text.setValue( "foobar" );
@@ -715,7 +709,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.fakeMouseEvent( text, "mousedown" );
       setSelection( [ 3, 3 ] );
       TestUtil.fakeMouseEvent( text, "mouseup" );
-      Server.getInstance().send();
+      Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
@@ -730,7 +724,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 //      setSelection( [ 3, 3 ] );
 //      TestUtil.fakeMouseEvent( text, "mouseout" );
 //      TestUtil.fakeMouseEvent( shell, "mouseup" );
-//      Server.getInstance().send();
+//      Connection.getInstance().send();
 //
 //      assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
 //    },
@@ -742,7 +736,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" );
-      Server.getInstance().send();
+      Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
@@ -754,7 +748,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.keyDown( text, "Right" );
       setSelection( [ 3, 3 ] );
       TestUtil.keyDown( text, "Enter" ); // can send a request without releasing Right
-      Server.getInstance().send();
+      Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
@@ -765,7 +759,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       setSelection( [ 3, 3 ] );
 
       text.setValue( "f" );
-      Server.getInstance().send();
+      Connection.getInstance().send();
 
       assertEquals( [ 1, 1 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
@@ -774,17 +768,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       createText();
 
       text.setValue( "foobar" );
-      Server.getInstance().send();
+      Connection.getInstance().send();
 
       assertEquals( "foobar", TestUtil.getMessageObject().findSetProperty( "w3", "text" ) );
     },
 
     testSendTextModifyEventWithModifyListener : function() {
       createText();
-      text.setHasModifyListener( true );
+      TestUtil.fakeListener( text, "Modify", true );
 
       text.setValue( "foobar" );
-      TestUtil.forceInterval( Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( Connection.getInstance()._delayTimer );
 
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
@@ -794,23 +788,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text.setValue( "foobar" );
       try {
-        TestUtil.forceInterval( Server.getInstance()._delayTimer );
+        TestUtil.forceInterval( Connection.getInstance()._delayTimer );
       } catch( ex ) {
         // expected
       }
 
       assertEquals( 0, TestUtil.getRequestsSend() );
-      Server.getInstance().send();
+      Connection.getInstance().send();
       assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
     testDontSendTextModifyEventTwice : function() {
       createText();
-      text.setHasModifyListener( true );
+      TestUtil.fakeListener( text, "Modify", true );
 
       text.setValue( "foobar" );
       text.setValue( "barfoo" );
-      TestUtil.forceInterval( Server.getInstance()._delayTimer );
+      TestUtil.forceInterval( Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
@@ -1292,7 +1286,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       TestUtil.flush();
       text = ObjectRegistry.getObject( "w3" );
-      text.setHasDefaultSelectionListener( true );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
 
       TestUtil.clickDOM( text._searchIconElement, 5, 5 );
 
@@ -1313,7 +1307,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       TestUtil.flush();
       text = ObjectRegistry.getObject( "w3" );
-      text.setHasDefaultSelectionListener( true );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
 
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
@@ -1322,17 +1316,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testSendDefaultSelectionEventOnCancelIconClickWithDefaultButton : function() {
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.widgets.Button",
-        "properties" : {
-          "style" : [ "PUSH" ],
-          "parent" : "w2"
-        }
-      } );
-      var defaultButton = ObjectRegistry.getObject( "w4" );
-      shell.setDefaultButton( defaultButton );
+      shell.setDefaultButton( createButton( true, true ) );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -1345,7 +1329,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       } );
       TestUtil.flush();
       text = ObjectRegistry.getObject( "w3" );
-      text.setHasDefaultSelectionListener( true );
+      TestUtil.fakeListener( text, "DefaultSelection", true );
 
       TestUtil.clickDOM( text._cancelIconElement, 5, 5 );
 
@@ -1483,6 +1467,17 @@ var createText = function( noflush, arg ) {
     text.focus();
     TestUtil.clearRequestLog();
   }
+};
+
+var createButton = function( visible, enabled ) {
+  var button = new rwt.widgets.Button( "push" );
+  button.setParent( shell );
+  var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" );
+  ObjectRegistry.add( "w4", button, handler );
+  button.setVisibility( visible );
+  button.setEnabled( enabled );
+  TestUtil.flush();
+  return button;
 };
 
 var createChangeLogger = function() {

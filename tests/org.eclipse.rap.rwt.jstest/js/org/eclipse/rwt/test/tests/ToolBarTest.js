@@ -9,12 +9,11 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-
 (function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
@@ -33,7 +32,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.ToolBar );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -54,7 +53,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
       shell.destroy();
@@ -189,7 +188,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       Processor.processOperation( { "target" : "w4", "action" : "destroy" } );
       TestUtil.flush();
       assertTrue( widget.isDisposed() );
-      assertEquals( undefined, ObjectManager.getObject( "w4" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();
     },
@@ -204,8 +203,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
       assertTrue( toolbar.isDisposed() );
       assertTrue( widget.isDisposed() );
-      assertEquals( undefined, ObjectManager.getObject( "w3" ) );
-      assertEquals( undefined, ObjectManager.getObject( "w4" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w3" ) );
+      assertEquals( undefined, ObjectRegistry.getObject( "w4" ) );
       shell.destroy();
       toolbar.destroy();
     },
@@ -623,6 +622,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.separator.setSpace( 21, 30, 0, 20 );
       this.toolItem3.setSpace( 51, 10, 0, 20 );
       var text = new rwt.widgets.Text( false );
+      ObjectRegistry.add( "t4", text );
       this.toolBar.addAt( text, 4 );
       text.setSpace( 21, 30, 0, 20 );
       TestUtil.flush();
