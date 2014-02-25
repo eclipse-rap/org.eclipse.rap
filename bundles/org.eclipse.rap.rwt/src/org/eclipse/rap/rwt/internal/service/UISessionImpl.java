@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public final class UISessionImpl
+public class UISessionImpl
   implements UISession, HttpSessionBindingListener, SerializableCompatibility
 {
 

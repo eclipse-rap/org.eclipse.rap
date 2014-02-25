@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -185,37 +184,43 @@ public class ServiceManagerImpl_Test {
   }
 
   @Test
-  public void testGetServiceHandlerUrl_returnsUrl() {
-    String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
+  public void testGetServiceHandlerUrl_returnsRelativeUrlWithIdParam() {
+    String url = serviceManager.getServiceHandlerUrl( "foo" );
 
-    assertEquals( "/fooapp/rap?servicehandler=foo", url );
+    assertEquals( "?servicehandler=foo", url );
   }
 
   @Test
-  public void testGetServiceHandlerUrl_withConnectionId() {
-    UISessionImpl uiSession
-      = new UISessionImpl( mock( ApplicationContextImpl.class ), mock( HttpSession.class ), "bar" );
-    ContextProvider.getContext().setUISession( uiSession );
+  public void testGetServiceHandlerUrl_includesConnectionId() {
+    ContextProvider.getContext().setUISession( mockUISessionWithConnectionId( "bar" ) );
 
-    String url = RWT.getServiceManager().getServiceHandlerUrl( "foo" );
+    String url = serviceManager.getServiceHandlerUrl( "foo" );
 
-    assertEquals( "/fooapp/rap?servicehandler=foo&cid=bar", url );
+    assertEquals( "?servicehandler=foo&cid=bar", url );
   }
 
   @Test
   public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
-    String url = RWT.getServiceManager().getServiceHandlerUrl( "Smørre brød" );
+    String url = serviceManager.getServiceHandlerUrl( "Smørre brød" );
 
-    assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
+    assertEquals( "?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
   }
 
   @Test
   public void testGetServiceHandlerUrl_failsWithNull() {
     try {
-      RWT.getServiceManager().getServiceHandlerUrl( null );
+      serviceManager.getServiceHandlerUrl( null );
       fail();
     } catch( NullPointerException exception ) {
+      assertThat( exception.getMessage(), containsString( "parameter" ) );
     }
+  }
+
+  private static UISessionImpl mockUISessionWithConnectionId( String connectionId ) {
+    UISessionImpl uiSession = mock( UISessionImpl.class );
+    when( Boolean.valueOf( uiSession.isBound() ) ).thenReturn( Boolean.TRUE );
+    when( uiSession.getConnectionId() ).thenReturn( connectionId );
+    return uiSession;
   }
 
 }

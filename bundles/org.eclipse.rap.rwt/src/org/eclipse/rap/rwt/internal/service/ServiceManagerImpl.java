@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -54,18 +54,17 @@ public class ServiceManagerImpl implements ServiceManager {
 
   public String getServiceHandlerUrl( String id ) {
     ParamCheck.notNull( id, "id" );
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder url = new StringBuilder( request.getRequestURI() );
-    url.append( '?' );
-    url.append( REQUEST_PARAM );
-    url.append( '=' );
-    url.append( encodeParameter( id ) );
+    StringBuilder url = new StringBuilder()
+      .append( '?' )
+      .append( REQUEST_PARAM )
+      .append( '=' )
+      .append( encodeParameter( id ) );
     String connectionId = getConnectionId();
     if( connectionId != null ) {
-      url.append( '&' );
-      url.append( UrlParameters.PARAM_CONNECTION_ID );
-      url.append( '=' );
-      url.append( connectionId );
+      url.append( '&' )
+        .append( PARAM_CONNECTION_ID )
+        .append( '=' )
+        .append( connectionId );
     }
     return ContextProvider.getResponse().encodeURL( url.toString() );
   }
