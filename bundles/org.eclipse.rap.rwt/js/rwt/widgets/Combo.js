@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this.base( arguments );
     this._ccombo = isCCombo === true;
     //
-    this._hasSelectionListener = false;
-    this._hasDefaultSelectionListener = false;
-    this._hasModifyListener = false;
-    this._isModified = false;
+    this._modifyScheduled = false;
     // Default values
     this._selected = null;
     this._editable = true;
@@ -398,7 +395,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         }
         this._resetListSelection();
       }
-      this._sendWidgetSelected();
+      this._notifySelectionChanged();
       this.dispatchSimpleEvent( "selectionChanged" );
     },
 
@@ -553,7 +550,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
                      && !evt.isCtrlPressed()
                      && !evt.isMetaPressed() )
           {
-            this._sendWidgetDefaultSelected();
+            rwt.remote.EventUtil.notifyDefaultSelected( this );
           }
           this.setFocused( true );
           evt.stopPropagation();
@@ -650,16 +647,16 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _onTextInput : function( evt ) {
       if( this._editable ) {
-        this._isModified = true;
         this._selected = null;
         this._resetListSelection();
-        if( !rwt.remote.EventUtil.getSuspended() ) {
-          var req = rwt.remote.Connection.getInstance();
-          req.addEventListener( "send", this._onSend, this );
-          if( this._hasModifyListener ) {
-            rwt.client.Timer.once( this._sendModifyText, this, 500 );
-          }
+        var connection = rwt.remote.Connection.getInstance();
+        var remoteObject = connection.getRemoteObject( this );
+        if( !this._modifyScheduled && remoteObject.isListening( "Modify" ) ) {
+          this._modifyScheduled = true;
+          connection.onNextSend( this._onSend, this );
+          connection.sendDelayed( 500 );
         }
+        remoteObject.set( "text", this._field.getComputedValue() );
       }
     },
 
@@ -667,50 +664,32 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     // Actions, connected with server communication
 
     _onTextBlur : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() && this._isModified ) {
-        var req = rwt.remote.Connection.getInstance();
-        req.send();
+      if( !rwt.remote.EventUtil.getSuspended() && this._modifyScheduled ) {
+        rwt.remote.Connection.getInstance().send();
       }
     },
 
     _onSend : function( evt ) {
-      var server = rwt.remote.Connection.getInstance();
-      server.getRemoteObject( this ).set( "text", this._field.getComputedValue() );
-      server.removeEventListener( "send", this._onSend, this );
-      this._isModified = false;
-      this.setText( this._field.getComputedValue() );
+      if( this._modifyScheduled ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify" );
+        this._modifyScheduled = false;
+      }
     },
 
-    _sendModifyText : function() {
-      var server = rwt.remote.Connection.getInstance();
-      server.getRemoteObject( this ).notify( "Modify" );
-      this._isModified = false;
-    },
-
-    _sendWidgetSelected : function() {
+    _notifySelectionChanged : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var listItem = this._list.getSelectedItem();
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "selectionIndex", this._list.getItemIndex( listItem ) );
-        if( this._hasSelectionListener ) {
-          rwt.remote.EventUtil.notifySelected( this );
-        }
-        if( this._hasModifyListener ) {
-          this._sendModifyText();
-        }
-      }
-    },
-
-    _sendWidgetDefaultSelected : function() {
-      if( this._hasDefaultSelectionListener && !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.EventUtil.notifyDefaultSelected( this );
+        rwt.remote.EventUtil.notifySelected( this );
+        remoteObject.notify( "Modify" );
       }
     },
 
     _updateListVisibleRequestParam : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        server.getRemoteObject( this ).set( "listVisible", this._list.getDisplay() );
+        var connection = rwt.remote.Connection.getInstance();
+        connection.getRemoteObject( this ).set( "listVisible", this._list.getDisplay() );
       }
     },
 
@@ -808,18 +787,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this._field.setMaxLength( value );
     },
 
-    setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
-    },
-
-    setHasDefaultSelectionListener : function( value ) {
-      this._hasDefaultSelectionListener = value;
-    },
-
-    setHasModifyListener : function( value ) {
-      this._hasModifyListener = value;
-    },
-
     ////////////////////////////
     // apply subwidget html IDs
 
@@ -842,4 +809,5 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     }
 
   }
+
 } );

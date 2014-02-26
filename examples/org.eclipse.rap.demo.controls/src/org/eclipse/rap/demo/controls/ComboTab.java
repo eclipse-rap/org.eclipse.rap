@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
@@ -41,6 +43,7 @@ import org.eclipse.swt.widgets.Text;
 public class ComboTab extends ExampleTab {
 
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
+  private static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   private static final String[] ITEMS = new String[] {
     "Eiffel",
@@ -77,6 +80,7 @@ public class ComboTab extends ExampleTab {
     createFontChooser();
     createCursorCombo();
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
+    createPropertyCheckbox( "Add Modify Listener", PROP_MODIFY_LISTENER );
     Group grpManioulateCCombo = new Group( parent, SWT.NONE );
     grpManioulateCCombo.setText( "Manipulate CCombo" );
     grpManioulateCCombo.setLayout( new GridLayout() );
@@ -157,6 +161,13 @@ public class ComboTab extends ExampleTab {
                        + "Text: " + firstCombo.getText() + "\n"
                        + "Selection: " + firstCombo.getSelectionIndex();
           MessageDialog.openInformation( shell, "Selection Event", msg );
+        }
+      } );
+    }
+    if( hasCreateProperty( PROP_MODIFY_LISTENER ) ) {
+      firstCombo.addModifyListener( new ModifyListener() {
+        public void modifyText( ModifyEvent event ) {
+          log( event.toString() );
         }
       } );
     }

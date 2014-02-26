@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,16 +9,22 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    testComboHandlerEventsList : function() {
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Combo" );
+
+      assertEquals( [ "Selection", "DefaultSelection", "Modify" ], handler.events );
+    },
 
     testCreateComboByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
@@ -31,7 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -52,7 +58,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "ccombo" : true
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Combo );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -76,7 +82,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
 
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "variant_mystyle" ) );
       assertTrue( widget._field.hasState( "variant_mystyle" ) );
       assertTrue( widget._list.hasState( "variant_mystyle" ) );
@@ -106,7 +112,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
 
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget.hasState( "variant_mystyle" ) );
       assertFalse( widget._field.hasState( "variant_mystyle" ) );
       assertFalse( widget._list.hasState( "variant_mystyle" ) );
@@ -126,7 +132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "itemHeight" : 18
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 18, widget._itemHeight );
       assertEquals( 90, widget._getListMaxHeight() );
       shell.destroy();
@@ -145,7 +151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "visibleItemCount" : 3
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 3, widget._visibleItemCount );
       assertEquals( 60, widget._getListMaxHeight() );
       shell.destroy();
@@ -164,7 +170,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "items" : [ "a", "b", "c" ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( [ "a", "b", "c" ], widget._items );
       widget._updateItems();
       var items = widget._list.getItems();
@@ -188,7 +194,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "items" : [ "  foo &\nbar " ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       widget._updateItems();
       var items = widget._list.getItems();
       assertEquals( 1, widget._list.getItemsCount() );
@@ -210,7 +216,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "listVisible" : true
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._dropped );
       shell.destroy();
       widget.destroy();
@@ -229,7 +235,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "selectionIndex" : 1
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       var items = widget._list.getItems();
       assertIdentical( items[ 1 ], widget._selected );
       shell.destroy();
@@ -248,7 +254,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "editable" : false
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget._editable );
       assertTrue( widget._field.getReadOnly() );
       shell.destroy();
@@ -267,7 +273,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "text" : "foo"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "foo", widget._field.getValue() );
       shell.destroy();
       widget.destroy();
@@ -294,7 +300,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       TestUtil.flush();
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       widget.focus();
 
 
@@ -315,64 +321,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "textLimit" : 10
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 10, widget._field.getMaxLength() );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetHasSelectionListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasSelectionListener );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetHasDefaultSelectionListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-
-      TestUtil.protocolListen( "w3", { "DefaultSelection" : true } );
-
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasDefaultSelectionListener );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetHasModifyListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "Modify" : true } );
-      var widget = ObjectManager.getObject( "w3" );
-      assertTrue( widget._hasModifyListener );
       shell.destroy();
       widget.destroy();
     },
@@ -590,7 +540,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setSpace( 10, 81, 6, 23 );
       combo.setItemHeight( 19 );
       combo.setEditable( false );
@@ -705,12 +655,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setVisibleItemCount( 5 );
       combo.setListVisible( true );
       combo.select( 3 );
-      combo.setHasSelectionListener( true );
+      TestUtil.fakeListener( combo, "Selection", true );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
@@ -742,12 +692,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setVisibleItemCount( 5 );
       combo.setListVisible( true );
       combo.select( 3 );
-      combo.setHasModifyListener( true );
+      TestUtil.fakeListener( combo, "Modify", true );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
@@ -779,9 +729,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setHasDefaultSelectionListener( true );
+      TestUtil.fakeListener( combo, "DefaultSelection", true );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
@@ -807,7 +757,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
           "parent" : "w2"
         }
       } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setVisibleItemCount( 5 );
       combo.setListVisible( true );
@@ -838,7 +788,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       TestUtil.protocolListen( "w3", { "Modify" : true } );
-      var combo = ObjectManager.getObject( "w3" );
+      var combo = ObjectRegistry.getObject( "w3" );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setVisibleItemCount( 5 );
       combo.setListVisible( true );
@@ -849,7 +799,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
       combo._field.setValue( "a" );
       combo._field._oninput();
-      TestUtil.forceTimerOnce();
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -857,7 +807,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
       shell.destroy();
     },
-
 
     testPageUpOnNotCreatedList : function() {
       var combo = this._createDefaultCombo();
@@ -974,7 +923,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       TestUtil.flush();
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       widget._toggleListVisibility();
       var propagated = false;
@@ -1003,7 +952,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       TestUtil.flush();
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       var propagated = false;
       shell.addEventListener( "keydown", function( event ) {
@@ -1080,4 +1029,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
 } );
 
-}());
+}() );
