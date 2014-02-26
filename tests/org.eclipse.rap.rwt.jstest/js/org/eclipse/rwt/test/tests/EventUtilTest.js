@@ -58,6 +58,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       assertNotNull( TestUtil.getLastMessage().findNotifyOperation( "w11", "MouseDoubleClick" ) );
     },
 
+    testMouseDoubleClickDoesNotSendNotifyIfDeviationIsBigger : function() {
+      widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDoubleClick );
+      widget.addEventListener( "mouseup", rwt.remote.EventUtil.mouseUpCounter );
+
+      TestUtil.click( widget, 10, 10 );
+      TestUtil.click( widget, 20, 20 );
+
+      assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
     testMouseDownOnChildElementSendsNotify : function() {
       widget.addEventListener( "mousedown", rwt.remote.EventUtil.mouseDown );
       var element = document.createElement( "div" );

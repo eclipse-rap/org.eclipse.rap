@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -246,13 +246,19 @@ rwt.qx.Class.define( "rwt.remote.EventUtil", {
     },
 
     _isDoubleClick : function( widget, evt ) {
-      // TODO [rh] compare last position with current position and don't
-      //      report double-click if deviation is too big
       var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
       return    lastMouseDown.mouseUpCount === 1
              && lastMouseDown.widget === widget
              && lastMouseDown.button === rwt.event.MouseEvent.C_BUTTON_LEFT
-             && lastMouseDown.button === evt.getButton();
+             && lastMouseDown.button === evt.getButton()
+             && rwt.remote.EventUtil._isCloseTo( lastMouseDown.x,
+                                                 lastMouseDown.y,
+                                                 evt.getPageX(),
+                                                 evt.getPageY() );
+    },
+
+    _isCloseTo : function( lastX, lastY, x, y ) {
+      return x >= lastX - 5 && x <= lastX + 5 && y >= lastY - 5 && y <= lastY + 5;
     },
 
     _notifyMouseListeners : function( widget, evt, eventType ) {
