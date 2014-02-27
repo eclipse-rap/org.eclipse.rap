@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
@@ -29,8 +30,7 @@ import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessagesImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
-import org.eclipse.rap.rwt.internal.client.FileUploader;
-import org.eclipse.rap.rwt.internal.client.FileUploaderImpl;
+import org.eclipse.rap.rwt.internal.client.ClientFileUploaderImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
@@ -145,8 +145,8 @@ public class WebClient implements Client {
       result = ( T )getServiceImpl( ClientInfoImpl.class );
     } else if( type == ClientMessages.class ) {
       result = ( T )getServiceImpl( WebClientMessages.class );
-    } else if( type == FileUploader.class ) {
-      result = ( T )getServiceImpl( FileUploaderImpl.class );
+    } else if( type == ClientFileUploader.class ) {
+      result = ( T )getServiceImpl( ClientFileUploaderImpl.class );
     }
     return result;
   }

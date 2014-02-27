@@ -8,23 +8,30 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.dnd;
+package org.eclipse.rap.rwt.dnd;
 
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 
 
-public class RemoteFileTransfer extends Transfer {
+/**
+ * The class <code>ClientFileTransfer</code> provides a dedicated transfer type for RAP client files
+ * DND operations.
+ *
+ * @see Transfer
+ * @since 2.3
+ */
+public class ClientFileTransfer extends Transfer {
 
-  static final String TYPE_NAME = "RemoteFile";
+  static final String TYPE_NAME = "ClientFile";
   static final int TYPE_ID = registerType( TYPE_NAME );
 
-  private RemoteFileTransfer() {
+  private ClientFileTransfer() {
   }
 
-  public static RemoteFileTransfer getInstance() {
-    return SingletonUtil.getSessionInstance( RemoteFileTransfer.class );
+  public static ClientFileTransfer getInstance() {
+    return SingletonUtil.getSessionInstance( ClientFileTransfer.class );
   }
 
   @Override

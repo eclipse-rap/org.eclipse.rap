@@ -8,14 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.dnd;
+package org.eclipse.rap.rwt.internal.client;
+
+import org.eclipse.rap.rwt.client.ClientFile;
 
 
-public class RemoteFile {
+public class ClientFileImpl implements ClientFile {
 
   private final String fileId;
 
-  public RemoteFile( String fileId ) {
+  public ClientFileImpl( String fileId ) {
     this.fileId = fileId;
   }
 

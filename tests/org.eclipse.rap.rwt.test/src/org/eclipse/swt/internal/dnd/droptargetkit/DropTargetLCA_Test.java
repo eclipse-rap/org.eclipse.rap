@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -303,7 +303,7 @@ public class DropTargetLCA_Test {
 
   @Test
   public void testRenderFileDropEnabled_initialTrueRendersTrue() throws IOException {
-    target.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+    target.setTransfer( new Transfer[]{ ClientFileTransfer.getInstance() } );
 
     lca.renderChanges( target );
 
@@ -314,7 +314,7 @@ public class DropTargetLCA_Test {
   @Test
   public void testRenderFileDropEnabled_setBackToFalseRendersFalse() throws IOException {
     Fixture.markInitialized( target );
-    target.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+    target.setTransfer( new Transfer[]{ ClientFileTransfer.getInstance() } );
     Fixture.preserveWidgets();
     target.setTransfer( new Transfer[ 0 ] );
 

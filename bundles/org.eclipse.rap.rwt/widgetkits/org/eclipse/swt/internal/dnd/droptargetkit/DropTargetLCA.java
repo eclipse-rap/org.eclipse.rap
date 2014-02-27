@@ -36,7 +36,7 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
@@ -187,7 +187,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   private static boolean isFileDropEnabled( DropTarget target ) {
     Transfer[] transfers = target.getTransfer();
     for( Transfer transfer : transfers ) {
-      if( transfer instanceof RemoteFileTransfer ) {
+      if( transfer instanceof ClientFileTransfer ) {
         return true;
       }
     }

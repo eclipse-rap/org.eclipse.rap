@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
+import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -443,14 +443,14 @@ public class DropTargetOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyDragAccept_filesPropertySetsRemoteFileTransfer() {
+  public void testHandleNotifyDragAccept_filesPropertySetsClientFileTransfer() {
     JsonObject properties = createFileDropProperties();
 
     handler.handleNotify( "DropAccept", properties );
 
     ArgumentCaptor<DNDEvent> captor = ArgumentCaptor.forClass( DNDEvent.class );
     verify( dropTarget ).notifyListeners( eq( DND.DropAccept ), captor.capture() );
-    assertTrue( RemoteFileTransfer.getInstance().isSupportedType( captor.getValue().dataType ) );
+    assertTrue( ClientFileTransfer.getInstance().isSupportedType( captor.getValue().dataType ) );
   }
 
   @Test
@@ -463,15 +463,15 @@ public class DropTargetOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotifyDragAccept_filesPropertyIsConvertedToRemoteFiles() {
-    dropTarget.setTransfer( new Transfer[]{ RemoteFileTransfer.getInstance() } );
+  public void testHandleNotifyDragAccept_filesPropertyIsConvertedToClientFiles() {
+    dropTarget.setTransfer( new Transfer[]{ ClientFileTransfer.getInstance() } );
     JsonObject properties = createFileDropProperties();
 
     handler.handleNotify( "DropAccept", properties );
 
     ArgumentCaptor<DNDEvent> captor = ArgumentCaptor.forClass( DNDEvent.class );
     verify( dropTarget ).notifyListeners( eq( DND.Drop ), captor.capture() );
-    RemoteFile[] remoteFiles = ( RemoteFile[] )captor.getValue().data;
+    ClientFileImpl[] remoteFiles = ( ClientFileImpl[] )captor.getValue().data;
     assertEquals( 2, remoteFiles.length );
     assertEquals( "file1", remoteFiles[ 0 ].getFileId() );
     assertEquals( "file2", remoteFiles[ 1 ].getFileId() );

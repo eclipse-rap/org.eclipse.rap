@@ -8,14 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.client;
-
-import org.eclipse.rap.rwt.client.service.ClientService;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
+package org.eclipse.rap.rwt.client;
 
 
-public interface FileUploader extends ClientService {
-
-  void submit( String url, RemoteFile[] remoteFiles );
-
+/**
+ * Represents a file on the client
+ *
+ * @since 2.3
+ */
+public interface ClientFile {
 }

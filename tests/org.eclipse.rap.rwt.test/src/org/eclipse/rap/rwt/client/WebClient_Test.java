@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
@@ -29,8 +30,7 @@ import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessages;
 import org.eclipse.rap.rwt.internal.client.ConnectionMessagesImpl;
 import org.eclipse.rap.rwt.internal.client.ExitConfirmationImpl;
-import org.eclipse.rap.rwt.internal.client.FileUploader;
-import org.eclipse.rap.rwt.internal.client.FileUploaderImpl;
+import org.eclipse.rap.rwt.internal.client.ClientFileUploaderImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptExecutorImpl;
 import org.eclipse.rap.rwt.internal.client.JavaScriptLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.UrlLauncherImpl;
@@ -139,8 +139,8 @@ public class WebClient_Test {
 
   @Test
   public void testGetFileUploaderService() {
-    ClientService service = client.getService( FileUploader.class );
-    assertTrue( service instanceof FileUploaderImpl );
+    ClientService service = client.getService( ClientFileUploader.class );
+    assertTrue( service instanceof ClientFileUploaderImpl );
   }
 
   private static class UnsupportedService implements ClientService {

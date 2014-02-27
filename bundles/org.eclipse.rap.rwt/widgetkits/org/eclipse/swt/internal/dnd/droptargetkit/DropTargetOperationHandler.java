@@ -31,8 +31,9 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
+import org.eclipse.rap.rwt.client.ClientFile;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
+import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
@@ -321,7 +322,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   }
 
   private boolean isFileDrop( DropData dropData ) {
-    return dropData.data instanceof RemoteFile[];
+    return dropData.data instanceof ClientFileImpl[];
   }
 
   private static DNDEvent createDropEvent( DropData dropData ) {
@@ -337,13 +338,13 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
 
   private static DropData createDropData( DropTarget dropTarget, JsonObject properties ) {
     DropData dropData = new DropData();
-    dropData.data = getRemoteFiles( properties.get( EVENT_PARAM_FILES ) );
+    dropData.data = getClientFiles( properties.get( EVENT_PARAM_FILES ) );
     dropData.x = properties.get( EVENT_PARAM_X ).asInt();
     dropData.y = properties.get( EVENT_PARAM_Y ).asInt();
     dropData.time = properties.get( EVENT_PARAM_TIME ).asInt();
     dropData.detail = getOperation( properties.get( EVENT_PARAM_OPERATION ) );
     dropData.dataType =   dropData.data != null
-                        ? getRemoteFileDataType()
+                        ? getClientFileDataType()
                         : getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
     dropData.dragSource = getDragSource( properties.get( EVENT_PARAM_SOURCE ) );
     dropData.dataTypes = determineDataTypes( dropData.dragSource, dropTarget );
@@ -352,13 +353,13 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
     return dropData;
   }
 
-  private static RemoteFile[] getRemoteFiles( JsonValue value ) {
+  private static ClientFile[] getClientFiles( JsonValue value ) {
     if( value != null ) {
       JsonArray fileIdArray = value.asArray();
       int size = fileIdArray.size();
-      RemoteFile[] result = new RemoteFile[ size ];
+      ClientFileImpl[] result = new ClientFileImpl[ size ];
       for( int i = 0; i < size; i++ ) {
-        result[ i ] = new RemoteFile( fileIdArray.get( i ).asString() );
+        result[ i ] = new ClientFileImpl( fileIdArray.get( i ).asString() );
       }
       return result;
     }
@@ -457,9 +458,9 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
     return result;
   }
 
-  private static TransferData getRemoteFileDataType() {
+  private static TransferData getClientFileDataType() {
     TransferData result = new TransferData();
-    result.type = RemoteFileTransfer.getInstance().getSupportedTypes()[ 0 ].type;
+    result.type = ClientFileTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     return result;
   }
 

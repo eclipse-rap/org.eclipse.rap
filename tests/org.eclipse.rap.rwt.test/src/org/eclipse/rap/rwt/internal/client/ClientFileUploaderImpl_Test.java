@@ -10,15 +10,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
+import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -27,13 +29,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class FileUploaderImpl_Test {
+public class ClientFileUploaderImpl_Test {
 
   private static final String REMOTE_ID = "rwt.client.FileUploader";
+
+  private ClientFileUploaderImpl uploader;
 
   @Before
   public void setUp() {
     Fixture.setUp();
+    uploader = new ClientFileUploaderImpl();
   }
 
   @After
@@ -45,21 +50,47 @@ public class FileUploaderImpl_Test {
   public void testCreatesRemoteObjectWithCorrectId() {
     ConnectionImpl connection = fakeConnection( mock( RemoteObject.class ) );
 
-    new FileUploaderImpl();
+    new ClientFileUploaderImpl();
 
     verify( connection ).createServiceObject( eq( REMOTE_ID ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testSubmit_failsWithNullUrl() {
+    uploader.submit( null, new ClientFile[ 0 ] );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSubmit_failsWithEmptyUrl() {
+    uploader.submit( "", new ClientFile[ 0 ] );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testSubmit_failsWithNullClientFiles() {
+    uploader.submit( "fooURL", null );
+  }
+
+  @Test
+  public void testSubmit_withEmptyClientFilesDoesNotCreateCallOperation() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+
+    uploader = new ClientFileUploaderImpl();
+    uploader.submit( "fooURL", new ClientFile[ 0 ] );
+
+    verify( remoteObject, never() ).call( eq( "submit" ), any( JsonObject.class) );
   }
 
   @Test
   public void testSubmit_createsCallOperation() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
-    FileUploaderImpl uploader = new FileUploaderImpl();
-    RemoteFile[] files = new RemoteFile[]{
-      new RemoteFile( "fileId1" ),
-      new RemoteFile( "fileId2" )
+    ClientFile[] files = new ClientFile[]{
+      new ClientFileImpl( "fileId1" ),
+      new ClientFileImpl( "fileId2" )
     };
 
+    uploader = new ClientFileUploaderImpl();
     uploader.submit( "fooURL", files );
 
     JsonObject expected = new JsonObject()

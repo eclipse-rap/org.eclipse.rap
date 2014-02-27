@@ -10,32 +10,38 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNull;
+import static org.eclipse.rap.rwt.internal.util.ParamCheck.notNullOrEmpty;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.dnd.RemoteFile;
+import org.eclipse.rap.rwt.client.ClientFile;
+import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 
-
-
-public class FileUploaderImpl implements FileUploader {
+public class ClientFileUploaderImpl implements ClientFileUploader {
 
   private static final String REMOTE_ID = "rwt.client.FileUploader";
   private final RemoteObject remoteObject;
 
-  public FileUploaderImpl() {
+  public ClientFileUploaderImpl() {
     ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
     remoteObject = connection.createServiceObject( REMOTE_ID );
   }
 
-  public void submit( String url, RemoteFile[] remoteFiles ) {
+  public void submit( String url, ClientFile[] clientFiles ) {
+    notNullOrEmpty( url, "url" );
+    notNull( clientFiles, "clientFiles" );
     JsonArray fileIds = new JsonArray();
-    for( RemoteFile file : remoteFiles ) {
-      fileIds.add( file.getFileId() );
+    for( ClientFile file : clientFiles ) {
+      fileIds.add( ( ( ClientFileImpl )file ).getFileId() );
     }
-    JsonObject parameters = new JsonObject() .add( "url", url ) .add( "fileIds", fileIds );
-    remoteObject.call( "submit", parameters );
+    if( !fileIds.isEmpty() ) {
+      JsonObject parameters = new JsonObject() .add( "url", url ) .add( "fileIds", fileIds );
+      remoteObject.call( "submit", parameters );
+    }
   }
 
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.dnd;
+package org.eclipse.rap.rwt.dnd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.dnd.RemoteFileTransfer;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -25,15 +24,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class RemoteFileTransfer_Test {
+public class ClientFileTransfer_Test {
 
-  private RemoteFileTransfer transfer;
+  private ClientFileTransfer transfer;
 
   @Before
   public void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
-    transfer = RemoteFileTransfer.getInstance();
+    transfer = ClientFileTransfer.getInstance();
   }
 
   @After
@@ -44,7 +43,7 @@ public class RemoteFileTransfer_Test {
 
   @Test
   public void testGetInstance_returnsSameInstance() {
-    RemoteFileTransfer transfer2 = RemoteFileTransfer.getInstance();
+    ClientFileTransfer transfer2 = ClientFileTransfer.getInstance();
 
     assertNotNull( transfer );
     assertSame( transfer, transfer2 );
@@ -55,7 +54,7 @@ public class RemoteFileTransfer_Test {
     String[] typeNames = transfer.getTypeNames();
 
     assertEquals( 1, typeNames.length );
-    assertEquals( "RemoteFile", typeNames[ 0 ] );
+    assertEquals( "ClientFile", typeNames[ 0 ] );
   }
 
   @Test
@@ -63,7 +62,7 @@ public class RemoteFileTransfer_Test {
     int[] typeIds = transfer.getTypeIds();
 
     assertEquals( 1, typeIds.length );
-    assertEquals( "RemoteFile".hashCode(), typeIds[ 0 ] );
+    assertEquals( "ClientFile".hashCode(), typeIds[ 0 ] );
   }
 
   @Test
