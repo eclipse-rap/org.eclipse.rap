@@ -12,9 +12,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
-import java.io.IOException;
-import java.util.Enumeration;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
 
+import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +30,6 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
@@ -103,22 +104,15 @@ public class RWTServlet extends HttpServlet {
     throws IOException, ServletException
   {
     if( !applicationContext.allowsRequests() ) {
-      response.sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+      response.sendError( SC_SERVICE_UNAVAILABLE );
     } else if( request.getPathInfo() == null ) {
       // /context/servlet: no extra path info after servlet name
       handleValidRequest( request, response );
-    } else if( "/".equals( request.getPathInfo() ) ) {
-      if( "".equals( request.getServletPath() ) ) {
-        // /context/: root servlet, in this case path info "/" is ok
-        handleValidRequest( request, response );
-      } else {
-        // /context/servlet/: redirect to /context/servlet (without trailing slash)
-        // in order to maintain relative links to static resources
-        String redirectUrl = createRedirectUrl( request );
-        response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
-      }
+    } else if( "/".equals( request.getPathInfo() ) && "".equals( request.getServletPath() ) ) {
+      // /context/: root servlet, in this case path info "/" is ok
+      handleValidRequest( request, response );
     } else {
-      response.sendError( HttpServletResponse.SC_NOT_FOUND );
+      response.sendError( SC_NOT_FOUND );
     }
   }
 
@@ -152,33 +146,13 @@ public class RWTServlet extends HttpServlet {
     synchronized( RWTServlet.class ) {
       HttpServletRequest request = serviceContext.getRequest();
       HttpSession httpSession = request.getSession( true );
-      String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
+      String connectionId = request.getParameter( PARAM_CONNECTION_ID );
       UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, connectionId );
       if( uiSession == null ) {
         uiSession = new UISessionBuilder( serviceContext ).buildUISession();
       }
       serviceContext.setUISession( uiSession );
     }
-  }
-
-  static String createRedirectUrl( HttpServletRequest request ) {
-    StringBuilder url = new StringBuilder( request.getRequestURI() );
-    Enumeration parameterNames = request.getParameterNames();
-    if( parameterNames.hasMoreElements() ) {
-      url.append( '?' );
-      boolean first = true;
-      while( parameterNames.hasMoreElements() ) {
-        if( !first ) {
-          url.append( '&' );
-        }
-        String parameterName = ( String )parameterNames.nextElement();
-        url.append( parameterName );
-        url.append( '=' );
-        url.append( request.getParameter( parameterName ) );
-        first = false;
-      }
-    }
-    return url.toString();
   }
 
 }

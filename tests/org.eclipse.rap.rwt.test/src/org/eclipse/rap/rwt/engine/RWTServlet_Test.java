@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.engine;
 
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -82,7 +84,7 @@ public class RWTServlet_Test {
 
     servlet.doGet( request, response );
 
-    verify( response ).sendError( HttpServletResponse.SC_SERVICE_UNAVAILABLE );
+    verify( response ).sendError( SC_SERVICE_UNAVAILABLE );
     verifyNoMoreInteractions( response );
   }
 
@@ -110,51 +112,22 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_withTrailingSlash() throws Exception {
-    request.setRequestURI( "/foo/bar" );
+    request.setServletPath( "/foo" );
     request.setPathInfo( "/" );
-    request.setSession( mock( HttpSession.class ) );
 
     servlet.doGet( request, response );
 
-    assertEquals( "/foo/bar", response.getRedirect() );
+    assertEquals( SC_NOT_FOUND, response.getErrorStatus() );
   }
 
   @Test
   public void testHandleRequest_withIllegalPathInfo() throws Exception {
-    request.setPathInfo( "foo" );
+    request.setServletPath( "/foo" );
+    request.setPathInfo( "bar" );
 
     servlet.doGet( request, response );
 
-    assertEquals( HttpServletResponse.SC_NOT_FOUND, response.getErrorStatus() );
-  }
-
-  @Test
-  public void testCreateRedirectUrl() {
-    request.setPathInfo( "/" );
-
-    String url = RWTServlet.createRedirectUrl( request );
-
-    assertEquals( "/fooapp/rap", url );
-  }
-
-  @Test
-  public void testCreateRedirectUrl_withParam() {
-    request.setParameter( "param1", "value1" );
-
-    String url = RWTServlet.createRedirectUrl( request );
-
-    assertEquals( "/fooapp/rap?param1=value1", url );
-  }
-
-  @Test
-  public void testCreateRedirectUrl_withTwoParams() {
-    request.setParameter( "param1", "value1" );
-    request.setParameter( "param2", "value2" );
-
-    String url = RWTServlet.createRedirectUrl( request );
-
-    assertTrue(    "/fooapp/rap?param1=value1&param2=value2".equals( url )
-                || "/fooapp/rap?param2=value2&param1=value1".equals( url ) );
+    assertEquals( SC_NOT_FOUND, response.getErrorStatus() );
   }
 
   @Test
