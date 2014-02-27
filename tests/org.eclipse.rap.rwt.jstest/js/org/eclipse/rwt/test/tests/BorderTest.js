@@ -438,10 +438,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     _getBorderWidths : function( style ) {
       var result = [];
-      result[ 0 ] = parseInt( style.borderTopWidth );
-      result[ 1 ] = parseInt( style.borderRightWidth );
-      result[ 2 ] = parseInt( style.borderBottomWidth );
-      result[ 3 ] = parseInt( style.borderLeftWidth );
+      result[ 0 ] = parseInt( style.borderTopWidth, 10 );
+      result[ 1 ] = parseInt( style.borderRightWidth, 10 );
+      result[ 2 ] = parseInt( style.borderBottomWidth, 10 );
+      result[ 3 ] = parseInt( style.borderLeftWidth, 10 );
       for( var i = 0; i < 4; i++ ) {
         result[ i ] = isNaN( result[ i ] ) ? 0 : result[ i ];
       }
@@ -451,10 +451,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     _getBorderRadii : function( style ) {
       var result = [];
       var props = rwt.html.Border._BORDERRADII;
-      result[ 0 ] = parseInt( style[ props[ 0 ] ] );
-      result[ 1 ] = parseInt( style[ props[ 1 ] ] );
-      result[ 2 ] = parseInt( style[ props[ 2 ] ] );
-      result[ 3 ] = parseInt( style[ props[ 3 ] ] );
+      result[ 0 ] = parseInt( style[ props[ 0 ] ], 10 );
+      result[ 1 ] = parseInt( style[ props[ 1 ] ], 10 );
+      result[ 2 ] = parseInt( style[ props[ 2 ] ], 10 );
+      result[ 3 ] = parseInt( style[ props[ 3 ] ], 10 );
       for( var i = 0; i < 4; i++ ) {
         result[ i ] = isNaN( result[ i ] ) ? 0 : result[ i ];
       }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var shape = GraphicsUtil.createShape( "rect" );
       GraphicsUtil.addToCanvas( canvas, shape );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
-      GraphicsUtil.handleAppear( canvas );      
+      GraphicsUtil.handleAppear( canvas );
       var canvasNode = parentNode.firstChild;
       assertEquals( "rect", canvasNode.firstChild.tagName );
       assertEquals( null, GraphicsUtil.getFillType( shape ) );
@@ -65,11 +65,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertFalse( shape.fill.on );
       GraphicsUtil.setFillColor( shape, "green" );
       assertTrue( shape.fill.on );
-      assertEquals( "solid", shape.fill.type );      
+      assertEquals( "solid", shape.fill.type );
       assertEquals( "green", shape.fill.color.value );
       assertEquals( "color", GraphicsUtil.getFillType( shape ) );
       assertEquals( "green", GraphicsUtil.getFillColor( shape ) );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testTransparentFill : function() {
@@ -90,7 +90,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertEquals( null, GraphicsUtil.getFillType( shape ) );
       assertEquals( null, GraphicsUtil.getFillColor( shape ) );
       assertFalse( shape.fill.on );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testColorRestore : function() {
@@ -105,12 +105,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       GraphicsUtil.setFillColor( shape, "green" );
       assertEquals( "green", GraphicsUtil.getFillColor( shape ) );
       parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
-      parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       assertEquals( "green", GraphicsUtil.getFillColor( shape ) );
       assertFalse( "green" == shape.fill.color );
       GraphicsUtil.handleAppear( canvas );
       assertTrue( "green" == shape.fill.color );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testFillGradient : function() {
@@ -125,13 +125,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       GraphicsUtil.handleAppear( canvas );
       GraphicsUtil.setFillGradient( shape, [ [ 0, "red" ], [ 1, "yellow" ] ] );
       assertTrue( shape.fill.on );
-      assertEquals( "gradient", shape.fill.type );      
+      assertEquals( "gradient", shape.fill.type );
       assertEquals( "gradient", GraphicsUtil.getFillType( shape ) );
       assertEquals( "yellow", shape.fill.color2.value );
       assertEquals( 180, shape.fill.angle );
       var expected = "0 red;.25 #ff4000;.5 #ff8000;.75 #ffbf00;1 yellow";
       assertEquals( expected, shape.fill.colors.value );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testFillGradientHorizontal : function() {
@@ -148,11 +148,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gradient.horizontal = true;
       GraphicsUtil.setFillGradient( shape, gradient );
       assertTrue( shape.fill.on );
-      assertEquals( "gradient", shape.fill.type );      
+      assertEquals( "gradient", shape.fill.type );
       assertEquals( "gradient", GraphicsUtil.getFillType( shape ) );
       assertEquals( "yellow", shape.fill.color2.value );
       assertEquals( 270, shape.fill.angle );
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testDrawRoundRect : function() {
@@ -166,8 +166,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       GraphicsUtil.addToCanvas( canvas, shape );
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
-      var expected =   " m95,95 ae255,135,40,40,-17694450,-5898150 " 
-                     + "ae265,265,30,30,0,-5898150 " 
+      var expected =   " m95,95 ae255,135,40,40,-17694450,-5898150 "
+                     + "ae265,265,30,30,0,-5898150 "
                      + "ae115,275,20,20,-5898150,-5898150 x e";
       assertEquals( expected, shape.node.path.v );
       parent.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
@@ -221,14 +221,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       GraphicsUtil.addToCanvas( canvas, shape );
       GraphicsUtil.setDisplay( shape, false );
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
-      GraphicsUtil.handleAppear( canvas );      
+      GraphicsUtil.handleAppear( canvas );
       var canvasNode = parentNode.firstChild;
       assertFalse( shape.fill.on );
       assertFalse( GraphicsUtil.getDisplay( shape ) );
       parent.destroy();
       TestUtil.flush();
     },
-    
+
     testFillPattern : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -243,13 +243,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       parentNode.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       assertEquals( "rect", shape.node.tagName );
-      assertTrue( shape.fill.on );      
-      assertEquals( "tile", shape.fill.type );      
+      assertTrue( shape.fill.on );
+      assertEquals( "tile", shape.fill.type );
       assertEquals( "./js/resource/tex.jpg", shape.fill.src );
       assertEquals( "pattern", GraphicsUtil.getFillType( shape ) );
       parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
-    
+
     testOpacity : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -262,12 +262,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       GraphicsUtil.setOpacity( shape, 0.5 );
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) != -1 );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
-      assertEquals( 0.5, GraphicsUtil.getOpacity( shape ) ); 
+      assertEquals( 0.5, GraphicsUtil.getOpacity( shape ) );
       GraphicsUtil.setOpacity( shape, 1 );
       // It is important for some issues that filter is completely removed:
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
-      assertEquals( 1, GraphicsUtil.getOpacity( shape ) ); 
-      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );      
+      assertEquals( 1, GraphicsUtil.getOpacity( shape ) );
+      parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
     testBlur : function() {
@@ -284,11 +284,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var filter = shape.node.style.filter;
       var expected = "progid:DXImageTransform.Microsoft.Blur(pixelradius=4)";
       assertTrue( filter.indexOf( expected ) != -1 );
-      assertEquals( 4, GraphicsUtil.getBlur( shape ) ); 
+      assertEquals( 4, GraphicsUtil.getBlur( shape ) );
       GraphicsUtil.setBlur( shape, 0 );
       // It is important for some issues that filter is completely removed:
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
-      assertEquals( 0, GraphicsUtil.getBlur( shape ) ); 
+      assertEquals( 0, GraphicsUtil.getBlur( shape ) );
       parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
 
@@ -317,7 +317,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
       parentNode.removeChild( GraphicsUtil.getCanvasNode( canvas ) );
     },
-    
+
     testNodeOrder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var GraphicsUtil = rwt.graphics.GraphicsUtil;
@@ -340,5 +340,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
 
   }
-  
+
 } );

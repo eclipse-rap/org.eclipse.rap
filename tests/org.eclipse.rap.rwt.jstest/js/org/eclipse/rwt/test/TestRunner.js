@@ -64,7 +64,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
                           "Probably the file contains corrupted JavaScript." );
     }
     // helper for debugging
-    /* global getLog:true */
+    /*global getLog:true */
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     };

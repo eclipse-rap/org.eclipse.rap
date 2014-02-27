@@ -659,7 +659,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
     },
 
     setUp : function() {
-      display = rwt.widgets.Display.getCurrent();
+      var display = rwt.widgets.Display.getCurrent();
       var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
       rwt.remote.ObjectRegistry.add( "w1", display, adapter );
     },

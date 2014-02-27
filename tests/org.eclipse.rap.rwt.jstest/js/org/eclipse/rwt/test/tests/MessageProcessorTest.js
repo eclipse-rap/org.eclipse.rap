@@ -9,6 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*jshint newcap: false */
 (function(){
 
 var HandlerRegistry = rwt.remote.HandlerRegistry;

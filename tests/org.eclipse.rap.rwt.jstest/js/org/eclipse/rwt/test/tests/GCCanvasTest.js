@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
   members : {
 
     TARGETENGINE : [ "gecko", "webkit", "newmshtml" ],
-    
-    // NOTE: drawImage can not be tested 
+
+    // NOTE: drawImage can not be tested
 
     testInit : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -32,20 +32,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       gc.init( 400, 500,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
-      assertEquals( 400, parseInt( gc._canvas.width ) );
-      assertEquals( 400, parseInt( gc._canvas.style.width ) );
-      assertEquals( 500, parseInt( gc._canvas.height ) );
-      assertEquals( 500, parseInt( gc._canvas.style.height ) );
+      assertEquals( 400, parseInt( gc._canvas.width, 10 ) );
+      assertEquals( 400, parseInt( gc._canvas.style.width, 10 ) );
+      assertEquals( 500, parseInt( gc._canvas.height, 10 ) );
+      assertEquals( 500, parseInt( gc._canvas.style.height, 10 ) );
       canvas.destroy();
       TestUtil.flush();
     },
-    
+
     // Note on "isPointInPath": This method is used to test if the given
-    // point is "in" the path, meaning: Would the point be included in a 
-    // potential "fill" operation? This makes it impossible to test paths with 
-    // less then 3 points. In these cases the test will extend the path.  
+    // point is "in" the path, meaning: Would the point be included in a
+    // potential "fill" operation? This makes it impossible to test paths with
+    // less then 3 points. In these cases the test will extend the path.
     // Also, Firefox differs from Webkit in some cases on whether the points
-    // on a path are "in" the path or not. 
+    // on a path are "in" the path or not.
 
     testDrawLine : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -57,11 +57,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       gc.init( 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
-      gc.draw( [ 
-        [ "beginPath" ], 
-        [ "moveTo", 10.5, 10.5 ], 
-        [ "lineTo", 20.5, 10.5 ], 
-        [ "stroke" ] 
+      gc.draw( [
+        [ "beginPath" ],
+        [ "moveTo", 10.5, 10.5 ],
+        [ "lineTo", 20.5, 10.5 ],
+        [ "stroke" ]
       ] );
       var context = gc._context;
       context.lineTo( 20.5, 20.5 );
@@ -101,7 +101,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
         [ "ellipse", x + radiusX, y + radiusY, radiusX, radiusY, 0, -1 * startAngle, -1 * ( startAngle + arcAngle ), true ],
         [ "fill" ]
       ] );
-            
+
       var context = gc._context;
       assertTrue( context.isPointInPath( 101, 115.1 ) );
       assertTrue( context.isPointInPath( 159, 115 ) );
@@ -116,8 +116,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.destroy();
       TestUtil.flush();
     }
-    
+
 
   }
-  
+
 } );
