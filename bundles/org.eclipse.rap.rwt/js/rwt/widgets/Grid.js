@@ -129,6 +129,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this.addEventListener( "click", this._onClick, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
+      this.addEventListener( "focusin", this._onFocusIn, this );
       this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
@@ -794,6 +795,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._singleSelectItem( event, item );
       }
       this._scrollIntoView( itemIndex, item );
+    },
+
+    _onFocusIn : function( event ) {
+      if( this._focusItem === null ) {
+        var firstItem = this._rootItem.getChild( 0 );
+        if( firstItem ) {
+          this.setFocusItem( firstItem );
+        }
+      }
     },
 
     /////////////////

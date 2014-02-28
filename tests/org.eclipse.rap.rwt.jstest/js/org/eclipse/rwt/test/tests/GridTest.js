@@ -1834,7 +1834,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     },
 
     testFocusItem : function() {
-      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1846,13 +1845,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( tree._rowContainer._children[ 2 ]._getTargetNode() );
       TestUtil.flush();
       assertTrue( tree.isFocusItem( item2 ) );
-      req.send();
+      rwt.remote.Connection.getInstance().send();
       assertEquals( "w4", TestUtil.getMessageObject().findSetProperty( "w3", "focusItem" ) );
       tree.destroy();
     },
 
     testChangeFocusItem : function() {
-      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
       this._createItem( tree.getRootItem(), 0 );
@@ -1866,13 +1864,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       assertFalse( tree.isFocusItem( item1 ) );
       assertTrue( tree.isFocusItem( item2 ) );
-      req.send();
+      rwt.remote.Connection.getInstance().send();
+      assertEquals( "w4", TestUtil.getMessageObject().findSetProperty( "w3", "focusItem" ) );
+      tree.destroy();
+    },
+
+    testSetFocusItemWhenFocusingGrid : function() {
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 3 );
+      var item = this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
+      this._createItem( tree.getRootItem(), 2 );
+      rwt.remote.ObjectRegistry.add( "w4", item, itemHandler );
+      TestUtil.flush();
+
+      tree.setFocused( true );
+
+      assertTrue( tree.isFocusItem( item ) );
+      rwt.remote.Connection.getInstance().send();
       assertEquals( "w4", TestUtil.getMessageObject().findSetProperty( "w3", "focusItem" ) );
       tree.destroy();
     },
 
     testFocusUnresolvedItem : function() {
-      var req = rwt.remote.Connection.getInstance();
       var tree = this._createDefaultTree();
       TestUtil.initRequestLog();
       tree.setItemCount( 3 );
@@ -1882,7 +1896,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
       TestUtil.flush();
       assertTrue( tree.isFocusItem( tree.getRootItem()._children[ 1 ] ) );
-      req.send();
+      rwt.remote.Connection.getInstance().send();
       assertEquals( "w3#1", TestUtil.getMessageObject().findSetProperty( "w3", "focusItem" ) );
       tree.destroy();
     },
