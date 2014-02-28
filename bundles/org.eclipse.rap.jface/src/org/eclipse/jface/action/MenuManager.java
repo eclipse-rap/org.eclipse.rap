@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.MenuManagerEventHelper;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -463,7 +464,9 @@ public class MenuManager extends ContributionManager implements IMenuManager {
         if (removeAllWhenShown) {
 			removeAll();
 		}
+        MenuManagerEventHelper.getInstance().showEventPreHelper(this);
         fireAboutToShow(this);
+        MenuManagerEventHelper.getInstance().showEventPostHelper(this);
         update(false, false);
     }
 
@@ -471,7 +474,9 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Notifies all listeners that this menu is about to disappear.
      */
     private void handleAboutToHide() {
+    	MenuManagerEventHelper.getInstance().hideEventPreHelper(this);
         fireAboutToHide(this);
+        MenuManagerEventHelper.getInstance().hideEventPostHelper(this);
     }
 
     /**
