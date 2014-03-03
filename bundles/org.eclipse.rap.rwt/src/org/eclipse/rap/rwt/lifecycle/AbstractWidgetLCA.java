@@ -11,22 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-
 import java.io.IOException;
-import java.util.List;
 
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
@@ -36,16 +23,17 @@ import org.eclipse.swt.widgets.Widget;
  * All widget LCAs should inherit from this class.
  *
  * @since 2.0
+ * @deprecated New custom widgets should use the RemoteObject API instead of LCAs.
+ * @see org.eclipse.rap.rwt.remote.RemoteObject
  */
-public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
+@Deprecated
+public abstract class AbstractWidgetLCA
+  extends org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA
+{
 
+  @Override
   public final void render( Widget widget ) throws IOException {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
-    if( !adapter.isInitialized() ) {
-      renderInitialization( widget );
-    }
-    renderChanges( widget );
-    adapter.setInitialized( true );
+    super.render( widget );
   }
 
   /**
@@ -72,18 +60,12 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    *
    * @since 2.2
    */
+  @Override
   public void readData( Widget widget ) {
-    ClientMessage clientMessage = ProtocolUtil.getClientMessage();
-    String id = getId( widget );
-    List<Operation> operations = clientMessage.getAllOperationsFor( id );
-    if( !operations.isEmpty() ) {
-      OperationHandler handler = getOperationHandler( id );
-      for( Operation operation : operations ) {
-        handleOperation( handler, operation );
-      }
-    }
+    super.readData( widget );
   }
 
+  @Override
   public abstract void preserveValues( Widget widget );
 
   /**
@@ -94,6 +76,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * @param widget the widget to initialize
    * @throws IOException
    */
+  @Override
   public abstract void renderInitialization( Widget widget ) throws IOException;
 
   /**
@@ -104,6 +87,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * @param widget the widget to render changes for
    * @throws IOException
    */
+  @Override
   public abstract void renderChanges( Widget widget ) throws IOException;
 
   /**
@@ -113,14 +97,9 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * @param widget the widget to dispose
    * @throws IOException
    */
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
-    RemoteObject remoteObject = getRemoteObject( widget );
-    if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
-      remoteObject.destroy();
-    } else {
-      ( ( RemoteObjectImpl )remoteObject ).markDestroyed();
-    }
+    super.renderDispose( widget );
   }
 
   /**
@@ -138,19 +117,8 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
    * </p>
    * @param control the control on which redraw was called.
    */
+  @Override
   public void doRedrawFake( Control control ) {
-  }
-
-  private static OperationHandler getOperationHandler( String id ) {
-    RemoteObjectImpl remoteObject = RemoteObjectRegistry.getInstance().get( id );
-    if( remoteObject == null ) {
-      throw new IllegalStateException( "No remote object found for widget: " + id );
-    }
-    OperationHandler handler = remoteObject.getHandler();
-    if( handler == null ) {
-      throw new IllegalStateException( "No operation handler found for widget: " + id );
-    }
-    return handler;
   }
 
 }

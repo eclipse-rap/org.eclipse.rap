@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.mockito.Matchers.eq;
@@ -35,11 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-/*
- * The implementation is covered by AbstractWidgetLCA_Test in the rwt.internal.lifecycle package.
- * This copy ensures that the deprecated API still works as expected.
- */
-@SuppressWarnings( "deprecation" )
+
 public class AbstractWidgetLCA_Test {
 
   private Shell shell;
