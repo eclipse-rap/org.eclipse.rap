@@ -62,6 +62,7 @@ public final class TestRequest implements HttpServletRequest {
   private String serverName;
   private String contextPath;
   private String requestURI;
+  private String queryString;
   private String servletPath;
   private String pathInfo;
   private final Map<String,String[]> parameters;
@@ -159,7 +160,11 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public String getQueryString() {
-    return null;
+    return queryString;
+  }
+
+  public void setQueryString( String queryString ) {
+    this.queryString = queryString;
   }
 
   public String getRemoteUser() {

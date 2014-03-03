@@ -17,6 +17,7 @@ import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
 
 import java.io.IOException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -109,8 +110,13 @@ public class RWTServlet extends HttpServlet {
       // /context/servlet: no extra path info after servlet name
       handleValidRequest( request, response );
     } else if( "/".equals( request.getPathInfo() ) && "".equals( request.getServletPath() ) ) {
-      // /context/: root servlet, in this case path info "/" is ok
-      handleValidRequest( request, response );
+      if( !request.getRequestURI().endsWith( "/" ) ) {
+        // /context: root servlet without trailing slash, see bug 429443
+        response.sendRedirect( request.getRequestURI() + "/" + getQueryString( request ) );
+      } else {
+        // /context/: root servlet, in this case path info "/" is ok
+        handleValidRequest( request, response );
+      }
     } else {
       response.sendError( SC_NOT_FOUND );
     }
@@ -153,6 +159,11 @@ public class RWTServlet extends HttpServlet {
       }
       serviceContext.setUISession( uiSession );
     }
+  }
+
+  private static String getQueryString( HttpServletRequest request ) {
+    String queryString = request.getQueryString();
+    return queryString != null ? "?" + queryString : "";
   }
 
 }
