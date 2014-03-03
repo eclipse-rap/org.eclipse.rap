@@ -21,8 +21,8 @@ import static org.eclipse.swt.internal.dnd.DNDUtil.getDetailChangedValue;
 import static org.eclipse.swt.internal.dnd.DNDUtil.hasDetailChanged;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
-import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
