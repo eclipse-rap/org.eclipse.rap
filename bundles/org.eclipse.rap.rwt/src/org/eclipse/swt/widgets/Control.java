@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1429,7 +1429,9 @@ public abstract class Control extends Widget implements Drawable {
     if( control != null && control.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( control == null || control.parent == parent && control != this ) {
+    if( this instanceof Shell ) {
+      // TODO: add support for Shell reordering
+    } else if( control == null || control.parent == parent && control != this ) {
       ControlHolder.removeControl( getParent(), this );
       int index = 0;
       if( control != null ) {
@@ -1464,7 +1466,9 @@ public abstract class Control extends Widget implements Drawable {
     if( control != null && control.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( control == null || control.parent == parent && control != this ) {
+    if( this instanceof Shell ) {
+      // TODO: add support for Shell reordering
+    } else if( control == null || control.parent == parent && control != this ) {
       ControlHolder.removeControl( getParent(), this );
       int index = ControlHolder.size( getParent() );
       if( control != null ) {
