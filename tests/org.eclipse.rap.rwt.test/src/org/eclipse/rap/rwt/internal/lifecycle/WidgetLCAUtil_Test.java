@@ -9,9 +9,8 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderToolTip;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
@@ -21,12 +20,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.Date;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -53,11 +55,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-/*
- * The implementation is covered by WidgetLCAUtil_Test in the rwt.internal.lifecycle package.
- * This test ensures that the deprecated API still works as expected.
- */
-@SuppressWarnings( "deprecation" )
 public class WidgetLCAUtil_Test {
 
   private Display display;
@@ -145,6 +142,36 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "selectionIndices", new int[] { 0, 1, 2 } );
     assertFalse( hasChanged );
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue( WidgetLCAUtil.equals( null, null ) );
+    assertFalse( WidgetLCAUtil.equals( null, "1" ) );
+    assertFalse( WidgetLCAUtil.equals( "1", null ) );
+    assertFalse( WidgetLCAUtil.equals( "1", "2" ) );
+    assertTrue( WidgetLCAUtil.equals( "1", "1" ) );
+    assertTrue( WidgetLCAUtil.equals( new String[] { "1" },
+                                   new String[] { "1" } ) );
+    assertTrue( WidgetLCAUtil.equals( new int[] { 1 },
+                                   new int[] { 1 } ) );
+    assertTrue( WidgetLCAUtil.equals( new boolean[] { true },
+                                   new boolean[] { true } ) );
+    assertTrue( WidgetLCAUtil.equals( new long[] { 232 },
+                                   new long[] { 232 } ) );
+    assertTrue( WidgetLCAUtil.equals( new float[] { 232 },
+                                   new float[] { 232 } ) );
+    assertTrue( WidgetLCAUtil.equals( new double[] { 345 },
+                                   new double[] { 345 } ) );
+    assertTrue( WidgetLCAUtil.equals( new Date[] { new Date( 1 ) },
+                                   new Date[] { new Date( 1 ) } ) );
+    assertFalse( WidgetLCAUtil.equals( new double[] { 345 },
+                                    new float[] { 345 } ) );
+    assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
+                                    new float[] { 345 } ) );
+    assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
+                                    new long[] { 345 } ) );
+    assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
   @Test
@@ -624,7 +651,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderIntialToolTipMarkupEnabled() {
     widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
-    renderToolTip( widget, "foo" );
+    WidgetLCAUtil.renderToolTip( widget, "foo" );
 
     Message message = getProtocolMessage();
     assertTrue( "foo", message.findSetProperty( widget, "toolTipMarkupEnabled" ).asBoolean() );
@@ -635,7 +662,7 @@ public class WidgetLCAUtil_Test {
     widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
     Fixture.markInitialized( widget );
 
-    renderToolTip( widget, "foo" );
+    WidgetLCAUtil.renderToolTip( widget, "foo" );
 
     Message message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTipMarkupEnabled" ) );
@@ -643,7 +670,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderIntialToolTip() {
-    renderToolTip( widget, null );
+    WidgetLCAUtil.renderToolTip( widget, null );
 
     Message message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTip" ) );
@@ -651,7 +678,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderToolTip() {
-    renderToolTip( widget, "foo" );
+    WidgetLCAUtil.renderToolTip( widget, "foo" );
 
     Message message = getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
@@ -659,7 +686,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderToolTip_withAmpersand() {
-    renderToolTip( widget, "&foo" );
+    WidgetLCAUtil.renderToolTip( widget, "&foo" );
 
     Message message = getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
@@ -669,7 +696,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderToolTip_withAmpersandAndMarkupEnabled() {
     widget.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
-    renderToolTip( widget, "foo &#38; bar" );
+    WidgetLCAUtil.renderToolTip( widget, "foo &#38; bar" );
 
     Message message = getProtocolMessage();
     assertEquals( "foo &#38; bar", message.findSetProperty( widget, "toolTip" ).asString() );
@@ -682,7 +709,7 @@ public class WidgetLCAUtil_Test {
     widget.setToolTipText( "foo" );
     Fixture.preserveWidgets();
 
-    renderToolTip( widget, "foo" );
+    WidgetLCAUtil.renderToolTip( widget, "foo" );
 
     Message message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTip" ) );
