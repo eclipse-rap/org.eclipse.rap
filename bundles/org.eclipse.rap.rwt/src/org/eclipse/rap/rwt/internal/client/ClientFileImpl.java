@@ -16,13 +16,42 @@ import org.eclipse.rap.rwt.client.ClientFile;
 public class ClientFileImpl implements ClientFile {
 
   private final String fileId;
+  private final String name;
+  private final String type;
+  private final long size;
 
-  public ClientFileImpl( String fileId ) {
+  public ClientFileImpl( String fileId, String name, String type, long size ) {
     this.fileId = fileId;
+    this.name = name;
+    this.type = type;
+    this.size = size;
   }
 
   public String getFileId() {
     return fileId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public long getSize() {
+    return size;
+  }
+
+  public String toString() {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( name );
+    buffer.append( ", " );
+    buffer.append( type );
+    buffer.append( ", " );
+    buffer.append( size );
+    buffer.append( " byte" );
+    return "ClientFile{ " + buffer.toString() + " }";
   }
 
 }

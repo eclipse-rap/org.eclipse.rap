@@ -86,8 +86,8 @@ public class ClientFileUploaderImpl_Test {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
     ClientFile[] files = new ClientFile[]{
-      new ClientFileImpl( "fileId1" ),
-      new ClientFileImpl( "fileId2" )
+      new ClientFileImpl( "fileId1", "", "", 0 ),
+      new ClientFileImpl( "fileId2", "", "", 0 )
     };
 
     uploader = new ClientFileUploaderImpl();
@@ -98,7 +98,6 @@ public class ClientFileUploaderImpl_Test {
       .add( "fileIds", new JsonArray().add( "fileId1" ).add( "fileId2" ) );
     verify( remoteObject ).call( eq( "submit" ), eq( expected ) );
   }
-
 
   private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
     ConnectionImpl connection = mock( ConnectionImpl.class );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.client.ClientFile;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -42,6 +44,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
@@ -434,14 +437,7 @@ public class DNDExampleTab extends ExampleTab {
             if( items.length == 0 ) {
               event.doit = false;
             } else {
-              StringBuffer buffer = new StringBuffer();
-              for( int i = 0; i < items.length; i++ ) {
-                buffer.append( items[ i ].getText() );
-                if( items.length > 1 && i < items.length - 1 ) {
-                  buffer.append( "\n" );
-                }
-              }
-              dragDataText = buffer.toString();
+              dragDataText = join( "\n", items );
             }
             break;
           }
@@ -461,14 +457,7 @@ public class DNDExampleTab extends ExampleTab {
             if( items.length == 0 ) {
               event.doit = false;
             } else {
-              StringBuffer buffer = new StringBuffer();
-              for( int i = 0; i < items.length; i++ ) {
-                buffer.append( items[ i ].getText() );
-                if( items.length > 1 && i < items.length - 1 ) {
-                  buffer.append( "\n" );
-                }
-              }
-              dragDataText = buffer.toString();
+              dragDataText = join( "\n", items );
             }
             break;
           }
@@ -477,14 +466,7 @@ public class DNDExampleTab extends ExampleTab {
             if( strings == null || strings.length == 0 ) {
               event.doit = false;
             } else {
-              StringBuffer buffer = new StringBuffer();
-              for( int i = 0; i < strings.length; i++ ) {
-                buffer.append( strings[ i ] );
-                if( strings.length > 1 && i < strings.length - 1 ) {
-                  buffer.append( "\n" );
-                }
-              }
-              dragDataText = buffer.toString();
+              dragDataText = join( "\n", strings );
             }
             break;
           }
@@ -504,14 +486,7 @@ public class DNDExampleTab extends ExampleTab {
             if( selection.length == 0 ) {
               event.doit = false;
             } else {
-              StringBuffer buffer = new StringBuffer();
-              for( int i = 0; i < selection.length; i++ ) {
-                buffer.append( selection[ i ] );
-                if( selection.length > 1 && i < selection.length - 1 ) {
-                  buffer.append( "\n" );
-                }
-              }
-              dragDataText = buffer.toString();
+              dragDataText = join( "\n", selection );
             }
             break;
           }
@@ -869,6 +844,13 @@ public class DNDExampleTab extends ExampleTab {
         {
           strings = ( String[] )event.data;
         }
+        if( ClientFileTransfer.getInstance().isSupportedType( event.currentDataType ) ) {
+          ClientFile[] files = ( ClientFile[] )event.data;
+          strings = new String[ files.length ];
+          for( int i = 0; i < files.length; i++ ) {
+            strings[ i ] = files[ i ].toString();
+          }
+        }
         if( strings == null || strings.length == 0 ) {
           dropConsole.append( "!!Invalid data dropped" );
           return;
@@ -952,7 +934,7 @@ public class DNDExampleTab extends ExampleTab {
           }
           case LABEL: {
             Label label = ( Label )dropControl;
-            label.setText( strings[ 0 ] );
+            label.setText( join( "\n", strings ) );
             break;
           }
           case LIST: {
@@ -1048,46 +1030,27 @@ public class DNDExampleTab extends ExampleTab {
 
   private void createDropTypes( final Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
-    Button b = new Button( parent, SWT.CHECK );
-    b.setText( "Text Transfer" );
-    b.addSelectionListener( new SelectionAdapter() {
+    createDropTypeButton( parent, "Text Transfer", TextTransfer.getInstance() )
+      .setSelection( true );
+    createDropTypeButton( parent, "RTF Transfer", RTFTransfer.getInstance() );
+    createDropTypeButton( parent, "HTML Transfer", HTMLTransfer.getInstance() );
+    createDropTypeButton( parent, "ClientFile Transfer", ClientFileTransfer.getInstance() );
+  }
+
+  private Button createDropTypeButton( Composite parent, String name, final Transfer transfer ) {
+    final Button button = new Button( parent, SWT.CHECK );
+    button.setText( name );
+    button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent e ) {
-        Button b = ( Button )e.widget;
-        if( b.getSelection() ) {
-          addDropTransfer( TextTransfer.getInstance() );
+        if( button.getSelection() ) {
+          addDropTransfer( transfer );
         } else {
-          removeDropTransfer( TextTransfer.getInstance() );
+          removeDropTransfer( transfer );
         }
       }
     } );
-    b.setSelection( true );
-    b = new Button( parent, SWT.CHECK );
-    b.setText( "RTF Transfer" );
-    b.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( final SelectionEvent e ) {
-        Button b = ( Button )e.widget;
-        if( b.getSelection() ) {
-          addDropTransfer( RTFTransfer.getInstance() );
-        } else {
-          removeDropTransfer( RTFTransfer.getInstance() );
-        }
-      }
-    } );
-    b = new Button( parent, SWT.CHECK );
-    b.setText( "HTML Transfer" );
-    b.addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( final SelectionEvent e ) {
-        Button b = ( Button )e.widget;
-        if( b.getSelection() ) {
-          addDropTransfer( HTMLTransfer.getInstance() );
-        } else {
-          removeDropTransfer( HTMLTransfer.getInstance() );
-        }
-      }
-    } );
+    return button;
   }
 
   private void createDropWidget( final Composite parent ) {
@@ -1180,7 +1143,7 @@ public class DNDExampleTab extends ExampleTab {
         return button;
       }
       case TABLE: {
-        Table table = new Table( parent, SWT.BORDER | SWT.MULTI );
+        Table table = new Table( parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL  );
         TableColumn column1 = new TableColumn( table, SWT.NONE );
         TableColumn column2 = new TableColumn( table, SWT.NONE );
         for( int i = 0; i < 10; i++ ) {
@@ -1201,7 +1164,7 @@ public class DNDExampleTab extends ExampleTab {
         return text;
       }
       case TREE: {
-        Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI );
+        Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL  );
         for( int i = 0; i < 3; i++ ) {
           TreeItem item = new TreeItem( tree, SWT.NONE );
           item.setText( prefix + " item " + i );
@@ -1229,7 +1192,7 @@ public class DNDExampleTab extends ExampleTab {
         return label;
       }
       case LIST: {
-        List list = new List( parent, SWT.BORDER );
+        List list = new List( parent, SWT.BORDER | SWT.V_SCROLL );
         list.setItems( new String[]{
           prefix + " Item a",
           prefix + " Item b",
@@ -1246,7 +1209,7 @@ public class DNDExampleTab extends ExampleTab {
     if( !dragEventDetail ) {
       return;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append( "widget: " );
     sb.append( e.widget );
     sb.append( ", time: " );
@@ -1254,9 +1217,7 @@ public class DNDExampleTab extends ExampleTab {
     sb.append( ", operation: " );
     sb.append( e.detail );
     sb.append( ", type: " );
-    sb.append( e.dataType != null
-                                 ? e.dataType.type
-                                 : 0 );
+    sb.append( e.dataType != null ? e.dataType.type : 0 );
     sb.append( ", doit: " );
     sb.append( e.doit );
     sb.append( ", data: " );
@@ -1269,7 +1230,7 @@ public class DNDExampleTab extends ExampleTab {
     if( !dropEventDetail ) {
       return;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append( "widget; " );
     sb.append( e.widget );
     sb.append( ", time: " );
@@ -1354,5 +1315,24 @@ public class DNDExampleTab extends ExampleTab {
     if( dropTarget != null ) {
       dropTarget.setTransfer( dropTypes );
     }
+  }
+
+    private static String join( String glue, Item[] items ) {
+      String[] strings = new String[ items.length ];
+      for( int i = 0; i < items.length; i++ ) {
+        strings[ i ] = items[ i ].getText();
+      }
+      return join( glue, strings );
+    }
+
+    private static String join( String glue, String[] strings ) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for( int i = 0; i < strings.length; i++ ) {
+      stringBuilder.append( strings[ i ] );
+      if( i != strings.length -1 ) {
+        stringBuilder.append( glue );
+      }
+    }
+    return stringBuilder.toString();
   }
 }

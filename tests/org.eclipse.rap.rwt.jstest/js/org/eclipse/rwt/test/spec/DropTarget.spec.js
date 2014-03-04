@@ -153,7 +153,18 @@ describe( "DropTarget", function() {
         "stopPropagation" : jasmine.createSpy( "stopPropagation" ),
         "dataTransfer" : {
           "types" : [ "Files" ],
-          "files" : [ {}, {} ]
+          "files" : [
+            {
+              "name" : "foo.txt",
+              "type" : "text/plain",
+              "size" : 9000
+            },
+            {
+              "name" : "bar.html",
+              "type" : "text/html",
+              "size" : 10000
+            }
+          ]
         }
       };
       event.dataTransfer.files.item = function( index ) {
@@ -295,12 +306,11 @@ describe( "DropTarget", function() {
         it( "attaches files", function() {
           getListener( "drop" )( event );
 
-          var properties = remoteObject.notify.argsForCall[ 0 ][ 1 ];
-
-          var files = event.dataTransfer.files;
-          expect( properties.files.length ).toBe( 2 );
-          expect( fileUploader.getFileById( properties.files[ 0 ] ) ).toBe( files.item( 0 ) );
-          expect( fileUploader.getFileById( properties.files[ 1 ] ) ).toBe( files.item( 1 ) );
+          var files = remoteObject.notify.argsForCall[ 0 ][ 1 ].files;
+          var fileIds = rwt.util.Objects.getKeys( files );
+          expect( fileIds.length ).toBe( 2 );
+          expect( files[ fileIds[ 0 ] ] ).toEqual( event.dataTransfer.files[ 0 ] );
+          expect( files[ fileIds[ 1 ] ] ).toEqual( event.dataTransfer.files[ 1 ] );
         } );
 
       } );

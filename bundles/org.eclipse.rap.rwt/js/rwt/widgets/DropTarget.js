@@ -85,7 +85,7 @@ namespace( "rwt.widgets" );
         "time" : rwt.remote.EventUtil.eventTimestamp(),
         "operation" : "move",
         "feedback" : 0,
-        "files" : this._getFileIds( event )
+        "files" : this._getFiles( event )
       } );
     },
 
@@ -94,12 +94,18 @@ namespace( "rwt.widgets" );
       return types.indexOf ? ( types.indexOf( "Files" ) !== -1 ) : types.contains( "Files" );
     },
 
-    _getFileIds : function( event ) {
+    _getFiles : function( event ) {
       var fileUploader = rwt.client.FileUploader.getInstance();
       var files = event.dataTransfer.files;
-      var result = [];
+      var result = {};
       for( var i = 0; i < files.length; i++ ) {
-        result[ i ] = fileUploader.addFile( files.item( i ) );
+        var file = files.item( i );
+        var fileId = fileUploader.addFile( file );
+        result[ fileId ] = {
+          "type" : file.type,
+          "size" : file.size,
+          "name" : file.name
+        };
       }
       return result;
     }

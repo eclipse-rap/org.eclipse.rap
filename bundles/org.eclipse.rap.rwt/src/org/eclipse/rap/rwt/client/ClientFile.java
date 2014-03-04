@@ -17,4 +17,26 @@ package org.eclipse.rap.rwt.client;
  * @since 2.3
  */
 public interface ClientFile {
+
+  /**
+   * The name of the file as it is known to the client, without path information.
+   *
+   * @return the file name as a string. May be empty, but never null.
+   */
+  String getName();
+
+  /**
+   * The string in lower case representing the MIME type of the File.
+   *
+   * @return the type of the file or an empty string if the type is unknown. Is never null.
+   */
+  String getType();
+
+  /**
+   * Returns the size of the File on the client.
+   *
+   * @return the size in bytes.
+   */
+  long getSize();
+
 }

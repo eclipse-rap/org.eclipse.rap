@@ -28,7 +28,7 @@ rwt.client.FileUploader.createFormData = function() {
 rwt.client.FileUploader.prototype = {
 
   addFile : function( file ) {
-    var result = "file_" + this._sequenceId;
+    var result = "f" + this._sequenceId;
     this._holder[ result ] = file;
     this._sequenceId++;
     return result;

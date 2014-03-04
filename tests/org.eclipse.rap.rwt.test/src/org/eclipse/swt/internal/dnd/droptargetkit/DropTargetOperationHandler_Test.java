@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
@@ -473,17 +472,31 @@ public class DropTargetOperationHandler_Test {
     verify( dropTarget ).notifyListeners( eq( DND.Drop ), captor.capture() );
     ClientFileImpl[] remoteFiles = ( ClientFileImpl[] )captor.getValue().data;
     assertEquals( 2, remoteFiles.length );
-    assertEquals( "file1", remoteFiles[ 0 ].getFileId() );
-    assertEquals( "file2", remoteFiles[ 1 ].getFileId() );
+    assertEquals( "f1", remoteFiles[ 0 ].getFileId() );
+    assertEquals( "foo.txt", remoteFiles[ 0 ].getName() );
+    assertEquals( "text/plain", remoteFiles[ 0 ].getType() );
+    assertEquals( 9000, remoteFiles[ 0 ].getSize() );
+    assertEquals( "f2", remoteFiles[ 1 ].getFileId() );
+    assertEquals( "bar.html", remoteFiles[ 1 ].getName() );
+    assertEquals( "text/html", remoteFiles[ 1 ].getType() );
+    assertEquals( 100000000000L, remoteFiles[ 1 ].getSize() );
   }
 
   private JsonObject createFileDropProperties() {
+    JsonObject file1 = new JsonObject()
+      .add( "name",  "foo.txt" )
+      .add( "type",  "text/plain" )
+      .add( "size",  9000 );
+    JsonObject file2 = new JsonObject()
+      .add( "name",  "bar.html" )
+      .add( "type",  "text/html" )
+      .add( "size",  100000000000L );
     return new JsonObject()
       .add( "x", 10 )
       .add( "y", 20 )
       .add( "time", 3 )
       .add( "operation", "move" )
-      .add( "files", new JsonArray().add( "file1" ).add( "file2" ) );
+      .add( "files", new JsonObject().add( "f1", file1 ).add( "f2", file2 ) );
   }
 
   @Test

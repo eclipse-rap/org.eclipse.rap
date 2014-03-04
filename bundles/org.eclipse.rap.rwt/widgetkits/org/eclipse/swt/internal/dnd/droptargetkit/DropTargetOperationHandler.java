@@ -28,7 +28,6 @@ import static org.eclipse.swt.internal.dnd.DNDUtil.setFeedbackChanged;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.client.ClientFile;
@@ -355,11 +354,16 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
 
   private static ClientFile[] getClientFiles( JsonValue value ) {
     if( value != null ) {
-      JsonArray fileIdArray = value.asArray();
-      int size = fileIdArray.size();
-      ClientFileImpl[] result = new ClientFileImpl[ size ];
-      for( int i = 0; i < size; i++ ) {
-        result[ i ] = new ClientFileImpl( fileIdArray.get( i ).asString() );
+      JsonObject fileProperties = value.asObject();
+      List<String> fileIds = fileProperties.names();
+      int filecount = fileIds.size();
+      ClientFileImpl[] result = new ClientFileImpl[ filecount ];
+      for( int i = 0; i < filecount; i++ ) {
+        JsonObject file = ( JsonObject )fileProperties.get( fileIds.get( i ) );
+        result[ i ] = new ClientFileImpl( fileIds.get( i ),
+                                          file.get( "name" ).asString(),
+                                          file.get( "type" ).asString(),
+                                          file.get( "size" ).asLong() );
       }
       return result;
     }
