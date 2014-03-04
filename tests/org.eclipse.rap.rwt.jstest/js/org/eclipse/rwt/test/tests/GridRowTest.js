@@ -1090,6 +1090,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "Test", text );
     },
 
+    // See Bug 429217 - [Tree] Image of TreeItem disappears after scrolling
+    testRenderImageAfterNullItem : function() {
+      var item = this._createItem( tree );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
+
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( null, tree._config, false, null );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      var image = TestUtil.getCssBackgroundImage( node );
+      assertTrue( image.indexOf( "bla.jpg" ) != -1 );
+      assertFalse( "none" == node.style.display );
+    },
+
     testHideUnusedBackgoundElement : function() {
       var item1 = this._createItem( tree );
       var item2 = this._createItem( tree );

@@ -906,12 +906,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
       for( var i = 0; i < this._cellCheckImages.length; i++ ) {
         if( this._cellCheckImages[ i ] ) {
-          this._cellCheckImages[ i ].style.backgroundImage = "";
+          rwt.html.Style.setBackgroundImage( this._cellCheckImages[ i ], null );
         }
       }
       for( var i = 0; i < this._cellImages.length; i++ ) {
         if( this._cellImages[ i ] ) {
-          this._cellImages[ i ].style.backgroundImage = "";
+          rwt.html.Style.setBackgroundImage( this._cellImages[ i ], null );
         }
       }
       for( var i = 0; i < this._cellLabels.length; i++ ) {
@@ -920,7 +920,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         }
       }
       if( this._checkBoxElement ) {
-        this._checkBoxElement.style.backgroundImage = "";
+        rwt.html.Style.setBackgroundImage( this._checkBoxElement, null );
       }
       this._renderOverlay( null );
       this._hideRemainingElements();
