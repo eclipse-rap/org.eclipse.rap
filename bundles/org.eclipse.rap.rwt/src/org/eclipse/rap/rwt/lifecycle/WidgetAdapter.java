@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,12 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 2.0
+ * @deprecated This adapter interface was provided to facilitate the implementation of LCAs. New
+ *             custom widgets should use the RemoteObject API instead of LCAs.
+ * @see org.eclipse.rap.rwt.remote.RemoteObject
  */
-@SuppressWarnings( "deprecation" )
-public interface WidgetAdapter extends IWidgetAdapter {
+@Deprecated
+public interface WidgetAdapter extends org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter {
 
   /**
    * Returns the id that identifies the widget on the client.

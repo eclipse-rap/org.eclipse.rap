@@ -88,12 +88,15 @@ public final class WidgetUtil {
   }
 
   /**
-   * Returns the according {@link WidgetAdapter} for a specified
-   * widget.
+   * Returns the according {@link WidgetAdapter} for a specified widget.
    *
    * @param widget the widget
    * @return the {@link WidgetAdapter} instance
+   * @deprecated The WidgetAdapter interface was provided to facilitate the implementation of LCAs.
+   *             New custom widgets should use the RemoteObject API instead of LCAs.
+   * @see org.eclipse.rap.rwt.remote.RemoteObject
    */
+  @Deprecated
   public static WidgetAdapter getAdapter( Widget widget ) {
     return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter( widget );
   }
