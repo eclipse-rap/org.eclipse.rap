@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
-import java.text.MessageFormat;
+import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
-import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -75,7 +71,8 @@ public final class WidgetUtil {
    * @see Widget#setData(String,Object)
    * @see #getId(Widget)
    */
-  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
+  public static final String CUSTOM_WIDGET_ID
+    = org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.CUSTOM_WIDGET_ID;
 
   /**
    * @see #CUSTOM_WIDGET_ID
@@ -98,12 +95,7 @@ public final class WidgetUtil {
    * @return the {@link WidgetAdapter} instance
    */
   public static WidgetAdapter getAdapter( Widget widget ) {
-    WidgetAdapter result;
-    result = widget.getAdapter( WidgetAdapter.class );
-    if( result == null ) {
-      throwAdapterException( WidgetAdapter.class );
-    }
-    return result;
+    return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter( widget );
   }
 
   /**
@@ -115,7 +107,7 @@ public final class WidgetUtil {
    * @return the id for the given <code>widget</code>
    */
   public static String getId( Widget widget ) {
-    return getAdapter( widget ).getId();
+    return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId( widget );
   }
 
   /**
@@ -127,23 +119,7 @@ public final class WidgetUtil {
    *         for the given widget
    */
   public static String getVariant( Widget widget ) {
-    String result = null;
-    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( widget );
-    Object data = widget.getData( RWT.CUSTOM_VARIANT );
-    if( data instanceof String ) {
-      result = ( String )data;
-      if( !result.equals( widgetAdapter.getCachedVariant() ) ) {
-        if( validateVariantString( result ) ) {
-          widgetAdapter.setCachedVariant( result );
-        } else {
-          String pattern = "Illegal character in widget variant ''{0}''";
-          Object[] arguments = new Object[] { result };
-          String message = MessageFormat.format( pattern, arguments );
-          throw new IllegalArgumentException( message );
-        }
-      }
-    }
-    return result;
+    return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getVariant( widget );
   }
 
   /**
@@ -151,16 +127,47 @@ public final class WidgetUtil {
    *
    * @param widget the widget to obtain the life cycle adapter from
    * @return the life cycle adapter for the given widget
+   * @deprecated New custom widgets should use the RemoteObject API instead of LCAs.
    */
-  // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
-  // methods up to WidgetLifeCycleAdapter and using this to talk to the outside
-  // world
+  @Deprecated
   public static AbstractWidgetLCA getLCA( Widget widget ) {
-    AbstractWidgetLCA lca = ( AbstractWidgetLCA )widget.getAdapter( WidgetLifeCycleAdapter.class );
-    if( lca == null ) {
-      throwAdapterException( AbstractWidgetLCA.class );
+    final org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA lca
+      = org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getLCA( widget );
+    if( lca instanceof AbstractWidgetLCA ) {
+      return ( AbstractWidgetLCA )lca;
     }
-    return lca;
+    return new AbstractWidgetLCA() {
+
+      @Override
+      public void readData( Widget widget ) {
+        lca.readData( widget );
+      }
+
+      @Override
+      public void preserveValues( Widget widget ) {
+        lca.preserveValues( widget );
+      }
+
+      @Override
+      public void renderInitialization( Widget widget ) throws IOException {
+        lca.renderInitialization( widget );
+      }
+
+      @Override
+      public void renderChanges( Widget widget ) throws IOException {
+        lca.renderChanges( widget );
+      }
+
+      @Override
+      public void renderDispose( Widget widget ) throws IOException {
+        lca.renderDispose( widget );
+      }
+
+      @Override
+      public void doRedrawFake( Control control ) {
+        lca.doRedrawFake( control );
+      }
+    };
   }
 
   /**
@@ -173,19 +180,7 @@ public final class WidgetUtil {
    * the given <code>id</code> within the widget hierarchy
    */
   public static Widget find( Composite root, final String id ) {
-    final Widget[] result = { null };
-    if( id != null ) {
-      WidgetTreeVisitor.accept( root, new AllWidgetTreeVisitor() {
-        @Override
-        public boolean doVisit( Widget widget ) {
-          if( getId( widget ).equals( id ) ) {
-            result[ 0 ] = widget;
-          }
-          return result[ 0 ] == null;
-        }
-      } );
-    }
-    return result[ 0 ];
+    return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find( root, id );
   }
 
   /**
@@ -203,45 +198,7 @@ public final class WidgetUtil {
    * @since 2.2
    */
   public static void registerDataKeys( String... keys ) {
-    ParamCheck.notNull( keys, "keys" );
-    WidgetDataUtil.registerDataKeys( keys );
-  }
-
-  private static void throwAdapterException( Class clazz ) {
-    String text =   "Could not retrieve an instance of ''{0}''. Probably the "
-                  + "AdapterFactory was not properly registered.";
-    Object[] param = new Object[]{ clazz.getName() };
-    String msg = MessageFormat.format( text, param );
-    throw new IllegalStateException( msg );
-  }
-
-  private static boolean validateVariantString( String variant ) {
-    boolean result = false;
-    String name = variant;
-    if( name.startsWith( "-" ) ) {
-      name = name.substring( 1 );
-    }
-    int length = name.length();
-    if( length > 0 ) {
-      result = isValidStart( name.charAt( 0 ) );
-      for( int i = 1; i < length && result; i++ ) {
-        result &= isValidPart( name.charAt( i ) );
-      }
-    }
-    return result;
-  }
-
-  private static boolean isValidStart( char ch ) {
-    return ch == '_'
-      || ( ch >= 'a' && ch <= 'z' )
-      || ( ch >= 'A' && ch <= 'Z' )
-      || ( ch >= 128 && ch <= 255 );
-  }
-
-  private static boolean isValidPart( char ch ) {
-    return isValidStart( ch )
-      || ( ch >= '0' && ch <= '9' )
-      || ch == '-';
+    org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys( keys );
   }
 
 }

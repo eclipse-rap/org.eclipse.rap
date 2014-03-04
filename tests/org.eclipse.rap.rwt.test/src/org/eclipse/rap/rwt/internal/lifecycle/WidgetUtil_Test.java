@@ -9,38 +9,29 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
+import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
 
 
-/*
- * The implementation is covered by WidgetUtil_Test in the internal.lifecycle package.
- * This test ensures that the deprecated API still works as expected.
- */
 public class WidgetUtil_Test {
 
   private Display display;
@@ -134,44 +125,6 @@ public class WidgetUtil_Test {
   @Test( expected = NullPointerException.class )
   public void testRegisterDataKeys_withNullArgument() {
     WidgetDataUtil.registerDataKeys( ( String[] )null );
-  }
-
-  @Test
-  @SuppressWarnings( "deprecation" )
-  public void testGetLCA_withPublicLCA() {
-    AbstractWidgetLCA publicLCA = mock( AbstractWidgetLCA.class );
-    Widget widget = mock( Widget.class );
-    when( widget.getAdapter( WidgetLifeCycleAdapter.class ) ).thenReturn( publicLCA );
-
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
-
-    assertThat( lca, sameInstance( publicLCA ) );
-  }
-
-  @Test
-  @SuppressWarnings( "deprecation" )
-  public void testGetLCA_withInternalLCA() throws IOException {
-    org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA internalLCA
-      = mock( org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA.class );
-    Control control = mock( Control.class );
-    when( control.getAdapter( WidgetLifeCycleAdapter.class ) ).thenReturn( internalLCA );
-
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( control );
-
-    lca.readData( control );
-    lca.preserveValues( control );
-    lca.renderInitialization( control );
-    lca.renderChanges( control );
-    lca.renderDispose( control );
-    lca.doRedrawFake( control );
-    InOrder order = inOrder( internalLCA );
-    order.verify( internalLCA ).readData( control );
-    order.verify( internalLCA ).preserveValues( control );
-    order.verify( internalLCA ).renderInitialization( control );
-    order.verify( internalLCA ).renderChanges( control );
-    order.verify( internalLCA ).renderDispose( control );
-    order.verify( internalLCA ).doRedrawFake( control );
-    order.verifyNoMoreInteractions();
   }
 
 }
