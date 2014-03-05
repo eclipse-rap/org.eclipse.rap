@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,9 +23,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
@@ -33,6 +31,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "deprecation" )
 public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
   public void render( Widget widget ) throws IOException {
@@ -64,7 +63,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
   @SuppressWarnings( "unused" )
   public void renderDispose( Widget widget ) throws IOException {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     RemoteObject remoteObject = getRemoteObject( widget );
     if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
       remoteObject.destroy();

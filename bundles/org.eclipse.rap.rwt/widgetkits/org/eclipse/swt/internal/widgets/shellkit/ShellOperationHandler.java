@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.shellkit;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_CLOSE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOVE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEACTIVATE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
@@ -28,7 +29,6 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.translateButton;
 
 import org.eclipse.rap.json.JsonArray;

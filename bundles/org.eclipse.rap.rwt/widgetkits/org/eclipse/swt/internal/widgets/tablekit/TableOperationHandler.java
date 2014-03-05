@@ -14,7 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEF
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;

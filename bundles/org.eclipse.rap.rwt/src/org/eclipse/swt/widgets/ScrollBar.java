@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -529,7 +529,8 @@ public class ScrollBar extends Widget {
     // FIXME: [if] ScrollBar has no LCA. Quick fix that prevents Scrollbars to be added to
     // DisposedWidgets list. See DisplayLCA#disposeWidgets().
     // For the same reason the remote object is marked as destroyed here too.
-    ( ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class ) ).setInitialized( false );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( this );
+    adapter.setInitialized( false );
     RemoteObject remoteObject = getRemoteObject( this );
     if( remoteObject != null ) {
       ( ( RemoteObjectImpl )remoteObject ).markDestroyed();

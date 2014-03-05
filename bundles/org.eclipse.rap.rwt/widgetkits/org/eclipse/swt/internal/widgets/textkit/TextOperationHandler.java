@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;

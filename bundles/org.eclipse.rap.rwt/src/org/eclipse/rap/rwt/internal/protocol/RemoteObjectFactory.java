@@ -15,7 +15,7 @@ import org.eclipse.rap.rwt.internal.remote.LifeCycleRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;

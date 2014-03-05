@@ -13,20 +13,23 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -35,10 +38,6 @@ import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
@@ -140,8 +139,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       @Override
       public boolean doVisit( Widget widget ) {
-        WidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-        adapter.readData( widget );
+        WidgetUtil.getLCA( widget ).readData( widget );
         return true;
       }
     };
@@ -258,8 +256,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void markInitialized( Display display ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( display );
-    adapter.setInitialized( true );
+    ( ( WidgetAdapterImpl )getAdapter( display ) ).setInitialized( true );
   }
 
   private static boolean hasResizeListener( Display display ) {

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getAdapter;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;

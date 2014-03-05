@@ -15,7 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RES
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;

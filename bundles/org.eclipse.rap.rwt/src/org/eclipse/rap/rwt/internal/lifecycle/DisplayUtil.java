@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.text.MessageFormat;
-
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -26,7 +23,8 @@ public final class DisplayUtil {
   public static DisplayLifeCycleAdapter getLCA( Display display ) {
     DisplayLifeCycleAdapter result = display.getAdapter( DisplayLifeCycleAdapter.class );
     if( result == null ) {
-      throwAdapterException( DisplayLifeCycleAdapter.class );
+      String message = "Could not retrieve an instance of DisplayLifeCycleAdapter.";
+      throw new IllegalStateException( message );
     }
     return result;
   }
@@ -35,19 +33,13 @@ public final class DisplayUtil {
     return getAdapter( display ).getId();
   }
 
+  @SuppressWarnings( "deprecation" )
   public static WidgetAdapter getAdapter( Display display ) {
-    WidgetAdapter result = display.getAdapter( WidgetAdapter.class );
+    WidgetAdapter result = display.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class );
     if( result == null ) {
-      throwAdapterException( WidgetAdapter.class );
+      throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }
     return result;
   }
 
-  private static void throwAdapterException( Class clazz ) {
-    String text =   "Could not retrieve an instance of ''{0}''. Probably the "
-                  + "AdapterFactory was not properly registered.";
-    Object[] param = new Object[]{ clazz.getName() };
-    String msg = MessageFormat.format( text, param );
-    throw new IllegalStateException( msg );
-  }
 }

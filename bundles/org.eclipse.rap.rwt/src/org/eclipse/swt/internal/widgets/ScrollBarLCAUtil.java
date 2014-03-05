@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.wasEventSent;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.wasEventSent;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -116,7 +116,7 @@ public class ScrollBarLCAUtil {
   // Helping methods
 
   private static WidgetAdapterImpl getAdapter( ScrollBar scrollBar ) {
-    return ( WidgetAdapterImpl )scrollBar.getAdapter( WidgetAdapter.class );
+    return ( WidgetAdapterImpl )WidgetUtil.getAdapter( scrollBar );
   }
 
 }

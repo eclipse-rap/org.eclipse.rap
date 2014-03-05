@@ -19,9 +19,9 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOL
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;

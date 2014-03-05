@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
@@ -22,7 +23,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemoteId;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
@@ -42,8 +42,6 @@ import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveList
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -279,7 +277,7 @@ public final class WidgetLCAUtil {
   }
 
   private static void renderToolTipMarkupEnabled( Widget widget ) {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() && isToolTipMarkupEnabledFor( widget ) ) {
       getRemoteObject( widget ).set( PROP_TOOLTIP_MARKUP_ENABLED, true );
     }

@@ -13,17 +13,17 @@ package org.eclipse.swt.internal.widgets.sashkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderListener;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Sash;

@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;

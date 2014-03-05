@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;

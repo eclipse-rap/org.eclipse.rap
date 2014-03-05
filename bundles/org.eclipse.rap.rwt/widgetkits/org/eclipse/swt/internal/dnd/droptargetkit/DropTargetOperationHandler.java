@@ -14,7 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PAR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TIME;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
 import static org.eclipse.swt.internal.dnd.DNDUtil.getDataTypeChangedValue;
 import static org.eclipse.swt.internal.dnd.DNDUtil.getDetailChangedValue;
 import static org.eclipse.swt.internal.dnd.DNDUtil.getFeedbackChangedValue;

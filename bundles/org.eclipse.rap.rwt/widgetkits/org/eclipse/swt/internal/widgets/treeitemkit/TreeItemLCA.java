@@ -13,15 +13,15 @@ package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

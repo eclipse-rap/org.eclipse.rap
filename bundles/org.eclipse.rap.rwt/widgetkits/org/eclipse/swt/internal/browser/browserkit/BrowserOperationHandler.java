@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FUNCTION_ERROR;
 import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FUNCTION_NAME;
 import static org.eclipse.swt.internal.browser.browserkit.BrowserLCA.EXECUTED_FUNCTION_RESULT;

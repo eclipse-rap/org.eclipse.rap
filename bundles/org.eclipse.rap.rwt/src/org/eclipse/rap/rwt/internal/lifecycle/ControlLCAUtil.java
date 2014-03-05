@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.readEventPropertyValue;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.lang.reflect.Field;
@@ -23,9 +23,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Cursor;

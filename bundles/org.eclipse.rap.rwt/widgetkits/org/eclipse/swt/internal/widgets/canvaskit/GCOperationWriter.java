@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -421,8 +421,7 @@ final class GCOperationWriter {
   }
 
   static String getGcId( Widget widget ) {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
-    return adapter.getId() + ".gc";
+    return getId( widget ) + ".gc";
   }
 
 }

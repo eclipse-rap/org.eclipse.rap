@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -45,7 +46,6 @@ import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
@@ -144,6 +144,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  *
  * @since 1.0
  */
+@SuppressWarnings( "deprecation" )
 public class Display extends Device implements Adaptable {
 
   private final static String BOUNDS = "bounds";
