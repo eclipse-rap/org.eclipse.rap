@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class ExampleApplication implements ApplicationConfiguration {
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
-    application.addEntryPoint( "/examples", MainUi.class, properties );
+    application.addEntryPoint( "/", MainUi.class, properties );
     application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
     application.addResource( "icons/favicon.png", createResourceLoader( "icons/favicon.png" ) );
     application.addResource( "icons/loading.gif", createResourceLoader( "icons/loading.gif" ) );

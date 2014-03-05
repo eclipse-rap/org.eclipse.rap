@@ -16,7 +16,7 @@
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <war-filename>controlsdemo</war-filename>
+    <war-filename>controls</war-filename>
   </properties>
 
   <build>

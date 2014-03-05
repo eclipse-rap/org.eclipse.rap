@@ -16,7 +16,7 @@
   <packaging>eclipse-repository</packaging>
 
   <properties>
-    <war-filename>workbenchdemo</war-filename>
+    <war-filename>workbench</war-filename>
   </properties>
 
   <build>
