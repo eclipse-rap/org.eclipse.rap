@@ -98,7 +98,11 @@ public final class WidgetUtil {
    */
   @Deprecated
   public static WidgetAdapter getAdapter( Widget widget ) {
-    return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter( widget );
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    if( adapter == null ) {
+      throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
+    }
+    return adapter;
   }
 
   /**

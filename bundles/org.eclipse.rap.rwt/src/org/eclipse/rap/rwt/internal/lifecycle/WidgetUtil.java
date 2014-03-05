@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
@@ -24,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "deprecation" )
 public final class WidgetUtil {
 
   public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
@@ -33,9 +33,9 @@ public final class WidgetUtil {
   }
 
   public static WidgetAdapter getAdapter( Widget widget ) {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    WidgetAdapter adapter = widget.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class );
     if( adapter == null ) {
-      throwAdapterException( WidgetAdapter.class );
+      throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }
     return adapter;
   }
@@ -67,7 +67,7 @@ public final class WidgetUtil {
   public static AbstractWidgetLCA getLCA( Widget widget ) {
     AbstractWidgetLCA lca = ( AbstractWidgetLCA )widget.getAdapter( WidgetLifeCycleAdapter.class );
     if( lca == null ) {
-      throwAdapterException( AbstractWidgetLCA.class );
+      throw new IllegalStateException( "Could not retrieve an instance of WidgetLifeCycleAdapter." );
     }
     return lca;
   }
@@ -91,14 +91,6 @@ public final class WidgetUtil {
   public static void registerDataKeys( String... keys ) {
     ParamCheck.notNull( keys, "keys" );
     WidgetDataUtil.registerDataKeys( keys );
-  }
-
-  private static void throwAdapterException( Class clazz ) {
-    String text =   "Could not retrieve an instance of ''{0}''. Probably the "
-                  + "AdapterFactory was not properly registered.";
-    Object[] param = new Object[]{ clazz.getName() };
-    String msg = MessageFormat.format( text, param );
-    throw new IllegalStateException( msg );
   }
 
   private static boolean validateVariantString( String variant ) {

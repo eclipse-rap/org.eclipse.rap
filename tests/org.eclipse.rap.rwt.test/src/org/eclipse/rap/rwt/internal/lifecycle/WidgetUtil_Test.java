@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -104,14 +104,12 @@ public class WidgetUtil_Test {
   }
 
   @Test
-  public void testInitializedForShell() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeResponseWriter();
-    Composite shell = new Shell( display, SWT.NONE );
-
+  @SuppressWarnings( "deprecation" )
+  public void testGetAdapter() {
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
-    assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
+    assertNotNull( adapter );
+    assertSame( shell.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class ), adapter );
   }
 
   @Test

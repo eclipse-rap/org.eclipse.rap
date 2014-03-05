@@ -12,7 +12,12 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,6 +46,7 @@ import org.mockito.InOrder;
  * The implementation is covered by WidgetUtil_Test in the internal.lifecycle package.
  * This test ensures that the deprecated API still works as expected.
  */
+@SuppressWarnings( "deprecation" )
 public class WidgetUtil_Test {
 
   private Display display;
@@ -113,13 +119,10 @@ public class WidgetUtil_Test {
   }
 
   @Test
-  public void testInitializedForShell() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeResponseWriter();
-    Composite shell = new Shell( display, SWT.NONE );
-
+  public void testGetAdapter() {
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
+    assertNotNull( adapter );
     assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
   }
 
@@ -137,7 +140,6 @@ public class WidgetUtil_Test {
   }
 
   @Test
-  @SuppressWarnings( "deprecation" )
   public void testGetLCA_withPublicLCA() {
     AbstractWidgetLCA publicLCA = mock( AbstractWidgetLCA.class );
     Widget widget = mock( Widget.class );
@@ -149,7 +151,6 @@ public class WidgetUtil_Test {
   }
 
   @Test
-  @SuppressWarnings( "deprecation" )
   public void testGetLCA_withInternalLCA() throws IOException {
     org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA internalLCA
       = mock( org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA.class );
