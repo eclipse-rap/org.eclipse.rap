@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import static org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil.renderToolTip;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

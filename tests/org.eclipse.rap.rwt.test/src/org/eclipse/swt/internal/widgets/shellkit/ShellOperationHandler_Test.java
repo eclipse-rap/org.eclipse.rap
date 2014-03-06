@@ -15,7 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_CLO
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOVE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;

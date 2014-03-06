@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.droptargetkit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.dnd.DNDUtil.getDetailChangedValue;
 import static org.eclipse.swt.internal.dnd.DNDUtil.hasDataTypeChanged;
 import static org.eclipse.swt.internal.dnd.DNDUtil.hasDetailChanged;

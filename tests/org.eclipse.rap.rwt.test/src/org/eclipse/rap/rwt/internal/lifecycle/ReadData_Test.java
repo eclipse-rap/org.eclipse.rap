@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -26,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+@SuppressWarnings( "deprecation" )
 public class ReadData_Test {
 
   private ReadData readData;
@@ -85,6 +85,7 @@ public class ReadData_Test {
     LoggingWidgetLCA( StringBuilder log ) {
       this.log = log;
     }
+    @Override
     public void readData( Widget widget ) {
       log.append( READ_DATA );
     }

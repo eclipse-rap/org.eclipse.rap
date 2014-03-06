@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.swt.internal.dnd.DNDUtil.cancel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
@@ -110,7 +111,7 @@ public class WidgetSerialization_Test {
   }
 
   private static WidgetAdapterImpl getWidgetAdapter( Widget widget ) {
-    return ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
+    return ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
   }
 
   private static class TestListener implements Listener {
