@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
-import org.eclipse.rap.rwt.service.ApplicationContextEvent;
-import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -221,13 +219,8 @@ public final class ServerPushManager implements SerializableCompatibility {
   }
 
   private static class TerminationListener
-    implements UISessionListener, ApplicationContextListener, SerializableCompatibility
+    implements UISessionListener, SerializableCompatibility
   {
-    // TODO [rst] If the system is changed to destroy UISessions on ApplicationContext deactivation
-    //            we won't need an ApplicationContextListener anymore
-    // see bug 422472: ServerPush request is not released when web application is stopped
-    // and bug 411102: Application context is not active in UISessionListener#beforeDestroy under
-    //                 some constellations
 
     private transient final Thread currentThread;
     private transient final UISession uiSession;
@@ -238,20 +231,14 @@ public final class ServerPushManager implements SerializableCompatibility {
     }
 
     public void attach() {
-      uiSession.getApplicationContext().addApplicationContextListener( this );
       uiSession.addUISessionListener( this );
     }
 
     public void detach() {
-      uiSession.getApplicationContext().removeApplicationContextListener( this );
       uiSession.removeUISessionListener( this );
     }
 
     public void beforeDestroy( UISessionEvent event ) {
-      currentThread.interrupt();
-    }
-
-    public void beforeDestroy( ApplicationContextEvent event ) {
       currentThread.interrupt();
     }
 

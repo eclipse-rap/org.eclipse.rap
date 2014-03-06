@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -57,6 +58,7 @@ import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 
 public class UISessionImpl_Test {
@@ -157,6 +159,18 @@ public class UISessionImpl_Test {
 
     assertNotNull( UISessionImpl.getInstanceFromSession( httpSession, null ) );
     assertTrue( uiSession.isBound() );
+  }
+
+  @Test
+  public void testSessionShutdownOnApplicationContextDeactivation() {
+    ArgumentCaptor<ApplicationContextListener> listenerCaptor
+      = ArgumentCaptor.forClass( ApplicationContextListener.class );
+    verify( applicationContext ).addApplicationContextListener( listenerCaptor.capture() );
+
+    listenerCaptor.getValue().beforeDestroy( null );
+
+    assertNull( UISessionImpl.getInstanceFromSession( httpSession, null ) );
+    assertFalse( uiSession.isBound() );
   }
 
   @Test
@@ -753,6 +767,18 @@ public class UISessionImpl_Test {
     uiSession.setApplicationContext( otherApplicationContext );
 
     assertSame( otherApplicationContext, uiSession.getApplicationContext() );
+  }
+
+  @Test
+  public void testSetApplicationContext_updatesApplicationContextListener() {
+    ApplicationContextImpl otherApplicationContext = mock( ApplicationContextImpl.class );
+
+    uiSession.setApplicationContext( otherApplicationContext );
+
+    verify( applicationContext )
+      .removeApplicationContextListener( any( ApplicationContextListener.class ) );
+    verify( otherApplicationContext )
+      .addApplicationContextListener( any( ApplicationContextListener.class ) );
   }
 
   @Test

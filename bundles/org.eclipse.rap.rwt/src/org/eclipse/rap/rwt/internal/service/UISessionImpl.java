@@ -35,6 +35,8 @@ import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
 import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.service.ApplicationContextEvent;
+import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -42,7 +44,8 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public class UISessionImpl
-  implements UISession, HttpSessionBindingListener, SerializableCompatibility
+  implements UISession, ApplicationContextListener, HttpSessionBindingListener,
+             SerializableCompatibility
 {
 
   private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
@@ -69,7 +72,7 @@ public class UISessionImpl
                         HttpSession httpSession,
                         String connectionId )
   {
-    this.applicationContext = applicationContext;
+    setApplicationContext( applicationContext );
     this.httpSession = httpSession;
     this.connectionId = connectionId;
     requestLock = new SerializableLock();
@@ -91,7 +94,13 @@ public class UISessionImpl
   }
 
   public void setApplicationContext( ApplicationContextImpl applicationContext ) {
+    if( this.applicationContext != null ) {
+      this.applicationContext.removeApplicationContextListener( this );
+    }
     this.applicationContext = applicationContext;
+    if( this.applicationContext != null ) {
+      this.applicationContext.addApplicationContextListener( this );
+    }
   }
 
   public ApplicationContextImpl getApplicationContext() {
@@ -112,6 +121,10 @@ public class UISessionImpl
 
   public ISessionShutdownAdapter getShutdownAdapter() {
     return shutdownAdapter;
+  }
+
+  public void beforeDestroy( ApplicationContextEvent event ) {
+    shutdown();
   }
 
   public void shutdown() {
