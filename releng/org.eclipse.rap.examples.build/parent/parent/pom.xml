@@ -31,11 +31,6 @@
       <layout>p2</layout>
       <url>${rap-incubator-repository}</url>
     </repository>
-    <repository>
-      <id>local-examples-repository</id>
-      <layout>p2</layout>
-      <url>file:${basedir}/../localrepo</url>
-    </repository>
   </repositories>
 
   <build>

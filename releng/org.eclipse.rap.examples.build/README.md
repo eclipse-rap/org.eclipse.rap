@@ -7,8 +7,9 @@ created from the nightly RAP and RAP incubator builds (see below).
 At the moment it generates three .war files that can be deployed in 
 any web container: controlsdemo.war, rapdemo.war, workbenchdemo.war.
 
-The RAP Examples Demo requires bundles from additional projects. See
-below for instructions on how to add them to the .war files.
+The RAP Examples Demo requires bundles from additional projects. These
+bundles need to be compiled externally and added to the .war file
+manually.
 
 * Google Maps:
   https://github.com/eclipsesource/rap-gmap
@@ -32,14 +33,3 @@ Example with RAP 2.2 and RAP Incubator builds for 2.2:
       -Drap-repository=http://download.eclipse.org/rt/rap/2.2/ \
       -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.2/ \
       clean install
-
-Adding additional pre-built bundles to .war files
--------------------------------------------------
-
-(1) Copy the bundles into the project directory
-    /org.eclipse.rap.examples.build/localrepo/plugins
-(2) Run the Ant build "RAP Examples - local p2 repo build" from within
-    Eclipse (/org.eclipse.rap.examples.build/localrepo/build.xml)
-(3) Add the new bundles to the .product file of your war product and
-    ensure that the start-levels are set appropriately
-(4) Run the standard Tycho/Maven build in project root
