@@ -4,7 +4,7 @@ created from the nightly RAP and RAP incubator builds (see below).
 
     mvn -e clean install
 
-At the moment it generates three .war files that can be deployed in 
+At the moment it generates three .war files that can be deployed in
 any web container: controlsdemo.war, rapdemo.war, workbenchdemo.war.
 
 The RAP Examples Demo requires bundles from additional projects. These
@@ -18,6 +18,19 @@ manually.
   https://github.com/ralfstx/rap-demo-additions
 
 * d3 Chart
+  https://github.com/ralfstx/rap-d3charts
+
+* Nebula Grid
+  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.nebula-grid.git/
+
+* FileUpload
+  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.fileupload.git/
+
+* AutoSuggest
+  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.dropdown.git/
+
+* CkEditor
+  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.richtext.git/
 
 
 Changing the default p2 repositories
