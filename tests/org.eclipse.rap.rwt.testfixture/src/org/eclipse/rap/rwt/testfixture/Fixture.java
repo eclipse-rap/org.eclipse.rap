@@ -87,6 +87,7 @@ import org.eclipse.swt.widgets.Widget;
  * your own risk.
  * </p>
  */
+@SuppressWarnings( "deprecation" )
 public final class Fixture {
 
   public final static File TEMP_DIR = createTempDir();
