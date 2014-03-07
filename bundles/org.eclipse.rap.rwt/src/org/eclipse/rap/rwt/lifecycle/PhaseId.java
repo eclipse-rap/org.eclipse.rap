@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,9 @@ import java.util.List;
  *
  * @since 2.0
  * @noextend This class is not intended to be subclassed by clients.
+ * @deprecated Support for PhaseListeners is going to be removed in the future.
  */
+@Deprecated
 public class PhaseId implements Comparable {
 
   private static int nextOrdinal;
@@ -97,4 +99,5 @@ public class PhaseId implements Comparable {
   public int getOrdinal() {
     return ordinal;
   }
+
 }

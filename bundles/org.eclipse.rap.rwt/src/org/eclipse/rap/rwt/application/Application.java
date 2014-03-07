@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Widget;
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 2.0
  */
+@SuppressWarnings( "deprecation" )
 public interface Application {
 
   /**
@@ -175,7 +176,9 @@ public interface Application {
    *
    * @param phaseListener the phase listener to add
    * @see PhaseListener
+   * @deprecated Support for PhaseListeners is going to be removed in the future.
    */
+  @Deprecated
   void addPhaseListener( PhaseListener phaseListener );
 
   /**

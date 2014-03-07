@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 
 
+@SuppressWarnings( "deprecation" )
 public class ProcessActionRunner {
 
   private static final String ATTR_RUNNABLE_LIST = ProcessActionRunner.class.getName();

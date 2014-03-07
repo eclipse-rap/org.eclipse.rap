@@ -24,6 +24,7 @@ import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -48,6 +49,7 @@ import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "deprecation" )
 public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Browser";
