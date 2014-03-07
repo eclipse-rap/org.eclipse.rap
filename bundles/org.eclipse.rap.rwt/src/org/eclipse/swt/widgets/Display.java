@@ -60,7 +60,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IdGeneratorProvider;
+import org.eclipse.swt.internal.widgets.IdGenerator;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -788,7 +788,7 @@ public class Display extends Device implements Adaptable {
       result = ( T )displayAdapter;
     } else if( adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        String id = IdGeneratorProvider.getIdGenerator().createId( this );
+        String id = IdGenerator.getInstance().createId( this );
         widgetAdapter = new WidgetAdapterImpl( id );
       }
       result = ( T )widgetAdapter;

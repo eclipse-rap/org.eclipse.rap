@@ -22,13 +22,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class IdGeneratorImpl_Test {
+public class IdGenerator_Test {
 
-  private IdGeneratorImpl idGenerator;
+  private IdGenerator idGenerator;
 
   @Before
   public void setUp() {
-    idGenerator = new IdGeneratorImpl();
+    idGenerator = new IdGenerator();
   }
 
   @Test
@@ -70,7 +70,7 @@ public class IdGeneratorImpl_Test {
   @Test
   public void testReproducibleIds() {
     String id1 = idGenerator.createId( "x" );
-    String id2 = new IdGeneratorImpl().createId( "x" );
+    String id2 = new IdGenerator().createId( "x" );
 
     assertEquals( id1, id2 );
   }
@@ -79,7 +79,7 @@ public class IdGeneratorImpl_Test {
   public void testSerialize() throws Exception {
     String id1 = idGenerator.createId( "x" );
 
-    IdGeneratorImpl deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
+    IdGenerator deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
     String id2 = deserializedIdGenerator.createId( "x" );
 
     assertFalse( id2.equals( id1 ) );

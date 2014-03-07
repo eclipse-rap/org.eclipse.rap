@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,45 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * An instance of this interface is used to generate IDs for objects that are used in the remote
- * protocol. An implementation must ensure that the generated IDs are unique, i.e. no ID must ever
- * be created twice.
- * <p>
- * The framework will call <code>createId(Object)</code> once for every object before it creates the
- * corresponding remote object.
- * </p>
- * <p>
- * A custom ID generator may be registered for the purpose of UI testing by setting the system
- * property <em>org.eclipse.rap.idGenerator</em> to the class name of the IdGenerator
- * implementation. The class will be load with the same class loader as RWT, hence a fragment must
- * be used in OSGi.
- * </p>
- *
- * @since 2.0
- */
-public interface IdGenerator {
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 
-  String createId( Object object );
+
+public final class IdGenerator implements SerializableCompatibility {
+
+  // TODO [rst] Start from zero when hard-coded "w1" is gone
+  private final AtomicInteger sequence = new AtomicInteger( 1 );
+
+  IdGenerator() {
+    // prevent instantiation from outside
+  }
+
+  public static IdGenerator getInstance() {
+    return SingletonUtil.getUniqueInstance( IdGenerator.class, RWT.getUISession() );
+  }
+
+  public String createId( Object object ) {
+    // TODO [rst] Remove dependencies on hard-coded "w1"
+    if( object instanceof Display ) {
+      return "w1";
+    }
+    return getPrefix( object ) + sequence.incrementAndGet();
+  }
+
+  private String getPrefix( Object object ) {
+    String prefix = "o";
+    if( object instanceof Widget || object instanceof Display ) {
+      prefix = "w";
+    } else if( object instanceof String ) {
+      // allow for using custom prefixes for non-widget types
+      prefix = ( String )object;
+    }
+    return prefix;
+  }
 
 }
