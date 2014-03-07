@@ -101,7 +101,6 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_withRootServlet() throws Exception {
-    request.setRequestURI( "/example/" );
     request.setServletPath( "" );
     request.setPathInfo( "/" );
     request.setSession( mock( HttpSession.class ) );
@@ -109,32 +108,6 @@ public class RWTServlet_Test {
     servlet.doGet( request, response );
 
     verify( serviceHandler ).service( request, response );
-  }
-
-  @Test
-  public void testHandleRequest_withRootServlet_missingTrailingSlash() throws Exception {
-    request.setRequestURI( "/example" );
-    request.setServletPath( "" );
-    request.setPathInfo( "/" );
-    request.setSession( mock( HttpSession.class ) );
-
-    servlet.doGet( request, response );
-
-    assertEquals( "/example/", response.getRedirect() );
-  }
-
-  @Test
-  public void testHandleRequest_withRootServlet_missingTrailingSlash_queryString() throws Exception
-  {
-    request.setRequestURI( "/example" );
-    request.setServletPath( "" );
-    request.setPathInfo( "/" );
-    request.setQueryString( "foo=23&bar=42" );
-    request.setSession( mock( HttpSession.class ) );
-
-    servlet.doGet( request, response );
-
-    assertEquals( "/example/?foo=23&bar=42", response.getRedirect() );
   }
 
   @Test
