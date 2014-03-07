@@ -10,25 +10,30 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.client;
 
+import org.eclipse.rap.rwt.client.service.ClientFileUploader;
+
 
 /**
- * Represents a file on the client
+ * Represents a file on the client.
  *
+ * @see ClientFileUploader
  * @since 2.3
  */
 public interface ClientFile {
 
   /**
-   * The name of the file as it is known to the client, without path information.
+   * The name of the file on the client, without path information. If the client can not
+   * determine the file name the string will be empty.
    *
-   * @return the file name as a string. May be empty, but never null.
+   * @return the file name as a string. May be empty, but never <code>null</code>.
    */
   String getName();
 
   /**
-   * The string in lower case representing the MIME type of the File.
+   * The string in lower case representing the MIME type of the file. If the client can not
+   * determine the file type the string will be empty.
    *
-   * @return the type of the file or an empty string if the type is unknown. Is never null.
+   * @return the type of the file. May be empty, but never <code>null</code>.
    */
   String getType();
 

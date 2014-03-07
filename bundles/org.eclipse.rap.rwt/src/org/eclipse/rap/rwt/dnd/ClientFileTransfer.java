@@ -11,15 +11,20 @@
 package org.eclipse.rap.rwt.dnd;
 
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.client.ClientFile;
+import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 
 
 /**
- * The class <code>ClientFileTransfer</code> provides a dedicated transfer type for RAP client files
- * DND operations.
+ * The class <code>ClientFileTransfer</code> allows the user to drop files from the user's file
+ * system on a <code>DropTarget</code>. The DropEvent will contain data of the type
+ * <code>ClientFile[]</code>.
  *
  * @see Transfer
+ * @see ClientFile
+ * @see ClientFileUploader
  * @since 2.3
  */
 public class ClientFileTransfer extends Transfer {

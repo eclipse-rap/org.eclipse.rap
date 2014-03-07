@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.client.service;
 
 import org.eclipse.rap.rwt.client.ClientFile;
+import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 
 /**
  * The ClientFileUploader service allows uploading client-side files to the server.
@@ -21,11 +22,12 @@ import org.eclipse.rap.rwt.client.ClientFile;
 public interface ClientFileUploader extends ClientService {
 
   /**
-   * Starts to upload the provided <code>ClientFile<code> to the given URL using HTTP POST. If no
-   * files has been provided, nothing happens.
+   * Starts to upload the provided <code>ClientFile</code> to the given URL using HTTP POST. If no
+   * files are provided, nothing happens.
    *
    * @param url the URL to upload to, must not be <code>null</code> or empty
-   * @param clientFiles client-side files, must not be <code>null
+   * @param clientFiles client-side files, must not be <code>null</code>
+   * @see ClientFileTransfer
    */
   public void submit( String url, ClientFile[] clientFiles );
 
