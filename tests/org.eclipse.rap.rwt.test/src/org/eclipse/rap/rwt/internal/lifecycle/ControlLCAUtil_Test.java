@@ -11,9 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_HELP;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_KEY_DOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_CHAR_CODE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_KEY_CODE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_MODIFIER;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -32,7 +41,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -98,7 +106,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, null, null );
+    fakeNotifySelection( getId( control ) );
     ControlLCAUtil.processSelection( control, null, true );
 
     verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
@@ -116,7 +124,7 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Selection, listener );
 
-    fakeSelectionEvent( control, null, null );
+    fakeNotifySelection( getId( control ) );
     ControlLCAUtil.processSelection( control, item, true );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -133,7 +141,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, "altKey", "true" );
+    fakeNotifySelection( getId( control ), "altKey", true );
     ControlLCAUtil.processSelection( control, null, true );
 
     verify( listener, never() ).widgetDefaultSelected( any( SelectionEvent.class ) );
@@ -151,7 +159,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_TEXT, "foo" );
+    fakeNotifySelection( getId( control ), EVENT_PARAM_TEXT, "foo" );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -165,7 +173,7 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Selection, listener );
 
-    fakeSelectionEvent( control, null, null );
+    fakeNotifySelection( getId( control ) );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -184,7 +192,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "check" );
+    fakeNotifySelection( getId( control ), EVENT_PARAM_DETAIL, "check" );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -198,7 +206,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "hyperlink" );
+    fakeNotifySelection( getId( control ), EVENT_PARAM_DETAIL, "hyperlink" );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -212,7 +220,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "search" );
+    fakeNotifySelection( getId( control ), EVENT_PARAM_DETAIL, "search" );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -226,7 +234,7 @@ public class ControlLCAUtil_Test {
     SelectionListener listener = mock( SelectionListener.class );
     control.addSelectionListener( listener );
 
-    fakeSelectionEvent( control, ClientMessageConst.EVENT_PARAM_DETAIL, "cancel" );
+    fakeNotifySelection( getId( control ), EVENT_PARAM_DETAIL, "cancel" );
     ControlLCAUtil.processSelection( control, null, false );
 
     ArgumentCaptor<SelectionEvent> captor = ArgumentCaptor.forClass( SelectionEvent.class );
@@ -253,7 +261,7 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     display.addFilter( SWT.KeyDown, listener );
 
-    fakeKeyDown( getId( shell ), 65, 97, "" );
+    fakeNotifyKeyDown( getId( shell ), 65, 97, "" );
     Fixture.readDataAndProcessAction( display );
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
@@ -269,7 +277,7 @@ public class ControlLCAUtil_Test {
     KeyListener listener = mock( KeyListener.class );
     shell.addKeyListener( listener );
 
-    fakeKeyDown( getId( shell ), 65, 97, "" );
+    fakeNotifyKeyDown( getId( shell ), 65, 97, "" );
     Fixture.readDataAndProcessAction( shell );
 
     ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
@@ -285,7 +293,7 @@ public class ControlLCAUtil_Test {
     KeyListener listener = mock( KeyListener.class );
     shell.addKeyListener( listener );
 
-    fakeKeyDown( getId( shell ), 65, 65, "" );
+    fakeNotifyKeyDown( getId( shell ), 65, 65, "" );
     Fixture.readDataAndProcessAction( shell );
 
     ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
@@ -301,7 +309,7 @@ public class ControlLCAUtil_Test {
     KeyListener listener = mock( KeyListener.class );
     shell.addKeyListener( listener );
 
-    fakeKeyDown( getId( shell ), 49, 49, "" );
+    fakeNotifyKeyDown( getId( shell ), 49, 49, "" );
     Fixture.readDataAndProcessAction( shell );
 
     ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
@@ -317,7 +325,7 @@ public class ControlLCAUtil_Test {
     KeyListener listener = mock( KeyListener.class );
     shell.addKeyListener( listener );
 
-    fakeKeyDown( getId( shell ), 49, 33, "" );
+    fakeNotifyKeyDown( getId( shell ), 49, 33, "" );
     Fixture.readDataAndProcessAction( shell );
 
     ArgumentCaptor<KeyEvent> captor = ArgumentCaptor.forClass( KeyEvent.class );
@@ -340,7 +348,7 @@ public class ControlLCAUtil_Test {
     shell.addListener( SWT.KeyDown, listener );
     shell.addListener( SWT.KeyUp, listener );
 
-    fakeTraverse( getId( shell ), 27, 0, "" );
+    fakeNotifyTraverse( getId( shell ), 27, 0, "" );
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 3, eventLog.size() );
@@ -398,7 +406,7 @@ public class ControlLCAUtil_Test {
     HelpListener listener = mock( HelpListener.class );
     shell.addHelpListener( listener );
 
-    Fixture.fakeNotifyOperation( getId( shell ), ClientMessageConst.EVENT_HELP, null );
+    Fixture.fakeNotifyOperation( getId( shell ), EVENT_HELP, null );
     Fixture.readDataAndProcessAction( shell );
 
     verify( listener, times( 1 ) ).helpRequested( any( HelpEvent.class) );
@@ -1118,30 +1126,37 @@ public class ControlLCAUtil_Test {
     assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MenuDetect" ) );
   }
 
-  private void fakeKeyDown( String target, int keyCode, int charCode, String modifier ) {
+  private void fakeNotifyKeyDown( String target, int keyCode, int charCode, String modifier ) {
     JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
-      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
-      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
-    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
+      .add( EVENT_PARAM_KEY_CODE, keyCode )
+      .add( EVENT_PARAM_CHAR_CODE, charCode )
+      .add( EVENT_PARAM_MODIFIER, modifier );
+    Fixture.fakeNotifyOperation( target, EVENT_KEY_DOWN, properties  );
   }
 
-  private void fakeTraverse( String target, int keyCode, int charCode, String modifier ) {
+  private void fakeNotifyTraverse( String target, int keyCode, int charCode, String modifier ) {
     JsonObject properties = new JsonObject()
-      .add( ClientMessageConst.EVENT_PARAM_KEY_CODE, keyCode )
-      .add( ClientMessageConst.EVENT_PARAM_CHAR_CODE, charCode )
-      .add( ClientMessageConst.EVENT_PARAM_MODIFIER, modifier );
-    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_KEY_DOWN, properties  );
-    Fixture.fakeNotifyOperation( target, ClientMessageConst.EVENT_TRAVERSE, properties  );
+      .add( EVENT_PARAM_KEY_CODE, keyCode )
+      .add( EVENT_PARAM_CHAR_CODE, charCode )
+      .add( EVENT_PARAM_MODIFIER, modifier );
+    Fixture.fakeNotifyOperation( target, EVENT_KEY_DOWN, properties  );
+    Fixture.fakeNotifyOperation( target, EVENT_TRAVERSE, properties  );
   }
 
-  private static void fakeSelectionEvent( Control control, String key, String value ) {
-    String id = getId( control );
-    JsonObject parameters = new JsonObject();
-    if( key != null ) {
-      parameters.add( key, value );
-    }
-    Fixture.fakeNotifyOperation( id, ClientMessageConst.EVENT_SELECTION, parameters );
+  private static void fakeNotifySelection( String target, String property, String value ) {
+    fakeNotifySelection( target, new JsonObject().add( property, JsonValue.valueOf( value ) ) );
+  }
+
+  private static void fakeNotifySelection( String target, String property, boolean value ) {
+    fakeNotifySelection( target, new JsonObject().add( property, JsonValue.valueOf( value ) ) );
+  }
+
+  private static void fakeNotifySelection( String target ) {
+    fakeNotifySelection( target, null );
+  }
+
+  private static void fakeNotifySelection( String target, JsonObject parameters ) {
+    Fixture.fakeNotifyOperation( target, EVENT_SELECTION, parameters );
   }
 
 }
