@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.Arrays;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -41,6 +42,7 @@ public class ProtocolUtil_Test {
   public void setUp() {
     Fixture.setUp();
     display = new Display();
+    Fixture.fakeNewRequest();
   }
 
   @After
@@ -164,12 +166,12 @@ public class ProtocolUtil_Test {
   public void testGetJsonForImage() {
     Image image = createImage( Fixture.IMAGE_100x50 );
 
-    JsonArray result = ProtocolUtil.getJsonForImage( image ).asArray();
+    JsonValue result = ProtocolUtil.getJsonForImage( image );
 
-    assertEquals( 3, result.size() );
-    assertTrue( result.get( 0 ).isString() );
-    assertEquals( 100, result.get( 1 ).asInt() );
-    assertEquals( 50, result.get( 2 ).asInt() );
+    JsonArray array = result.asArray();
+    assertTrue( array.get( 0 ).isString() );
+    array.set( 0, "" );
+    assertEquals( new JsonArray().add( "" ).add( 100 ).add( 50 ), array );
   }
 
   @Test
@@ -179,15 +181,11 @@ public class ProtocolUtil_Test {
 
   @Test
   public void testIsClientMessageProcessed_No() {
-    fakeNewJsonMessage();
-
     assertFalse( ProtocolUtil.isClientMessageProcessed() );
   }
 
   @Test
   public void testIsClientMessageProcessed_Yes() {
-    fakeNewJsonMessage();
-
     ProtocolUtil.getClientMessage();
 
     assertTrue( ProtocolUtil.isClientMessageProcessed() );
@@ -195,7 +193,7 @@ public class ProtocolUtil_Test {
 
   @Test
   public void testGetClientMessage() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", JsonValue.TRUE );
 
     ClientMessage message = ProtocolUtil.getClientMessage();
 
@@ -205,8 +203,6 @@ public class ProtocolUtil_Test {
 
   @Test
   public void testGetClientMessage_SameInstance() {
-    fakeNewJsonMessage();
-
     ClientMessage message1 = ProtocolUtil.getClientMessage();
     ClientMessage message2 = ProtocolUtil.getClientMessage();
 
@@ -215,42 +211,39 @@ public class ProtocolUtil_Test {
 
   @Test
   public void testReadProperyValue_MissingProperty() {
-    fakeNewJsonMessage();
-
     assertNull( ProtocolUtil.readPropertyValueAsString( "w3", "p0" ) );
   }
 
   @Test
-  public void testReadProperyValueAsString_String() {
-    fakeNewJsonMessage();
+  public void testReadProperyValueAsString_string() {
+    Fixture.fakeSetProperty( "w3", "prop", JsonValue.valueOf( "foo" ) );
 
-    assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
+    assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
   }
 
   @Test
-  public void testReadProperyValueAsString_Integer() {
-    fakeNewJsonMessage();
+  public void testReadProperyValueAsString_int() {
+    Fixture.fakeSetProperty( "w3", "prop", JsonValue.valueOf( 23 ) );
 
-    assertEquals( "123", ProtocolUtil.readPropertyValueAsString( "w3", "p2" ) );
+    assertEquals( "23", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
   }
 
   @Test
-  public void testReadProperyValueAsString_Boolean() {
-    fakeNewJsonMessage();
+  public void testReadProperyValueAsString_boolean() {
+    Fixture.fakeSetProperty( "w3", "prop", JsonValue.TRUE );
 
-    assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "p3" ) );
+    assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
   }
 
   @Test
-  public void testReadProperyValueAsString_Null() {
-    fakeNewJsonMessage();
+  public void testReadProperyValueAsString_null() {
+    Fixture.fakeSetProperty( "w3", "prop", JsonValue.NULL );
 
-    assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "p4" ) );
+    assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
   }
 
   @Test
   public void testReadPropertyValue_LastSetValue() {
-    Fixture.fakeNewRequest();
     Fixture.fakeSetProperty( "w3", "p1", "foo" );
     Fixture.fakeSetProperty( "w3", "p1", "bar" );
 
@@ -259,155 +252,140 @@ public class ProtocolUtil_Test {
 
   @Test
   public void testReadEventPropertyValue_MissingProperty() {
-    fakeNewJsonMessage();
-
     assertNull( ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "item" ) );
   }
 
   @Test
   public void testReadEventPropertyValue() {
-    fakeNewJsonMessage();
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject().add( "detail", "check" ) );
 
     String value = ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "detail" );
+
     assertEquals( "check", value );
   }
 
   @Test
-  public void testWasEventSend_Send() {
-    fakeNewJsonMessage();
+  public void testWasEventSent_sent() {
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject() );
 
     assertTrue( ProtocolUtil.wasEventSent( "w3", "widgetSelected" ) );
   }
 
   @Test
-  public void testWasEventSend_NotSend() {
-    fakeNewJsonMessage();
+  public void testWasEventSend_notSent() {
+    Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject() );
 
     assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
   }
 
   @Test
   public void testReadPropertyValueAsPoint() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2 ) );
 
-    assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "p5" ) );
+    assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "prop" ) );
   }
 
-  @Test
-  public void testReadPropertyValueAsPoint_NotPoint() {
-    fakeNewJsonMessage();
+  @Test( expected = IllegalStateException.class )
+  public void testReadPropertyValueAsPoint_notPoint() {
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
 
-    try {
-      ProtocolUtil.readPropertyValueAsPoint( "w3", "p6" );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    ProtocolUtil.readPropertyValueAsPoint( "w3", "prop" );
   }
 
   @Test
   public void testReadPropertyValueAsRectangle() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
 
     Rectangle expected = new Rectangle( 1, 2, 3, 4 );
-    assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "p6" ) );
+    assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "prop" ) );
   }
 
-  @Test
-  public void testReadPropertyValueAsRectangle_NotRectangle() {
-    fakeNewJsonMessage();
+  @Test( expected = IllegalStateException.class )
+  public void testReadPropertyValueAsRectangle_notRectangle() {
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2 ) );
 
-    try {
-      ProtocolUtil.readPropertyValueAsRectangle( "w3", "p5" );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    ProtocolUtil.readPropertyValueAsRectangle( "w3", "prop" );
   }
 
   @Test
   public void testReadPropertyValueAsIntArray() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
 
-    int[] expected = new int[]{ 1, 2, 3, 4 };
-    int[] actual = ProtocolUtil.readPropertyValueAsIntArray( "w3", "p6" );
-    assertTrue( Arrays.equals( expected, actual ) );
+    int[] result = ProtocolUtil.readPropertyValueAsIntArray( "w3", "prop" );
+
+    int[] expected = { 1, 2, 3, 4 };
+    assertArrayEquals( expected, result );
   }
 
   @Test
   public void testReadPropertyValueAsBooleanArray() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( true, false, true ) );
 
-    boolean[] expected = new boolean[]{ true, false, true };
-    boolean[] actual = ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "p9" );
-    assertTrue( Arrays.equals( expected, actual ) );
+    boolean[] result = ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "prop" );
+
+    boolean[] expected = { true, false, true };
+    assertTrue( Arrays.equals( expected, result ) );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void testReadPropertyValueAsBooleanArray_NotBoolean() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( "a", "b", "c" ) );
 
-    try {
-      ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "p7" );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "prop" );
   }
 
   @Test
   public void testReadPropertyValueAsStringArray() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( "a", "b", "c" ) );
 
-    String[] expected = new String[]{ "a", "b", "c" };
-    String[] actual = ProtocolUtil.readPropertyValueAsStringArray( "w3", "p7" );
-    assertTrue( Arrays.equals( expected, actual ) );
+    String[] result = ProtocolUtil.readPropertyValueAsStringArray( "w3", "prop" );
+
+    String[] expected = { "a", "b", "c" };
+    assertTrue( Arrays.equals( expected, result ) );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void testReadPropertyValueAsStringArray_NotString() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
 
-    try {
-      ProtocolUtil.readPropertyValueAsStringArray( "w3", "p6" );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    ProtocolUtil.readPropertyValueAsStringArray( "w3", "prop" );
   }
 
   @Test
   public void testReadPropertyValue() {
-    fakeNewJsonMessage();
+    Fixture.fakeSetProperty( "w3", "prop", new JsonArray().add( "a" ).add( 2 ).add( true ) );
+
+    JsonValue result = ProtocolUtil.readPropertyValue( "w3", "prop" );
 
     JsonValue expected = JsonValue.readFrom( "[\"a\", 2, true]" );
-    JsonValue actual = ProtocolUtil.readPropertyValue( "w3", "p8" );
-    assertEquals( expected, actual );
+    assertEquals( expected, result );
   }
 
   @Test
-    public void testWasCallReceived() {
-      fakeNewJsonMessage();
+  public void testWasCallReceived() {
+    Fixture.fakeCallOperation( "w3", "resize", null );
 
-      assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
-      assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
-    }
+    assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
+    assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
+  }
 
   @Test
   public void testReadCallProperty() {
-    fakeNewJsonMessage();
+    Fixture.fakeCallOperation( "w3", "resize", new JsonObject().add( "width", 10 ) );
 
     assertEquals( "10", ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
   }
 
   @Test
-  public void testReadCallProperty_MissingProperty() {
-    fakeNewJsonMessage();
+  public void testReadCallProperty_missingProperty() {
+    Fixture.fakeCallOperation( "w3", "resize", null );
 
-    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "left" ) );
+    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
   }
 
   @Test
-  public void testReadCallProperty_MissingOperation() {
-    fakeNewJsonMessage();
-
-    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w4", "resize", "left" ) );
+  public void testReadCallProperty_missingOperation() {
+    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
   }
 
   @Test
@@ -466,31 +444,6 @@ public class ProtocolUtil_Test {
   @Test( expected = IllegalArgumentException.class )
   public void testToRectangle_withWrongElementType() {
     ProtocolUtil.toRectangle( new JsonArray().add( 1 ).add( true ) );
-  }
-
-  //////////////////
-  // Helping methods
-
-  private void fakeNewJsonMessage() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( "requestCounter", 21 );
-    JsonObject setProperties1 = new JsonObject()
-      .add( "p1", "foo" )
-      .add( "p2", 123 );
-    Fixture.fakeSetOperation( "w3", setProperties1  );
-    JsonObject notifyParameters = new JsonObject().add( "detail", "check" );
-    Fixture.fakeNotifyOperation( "w3", "widgetSelected", notifyParameters );
-    JsonObject setProperites2 = new JsonObject()
-      .add( "p3", true )
-      .add( "p4", JsonValue.NULL )
-      .add( "p5", createJsonArray( 1, 2 ) )
-      .add( "p6", createJsonArray( 1, 2, 3, 4 ) )
-      .add( "p7", createJsonArray( "a", "b", "c" ) )
-      .add( "p8", new JsonArray().add( "a" ).add( 2 ).add( true ) )
-      .add( "p9", createJsonArray( true, false, true ) );
-    Fixture.fakeSetOperation( "w3", setProperites2  );
-    JsonObject callParameters = new JsonObject().add( "width", 10 );
-    Fixture.fakeCallOperation( "w3", "resize", callParameters );
   }
 
   @SuppressWarnings( "resource" )
