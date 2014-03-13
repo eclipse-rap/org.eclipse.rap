@@ -9,6 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*jshint nonew:false */
 rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
 
   factory : function( properties ) {
@@ -36,6 +37,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     rwt.remote.HandlerUtil.setParent( result, properties.parent );
+    new rwt.widgets.util.GridSynchronizer( result );
     return result;
   },
 

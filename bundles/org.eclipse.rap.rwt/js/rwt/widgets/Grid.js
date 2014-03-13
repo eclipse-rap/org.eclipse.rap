@@ -293,7 +293,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setFocusItem : function( item ) {
       this._focusItem = item;
-      this._sendItemFocusChange();
+      this.dispatchSimpleEvent( "focusItemChanged" );
+    },
+
+    getFocusItem : function() {
+      return this._focusItem;
     },
 
     setSortDirection : function( direction ) {
@@ -398,6 +402,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       return this._selection.indexOf( item ) != -1;
     },
 
+    getSelection : function() {
+      return this._selection.slice( 0 );
+    },
+
     getRowContainer : function() {
       return this._rowContainer;
     },
@@ -443,7 +451,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( event.msg === "remove" ) {
         this._scheduleUpdate( "checkDisposedItems" );
       }
-      this._sendItemUpdate( item, event );
+      if( event.msg === "expanded" || event.msg === "collapsed" ) {
+        this._fireExpand( item, event.msg === "expanded" );
+      }
       this._renderItemUpdate( item, event );
       return false;
     },
@@ -486,7 +496,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( this._inServerResponse() || !this.isSeeable() ) {
         this._scheduleUpdate( "topItem" );
       } else {
-        this._sendTopItemIndexChange();
+        this.dispatchSimpleEvent( "topItemChanged" );
         this._updateTopItem( true );
       }
     },
@@ -499,7 +509,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( this._footer ) {
         this._footer.setScrollLeft( this._horzScrollBar.getValue() );
       }
-      this._sendScrollLeftChange();
+      this.dispatchSimpleEvent( "scrollLeftChanged" );
     },
 
     _onMouseDown : function( event ) {
@@ -533,7 +543,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         } else if( identifier[ 0 ] === "checkBox" || identifier[ 0 ] === "cellCheckBox" ) {
           this._toggleCheckSelection( item, identifier[ 1 ] );
         } else if( identifier[ 0 ] === "selectableCell" ) {
-          this._sendSelectionEvent( item, false, "cell", undefined, identifier[ 1 ] );
+          this._fireSelectionChanged( item, "cell", null, identifier[ 1 ] );
         } else if( identifier[ 0 ] === "treeColumn" || this._acceptsGlobalSelection() ) {
           this._onSelectionClick( event, item );
         }
@@ -557,7 +567,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
             if( !text ) {
               text = hyperlink.innerHTML;
             }
-            this._sendSelectionEvent( item, false, "hyperlink", undefined, text );
+            this._fireSelectionChanged( item, "hyperlink", null, text );
           }
         }
       }
@@ -591,7 +601,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       //       item is re-rendered on mousedown which prevents the dom-event.
       var doubleClick = this._isDoubleClicked( event, item );
       if( doubleClick ) {
-        this._sendSelectionEvent( item, true, null );
+        this._fireSelectionChanged( item, "defaultSelection" );
       } else if( !this._hasMultiSelection ) {
         this._singleSelectItem( event, item );
       } else if( !this._delayMultiSelect( event, item ) ) {
@@ -699,7 +709,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _handleKeyEnter : function( event ) {
-      this._sendSelectionEvent( this._focusItem, true, null );
+      this._fireSelectionChanged( this._focusItem, "defaultSelection" );
     },
 
     _handleKeySpace : function( event ) {
@@ -948,111 +958,21 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     //////////////
-    // Send events
+    // Fire events
 
-    _sendSelectionChange : function( item ) {
-      if( !this._inServerResponse() ) {
-        var selection = this._getSelectionList();
-        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", selection );
-        this._sendSelectionEvent( item, false, null );
-      }
+    _fireExpand : function( item, expanded ) {
+      var data = { "item" : item , "expanded" : expanded };
+      this.dispatchSimpleEvent( "expand", data );
     },
 
-    _sendItemCheckedChange : function( item ) { // TODO [tb] : item events should be send by item
-      if( !this._inServerResponse() ) {
-        rwt.remote.Connection.getInstance().getRemoteObject( item ).set( "checked", item.isChecked() );
-        this._sendSelectionEvent( item, false, "check" );
-      }
-    },
-
-    _sendCellCheckedChange : function( item, cell ) { // TODO [tb] : item events should be send by item
-      if( !this._inServerResponse() ) {
-        var server = rwt.remote.Connection.getInstance();
-        var arr = item.getCellChecked();
-        var sendArr = [];
-        for( var i = 0; i < this._config.columnCount; i++ ) {
-          sendArr[ i ] = arr[ i ] === true;
-        }
-        server.getRemoteObject( item ).set( "cellChecked", sendArr );
-        this._sendSelectionEvent( item, false, "check", cell );
-      }
-    },
-
-    _sendItemFocusChange : function() {
-      if( !this._inServerResponse() ) {
-        var focusItemId = this._getItemId( this._focusItem );
-        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "focusItem", focusItemId );
-      }
-    },
-
-    _sendTopItemIndexChange : function() {
-      var connection = rwt.remote.Connection.getInstance();
-      var remoteObject = connection.getRemoteObject( this );
-      remoteObject.set( "topItemIndex", this._topItemIndex );
-      if( this._vertScrollBar.getHasSelectionListener() ) {
-        connection.onNextSend( this._sendVerticalScrolled, this );
-      }
-      if( remoteObject.isListening( "SetData" ) ) {
-        connection.onNextSend( this._sendSetData, this );
-      }
-      if( this._vertScrollBar.getHasSelectionListener() || remoteObject.isListening( "SetData" ) ) {
-        connection.sendDelayed( 400 );
-      }
-    },
-
-    _sendScrollLeftChange : function() {
-      // TODO [tb] : There should be a check for _inServerResponse,
-      // but currently this is needed to sync the value with the
-      // server when the scrollbars are hidden by the server.
-      var connection = rwt.remote.Connection.getInstance();
-      var remoteObject = connection.getRemoteObject( this );
-      remoteObject.set( "scrollLeft", this._horzScrollBar.getValue() );
-      if( this._horzScrollBar.getHasSelectionListener() ) {
-        connection.onNextSend( this._sendHorizontalScrolled, this );
-        connection.sendDelayed( 400 );
-      }
-    },
-
-    _sendVerticalScrolled : function() {
-      var connection = rwt.remote.Connection.getInstance();
-      connection.getRemoteObject( this._vertScrollBar ).notify( "Selection" );
-    },
-
-    _sendHorizontalScrolled : function() {
-      var connection = rwt.remote.Connection.getInstance();
-      connection.getRemoteObject( this._horzScrollBar ).notify( "Selection" );
-    },
-
-    _sendSetData : function() {
-      var connection = rwt.remote.Connection.getInstance();
-      connection.getRemoteObject( this ).notify( "SetData" );
-    },
-
-    _sendItemUpdate : function( item, event ) {
-      if( !this._inServerResponse() ) {
-        if( event.msg === "expanded" || event.msg === "collapsed" ) {
-          var expanded = event.msg === "expanded";
-          var connection = rwt.remote.Connection.getInstance();
-          connection.getRemoteObject( item ).set( "expanded", expanded );
-          connection.getRemoteObject( this ).notify( expanded ? "Expand" : "Collapse", {
-            "item" : rwt.remote.ObjectRegistry.getId( item )
-          } );
-        }
-      }
-    },
-
-    _sendSelectionEvent : function( item, defaultSelected, detail, index, text ) {
-      var properties = {
-        "item" : this._getItemId( item ),
-        "detail" : detail,
+    _fireSelectionChanged : function( item, type, index, text ) {
+      var data = {
+        "item" : item,
+        "type" : type,
         "index" : !isNaN( index ) ? index : undefined,
         "text" : text != null ? text : undefined
       };
-      if( defaultSelected ) {
-        rwt.remote.EventUtil.notifyDefaultSelected( this, properties );
-      } else {
-        rwt.remote.EventUtil.notifySelected( this, properties );
-      }
+      this.dispatchSimpleEvent( "selectionChanged", data );
     },
 
     _isDoubleClicked : function( event, item ) {
@@ -1075,31 +995,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._selectionOffsetX = event.getPageX();
       } else if( mousedown ) {
         this._selectionTimestamp = null;
-      }
-      return result;
-    },
-
-    _getSelectionList : function() {
-      var result = [];
-      for( var i = 0; i < this._selection.length; i++ ) {
-        result.push( this._getItemId( this._selection[ i ] ) );
-      }
-      return result;
-    },
-
-    _getItemId : function( item ) {
-      var wm = rwt.remote.WidgetManager.getInstance();
-      var result;
-      if( item.isCached() ) {
-        result = wm.findIdByWidget( item );
-      } else {
-        var parent = item.getParent();
-        if( parent.isRootItem() ) {
-          result = wm.findIdByWidget( this );
-        } else {
-          result = wm.findIdByWidget( parent );
-        }
-        result += "#" + parent.indexOf( item );
       }
       return result;
     },
@@ -1143,7 +1038,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this.deselectAll();
       this._leadItem = null;
       this._selectItem( item, true );
-      this._sendSelectionChange( item );
+      this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
     },
 
@@ -1153,7 +1048,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       } else {
         this._deselectItem( item, true );
       }
-      this._sendSelectionChange( item );
+      this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
     },
 
@@ -1174,7 +1069,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         currentItem = currentItem.getNextItem();
         this._selectItem( currentItem, true );
       }
-      this._sendSelectionChange( item );
+      this._fireSelectionChanged( item, "selection" );
       this.setFocusItem( item );
     },
 
@@ -1209,10 +1104,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( item.isCached() ) {
         if( isNaN( cell ) ) {
           item.setChecked( !item.isChecked() );
-          this._sendItemCheckedChange( item );
+          this._fireSelectionChanged( item, "check" );
         } else if( item.isCellCheckable( cell ) ) {
           item.toggleCellChecked( cell );
-          this._sendCellCheckedChange( item, cell );
+          this._fireSelectionChanged( item, "cellCheck", cell );
         }
       }
     },

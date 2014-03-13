@@ -69,6 +69,9 @@ org.eclipse.rwt.test.JasmineStartup = {
     window.any = jasmine.any;
 
     window.mock = function( constr, name ) {
+      if( constr.$$initializer ) {
+        rwt.qx.Class.__initializeClass( constr );
+      }
       return jasmine.createSpyObj( name || "mock", rwt.util.Objects.getKeys( constr.prototype ) );
     };
 
