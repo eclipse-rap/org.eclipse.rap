@@ -3549,32 +3549,15 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _styleBackgroundImage : function( value ) {
-      if( value ) {
-        rwt.html.Style.setBackgroundImage( this, value );
-        this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
-        this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
-      } else {
-        this.removeStyleProperty( "backgroundImage" );
-        if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
-          rwt.html.Style.setBackgroundGradient( this, this.getBackgroundGradient() );
-        }
-      }
+      rwt.html.Style.setBackgroundImage( this, value );
     },
 
     _applyBackgroundRepeat : function( value, old ) {
-      if( value ) {
-        this.setStyleProperty( "backgroundRepeat", value );
-      } else {
-        this.removeStyleProperty( "backgroundRepeat" );
-      }
+      rwt.html.Style.setBackgroundRepeat( this, value );
     },
 
     _applyBackgroundPosition : function( value, old ) {
-      if( value ) {
-        this.setStyleProperty( "backgroundPosition", value );
-      } else {
-        this.removeStyleProperty( "backgroundPosition" );
-      }
+      rwt.html.Style.setBackgroundPosition( this, value );
     },
 
     ///////////////////
@@ -3740,12 +3723,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyBackgroundGradient : function( value, oldValue ) {
       rwt.html.Style.setBackgroundGradient( this, value );
-      if( value === null ) {
-        this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
-        this.setStyleProperty( "backgroundRepeat", this.getStyleProperty( "backgroundRepeat" ) );
-        this.setStyleProperty( "backgroundPosition", this.getStyleProperty( "backgroundPosition" ) );
-        this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
-      }
     },
 
     _applyShadow : function( value, oldValue ) {
@@ -3757,21 +3734,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _styleBackgroundColor : function( value ) {
-      if( value == null || value === "transparent" ) {
-        this._removeBackgroundColor();
-      } else {
-        this.setStyleProperty( "backgroundColor", value );
-      }
+      rwt.html.Style.setBackgroundColor( this, value );
     },
-
-    _removeBackgroundColor : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {
-        this.removeStyleProperty( "backgroundColor" );
-       },
-      "newmshtml" : function() {
-        this.setStyleProperty( "backgroundColor", "rgba( 0, 0, 0, 0 )" );
-      }
-    } ),
 
     _applyTextColor : function(value, old) {
       // place holder

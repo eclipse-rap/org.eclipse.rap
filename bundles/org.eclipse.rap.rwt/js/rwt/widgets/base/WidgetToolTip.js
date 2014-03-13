@@ -127,7 +127,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       if( this._pointer == null ) {
         this._pointer = document.createElement( "div" );
         this._pointer.style.position = "absolute";
-        this._pointer.style.backgroundRepeat = "no-repeat";
+        rwt.html.Style.setBackgroundRepeat( this._pointer, "no-repeat" );
         rwt.html.Style.setPointerEvents( this._pointer, "none" );
         this.getElement().appendChild( this._pointer );
       }

@@ -247,12 +247,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsAlignmentLeftTop : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( {
+      var element = renderer.createElement( {
         "horizontalAlignment" : "LEFT",
         "verticalAlignment" : "TOP"
       } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       assertTrue( "left top" === position || "0% 0%" === position );
@@ -260,12 +261,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsAlignmentCenterCenter : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( {
+      var element = renderer.createElement( {
         "horizontalAlignment" : "CENTER",
         "verticalAlignment" : "CENTER"
       } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
@@ -273,9 +275,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsAlignmentDefault : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( { "alignment" : {} } );
+      var element = renderer.createElement( { "alignment" : {} } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       assertTrue( "center" === position || "center center" === position || "50% 50%" === position );
@@ -283,12 +286,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsAlignmentRightBottom : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( {
+      var element = renderer.createElement( {
         "horizontalAlignment" : "RIGHT",
         "verticalAlignment" : "BOTTOM"
       } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       assertTrue( "right bottom" === position || "100% 100%" === position );
@@ -297,9 +301,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsScaleModeFit : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( { "scaleMode" : "FIT" } );
+      var element = renderer.createElement( { "scaleMode" : "FIT" } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       var size = element.style.backgroundSize;
@@ -309,9 +314,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsScaleModeFill : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( { "scaleMode" : "FILL" } );
+      var element = renderer.createElement( { "scaleMode" : "FILL" } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       var size = element.style.backgroundSize;
@@ -321,9 +327,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
 
     testImageRenderer_CreateElementSetsScaleModeStretch : function() {
       var defaultRegistry = rwt.widgets.util.CellRendererRegistry.getInstance();
-      var create = defaultRegistry.getRendererFor( "image" ).createElement;
+      var renderer = defaultRegistry.getRendererFor( "image" );
 
-      var element = create( { "scaleMode" : "STRETCH" } );
+      var element = renderer.createElement( { "scaleMode" : "STRETCH" } );
+      renderer.renderContent( element, [ "foo.jpg", 10, 15 ], {}, {} );
 
       var position = element.style.backgroundPosition;
       var size = element.style.backgroundSize;

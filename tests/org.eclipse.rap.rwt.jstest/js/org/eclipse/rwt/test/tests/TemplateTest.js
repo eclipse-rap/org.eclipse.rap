@@ -755,8 +755,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellBackgrounds( [ null ] );
       template.render( renderOptions );
 
-      var color = container.element.firstChild.style.backgroundColor.toLowerCase();
-      assertTrue( color === "" || color === "transparent" );
+      assertNull( TestUtil.getCssBackgroundColor( container.element.firstChild ) );
     },
 
     testRenderForegroundColor : function() {

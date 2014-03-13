@@ -78,10 +78,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       this._loopWrapper();
     },
 
-    /*global console:false */
     pause : function( value ) {
-      console.log( value );
-      console.trace();
       this._pause = value;
     },
 

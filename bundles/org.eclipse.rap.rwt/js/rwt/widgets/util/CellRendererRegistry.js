@@ -145,7 +145,8 @@ var defaultTextRenderer = {
 var setImage = function( element, content, cellData, options ) {
   var opacity = options.enabled ? 1 : 0.3;
   var src = content ? content[ 0 ] : null;
-  rwt.html.Style.setBackgroundImage( element, src, opacity );
+  rwt.html.Style.setBackgroundImage( element, src );
+  rwt.html.Style.setOpacity( element, opacity );
 };
 
 var imgHtml = function( path, left, top, width, height ) {
@@ -198,19 +199,19 @@ var defaultImageRenderer = {
   } ),
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
-    result.style.backgroundRepeat = "no-repeat";
+    rwt.html.Style.setBackgroundRepeat( result, "no-repeat" );
     var position = [ "center", "center" ];
     if( cellData.scaleMode === "FIT" ) {
-      result.style.backgroundSize = "contain";
+      rwt.html.Style.setBackgroundSize( result, "contain" );
     } else if( cellData.scaleMode === "FILL" ) {
-      result.style.backgroundSize = "cover";
+      rwt.html.Style.setBackgroundSize( result, "cover" );
     } else if( cellData.scaleMode === "STRETCH" ) {
-      result.style.backgroundSize = "100% 100%";
+      rwt.html.Style.setBackgroundSize( result, "100% 100%" );
     } else {
       position[ 0 ] = alignmentStyleToCss[ cellData.horizontalAlignment ] || "center";
       position[ 1 ] = alignmentStyleToCss[ cellData.verticalAlignment ] || "center";
     }
-    result.style.backgroundPosition = position.join( " " );
+    rwt.html.Style.setBackgroundPosition( result, position.join( " " ) );
     return result;
   }
 };

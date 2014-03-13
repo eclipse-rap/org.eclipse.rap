@@ -267,7 +267,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _renderBackground : function( element, color ) {
-    element.style.backgroundColor = color || "transparent";
+    rwt.html.Style.setBackgroundColor( element, color );
   },
 
   _renderForeground : function( element, color ) {

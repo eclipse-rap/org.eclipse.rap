@@ -695,6 +695,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderBackgroundRepeat : function() {
       var widget = this._createWidget();
+      widget.setBackgroundImage( "foo.png" );
 
       widget.setBackgroundRepeat( "no-repeat" );
       TestUtil.flush();
@@ -705,6 +706,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testRenderBackgroundPosition : function() {
       var widget = this._createWidget();
+      widget.setBackgroundImage( "foo.png" );
 
       widget.setBackgroundPosition( "right bottom" );
       TestUtil.flush();

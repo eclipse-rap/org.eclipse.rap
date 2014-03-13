@@ -382,8 +382,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this.setState( "over", hoverTarget !== null );
         if( this._checkBoxElement === null ) {
           this._checkBoxElement = this._createElement( 3 );
-          this._checkBoxElement.style.backgroundRepeat = "no-repeat";
-          this._checkBoxElement.style.backgroundPosition = "center";
+          Style.setBackgroundRepeat( this._checkBoxElement, "no-repeat" );
+          Style.setBackgroundPosition( this._checkBoxElement, "center" );
         }
         this._setImage( this._checkBoxElement, image, config.enabled );
         if( config.treeColumn !== -1 || !contentOnly ) {
@@ -433,7 +433,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( gradient ) {
         this._renderOverlayGradient( element, gradient );
       } else {
-        element.style.backgroundColor = styleMap.background;
+        Style.setBackgroundColor( element, styleMap.background );
         Style.setOpacity( element, styleMap.backgroundAlpha );
       }
     },
@@ -500,9 +500,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
         renderBounds = !contentOnly || !this._cellBackgrounds[ cell ];
         var element = this._getBackgroundElement( cell );
-        element.style.backgroundColor = background;
-      } else if( this._cellBackgrounds[ cell ] ){
-        this._cellBackgrounds[ cell ].style.backgroundColor = "transparent";
+        Style.setBackgroundColor( element, background );
+      } else if( this._cellBackgrounds[ cell ] ) {
+        Style.setBackgroundColor( this._cellBackgrounds[ cell ], null );
         renderBounds = !contentOnly;
       }
       if( renderBounds ) {
@@ -810,7 +810,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _setImage : function( element, src, enabled ) {
       var opacity = enabled ? 1 : 0.3;
-      rwt.html.Style.setBackgroundImage( element, src, enabled != null ? opacity : null);
+      Style.setBackgroundImage( element, src );
+      Style.setOpacity( element, enabled != null ? opacity : null );
     },
 
     _getTextElement : function( cell ) {
@@ -818,9 +819,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !result ) {
         result = this._createElement( 3 );
         result.style.whiteSpace = "nowrap";
-        if( rwt.client.Client.isNewMshtml() ) {
-          result.style.backgroundColor = "rgba(0, 0, 0, 0)";
-        }
+        Style.setBackgroundColor( result, null );
         this._cellLabels[ cell ] = result;
       }
       return result;
@@ -830,8 +829,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = this._cellImages[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.backgroundRepeat = "no-repeat";
-        result.style.backgroundPosition = "center";
+        Style.setBackgroundRepeat( result, "no-repeat" );
+        Style.setBackgroundPosition( result, "center" );
         this._cellImages[ cell ] = result;
       }
       return result;
@@ -841,8 +840,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = this._cellCheckImages[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.backgroundRepeat = "no-repeat";
-        result.style.backgroundPosition = "center";
+        Style.setBackgroundRepeat( result, "no-repeat" );
+        Style.setBackgroundPosition( result, "center" );
         this._cellCheckImages[ cell ] = result;
       }
       return result;
@@ -851,7 +850,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getMiscImage : function() {
       var result = this._getMiscElement( 3 );
       result.innerHTML = "";
-      result.style.backgroundColor = "";
+      Style.setBackgroundColor( result, null );
       return result;
     },
 
@@ -881,8 +880,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result.style.zIndex = zIndex;
       } else {
         result = this._createElement( zIndex );
-        result.style.backgroundRepeat = "no-repeat";
-        result.style.backgroundPosition = "center";
+        Style.setBackgroundRepeat( result, "no-repeat" );
+        Style.setBackgroundPosition( result, "center" );
         this._miscNodes.push( result );
       }
       this._usedMiscNodes++;
@@ -901,17 +900,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _clearContent : function( config ) {
       for( var i = 0; i < this._cellBackgrounds.length; i++ ) {
         if( this._cellBackgrounds[ i ] ) {
-          this._cellBackgrounds[ i ].style.backgroundColor = "transparent";
+          Style.setBackgroundColor( this._cellBackgrounds[ i ], null );
         }
       }
       for( var i = 0; i < this._cellCheckImages.length; i++ ) {
         if( this._cellCheckImages[ i ] ) {
-          rwt.html.Style.setBackgroundImage( this._cellCheckImages[ i ], null );
+          Style.setBackgroundImage( this._cellCheckImages[ i ], null );
         }
       }
       for( var i = 0; i < this._cellImages.length; i++ ) {
         if( this._cellImages[ i ] ) {
-          rwt.html.Style.setBackgroundImage( this._cellImages[ i ], null );
+          Style.setBackgroundImage( this._cellImages[ i ], null );
         }
       }
       for( var i = 0; i < this._cellLabels.length; i++ ) {
@@ -920,7 +919,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         }
       }
       if( this._checkBoxElement ) {
-        rwt.html.Style.setBackgroundImage( this._checkBoxElement, null );
+        Style.setBackgroundImage( this._checkBoxElement, null );
       }
       this._renderOverlay( null );
       this._hideRemainingElements();

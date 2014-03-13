@@ -108,11 +108,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     return result;
   },
 
-  getCssBackgroundColor : function( widget ) {
-    var inner = widget._getTargetNode().style.backgroundColor;
-    var outer = widget.getElement().style.backgroundColor;
-    var result = ( ( inner || outer ) || null );
-    if( result === "transparent" || result === "rgba(0, 0, 0, 0)" ) {
+  getCssBackgroundColor : function( target ) {
+    var result;
+    if( target instanceof rwt.widgets.base.Widget ) {
+      var inner = target._getTargetNode().style.backgroundColor;
+      var outer = target.getElement().style.backgroundColor;
+      result = ( ( inner || outer ) || null );
+    } else {
+      result = target.style.backgroundColor;
+    }
+    if( result === "" || result === "transparent" || result === "rgba(0, 0, 0, 0)" ) {
       result = null;
     }
     return result;
@@ -144,9 +149,21 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var background = element.style.background;
     var start = background.indexOf( "gradient(" );
     if( start !== -1 ) {
-      var end = background.indexOf( ") repeat", start );
-      if( end != -1 ) {
-        result = background.slice( start, end + 1 );
+      var end = -1;
+      var level = 0;
+      for( var i = start + "gradient".length; i < background.length; i++ ) {
+        if( background.charAt( i ) === "(" ) {
+          level++;
+        } else if( background.charAt( i ) === ")" ) {
+          level--;
+        }
+        if( level === 0 ) {
+          end = i + 1;
+          break;
+        }
+      }
+      if( end !== -1 ) {
+        result = background.slice( start, end );
       } else {
         result = background.slice( start );
       }

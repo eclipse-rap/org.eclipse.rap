@@ -121,7 +121,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var nodes = row._getTargetNode().childNodes;
       assertEquals( "none", nodes[ 0 ].style.display );
-      assertEquals( "transparent", nodes[ 1 ].style.backgroundColor );
+      assertNull( TestUtil.getCssBackgroundColor( nodes[ 1 ] ) );
       assertEquals( "", TestUtil.getCssBackgroundImage( nodes[ 2 ] ) );
       assertEquals( "", nodes[ 3 ].innerHTML );
     },
@@ -1117,7 +1117,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "green", nodes[ 1 ].style.backgroundColor );
       row.renderItem( item2, tree._config, false, null );
 
-      assertEquals( "transparent", nodes[ 1 ].style.backgroundColor );
+      assertNull( TestUtil.getCssBackgroundColor( nodes[ 1 ] ) );
     },
 
     testReUseBackgoundElement : function() {
@@ -2878,8 +2878,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       item.setCellBackgrounds( [ null ] );
       row.renderItem( item, tree._config, false, null );
 
-      var color = row._getTargetNode().childNodes[ 0 ].style.backgroundColor;
-      assertTrue( color === "" || color === "transparent" );
+      assertNull( TestUtil.getCssBackgroundColor( row._getTargetNode().childNodes[ 0 ] ) );
     },
 
     testRenderTemplate_RenderImageCellContent : function() {
