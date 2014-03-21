@@ -171,7 +171,8 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       {
         // Bug 427828 - [Text] Loses focus on click in IE8
         // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
-        rwt.html.Style.setBackgroundImage( this._inputElement, "static/image/blank.gif" );
+        var blank = rwt.remote.Connection.RESOURCE_PATH + "static/image/blank.gif";
+        rwt.html.Style.setBackgroundImage( this._inputElement, blank );
       }
       // Fix for bug 306354
       this._inputElement.style.paddingRight = "1px";

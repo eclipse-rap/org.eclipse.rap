@@ -38,7 +38,6 @@ public final class ClientResources {
 
   private static final String[] WIDGET_IMAGES = new String[] {
     "resource/static/image/blank.gif",
-    "resource/static/image/dotted_white.gif",
     "resource/widget/rap/arrows/chevron-left.png",
     "resource/widget/rap/arrows/chevron-right.png",
     "resource/widget/rap/arrows/chevron-left-hover.png",
