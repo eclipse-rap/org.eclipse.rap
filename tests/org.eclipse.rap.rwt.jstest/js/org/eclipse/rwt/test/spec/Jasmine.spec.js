@@ -50,6 +50,25 @@ describe( "Jasmine", function() {
       expect( jasmine.isSpy( myMock.bar ) ).toBeTruthy();
     } );
 
+    it( "keeps fields", function() {
+      var Foo = function(){};
+      Foo.prototype.bar = function(){};
+      Foo.prototype.classname = "Foo";
+
+      var myMock = mock( Foo );
+
+      expect( myMock.classname ).toBe( "Foo" );
+    } );
+
+    it( "fakes prototype chain", function() {
+      var Foo = function(){};
+      Foo.prototype.bar = function(){};
+
+      var myMock = mock( Foo );
+
+      expect( myMock instanceof Foo ).toBeTruthy();
+    } );
+
     it( "names spies with default mock name", function() {
       var Foo = function(){};
       Foo.prototype.bar = function(){};
@@ -66,6 +85,24 @@ describe( "Jasmine", function() {
       var myMock = mock( Foo, "Foo" );
 
       expect( myMock.bar.identity ).toBe( "Foo.bar" );
+    } );
+
+    it( "supports jasmine pretty print with name", function() {
+      var Foo = function(){};
+      Foo.prototype.bar = function(){};
+
+      var myMock = mock( Foo, "Foo" );
+
+      expect( jasmine.pp( myMock ) ).toBe( "mock of Foo" );
+    } );
+
+    it( "supports jasmine pretty print without name", function() {
+      var Foo = function(){};
+      Foo.prototype.bar = function(){};
+
+      var myMock = mock( Foo );
+
+      expect( jasmine.pp( myMock ) ).toBe( "mock" );
     } );
 
   } );

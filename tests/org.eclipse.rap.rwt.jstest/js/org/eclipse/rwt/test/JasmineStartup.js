@@ -72,8 +72,15 @@ org.eclipse.rwt.test.JasmineStartup = {
       if( constr.$$initializer ) {
         rwt.qx.Class.__initializeClass( constr );
       }
-      return jasmine.createSpyObj( name || "mock", rwt.util.Objects.getKeys( constr.prototype ) );
-    };
+      var result = createObjectWithPrototype( constr.prototype );
+      result.jasmineToString = function() { return "mock" + ( name ? " of " + name : "" ); };
+      for( var key in constr.prototype ) {
+        if( constr.prototype[ key ] instanceof Function ) {
+          result[ key ] = jasmine.createSpy( ( name || "mock" ) + '.' + key );
+        }
+      }
+      return result;
+   };
 
     window.same = function( expected ) {
       return {
@@ -85,6 +92,12 @@ org.eclipse.rwt.test.JasmineStartup = {
 
     /////////
     // Helper
+
+    function createObjectWithPrototype( proto ) {
+      var HelperConstr = new Function();
+      HelperConstr.prototype = proto;
+      return new HelperConstr();
+    }
 
     function updateScrollPositions() {
       // Some tests focus something off-screen, causing scrolling away form the stats
