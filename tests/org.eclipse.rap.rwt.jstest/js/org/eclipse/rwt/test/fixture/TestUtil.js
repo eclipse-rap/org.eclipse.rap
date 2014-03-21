@@ -1037,12 +1037,21 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     remoteObject._.listen[ type ] = value;
   },
 
-  resetObjectManager : function() {
-    var w1 = rwt.remote.ObjectRegistry._map[ "w1" ];
-    rwt.remote.ObjectRegistry._map = { "w1" : w1 };
+  resetObjectRegistry : function() {
+    var map = rwt.remote.ObjectRegistry._map;
+    for( var id in map ) { // replacing _map would not be enough, must also be remove id from object
+      if( id !== "w1" ) {
+        rwt.remote.ObjectRegistry.remove( id );
+      }
+    }
     rwt.remote.ObjectRegistry._callbacks = {};
     rwt.remote.RemoteObjectFactory._db = {};
   },
+
+  resetSendListener : function() {
+    var connection = rwt.remote.Connection.getInstance();
+    connection.__listeners[ "send" ] = {};
+   },
 
   resetWindowManager : function() {
     var manager = rwt.widgets.base.Window.getDefaultWindowManager();

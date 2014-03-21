@@ -122,26 +122,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testExecute :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 600 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         //NOTE: Using "_isLoaded" instead of "isLoaded" because of IE.
         assertTrue( "slow connection?", browser._isLoaded );
         TestUtil.initRequestLog();
-        var win = browser.getContentWindow();
-        assertNotNull( win );
-        assertTrue( typeof foo === "undefined" );
         foo = 17;
+
         // Note: Using this line would fail in firefox, no workaround known:
         //browser.execute( "foo = 33;" );
+
         browser.execute( "window.foo = 33;" );
         assertEquals( 17, foo );
-        assertEquals( 33, win.foo );
+        assertEquals( 33, browser.getContentWindow().foo );
+        assertEquals( 1, TestUtil. getRequestsSend() );
         var message = TestUtil.getMessageObject();
         assertNotNull( message.findCallOperation( "w6", "evaluationSucceeded" ) );
         browser.destroy();
-        delete foo;
+        foo = undefined;
       }
     ],
 
@@ -157,7 +157,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "parent" : "w2"
           }
         } );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         var browser = ObjectRegistry.getObject( "w3" );
         TestUtil.store( browser );
       },
@@ -182,7 +182,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -216,7 +216,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testExecuteFailed :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -226,14 +226,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var message = TestUtil.getMessageObject();
         assertNotNull( message.findCallOperation( "w6", "evaluationFailed" ) );
         browser.destroy();
-        delete foo;
+        foo = undefined;
       }
     ],
 
     testEvaluateReturnsRegexp :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -249,7 +249,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsMap :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -265,7 +265,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsArray :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -283,7 +283,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsFunction :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -301,7 +301,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
         browser.syncSource();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -322,7 +322,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
         browser.syncSource();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -342,7 +342,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testCreateDestroyBrowserFunction :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -363,7 +363,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var browser = this._createBrowser();
         browser.createFunction( "abc" );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -380,13 +380,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var browser = this._createBrowser();
         browser.setSource( "javascript:false;" );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
         browser.createFunction( "abc" );
         browser.getIframeNode().src = this.BLANK;
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -402,7 +402,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testCreateDestroyBrowserFunctionThenNavigate :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 600 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -411,7 +411,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.createFunction( "abc" );
         browser.destroyFunction( "abc" );
         browser.reload();
-        TestUtil.delayTest( 600 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -425,7 +425,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testCreateBrowserFunctionThenSetSourceToOtherDomain :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -446,7 +446,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testCreateBrowserFunctionThenNavigateToOtherDomain :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -473,7 +473,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testNavigateToOtherDomainThenCreateBrowserFunction :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -506,7 +506,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testBrowserFunctionCall  :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -529,7 +529,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testBrowserFunctionFailed :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -555,7 +555,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testBrowserFunctionSucceed  :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -582,7 +582,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -616,7 +616,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         TestUtil.createShellByProtocol( "w2" );
         var browser = this._createBrowserByProtocol( "w3", "w2" );
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {
@@ -670,7 +670,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           assertTrue( browser.isSeeable() );
         }
         assertTrue( wm.findWidgetById( "w6" ) == null ); /* may be undefined */
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser, el, iframe );
       },
       function( browser, el, iframe ) {
@@ -691,7 +691,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEnabled :  [
       function() {
         var browser = this._createBrowser();
-        TestUtil.delayTest( 1000 );
+        TestUtil.delayTest( 2000 );
         TestUtil.store( browser );
       },
       function( browser ) {

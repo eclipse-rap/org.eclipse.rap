@@ -720,17 +720,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       shell.destroy();
     },
 
-    testResetObjectManager : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-
-      assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
-      TestUtil.resetObjectManager();
-
-      assertTrue( null == rwt.remote.ObjectRegistry.getObject( "w2" ) );
-      assertTrue( null != rwt.remote.ObjectRegistry.getObject( "w1" ) );
-      shell.destroy();
-    },
-
     testProtocolListen : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
 
@@ -791,6 +780,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       logger.log( 3 );
 
       assertEquals( [ 1, 2, 3 ], logger.getLog() );
+    },
+
+    testResetObjectRegistry : function() {
+      var w1 = {};
+      var w2 = {};
+      var w3 = {};
+      rwt.remote.ObjectRegistry.add( "w1", w1 );
+      rwt.remote.ObjectRegistry.add( "w2", w2 );
+      rwt.remote.ObjectRegistry.add( "w3", w3 );
+
+      TestUtil.resetObjectRegistry();
+
+      assertTrue( rwt.remote.ObjectRegistry.containsObject( w1 ) ); // keep display
+      assertFalse( rwt.remote.ObjectRegistry.containsObject( w2 ) );
+      assertFalse( rwt.remote.ObjectRegistry.containsObject( w2 ) );
+    },
+
+    testResetSendListener : function() {
+      var connection = rwt.remote.Connection.getInstance();
+      var eventFired = 0;
+      connection.addEventListener( "send", function() {
+        eventFired++;
+      } );
+
+      connection.send();
+      TestUtil.resetSendListener();
+      connection.send();
+
+      assertEquals( 1, eventFired );
     },
 
     /////////

@@ -86,7 +86,8 @@ org.eclipse.rwt.test.fixture.Fixture = {
     org.eclipse.rwt.test.fixture.TestUtil.resetEventHandler();
     org.eclipse.rwt.test.fixture.TestUtil.cleanUpKeyUtil();
     org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-    org.eclipse.rwt.test.fixture.TestUtil.resetObjectManager();
+    org.eclipse.rwt.test.fixture.TestUtil.resetObjectRegistry();
+    org.eclipse.rwt.test.fixture.TestUtil.resetSendListener();
     org.eclipse.rwt.test.fixture.TestUtil.resetWindowManager();
     org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
     rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode

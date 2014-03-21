@@ -104,7 +104,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
 
     _onload : function( evt ) {
       // syncSource in destroy may cause unwanted load event when widget is about to be disposed
-      if( !this._isInGlobalDisposeQueue ) {
+      if( !this._isInGlobalDisposeQueue && !this.isDisposed() ) {
         this.base( arguments, evt );
         if( this._isContentAccessible() ) {
           this._attachBrowserFunctions();
@@ -120,7 +120,11 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     },
 
     _sendProgressEvent : function() {
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Progress" );
+      // The IFrame destroy method does not mark the widget as disposed (or in dispose) immediately,
+      // and getRemoteObject can fail if the widget has already been removed from ObjectRegistry
+      if( rwt.remote.ObjectRegistry.containsObject( this ) ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Progress" );
+      }
     },
 
     execute : function( script ) {
@@ -157,14 +161,20 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     },
 
     _isContentAccessible : function() {
-      var accessible;
-      try {
-        var ignored = this.getContentDocument().body.URL;
-        accessible = true;
-      } catch( ex ) {
-        accessible = false;
+      if( !this._isLoaded ) {
+        return false;
       }
-      return accessible && this._isLoaded;
+      var accessible = false;
+      try {
+        var src = this.getSource() || "";
+        if( src.indexOf( "://" ) === -1 ) { // relative path?
+          src = document.URL; // works since we only check that the domain matches
+        }
+        accessible = src.indexOf( this.getContentDocument().domain ) !== -1;
+      } catch( ex ) {
+        // ignore
+      }
+      return accessible;
     },
 
     _checkIframeAccess : function( functionName ) {
