@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -171,6 +171,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     _handleSelectionChange : function( start, length ) {
       this._selectionStart = start;
       this._selectionLength = length;
+      this.dispatchSimpleEvent( "selectionChanged" );
     },
 
     _setSelectionStart : rwt.util.Variant.select( "qx.client", {

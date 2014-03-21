@@ -304,7 +304,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       widget.focus();
 
 
-      assertEquals( [ 2, 5 ], widget._field.getComputedSelection() );
+      assertEquals( [ 2, 5 ], widget._field.getSelection() );
       shell.destroy();
       widget.destroy();
     },
@@ -988,10 +988,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setEditable( true );
       combo.setText( "foobar" );
       TestUtil.flush();
-      combo.focus();
+      combo._field.focus();
 
       this._setTextSelection( combo._field, [ 3, 3 ] );
-      TestUtil.keyDown( combo._field.getElement(), "Enter" );
+      TestUtil.keyDown( combo._field, "Enter" );
       rwt.remote.Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );

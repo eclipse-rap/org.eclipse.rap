@@ -18,16 +18,11 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
   construct : function( isCCombo ) {
     this.base( arguments );
-    this._ccombo = isCCombo === true;
-    //
     this._modifyScheduled = false;
     // Default values
     this._selected = null;
     this._editable = true;
     this._dropped = false;
-    this._borderWidth = 0;
-    this._selectionStart = 0;
-    this._selectionLength = 0;
     this._itemHeight = 20;
     this._visibleItemCount = 5;
     // Text field
@@ -62,27 +57,14 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     var cDocument = rwt.widgets.base.ClientDocument.getInstance();
     cDocument.addEventListener( "windowblur", this._onBlur, this );
     // Set appearance
-    if( this._ccombo ) {
-      this.setAppearance( "ccombo" );
-      this._field.setAppearance( "ccombo-field" );
-      this._button.setAppearance( "ccombo-button" );
-      this._list.setAppearance( "ccombo-list" );
-    } else {
-      this.setAppearance( "combo" );
-      this._field.setAppearance( "combo-field" );
-      this._button.setAppearance( "combo-button" );
-      this._list.setAppearance( "combo-list" );
-    }
-    // Init events
+    var appearance = isCCombo ? "ccombo" : "combo";
+    this.setAppearance( appearance );
+    this._field.setAppearance( appearance + "-field" );
+    this._button.setAppearance( appearance + "-button" );
+    this._list.setAppearance( appearance + "-list" );
+    // Listeners
     this.addEventListener( "appear", this._onAppear, this );
-    this.addEventListener( "focusin", this._onFocusIn, this );
     this.addEventListener( "blur", this._onBlur, this );
-    this.addEventListener( "contextmenu", this._onContextMenu, this );
-    this.addEventListener( "changeFont", this._onChangeFont, this );
-    this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
-    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
-    this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
-    // Mouse events
     this.addEventListener( "mousedown", this._onMouseDown, this );
     this.addEventListener( "mouseup", this._onMouseUp, this );
     this.addEventListener( "click", this._onMouseClick, this );
@@ -90,13 +72,10 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
-    // Keyboard events
     this.addEventListener( "keydown", this._onKeyDown, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
-    this._field.addEventListener( "keypress", this._onKeyPress, this );
-    // Specific events
-    this._field.addEventListener( "blur", this._onTextBlur, this );
     this._field.addEventListener( "input", this._onTextInput, this );
+    this._field.addEventListener( "selectionChanged", this._handleSelectionChange, this );
     this._list.addEventListener( "appear", this._onListAppear, this );
     this._setupCaptureRestore();
   },
@@ -105,13 +84,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     var cDocument = rwt.widgets.base.ClientDocument.getInstance();
     cDocument.removeEventListener( "windowblur", this._onBlur, this );
     this.removeEventListener( "appear", this._onAppear, this );
-    this.removeEventListener( "focusin", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onBlur, this );
-    this.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this.removeEventListener( "changeFont", this._onChangeFont, this );
-    this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
-    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
-    this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this.removeEventListener( "click", this._onMouseClick, this );
@@ -120,25 +93,15 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "keydown", this._onKeyDown, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
-    this._field.removeEventListener( "keypress", this._onKeyPress, this );
-    this._field.removeEventListener( "blur", this._onTextBlur, this );
     this._field.removeEventListener( "input", this._onTextInput, this );
+    this._field.removeEventListener( "selectionChanged", this._handleSelectionChange, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
     // Solution taken from Qooxdoo implementation of ComboBox
     // in order to prevent memory leak and other problems.
     if( this._list && !rwt.qx.Object.inGlobalDispose() ) {
       this._list.setParent( null );
     }
-    this._disposeObjects( "_field",
-                          "_button",
-                          "_list",
-                          "_manager",
-                          "_selected" );
-  },
-
-  events : {
-    "itemsChanged" : "rwt.event.Event",
-    "selectionChanged" : "rwt.event.Event"
+    this._disposeObjects( "_field", "_button", "_list", "_manager", "_selected" );
   },
 
   members : {
@@ -161,7 +124,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onAppear : function( evt ) {
+    _onAppear : function( event ) {
         if( this.hasState( "rwt_FLAT" ) ) {
           this._field.addState( "rwt_FLAT" );
           this._button.addState( "rwt_FLAT" );
@@ -175,24 +138,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this.getTopLevelWidget().add( this._list );
     },
 
-    _onFocusIn : function( evt ) {
-      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
-      }
-    },
-
-    _onContextMenu : function( evt ) {
-      var menu = this.getContextMenu();
-      if( menu != null && !this._dropped ) {
-        menu.setLocation( evt.getPageX(), evt.getPageY() );
-        menu.setOpener( this );
-        menu.show();
-        evt.stopPropagation();
-      }
-    },
-
-    _onChangeFont : function( evt ) {
-      var value = evt.getValue();
+    _applyFont : function( value, old ) {
+      this.base( arguments, value, old );
       this._field.setFont( value );
       var items = this._list.getItems();
       for( var i = 0; i < items.length; i++ ) {
@@ -200,26 +147,26 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onChangeTextColor : function( evt ) {
-      var value = evt.getValue();
+    _applyTextColor : function( value, old ) {
+      this.base( arguments, value, old );
       this._field.setTextColor( value );
       this._list.setTextColor( value );
     },
 
-    _onChangeBackgroundColor : function( evt ) {
-      var color = evt.getValue();
+    _applyBackgroundColor : function( value, old ) {
+      this.base( arguments, value, old );
       // Ensure that the list is never transparent (see bug 282540)
-      if( color != null ) {
-        this._list.setBackgroundColor( color );
+      if( value ) {
+        this._list.setBackgroundColor( value );
       } else {
         this._list.resetBackgroundColor();
       }
     },
 
-    _onChangeVisibility : function( evt ) {
-      var value = evt.getValue();
-      if( !value && this._dropped ) {
-        this._toggleListVisibility();
+    _applyVisibility : function( value, old ) {
+      this.base( arguments, value, old );
+      if( !value ) {
+        this._hideList();
       }
     },
 
@@ -243,9 +190,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this._field._renderSelection();
       }
       if( !this._editable ) {
-        var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-        var cssSelector = this._ccombo ? "CCombo-FocusIndicator" : "Combo-FocusIndicator";
-        focusIndicator.show( this, cssSelector, null );
+        var cssSelector = ( this.getAppearance() === "combo" ? "" : "C" ) + "Combo-FocusIndicator";
+        rwt.widgets.util.FocusIndicator.getInstance().show( this, cssSelector, null );
       }
       this.addState( "focused" );
     },
@@ -264,17 +210,14 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         this._field._visualizeBlur();
       }
       if( !this._editable ) {
-        var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-        focusIndicator.hide( this );
+        rwt.widgets.util.FocusIndicator.getInstance().hide( this );
       }
       this.removeState( "focused" );
     },
 
     // On "blur" or "windowblur" event: closes the list, if it is seeable
-    _onBlur : function( evt ) {
-      if( this._dropped ) {
-        this._toggleListVisibility();
-      }
+    _onBlur : function( event ) {
+      this._hideList();
     },
 
     ///////////////////////////////////////
@@ -305,28 +248,40 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _toggleListVisibility : function() {
+      if( this._dropped ) {
+        this._hideList();
+      } else {
+        this._showList();
+      }
+    },
+
+    _showList : function() {
       if( !this._dropped ) {
         this._updateItems();
-      }
-      if( this._list.getItemsCount() ) {
-        // Temporary make the text field ReadOnly, when the list is dropped.
-        if( this._editable ) {
-          this._field.setReadOnly( !this._dropped  );
-        }
-        if( !this._dropped ) {
-          // Brings this widget on top of the others with same parent.
+        if( this._list.getItemsCount() ) {
+          this._dropped = true;
+          if( this._editable ) {
+            this._field.setReadOnly( false );
+          }
           this._bringToFront();
-        }
-        this.setCapture( !this._dropped );
-        this._list.setDisplay( !this._dropped );
-        if( this._list.getDisplay() ) {
+          this.setCapture( true );
+          this._list.setDisplay( true );
           this._setListBounds();
-        }
-        this._dropped = !this._dropped;
-        if( this._dropped ) {
           this._setListSelection( this._selected );
+          this._updateListScrollBar();
+          this._updateListVisibleRequestParam();
         }
-        this._updateListScrollBar();
+      }
+    },
+
+    _hideList : function() {
+      if( this._dropped ) {
+        this._dropped = false;
+        if( this._editable ) {
+          this._field.setReadOnly( true );
+        }
+        this.setCapture( false );
+        this._list.setDisplay( false );
         this._updateListVisibleRequestParam();
       }
     },
@@ -352,7 +307,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this._manager.setSelectedItem( item );
     },
 
-    _onListAppear : function( evt ) {
+    _onListAppear : function( event ) {
       this._setListBounds();
       if( this._selected ) {
         this._selected.scrollIntoView();
@@ -379,13 +334,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     _setSelected : function( value ) {
       this._selected = value;
       if( value ) {
-        var fieldValue = value.getLabel().toString();
-        this.setText( this._formatText( fieldValue ) );
-        if( this._field.isCreated() ) {
-          if( !rwt.remote.EventUtil.getSuspended() ) {
-            this._field.selectAll();
-            this._handleSelectionChange();
-          }
+        this.setText( this._formatText( value.getLabel().toString() ) );
+        if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
+          this._field.selectAll();
         }
         this._setListSelection( value );
         this._manager.scrollItemIntoView( value );
@@ -425,74 +376,62 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onMouseDown : function( evt ) {
-      if( evt.isLeftButtonPressed() ) {
-        if( evt.getTarget() == this._field ) {
+    _onMouseDown : function( event ) {
+      if( event.isLeftButtonPressed() ) {
+        if( event.getTarget() == this._field ) {
           if( !this._editable || this._dropped ) {
             this._toggleListVisibility();
           }
         } else if( this._dropped ) {
-          this._reDispatch( evt );
+          this._reDispatch( event );
         }
       }
     },
 
-    _onMouseClick : function( evt ) {
-      if( evt.isLeftButtonPressed() ) {
+    _onMouseClick : function( event ) {
+      if( event.isLeftButtonPressed() ) {
         // In case the 'mouseout' event has not been catched
-        if( this._button.hasState( "over" ) ) {
-          this._button.removeState( "over" );
-        }
+        this._button.removeState( "over" );
         // Redirecting the action, according to the click target
-        var target = evt.getTarget();
+        var target = event.getTarget();
         // Click is on a list item
-        if(    target instanceof rwt.widgets.ListItem
-            && target === this._list.getListItemTarget( target ) )
-        {
-          this._reDispatch( evt );
-          this._toggleListVisibility();
+        var isListItemTarget = target instanceof rwt.widgets.ListItem;
+        if( isListItemTarget && target === this._list.getListItemTarget( target ) ) {
+          this._reDispatch( event );
+          this._hideList();
           this._setSelected( this._manager.getSelectedItem() );
           this.setFocused( true );
-        // Click is on the combo's button or outside the dropped combo
-        } else if(    target == this._button
-                   || (    this._dropped
-                        && target != this
-                        && target != this._field
-                        && !this._list.contains( target ) ) )
-        {
+        } else if( target == this._button ) {
           this._toggleListVisibility();
+        // Click is on outside the dropped combo
+        } else if( target !== this && target !== this._field && !this._list.contains( target ) ) {
+          this._hideList();
         }
       }
     },
 
-    _onMouseUp : function( evt ) {
-      if( !this._dropped ) {
-        this.setCapture( false );
-      }
-      if( evt.getTarget() == this._field && !rwt.remote.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
-      } else if( this._dropped ) {
-        this._reDispatch( evt );
+    _onMouseUp : function( event ) {
+      if( this._dropped ) {
+        this._reDispatch( event );
       }
     },
 
-    _onMouseWheel : function( evt ) {
+    _onMouseWheel : function( event ) {
       if( this._dropped ) {
-        if( !this._list.isRelevantEvent( evt ) ) {
-          evt.preventDefault();
-          evt.stopPropagation();
+        if( !this._list.isRelevantEvent( event ) ) {
+          event.preventDefault();
+          event.stopPropagation();
         }
       } else if( this.getFocused() ) {
         this._updateItems();
-        evt.preventDefault();
-        evt.stopPropagation();
-        var toSelect;
-        var isSelected = this._selected;
-        if( isSelected ) {
-          if( evt.getWheelDelta() < 0 ) {
-            toSelect = this._manager.getNext( isSelected );
+        event.preventDefault();
+        event.stopPropagation();
+        if( this._selected ) {
+          var toSelect;
+          if( event.getWheelDelta() < 0 ) {
+            toSelect = this._manager.getNext( this._selected );
           } else {
-            toSelect = this._manager.getPrevious( isSelected );
+            toSelect = this._manager.getPrevious( this._selected );
           }
           if( toSelect ) {
             this._setSelected( toSelect );
@@ -503,8 +442,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onMouseOver : function( evt ) {
-      var target = evt.getTarget();
+    _onMouseOver : function( event ) {
+      var target = event.getTarget();
       if( target instanceof rwt.widgets.ListItem && !this._blockMouseOver ) {
         this._setListSelection( target );
       } else if( target == this._button ) {
@@ -512,17 +451,15 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onMouseMove : function( evt ) {
-      var target = evt.getTarget();
-      if(    target instanceof rwt.widgets.ListItem
-          && this._manager.getSelectedItem() !== evt.getTarget() )
-      {
-        this._onMouseOver( evt );
+    _onMouseMove : function( event ) {
+      var target = event.getTarget();
+      if( target instanceof rwt.widgets.ListItem && target !== this._manager.getSelectedItem() ) {
+        this._onMouseOver( event );
       }
     },
 
-    _onMouseOut : function( evt ) {
-      if( evt.getTarget() == this._button ) {
+    _onMouseOut : function( event ) {
+      if( event.getTarget() == this._button ) {
         this._button.removeState( "over" );
       }
     },
@@ -539,113 +476,118 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     ////////////////////////////////////
     // Keyboard events handling methods
 
-    _onKeyDown : function( evt ) {
-      switch( evt.getKeyIdentifier() ) {
+    _onKeyDown : function( event ) {
+      switch( event.getKeyIdentifier() ) {
         case "Enter":
-          if( this._dropped ) {
-            this._toggleListVisibility();
-            this._setSelected( this._manager.getSelectedItem() );
-          } else if(    !evt.isShiftPressed()
-                     && !evt.isAltPressed()
-                     && !evt.isCtrlPressed()
-                     && !evt.isMetaPressed() )
-          {
-            rwt.remote.EventUtil.notifyDefaultSelected( this );
-          }
-          this.setFocused( true );
-          evt.stopPropagation();
+          this._handleKeyEnter( event );
         break;
         case "Escape":
-          if( this._dropped ) {
-            this._toggleListVisibility();
-            this.setFocused( true );
-            evt.stopPropagation();
-          }
+          this._handleKeyEscape( event );
         break;
         case "Down":
         case "Up":
         case "PageUp":
         case "PageDown":
-          if( evt.isAltPressed() ) {
-            this._toggleListVisibility();
-          } else {
-            this._updateItems();
-            if( this._selected || this._manager.getSelectedItem() ) {
-              this._list._onkeypress( evt );
-              var selected = this._manager.getSelectedItem();
-              this._setSelected( selected );
-            } else if( this._list.getItemsCount() ) {
-              this._setSelected( this._list.getItems()[ 0 ] );
-            }
-          }
+          this._handleKeyUpDown( event );
         break;
-      }
-      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
       }
     },
 
-    _onKeyPress : function( evt ) {
-      switch( evt.getKeyIdentifier() ) {
+    _onKeyPress : function( event ) {
+      switch( event.getKeyIdentifier() ) {
         case "Escape":
         case "Down":
         case "Up":
         case "PageUp":
         case "PageDown":
-          evt.stopPropagation();
+          event.stopPropagation();
         break;
         case "Tab":
-          if( this._dropped ) {
-            this._toggleListVisibility();
-          }
+          this._hideList();
         break;
         case "Right":
-          if( this._dropped ) {
-            var toSelect =   this._selected
-                           ? this._manager.getNext( this._selected )
-                           : this._manager.getFirst();
-            if( toSelect ) {
-              this._setSelected( toSelect );
-            }
-          }
+          this._handleKeyRight( event );
         break;
         case "Left":
-          if( this._dropped ) {
-            var toSelect =   this._selected
-                           ? this._manager.getPrevious( this._selected )
-                           : this._manager.getLast();
-            if( toSelect ) {
-              this._setSelected( toSelect );
-            }
-          }
+          this._handleKeyLeft( event );
         break;
         case "Enter":
-          evt.preventDefault();
+          event.preventDefault();
         break;
       }
-      if( this._field.isCreated() && !rwt.remote.EventUtil.getSuspended() ) {
-        this._handleSelectionChange();
+      this._selectByFirstLetter( event );
+    },
+
+    _handleKeyEnter : function( event ) {
+      if( this._dropped ) {
+        this._hideList();
+        this._setSelected( this._manager.getSelectedItem() );
+      } else if( event.getModifiers() === 0 ) {
+        rwt.remote.EventUtil.notifyDefaultSelected( this );
       }
-      if( evt.getCharCode() !== 0 ) {
-        this._onKeyInput( evt );
+      this.setFocused( true );
+      event.stopPropagation();
+    },
+
+    _handleKeyEscape : function( event ) {
+      if( this._dropped ) {
+        this._hideList();
+        this.setFocused( true );
+        event.stopPropagation();
       }
     },
 
-    // Additional check for ALT and CTRL keys is added to fix bug 288344
-    _onKeyInput : function( evt ) {
-      if( ( this._dropped || !this._editable ) && !evt.isAltPressed() && !evt.isCtrlPressed() ) {
+    _handleKeyUpDown : function( event ) {
+      if( event.isAltPressed() ) {
+        this._toggleListVisibility();
+      } else {
         this._updateItems();
-        this._list._onkeyinput( evt );
-        var selected = this._manager.getSelectedItem();
-        if( selected != null ) {
-          this._setSelected( selected );
-        } else {
-          this._setListSelection( this._selected );
+        if( this._selected || this._manager.getSelectedItem() ) {
+          this._list._onkeypress( event );
+          this._setSelected( this._manager.getSelectedItem() );
+        } else if( this._list.getItemsCount() ) {
+          this._setSelected( this._list.getItems()[ 0 ] );
         }
       }
     },
 
-    _onTextInput : function( evt ) {
+    _handleKeyLeft : function( event ) {
+      if( this._dropped ) {
+        var manager = this._manager;
+        var toSelect = this._selected ? manager.getPrevious( this._selected ) : manager.getLast();
+        if( toSelect ) {
+          this._setSelected( toSelect );
+        }
+      }
+    },
+
+    _handleKeyRight : function( event ) {
+      if( this._dropped ) {
+        var manager = this._manager;
+        var toSelect = this._selected ? manager.getNext( this._selected ) : manager.getFirst();
+        if( toSelect ) {
+          this._setSelected( toSelect );
+        }
+      }
+    },
+
+    _selectByFirstLetter : function( event ) {
+      // Additional check for ALT and CTRL keys is added to fix bug 288344
+      if( event.getCharCode() !== 0 && !event.isAltPressed() && !event.isCtrlPressed() ) {
+        if( this._dropped || !this._editable ) {
+          this._updateItems();
+          this._list._onkeyinput( event );
+          var selected = this._manager.getSelectedItem();
+          if( selected ) {
+            this._setSelected( selected );
+          } else {
+            this._setListSelection( this._selected );
+          }
+        }
+      }
+    },
+
+    _onTextInput : function( event ) {
       if( this._editable ) {
         this._selected = null;
         this._resetListSelection();
@@ -663,13 +605,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     ///////////////////////////////////////////////
     // Actions, connected with server communication
 
-    _onTextBlur : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() && this._modifyScheduled ) {
-        rwt.remote.Connection.getInstance().send();
-      }
-    },
-
-    _onSend : function( evt ) {
+    _onSend : function( event ) {
       if( this._modifyScheduled ) {
         rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify" );
         this._modifyScheduled = false;
@@ -693,30 +629,10 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    // Checks for a text field selection change and updates
-    // the request parameter if necessary.
-    _handleSelectionChange : function() {
-      var sel = this._field.getComputedSelection();
-      var start = sel[ 0 ];
-      // TODO [ad] Solution from TextUtil.js - must be in synch with it
-      // TODO [rst] Quick fix for bug 258632
-      //            https://bugs.eclipse.org/bugs/show_bug.cgi?id=258632
-      if( start === undefined ) {
-        start = 0;
-      }
-      var length = sel[ 1 ] - sel[ 0 ];
-      // TODO [ad] Solution from TextUtil.js - must be in synch with it
-      // TODO [rst] Workaround for qx bug 521. Might be redundant as the
-      //            bug is marked as (partly) fixed.
-      //            See http://bugzilla.qooxdoo.org/show_bug.cgi?id=521
-      if( typeof length == "undefined" ) {
-        length = 0;
-      }
-      if( this._selectionStart != start || this._selectionLength != length ) {
-        this._selectionStart = start;
-        this._selectionLength = length;
+    _handleSelectionChange : function( event ) {
+      if( !rwt.remote.EventUtil.getSuspended() ) {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-        remoteObject.set( "selection", [ start, start + length ] );
+        remoteObject.set( "selection", this._field.getSelection() );
       }
     },
 
@@ -767,9 +683,10 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     setListVisible : function( value ) {
-      if( this._list.getDisplay() != value ) {
-        this._dropped = !value;
-        this._toggleListVisibility();
+      if( value ) {
+        this._showList();
+      } else {
+        this._hideList();
       }
     },
 
@@ -777,10 +694,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this._field.setValue( value );
     },
 
-    setTextSelection : function( start, length ) {
-      this._selectionStart = start;
-      this._selectionLength = length;
-      this._field.setSelection( [ start, start + length ] );
+    setTextSelection : function( selection ) {
+      this._field.setSelection( selection );
     },
 
     setTextLimit : function( value ) {

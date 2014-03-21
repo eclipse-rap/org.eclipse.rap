@@ -77,9 +77,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Combo", {
       widget.select( value );
     },
     "selection" : function( widget, value ) {
-      var start = value[ 0 ];
-      var length = value[ 1 ] - value[ 0 ];
-      widget.setTextSelection( start, length );
+      widget.setTextSelection( value );
     }
   } ),
 
