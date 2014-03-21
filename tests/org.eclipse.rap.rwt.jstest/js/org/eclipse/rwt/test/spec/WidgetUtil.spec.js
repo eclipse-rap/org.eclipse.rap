@@ -27,6 +27,38 @@ describe( "WidgetUtil", function() {
     widget = null;
   } );
 
+  describe( "getShell", function() {
+
+    var shell;
+
+    beforeEach( function() {
+      shell = mock( rwt.widgets.Shell );
+    } );
+
+    it( "finds the shell if it is the parent", function() {
+      widget.getParent = function(){ return shell; };
+
+      expect( WidgetUtil.getShell( widget ) ).toBe( shell );
+    } );
+
+    it( "finds the shell if it is an indirect parent", function() {
+      widget.getParent = function(){
+        return {
+          getParent : function() { return shell; }
+        };
+      };
+
+      expect( WidgetUtil.getShell( widget ) ).toBe( shell );
+    } );
+
+    it( "returns null if there is no shell", function() {
+      widget.getParent = function(){ return null; };
+
+      expect( WidgetUtil.getShell( widget ) ).toBeNull();
+    } );
+
+  } );
+
   describe( "callWithElement", function() {
 
     var element = {};

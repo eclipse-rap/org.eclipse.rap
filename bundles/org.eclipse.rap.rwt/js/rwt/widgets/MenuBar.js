@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,10 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._hoverItem = null;
     this._openItem = null;
     this._active = false;
-    this._lastActive = null;
-    this._lastFocus = null;
     this._mnemonics = false;
+    this.setAppearance( "toolbar" );
     this.addEventListener( "mousedown", this._onMouseDown );
+    this.addEventListener( "mouseup", this._onMouseUp );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "keydown", this._onKeyDown );
@@ -30,24 +30,10 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
   destruct : function() {
     this._hoverItem = null;
     this._openItem = null;
-    this._lastActive = null;
-    this._lastFocus = null;
     this._active = false;
     this._mnemonics = false;
     rwt.widgets.util.MenuManager.getInstance().remove( this );
-  },
-
-  properties : {
-
-    appearance :  {
-      refine : true,
-      init : "toolbar"
-    }
-
-  },
-
-  events : {
-    "changeOpenItem" : "rwt.event.Event"
+    this.setActive( false );
   },
 
   members : {
@@ -148,7 +134,6 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
 
     getOpener : rwt.util.Functions.returnNull,
 
-
     // from original Menu, needed for the menu-manager:
     isSubElement : function( vElement, vButtonsOnly ) {
       var result = false;
@@ -180,38 +165,25 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
 
     getAutoHide : rwt.util.Functions.returnTrue,
 
+    // Overwritten to prevent this from being ever focused
+    getFocusRoot : function() {
+      return null;
+    },
+
     _activate : function() {
-      var focusRoot = this.getFocusRoot();
       rwt.widgets.util.MenuManager.getInstance().add( this );
       if( this._openItem == null ) {
         this.setHoverItem( this.getFirstChild() );
       }
-      if( focusRoot ) {
-        this._lastActive = focusRoot.getActiveChild();
-        this._lastFocus = focusRoot.getFocusedChild();
-        focusRoot.setActiveChild( this );
-      }
+      this.setCapture( true );
     },
 
     _deactivate : function() {
-      var focusRoot = this.getFocusRoot();
       rwt.widgets.util.MenuManager.getInstance().remove( this );
       this.setMnemonics( false );
       this.setOpenItem( null );
       this.setHoverItem( null );
-      if( focusRoot ) {
-        focusRoot.setActiveChild( this._lastActive );
-        focusRoot.setFocusedChild( this._lastFocus );
-      }
-    },
-
-    _setMnemonics : function( value ) {
-      var items = this.getChildren();
-      for( var i = 0; i < items.length; i++ ) {
-        if( items[ i ].renderText ) {
-          items[ i ].renderText();
-        }
-      }
+      this.setCapture( false );
     },
 
     _onKeyDown :function( event ) {
@@ -289,23 +261,54 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     },
 
     _onMouseOver : function( event ) {
-      var target = event.getTarget();
-      var hoverItem = target == this ? null : target;
-      this.setHoverItem( hoverItem );
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        var hoverItem = target == this ? null : target;
+        this.setHoverItem( hoverItem );
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
+      }
     },
 
     _onMouseOut : function( event ) {
-      var target = event.getTarget();
-      var related = event.getRelatedTarget();
-      if( target == this || !this.contains( related ) ) {
-        this.setHoverItem( null );
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        var related = event.getRelatedTarget();
+        if( target == this || !this.contains( related ) ) {
+          this.setHoverItem( null );
+        }
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
       }
     },
 
     _onMouseDown : function( event ) {
-      var target = event.getTarget();
-      if( target != this ) {
-        this.setOpenItem( target );
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        if( target != this ) {
+          this.setOpenItem( target );
+        }
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
+      }
+    },
+
+    _onMouseUp : function( event ) {
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        if( target instanceof rwt.widgets.MenuItem ) {
+          target.execute();
+        }
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
       }
     }
 

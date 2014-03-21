@@ -12,6 +12,7 @@
 (function() {
 
 var EventHandlerUtil = rwt.event.EventHandlerUtil;
+var WidgetUtil = rwt.widgets.util.WidgetUtil;
 
 rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
@@ -37,10 +38,10 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
   members : {
 
     add : function( widget, listener ) {
-      var root = widget.getFocusRoot();
-      if( root != null ) {  // TODO [tb] : this is for MenuBar items, handle them like Menu items
-        this._registerFocusRoot( root );
-        var handlers = this._map[ root.toHashCode() ];
+      var shell = WidgetUtil.getShell( widget );
+      if( shell != null ) {  // TODO [tb] : this is for MenuBar items, handle them like Menu items
+        this._registerFocusRoot( shell );
+        var handlers = this._map[ shell.toHashCode() ];
         if( widget instanceof rwt.widgets.MenuItem ) {
           handlers.menu[ widget.toHashCode() ] = [ widget, listener ];
         } else {
@@ -50,7 +51,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
     },
 
     remove : function( widget ) {
-      // NOTE: The focus root may be gone if the widget is in dispose, therefore we have to search:
+      // NOTE: The shell may be gone if the widget is in dispose, therefore we have to search:
       var hash = widget.toHashCode();
       if( widget instanceof rwt.widgets.MenuItem ) {
         for( var key in this._map ) {
@@ -105,8 +106,6 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
 
     activate : function() {
       if( this._noMenuOpen() ) {
-        // TODO : The Active shell is not always the focus root - why?
-        //var root = rwt.event.EventHandler.getFocusRoot();
         var root = rwt.widgets.base.Window.getDefaultWindowManager().getActiveWindow();
         if( root == null ) {
           root = rwt.widgets.base.ClientDocument.getInstance();

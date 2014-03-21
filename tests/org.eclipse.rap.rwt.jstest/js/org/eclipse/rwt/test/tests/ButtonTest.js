@@ -602,22 +602,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     },
 
     testRenderMnemonic_NotInitially : function() {
+      var shell = createActiveShell();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      button.setParent( shell );
       button.setText( "foo" );
 
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
 
       assertEquals( "foo", button.getCellContent( 2 ) );
-      button.destroy();
+      shell.destroy();
     },
 
     testRenderMnemonic_FirstChar : function() {
+      var shell = createActiveShell();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 0 );
       TestUtil.flush();
@@ -626,13 +628,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       assertEquals( "<span style=\"text-decoration:underline\">f</span>oo", button.getCellContent( 2 ) );
-      button.destroy();
+      shell.destroy();
     },
 
     testRenderMnemonic_OnActivate : function() {
+      var shell = createActiveShell();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
@@ -641,13 +644,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", button.getCellContent( 2 ) );
-      button.destroy();
+      shell.destroy();
     },
 
     testDoNotRenderMnemonic_OnDeactivate : function() {
+      var shell = createActiveShell();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
@@ -657,13 +661,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       assertEquals( "foo", button.getCellContent( 2 ) );
-      button.destroy();
+      shell.destroy();
     },
 
     testTriggerMnemonic_WrongCharacterDoesNothing : function() {
+      var shell = createActiveShell();
       var button = new rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );
-      button.addToDocument();
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
@@ -673,11 +678,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       assertFalse( button.getFocused() );
-      button.destroy();
+      shell.destroy();
     },
 
     testTriggerMnemonic_FocusesButton : function() {
+      var shell = createActiveShell();
       var button = this.createButton( "w11", "push" );
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.flush();
@@ -687,11 +694,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       TestUtil.flush();
 
       assertTrue( button.getFocused() );
-      button.destroy();
+      shell.destroy();
     },
 
     testTriggerMnemonic_SendsSelection : function() {
+      var shell = createActiveShell();
       var button = this.createButton( "w11", "push" );
+      button.setParent( shell );
       button.setText( "foo" );
       button.setMnemonicIndex( 1 );
       TestUtil.fakeListener( button, "Selection", true );
@@ -782,5 +791,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
   }
 
 } );
+
+var createActiveShell = function() {
+  var shell = TestUtil.createShellByProtocol( "w2" );
+  shell.show();
+  shell.setActive( true );
+  TestUtil.flush();
+  TestUtil.clearRequestLog();
+  return shell;
+};
 
 }() );

@@ -15,22 +15,18 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
   construct : function() {
     this.base( arguments );
-    this._layout = null;
+    this._openTimer = new rwt.client.Timer( 250 );
+    this._closeTimer = new rwt.client.Timer( 250 );
+    this._layout = new rwt.widgets.base.VerticalBoxLayout();
     this._preItem = null;
-    this._maxCellWidths = null;
     this._menuLayoutScheduled = false;
     this._opener = null;
     this._mnemonics = false;
     this._hoverItem = null;
-    this._openTimer = null;
-    this._closeTimer = null;
     this._openItem = null;
     this._itemsHiddenFlag = false;
-    this._hoverFirstItemFlag = false;
-    this.setHeight( "auto" );
-    this.setWidth( "auto" );
+    this.setAppearance( "menu" );
     this._maxCellWidths = [ null, null, null, null, null ];
-    this._layout = new rwt.widgets.base.VerticalBoxLayout();
     this._layout.set( {
       top : 0,
       right : 0,
@@ -40,25 +36,22 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     } );
     this.add( this._layout );
     this.addEventListener( "mousedown", this._unhoverSubMenu );
+    this.addEventListener( "mousedown", this._onMouseUp );
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "keypress", this._onKeyPress );
     this.addEventListener( "keydown", this._onKeyDown );
-    this._openTimer = new rwt.client.Timer( 250 );
-    this._openTimer.addEventListener( "interval", this._onopentimer, this );
-    this._closeTimer = new rwt.client.Timer( 250 );
-    this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
+    this._openTimer.addEventListener( "interval", this._onOpenTimer, this );
+    this._closeTimer.addEventListener( "interval", this._onCloseTimer, this );
     this.addToDocument();
   },
 
   destruct : function() {
+    // needed if menu is disposed while scheduled to be shown (beforeAppear already called):
+    rwt.widgets.util.MenuManager.getInstance().remove( this );
+    this._makeInactive();
     this._disposeObjects( "_openTimer", "_closeTimer", "_preItem", "_animation" );
-    this._disposeFields( "_lastActive",
-                         "_lastFocus",
-                         "_layout",
-                         "_opener",
-                         "_hoverItem",
-                         "_openItem" );
+    this._disposeFields( "_layout", "_opener", "_hoverItem", "_openItem" );
   },
 
   statics : {
@@ -123,19 +116,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
   },
 
-  properties :  {
-
-    appearance : {
-      refine : true,
-      init : "menu"
-    }
-
-  },
-
-  events : {
-    "changeHoverItem" : "rwt.event.Event"
-  },
-
   members : {
 
     /////////
@@ -165,15 +145,9 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return this._mnemonics;
     },
 
-    // Overwritten:
+    // Overwritten to prevent this or any children from being focused
     getFocusRoot : function() {
-      var root = null;
-      if ( this._opener ) {
-        root = this._opener.getFocusRoot();
-      } else if( this._hasParent ) {
-        root = this.getParent().getFocusRoot();
-      }
-      return root;
+      return null;
     },
 
     /////////
@@ -365,28 +339,12 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     // overwritten:
     _makeActive : function() {
-      var focusRoot = this.getFocusRoot();
-      this._lastActive = focusRoot.getActiveChild();
-      this._lastFocus = focusRoot.getFocusedChild();
-      this._restoreActive = true;
-      focusRoot.setActiveChild( this );
-      focusRoot.addEventListener( "changeActiveChild", this._onChangeActiveChild, this );
+      this.setCapture( true );
     },
 
     // overwritten:
     _makeInactive : function() {
-      var focusRoot = this.getFocusRoot();
-      focusRoot.removeEventListener( "changeActiveChild", this._onChangeActiveChild, this );
-      if( this._restoreActive ) {
-        focusRoot.setActiveChild( this._lastActive );
-        focusRoot.setFocusedChild( this._lastFocus );
-      }
-    },
-
-    _onChangeActiveChild : function( evt ) {
-      if( !( evt.getValue() instanceof rwt.widgets.MenuItem ) ) {
-        this._restoreActive = false;
-      }
+      this.setCapture( false );
     },
 
     _beforeAppear : function() {
@@ -403,10 +361,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       // original qooxdoo code: (1 line)
       rwt.widgets.base.Parent.prototype._beforeDisappear.call( this );
       rwt.widgets.util.MenuManager.getInstance().remove( this );
-      if( this.getFocusRoot() ) {
-        // if the menu is disposed while visible, it might not have a focusRoot
-        this._makeInactive();
-      }
+      this._makeInactive();
       this.setOpenItem( null );
       this.setHoverItem( null );
       if( this._opener instanceof rwt.widgets.MenuItem ) {
@@ -428,14 +383,14 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return item && item.getMenu && item.getMenu();
     },
 
-   _onopentimer : function( event ) {
+   _onOpenTimer : function( event ) {
       this._openTimer.stop();
       this.setOpenItem( this._hoverItem );
       // fix for bug 299350
       this._closeTimer.stop();
     },
 
-    _onclosetimer : function( event ) {
+    _onCloseTimer : function( event ) {
       this._closeTimer.stop();
       this.setOpenItem( null );
     },
@@ -450,9 +405,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         this._openItem.setSubMenuOpen( false );
         var oldMenu = this._openItem.getMenu();
         oldMenu.hide();
-        if( this.getFocusRoot() ) {
-          this._makeActive();
-        }
+        this._makeActive();
       }
       this._openItem = item;
       // in theory an item could have lost it's assigned menu (by eval-code)
@@ -480,20 +433,44 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     // Event-handling
 
     _onMouseOut : function( event ) {
-      var target = event.getTarget();
-      var related = event.getRelatedTarget();
-      if ( target == this || ( related != this && !this.contains( related ) ) )
-      {
-        this.setHoverItem( null );
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        var related = event.getRelatedTarget();
+        if( target === this || ( related !== this && !this.contains( related ) ) ) {
+          this.setHoverItem( null );
+        }
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
       }
     },
 
     _onMouseOver : function( event ) {
-      var target = event.getTarget();
-      if( target != this ) {
-        this.setHoverItem( target );
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        if( target instanceof rwt.widgets.MenuItem ) {
+          this.setHoverItem( target );
+        }
+        this._unhoverSubMenu();
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
       }
-      this._unhoverSubMenu();
+    },
+
+    _onMouseUp : function( event ) {
+      var target = event.getOriginalTarget();
+      if( this.contains( target ) ) {
+        if( target instanceof rwt.widgets.MenuItem ) {
+          target.execute();
+        }
+      } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
+      }
     },
 
     _unhoverSubMenu : function() {
@@ -580,7 +557,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     _handleKeyRight : function( event ) {
       if( this.hasSubmenu( this._hoverItem ) ) {
-        this._onopentimer();
+        this._onOpenTimer();
         this.setHoverItem( null, true );
         this._openItem.getMenu().hoverFirstItem();
         event.preventDefault();
@@ -590,7 +567,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
 
     _handleKeyEnter : function( event ) {
       if( this.hasSubmenu( this._hoverItem ) ) {
-        this._onopentimer();
+        this._onOpenTimer();
         this.setHoverItem( null, true );
         this._openItem.getMenu().hoverFirstItem();
       } else if( this._hoverItem ){
@@ -633,11 +610,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
           var display = this._layout.getChildren().length !== 0;
           //no items and no listener to add some:
           this.setDisplay( display );
-          if( display ) {
-            if( this._hoverFirstItemFlag ) {
-              this.hoverFirstItem();
-            }
-          }
         }
       }
     },
@@ -658,13 +630,9 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
           this._preItem.setDisplay( false );
         }
         this._itemsHiddenFlag = false;
-        if( this._hoverFirstItemFlag ) {
-          this.hoverFirstItem();
-        }
       } else {
         this.hide();
       }
-      this._hoverFirstItemFlag = false;
     },
 
     // Called to open a popup menu from server side

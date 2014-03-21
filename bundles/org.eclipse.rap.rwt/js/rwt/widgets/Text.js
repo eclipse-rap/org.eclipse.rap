@@ -104,7 +104,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     _shouldNotifyDefaultSelection : function() {
       // Emulate SWT (on Windows) where a default button takes precedence over
       // a SelectionListener on a text field when both are on the same shell.
-      var shell = rwt.remote.HandlerUtil.getShell( this );
+      var shell = rwt.widgets.util.WidgetUtil.getShell( this );
       var defButton = shell ? shell.getDefaultButton() : null;
       var hasDefaultButton = defButton != null && defButton.isSeeable() && defButton.getEnabled();
       return !hasDefaultButton && !this._isTextArea();

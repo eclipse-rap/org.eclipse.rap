@@ -664,9 +664,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     },
 
     testRenderMnemonic_OnActivate : function() {
+      var shell = createActiveShell();
       var item = new rwt.widgets.ToolItem( "push" );
       item.setText( "foo" );
-      item.addToDocument();
+      item.setParent( shell );
       item.setMnemonicIndex( 1 );
       TestUtil.flush();
 
@@ -674,13 +675,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       TestUtil.flush();
 
       assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getCellContent( 2 ) );
-      item.destroy();
+      shell.destroy();
     },
 
     testRenderMnemonic_OnDeactivate : function() {
+      var shell = createActiveShell();
       var item = new rwt.widgets.ToolItem( "push" );
       item.setText( "foo" );
-      item.addToDocument();
+      item.setParent( shell );
       item.setMnemonicIndex( 1 );
       TestUtil.flush();
 
@@ -689,14 +691,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       TestUtil.flush();
 
       assertEquals( "foo", item.getCellContent( 2 ) );
-      item.destroy();
+      shell.destroy();
     },
 
     testTriggerMnemonic_SendsSelection : function() {
+      var shell = createActiveShell();
       var item = new rwt.widgets.ToolItem( "push" );
       rwt.remote.ObjectRegistry.add( "w11", item );
       item.setText( "foo" );
-      item.addToDocument();
+      item.setParent( shell );
       item.setMnemonicIndex( 1 );
       TestUtil.fakeListener( item, "Selection", true );
       TestUtil.flush();
@@ -708,7 +711,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
       assertTrue( success );
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
-      item.destroy();
+      shell.destroy();
     },
 
     /////////
@@ -776,5 +779,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
   }
 
 } );
+
+var createActiveShell = function() {
+  var shell = TestUtil.createShellByProtocol( "w2" );
+  shell.show();
+  shell.setActive( true );
+  TestUtil.flush();
+  TestUtil.clearRequestLog();
+  return shell;
+};
 
 }() );

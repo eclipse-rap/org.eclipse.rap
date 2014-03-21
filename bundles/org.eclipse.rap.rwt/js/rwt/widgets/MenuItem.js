@@ -22,13 +22,11 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     this._subMenu = null;
     this._subMenuOpen = false;
     this._preferredCellWidths = null;
-    this.initTabIndex();
     this.set( {
       width : "auto",
       horizontalChildrenAlign : "left",
       verticalChildrenAlign : "middle"
     } );
-    this.addEventListener( "mouseup", this.execute );
     this.addEventListener( "changeFont", this._onFontChange );
     this.addState( menuItemType );
     switch( menuItemType ){
@@ -334,11 +332,8 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     _shouldSendEvent : function() {
       return !this.hasState( "cascade" );
-    },
-
-    _onmouseup : function( event ) {
-      this.execute();
     }
+
   }
 
 });

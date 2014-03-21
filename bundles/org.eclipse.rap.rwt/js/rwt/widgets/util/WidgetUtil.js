@@ -38,6 +38,14 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
       return result;
     },
 
+    getShell : function( widget ) {
+      var result = widget;
+      while( result != null && result.classname !== "rwt.widgets.Shell" ) {
+        result = result.getParent();
+      }
+      return result;
+    },
+
     getChildIds : function( widget ) {
       return widget.getUserData( "rwt_Children" );
     },
