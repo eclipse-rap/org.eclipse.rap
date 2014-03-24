@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,8 @@ rwt.remote.ObjectRegistry = {
   },
 
   remove : function( id ) {
-    if( id != null ) {
+    if( id != null && this._map[ id ] != null) {
+      delete this._map[ id ].object._rwtId;
       delete this._map[ id ];
     }
   },
@@ -49,7 +50,11 @@ rwt.remote.ObjectRegistry = {
 
   getObject : function( id ) {
     var entry = this.getEntry( id );
-    return entry ? entry.object : undefined;
+    return entry ? entry.object : null;
+  },
+
+  containsObject : function( object ) {
+    return object ? object._rwtId != null : false;
   },
 
   getEntry : function( id ) {

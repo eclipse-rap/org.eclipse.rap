@@ -63,7 +63,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
         "action" : "destroy"
       } );
       TestUtil.flush();
-      assertIdentical( undefined, ObjectManager.getObject( "w4" ) );
+      assertNull( ObjectManager.getObject( "w4" ) );
       assertEquals( -1, tree.getRootItem().indexOf( item ) );
       assertTrue( TestUtil.hasNoObjects( item, true ) );
       shell.destroy();
@@ -102,8 +102,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       } );
       TestUtil.flush();
 
-      assertIdentical( undefined, ObjectManager.getObject( "w4" ) );
-      assertIdentical( undefined, ObjectManager.getObject( "w5" ) );
+      assertNull( ObjectManager.getObject( "w4" ) );
+      assertNull( ObjectManager.getObject( "w5" ) );
       shell.destroy();
     },
 
@@ -132,7 +132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       } );
       TestUtil.flush();
 
-      assertIdentical( undefined, ObjectManager.getObject( "w4" ) );
+      assertNull( ObjectManager.getObject( "w4" ) );
       assertTrue( childItem.isDisposed() );
       shell.destroy();
     },
