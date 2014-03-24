@@ -345,18 +345,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
-    testShowList_markFieldNotEditable : function() {
+    testShowList_markFieldNotEditableAndRemoveFocus : function() {
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
-
-      combo.setListVisible( true );
       TestUtil.flush();
 
+      combo.setListVisible( true );
+
       assertTrue( combo._field.getReadOnly() );
+      assertFalse( combo._field.hasState( "focused" ) );
       combo.destroy();
     },
 
-    testHideList_markFieldEditable : function() {
+    testHideList_markFieldEditableAndRestoreFocus : function() {
       var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.setListVisible( true );
@@ -365,6 +366,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( false );
 
       assertFalse( combo._field.getReadOnly() );
+      assertTrue( combo._field.hasState( "focused" ) );
       combo.destroy();
     },
 
