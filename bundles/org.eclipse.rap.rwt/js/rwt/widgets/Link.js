@@ -100,13 +100,9 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     },
 
     addLink : function( text, index ) {
-      var style = this._getHyperlinkStyle( false );
       var widgetManager = rwt.remote.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this ) + "#" + index;
       this._text += "<span tabIndex=\"1\" ";
-      this._text += "style=\"";
-      this._text += "text-decoration:" + style.textDecoration + "; ";
-      this._text += "\" ";
       this._text += "id=\"" + id + "\"";
       this._text += ">";
       this._text += text;
@@ -137,6 +133,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
         rwt.html.Style.setStyleProperty( hyperlinks[ i ], "color", style.textColor );
         rwt.html.Style.setTextShadow( hyperlinks[ i ], style.textShadow );
         rwt.html.Style.setStyleProperty( hyperlinks[ i ], "cursor", style.cursor );
+        rwt.html.Style.setStyleProperty( hyperlinks[ i ], "textDecoration", style.textDecoration );
       }
     },
 

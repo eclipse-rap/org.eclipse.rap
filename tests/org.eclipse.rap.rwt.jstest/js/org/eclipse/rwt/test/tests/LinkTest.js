@@ -58,9 +58,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text1 "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">link1</span>"
+        + "<span tabIndex=\"1\" id=\"w3#0\">link1</span>"
         + " text2 "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#1\">link2</span>";
+        + "<span tabIndex=\"1\" id=\"w3#1\">link2</span>";
       assertEquals( expected, widget._link.getHtml() );
       assertEquals( 2, widget._linksCount );
       shell.destroy();
@@ -82,7 +82,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "text<br/>text "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
+        + "<span tabIndex=\"1\" id=\"w3#0\">"
         + "link<br/>link"
         + "</span>";
       assertEquals( expected, widget._link.getHtml() );
@@ -106,7 +106,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var widget = ObjectManager.getObject( "w3" );
       var expected
         = "foo &amp;&amp; &lt;&gt; &quot; bar "
-        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"w3#0\">"
+        + "<span tabIndex=\"1\" id=\"w3#0\">"
         + "foo &amp;&amp; &lt;&gt; &quot; bar"
         + "</span>";
       assertEquals( expected, widget._link.getHtml() );
@@ -158,6 +158,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       var message = TestUtil.getLastMessage();
       assertEquals( 1, message.findNotifyProperty( "w3", "Selection", "index" ) );
       shell.destroy();
+    },
+
+    testLinkStyleProperties : function() {
+      var link = new rwt.widgets.Link();
+      link.addToDocument();
+      link.addLink( "foo", 0 );
+
+      link.applyText();
+      TestUtil.flush();
+
+      var style = link._getHyperlinkElements()[ 0 ].style;
+      assertEquals( "underline", style.textDecoration );
+      assertEquals( "pointer", style.cursor );
+      assertEquals( [0, 0, 255], rwt.util.Colors.stringToRgb( style.color ) );
+      link.destroy();
     }
 
   }
