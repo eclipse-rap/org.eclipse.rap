@@ -261,7 +261,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         if( this._list.getItemsCount() ) {
           this._dropped = true;
           if( this._editable ) {
-            this._field.setReadOnly( false );
+            this._field.setReadOnly( true );
           }
           this._bringToFront();
           this.setCapture( true );
@@ -278,7 +278,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       if( this._dropped ) {
         this._dropped = false;
         if( this._editable ) {
-          this._field.setReadOnly( true );
+          this._field.setReadOnly( false );
         }
         this.setCapture( false );
         this._list.setDisplay( false );

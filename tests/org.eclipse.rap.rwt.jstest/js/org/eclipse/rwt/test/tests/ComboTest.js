@@ -345,6 +345,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testShowList_markFieldNotEditable : function() {
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+
+      combo.setListVisible( true );
+      TestUtil.flush();
+
+      assertTrue( combo._field.getReadOnly() );
+      combo.destroy();
+    },
+
+    testHideList_markFieldEditable : function() {
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+      combo.setListVisible( true );
+      TestUtil.flush();
+
+      combo.setListVisible( false );
+
+      assertFalse( combo._field.getReadOnly() );
+      combo.destroy();
+    },
+
     testCloseListOnBlur : function() {
       var combo = this._createDefaultCombo();
       combo.focus();
