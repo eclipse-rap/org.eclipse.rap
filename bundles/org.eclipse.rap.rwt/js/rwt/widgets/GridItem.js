@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -228,7 +228,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setChecked : function( value ) {
       this._checked = value;
-      this._update( "content" );
+      this._update( "check" );
     },
 
     isChecked : function() {
@@ -237,7 +237,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setGrayed : function( value ) {
       this._grayed = value;
-      this._update( "content" );
+      this._update( "check" );
     },
 
     isGrayed : function() {
@@ -246,12 +246,12 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setCellChecked : function( value ) {
       this._cellChecked = value;
-      this._update( "content" );
+      this._update( "check" );
     },
 
     toggleCellChecked : function( cell ) {
       this._cellChecked[ cell ] = !this._cellChecked[ cell ];
-      this._update( "content" );
+      this._update( "check" );
     },
 
     getCellChecked : function() {
@@ -264,7 +264,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setCellGrayed : function( value ) {
       this._cellGrayed = value;
-      this._update( "content" );
+      this._update( "check" );
     },
 
     isCellGrayed : function( column ) {
@@ -708,7 +708,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     _onUpdate : function( event ) {
-      if( event.msg !== "content" ) {
+      if( event.msg !== "content" && event.msg !== "check" ) {
         this._visibleChildrenCount = null;
         this._indexCache = {};
       }

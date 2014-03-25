@@ -37,8 +37,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._headerHeight = 0;
     this._footerHeight = 0;
     this._itemHeight = 16;
-    // Timer & Border
-    this._mergeEventsTimer = new rwt.client.Timer( 50 );
     // Subwidgets
     this._rowContainer = rwt.widgets.util.GridUtil.createTreeRowContainer( argsMap );
     this._columns = {};
@@ -64,8 +62,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._rootItem.removeEventListener( "update", this._onItemUpdate, this );
     this._rootItem.dispose();
     this._rootItem = null;
-    this._mergeEventsTimer.dispose();
-    this._mergeEventsTimer = null;
     this._rowContainer = null;
     this._header = null;
     this._footer = null;
@@ -131,7 +127,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this.addEventListener( "keypress", this._onKeyPress, this );
       this.addEventListener( "focusin", this._onFocusIn, this );
       this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
@@ -260,17 +255,16 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._config.treeColumn = columnIndex;
     },
 
+    scrollIntoView : function( item ) {
+      this._disableRender = true;
+      this._scrollIntoView( item.getFlatIndex(), item );
+      delete this._disableRender;
+    },
+
     setTopItemIndex : function( index ) {
-      this._updateScrollHeight();
-      var offset = 0;
-      var item = this._rootItem.findItemByFlatIndex( index );
-      if( item != null ) {
-        offset = item.getOffset();
-      }
-      this._vertScrollBar.setValue( offset );
-      if( !this._inServerResponse() ) {
-        rwt.widgets.base.Widget.flushGlobalQueues();
-      }
+      this._disableRender = true;
+      this._setTopItemIndex( index );
+      delete this._disableRender;
     },
 
     getTopItemIndex : function() {
@@ -473,17 +467,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onVertScrollBarChangeValue : function() {
-      if( this._vertScrollBar._internalValueChange ) {
-        // NOTE : IE can create several scroll events with one click. Using
-        // this timer to merge theses events improves performance a bit.
-        this._mergeEventsTimer.start();
-      } else {
-        this._updateTopItemIndex();
-      }
+      this._updateTopItemIndex();
     },
 
     _updateTopItemIndex : function() {
-      this._mergeEventsTimer.stop();
       var scrollTop = this._vertScrollBar.getValue();
       var beforeTopitem = this._rootItem.findItemByOffset( scrollTop - 1 );
       if( beforeTopitem ) {
@@ -493,11 +480,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._topItemIndex = 0;
         this._topItem = null;
       }
-      if( this._inServerResponse() || !this.isSeeable() ) {
-        this._scheduleUpdate( "topItem" );
-      } else {
+      if( this._allowRender() ) {
         this.dispatchSimpleEvent( "topItemChanged" );
         this._updateTopItem( true );
+      } else {
+        this._scheduleUpdate( "topItem" );
       }
     },
 
@@ -848,11 +835,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
             }
             this._topItem = null;
           break;
+          case "content":
+            this._scheduleItemUpdate( item );
+          break;
           default:
-            if( this._inServerResponse() ) {
-              this._scheduleItemUpdate( item );
-            } else {
+            if( this._allowRender() ) {
               this._rowContainer.renderItem( item );
+            } else {
+              this._scheduleItemUpdate( item );
             }
           break;
         }
@@ -942,7 +932,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _scrollIntoView : function( index, item ) {
       if( index < this._topItemIndex ) {
-        this.setTopItemIndex( index );
+        this._setTopItemIndex( index );
       } else if( index > this._topItemIndex ) {
         var topItem = this._getTopItem();
         var topItemOffset = topItem.getOffset();
@@ -952,9 +942,22 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           var newTopOffset = itemOffset - pageSize - 1;
           var newTopItem = this.getRootItem().findItemByOffset( newTopOffset );
           var newTopIndex = newTopItem.getFlatIndex() + 1;
-          this.setTopItemIndex( newTopIndex );
+          this._setTopItemIndex( newTopIndex );
         }
       }
+      if( this._allowRender() ) {
+        rwt.widgets.base.Widget.flushGlobalQueues();
+      }
+    },
+
+    _setTopItemIndex : function( index ) {
+      this._updateScrollHeight();
+      var offset = 0;
+      var item = this._rootItem.findItemByFlatIndex( index );
+      if( item != null ) {
+        offset = item.getOffset();
+      }
+      this._vertScrollBar.setValue( offset );
     },
 
     //////////////
@@ -1256,8 +1259,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     /////////
     // helper
 
-    _inServerResponse : function() {
-      return rwt.remote.EventUtil.getSuspended();
+    _allowRender : function() {
+      return !this._disableRender && !rwt.remote.EventUtil.getSuspended() && this.isSeeable();
     },
 
     _isDragSource : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -229,7 +229,7 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
           var newItem = offset > 0 ? item.getNextItem() : item.getPreviousItem();
           if( newItem != null ) {
             var newTopIndex = this._tree._topItemIndex + offset;
-            this._tree.setTopItemIndex( newTopIndex );
+            this._tree._setTopItemIndex( newTopIndex );
             var newRow = this._tree._rowContainer._findRowByItem( newItem );
             var oldRow = this._currentRow;
             var wrapper = function() {
