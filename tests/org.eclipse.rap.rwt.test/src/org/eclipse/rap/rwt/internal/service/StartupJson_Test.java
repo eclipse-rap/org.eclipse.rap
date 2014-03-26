@@ -85,7 +85,7 @@ public class StartupJson_Test {
     JsonObject content = StartupJson.get();
 
     Message message = new Message( content );
-    assertEquals( "", message.getHead().get( PROPERTY_URL ).asString() );
+    assertEquals( "./", message.getHead().get( PROPERTY_URL ).asString() );
   }
 
   @Test

@@ -129,7 +129,7 @@ public class StartupJson {
   private static String getUrl() {
     HttpServletRequest request = ContextProvider.getRequest();
     String servletPath = request.getServletPath();
-    String url = "".equals( servletPath ) ? servletPath : servletPath.substring( 1 );
+    String url = "".equals( servletPath ) ? "./" : servletPath.substring( 1 );
     return ContextProvider.getResponse().encodeURL( url );
   }
 
