@@ -9,6 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*jshint nonew:false */
 (function(){
   'use strict';
 
@@ -16,7 +17,9 @@
 
     factory : function( properties ) {
       var control = rwt.remote.ObjectRegistry.getObject( properties.parent );
-      return new rwt.widgets.DropDown( control, properties.markupEnabled );
+      var dropdown = new rwt.widgets.DropDown( control, properties.markupEnabled );
+      new rwt.widgets.util.DropDownSynchronizer( dropdown );
+      return dropdown;
     },
 
     properties : [ "items", "visible", "visibleItemCount", "columns", "data" ],

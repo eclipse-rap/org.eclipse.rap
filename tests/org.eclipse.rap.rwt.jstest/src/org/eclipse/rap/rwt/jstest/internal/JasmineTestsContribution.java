@@ -32,7 +32,8 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/WidgetUtil.spec.js",
     "spec/Variant.spec.js",
     "spec/Style.spec.js",
-    "spec/GridSynchronizer.spec.js"
+    "spec/GridSynchronizer.spec.js",
+    "spec/DropDownSynchronizer.spec.js"
   };
 
   public String getName() {

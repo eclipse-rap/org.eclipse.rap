@@ -9,6 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+/*jshint nonew:false */
 (function(){
 'use strict';
 
@@ -1197,6 +1198,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
         dropdown,
         rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DropDown" )
       );
+      new rwt.widgets.util.DropDownSynchronizer( dropdown );
       popup = dropdown._.popup;
       grid = dropdown._.grid;
       hideTimer = dropdown._.hideTimer;

@@ -167,9 +167,6 @@
       if( !this._.visibility ) {
         this._.visibility = true;
         fireEvent.call( this, "Show" );
-        if( !rwt.remote.EventUtil.getSuspended() ) {
-          rap.getRemoteObject( this ).set( "visible", true );
-        }
       }
       if( this._.items.length > 0 && this._.parent.isCreated() && !this._.popup.isSeeable() ) {
         renderLayout.call( this );
@@ -185,9 +182,6 @@
       if( this._.visibility ) {
         this._.visibility = false;
         fireEvent.call( this, "Hide" );
-        if( !rwt.remote.EventUtil.getSuspended() ) {
-          rap.getRemoteObject( this ).set( "visible", false );
-        }
       }
       this._.popup.setVisibility( false ); // makes it disappear immediately
       this._.popup.setDisplay( false ); // forces the popup to appear after all parents are layouted
@@ -476,9 +470,6 @@
   };
 
   var onSelection = function( event ) {
-    if( !rwt.remote.EventUtil.getSuspended() ) {
-      rap.getRemoteObject( this ).set( "selectionIndex", this.getSelectionIndex() );
-    }
     if( event.type === "selection" ) {
       fireEvent.call( this, "Selection" );
     }
@@ -521,8 +512,6 @@
       }
       notify.apply( this, [ type, event ] );
       if( !rwt.remote.EventUtil.getSuspended() ) { // TODO [tb] : ClientScripting must reset flag
-        // TODO : merge multiple changes? How long?
-        rap.getRemoteObject( this ).notify( type, event );
         if( type === "DefaultSelection" && selection.length > 0 ) {
           this.hide();
         }

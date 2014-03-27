@@ -268,4 +268,5 @@ rwt/scripting/WidgetProxyFactory.js
 rwt/remote/handler/FunctionHandler.js
 rwt/widgets/util/Template.js
 rwt/widgets/DropDown.js
+rwt/widgets/util/DropDownSynchronizer.js
 rwt/remote/handler/DropDownHandler.js
