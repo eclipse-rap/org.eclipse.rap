@@ -152,6 +152,14 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     return column < this._fixedColumns ? 0 : this._splitOffset;
   },
 
+  indexOf : function( child ){
+    var index = this._container[ 0 ].indexOf( child );
+    if( index < 0 ){
+        index = this._container[ 1 ].indexOf( child );
+    }
+    return index;
+  },
+
   _updateConfig : function() {
     var configLeft = this._container[ 0 ].getRenderConfig();
     var configRight = this._container[ 1 ].getRenderConfig();
