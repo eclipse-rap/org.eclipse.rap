@@ -984,7 +984,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertNull( dndSupport._dropFeedbackRenderer );
     },
 
-    testTreeFeedbackScroll_EmptryRow : function() {
+    testTreeFeedbackScroll_EmptyRow : function() {
       var leftButton = rwt.event.MouseEvent.buttons.left;
       var target = this.createDropTargetWithTree();
       var tree = target.control;
@@ -1010,6 +1010,74 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.flush();
 
       assertEquals( 0, tree._topItemIndex );
+
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseup", leftButton );
+    },
+
+    testTreeFeedbackScroll_FixedColumnsLeft : function() {
+      var leftButton = rwt.event.MouseEvent.buttons.left;
+      var target = this.createDropTargetWithTree( true );
+      var tree = target.control;
+      this.createTreeItem( 0, tree, tree );
+      this.createTreeItem( 1, tree, tree );
+      this.createTreeItem( 2, tree, tree );
+      this.createTreeItem( 3, tree, tree );
+      var source = this.createDragSource();
+      TestUtil.flush();
+      var sourceNode = source.control._getTargetNode();
+      var container = tree.getRowContainer().getSubContainer( 0 );
+      var targetNode = container._children[ 1 ]._getTargetNode();
+      var treeNode = tree.getElement();
+      var doc = document.body;
+      // drag
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      // Over tree
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( treeNode, "mousemove", leftButton );
+      // over row 2
+      TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
+      assertIdentical( container._children[ 1 ], dndSupport._getCurrentFeedbackTarget() );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_SCROLL" ] );
+      TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
+      TestUtil.flush();
+
+      assertEquals( 1, tree._topItemIndex );
+
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseup", leftButton );
+    },
+
+    testTreeFeedbackScroll_FixedColumnsRight : function() {
+      var leftButton = rwt.event.MouseEvent.buttons.left;
+      var target = this.createDropTargetWithTree( true );
+      var tree = target.control;
+      this.createTreeItem( 0, tree, tree );
+      this.createTreeItem( 1, tree, tree );
+      this.createTreeItem( 2, tree, tree );
+      this.createTreeItem( 3, tree, tree );
+      var source = this.createDragSource();
+      TestUtil.flush();
+      var sourceNode = source.control._getTargetNode();
+      var container = tree.getRowContainer().getSubContainer( 1 );
+      var targetNode = container._children[ 1 ]._getTargetNode();
+      var treeNode = tree.getElement();
+      var doc = document.body;
+      // drag
+      TestUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      TestUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      // Over tree
+      TestUtil.fakeMouseEventDOM( treeNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( treeNode, "mousemove", leftButton );
+      // over row 2
+      TestUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
+      TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
+      assertIdentical( container._children[ 1 ], dndSupport._getCurrentFeedbackTarget() );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_SCROLL" ] );
+      TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
+      TestUtil.flush();
+
+      assertEquals( 1, tree._topItemIndex );
 
       TestUtil.fakeMouseEventDOM( treeNode, "mouseup", leftButton );
     },
@@ -1388,11 +1456,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       return rwt.remote.ObjectRegistry.getObject( id );
     },
 
-    createDropTargetWithTree : function() {
+    createDropTargetWithTree : function( fixedColumns ) {
       var argsMap = {
         "appearance" : "tree",
         "selectionPadding" : [ 2, 2 ]
       };
+      if( fixedColumns ) {
+        argsMap[ "splitContainer" ] = true;
+      }
       TestUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
