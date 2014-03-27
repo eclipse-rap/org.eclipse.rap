@@ -76,26 +76,22 @@
     this._ = {};
     this._.hideTimer = new rwt.client.Timer( 0 );
     this._.hideTimer.addEventListener( "interval", checkFocus, this );
+    this._.parent = parent;
     this._.popup = createPopup(); // TODO: create on demand
     this._.grid = createGrid( this._.popup, markupEnabled );
+    applyGridStyling.call( this );
     this._.visibleItemCount = 5;
-    this._.parent = parent;
     this._.items = [];
     this._.columns = null;
     this._.inMouseSelection = false;
+    this._.visibility = false;
     this._.events = createEventsMap();
-    this._.parent.addEventListener( "keypress", onTextKeyEvent, this );
-    this._.parent.addEventListener( "flush", onTextFlush, this );
-    this._.grid.addEventListener( "selectionChanged", onSelection, this );
-    this._.grid.addEventListener( "keypress", onKeyEvent, this );
-    this._.grid.addEventListener( "mousedown", onMouseDown, this );
-    this._.grid.addEventListener( "mouseup", onMouseUp, this );
+    addParentListeners.call( this );
+    addGridListeners.call( this );
     this._.popup.addEventListener( "appear", onAppear, this );
     this._.popup.getFocusRoot().addEventListener( "changeFocusedChild", onFocusChange, this );
     this._.parentFocusRoot = parent.getFocusRoot();
     this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
-    parent.addEventListener( "appear", onTextAppear, this );
-    this._.visibility = false;
   };
 
   rwt.dropdown.DropDown.prototype = {
@@ -185,7 +181,6 @@
         }
       }
       if( this._.items.length > 0 && this._.parent.isCreated() && !this._.popup.isSeeable() ) {
-        this._.grid.setFont( this._.parent.getFont() );
         renderLayout.call( this );
         this._.popup.show();
         if( !hasFocus( this._.parent ) ) {
@@ -270,9 +265,12 @@
         this._.grid.getRootItem().setItemCount( 0 );
         if( !this._.parent.isDisposed() ) {
           this._.parent.removeEventListener( "appear", onTextAppear, this );
-          this._.parent.removeEventListener( "keydown", onTextKeyEvent, this );
           this._.parent.removeEventListener( "flush", onTextFlush, this );
           this._.parent.removeEventListener( "keypress", onTextKeyEvent, this );
+          this._.parent.removeEventListener( "changeFont", applyGridStyling, this );
+          this._.parent.removeEventListener( "changeTextColor", applyGridStyling, this );
+          this._.parent.removeEventListener( "changeBackgroundColor", applyGridStyling, this );
+          this._.parent.removeEventListener( "changeCursor", applyGridStyling, this );
           this._.popup.destroy();
         }
         this._.hideTimer.dispose();
@@ -332,6 +330,23 @@
 
   ////////////
   // Internals
+
+  var addParentListeners = function() {
+    this._.parent.addEventListener( "appear", onTextAppear, this );
+    this._.parent.addEventListener( "flush", onTextFlush, this );
+    this._.parent.addEventListener( "keypress", onTextKeyEvent, this );
+    this._.parent.addEventListener( "changeFont", applyGridStyling, this );
+    this._.parent.addEventListener( "changeTextColor", applyGridStyling, this );
+    this._.parent.addEventListener( "changeBackgroundColor", applyGridStyling, this );
+    this._.parent.addEventListener( "changeCursor", applyGridStyling, this );
+  };
+
+  var addGridListeners = function() {
+    this._.grid.addEventListener( "selectionChanged", onSelection, this );
+    this._.grid.addEventListener( "keypress", onKeyEvent, this );
+    this._.grid.addEventListener( "mousedown", onMouseDown, this );
+    this._.grid.addEventListener( "mouseup", onMouseUp, this );
+  };
 
   var renderLayout = function() {
     var font = this._.grid.getFont();
@@ -577,6 +592,13 @@
       result.getRenderConfig().focused = true;
     } );
     return result;
+  };
+
+  var applyGridStyling = function() {
+    this._.grid.setFont( this._.parent.getFont() );
+    this._.grid.setTextColor( this._.parent.getTextColor() );
+    this._.grid.setBackgroundColor( this._.parent.getBackgroundColor() );
+    this._.grid.setCursor( this._.parent.getCursor() );
   };
 
   var checkDisposed = function( dropdown ) {

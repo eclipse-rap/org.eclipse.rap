@@ -99,6 +99,18 @@ rwt.qx.Class.define( "rwt.dropdown.DropDown_Test", {
       assertFalse( grid.getHorizontalBar().getVisibility() );
     },
 
+    testGridStylingIsHookedToParentStyling : function() {
+      widget.setFont( rwt.html.Font.fromString( "Times 12px" ) );
+      widget.setTextColor( "#00000F" );
+      widget.setBackgroundColor( "#0000F0" );
+      widget.setCursor( "help" );
+
+      assertEquals( "12px Times", grid.getFont().toCss() );
+      assertEquals( "#00000F", grid.getTextColor() );
+      assertEquals( "#0000F0", grid.getBackgroundColor() );
+      assertEquals( "help", grid.getCursor() );
+    },
+
     testSetData_SetDataWithTwoParameters : function() {
       dropdown.setData( "foo", "bar" );
 
