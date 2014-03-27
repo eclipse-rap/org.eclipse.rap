@@ -58,21 +58,12 @@
     Escape : true
   };
 
-  /**
-   * @public
-   * @namespace
-   * @name rwt
-   */
-  /**
-   * @public
-   * @namespace
-   */
-  rwt.dropdown = {};
+  namespace( "rwt.widgets" );
 
   /**
    * @class Instances of DropDown represent the server-side counterpart of a DropDown widget
    */
-  rwt.dropdown.DropDown = function( parent, markupEnabled ) {
+  rwt.widgets.DropDown = function( parent, markupEnabled ) {
     this._ = {};
     this._.hideTimer = new rwt.client.Timer( 0 );
     this._.hideTimer.addEventListener( "interval", checkFocus, this );
@@ -94,9 +85,9 @@
     this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
   };
 
-  rwt.dropdown.DropDown.prototype = {
+  rwt.widgets.DropDown.prototype = {
 
-    classname : "rwt.dropdown.DropDown",
+    classname : "rwt.widgets.DropDown",
 
     setItems : function( items ) {
       this.setSelectionIndex( -1 );
@@ -299,7 +290,7 @@
   ////////////
   // "statics"
 
-  rwt.dropdown.DropDown.searchItems = function( items, query, limit ) {
+  rwt.widgets.DropDown.searchItems = function( items, query, limit ) {
     var resultIndicies = [];
     var filter = function( item, index ) {
       if( query.test( item ) ) {
@@ -319,12 +310,12 @@
     };
   };
 
-  rwt.dropdown.DropDown.createQuery = function( str, caseSensitive, ignorePosition ) {
-    var escapedStr = rwt.dropdown.DropDown.escapeRegExp( str );
+  rwt.widgets.DropDown.createQuery = function( str, caseSensitive, ignorePosition ) {
+    var escapedStr = rwt.widgets.DropDown.escapeRegExp( str );
     return new RegExp( ( ignorePosition ? "" : "^" ) + escapedStr, caseSensitive ? "" : "i" );
   };
 
-  rwt.dropdown.DropDown.escapeRegExp = function( str ) {
+  rwt.widgets.DropDown.escapeRegExp = function( str ) {
     return str.replace( /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&" );
   };
 

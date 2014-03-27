@@ -12,11 +12,11 @@
 (function(){
   'use strict';
 
-  rap.registerTypeHandler( "rwt.dropdown.DropDown", {
+  rap.registerTypeHandler( "rwt.widgets.DropDown", {
 
     factory : function( properties ) {
       var control = rwt.remote.ObjectRegistry.getObject( properties.parent );
-      return new rwt.dropdown.DropDown( control, properties.markupEnabled );
+      return new rwt.widgets.DropDown( control, properties.markupEnabled );
     },
 
     properties : [ "items", "visible", "visibleItemCount", "columns", "data" ],

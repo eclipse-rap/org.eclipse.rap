@@ -13,7 +13,7 @@
 'use strict';
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var DropDown = rwt.dropdown.DropDown;
+var DropDown = rwt.widgets.DropDown;
 
 var ITEM_HEIGHT = 25; // Depends on padding which is currently taken from list theming
 var PADDING_LEFT = 10;
@@ -26,7 +26,7 @@ var popup;
 var grid;
 var hideTimer;
 
-rwt.qx.Class.define( "rwt.dropdown.DropDown_Test", {
+rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
   extend : rwt.qx.Object,
 
@@ -79,7 +79,7 @@ rwt.qx.Class.define( "rwt.dropdown.DropDown_Test", {
     testConstructor_SetsMarkupEnabledTrue : function() {
       widget = new rwt.widgets.Composite();
       widget.setParent( shell );
-      dropdown = new rwt.dropdown.DropDown( widget, true );
+      dropdown = new rwt.widgets.DropDown( widget, true );
       grid = dropdown._.grid;
 
       assertTrue( grid.getRenderConfig().markupEnabled );
@@ -1191,11 +1191,11 @@ rwt.qx.Class.define( "rwt.dropdown.DropDown_Test", {
       widget.setParent( shell );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 30 );
-      dropdown = new rwt.dropdown.DropDown( widget );
+      dropdown = new rwt.widgets.DropDown( widget );
       rwt.remote.ObjectRegistry.add(
         "w3",
         dropdown,
-        rwt.remote.HandlerRegistry.getHandler( "rwt.dropdown.DropDown" )
+        rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DropDown" )
       );
       popup = dropdown._.popup;
       grid = dropdown._.grid;
