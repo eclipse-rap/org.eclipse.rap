@@ -251,6 +251,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       widget.destroy();
     },
 
+    testToolTipIsNotFocusRoot : function() {
+      var tooltip = new rwt.widgets.ToolTip();
+
+      assertFalse( tooltip.isFocusRoot() );
+      assertNull( tooltip.getFocusRoot() );
+      tooltip.destroy();
+    },
+
     /////////
     // Helper
 

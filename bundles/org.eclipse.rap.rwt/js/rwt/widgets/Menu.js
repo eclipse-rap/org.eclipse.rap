@@ -145,11 +145,6 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return this._mnemonics;
     },
 
-    // Overwritten to prevent this or any children from being focused
-    getFocusRoot : function() {
-      return null;
-    },
-
     /////////
     // Layout
 

@@ -157,12 +157,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertTrue( dropdown.getVisible() );
     },
 
-    testShow_FocusesGrid : function() {
-      showDropDown();
-
-      assertTrue( grid.getFocused() );
-    },
-
     testShow_LeavesParentFocused : function() {
       widget.setTabIndex( 1 );
       widget.focus();
@@ -218,7 +212,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     testHideOnEscape : function() {
       showDropDown();
 
-      TestUtil.press( grid, "Escape" );
+      TestUtil.press( widget, "Escape" );
 
       assertFalse( popup.isSeeable() );
     },
@@ -228,7 +222,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.setItems( [ "a", "b" ] );
       dropdown.setSelectionIndex( 0 );
 
-      TestUtil.press( grid, "Enter" );
+      TestUtil.press( widget, "Enter" );
       TestUtil.forceTimerOnce();
 
       assertFalse( popup.isSeeable() );
@@ -254,6 +248,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     },
 
     testShellClickAfterDropDownDisposeDoesNotCrash : function() {
+      widget.focus();
       showDropDown();
       dropdown.destroy();
       TestUtil.flush();
@@ -763,19 +758,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 1, message.findNotifyProperty( "w3", "Selection", "index" ) );
     },
 
-    testAddDefaultSelectionListener_FiresOnEnter : function() {
-      dropdown.setItems( [ "a", "b", "c" ] );
-      showDropDown();
-      var logger = TestUtil.getLogger();
-
-      dropdown.addListener( "DefaultSelection", logger.log );
-      dropdown.setSelectionIndex( 1 );
-      TestUtil.pressOnce( grid, "Enter" );
-      TestUtil.forceTimerOnce();
-
-      assertEquals( 1, logger.getLog().length );
-    },
-
     testAddDefaultSelectionListener_FiresOnClick : function() {
       dropdown.setItems( [ "a", "b", "c" ] );
       showDropDown();
@@ -822,7 +804,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
       dropdown.addListener( "DefaultSelection", logger.log );
       clickItem( 1 );
-      TestUtil.pressOnce( grid, "Enter" );
       TestUtil.forceTimerOnce();
 
       var event = logger.getLog()[ 0 ];

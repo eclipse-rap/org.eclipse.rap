@@ -80,7 +80,6 @@
     addParentListeners.call( this );
     addGridListeners.call( this );
     this._.popup.addEventListener( "appear", onAppear, this );
-    this._.popup.getFocusRoot().addEventListener( "changeFocusedChild", onFocusChange, this );
     this._.parentFocusRoot = parent.getFocusRoot();
     this._.parentFocusRoot.addEventListener( "changeFocusedChild", onFocusChange, this );
   };
@@ -171,9 +170,6 @@
       if( this._.items.length > 0 && this._.parent.isCreated() && !this._.popup.isSeeable() ) {
         renderLayout.call( this );
         this._.popup.show();
-        if( !hasFocus( this._.parent ) ) {
-          this._.grid.getFocusRoot().setFocusedChild( this._.grid );
-        }
       }
     },
 
@@ -242,10 +238,6 @@
         var parentFocusRoot = this._.parentFocusRoot;
         if( parentFocusRoot && !parentFocusRoot.isDisposed() ) {
           parentFocusRoot.removeEventListener( "changeFocusedChild", onFocusChange, this );
-        }
-        var popupFocusRoot = this._.popup.getFocusRoot();
-        if( popupFocusRoot && !popupFocusRoot.isDisposed() ) {
-          popupFocusRoot.removeEventListener( "changeFocusedChild", onFocusChange, this );
         }
         this._.grid.getRootItem().setItemCount( 0 );
         if( !this._.parent.isDisposed() ) {
@@ -523,7 +515,7 @@
 
   var checkFocus = function() {
     this._.hideTimer.stop();
-    if( !hasFocus( this._.parent ) && !hasFocus( this._.popup ) && this._.visibility ) {
+    if( !hasFocus( this._.parent ) && this._.visibility ) {
       this.hide();
     }
   };

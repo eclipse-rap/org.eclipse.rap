@@ -1668,6 +1668,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.press( menu, "Left" );
 
       menu.destroy();
+    },
+
+    testMenuIsNotFocusRoot : function() {
+      createSimpleMenu( "push" );
+
+      assertFalse( menu.isFocusRoot() );
+      assertNull( menu.getFocusRoot() );
+      menu.destroy();
     }
 
   }

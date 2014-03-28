@@ -1143,6 +1143,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip._computeFallbackMode( toolTip._getTargetBounds() ) );
       toolTip.resetMousePointerOffsetX();
       toolTip.resetMousePointerOffsetY();
+    },
+
+    testWidgetToolTipIsNotFocusRoot : function() {
+      assertFalse( toolTip.isFocusRoot() );
+      assertNull( toolTip.getFocusRoot() );
     }
 
   }

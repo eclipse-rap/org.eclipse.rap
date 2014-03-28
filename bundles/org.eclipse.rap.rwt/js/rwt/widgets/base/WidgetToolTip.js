@@ -98,7 +98,6 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
   members : {
     _minZIndex : 1e7,
     _targetDistance : 4,
-    _isFocusRoot : false,
 
     updateText : function() {
       this._updateTextInternal();

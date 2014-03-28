@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -171,10 +171,14 @@ rwt.qx.Class.define("rwt.widgets.base.Popup",
 
   members :
   {
-    _isFocusRoot : true,
+    _isFocusRoot : false,
 
     _showTimeStamp : (new Date(0)).valueOf(),
     _hideTimeStamp : (new Date(0)).valueOf(),
+
+    getFocusRoot : function() {
+      return this.isFocusRoot() ? this : null;
+    },
 
     /*
     ---------------------------------------------------------------------------
