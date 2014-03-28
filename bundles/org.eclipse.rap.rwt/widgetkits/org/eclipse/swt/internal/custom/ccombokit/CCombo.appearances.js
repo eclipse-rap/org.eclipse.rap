@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,9 +74,9 @@ var appearances = {
       result.top = 0;
       result.bottom = 0;
       result.right = 0;
-      result.icon = tv.getCssImage( "CCombo-Button-Icon", "background-image" );
-      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
+      result.icon = tv.getCssSizedImage( "CCombo-Button-Icon", "background-image" );
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
+        result.icon = tv.getCssSizedImage( "CCombo-Button", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "CCombo-Button", "background-image" );
       }

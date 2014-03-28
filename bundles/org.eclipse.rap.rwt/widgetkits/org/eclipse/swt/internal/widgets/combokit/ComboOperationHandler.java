@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
@@ -167,7 +167,9 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
   }
 
   private static void setText( Combo combo, String value ) {
-    combo.getAdapter( ITextAdapter.class ).setText( value );
+    if( !combo.getText().equals( value ) ) {
+      combo.getAdapter( ITextAdapter.class ).setText( value );
+    }
   }
 
 }

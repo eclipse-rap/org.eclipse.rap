@@ -19,12 +19,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -185,6 +186,18 @@ public class CComboOperationHandler_Test {
 
     assertEquals( "abc", ccombo.getText() );
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelectionIndex_fireModifyEventOnce() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Listener listener = mock( Listener.class );
+    ccombo.addListener( SWT.Modify, listener );
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+
+    handler.handleSet( new JsonObject().add( "text", "b" ).add( "selectionIndex", 1 ) );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
   }
 
   @Test

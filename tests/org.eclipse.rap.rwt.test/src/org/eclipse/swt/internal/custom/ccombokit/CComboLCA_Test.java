@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -25,10 +25,10 @@ import java.util.Arrays;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -264,23 +264,6 @@ public class CComboLCA_Test {
     CreateOperation operation = message.findCreateOperation( ccombo );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "FLAT" ) );
-  }
-  @Test
-  public void testRenderInitialItemHeight() throws IOException {
-    lca.render( ccombo );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( ccombo );
-    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
-  }
-
-  @Test
-  public void testRenderItemHeight() throws IOException {
-    ccombo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
-    lca.renderChanges( ccombo );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( 28, message.findSetProperty( ccombo, "itemHeight" ).asInt() );
   }
 
   @Test

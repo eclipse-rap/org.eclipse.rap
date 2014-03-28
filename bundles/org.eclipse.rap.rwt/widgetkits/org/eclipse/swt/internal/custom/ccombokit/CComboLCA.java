@@ -10,9 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
@@ -20,6 +17,9 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preservePrope
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
@@ -48,7 +48,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
-  static final String PROP_ITEM_HEIGHT = "itemHeight";
   static final String PROP_SELECTION_LISTENER = "Selection";
   static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   static final String PROP_MODIFY_LISTENER = "Modify";
@@ -69,7 +68,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_SELECTION, ccombo.getSelection() );
     preserveProperty( ccombo, PROP_TEXT_LIMIT, getTextLimit( ccombo ) );
     preserveProperty( ccombo, PROP_VISIBLE_ITEM_COUNT, ccombo.getVisibleItemCount() );
-    preserveProperty( ccombo, PROP_ITEM_HEIGHT, ccombo.getItemHeight() );
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
@@ -95,7 +93,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     CCombo ccombo = ( CCombo )widget;
     ControlLCAUtil.renderChanges( ccombo );
     WidgetLCAUtil.renderCustomVariant( ccombo );
-    renderItemHeight( ccombo );
     renderVisibleItemCount( ccombo );
     renderItems( ccombo );
     renderListVisible( ccombo );
@@ -111,13 +108,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////////////
   // Helping methods to write changed properties
-
-  private static void renderItemHeight( CCombo ccombo ) {
-    Integer newValue = Integer.valueOf( ccombo.getItemHeight() );
-    if( hasChanged( ccombo, PROP_ITEM_HEIGHT, newValue ) ) {
-      getRemoteObject( ccombo ).set( PROP_ITEM_HEIGHT, newValue.intValue() );
-    }
-  }
 
   private static void renderVisibleItemCount( CCombo ccombo ) {
     int defValue = DEFAULT_VISIBLE_ITEM_COUNT;

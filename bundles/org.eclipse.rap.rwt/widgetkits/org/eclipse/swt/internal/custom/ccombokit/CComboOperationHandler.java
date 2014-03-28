@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
@@ -167,7 +167,9 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
   }
 
   private static void setText( CCombo ccombo, String value ) {
-    ccombo.getAdapter( ITextAdapter.class ).setText( value );
+    if( !ccombo.getText().equals( value ) ) {
+      ccombo.getAdapter( ITextAdapter.class ).setText( value );
+    }
   }
 
 }

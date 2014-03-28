@@ -148,19 +148,19 @@ public class ComboTab extends ExampleTab {
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       firstCombo.addSelectionListener( new SelectionAdapter() {
         @Override
-        public void widgetSelected( final SelectionEvent evt ) {
-          show( evt );
+        public void widgetSelected( SelectionEvent event ) {
+          show( event, false );
         }
         @Override
-        public void widgetDefaultSelected( final SelectionEvent evt ) {
-          show( evt );
+        public void widgetDefaultSelected( SelectionEvent event ) {
+          show( event, true );
         }
-        private void show( final SelectionEvent evt ) {
-          Shell shell = firstCombo.getShell();
-          String msg = "Event: " + evt + "\n"
-                       + "Text: " + firstCombo.getText() + "\n"
-                       + "Selection: " + firstCombo.getSelectionIndex();
-          MessageDialog.openInformation( shell, "Selection Event", msg );
+        private void show( SelectionEvent event, boolean defaultSelection ) {
+          String type = defaultSelection ? "DefaultSelection" : "Selection";
+          String msg = type + ": " + event + "\n"
+                     + "Text: " + firstCombo.getText() + "\n"
+                     + "Selection: " + firstCombo.getSelectionIndex();
+          log( msg );
         }
       } );
     }
@@ -175,22 +175,21 @@ public class ComboTab extends ExampleTab {
     btnShowSelection.setText( "Show Selection" );
     btnShowSelection.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         showSelection( firstCombo.getItems(), firstCombo.getSelectionIndex() );
       }
     } );
-
     // -- verify listener --
     Label lblVerifyCombo = new Label( parent, SWT.NONE );
     lblVerifyCombo.setText( "Combo with VerifyListener (only 0-9 allowed)" );
     verifyCombo = new Combo( parent, style );
-    verifyCombo.setLayoutData( colSpan2() );
+    verifyCombo.setLayoutData( createGridDataWithSpan( SWT.NONE, 2 ) );
     verifyCombo.add( "0" );
     verifyCombo.add( "1" );
     verifyCombo.add( "2" );
     verifyCombo.add( "3" );
     verifyCombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
           char ch = event.text.charAt( i );
@@ -206,21 +205,21 @@ public class ComboTab extends ExampleTab {
     String msg = "ComboViewer with context menu";
     lblViewerCombo.setText( msg );
     viewerCombo = new Combo( parent, style );
-    viewerCombo.setLayoutData( colSpan2() );
+    viewerCombo.setLayoutData( createGridDataWithSpan( SWT.NONE, 2 ) );
     ComboViewer viewer = new ComboViewer( viewerCombo );
     viewer.setContentProvider( new IStructuredContentProvider() {
       public void dispose() {
       }
-      public void inputChanged( final Viewer viewer, final Object oldIn, final Object newIn ) {
+      public void inputChanged( Viewer viewer, Object oldIn, Object newIn ) {
       }
-      public Object[] getElements( final Object inputElement ) {
+      public Object[] getElements( Object inputElement ) {
         return ( Object[] )inputElement;
       }
     } );
     viewer.setLabelProvider( new LabelProvider() );
     viewer.setInput( ITEMS );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( final SelectionChangedEvent event ) {
+      public void selectionChanged( SelectionChangedEvent event ) {
         String message = "Selected item: " + event.getSelection().toString();
         Shell shell = parent.getShell();
         MessageDialog.openInformation( shell, "Info", message );
@@ -233,7 +232,7 @@ public class ComboTab extends ExampleTab {
     // Separator
     int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );
-    separator.setLayoutData( createGridDataWithSpan() );
+    separator.setLayoutData( createGridDataWithSpan( GridData.FILL_HORIZONTAL, 3 ) );
     // CCombo
     Label lblCCombo = new Label( parent, SWT.NONE );
     lblCCombo.setText( "CCombo" );
@@ -243,19 +242,19 @@ public class ComboTab extends ExampleTab {
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       cCombo.addSelectionListener( new SelectionAdapter() {
         @Override
-        public void widgetSelected( final SelectionEvent evt ) {
-          show( evt );
+        public void widgetSelected( SelectionEvent event ) {
+          show( event, false );
         }
         @Override
-        public void widgetDefaultSelected( final SelectionEvent evt ) {
-          show( evt );
+        public void widgetDefaultSelected( SelectionEvent event ) {
+          show( event, true );
         }
-        private void show( final SelectionEvent evt ) {
-          Shell shell = cCombo.getShell();
-          String msg = "Event: " + evt + "\n"
-                       + "Text: " + cCombo.getText() + "\n"
-                       + "Selection: " + cCombo.getSelectionIndex();
-          MessageDialog.openInformation( shell, "Selection Event", msg );
+        private void show( SelectionEvent event, boolean defaultSelection ) {
+          String type = defaultSelection ? "DefaultSelection" : "Selection";
+          String msg = type + ": " + event + "\n"
+                     + "Text: " + cCombo.getText() + "\n"
+                     + "Selection: " + cCombo.getSelectionIndex();
+          log( msg );
         }
       } );
     }
@@ -263,7 +262,7 @@ public class ComboTab extends ExampleTab {
     btnShowSelectionCCombo.setText( "Show Selection" );
     btnShowSelectionCCombo.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         showSelection( cCombo.getItems(), cCombo.getSelectionIndex() );
       }
     } );
@@ -407,19 +406,13 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private int parseInt( final String text ) {
+  private int parseInt( String text ) {
     int result;
     try {
       result = Integer.parseInt( text );
     } catch( NumberFormatException e ) {
       result = -1;
     }
-    return result;
-  }
-
-  private static GridData colSpan2() {
-    GridData result = new GridData( SWT.BEGINNING, SWT.CENTER, false, false );
-    result.horizontalSpan = 2;
     return result;
   }
 
@@ -498,7 +491,7 @@ public class ComboTab extends ExampleTab {
     button.setText( "Change text" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         cCombo.setText( "foo" );
       }
     } );
@@ -513,9 +506,10 @@ public class ComboTab extends ExampleTab {
     MessageDialog.openInformation( getShell(), "Information", msg );
   }
 
-  private GridData createGridDataWithSpan() {
-    GridData gridData = new GridData( GridData.FILL_HORIZONTAL );
-    gridData.horizontalSpan = 3;
+  private GridData createGridDataWithSpan( int style, int span ) {
+    GridData gridData = new GridData( style );
+    gridData.horizontalSpan = span;
     return gridData;
   }
+
 }

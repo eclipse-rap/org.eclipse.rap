@@ -33,9 +33,9 @@ import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -216,6 +216,19 @@ public class ComboOperationHandler_Test {
 
     assertEquals( "abc", combo.getText() );
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  @Test
+  public void testHandleSetTextAndSelectionIndex_fireModifyEventOnce() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    handler = new ComboOperationHandler( combo );
+    Listener listener = mock( Listener.class );
+    combo.addListener( SWT.Modify, listener );
+    combo.setItems( new String[] { "a", "b", "c" } );
+
+    handler.handleSet( new JsonObject().add( "text", "b" ).add( "selectionIndex", 1 ) );
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
   }
 
   @Test

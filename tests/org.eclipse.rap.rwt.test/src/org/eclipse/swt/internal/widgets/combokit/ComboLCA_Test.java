@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -24,10 +24,10 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -240,24 +240,6 @@ public class ComboLCA_Test {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
     assertEquals( WidgetUtil.getId( combo.getParent() ), operation.getParent() );
-  }
-
-  @Test
-  public void testRenderInitialItemHeight() throws IOException {
-    lca.render( combo );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
-  }
-
-  @Test
-  public void testRenderItemHeight() throws IOException {
-    combo.setFont( new Font( display, "Arial", 16, SWT.NONE ) );
-    lca.renderChanges( combo );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( 28, message.findSetProperty( combo, "itemHeight" ).asInt() );
   }
 
   @Test

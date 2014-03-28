@@ -15,10 +15,30 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
+var shell;
+var combo;
+var list;
+var field;
+var button;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+      shell.open();
+      shell.setBorder( null );
+      shell.setLocation( 10, 20 );
+      combo = this._createDefaultCombo();
+      TestUtil.flush();
+    },
+
+    tearDown : function() {
+      shell.destroy();
+      combo.destroy();
+    },
 
     testComboHandlerEventsList : function() {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Combo" );
@@ -27,7 +47,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     testCreateComboByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -42,12 +61,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "combo", widget.getAppearance() );
-      shell.destroy();
       widget.destroy();
     },
 
     testCreateCComboByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -64,13 +81,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "ccombo", widget.getAppearance() );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
-      shell.destroy();
       widget.destroy();
     },
 
     testCreateComboWithCustomVariantByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -85,14 +99,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "variant_mystyle" ) );
       assertTrue( widget._field.hasState( "variant_mystyle" ) );
-      assertTrue( widget._list.hasState( "variant_mystyle" ) );
       assertTrue( widget._button.hasState( "variant_mystyle" ) );
-      shell.destroy();
+      widget.destroy();
     },
 
     testRemoveCustomVariantByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -115,32 +126,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget.hasState( "variant_mystyle" ) );
       assertFalse( widget._field.hasState( "variant_mystyle" ) );
-      assertFalse( widget._list.hasState( "variant_mystyle" ) );
       assertFalse( widget._button.hasState( "variant_mystyle" ) );
-      shell.destroy();
-    },
-
-    testSetItemHeightByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "itemHeight" : 18
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 18, widget._itemHeight );
-      assertEquals( 90, widget._getListMaxHeight() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetVisibleItemCountByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -152,14 +142,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 3, widget._visibleItemCount );
-      assertEquals( 60, widget._getListMaxHeight() );
-      shell.destroy();
+      assertEquals( 3, widget._list.getVisibleItemCount() );
       widget.destroy();
     },
 
     testSetItemsByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -171,40 +158,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( [ "a", "b", "c" ], widget._items );
-      widget._updateItems();
-      var items = widget._list.getItems();
-      assertEquals( 3, widget._list.getItemsCount() );
-      assertEquals( "a", items[ 0 ].getLabel() );
-      assertEquals( "b", items[ 1 ].getLabel() );
-      assertEquals( "c", items[ 2 ].getLabel() );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetItemsEscapeTextByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "items" : [ "  foo &\nbar " ]
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      widget._updateItems();
-      var items = widget._list.getItems();
-      assertEquals( 1, widget._list.getItemsCount() );
-      assertEquals( "&nbsp; foo &amp; bar&nbsp;", items[ 0 ].getLabel() );
-      shell.destroy();
+      assertEquals( [ "a", "b", "c" ], widget._list.getItems() );
       widget.destroy();
     },
 
     testSetListVisibleByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -217,13 +175,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
         }
       } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertTrue( widget._dropped );
-      shell.destroy();
+      assertTrue( widget._list.getVisible() );
       widget.destroy();
     },
 
     testSetSelectionIndexByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -237,13 +193,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       } );
       var widget = ObjectRegistry.getObject( "w3" );
       var items = widget._list.getItems();
-      assertIdentical( items[ 1 ], widget._selected );
-      shell.destroy();
+      assertIdentical( 1, widget._list.getSelectionIndex() );
       widget.destroy();
     },
 
     testSetEditableByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -257,12 +211,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertFalse( widget._editable );
       assertTrue( widget._field.getReadOnly() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetTextByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -275,12 +227,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       } );
       var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "foo", widget._field.getValue() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -305,12 +255,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
 
       assertEquals( [ 2, 5 ], widget._field.getSelection() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetTextLimitByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -323,704 +271,537 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       } );
       var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 10, widget._field.getMaxLength() );
-      shell.destroy();
       widget.destroy();
     },
 
     testCreateDispose : function() {
-      var combo = this._createDefaultCombo();
       assertTrue( combo instanceof rwt.widgets.Combo );
+
       combo.destroy();
       TestUtil.flush();
+
       assertTrue( combo.isDisposed() );
+    },
+
+    testCreateListAfterParentIsSet : function() {
+      var combo = new rwt.widgets.Combo();
+      assertTrue( typeof combo._list === "undefined" );
+
+      combo.addToDocument();
+      assertTrue( combo._list instanceof rwt.widgets.DropDown );
       combo.destroy();
+    },
+
+    testDispose_disposesSubwidgets : function() {
+      combo.destroy();
+      TestUtil.flush();
+
+      assertTrue( list.isDisposed() );
+      assertTrue( field.isDisposed() );
+      assertTrue( button.isDisposed() );
+    },
+
+    testSetFonts: function() {
+      combo.setFont( rwt.html.Font.fromString( "Arial 20px" ) );
+
+      assertEquals( "20px Arial", combo.getFont().toCss() );
+      assertEquals( "20px Arial", field.getFont().toCss() );
+    },
+
+    testSetTextColor : function() {
+      combo.setTextColor( "#00000F" );
+
+      assertEquals( "#00000F", combo.getTextColor() );
+      assertEquals( "#00000F", field.getTextColor() );
+    },
+
+    testSetBackgroundColor : function() {
+      combo.setBackgroundColor( "#00000F" );
+
+      assertEquals( "#00000F", combo.getBackgroundColor() );
+      assertEquals( "#00000F", field.getBackgroundColor() );
+    },
+
+    testSetCursor : function() {
+      combo.setCursor( "help" );
+
+      assertEquals( "help", combo.getCursor() );
+      assertEquals( "help", field.getCursor() );
+      assertEquals( "help", button.getCursor() );
     },
 
     testOpenList : function() {
-      var combo = this._createDefaultCombo();
       combo.setListVisible( true );
       TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      assertEquals( "hidden", combo._list.getOverflow() );
-      combo.destroy();
+
+      assertTrue( list.getVisible() );
     },
 
     testShowList_markFieldNotEditableAndRemoveFocus : function() {
-      var combo = this._createDefaultCombo();
       combo.setEditable( true );
       TestUtil.flush();
 
       combo.setListVisible( true );
 
-      assertTrue( combo._field.getReadOnly() );
-      assertFalse( combo._field.hasState( "focused" ) );
+      assertTrue( field.getReadOnly() );
+      assertFalse( field.hasState( "focused" ) );
       combo.destroy();
     },
 
     testHideList_markFieldEditableAndRestoreFocus : function() {
-      var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.setListVisible( true );
       TestUtil.flush();
 
       combo.setListVisible( false );
 
-      assertFalse( combo._field.getReadOnly() );
-      assertTrue( combo._field.hasState( "focused" ) );
-      combo.destroy();
-    },
-
-    testCloseListOnBlur : function() {
-      var combo = this._createDefaultCombo();
-      combo.focus();
-      combo.setListVisible( true );
-      TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      combo.blur();
-      TestUtil.flush();
-      assertFalse( combo._list.isSeeable() );
-      combo.destroy();
+      assertFalse( field.getReadOnly() );
+      assertTrue( field.hasState( "focused" ) );
     },
 
     testItems : function() {
-      var combo = this._createDefaultCombo();
       combo.setListVisible( true );
       TestUtil.flush();
-      var items = this._getItems( combo );
+      var items = list.getItems();
       assertEquals( 6, items.length );
-      assertEquals( "Eiffel", items[ 0 ].getLabel() );
-      assertEquals( "Smalltalk", items[ 5 ].getLabel() );
-      combo.destroy();
+      assertEquals( "Eiffel", items[ 0 ] );
+      assertEquals( "Smalltalk", items[ 5 ] );
     },
 
-    testSelectItem : function() {
-      var combo = this._createDefaultCombo();
+    testItems_recalculatesMinWidthOnVisibleList : function() {
       combo.setListVisible( true );
+      var oldMinWidth = combo._listMinWidth;
+
+      combo.setItems( [ "a very very long item" ] );
+
+      assertTrue( combo._listMinWidth > oldMinWidth );
+    },
+
+    testSetVisibleItemCount : function() {
+      combo.setVisibleItemCount( 7 );
+
+      assertEquals( 7, list.getVisibleItemCount() );
+    },
+
+    testSetEditable : function() {
+      combo.setEditable( false );
+      assertTrue( field.getReadOnly() );
+
+      combo.setEditable( true );
+      assertFalse( field.getReadOnly() );
+    },
+
+    testSetText_onReadOnly : function() {
+      combo.setText( "foo" );
+
+      assertEquals( "", field.getValue() );
+    },
+
+    testSetText_onEditable : function() {
+      combo.setEditable( true );
+
+      combo.setText( "foo" );
+
+      assertEquals( "foo", field.getValue() );
+    },
+
+    testSetTextSelection : function() {
+      combo.setEditable( true );
+      combo.setText( "foo bar" );
       TestUtil.flush();
+
+      combo.setTextSelection( [ 2, 4 ] );
+
+      assertEquals( [ 2, 4 ], field.getSelection() );
+    },
+
+    testSetTextLimit : function() {
+      combo.setTextLimit( 7 );
+
+      assertEquals( 7, field.getMaxLength() );
+    },
+
+    testSetListVisible : function() {
+      combo.setListVisible( true );
+      assertTrue( list.getVisible() );
+
+      combo.setListVisible( false );
+      assertFalse( list.getVisible() );
+    },
+
+    testSetVisible_recalculatesMinWidth : function() {
+      assertEquals( -1, combo._listMinWidth );
+
+      combo.setListVisible( true );
+
+      assertTrue( combo._listMinWidth > 0 );
+    },
+
+    testSelect : function() {
       combo.select( 1 );
-      assertEquals( "Java", combo._field.getValue() );
-      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
+
+      assertEquals( "Java", field.getValue() );
+      assertEquals( 1, list.getSelectionIndex() );
     },
 
-    testHoverClickItem : function() {
-      var combo = this._createDefaultCombo();
-      combo.setListVisible( true );
-      TestUtil.flush();
-      var items = this._getItems( combo );
-      TestUtil.mouseOver( items[ 1 ] );
-      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      TestUtil.click( items[ 1 ] );
-      assertEquals( "Java", combo._field.getValue() );
-      combo.destroy();
-    },
-
-    testKeyDownScroll : function() {
-      var combo = this._createDefaultCombo();
-      combo.setVisibleItemCount( 2 );
-      combo.setListVisible( true );
+    testScroll_Down : function() {
       combo.select( 0 );
       TestUtil.flush();
 
-      assertEquals( "Eiffel", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      TestUtil.press( combo._field, "Down" );
-      TestUtil.flush();
-      TestUtil.press( combo._field, "Down" );
-      TestUtil.flush();
-      TestUtil.press( combo._field, "Down" );
+      TestUtil.press( field, "Down" );
       TestUtil.flush();
 
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      assertEquals( ( 19 * 2 ), combo._list._clientArea.getScrollTop() );
-      combo.destroy();
+      assertEquals( 1, list.getSelectionIndex() );
     },
 
-    testHoverAndKeyDownScroll : function() {
-      var combo = this._createDefaultCombo();
-      combo.setVisibleItemCount( 2 );
-      combo.setListVisible( true );
+    testScroll_PageDown : function() {
+      combo.select( 0 );
       TestUtil.flush();
 
-      var items = this._getItems( combo );
-      TestUtil.mouseOver( items[ 0 ] );
-      assertEquals( "Eiffel", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      TestUtil.press( combo._field, "Down" );
-      TestUtil.flush();
-      TestUtil.press( combo._field, "Down" );
-      TestUtil.flush();
-      TestUtil.press( combo._field, "Down" );
+      TestUtil.press( field, "PageDown" );
       TestUtil.flush();
 
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      assertEquals( ( 19 * 2 ), combo._list._clientArea.getScrollTop() );
-      combo.destroy();
+      assertEquals( 4, list.getSelectionIndex() );
     },
 
-    testScrollDoesNotChangeSelection : function() {
-      var combo = this._createDefaultCombo();
-      combo.setVisibleItemCount( 2 );
-      combo.setListVisible( true );
+    testScroll_Up : function() {
+      combo.select( 5 );
       TestUtil.flush();
 
-      var items = this._getItems( combo );
-      TestUtil.mouseOver( items[ 0 ] );
-      assertEquals( "Eiffel", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo._list._clientArea.setScrollTop( 19 );
-      combo._list.createDispatchEvent( "userScroll" );
-      TestUtil.mouseOver( items[ 1 ] ); // browser may fire mouse events on scroll
-      TestUtil.mouseMove( items[ 1 ] );
+      TestUtil.press( field, "Up" );
+      TestUtil.flush();
 
-      assertEquals( "Eiffel", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
+      assertEquals( 4, list.getSelectionIndex() );
     },
 
-    testMoveAfterScrollDoesChangeSelection : function() {
-      var combo = this._createDefaultCombo();
-      combo.setVisibleItemCount( 2 );
-      combo.setListVisible( true );
+    testScroll_PageUp : function() {
+      combo.select( 5 );
       TestUtil.flush();
 
-      var items = this._getItems( combo );
-      TestUtil.mouseOver( items[ 0 ] );
-      assertEquals( "Eiffel", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo._list._clientArea.setScrollTop( 19 );
-      combo._list.createDispatchEvent( "userScroll" );
-      TestUtil.mouseOver( items[ 1 ] ); // browser may fire mouse events on scroll
-      TestUtil.mouseMove( items[ 1 ] );
-      TestUtil.forceTimerOnce();
-      TestUtil.mouseMove( items[ 1 ] );
+      TestUtil.press( field, "PageUp" );
+      TestUtil.flush();
 
-      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
+      assertEquals( 1, list.getSelectionIndex() );
     },
 
-    testScrollBarClick : function() {
-      var combo = this._createDefaultCombo();
-      combo.setListVisible( true );
+    testFieldClick_togglesListVisibility : function() {
+      TestUtil.click( field );
       TestUtil.flush();
-      assertTrue( combo._list._vertScrollBar.isSeeable() );
-      TestUtil.click( combo._list._vertScrollBar._thumb );
-      assertTrue( combo._list.isSeeable() );
-      combo.destroy();
+      assertTrue( list.getVisible() );
+
+      TestUtil.click( field );
+      TestUtil.flush();
+      assertFalse( list.getVisible() );
     },
 
-    testFieldClick : function() {
-      var combo = this._createDefaultCombo();
-      TestUtil.click( combo._field );
+    testFiledClick_focusesCombo : function() {
+      combo.setFocused( false );
+
+      TestUtil.click( field );
       TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      TestUtil.click( combo._list._vertScrollBar._thumb );
-      TestUtil.click( combo._field );
-      TestUtil.flush();
-      assertFalse( combo._list.isSeeable() );
-      combo.destroy();
+
+      assertTrue( combo.getFocused() );
     },
 
-    // bug 343532
-    testEventRedispatch : function() {
-      var combo = this._createDefaultCombo();
-      var otherCombo = this._createDefaultCombo();
-      otherCombo.setSpace( 239, 81, 36, 23 );
-      combo.setListVisible( true );
+    testButtonClick_togglesListVisibility : function() {
+      TestUtil.click( button );
       TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      TestUtil.click( otherCombo._field );
+      assertTrue( list.getVisible() );
+
+      TestUtil.click( button );
       TestUtil.flush();
-      assertFalse( combo._list.isSeeable() );
-      assertFalse( otherCombo._list.isSeeable() );
-      combo.destroy();
-      otherCombo.destroy();
+      assertFalse( list.getVisible() );
     },
 
-    // bug 343557
-    testEventRedispatch_2 : function() {
-      var combo = this._createDefaultCombo();
-      combo.setListVisible( true );
-      var checkbox = new rwt.widgets.Button( "check" );
-      checkbox.addState( "rwt_CHECK" );
-      checkbox.addToDocument();
-      checkbox.setEnabled( false );
-      TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      assertFalse( checkbox.getEnabled() );
-      assertFalse( checkbox.hasState( "selected" ) );
-      TestUtil.click( checkbox );
-      assertFalse( combo._list.isSeeable() );
-      assertFalse( checkbox.hasState( "selected" ) );
-      combo.destroy();
-      checkbox.destroy();
-    },
+    testButtonClick_focusesCombo : function() {
+      combo.setFocused( false );
 
-    // bug 388717
-    testEventRedispatch_3 : function() {
-      var logger = TestUtil.getLogger();
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      shell.addEventListener( "mousedown", logger.log, logger );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setSpace( 10, 81, 6, 23 );
-      combo.setItemHeight( 19 );
-      combo.setEditable( false );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setVisibleItemCount( 5 );
-      TestUtil.flush();
-      combo.setListVisible( true );
+      TestUtil.click( button );
       TestUtil.flush();
 
-      TestUtil.click( combo._list.getItems()[ 1 ] );
-
-      assertEquals( 0, logger.getLog().length );
-      shell.destroy();
-    },
-
-    testButtonClick : function() {
-      var combo = this._createDefaultCombo();
-      TestUtil.click( combo._button );
-      TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      TestUtil.click( combo._list._vertScrollBar._thumb );
-      TestUtil.click( combo._button );
-      TestUtil.flush();
-      assertFalse( combo._list.isSeeable() );
-      combo.destroy();
+      assertTrue( combo.getFocused() );
     },
 
     testListPopUpBehavior : function() {
-      var combo = this._createDefaultCombo();
-      TestUtil.click( combo._field );
+      TestUtil.click( field );
       TestUtil.flush();
-      TestUtil.click( combo._list._vertScrollBar._thumb );
-      assertTrue( combo._list.isSeeable() );
-      TestUtil.click( TestUtil.getDocument() );
-      assertFalse( combo._list.isSeeable() );
-      TestUtil.click( combo._field );
-      TestUtil.flush();
-      assertTrue( combo._list.isSeeable() );
-      combo.destroy();
-    },
+      assertTrue( list.getVisible() );
 
-    testListHeight : function() {
-      var combo = this._createDefaultCombo();
-      combo.setItems( [ "Eiffel", "Java", "Python" ] );
-      var correctHeight = 19 * 3 + combo._list.getFrameHeight();
-      combo.setListVisible( true );
+      TestUtil.click( TestUtil.getDocument() );
+      assertFalse( list.getVisible() );
+
+      TestUtil.click( field );
       TestUtil.flush();
-      assertEquals( correctHeight, combo._list.getHeight() );
-      combo.destroy();
+      assertTrue( list.getVisible() );
     },
 
     testListSelection : function() {
-      var combo = this._createDefaultCombo();
       combo.select( 1 );
-      combo._setListSelection( combo._list.getItems()[ 5 ] );
-      assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      assertEquals( 1, list.getSelectionIndex() );
+      assertEquals( "Java", field.getValue() );
+
       combo.setListVisible( true );
-      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
-    },
-
-    testListPosition_afterSetBoundsAndListVisibleTogether : function() {
-      var combo = this._createDefaultCombo();
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "set",
-        "properties" : {
-          "bounds" : [ 11, 12, 13, 14 ],
-          "listVisible" : true
-        }
-      } );
-      TestUtil.flush();
-
-      assertTrue( combo._list.isSeeable() );
-      assertEquals( 11, combo._list.getLeft() );
-      assertEquals( 26, combo._list.getTop() );
-      combo.destroy();
-    },
-
-    testScrollToSelectedItem : function() {
-      var combo = this._createDefaultCombo();
-      combo.select( 5 );
-      combo.setListVisible( true );
-      TestUtil.flush();
-      assertTrue( combo._list._clientArea.isSeeable() );
-      assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      assertEquals( 19, combo._list._clientArea.getScrollTop() );
-      combo.destroy();
+      assertEquals( 1, list.getSelectionIndex() );
     },
 
     testSelectionByArrowKeys : function() {
-      var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.select( 3 );
       TestUtil.flush();
-      combo.focus();
-      TestUtil.keyDown( combo._field.getElement(), "Down" );
-      assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      TestUtil.keyDown( combo._field.getElement(), "Up" );
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
+
+      TestUtil.press( field, "Down" );
+      assertEquals( 4, list.getSelectionIndex() );
+      assertEquals( "Simula", field.getValue() );
+
+      TestUtil.press( field, "Up" );
+      assertEquals( 3, list.getSelectionIndex() );
+      assertEquals( "Ruby", field.getValue() );
     },
 
-    testHoldArrowKeysSendSelectionEventOnce : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setVisibleItemCount( 5 );
+    testSelectionByArrowKeys_SendsSelectionEvent : function() {
       combo.setListVisible( true );
-      combo.select( 3 );
+      combo.select( 1 );
       TestUtil.fakeListener( combo, "Selection", true );
       TestUtil.flush();
-      combo.focus();
       TestUtil.initRequestLog();
 
-      TestUtil.keyDown( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyUp( combo._field.getElement(), "Down" );
+      TestUtil.press( field, "Down" );
 
-      assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      assertEquals( "Python", field.getValue() );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
+      assertEquals( 2, message.findSetProperty( "w3", "selectionIndex" ) );
       assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
-      assertNull( message.findNotifyOperation( "w3", "Modify" ) );
-      combo.destroy();
-      shell.destroy();
     },
 
-    testHoldArrowKeysSendModifyEventOnce : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setVisibleItemCount( 5 );
+    testSelectionByArrowKeys_SendsTextOnEditable : function() {
+      combo.setEditable( true );
+      combo.select( 1 );
+      TestUtil.fakeListener( combo, "Selection", true );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+
+      TestUtil.press( field, "Down" );
+
+      assertEquals( "Python", field.getValue() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "Python", message.findSetProperty( "w3", "text" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+    },
+
+    testSelectionByArrowKeys_SendsModifyEvent : function() {
       combo.setListVisible( true );
-      combo.select( 3 );
+      combo.select( 1 );
       TestUtil.fakeListener( combo, "Modify", true );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
 
-      TestUtil.keyDown( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyHold( combo._field.getElement(), "Down" );
-      TestUtil.keyUp( combo._field.getElement(), "Down" );
+      TestUtil.press( field, "Down" );
 
-      assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      assertEquals( "Python", field.getValue() );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
-      assertEquals( 4, message.findSetProperty( "w3", "selectionIndex" ) );
+      assertEquals( 2, message.findSetProperty( "w3", "selectionIndex" ) );
       assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
-      assertNull( message.findNotifyOperation( "w3", "Selection" ) );
-      combo.destroy();
-      shell.destroy();
     },
 
     testSendDefaultSelectionEvent : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       TestUtil.fakeListener( combo, "DefaultSelection", true );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
 
-      TestUtil.keyDown( combo._field.getElement(), "Enter" );
-      TestUtil.keyUp( combo._field.getElement(), "Enter" );
+      TestUtil.press( field, "Enter" );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
-      combo.destroy();
-      shell.destroy();
+    },
+
+    testSendListVislible : function() {
+      TestUtil.click( button );
+      TestUtil.flush();
+
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertTrue( message.findSetProperty( "w3", "listVisible" ) );
     },
 
     testSendText : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setVisibleItemCount( 5 );
+      combo.setEditable( true );
       combo.setListVisible( true );
       combo.select( 3 );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
 
-      combo._field.setValue( "a" );
-      combo._field._oninput();
+      field.setValue( "a" );
+      field._oninput();
       rwt.remote.Connection.getInstance().send();
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "a", message.findSetProperty( "w3", "text" ) );
-      shell.destroy();
     },
 
     testSendModify : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.protocolListen( "w3", { "Modify" : true } );
-      var combo = ObjectRegistry.getObject( "w3" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setVisibleItemCount( 5 );
+      TestUtil.fakeListener( combo, "Modify", true );
+      combo.setEditable( true );
       combo.setListVisible( true );
       combo.select( 3 );
       TestUtil.flush();
       combo.focus();
       TestUtil.initRequestLog();
 
-      combo._field.setValue( "a" );
-      combo._field._oninput();
+      field.setValue( "a" );
+      field._oninput();
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "a", message.findSetProperty( "w3", "text" ) );
       assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
-      shell.destroy();
     },
 
-    testPageUpOnNotCreatedList : function() {
-      var combo = this._createDefaultCombo();
+    testSelectionByFirstLetter_ReadOnly : function() {
+      TestUtil.press( field, "R" );
+
+      assertEquals( "Ruby", field.getValue() );
+    },
+
+    testSelectionByFirstLetter_Editable : function() {
       combo.setEditable( true );
+
+      TestUtil.keyDown( field.getElement(), "R" );
+
+      assertEquals( -1, list.getSelectionIndex() );
+    },
+
+    testSelectionByFirstLetter_Wraps : function() {
+      TestUtil.press( field, "S" );
+      assertEquals( "Simula", field.getValue() );
+
+      TestUtil.press( field, "S" );
+      assertEquals( "Smalltalk", field.getValue() );
+
+      TestUtil.press( field, "S" );
+      assertEquals( "Simula", field.getValue() );
+    },
+
+    testSelectionByMouseWhell_Down : function() {
       combo.select( 3 );
-      TestUtil.flush();
-      combo.focus();
-      TestUtil.keyDown( combo._field.getElement(), "PageUp" );
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
+
+      TestUtil.fakeWheel( field, -1 );
+
+      assertEquals( 4, list.getSelectionIndex() );
+      assertEquals( "Simula", field.getValue() );
     },
 
-    testPageDownOnNotCreatedList : function() {
-      var combo = this._createDefaultCombo();
-      combo.setEditable( true );
+    testSelectionByMouseWhell_Up : function() {
       combo.select( 3 );
-      TestUtil.flush();
-      combo.focus();
-      TestUtil.keyDown( combo._field.getElement(), "PageDown" );
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
-    },
 
-    testSelectionByKeyboardReadOnly : function() {
-      var combo = this._createDefaultCombo();
-      combo.setEditable( false );
-      TestUtil.flush();
-      combo.focus();
-      TestUtil.keyDown( combo._field.getElement(), "R" );
-      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
-      combo.destroy();
-    },
+      TestUtil.fakeWheel( field, 1 );
 
-    testSelectionByKeyboardEditable : function() {
-      var combo = this._createDefaultCombo();
-      combo.setEditable( true );
-      TestUtil.flush();
-      combo.focus();
-      TestUtil.keyDown( combo._field.getElement(), "R" );
-      assertEquals( 0, combo._list.getSelectedItems().length );
-      combo.destroy();
+      assertEquals( 2, list.getSelectionIndex() );
+      assertEquals( "Python", field.getValue() );
     },
 
     testFiresItemsChangedEvent : function() {
-      var combo = this._createDefaultCombo();
       var log = 0;
       combo.addEventListener( "itemsChanged", function() {
         log++;
       } );
 
       combo.setItems( [ "Simula", "Smalltalk" ] );
-      combo._updateItems();
       TestUtil.flush();
 
       assertEquals( 1, log );
-      combo.destroy();
     },
 
     testFiresSelectionChangedEvent : function() {
-      var combo = this._createDefaultCombo();
       var log = 0;
       combo.addEventListener( "selectionChanged", function() {
         log++;
       } );
 
-      combo._setSelected( combo._list.getItems()[ 3 ] );
+      combo.select( 3 );
 
       assertEquals( 1, log );
-      combo.destroy();
     },
 
-    testApplyListId_renderHtmlIdsActivated : function() {
-      rwt.widgets.base.Widget._renderHtmlIds = true;
-      var combo = this._createDefaultCombo();
-
-      combo.applyObjectId( "123" );
-
-      assertEquals( "123-listbox" ,combo._list.getHtmlAttribute( "id" ) );
-      combo.destroy();
-    },
-
-    testApplyListId_renderHtmlIdsDeactivated : function() {
-      rwt.widgets.base.Widget._renderHtmlIds = false;
-      var combo = this._createDefaultCombo();
-
-      combo.applyObjectId( "123" );
-
-      assertEquals( "" ,combo._list.getHtmlAttribute( "id" ) );
-      combo.destroy();
-    },
-
-    testApplyListItemIds_renderHtmlIdsActivated : function() {
-      rwt.widgets.base.Widget._renderHtmlIds = true;
-      var combo = this._createDefaultCombo();
-
-      combo.applyObjectId( "123" );
-      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo._updateItems();
-
-      var listItemId = combo._list.getHtmlAttribute( "id" ) + "-listitem-3";
-      assertEquals( listItemId, combo._list.getItems()[ 3 ].getHtmlAttribute( "id" ) );
-      combo.destroy();
-    },
+//    testApplyListId_renderHtmlIdsActivated : function() {
+//      rwt.widgets.base.Widget._renderHtmlIds = true;
+//
+//      combo.applyObjectId( "123" );
+//
+//      assertEquals( "123-listbox" ,list.getHtmlAttribute( "id" ) );
+//    },
+//
+//    testApplyListId_renderHtmlIdsDeactivated : function() {
+//      rwt.widgets.base.Widget._renderHtmlIds = false;
+//
+//      combo.applyObjectId( "123" );
+//
+//      assertEquals( "" ,list.getHtmlAttribute( "id" ) );
+//    },
+//
+//    testApplyListItemIds_renderHtmlIdsActivated : function() {
+//      rwt.widgets.base.Widget._renderHtmlIds = true;
+//
+//      combo.applyObjectId( "123" );
+//      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+//
+//      var listItemId = list.getHtmlAttribute( "id" ) + "-listitem-3";
+//      assertEquals( listItemId, list.getItems()[ 3 ].getHtmlAttribute( "id" ) );
+//    },
 
     testPropagateEscKey_ListIsVisible : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.flush();
-      var widget = ObjectRegistry.getObject( "w3" );
-      widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      widget._toggleListVisibility();
-      var propagated = false;
-      shell.addEventListener( "keydown", function( event ) {
-        if( event.getKeyIdentifier() == "Escape" ) {
-          propagated = true;
-        }
-      } );
+      combo.setListVisible( true );
+      var logger = TestUtil.getLogger();
+      TestUtil.getDocument().addEventListener( "keydown", logger.log );
 
-      TestUtil.press( widget, "Escape" );
+      TestUtil.press( field, "Escape" );
 
-      assertFalse( propagated );
-      shell.destroy();
-      widget.destroy();
+      assertEquals( 0, logger.getLog().length );
     },
 
     testPropagateEscKey_ListIsNotVisible : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Combo",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      TestUtil.flush();
-      var widget = ObjectRegistry.getObject( "w3" );
-      widget.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      var propagated = false;
-      shell.addEventListener( "keydown", function( event ) {
-        if( event.getKeyIdentifier() == "Escape" ) {
-          propagated = true;
-        }
-      } );
+      combo.setListVisible( false );
+      var logger = TestUtil.getLogger();
+      TestUtil.getDocument().addEventListener( "keydown", logger.log );
 
-      TestUtil.press( widget, "Escape" );
+      TestUtil.press( field, "Escape" );
 
-      assertTrue( propagated );
-      shell.destroy();
-      widget.destroy();
+      assertEquals( 1, logger.getLog().length );
     },
 
     testSendSelectionChangeOnMouseDown : function() {
-      var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.setText( "foobar" );
       TestUtil.flush();
 
-      TestUtil.fakeMouseEvent( combo._field, "mousedown" );
-      this._setTextSelection( combo._field, [ 3, 3 ] );
-      TestUtil.fakeMouseEvent( combo._field, "mouseup" );
+      TestUtil.fakeMouseEvent( field, "mousedown" );
+      this._setTextSelection( field, [ 3, 3 ] );
+      TestUtil.fakeMouseEvent( field, "mouseup" );
       rwt.remote.Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
-      combo.destroy();
     },
 
     testSendSelectionChangeOnKeyPress : function() {
-      var combo = this._createDefaultCombo();
       combo.setEditable( true );
       combo.setText( "foobar" );
       TestUtil.flush();
-      combo._field.focus();
+      field.focus();
 
-      this._setTextSelection( combo._field, [ 3, 3 ] );
-      TestUtil.keyDown( combo._field, "Enter" );
+      this._setTextSelection( field, [ 3, 3 ] );
+      TestUtil.keyDown( field, "Enter" );
       rwt.remote.Connection.getInstance().send();
 
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
-      combo.destroy();
     },
 
     //////////
@@ -1028,21 +809,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
 
     _createDefaultCombo : function() {
       var combo = new rwt.widgets.Combo();
+      combo.addToDocument();
       combo.setSpace( 239, 81, 6, 23 );
-      combo.setItemHeight( 19 );
       combo.setEditable( false );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo._updateItems();
       combo.setVisibleItemCount( 5 );
-      combo.addToDocument();
+      combo.setFocused( true );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Combo" );
       rwt.remote.ObjectRegistry.add( "w3", combo, handler );
+      list = combo._list;
+      field = combo._field;
+      button = combo._button;
       TestUtil.flush();
       return combo;
-    },
-
-    _getItems : function( combo ) {
-      return combo._list.getItems();
     },
 
     _setTextSelection : function( text, selection ) {
