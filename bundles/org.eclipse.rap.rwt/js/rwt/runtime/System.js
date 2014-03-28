@@ -36,7 +36,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       rwt.graphics.GraphicsUtil.init();
       this._applyPatches();
-      this._insertStyleSheets();
       var eventHandler = rwt.event.EventHandler;
       eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       eventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
@@ -82,16 +81,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
         }
       }
       rwt.qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
-    },
-
-    _insertStyleSheets : function() {
-      if( rwt.client.Client.getBrowser() === "safari" && rwt.client.Client.getVersion() >= 537 ) {
-        // see Bug 422693 - Invisible Elements in RAP Demo with Safari 7
-        var style = document.createElement( "style" );
-        style.type = 'text/css';
-        style.innerHTML = "div { -webkit-transform: translate3d(0, 0, 0); }";
-        document.getElementsByTagName( "head" )[ 0 ].appendChild( style );
-      }
     },
 
     getStartupTime : function() {
