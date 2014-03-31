@@ -974,6 +974,18 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 0, logger.getLog().length );
     },
 
+    testKeyEventForwarding_UpWithAltModifier : function() {
+      showDropDown( [ "a", "b" ] );
+      dropdown.setSelectionIndex( 1 );
+      var logger = TestUtil.getLogger();
+
+      grid.addEventListener( "keypress", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Up", rwt.event.DomEvent.ALT_MASK );
+
+      assertEquals( 0, logger.getLog().length );
+    },
+
     testKeyEventForwarding_Down : function() {
       dropdown.setItems( [ "a", "b", "c" ] );
       dropdown.setSelectionIndex( 1 );

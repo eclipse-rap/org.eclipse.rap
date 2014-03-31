@@ -429,7 +429,7 @@
 
   var onTextKeyEvent = function( event ) {
     var key = event.getKeyIdentifier();
-    if( this._.visibility && forwardedKeys[ key ] ) {
+    if( this._.visibility && forwardedKeys[ key ] && !event.isAltPressed() ) {
       event.preventDefault();
       if( key === "Down" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
         this.setSelectionIndex( 0 );
