@@ -103,6 +103,10 @@
       }
     },
 
+    getItems : function() {
+      return rwt.util.Arrays.copy( this._.items );
+    },
+
     getItemCount : function() {
       return this._.grid.getRootItem().getChildrenLength();
     },
@@ -117,6 +121,10 @@
       }
       // TODO: hide dropdown completely if no items are visible
       updateScrollBars.call( this );
+    },
+
+    getVisibleItemCount : function() {
+      return this._.visibleItemCount;
     },
 
     setSelectionIndex : function( index ) {

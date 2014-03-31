@@ -436,6 +436,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 2 * ITEM_HEIGHT, popup.getInnerHeight() );
     },
 
+    testSetVisibleItemCount : function() {
+      dropdown.setItems( [ "a", "b", "c" ] );
+
+      dropdown.setVisibleItemCount( 2 );
+
+      assertEquals( 2, dropdown.getVisibleItemCount() );
+    },
+
     testSetVisibleItemCount_UpdatesScrollbar : function() {
       dropdown.setItems( [ "a", "b", "c" ] );
 
@@ -454,6 +462,12 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
       assertEquals( 2 * ITEM_HEIGHT, popup.getInnerHeight() );
       assertEquals( 2 * ITEM_HEIGHT, grid.getHeight() );
+    },
+
+    testSetItems : function() {
+      dropdown.setItems( [ "a", "b", "c" ] );
+
+      assertEquals( [ "a", "b", "c" ], dropdown.getItems() );
     },
 
     testSetItems_UpdatesScrollbar : function() {
