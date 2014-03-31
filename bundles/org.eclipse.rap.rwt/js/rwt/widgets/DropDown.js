@@ -247,7 +247,9 @@
         if( parentFocusRoot && !parentFocusRoot.isDisposed() ) {
           parentFocusRoot.removeEventListener( "changeFocusedChild", onFocusChange, this );
         }
-        this._.grid.getRootItem().setItemCount( 0 );
+        if( !this._.grid.isDisposed() ) {
+          this._.grid.getRootItem().setItemCount( 0 );
+        }
         if( !this._.parent.isDisposed() ) {
           this._.parent.removeEventListener( "appear", onTextAppear, this );
           this._.parent.removeEventListener( "flush", onTextFlush, this );
@@ -256,8 +258,8 @@
           this._.parent.removeEventListener( "changeTextColor", applyGridStyling, this );
           this._.parent.removeEventListener( "changeBackgroundColor", applyGridStyling, this );
           this._.parent.removeEventListener( "changeCursor", applyGridStyling, this );
-          this._.popup.destroy();
         }
+        this._.popup.destroy();
         this._.hideTimer.dispose();
         if( this._.widgetData ) {
           for( var key in this._.widgetData ) {

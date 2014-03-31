@@ -1148,6 +1148,16 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertTrue( popup.isDisposed() );
     },
 
+    testDestroy_AfterControlDispose_DisposesPopup : function() {
+      widget.destroy();
+      TestUtil.flush();
+
+      dropdown.destroy();
+      TestUtil.flush();
+
+      assertTrue( popup.isDisposed() );
+    },
+
     testDestroy_ClearsReferences : function() {
       dropdown.setData( "foo", {} );
       var privateObj = dropdown._;
@@ -1188,6 +1198,15 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       TestUtil.click( TestUtil.getDocument() );
 
       assertFalse( popup.isSeeable() );
+    },
+
+    testDestroy_DoesNotCrashOnDisposedGrid : function() {
+      grid.destroy();
+      TestUtil.flush();
+
+      dropdown.destroy();
+
+      assertTrue( dropdown.isDisposed() );
     },
 
     ///////////
