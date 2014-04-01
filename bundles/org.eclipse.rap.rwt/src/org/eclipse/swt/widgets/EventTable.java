@@ -22,6 +22,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * same event type are supported.
  */
 // copied from SWT
+@SuppressWarnings( "all" )
 class EventTable implements SerializableCompatibility {
 	int [] types;
 	Listener [] listeners;
