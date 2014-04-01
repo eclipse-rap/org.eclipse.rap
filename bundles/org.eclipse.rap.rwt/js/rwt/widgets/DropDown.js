@@ -11,36 +11,9 @@
 
 //@ sourceURL=DropDown.js
 
-(function(){
+(function() {
 
   var TAB = String.fromCharCode( 9 );
-  var getPadding = function() {
-    var manager = rwt.theme.AppearanceManager.getInstance();
-    var stylemap = manager.styleFrom( "list-item", {} );
-    return stylemap.padding || [ 5, 5, 5, 5 ];
-  };
-  var getShadow = function() {
-    var manager = rwt.theme.AppearanceManager.getInstance();
-    var stylemap = manager.styleFrom( "combo-list", {} );
-    return stylemap.shadow || null;
-  };
-  var styleMap = null;
-  var getStyleMap = function() {
-    if( styleMap == null ) {
-      var manager = rwt.theme.AppearanceManager.getInstance();
-      try {
-        styleMap = manager.styleFrom( "dropdown", {} );
-      } catch( ex ) {
-      }
-      if( styleMap == null ) {
-        styleMap = {};
-        styleMap.border = new rwt.html.Border( 1, "solid", "#000000" );
-      }
-      styleMap.padding = getPadding();
-      styleMap.shadow = getShadow();
-    }
-   return styleMap;
-  };
 
   var eventTypes = {
     Selection : SWT.Selection,
@@ -63,14 +36,18 @@
   /**
    * @class Instances of DropDown represent the server-side counterpart of a DropDown widget
    */
-  rwt.widgets.DropDown = function( parent, markupEnabled ) {
+  rwt.widgets.DropDown = function( parent, markupEnabled, appearance ) {
     this._ = {};
     this._.hideTimer = new rwt.client.Timer( 0 );
     this._.hideTimer.addEventListener( "interval", checkFocus, this );
     this._.parent = parent;
-    this._.popup = createPopup(); // TODO: create on demand
+    this._.appearance = appearance;
+    this._.customVariant = null;
+    this._.styleMap = null;
+    this._.popup = createPopup.call( this ); // TODO: create on demand
     this._.grid = createGrid( this._.popup, markupEnabled );
-    applyGridStyling.call( this );
+    renderAppearance.call( this );
+    inheritParentStyling.call( this );
     this._.visibleItemCount = 5;
     this._.items = [];
     this._.columns = null;
@@ -177,6 +154,12 @@
       }
     },
 
+    setCustomVariant : function( value ) {
+      this._.customVariant = value;
+      this._.styleMap = null;
+      renderAppearance.call( this );
+    },
+
     show : function() {
       checkDisposed( this );
       if( !this._.visibility ) {
@@ -262,10 +245,10 @@
           this._.parent.removeEventListener( "appear", onTextAppear, this );
           this._.parent.removeEventListener( "flush", onTextFlush, this );
           this._.parent.removeEventListener( "keypress", onTextKeyEvent, this );
-          this._.parent.removeEventListener( "changeFont", applyGridStyling, this );
-          this._.parent.removeEventListener( "changeTextColor", applyGridStyling, this );
-          this._.parent.removeEventListener( "changeBackgroundColor", applyGridStyling, this );
-          this._.parent.removeEventListener( "changeCursor", applyGridStyling, this );
+          this._.parent.removeEventListener( "changeFont", inheritParentStyling, this );
+          this._.parent.removeEventListener( "changeTextColor", inheritParentStyling, this );
+          this._.parent.removeEventListener( "changeBackgroundColor", inheritParentStyling, this );
+          this._.parent.removeEventListener( "changeCursor", inheritParentStyling, this );
         }
         this._.popup.destroy();
         this._.hideTimer.dispose();
@@ -330,10 +313,10 @@
     this._.parent.addEventListener( "appear", onTextAppear, this );
     this._.parent.addEventListener( "flush", onTextFlush, this );
     this._.parent.addEventListener( "keypress", onTextKeyEvent, this );
-    this._.parent.addEventListener( "changeFont", applyGridStyling, this );
-    this._.parent.addEventListener( "changeTextColor", applyGridStyling, this );
-    this._.parent.addEventListener( "changeBackgroundColor", applyGridStyling, this );
-    this._.parent.addEventListener( "changeCursor", applyGridStyling, this );
+    this._.parent.addEventListener( "changeFont", inheritParentStyling, this );
+    this._.parent.addEventListener( "changeTextColor", inheritParentStyling, this );
+    this._.parent.addEventListener( "changeBackgroundColor", inheritParentStyling, this );
+    this._.parent.addEventListener( "changeCursor", inheritParentStyling, this );
   };
 
   var addGridListeners = function() {
@@ -346,13 +329,13 @@
   var renderLayout = function() {
     var font = this._.grid.getFont();
     // NOTE: Guessing the lineheight to be 1.3
-    var padding = getStyleMap().padding;
+    var padding = getStyleMap.call( this ).padding;
     var itemHeight = Math.floor( font.getSize() * 1.3 ) + padding[ 0 ] + padding[ 2 ];
     var visibleItems = Math.min( this._.visibleItemCount, this.getItemCount() );
     var gridWidth = calcGridWidth.apply( this );
     var gridHeight = visibleItems * itemHeight;
     renderPosition.call( this );
-    var frameWidth = getStyleMap().border.getWidthLeft() * 2;
+    var frameWidth = getStyleMap.call( this ).border.getWidthLeft() * 2;
     this._.popup.setWidth( gridWidth + frameWidth );
     this._.popup.setHeight( gridHeight + frameWidth );
     this._.grid.setDimension( gridWidth, gridHeight );
@@ -368,10 +351,10 @@
   };
 
   var calcGridWidth = function() {
-    var frameWidth = getStyleMap().border.getWidthLeft() * 2;
+    var frameWidth = getStyleMap.call( this ).border.getWidthLeft() * 2;
     var result = this._.parent.getWidth() - frameWidth;
     if( this._.minWidth > 0 ) {
-      var padding = getStyleMap().padding;
+      var padding = getStyleMap.call( this ).padding;
       var scrollbarWidth = 0;
       if( this._.visibleItemCount < this.getItemCount() ) {
         scrollbarWidth = this._.grid.getVerticalBar().getWidth();
@@ -567,10 +550,8 @@
   var createPopup = function() {
     var result = new rwt.widgets.base.Popup();
     result.addToDocument();
-    result.setBorder( getStyleMap().border );
     result.setBackgroundColor( "#ffffff" );
     result.setDisplay( false );
-    result.setShadow( getStyleMap().shadow );
     result.setRestrictToPageOnOpen( false );
     result.setAutoHide( false );
     return result;
@@ -593,7 +574,12 @@
     return result;
   };
 
-  var applyGridStyling = function() {
+  var renderAppearance = function() {
+    this._.popup.setBorder( getStyleMap.call( this ).border );
+    this._.popup.setShadow( getStyleMap.call( this ).shadow );
+  };
+
+  var inheritParentStyling = function() {
     this._.grid.setFont( this._.parent.getFont() );
     this._.grid.setTextColor( this._.parent.getTextColor() );
     this._.grid.setBackgroundColor( this._.parent.getBackgroundColor() );
@@ -644,5 +630,29 @@
     return result;
   };
 
+  var getStyleMap = function() {
+    if( this._.styleMap == null ) {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      var states = {};
+      if( this._.customVariant ) {
+        states[ this._.customVariant ] = true;
+      }
+      try {
+        // "dropdown" appearance is defined in the incubator project and could be unavailable
+        // if DropDown is not registered as themeable widget. Fallback to "combo-list" in this case.
+        this._.styleMap = manager.styleFrom( this._.appearance, states );
+      } catch( ex ) {
+        this._.styleMap = manager.styleFrom( "combo-list", states );
+      }
+      this._.styleMap.padding = getPadding();
+    }
+    return this._.styleMap;
+  };
 
-}());
+  var getPadding = function() {
+    var manager = rwt.theme.AppearanceManager.getInstance();
+    var stylemap = manager.styleFrom( "list-item", {} );
+    return stylemap.padding || [ 5, 5, 5, 5 ];
+  };
+
+}() );

@@ -10,14 +10,14 @@
  ******************************************************************************/
 
 /*jshint nonew:false */
-(function(){
+(function() {
   'use strict';
 
   rap.registerTypeHandler( "rwt.widgets.DropDown", {
 
     factory : function( properties ) {
       var control = rwt.remote.ObjectRegistry.getObject( properties.parent );
-      var dropdown = new rwt.widgets.DropDown( control, properties.markupEnabled );
+      var dropdown = new rwt.widgets.DropDown( control, properties.markupEnabled, "dropdown" );
       new rwt.widgets.util.DropDownSynchronizer( dropdown );
       return dropdown;
     },
@@ -45,4 +45,4 @@
 
   } );
 
-}());
+}() );

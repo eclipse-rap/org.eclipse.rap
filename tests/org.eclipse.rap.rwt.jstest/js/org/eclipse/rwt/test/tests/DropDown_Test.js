@@ -54,9 +54,39 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
     testConstructor_SetsDefaultPopUpStyling : function() {
       assertEquals( "solid", popup.getBorder().getStyle() );
-      assertEquals( "#000000", popup.getBorder().getColor() );
+      assertEquals( "#aaaaaa", popup.getBorder().getColor() );
       assertEquals( [ 1, 1, 1, 1] , popup.getBorder().getWidths() );
       assertEquals( "#ffffff", popup.getBackgroundColor() );
+    },
+
+    testConstructor_WithAppearanceSetsPopUpStyling : function() {
+      dropdown.destroy();
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            "border" : new rwt.html.Border( 3, "dotted", "#00ff00" ),
+            "shadow" : null
+          };
+        }
+      } );
+
+      dropdown = new rwt.widgets.DropDown( widget, false, "foo" );
+      popup = dropdown._.popup;
+
+      assertEquals( "dotted", popup.getBorder().getStyle() );
+      assertEquals( "#00ff00", popup.getBorder().getColor() );
+      assertEquals( [ 3, 3, 3, 3] , popup.getBorder().getWidths() );
+    },
+
+    testConstructor_WithMissingAppearanceDoesNotCrash : function() {
+      dropdown.destroy();
+
+      dropdown = new rwt.widgets.DropDown( widget, false, "missing" );
+      popup = dropdown._.popup;
+
+      assertEquals( "solid", popup.getBorder().getStyle() );
+      assertEquals( "#aaaaaa", popup.getBorder().getColor() );
+      assertEquals( [ 1, 1, 1, 1] , popup.getBorder().getWidths() );
     },
 
     testConstructor_DoesNotMakePopUpVisible : function() {
@@ -451,6 +481,25 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.setMinWidth( 150 );
 
       assertEquals( 150 + PADDING_RIGHT + PADDING_LEFT + 2 * BORDER, popup.getWidth() );
+    },
+
+    testSetCustomVariant_UpdatesAppearanceStates : function() {
+      dropdown.destroy();
+      var log = {};
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          log.states = states;
+          return {
+            "border" : new rwt.html.Border( 3, "dotted", "#00ff00" ),
+            "shadow" : null
+          };
+        }
+      } );
+
+      dropdown = new rwt.widgets.DropDown( widget, false, "foo" );
+      dropdown.setCustomVariant( "bar" );
+
+      assertTrue( log.states.bar );
     },
 
     testSetVisibleItemCount : function() {
@@ -1235,7 +1284,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       widget.setParent( shell );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 30 );
-      dropdown = new rwt.widgets.DropDown( widget );
+      dropdown = new rwt.widgets.DropDown( widget, false, "combo-list" );
       rwt.remote.ObjectRegistry.add(
         "w3",
         dropdown,
