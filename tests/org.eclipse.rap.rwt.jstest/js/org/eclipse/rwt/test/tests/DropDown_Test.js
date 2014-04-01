@@ -19,6 +19,7 @@ var DropDown = rwt.widgets.DropDown;
 var ITEM_HEIGHT = 25; // Depends on padding which is currently taken from list theming
 var PADDING_LEFT = 10;
 var PADDING_RIGHT = 10;
+var BORDER = 1;
 
 var shell;
 var widget;
@@ -418,6 +419,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 100, popup.getWidth() );
     },
 
+    testShow_SetsPopUpWidth_withMinWidth : function() {
+      dropdown.setMinWidth( 150 );
+
+      showDropDown();
+
+      assertEquals( 150 + PADDING_RIGHT + PADDING_LEFT + 2 * BORDER, popup.getWidth() );
+    },
+
     testShow_PopUpInnerHeightOverVisibleItemCount : function() {
       var items = [ "a", "b", "c", "d", "a", "b", "c", "d", "a", "b", "c", "d", "a", "b", "c" ];
       dropdown.setItems( items );
@@ -434,6 +443,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       showDropDown();
 
       assertEquals( 2 * ITEM_HEIGHT, popup.getInnerHeight() );
+    },
+
+    testSetMinWidth_UpdatesPopupWidthIfVisible : function() {
+      showDropDown();
+
+      dropdown.setMinWidth( 150 );
+
+      assertEquals( 150 + PADDING_RIGHT + PADDING_LEFT + 2 * BORDER, popup.getWidth() );
     },
 
     testSetVisibleItemCount : function() {

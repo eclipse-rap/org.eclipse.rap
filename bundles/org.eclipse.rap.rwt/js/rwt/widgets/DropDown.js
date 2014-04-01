@@ -76,6 +76,7 @@
     this._.columns = null;
     this._.inMouseSelection = false;
     this._.visibility = false;
+    this._.minWidth = 0;
     this._.events = createEventsMap();
     addParentListeners.call( this );
     addGridListeners.call( this );
@@ -167,6 +168,13 @@
 
     getVisible : function() {
       return this._.visibility;
+    },
+
+    setMinWidth : function( value ) {
+      this._.minWidth = value;
+      if( this._.grid.isSeeable() ) {
+        renderLayout.call( this );
+      }
     },
 
     show : function() {
@@ -362,6 +370,15 @@
   var calcGridWidth = function() {
     var frameWidth = getStyleMap().border.getWidthLeft() * 2;
     var result = this._.parent.getWidth() - frameWidth;
+    if( this._.minWidth > 0 ) {
+      var padding = getStyleMap().padding;
+      var scrollbarWidth = 0;
+      if( this._.visibleItemCount < this.getItemCount() ) {
+        scrollbarWidth = this._.grid.getVerticalBar().getWidth();
+      }
+      var preferredWidth = this._.minWidth + padding[ 1 ] + padding[ 3 ] + scrollbarWidth;
+      result = Math.max( result, preferredWidth );
+    }
     if( this._.columns ) {
       var columnsSum = 0;
       for( var i = 0; i < this._.columns.length; i++ ) {
