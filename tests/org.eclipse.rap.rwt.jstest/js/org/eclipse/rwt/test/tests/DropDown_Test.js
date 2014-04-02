@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /*jshint nonew:false */
-(function(){
+(function() {
 'use strict';
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -1052,6 +1052,19 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 0, logger.getLog().length );
     },
 
+    testKeyEventForwarding_UpWithDisabledSelectionWrapping : function() {
+      dropdown.setSelectionWrapping( false );
+      showDropDown( [ "a", "b" ] );
+      dropdown.setSelectionIndex( 1 );
+      var logger = TestUtil.getLogger();
+
+      grid.addEventListener( "keypress", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Up" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
     testKeyEventForwarding_Down : function() {
       dropdown.setItems( [ "a", "b", "c" ] );
       dropdown.setSelectionIndex( 1 );
@@ -1064,6 +1077,20 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
       assertEquals( 1, logger.getLog().length );
       assertTrue( logger.getLog()[ 0 ].getDefaultPrevented() );
+    },
+
+    testKeyEventForwarding_DownWithDisabledSelectionWrapping : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      dropdown.setSelectionIndex( 1 );
+      showDropDown();
+      var logger = TestUtil.getLogger();
+
+      grid.addEventListener( "keypress", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Down" );
+
+      assertEquals( 1, logger.getLog().length );
     },
 
     testKeyEventForwarding_PageUp : function() {
@@ -1166,6 +1193,80 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       TestUtil.pressOnce( widget, "Down" );
 
       assertEquals( -1, dropdown.getSelectionIndex() );
+    },
+
+    testPressDown_WithDisabledSelectionWrapping_SelectsFirstItem : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "Down" );
+
+      assertEquals( 0, dropdown.getSelectionIndex() );
+    },
+
+    testPressUp_WithDisabledSelectionWrapping_SelectsLastItem : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "Up" );
+
+      assertEquals( 2, dropdown.getSelectionIndex() );
+    },
+
+    testPressPgDown_WithDisabledSelectionWrapping_SelectsFirstItem : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "PageDown" );
+
+      assertEquals( 0, dropdown.getSelectionIndex() );
+    },
+
+    testPressPgUp_WithDisabledSelectionWrapping_SelectsLastItem : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "PageUp" );
+
+      assertEquals( 2, dropdown.getSelectionIndex() );
+    },
+
+    testPressDown_WithDisabledSelectionWrapping_DoesNotWrap : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      dropdown.setSelectionIndex( 2 );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "Down" );
+
+      assertEquals( 2, dropdown.getSelectionIndex() );
+    },
+
+    testPressUp_WithDisabledSelectionWrapping_DoesNotWrap : function() {
+      dropdown.setSelectionWrapping( false );
+      dropdown.setItems( [ "a", "b", "c" ] );
+      dropdown.setSelectionIndex( 0 );
+      showDropDown();
+      TestUtil.flush();
+
+      widget.focus();
+      TestUtil.pressOnce( widget, "Up" );
+
+      assertEquals( 0, dropdown.getSelectionIndex() );
     },
 
     testSelectionResetResetsLeadItem : function() {
@@ -1336,5 +1437,4 @@ var forceTimer = function() {
   TestUtil.forceInterval( hideTimer );
 };
 
-
-}());
+}() );

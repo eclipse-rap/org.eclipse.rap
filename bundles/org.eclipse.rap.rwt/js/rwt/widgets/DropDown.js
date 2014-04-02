@@ -54,6 +54,7 @@
     this._.inMouseSelection = false;
     this._.visibility = false;
     this._.minWidth = 0;
+    this._.selectionWrapping = true;
     this._.events = createEventsMap();
     addParentListeners.call( this );
     addGridListeners.call( this );
@@ -152,6 +153,10 @@
       if( this._.grid.isSeeable() ) {
         renderLayout.call( this );
       }
+    },
+
+    setSelectionWrapping : function( value ) {
+      this._.selectionWrapping = value;
     },
 
     setCustomVariant : function( value ) {
@@ -433,17 +438,38 @@
     var key = event.getKeyIdentifier();
     if( this._.visibility && forwardedKeys[ key ] && !event.isAltPressed() ) {
       event.preventDefault();
-      if( key === "Down" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
-        this.setSelectionIndex( 0 );
-      } else if( key === "Up" && this.getSelectionIndex() === 0 ) {
-        this.setSelectionIndex( -1 );
-      } else if( key === "Down" && this.getSelectionIndex() === this.getItemCount() - 1 ) {
-        this.setSelectionIndex( -1 );
-      } else if( key === "Up" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
-        this.setSelectionIndex( this.getItemCount() - 1 );
+      if( this._.selectionWrapping ) {
+        selectWithWrapping.call( this, event );
       } else {
-        this._.grid.dispatchEvent( event );
+        selectWithoutWrapping.call( this, event );
       }
+    }
+  };
+
+  var selectWithWrapping = function( event ) {
+    var key = event.getKeyIdentifier();
+    if( key === "Down" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
+      this.setSelectionIndex( 0 );
+    } else if( key === "Up" && this.getSelectionIndex() === 0 ) {
+      this.setSelectionIndex( -1 );
+    } else if( key === "Down" && this.getSelectionIndex() === this.getItemCount() - 1 ) {
+      this.setSelectionIndex( -1 );
+    } else if( key === "Up" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
+      this.setSelectionIndex( this.getItemCount() - 1 );
+    } else {
+      this._.grid.dispatchEvent( event );
+    }
+  };
+
+  var selectWithoutWrapping = function( event ) {
+    var key = event.getKeyIdentifier();
+    var allowSelection = this.getSelectionIndex() === -1 && this.getItemCount() > 0;
+    if( ( key === "Down" || key === "PageDown" ) && allowSelection ) {
+      this.setSelectionIndex( 0 );
+    } else if( ( key === "Up" || key === "PageUp" ) && allowSelection ) {
+      this.setSelectionIndex( this.getItemCount() - 1 );
+    } else {
+      this._.grid.dispatchEvent( event );
     }
   };
 
