@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -259,27 +260,50 @@ public class Cell_Test {
   public void testSetLeft() {
     Cell cell = new TestCell( template, "foo" );
 
-    cell.setLeft( 23 );
+    cell.setLeft( 33.3f, 10 );
 
-    assertEquals( Integer.valueOf( 23 ), cell.getLeft() );
+    assertEquals( new Position( 33.3f, 10 ), cell.getLeft() );
   }
 
   @Test
-  public void testSetLeft_acceptsZero() {
+  public void testSetLeft_offsetOnly() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setLeft( 23 );
+
+    assertEquals( new Position( 0, 23 ), cell.getLeft() );
+  }
+
+  @Test
+  public void testSetLeft_acceptsZeroOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setLeft( 0 );
 
-    assertEquals( Integer.valueOf( 0 ), cell.getLeft() );
+    assertEquals( new Position( 0, 0 ), cell.getLeft() );
   }
 
   @Test
-  public void testSetLeft_acceptsNegativeValues() {
+  public void testSetLeft_acceptsNegativeOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setLeft( -1 );
 
-    assertEquals( Integer.valueOf( -1 ), cell.getLeft() );
+    assertEquals( new Position( 0, -1 ), cell.getLeft() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetLeft_rejectsNegativePercentage() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setLeft( -1, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetLeft_rejectsPercentageGreater100() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setLeft( 101, 0 );
   }
 
   @Test( expected = IllegalStateException.class )
@@ -304,30 +328,50 @@ public class Cell_Test {
   public void testSetRight() {
     Cell cell = new TestCell( template, "foo" );
 
-    cell.setRight( 23 );
+    cell.setRight( 33.3f, 10 );
 
-    Integer right = cell.getRight();
-    assertEquals( Integer.valueOf( 23 ), right );
+    assertEquals( new Position( 33.3f, 10 ), cell.getRight() );
   }
 
   @Test
-  public void testSetRight_acceptsZero() {
+  public void testSetRight_offsetOnly() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setRight( 23 );
+
+    assertEquals( new Position( 0, 23 ), cell.getRight() );
+  }
+
+  @Test
+  public void testSetRight_acceptsZeroOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setRight( 0 );
 
-    Integer right = cell.getRight();
-    assertEquals( Integer.valueOf( 0 ), right );
+    assertEquals( new Position( 0, 0 ), cell.getRight() );
   }
 
   @Test
-  public void testSetRight_acceptsNegativeValues() {
+  public void testSetRight_acceptsNegativeOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setRight( -1 );
 
-    Integer right = cell.getRight();
-    assertEquals( Integer.valueOf( -1 ), right );
+    assertEquals( new Position( 0, -1 ), cell.getRight() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetRight_rejectsNegativePercentage() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setRight( -1, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetRight_rejectsPercentageGreater100() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setRight( 101, 0 );
   }
 
   @Test( expected = IllegalStateException.class )
@@ -352,27 +396,50 @@ public class Cell_Test {
   public void testSetTop() {
     Cell cell = new TestCell( template, "foo" );
 
-    cell.setTop( 23 );
+    cell.setTop( 33.3f, 10 );
 
-    assertEquals( Integer.valueOf( 23 ), cell.getTop() );
+    assertEquals( new Position( 33.3f, 10 ), cell.getTop() );
   }
 
   @Test
-  public void testSetTop_acceptsZero() {
+  public void testSetTop_offsetOnly() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setTop( 23 );
+
+    assertEquals( new Position( 0, 23 ), cell.getTop() );
+  }
+
+  @Test
+  public void testSetTop_acceptsZeroOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setTop( 0 );
 
-    assertEquals( Integer.valueOf( 0 ), cell.getTop() );
+    assertEquals( new Position( 0, 0 ), cell.getTop() );
   }
 
   @Test
-  public void testSetTop_acceptsNegativeValues() {
+  public void testSetTop_acceptsNegativeOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setTop( -1 );
 
-    assertEquals( Integer.valueOf( -1 ), cell.getTop() );
+    assertEquals( new Position( 0, -1 ), cell.getTop() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetTop_rejectsNegativePercentage() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setTop( -1, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetTop_rejectsPercentageGreater100() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setTop( 101, 0 );
   }
 
   @Test( expected = IllegalStateException.class )
@@ -397,27 +464,50 @@ public class Cell_Test {
   public void testSetBottom() {
     Cell cell = new TestCell( template, "foo" );
 
-    cell.setBottom( 23 );
+    cell.setBottom( 33.3f, 10 );
 
-    assertEquals( Integer.valueOf( 23 ), cell.getBottom() );
+    assertEquals( new Position( 33.3f, 10 ), cell.getBottom() );
   }
 
   @Test
-  public void testSetBottom_acceptsNegativeValues() {
+  public void testSetBottom_offsetOnly() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setBottom( 23 );
+
+    assertEquals( new Position( 0, 23 ), cell.getBottom() );
+  }
+
+  @Test
+  public void testSetBottom_acceptsNegativeOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setBottom( -1 );
 
-    assertEquals( Integer.valueOf( -1 ), cell.getBottom() );
+    assertEquals( new Position( 0, -1 ), cell.getBottom() );
   }
 
   @Test
-  public void testSetBottom_acceptsZero() {
+  public void testSetBottom_acceptsZeroOffset() {
     Cell cell = new TestCell( template, "foo" );
 
     cell.setBottom( 0 );
 
-    assertEquals( Integer.valueOf( 0 ), cell.getBottom() );
+    assertEquals( new Position( 0, 0 ), cell.getBottom() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetBottom_rejectsNegativePercentage() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setBottom( -1, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetBottom_rejectsPercentageGreater100() {
+    Cell cell = new TestCell( template, "foo" );
+
+    cell.setBottom( 101, 0 );
   }
 
   @Test( expected = IllegalStateException.class )
@@ -586,40 +676,40 @@ public class Cell_Test {
   public void testToJson_containsLeft() {
     Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setLeft( 23 );
+    cell.setLeft( 23, 42 );
     JsonObject json = cell.toJson();
 
-    assertEquals( 23, json.get( "left" ).asInt() );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), json.get( "left" ).asArray() );
   }
 
   @Test
   public void testToJson_containsRight() {
     Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setRight( 23 );
+    cell.setRight( 23, 42 );
     JsonObject json = cell.toJson();
 
-    assertEquals( 23, json.get( "right" ).asInt() );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), json.get( "right" ).asArray() );
   }
 
   @Test
   public void testToJson_containsTop() {
     Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setTop( 23 );
+    cell.setTop( 23, 42 );
     JsonObject json = cell.toJson();
 
-    assertEquals( 23, json.get( "top" ).asInt() );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), json.get( "top" ).asArray() );
   }
 
   @Test
   public void testToJson_containsBottom() {
     Cell cell = new Cell( template, "foo" ) {};
 
-    cell.setBottom( 23 );
+    cell.setBottom( 23, 42 );
     JsonObject json = cell.toJson();
 
-    assertEquals( 23, json.get( "bottom" ).asInt() );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), json.get( "bottom" ).asArray() );
   }
 
   @Test

@@ -57,10 +57,10 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   private Color foreground;
   private Color background;
   private Font font;
-  private Integer left;
-  private Integer right;
-  private Integer top;
-  private Integer bottom;
+  private Position left;
+  private Position right;
+  private Position top;
+  private Position bottom;
   private Integer width;
   private Integer height;
   private int horizontalAlignment = SWT.NONE;
@@ -189,70 +189,130 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   }
 
   /**
-   * Sets the left offset of the cell, i.e. the distance from the left edge of the template.
+   * Sets the position of the left edge of the cell.
    *
-   * @param offset the left offset in px
+   * @param offset the distance from the left edge of the template in px
    * @return the cell itself, to enable method chaining
    * @throws IllegalStateException if both <em>right</em> and <em>width</em> are already set
    */
   public T setLeft( int offset ) {
+    return setLeft( 0, offset );
+  }
+
+  /**
+   * Sets the position of the left edge of the cell.
+   *
+   * @param percentage the distance from the left edge of the template as a percentage of the
+   *          template's width
+   * @param offset a fixed offset in px to add to the percentage
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>right</em> and <em>width</em> are already set
+   * @since 2.3
+   */
+  public T setLeft( float percentage, int offset ) {
     checkHorizontalParameters( right, width );
-    left = Integer.valueOf( offset );
+    checkPercentage( percentage );
+    left = new Position( percentage, offset );
     return getThis();
   }
 
-  Integer getLeft() {
+  Position getLeft() {
     return left;
   }
 
   /**
-   * Sets the right offset of the cell, i.e. the distance from the right edge of the template.
+   * Sets the position of the right edge of the cell.
    *
-   * @param offset the right offset in px
+   * @param offset the distance from the right edge of the template in px
    * @return the cell itself, to enable method chaining
    * @throws IllegalStateException if both <em>left</em> and <em>width</em> are already set
    */
   public T setRight( int offset ) {
+    return setRight( 0, offset );
+  }
+
+  /**
+   * Sets the position of the right edge of the cell.
+   *
+   * @param percentage the distance from the right edge of the template as a percentage of the
+   *          template's width
+   * @param offset a fixed offset in px to add to the percentage
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>left</em> and <em>width</em> are already set
+   * @since 2.3
+   */
+  public T setRight( float percentage, int offset ) {
     checkHorizontalParameters( left, width );
-    this.right = Integer.valueOf( offset );
+    checkPercentage( percentage );
+    this.right = new Position( percentage, offset );
     return getThis();
   }
 
-  Integer getRight() {
+  Position getRight() {
     return right;
   }
 
   /**
-   * Sets the top offset of the cell, i.e. the distance from the top edge of the template.
+   * Sets the position of the upper edge of the cell.
    *
-   * @param offset the top offset in px
+   * @param offset the distance from the upper edge of the template in px
    * @return the cell itself, to enable method chaining
    * @throws IllegalStateException if both <em>bottom</em> and <em>height</em> are already set
    */
   public T setTop( int offset ) {
+    return setTop( 0, offset );
+  }
+
+  /**
+   * Sets the position of the upper edge of the cell.
+   *
+   * @param percentage the distance from the right edge of the template as a percentage of the
+   *          template's height
+   * @param offset a fixed offset in px to add to the percentage
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>bottom</em> and <em>height</em> are already set
+   * @since 2.3
+   */
+  public T setTop( float percentage, int offset ) {
     checkVerticalParameters( bottom, height );
-    this.top = Integer.valueOf( offset );
+    checkPercentage( percentage );
+    this.top = new Position( percentage, offset );
     return getThis();
   }
 
-  Integer getTop() {
+  Position getTop() {
     return top;
   }
 
   /**
-   * Sets the bottom offset of the cell, i.e. the distance from the bottom edge of the template.
+   * Sets the position of the lower edge of the cell.
    *
-   * @param offset the bottom offset in px
+   * @param offset the distance from the lower edge of the template in px
    * @return the cell itself, to enable method chaining
    * @throws IllegalStateException if both <em>top</em> and <em>height</em> are already set
    */
   public T setBottom( int offset ) {
+    return setBottom( 0, offset );
+  }
+
+  /**
+   * Sets the position of the lower edge of the cell.
+   *
+   * @param percentage the distance from the right edge of the template as a percentage of the
+   *          template's height
+   * @param offset a fixed offset in px to add to the percentage
+   * @return the cell itself, to enable method chaining
+   * @throws IllegalStateException if both <em>top</em> and <em>height</em> are already set
+   * @since 2.3
+   */
+  public T setBottom( float percentage, int offset ) {
     checkVerticalParameters( top, height );
-    this.bottom = Integer.valueOf( offset );
+    checkPercentage( percentage );
+    this.bottom = new Position( percentage, offset );
     return getThis();
   }
 
-  Integer getBottom() {
+  Position getBottom() {
     return bottom;
   }
 
@@ -339,16 +399,16 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     JsonObject jsonObject = new JsonObject();
     jsonObject.add( PROPERTY_TYPE, type );
     if( left != null ) {
-      jsonObject.add( PROPERTY_LEFT, left.intValue() );
+      jsonObject.add( PROPERTY_LEFT, left.toJson() );
     }
     if( right != null ) {
-      jsonObject.add( PROPERTY_RIGHT, right.intValue() );
+      jsonObject.add( PROPERTY_RIGHT, right.toJson() );
     }
     if( top != null ) {
-      jsonObject.add( PROPERTY_TOP, top.intValue() );
+      jsonObject.add( PROPERTY_TOP, top.toJson() );
     }
     if( bottom != null ) {
-      jsonObject.add( PROPERTY_BOTTOM, bottom.intValue() );
+      jsonObject.add( PROPERTY_BOTTOM, bottom.toJson() );
     }
     if( width != null ) {
       jsonObject.add( PROPERTY_WIDTH, width.intValue() );
@@ -388,15 +448,21 @@ public abstract class Cell<T extends Cell> implements Serializable  {
     return ( T )this;
   }
 
-  private void checkHorizontalParameters( Integer value1, Integer value2 ) {
+  private void checkHorizontalParameters( Object value1, Object value2 ) {
     if( value1 != null && value2 != null ) {
       throw new IllegalStateException( "Can only set two horizontal attributes" );
     }
   }
 
-  private void checkVerticalParameters( Integer value1, Integer value2 ) {
+  private void checkVerticalParameters( Object value1, Object value2 ) {
     if( value1 != null && value2 != null ) {
       throw new IllegalStateException( "Can only set two vertical attributes" );
+    }
+  }
+
+  private static void checkPercentage( float percentage ) {
+    if( percentage < 0 || percentage > 100 ) {
+      throw new IllegalArgumentException( "Percentage out of range: " + percentage );
     }
   }
 
