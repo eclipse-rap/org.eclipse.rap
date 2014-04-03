@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var EventHandler = rwt.event.EventHandler;
@@ -19,6 +19,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    tearDown : function() {
+      EventHandler.setMouseEventFilter( null );
+    },
 
     testOverOutEventsOrder : function() {
       var widget = this.createDefaultWidget();
@@ -768,6 +772,55 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       assertEquals( "none", event.dataTransfer.dropEffect );
     },
 
+    testSetMouseEventFilter : function() {
+      var filter = rwt.util.Functions.returnTrue;
+      var context = "foo";
+
+      EventHandler.setMouseEventFilter( filter, context );
+
+      var mouseEventFilter = EventHandler.getMouseEventFilter();
+      assertTrue( typeof mouseEventFilter !== "undefined" );
+      assertIdentical( filter, mouseEventFilter[ 0 ] );
+      assertIdentical( context, mouseEventFilter[ 1 ] );
+    },
+
+    testResetMouseEventFilter : function() {
+      var filter = rwt.util.Functions.returnTrue;
+      var context = "foo";
+      EventHandler.setMouseEventFilter( filter, context );
+
+      EventHandler.setMouseEventFilter( null );
+
+      var mouseEventFilter = EventHandler.getMouseEventFilter();
+      assertTrue( typeof mouseEventFilter === "undefined" );
+    },
+
+    testMouseEvent_allowedByFilter : function() {
+      var logger = TestUtil.getLogger();
+      var widget = this.createDefaultWidget();
+      var targetNode = widget._getTargetNode();
+      widget.addEventListener( "mousedown", logger.log );
+      EventHandler.setMouseEventFilter( rwt.util.Functions.returnTrue );
+
+      TestUtil.fakeMouseEventDOM( targetNode, "mousedown" );
+
+      assertEquals( 1, logger.getLog().length );
+      widget.destroy();
+    },
+
+    testMouseEvent_disallowedByFilter : function() {
+      var logger = TestUtil.getLogger();
+      var widget = this.createDefaultWidget();
+      var targetNode = widget._getTargetNode();
+      widget.addEventListener( "mousedown", logger.log );
+      EventHandler.setMouseEventFilter( rwt.util.Functions.returnFalse );
+
+      TestUtil.fakeMouseEventDOM( targetNode, "mousedown" );
+
+      assertEquals( 0, logger.getLog().length );
+      widget.destroy();
+    },
+
     /////////
     // Helper
 
@@ -804,4 +857,4 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
   }
 } );
 
-}());
+}() );

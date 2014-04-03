@@ -169,6 +169,7 @@
       checkDisposed( this );
       if( !this._.visibility ) {
         this._.visibility = true;
+        addMouseWheelEventFilter.call( this );
         fireEvent.call( this, "Show" );
       }
       if( this._.items.length > 0 && this._.parent.isCreated() && !this._.popup.isSeeable() ) {
@@ -181,6 +182,7 @@
       checkDisposed( this );
       if( this._.visibility ) {
         this._.visibility = false;
+        removeMouseWheelEventFilter.call( this );
         fireEvent.call( this, "Hide" );
       }
       this._.popup.setVisibility( false ); // makes it disappear immediately
@@ -255,6 +257,7 @@
           this._.parent.removeEventListener( "changeBackgroundColor", inheritParentStyling, this );
           this._.parent.removeEventListener( "changeCursor", inheritParentStyling, this );
         }
+        removeMouseWheelEventFilter.call( this );
         this._.popup.destroy();
         this._.hideTimer.dispose();
         if( this._.widgetData ) {
@@ -679,6 +682,28 @@
     var manager = rwt.theme.AppearanceManager.getInstance();
     var stylemap = manager.styleFrom( "list-item", {} );
     return stylemap.padding || [ 5, 5, 5, 5 ];
+  };
+
+  var addMouseWheelEventFilter = function() {
+    rwt.event.EventHandler.setMouseEventFilter( filterMouseWheelEvent, this );
+  };
+
+  var removeMouseWheelEventFilter = function() {
+    var filter = rwt.event.EventHandler.getMouseEventFilter();
+    if( filter && filter[ 0 ] === filterMouseWheelEvent && filter[ 1 ] === this ) {
+      rwt.event.EventHandler.setMouseEventFilter( null );
+    }
+  };
+
+  var filterMouseWheelEvent = function( event ) {
+    if( this.getVisible() ) {
+      if( event.getType() === "mousewheel" ) {
+        event.preventDefault();
+        this._.grid.getRowContainer().dispatchEvent( event );
+        return false;
+      }
+    }
+    return true;
   };
 
 }() );

@@ -148,7 +148,19 @@ rwt.event.EventHandler = {
   },
 
   setMouseEventFilter : function( filter, context ) {
-    this._filter[ "mouseevent" ] = [ filter, context ];
+    if( filter ) {
+      this._filter[ "mouseevent" ] = [ filter, context ];
+    } else {
+      delete this._filter[ "mouseevent" ];
+    }
+  },
+
+  getMouseEventFilter : function() {
+    return this._filter[ "mouseevent" ];
+  },
+
+  setMouseDomEventFilter : function( filter, context ) {
+    this._filter[ "dommouseevent" ] = [ filter, context ];
   },
 
   setKeyEventFilter : function( filter, context ) {
@@ -158,7 +170,7 @@ rwt.event.EventHandler = {
   },
 
   setKeyDomEventFilter : function( filter, context ) {
-    this._filter[ "domKeyevent" ] = [ filter, context ];
+    this._filter[ "domkeyevent" ] = [ filter, context ];
   },
 
   //////////////
@@ -176,9 +188,9 @@ rwt.event.EventHandler = {
         }
         return;
       }
-      if( typeof this._filter[ "domKeyevent" ] !== "undefined" ) {
-        var context = this._filter[ "domKeyevent" ][ 1 ];
-        var func = this._filter[ "domKeyevent" ][ 0 ];
+      if( typeof this._filter[ "domkeyevent" ] !== "undefined" ) {
+        var context = this._filter[ "domkeyevent" ][ 1 ];
+        var func = this._filter[ "domkeyevent" ][ 0 ];
         func.call( context, event.type, keyCode, charCode, event );
       }
       var pseudoTypes = EventHandlerUtil.getEventPseudoTypes( event, keyCode, charCode );
@@ -266,9 +278,9 @@ rwt.event.EventHandler = {
   _onmouseevent : function( event ) {
     try {
       var process = true;
-      if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
-        var context = this._filter[ "mouseevent" ][ 1 ];
-        process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
+      if( typeof this._filter[ "dommouseevent" ] !== "undefined" ) {
+        var context = this._filter[ "dommouseevent" ][ 1 ];
+        process = this._filter[ "dommouseevent" ][ 0 ].call( context, event );
       }
       if( process ) {
         this._processMouseEvent( event );
@@ -409,7 +421,7 @@ rwt.event.EventHandler = {
       rwt.event.MouseEvent.storeEventState( vEventObject );
     }
     if( !eventConsumed ) {
-      vDispatchTarget.dispatchEvent( vEventObject );
+      this._dispatchMouseEvent( vDispatchTarget, vEventObject );
       if( vDispatchTarget.getEnabled() ) {
         this._onmouseevent_special_post( vType,
                                          vTarget,
@@ -442,12 +454,23 @@ rwt.event.EventHandler = {
   {
     if( dispatchTarget.getEnabled() ) {
       var eventObject = new rwt.event.MouseEvent( type,
-                                                      domEvent,
-                                                      domTarget,
-                                                      target,
-                                                      originalTarget,
-                                                      relatedTarget );
-      dispatchTarget.dispatchEvent( eventObject );
+                                                  domEvent,
+                                                  domTarget,
+                                                  target,
+                                                  originalTarget,
+                                                  relatedTarget );
+      this._dispatchMouseEvent( dispatchTarget, eventObject );
+    }
+  },
+
+  _dispatchMouseEvent : function( target, event ) {
+    var process = true;
+    if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
+      var context = this._filter[ "mouseevent" ][ 1 ];
+      process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
+    }
+    if( process ) {
+      target.dispatchEvent( event );
     }
   },
 

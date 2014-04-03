@@ -208,6 +208,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertTrue( focusable.getFocused() );
     },
 
+    testShow_AddsMouseEventFilter : function() {
+      showDropDown();
+
+      var filter = rwt.event.EventHandler.getMouseEventFilter();
+      assertTrue( typeof filter !== "undefined" );
+      assertIdentical( dropdown, filter[ 1 ] );
+    },
+
     testDoNotHideOnParentClick : function() {
       var focusable = new rwt.widgets.base.BasicButton( "push" );
       focusable.setTabIndex( 1 );
@@ -349,6 +357,25 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
       var message = TestUtil.getMessageObject();
       assertNull( message.findSetOperation( "w3", "visible" ) );
+    },
+
+    testHide_RemovesMouseEventFilter : function() {
+      showDropDown();
+
+      dropdown.hide();
+
+      var filter = rwt.event.EventHandler.getMouseEventFilter();
+      assertTrue( typeof filter === "undefined" );
+    },
+
+    testHide_DoesNotRemoveOtherMouseEventFilter : function() {
+      showDropDown();
+      rwt.event.EventHandler.setMouseEventFilter( rwt.util.Functions.returnTrue );
+
+      dropdown.hide();
+
+      var filter = rwt.event.EventHandler.getMouseEventFilter();
+      assertTrue( typeof filter !== "undefined" );
     },
 
     testShow_PositionsPopUp : function() {
@@ -1295,6 +1322,46 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 0, dropdown.getSelectionIndex() );
     },
 
+    testMouseWheelEventOnOtherWidgetsWhenInvisible : function() {
+      var logger = TestUtil.getLogger();
+      var otherWidget = new rwt.widgets.base.Terminator();
+      otherWidget.setParent( shell );
+      otherWidget.addEventListener( "mousewheel", logger.log );
+      TestUtil.flush();
+
+      TestUtil.fakeWheel( otherWidget, 1 );
+
+      assertEquals( 1, logger.getLog().length );
+      assertFalse( logger.getLog()[ 0 ].getDefaultPrevented() );
+    },
+
+    testSuppressMouseWheelEventOnOtherWidgetsWhenVisible : function() {
+      var logger = TestUtil.getLogger();
+      var otherWidget = new rwt.widgets.base.Terminator();
+      otherWidget.setParent( shell );
+      otherWidget.addEventListener( "mousewheel", logger.log );
+      TestUtil.flush();
+      showDropDown();
+
+      TestUtil.fakeWheel( otherWidget, 1 );
+
+      assertEquals( 0, logger.getLog().length );
+    },
+
+    testRedispatchMouseWheelEventToGridContainerWhenVisible : function() {
+      var logger = TestUtil.getLogger();
+      var otherWidget = new rwt.widgets.base.Terminator();
+      otherWidget.setParent( shell );
+      grid.getRowContainer().addEventListener( "mousewheel", logger.log );
+      TestUtil.flush();
+      showDropDown();
+
+      TestUtil.fakeWheel( otherWidget, 1 );
+
+      assertEquals( 1, logger.getLog().length );
+      assertTrue( logger.getLog()[ 0 ].getDefaultPrevented() );
+    },
+
     testDestroy_DisposesDropDown : function() {
       dropdown.destroy();
 
@@ -1374,6 +1441,15 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.destroy();
 
       assertTrue( dropdown.isDisposed() );
+    },
+
+    testDestroy_RemovesMouseEventFilter : function() {
+      showDropDown();
+
+      dropdown.destroy();
+
+      var filter = rwt.event.EventHandler.getMouseEventFilter();
+      assertTrue( typeof filter === "undefined" );
     },
 
     ///////////

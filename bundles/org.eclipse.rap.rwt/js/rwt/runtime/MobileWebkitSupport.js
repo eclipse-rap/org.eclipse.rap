@@ -164,8 +164,7 @@ rwt.runtime.MobileWebkitSupport = {
   },
 
   _registerFilter : function() {
-    var eventHandler = rwt.event.EventHandler;
-    eventHandler.setMouseEventFilter( this._filterMouseEvents, this );
+    rwt.event.EventHandler.setMouseDomEventFilter( this._filterMouseEvents, this );
   },
 
   _filterMouseEvents : function( event ) {
