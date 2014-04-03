@@ -172,9 +172,9 @@
         addMouseWheelEventFilter.call( this );
         fireEvent.call( this, "Show" );
       }
-      if( this._.items.length > 0 && this._.parent.isCreated() && !this._.popup.isSeeable() ) {
+      if( this._.items.length > 0 && this._.parent.isSeeable() && !this._.popup.isSeeable() ) {
         renderLayout.call( this );
-        this._.popup.show();
+        setPopUpVisible.call( this, true );
       }
     },
 
@@ -185,8 +185,7 @@
         removeMouseWheelEventFilter.call( this );
         fireEvent.call( this, "Hide" );
       }
-      this._.popup.setVisibility( false ); // makes it disappear immediately
-      this._.popup.setDisplay( false ); // forces the popup to appear after all parents are layouted
+      setPopUpVisible.call( this, false );
     },
 
     setData : function( key, value ) {
@@ -249,9 +248,10 @@
           this._.grid.getRootItem().setItemCount( 0 );
         }
         if( !this._.parent.isDisposed() ) {
-          this._.parent.removeEventListener( "appear", onTextAppear, this );
-          this._.parent.removeEventListener( "flush", onTextFlush, this );
-          this._.parent.removeEventListener( "keypress", onTextKeyEvent, this );
+          this._.parent.removeEventListener( "appear", onParentVisibilityChange, this );
+          this._.parent.removeEventListener( "disappear", onParentVisibilityChange, this );
+          this._.parent.removeEventListener( "flush", onParentFlush, this );
+          this._.parent.removeEventListener( "keypress", onParentKeyEvent, this );
           this._.parent.removeEventListener( "changeFont", inheritParentStyling, this );
           this._.parent.removeEventListener( "changeTextColor", inheritParentStyling, this );
           this._.parent.removeEventListener( "changeBackgroundColor", inheritParentStyling, this );
@@ -318,9 +318,10 @@
   // Internals
 
   var addParentListeners = function() {
-    this._.parent.addEventListener( "appear", onTextAppear, this );
-    this._.parent.addEventListener( "flush", onTextFlush, this );
-    this._.parent.addEventListener( "keypress", onTextKeyEvent, this );
+    this._.parent.addEventListener( "appear", onParentVisibilityChange, this );
+    this._.parent.addEventListener( "disappear", onParentVisibilityChange, this );
+    this._.parent.addEventListener( "flush", onParentFlush, this );
+    this._.parent.addEventListener( "keypress", onParentKeyEvent, this );
     this._.parent.addEventListener( "changeFont", inheritParentStyling, this );
     this._.parent.addEventListener( "changeTextColor", inheritParentStyling, this );
     this._.parent.addEventListener( "changeBackgroundColor", inheritParentStyling, this );
@@ -332,6 +333,15 @@
     this._.grid.addEventListener( "keypress", onKeyEvent, this );
     this._.grid.addEventListener( "mousedown", onMouseDown, this );
     this._.grid.addEventListener( "mouseup", onMouseUp, this );
+  };
+
+  var setPopUpVisible = function( visible ) {
+    if( visible ) {
+      this._.popup.show();
+    } else {
+      this._.popup.setVisibility( false ); // makes it disappear immediately
+      this._.popup.setDisplay( false ); // forces the popup to appear after all parents are layouted
+    }
   };
 
   var renderLayout = function() {
@@ -431,13 +441,17 @@
     }
   };
 
-  var onTextAppear = function() {
+  var onParentVisibilityChange = function() {
     if( this._.visibility ) {
-      this.show();
+      if( this._.parent.isSeeable() ) {
+        this.show(); // makes popup visible if items are present and handles layout
+      } else {
+        setPopUpVisible.call( this, false );
+      }
     }
   };
 
-  var onTextKeyEvent = function( event ) {
+  var onParentKeyEvent = function( event ) {
     var key = event.getKeyIdentifier();
     if( this._.visibility && forwardedKeys[ key ] && !event.isAltPressed() ) {
       event.preventDefault();
@@ -476,9 +490,10 @@
     }
   };
 
-  var onTextFlush = function( event ) {
+  var onParentFlush = function( event ) {
     var changes = event.getData();
-    if( this._.visibility && ( changes.top || changes.left || changes.width || changes.height ) ) {
+    var layouted = changes.top || changes.left || changes.width || changes.height;
+    if( layouted && this._.parent.isInDom() && this._.visibility ) {
       renderLayout.call( this );
     }
   };

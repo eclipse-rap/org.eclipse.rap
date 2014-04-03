@@ -319,6 +319,38 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertTrue( popup.isSeeable() );
     },
 
+    testShow_CalledWithParentNotVisibleDoesNotMakePopUpVisible : function() {
+      dropdown.destroy();
+      this.createExample();
+      TestUtil.flush();
+      widget.setVisibility( false );
+
+      showDropDown();
+
+      assertFalse( popup.isSeeable() );
+    },
+
+    testShow_CalledBeforeParentVisibleMakesPopUpVisible : function() {
+      dropdown.destroy();
+      this.createExample();
+      TestUtil.flush();
+      widget.setVisibility( false );
+
+      showDropDown();
+      widget.setVisibility( true );
+      TestUtil.flush();
+
+      assertTrue( popup.isSeeable() );
+    },
+
+    testHidePopupWhenParentDisappears : function() {
+      showDropDown();
+
+      widget.setVisibility( false );
+
+      assertFalse( popup.isSeeable() );
+    },
+
     testHide_MakesPopUpInvisible : function() {
       showDropDown();
 
@@ -674,10 +706,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       widget.destroy();
       dropdown.destroy();
       this.createExample();
+      dropdown.setItems( [ "a" ] );
+
       dropdown.show();
       dropdown.setColumns( [ 100, 200, 100 ] );
-      TestUtil.flush();
+      TestUtil.flush(); // widget appears
+      TestUtil.flush(); // dropdown appears
 
+      assertTrue( popup.isSeeable() );
       assertEquals( 400, popup.getInnerWidth() );
     },
 
