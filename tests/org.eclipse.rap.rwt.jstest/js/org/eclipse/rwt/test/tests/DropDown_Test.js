@@ -1068,6 +1068,48 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       }
     },
 
+    testKeyDownPropagation_Escape : function() {
+      var logger = TestUtil.getLogger();
+
+      shell.addEventListener( "keydown", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Escape" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testKeyDownPropagation_Enter : function() {
+      var logger = TestUtil.getLogger();
+
+      shell.addEventListener( "keydown", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Enter" );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testKeyDownPropagationIsStoppedWhenVisible_Escape : function() {
+      showDropDown();
+      var logger = TestUtil.getLogger();
+
+      shell.addEventListener( "keydown", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Escape" );
+
+      assertEquals( 0, logger.getLog().length );
+    },
+
+    testKeyDownPropagationIsStoppedWhenVisible_Enter : function() {
+      showDropDown();
+      var logger = TestUtil.getLogger();
+
+      shell.addEventListener( "keydown", logger.log );
+      widget.focus();
+      TestUtil.pressOnce( widget, "Enter" );
+
+      assertEquals( 0, logger.getLog().length );
+    },
+
     testKeyEventForwarding_Escape : function() {
       showDropDown();
       var logger = TestUtil.getLogger();

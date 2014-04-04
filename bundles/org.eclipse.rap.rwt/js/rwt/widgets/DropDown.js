@@ -251,7 +251,8 @@
           this._.parent.removeEventListener( "appear", onParentVisibilityChange, this );
           this._.parent.removeEventListener( "disappear", onParentVisibilityChange, this );
           this._.parent.removeEventListener( "flush", onParentFlush, this );
-          this._.parent.removeEventListener( "keypress", onParentKeyEvent, this );
+          this._.parent.removeEventListener( "keydown", onParentKeyDownEvent, this );
+          this._.parent.removeEventListener( "keypress", onParentKeyPressEvent, this );
           this._.parent.removeEventListener( "changeFont", inheritParentStyling, this );
           this._.parent.removeEventListener( "changeTextColor", inheritParentStyling, this );
           this._.parent.removeEventListener( "changeBackgroundColor", inheritParentStyling, this );
@@ -321,7 +322,8 @@
     this._.parent.addEventListener( "appear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "disappear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "flush", onParentFlush, this );
-    this._.parent.addEventListener( "keypress", onParentKeyEvent, this );
+    this._.parent.addEventListener( "keydown", onParentKeyDownEvent, this );
+    this._.parent.addEventListener( "keypress", onParentKeyPressEvent, this );
     this._.parent.addEventListener( "changeFont", inheritParentStyling, this );
     this._.parent.addEventListener( "changeTextColor", inheritParentStyling, this );
     this._.parent.addEventListener( "changeBackgroundColor", inheritParentStyling, this );
@@ -451,7 +453,15 @@
     }
   };
 
-  var onParentKeyEvent = function( event ) {
+  var onParentKeyDownEvent = function( event ) {
+    // NOTE: This prevents the underlying Shell from closing. Shell is listening for keydown.
+    var key = event.getKeyIdentifier();
+    if( this._.visibility && ( key === "Enter" || key === "Escape" ) ) {
+      event.stopPropagation();
+    }
+  };
+
+  var onParentKeyPressEvent = function( event ) {
     var key = event.getKeyIdentifier();
     if( this._.visibility && forwardedKeys[ key ] && !event.isAltPressed() ) {
       event.preventDefault();
