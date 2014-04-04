@@ -710,23 +710,28 @@
   };
 
   var addMouseWheelEventFilter = function() {
-    rwt.event.EventHandler.setMouseEventFilter( filterMouseWheelEvent, this );
+    rwt.event.EventHandler.setMouseEventFilter( filterMouseEvent, this );
   };
 
   var removeMouseWheelEventFilter = function() {
-    var filter = rwt.event.EventHandler.getMouseEventFilter();
-    if( filter && filter[ 0 ] === filterMouseWheelEvent && filter[ 1 ] === this ) {
+    var currentFilter = rwt.event.EventHandler.getMouseEventFilter();
+    if( currentFilter && currentFilter[ 0 ] === filterMouseEvent && currentFilter[ 1 ] === this ) {
       rwt.event.EventHandler.setMouseEventFilter( null );
     }
   };
 
-  var filterMouseWheelEvent = function( event ) {
-    if( this.getVisible() ) {
-      if( event.getType() === "mousewheel" ) {
-        event.preventDefault();
-        this._.grid.getRowContainer().dispatchEvent( event );
-        return false;
+  var filterMouseEvent = function( event ) {
+    if( event.getType() === "mousedown" ) {
+      var target = event.getTarget();
+      if(    target !== this._.popup && !this._.popup.contains( target )
+          && target !== this._.parent && !this._.parent.contains( target ) )
+      {
+        this.hide();
       }
+    } else if( event.getType() === "mousewheel" ) {
+      event.preventDefault();
+      this._.grid.getRowContainer().dispatchEvent( event );
+      return false;
     }
     return true;
   };

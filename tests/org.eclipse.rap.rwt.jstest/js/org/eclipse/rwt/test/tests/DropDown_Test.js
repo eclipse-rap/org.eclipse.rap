@@ -243,9 +243,41 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       showDropDown();
 
       TestUtil.click( shell );
-      forceTimer();
 
       assertFalse( popup.isSeeable() );
+    },
+
+    testHideOnClientDocumentClick : function() {
+      showDropDown();
+
+      TestUtil.click( TestUtil.getDocument() );
+
+      assertFalse( popup.isSeeable() );
+    },
+
+    testHideOnClientDocumentBlockerClick : function() {
+      var blocker = TestUtil.getDocument()._getBlocker();
+      blocker.show();
+      TestUtil.flush();
+      showDropDown();
+
+      TestUtil.click( blocker );
+
+      assertFalse( popup.isSeeable() );
+      blocker.hide();
+    },
+
+    testHideOnOtherPopupClick : function() {
+      var otherPopup = new rwt.widgets.base.Popup();
+      otherPopup.addToDocument();
+      otherPopup.show();
+      TestUtil.flush();
+      showDropDown();
+
+      TestUtil.click( otherPopup );
+
+      assertFalse( popup.isSeeable() );
+      otherPopup.destroy();
     },
 
     testHideOnEscape : function() {
