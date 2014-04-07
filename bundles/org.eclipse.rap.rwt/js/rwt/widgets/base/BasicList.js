@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -49,18 +49,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicList", {
 
     getManager : function() {
       return this._manager;
-    },
-
-    getPreferredWidth: function() {
-      var result = 0;
-      var items = this.getItems();
-      for( var i = 0; i < items.length; i++ ) {
-        var paddingWidth = items[ i ].getPaddingLeft() + items[ i ].getPaddingRight();
-        var itemWidth = items[ i ].getPreferredBoxWidth() + paddingWidth;
-        result = Math.max( result, itemWidth );
-      }
-      result += this._vertScrollBar.getWidth();
-      return result;
     },
 
     isRelevantEvent : function( evt ) {
