@@ -691,13 +691,7 @@
       if( this._.customVariant ) {
         states[ this._.customVariant ] = true;
       }
-      try {
-        // "dropdown" appearance is defined in the incubator project and could be unavailable
-        // if DropDown is not registered as themeable widget. Fallback to "combo-list" in this case.
-        this._.styleMap = manager.styleFrom( this._.appearance, states );
-      } catch( ex ) {
-        this._.styleMap = manager.styleFrom( "combo-list", states );
-      }
+      this._.styleMap = manager.styleFrom( this._.appearance, states );
       this._.styleMap.padding = getPadding();
     }
     return this._.styleMap;

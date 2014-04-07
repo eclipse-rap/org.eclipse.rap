@@ -22,7 +22,7 @@
       return dropdown;
     },
 
-    properties : [ "items", "visible", "visibleItemCount", "columns", "data" ],
+    properties : [ "items", "visible", "visibleItemCount", "columns", "data", "selectionIndex" ],
 
     events : [ "Selection", "DefaultSelection" ],
 

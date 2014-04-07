@@ -78,17 +78,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( [ 3, 3, 3, 3] , popup.getBorder().getWidths() );
     },
 
-    testConstructor_WithMissingAppearanceDoesNotCrash : function() {
-      dropdown.destroy();
-
-      dropdown = new rwt.widgets.DropDown( widget, false, "missing" );
-      popup = dropdown._.popup;
-
-      assertEquals( "solid", popup.getBorder().getStyle() );
-      assertEquals( "#aaaaaa", popup.getBorder().getColor() );
-      assertEquals( [ 1, 1, 1, 1] , popup.getBorder().getWidths() );
-    },
-
     testConstructor_DoesNotMakePopUpVisible : function() {
       TestUtil.flush();
       assertFalse( popup.isSeeable() );
@@ -111,7 +100,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     testConstructor_SetsMarkupEnabledTrue : function() {
       widget = new rwt.widgets.Composite();
       widget.setParent( shell );
-      dropdown = new rwt.widgets.DropDown( widget, true );
+      dropdown = new rwt.widgets.DropDown( widget, true, "dropdown" );
       grid = dropdown._.grid;
 
       assertTrue( grid.getRenderConfig().markupEnabled );
