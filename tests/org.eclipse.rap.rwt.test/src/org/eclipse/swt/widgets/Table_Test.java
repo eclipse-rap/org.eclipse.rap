@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2486,11 +2486,24 @@ public class Table_Test {
   }
 
   @Test
-  public void testGetItemsPreferredWidth_CHECK() {
+  public void testGetItemsPreferredWidth_withCheck() {
     Table table = createTable( SWT.CHECK, 2 );
     // 33 = 21 ( check width ) + 12
     assertEquals( 37, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
+  }
+
+  @Test
+  public void testGetItemsPreferredWidth_withMarkup() {
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "<b>foo</b>" );
+    int width1 = table.getItemsPreferredWidth( 0 );
+
+    item.clearTextWidths();
+    table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    int width2 = table.getItemsPreferredWidth( 0 );
+
+    assertTrue( width1 > width2 );
   }
 
   @Test
@@ -2779,7 +2792,7 @@ public class Table_Test {
   private static TableItem[] createTableItems( Table table, int number ) {
     TableItem[] result = new TableItem[ number ];
     for( int i = 0; i < number; i++ ) {
-      result[ i ] = new TableItem( table, 0 );
+      result[ i ] = new TableItem( table, SWT.NONE );
       result[ i ].setText( "item" + i );
     }
     return result;

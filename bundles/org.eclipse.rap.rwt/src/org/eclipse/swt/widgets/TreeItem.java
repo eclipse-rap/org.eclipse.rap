@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -402,7 +402,7 @@ public class TreeItem extends Item {
    * Returns a rectangle describing the receiver's size and location relative to
    * its parent at a column in the tree.
    *
-   * @param columnIndex the index that specifies the column
+   * @param index the index that specifies the column
    * @return the receiver's bounding column rectangle
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -410,15 +410,15 @@ public class TreeItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public Rectangle getBounds( int columnIndex ) {
+  public Rectangle getBounds( int index ) {
     checkWidget();
-    if( !parent.checkData( this, index ) ) {
+    if( !parent.checkData( this, this.index ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
-    if( isVisible() && isValidColumn( columnIndex ) ) {
-      int left = parent.getVisualCellLeft( columnIndex, this );
-      int width = parent.getVisualCellWidth( columnIndex, this );
+    if( isVisible() && isValidColumn( index ) ) {
+      int left = parent.getVisualCellLeft( this, index );
+      int width = parent.getVisualCellWidth( this, index );
       result = new Rectangle( left, getItemTop(), width, parent.getItemHeight() );
     }
     return result;
@@ -908,9 +908,9 @@ public class TreeItem extends Item {
     }
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( index ) ) {
-      result.x = parent.getVisualTextLeft( index, this );
+      result.x = parent.getVisualTextLeft( this, index );
       result.y = getItemTop();
-      result.width = parent.getVisualTextWidth( index, this );
+      result.width = parent.getVisualTextWidth( this, index );
       result.height = parent.getItemHeight();
     }
     return result;
@@ -1037,28 +1037,28 @@ public class TreeItem extends Item {
    * Returns a rectangle describing the size and location relative to its parent
    * of an image at a column in the tree.
    *
-   * @param columnIndex the index that specifies the column
+   * @param index the index that specifies the column
    * @return the receiver's bounding image rectangle
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
-  public Rectangle getImageBounds( int columnIndex ) {
+  public Rectangle getImageBounds( int index ) {
     checkWidget();
-    if( !parent.checkData( this, index ) ) {
+    if( !parent.checkData( this, this.index ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Rectangle result = null;
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( ( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
+    if( ( 0 <= index && index < validColumnCount ) ) {
       result = new Rectangle( 0, 0, 0, 0 );
-      Point size = parent.getItemImageSize( columnIndex );
+      Point size = parent.getItemImageSize( index );
       result.width = size.x;
       result.height = size.y;
-      result.x = parent.getVisualCellLeft( columnIndex, this );
+      result.x = parent.getVisualCellLeft( this, index );
       // Note: The left cell-padding is visually ignored for the tree-column
-      if( !parent.isTreeColumn( columnIndex ) ) {
+      if( !parent.isTreeColumn( index ) ) {
         result.x += parent.getCellPadding().x;
       }
       // SWT behavior on windows gives the correct y value
@@ -1069,13 +1069,6 @@ public class TreeItem extends Item {
       result = new Rectangle( 0, 0, 0, 0 );
     }
     return result;
-  }
-
-  /*
-   * Returns the receiver's ideal width for the specified columnIndex.
-   */
-  int getPreferredWidth( int columnIndex, boolean checkData ) {
-    return parent.getPreferredCellWidth( this, columnIndex, checkData );
   }
 
   void clear() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1615,7 +1615,7 @@ public class Tree_Test {
   }
 
   @Test
-  public void testGetPreferredCellWidthForColumn() {
+  public void testGetPreferredCellWidth_withColumns() {
     createColumns( tree, 3 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( 0, "short" );
@@ -1624,6 +1624,45 @@ public class Tree_Test {
     int width1 = tree.getPreferredCellWidth( item, 0, false );
     int width2 = tree.getPreferredCellWidth( item, 1, false );
     assertTrue( width2 > width1 );
+  }
+
+  @Test
+  public void testGetPreferredCellWidth_withMarkup() {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "<b>foo</b>" );
+    int width1 = tree.getPreferredCellWidth( item, 0, false );
+
+    item.clearPreferredWidthBuffers( false );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    int width2 = tree.getPreferredCellWidth( item, 0, false );
+
+    assertTrue( width1 > width2 );
+  }
+
+  @Test
+  public void testGetVisualCellWidth_withMarkup() {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "<b>foo</b>" );
+    int width1 = tree.getVisualCellWidth( item, 0 );
+
+    item.clearPreferredWidthBuffers( false );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    int width2 = tree.getVisualCellWidth( item, 0 );
+
+    assertTrue( width1 > width2 );
+  }
+
+  @Test
+  public void testGetVisualTextWidth_withMarkup() {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "<b>foo</b>" );
+    int width1 = tree.getVisualTextWidth( item, 0 );
+
+    item.clearPreferredWidthBuffers( false );
+    tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    int width2 = tree.getVisualTextWidth( item, 0 );
+
+    assertTrue( width1 > width2 );
   }
 
   @Test

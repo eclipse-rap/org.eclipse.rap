@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.markupExtent;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.util.ArrayList;
@@ -1685,7 +1687,7 @@ public class Tree extends Composite {
       for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = items[ i ];
         if( item != null && item.isCached() ) {
-          int itemWidth = item.getPreferredWidth( 0, false );
+          int itemWidth = getPreferredCellWidth( item, 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
             int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
@@ -1772,7 +1774,7 @@ public class Tree extends Composite {
         if( clearBuffer ) {
           item.clearPreferredWidthBuffers( false );
         }
-        int itemWidth = item.getPreferredWidth( columnIndex, false ) + indention;
+        int itemWidth = getPreferredCellWidth( item, columnIndex, false ) + indention;
         maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
         if( item.getExpanded() ) {
           int innerWidth = getMaxInnerWidth( item.items, columnIndex, level + 1, clearBuffer );
@@ -1825,7 +1827,11 @@ public class Tree extends Composite {
     return getIndentionWidth() * ( item.depth + 1);
   }
 
-  int getVisualCellLeft( int index, TreeItem item ) {
+  int getVisualTextLeft( TreeItem item, int index ) {
+    return getVisualCellLeft( item, index ) + getCellPadding().x + getItemImageOuterWidth( index );
+  }
+
+  int getVisualCellLeft( TreeItem item, int index ) {
     int result = getCellLeft( index ) - getColumnLeftOffset( index );
     if( isTreeColumn( index ) ) {
       result += getIndentionOffset( item );
@@ -1836,15 +1842,23 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getVisualCellWidth( int index, TreeItem item ) {
+  int getVisualTextWidth( TreeItem item, int index ) {
+    int result = 0;
+    if( index == 0 && getColumnCount() == 0 ) {
+      result = getTextExtent( item.getFont(), item.getText( 0 ) ).x + TEXT_MARGIN.width;
+    } else if( index >= 0 && index < getColumnCount() ) {
+      result = getTextWidth( index ) - getIndentionOffset( item );
+      result = Math.max( 0, result );
+    }
+    return result;
+  }
+
+  int getVisualCellWidth( TreeItem item, int index ) {
     int result;
     if( getColumnCount() == 0 && index == 0 ) {
-      String text = item.getText( 0 );
-      int textWidth = TextSizeUtil.stringExtent( item.getFont(), text ).x;
-      result = getCellPadding().width
-               + getItemImageOuterWidth( index )
-               + textWidth
-               + TEXT_MARGIN.width;
+      Rectangle padding = getCellPadding();
+      int textWidth = getTextExtent( item.getFont(), item.getText( 0 ) ).x;
+      result = padding.width + getItemImageOuterWidth( index ) + textWidth + TEXT_MARGIN.width;
     } else {
       result = getColumn( index ).getWidth();
       if( isTreeColumn( index ) ) {
@@ -1858,35 +1872,23 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getVisualTextLeft( int index, TreeItem item ) {
-    return getVisualCellLeft( index, item ) + getCellPadding().x + getItemImageOuterWidth( index );
-  }
-
-  int getVisualTextWidth( int index, TreeItem item ) {
-    int result = 0;
-    if( index == 0 && getColumnCount() == 0 ) {
-      result = TextSizeUtil.stringExtent( item.getFont(), item.getText( 0 ) ).x;
-      result += TEXT_MARGIN.width;
-    } else if( index >= 0 && index < getColumnCount() ) {
-      result = getTextWidth( index ) - getIndentionOffset( item );
-      result = Math.max( 0, result );
-    }
-    return result;
-  }
-
-  int getPreferredCellWidth( TreeItem item, int columnIndex, boolean checkData ) {
-    int result = item.getPreferredWidthBuffer( columnIndex );
-    if( !item.hasPreferredWidthBuffer( columnIndex ) ) {
-      result = getTextOffset( columnIndex ) ;
+  int getPreferredCellWidth( TreeItem item, int index, boolean checkData ) {
+    int result = item.getPreferredWidthBuffer( index );
+    if( !item.hasPreferredWidthBuffer( index ) ) {
       Rectangle padding = getCellPadding();
-      result += TextSizeUtil.stringExtent( getFont(), item.getTextWithoutMaterialize( columnIndex ) ).x;
+      result = getTextOffset( index ) ;
+      result += getTextExtent( item.getFont(), item.getTextWithoutMaterialize( index ) ).x;
       result += padding.width - padding.x;
-      if( isTreeColumn( columnIndex ) ) {
+      if( isTreeColumn( index ) ) {
         result += TEXT_MARGIN.width - TEXT_MARGIN.x;
       }
-      item.setPreferredWidthBuffer( columnIndex, result );
+      item.setPreferredWidthBuffer( index, result );
     }
     return result;
+  }
+
+  private Point getTextExtent( Font font, String text ) {
+    return isMarkupEnabledFor( this ) ? markupExtent( font, text, -1 ) : stringExtent( font, text );
   }
 
   boolean isTreeColumn( int index ) {
@@ -2278,7 +2280,7 @@ public class Tree extends Composite {
       for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = items[ i ];
         if( item != null && !item.isInDispose() && item.isCached() ) {
-          int itemWidth = item.getPreferredWidth( 0, false );
+          int itemWidth = getPreferredCellWidth( item, 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
             int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
