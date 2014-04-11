@@ -428,9 +428,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getChild : function( index ) {
-      var result = this._children[ index ];
-      if( !result ) {
-        if( index >= 0 && index < this._children.length ) {
+      var result;
+      // Note: Check for index range first to avoid weird behavior in IE8 - bug 429741
+      if( index >= 0 && index < this._children.length ) {
+        result = this._children[ index ];
+        if( !result ) {
           result = new rwt.widgets.GridItem( this, index, true );
         }
       }
