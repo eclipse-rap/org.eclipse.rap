@@ -323,7 +323,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       var start = ( new Date() ).getTime();
       this._updateRows( 0, this._children.length, contentOnly );
       this._renderBounds();
-      if( this._postRender ) {
+      if( this._postRender ) { // TODO : remove with IE8 support
         var postRender = this._postRender;
         window.setTimeout( function() {
           var renderTime = ( new Date() ).getTime() - start;

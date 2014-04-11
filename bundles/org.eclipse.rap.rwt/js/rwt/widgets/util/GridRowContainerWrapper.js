@@ -163,23 +163,12 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
   _updateConfig : function() {
     var configLeft = this._container[ 0 ].getRenderConfig();
     var configRight = this._container[ 1 ].getRenderConfig();
-    for( var key in this._config ) {
-      if( this._config[ key ] instanceof Array ) {
-        configLeft[ key ] = this._config[ key ].concat();
-        configRight[ key ] = this._config[ key ].concat();
-      } else {
-        configLeft[ key ] = this._config[ key ];
-        configRight[ key ] = this._config[ key ];
-      }
-    }
+    this._copyConfigToSubContainer( configLeft, configRight );
+    configLeft.containerNumber = 0;
+    configRight.containerNumber = 1;
     configRight.hasCheckBoxes = false;
     var columnOrder = this._getColumnOrder();
-    var rightColumnsOffset = 0;
-    if( columnOrder.length > this._fixedColumns ) {
-      rightColumnsOffset = this._config.itemLeft[ columnOrder[ this._fixedColumns ] ];
-    } else {
-      rightColumnsOffset = this._width;
-    }
+    var rightColumnsOffset = this._computeRightColumnsOffset( columnOrder );
     for( var i = 0; i < columnOrder.length; i++ ) {
       var column = columnOrder[ i ];
       if( i < this._fixedColumns ) {
@@ -195,6 +184,28 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
       this._splitOffset = rightColumnsOffset;
       this._layoutX();
     }
+  },
+
+  _copyConfigToSubContainer : function( configLeft, configRight ) {
+    for( var key in this._config ) {
+      if( this._config[ key ] instanceof Array ) {
+        configLeft[ key ] = this._config[ key ].concat();
+        configRight[ key ] = this._config[ key ].concat();
+      } else {
+        configLeft[ key ] = this._config[ key ];
+        configRight[ key ] = this._config[ key ];
+      }
+    }
+  },
+
+  _computeRightColumnsOffset : function( columnOrder ) {
+    var rightColumnsOffset = 0;
+    if( columnOrder.length > this._fixedColumns ) {
+      rightColumnsOffset = this._config.itemLeft[ columnOrder[ this._fixedColumns ] ];
+    } else {
+      rightColumnsOffset = this._width;
+    }
+    return rightColumnsOffset;
   },
 
   _layoutX : function() {

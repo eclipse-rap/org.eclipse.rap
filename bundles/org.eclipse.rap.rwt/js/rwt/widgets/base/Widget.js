@@ -4020,12 +4020,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         result = this._adapters[ key ];
       }
       return result;
-    },
-
-    applyObjectId : function( id ) {
-      if( rwt.widgets.base.Widget._renderHtmlIds ) {
-        this.setHtmlAttribute( "id", id );
-      }
     }
 
   },

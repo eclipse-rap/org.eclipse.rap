@@ -93,8 +93,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       label.setWidth( column.getWidth() );
       label.setHoverEffect( column.getMoveable() );
       label.setVisibility( column.getVisibility() && column.getWidth() > 0 );
-      label.clearHtmlAttributes();
-      label.setHtmlAttributes( column.getHtmlAttributes() );
       if( this._footer ) {
         label.setText( column.getFooterText() );
         label.setImage( column.getFooterImage() );
@@ -104,6 +102,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
           label.resetFont();
         }
       } else {
+        label.clearHtmlAttributes();
+        label.setHtmlAttributes( column.getHtmlAttributes() );
         if( column.getFont() !== null ) {
           label.setFont( column.getFont() );
         } else {
@@ -113,7 +113,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
         label.setImage( column.getImage() );
         label.setToolTipText( column.getToolTipText() );
         label.setSortIndicator( column.getSortDirection() );
-        label.applyObjectId( column.getObjectId() );
         if( column.isGroup() ) {
           label.setChevron( column.isExpanded() ? "expanded" : "collapsed" );
         }

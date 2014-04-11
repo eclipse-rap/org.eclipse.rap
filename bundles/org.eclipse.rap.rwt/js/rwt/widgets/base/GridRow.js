@@ -105,7 +105,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           }
         }
       }
-      this._renderHtmlAttributes( item );
+      this._renderHtmlAttributes( item, config );
       this.dispatchSimpleEvent( "itemRendered", item );
     },
 
@@ -646,9 +646,14 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _renderHtmlAttributes : function( item ) {
+    _renderHtmlAttributes : function( item, config ) {
       this.clearHtmlAttributes();
-      this.setHtmlAttributes( item ? item.getHtmlAttributes() : {} );
+      var attributes = item ? item.getHtmlAttributes() : {};
+      if( attributes[ "id" ] && config.containerNumber === 1 ) {
+        attributes = rwt.util.Objects.copy( attributes );
+        attributes[ "id" ] += "-1";
+      }
+      this.setHtmlAttributes( attributes );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {

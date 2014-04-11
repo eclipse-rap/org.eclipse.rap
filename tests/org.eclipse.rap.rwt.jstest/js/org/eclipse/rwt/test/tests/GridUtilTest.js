@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2011, 2014 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -26,6 +26,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       assertTrue( sub1 instanceof rwt.widgets.base.GridRowContainer );
       assertTrue( sub2 instanceof rwt.widgets.base.GridRowContainer );
       container.destroy();
+    },
+
+    testSubContainerCanBeIdentifiedByRenderConfig : function() {
+      var container = this._createSplitContainer();
+      var configLeft = container.getSubContainer( 0 ).getRenderConfig();
+      var configRight = container.getSubContainer( 1 ).getRenderConfig();
+
+      assertEquals( 0, configLeft.containerNumber );
+      assertEquals( 1, configRight.containerNumber );
     },
 
     testAddToParent : function() {

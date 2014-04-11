@@ -406,29 +406,12 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _onSend : function( event ) {
       rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+    },
+
+    applyObjectId : function( id ) {
+      this.base( arguments, id );
+      this._list.applyObjectId( id + "-listbox" );
     }
-
-    ////////////////////////////
-    // apply subwidget html IDs
-
-//    applyObjectId : function( id ) {
-//      this.base( arguments, id );
-//      if( rwt.widgets.base.Widget._renderHtmlIds ) {
-//        this._list.applyObjectId( id + "-listbox" );
-//        this.addEventListener( "itemsChanged", this._applyListItemIds );
-//      }
-//    },
-//
-//    _applyListItemIds : function() {
-//      var listId = this._list.getHtmlAttribute( "id" );
-//      var listItems = this._list.getItems();
-//      if( listItems ) {
-//        for( var i = 0; i < listItems.length; i++ ) {
-//          listItems[ i ].setHtmlAttribute( "id", this._list.getHtmlAttribute( "id" ) + "-listitem-" + i );
-//        }
-//      }
-//    }
-
   }
 
 } );

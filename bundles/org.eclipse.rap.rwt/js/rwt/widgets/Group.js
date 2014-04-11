@@ -149,10 +149,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
 
     applyObjectId : function( id ) {
       this.base( arguments, id );
-      if( rwt.widgets.base.Widget._renderHtmlIds ) {
-        var labelObject = this.getLegendObject().getLabelObject();
-        labelObject.setHtmlAttribute( "id", id + "-label" );
-      }
+      this.getLegendObject().getLabelObject().applyObjectId( id + "-label" );
     },
 
     /**

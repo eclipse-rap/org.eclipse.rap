@@ -751,31 +751,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( 1, log );
     },
 
-//    testApplyListId_renderHtmlIdsActivated : function() {
-//      rwt.widgets.base.Widget._renderHtmlIds = true;
-//
-//      combo.applyObjectId( "123" );
-//
-//      assertEquals( "123-listbox" ,list.getHtmlAttribute( "id" ) );
-//    },
-//
-//    testApplyListId_renderHtmlIdsDeactivated : function() {
-//      rwt.widgets.base.Widget._renderHtmlIds = false;
-//
-//      combo.applyObjectId( "123" );
-//
-//      assertEquals( "" ,list.getHtmlAttribute( "id" ) );
-//    },
-//
-//    testApplyListItemIds_renderHtmlIdsActivated : function() {
-//      rwt.widgets.base.Widget._renderHtmlIds = true;
-//
-//      combo.applyObjectId( "123" );
-//      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-//
-//      var listItemId = list.getHtmlAttribute( "id" ) + "-listitem-3";
-//      assertEquals( listItemId, list.getItems()[ 3 ].getHtmlAttribute( "id" ) );
-//    },
+    testApplyListId_renderHtmlIdsActivated : function() {
+      rwt.widgets.base.Widget._renderHtmlIds = true;
+
+      combo.applyObjectId( "123" );
+
+      assertEquals( "123-listbox" ,list._.popup.getHtmlAttribute( "id" ) );
+      rwt.widgets.base.Widget._renderHtmlIds = false;
+    },
+
+    testApplyListId_renderHtmlIdsDeactivated : function() {
+      rwt.widgets.base.Widget._renderHtmlIds = false;
+
+      combo.applyObjectId( "123" );
+
+      assertEquals( "" ,list._.popup.getHtmlAttribute( "id" ) );
+    },
+
+    testApplyListItemIds_renderHtmlIdsActivated : function() {
+      rwt.widgets.base.Widget._renderHtmlIds = true;
+
+      combo.applyObjectId( "123" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+
+      var listItemId = list._.popup.getHtmlAttribute( "id" ) + "-listitem-3";
+      var item3 = list._.grid.getRootItem().getChild( 3 );
+      assertEquals( listItemId, item3.getHtmlAttribute( "id" ) );
+    },
 
     testPropagateEscKey_ListIsVisible : function() {
       combo.setListVisible( true );

@@ -113,7 +113,6 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
 
     navBar.add(lastYearBt, lastMonthBt, monthYearLabel, nextMonthBt, nextYearBt);
     this._monthYearLabel = monthYearLabel;
-    navBar.setHtmlProperty("id", "navBar");
 
     // Create the date pane
     var datePane = new rwt.widgets.base.Parent();

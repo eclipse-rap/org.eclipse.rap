@@ -31,7 +31,6 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     this._width = 0;
     this._toolTip = null;
     this._customVariant = null;
-    this._objectId = null;
     this._text = "";
     this._font = null;
     this._image = null;
@@ -238,15 +237,6 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
           rwt.remote.EventUtil.notifySelected( this );
         }
       }
-    },
-
-    applyObjectId : function( id ) {
-      this._objectId = id;
-      this._update();
-    },
-
-    getObjectId : function() {
-      return this._objectId;
     },
 
     setAlignment : function( value ) {

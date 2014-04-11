@@ -279,6 +279,11 @@
 
     toString : function() {
       return "DropDown";
+    },
+
+    applyObjectId : function( id ) {
+      this._.id = id;
+      this._.popup.applyObjectId( id );
     }
 
   };
@@ -435,6 +440,7 @@
     rootItem.setItemCount( items.length );
     for( var i = 0; i < items.length; i++ ) {
       var gridItem = new rwt.widgets.GridItem( rootItem, i, false );
+      gridItem.applyObjectId( this._.id + "-listitem-" + i );
       if( this._.columns ) {
         gridItem.setTexts( items[ i ].split( TAB ) );
       } else {

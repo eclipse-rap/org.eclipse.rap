@@ -17,6 +17,12 @@ rwt.qx.Mixin.define( "rwt.widgets.util.HtmlAttributesMixin", {
 
   members : {
 
+    applyObjectId : function( id ) {
+      if( rwt.widgets.base.Widget._renderHtmlIds ) {
+        this.setHtmlAttribute( "id", id );
+      }
+    },
+
     clearHtmlAttributes : function( map ) {
       if( !this._htmlAttributes ) {
         return;
