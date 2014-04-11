@@ -11,21 +11,21 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -49,6 +49,7 @@ final class DateTimeLCAUtil {
   private static final String PROP_DATE_PATTERN = "datePattern";
   private static final String PROP_SUB_WIDGETS_BOUNDS = "subWidgetsBounds";
   private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private DateTimeLCAUtil() {
     // prevent instantiation
@@ -58,6 +59,9 @@ final class DateTimeLCAUtil {
     ControlLCAUtil.preserveValues( dateTime );
     WidgetLCAUtil.preserveCustomVariant( dateTime );
     preserveListener( dateTime, PROP_SELECTION_LISTENER, isListening( dateTime, SWT.Selection ) );
+    preserveListener( dateTime,
+                      PROP_DEFAULT_SELECTION_LISTENER,
+                      isListening( dateTime, SWT.DefaultSelection ) );
   }
 
   static void renderInitialization( DateTime dateTime ) {
@@ -73,6 +77,10 @@ final class DateTimeLCAUtil {
     renderListener( dateTime,
                     PROP_SELECTION_LISTENER,
                     isListening( dateTime, SWT.Selection ),
+                    false );
+    renderListener( dateTime,
+                    PROP_DEFAULT_SELECTION_LISTENER,
+                    isListening( dateTime, SWT.DefaultSelection ),
                     false );
   }
 

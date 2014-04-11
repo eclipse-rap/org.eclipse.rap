@@ -15,13 +15,9 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectManager = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
-rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
+var shell;
 
-  extend : rwt.qx.Object,
-
-  members : {
-
-    monthNames : [ "January",
+var monthNames = [ "January",
                    "February",
                    "March",
                    "April",
@@ -33,18 +29,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
                    "October",
                    "November",
                    "December",
-                   "" ],
-    weekdayShortNames : [ "",
+                   "" ];
+var weekdayShortNames = [ "",
                           "Sun",
                           "Mon",
                           "Tue",
                           "Wed",
                           "Thu",
                           "Fri",
-                          "Sat" ],
+                          "Sat" ];
+
+rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
+
+  extend : rwt.qx.Object,
+
+  members : {
+
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.flush();
+    },
+
+    tearDown : function() {
+      shell.destroy();
+    },
 
     testCreateDateTimeCalendarByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       assertTrue( widget instanceof rwt.widgets.DateTimeCalendar );
       assertIdentical( shell, widget.getParent() );
@@ -52,84 +62,103 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       assertEquals( "datetime-calendar", widget.getAppearance() );
       assertEquals( 34, rwt.widgets.base.Calendar.CELL_WIDTH );
       assertEquals( 19, rwt.widgets.base.Calendar.CELL_HEIGHT );
-      assertEquals( this.monthNames, rwt.widgets.base.Calendar.MONTH_NAMES );
-      assertEquals( this.weekdayShortNames, rwt.widgets.base.Calendar.WEEKDAY_NAMES );
-      shell.destroy();
+      assertEquals( monthNames, rwt.widgets.base.Calendar.MONTH_NAMES );
+      assertEquals( weekdayShortNames, rwt.widgets.base.Calendar.WEEKDAY_NAMES );
       widget.destroy();
     },
 
     testSetYearByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "year" : 2000 } );
       assertEquals( 2000, widget._calendar.getDate().getFullYear() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetMonthByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "month" : 6 } );
       assertEquals( 6, widget._calendar.getDate().getMonth() );
-      shell.destroy();
       widget.destroy();
     },
 
     testSetDayByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.protocolSet( "w3", { "day" : 10 } );
       assertEquals( 10, widget._calendar.getDate().getDate() );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetSelectionListenerByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
-
-      TestUtil.protocolListen( "w3", { "Selection" : true } );
-
-      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
-      assertTrue( remoteObject.isListening( "Selection" ) );
-      shell.destroy();
       widget.destroy();
     },
 
     // see bug 401780
     testKeypressEscape : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       TestUtil.flush();
       widget.setFocused( true );
 
       TestUtil.pressOnce( widget.getElement(), "Escape", 0 );
 
-      shell.destroy();
       widget.destroy();
+    },
+
+    testSendAllFieldsTogether : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.clearRequestLog();
+
+      TestUtil.press( dateTime, "Right" );
+      rwt.remote.Connection.getInstance().send();
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( 11, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testSendSelectionEvent : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      TestUtil.fakeListener( dateTime, "Selection", true );
+      TestUtil.clearRequestLog();
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Up" );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+      dateTime.destroy();
+    },
+
+    testSendDefaultSelectionEvent : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      TestUtil.fakeListener( dateTime, "DefaultSelection", true );
+      TestUtil.clearRequestLog();
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Enter" );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "DefaultSelection" ) );
+      dateTime.destroy();
+    },
+
+    testSetCustomVariant : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+
+      dateTime.setCustomVariant( "foo" );
+
+      assertEquals( "foo", dateTime._calendar._customVariant );
+      dateTime.destroy();
     },
 
     testCreateDispose : function() {
       rwt.widgets.base.Calendar.CELL_WIDTH = 24;
       rwt.widgets.base.Calendar.CELL_HEIGHT = 16;
-      var months = [
-        "Januar",
-        "Februar",
-        "März",
-        "April",
-        "Mai",
-        "Juni",
-        "Juli",
-        "August",
-        "September",
-        "Oktober",
-        "November",
-        "Dezember",
-        ""
-      ];
-      var days = [ "", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ];
-      var calendar = new rwt.widgets.DateTimeCalendar( "medium", months, days );
+      var calendar = new rwt.widgets.DateTimeCalendar( "medium", monthNames, weekdayShortNames );
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.DateTime" );
       ObjectManager.add( "w3", calendar, handler );
       calendar.addToDocument();
@@ -158,8 +187,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
           "style" : styles,
           "parent" : parentId,
           "cellSize" : [ 34, 19 ],
-          "monthNames" : this.monthNames,
-          "weekdayShortNames" : this.weekdayShortNames
+          "monthNames" : monthNames,
+          "weekdayShortNames" : weekdayShortNames
         }
       } );
       return ObjectManager.getObject( "w3" );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,8 +30,9 @@ class DateTimeTab extends ExampleTab {
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
-  DateTime dateTime1;
-  Group group1, group2;
+
+  private DateTime dateTime;
+  private Group group1, group2;
 
   DateTimeTab() {
     super( "DateTime" );
@@ -67,45 +68,41 @@ class DateTimeTab extends ExampleTab {
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle() | getStyle( group1 ) | getStyle( group2 );
-    /* Create the example widgets */
-    dateTime1 = new DateTime( parent, style );
+    dateTime = new DateTime( parent, style );
     if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
-      Menu dateTimeMenu = new Menu( dateTime1 );
+      Menu dateTimeMenu = new Menu( dateTime );
       MenuItem dateTimeMenuItem = new MenuItem( dateTimeMenu, SWT.PUSH );
       dateTimeMenuItem.addSelectionListener( new SelectionAdapter() {
 
         @Override
-        public void widgetSelected( final SelectionEvent event ) {
+        public void widgetSelected( SelectionEvent event ) {
           String message = "You requested a context menu for the DateTime";
-          MessageDialog.openInformation( dateTime1.getShell(),
-                                         "Information",
-                                         message );
+          MessageDialog.openInformation( dateTime.getShell(), "Information", message );
         }
       } );
       dateTimeMenuItem.setText( "DateTime context menu item" );
-      dateTime1.setMenu( dateTimeMenu );
+      dateTime.setMenu( dateTimeMenu );
     }
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
-      dateTime1.addSelectionListener( new SelectionListener() {
+      dateTime.addSelectionListener( new SelectionListener() {
 
-        public void widgetSelected( final SelectionEvent event ) {
+        public void widgetSelected( SelectionEvent event ) {
           String message = "DateTime WidgetSelected! Selected date: "
-            + dateTime1.getDay()
-            + "/" + ( dateTime1.getMonth() + 1 )
-            + "/" + dateTime1.getYear()
-            + " " + dateTime1.getHours()
-            + ":" + dateTime1.getMinutes()
-            + ":" + dateTime1.getSeconds();
+                         + dateTime.getDay()
+                         + "/" + ( dateTime.getMonth() + 1 )
+                         + "/" + dateTime.getYear()
+                         + " " + dateTime.getHours()
+                         + ":" + dateTime.getMinutes()
+                         + ":" + dateTime.getSeconds();
           log( message );
         }
 
-        public void widgetDefaultSelected( final SelectionEvent event ) {
-          String message = "DateTime WidgetDefaultSelected!";
-          log( message );
+        public void widgetDefaultSelected( SelectionEvent event ) {
+          log( "DateTime WidgetDefaultSelected!" );
         }
       } );
     }
-    registerControl( dateTime1 );
+    registerControl( dateTime );
   }
 
   protected Button createStyleButton( Composite parent,
@@ -119,7 +116,7 @@ class DateTimeTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
 
       @Override
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         createNew();
       }
     } );
@@ -149,4 +146,5 @@ class DateTimeTab extends ExampleTab {
     }
     return result;
   }
+
 }

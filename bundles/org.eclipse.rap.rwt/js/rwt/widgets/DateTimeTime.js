@@ -16,28 +16,14 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
   construct : function( style ) {
     this.base( arguments );
     this.setOverflow( "hidden" );
-    this.setAppearance( "datetime-time" );
-
-    // Get styles
     this._short = rwt.util.Strings.contains( style, "short" );
     this._medium = rwt.util.Strings.contains( style, "medium" );
     this._long = rwt.util.Strings.contains( style, "long" );
-
-    this._requestTimer = new rwt.client.Timer( 110 );
-    this._requestTimer.addEventListener( "interval", this._onInterval, this );
-
-    // Add listener for font change
-    this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
-
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "keyup", this._onKeyUp, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
-    this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
-
-    // Focused text field
-    this._focusedTextField = null;
     // Hours
     this._hoursTextField = new rwt.widgets.base.Label( "00" );
     this._hoursTextField.setAppearance( "datetime-field" );
@@ -47,7 +33,6 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
     // Separator
     this._separator3 = new rwt.widgets.base.Label( ":" );
     this._separator3.setAppearance( "datetime-separator" );
-    this._separator3.addEventListener( "contextmenu", this._onContextMenu, this );
     this.add(this._separator3);
     // Minutes
     this._minutesTextField = new rwt.widgets.base.Label( "00" );
@@ -70,111 +55,68 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       this.add(this._secondsTextField);
     }
     // Spinner
-    this._spinner = new rwt.widgets.base.Spinner();
-    this._spinner.set({
-      wrap: true,
-      border: null,
-      backgroundColor: null,
-      selectTextOnInteract : false
-    });
-    this._spinner.setMin( 0 );
-    this._spinner.setMax( 23 );
-    this._spinner.setValue( 0 );
-    this._spinner.addEventListener( "change",  this._onSpinnerChange, this );
-    this._spinner._textfield.setTabIndex( null );
-    // Hack to prevent the spinner text field to request the focus
-    this._spinner._textfield.setFocused = function() {};
-    // Solution for Bug 284021
-    this._spinner._textfield.setDisplay( false );
-    this._spinner._upbutton.setAppearance("datetime-button-up");
-    this._spinner._downbutton.setAppearance("datetime-button-down");
-    this._spinner.removeEventListener("keypress", this._spinner._onkeypress, this._spinner);
-    this._spinner.removeEventListener("keydown", this._spinner._onkeydown, this._spinner);
-    this._spinner.removeEventListener("keyup", this._spinner._onkeyup, this._spinner);
-    this._spinner.removeEventListener("mousewheel", this._spinner._onmousewheel, this._spinner);
+    this._spinner = this._createSpinner();
     this.add( this._spinner );
     // Set the default focused text field
     this._focusedTextField = this._hoursTextField;
+    // Set the appearance after subwidgets are created
+    this.setAppearance( "datetime-time" );
   },
 
   destruct : function() {
-    this.removeEventListener( "changeFont", this._rwt_onChangeFont, this );
-    this.removeEventListener( "keypress", this._onKeyPress, this );
-    this.removeEventListener( "keyup", this._onKeyUp, this );
-    this.removeEventListener( "mousewheel", this._onMouseWheel, this );
-    this.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this.removeEventListener( "focus", this._onFocusIn, this );
-    this.removeEventListener( "blur", this._onFocusOut, this );
-    this._hoursTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this._minutesTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this._secondsTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this._spinner.removeEventListener( "change",  this._onSpinnerChange, this );
     this._disposeObjects( "_hoursTextField",
                           "_minutesTextField",
                           "_secondsTextField",
                           "_focusedTextField",
                           "_spinner",
                           "_separator3",
-                          "_separator4",
-                          "_requestTimer" );
-  },
-
-  statics : {
-    HOURS_TEXTFIELD : 8,
-    MINUTES_TEXTFIELD : 9,
-    SECONDS_TEXTFIELD : 10,
-    HOURS_MINUTES_SEPARATOR : 11,
-    MINUTES_SECONDS_SEPARATOR : 12,
-    SPINNER : 7,
-
-    _isNoModifierPressed : function( evt ) {
-      return    !evt.isCtrlPressed()
-             && !evt.isShiftPressed()
-             && !evt.isAltPressed()
-             && !evt.isMetaPressed();
-    }
+                          "_separator4" );
   },
 
   members : {
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._hoursTextField.addState( state );
-        this._minutesTextField.addState( state );
-        this._secondsTextField.addState( state );
-        this._spinner.addState( state );
-        this._separator3.addState( state );
-        this._separator4.addState( state );
-      }
+
+    _getSubWidgets : function() {
+      return [ this._hoursTextField,
+               this._minutesTextField,
+               this._secondsTextField,
+               this._spinner,
+               this._separator3,
+               this._separator4 ];
     },
 
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._hoursTextField.removeState( state );
-        this._minutesTextField.removeState( state );
-        this._secondsTextField.removeState( state );
-        this._spinner.removeState( state );
-        this._separator3.removeState( state );
-        this._separator4.removeState( state );
-      }
+    _createSpinner : function() {
+      var spinner = new rwt.widgets.base.Spinner();
+      spinner.set( {
+        wrap: true,
+        border: null,
+        backgroundColor: null,
+        selectTextOnInteract : false
+      } );
+      spinner.setMin( 0 );
+      spinner.setMax( 23 );
+      spinner.setValue( 0 );
+      spinner.addEventListener( "change",  this._onSpinnerChange, this );
+      spinner._textfield.setTabIndex( null );
+      // Hack to prevent the spinner text field to request the focus
+      spinner._textfield.setFocused = rwt.util.Functions.returnTrue;
+      // Solution for Bug 284021
+      spinner._textfield.setDisplay( false );
+      spinner._upbutton.setAppearance( "datetime-button-up" );
+      spinner._downbutton.setAppearance( "datetime-button-down" );
+      spinner.removeEventListener( "keypress", spinner._onkeypress, spinner );
+      spinner.removeEventListener( "keydown", spinner._onkeydown, spinner );
+      spinner.removeEventListener( "keyup", spinner._onkeyup, spinner );
+      spinner.removeEventListener( "mousewheel", spinner._onmousewheel, spinner );
+      return spinner;
     },
 
-    _rwt_onChangeFont : function( evt ) {
-      var value = evt.getValue();
+    _applyFont : function( value, old ) {
+      this.base( arguments, value, old );
       this._hoursTextField.setFont( value );
       this._minutesTextField.setFont( value );
       this._secondsTextField.setFont( value );
-    },
-
-    _onContextMenu : function( evt ) {
-      var menu = this.getContextMenu();
-      if( menu != null ) {
-        menu.setLocation( evt.getPageX(), evt.getPageY() );
-        menu.setOpener( this );
-        menu.show();
-        evt.stopPropagation();
-      }
+      this._separator3.setFont( value );
+      this._separator4.setFont( value );
     },
 
     _onFocusIn : function( evt ) {
@@ -186,8 +128,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       this._focusedTextField.removeState( "selected" );
     },
 
-    _onTextFieldMouseDown : function( evt ) {
-      this._setFocusedTextField( evt.getTarget() );
+    _onTextFieldMouseDown : function( event ) {
+      this._setFocusedTextField( event.getTarget() );
     },
 
     _setFocusedTextField :  function( textField ) {
@@ -217,7 +159,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       }
     },
 
-    _onSpinnerChange : function( evt ) {
+    _onSpinnerChange : function( event ) {
       if( this._focusedTextField != null ) {
         var oldValue = this._focusedTextField.getText();
         var newValue = this._addLeadingZero( this._spinner.getValue() );
@@ -228,122 +170,145 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       }
     },
 
-    _onKeyPress : function( evt ) {
-      var keyIdentifier = evt.getKeyIdentifier();
-      if( rwt.widgets.DateTimeTime._isNoModifierPressed( evt ) ) {
-        switch( keyIdentifier ) {
+    _onKeyPress : function( event ) {
+      if( event.getModifiers() === 0 ) {
+        switch( event.getKeyIdentifier() ) {
+          case "Enter":
+            this._handleKeyEnter( event );
+            break;
           case "Left":
-            if( this._focusedTextField === this._hoursTextField ) {
-              if( this._short ) {
-                this._setFocusedTextField( this._minutesTextField );
-              } else {
-                this._setFocusedTextField( this._secondsTextField );
-              }
-            } else if( this._focusedTextField === this._minutesTextField ) {
-              this._setFocusedTextField( this._hoursTextField );
-            } else if( this._focusedTextField === this._secondsTextField ) {
-              this._setFocusedTextField( this._minutesTextField );
-            }
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyLeft( event );
             break;
           case "Right":
-            if( this._focusedTextField === this._hoursTextField ) {
-              this._setFocusedTextField( this._minutesTextField );
-            } else if( this._focusedTextField === this._minutesTextField ) {
-              if( this._short ) {
-                this._setFocusedTextField( this._hoursTextField );
-              } else {
-                this._setFocusedTextField( this._secondsTextField );
-              }
-            } else if( this._focusedTextField === this._secondsTextField ) {
-              this._setFocusedTextField( this._hoursTextField );
-            }
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyRight( event );
             break;
           case "Up":
-            var value = this._spinner.getValue();
-            if( value == this._spinner.getMax() ) {
-              this._spinner.setValue( this._spinner.getMin() );
-            } else {
-              this._spinner.setValue( value + 1 );
-            }
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyUp( event );
             break;
           case "Down":
-            var value = this._spinner.getValue();
-            if( value == this._spinner.getMin() ) {
-              this._spinner.setValue( this._spinner.getMax() );
-            } else {
-              this._spinner.setValue( value - 1 );
-            }
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyDown( event );
             break;
           case "PageUp":
           case "PageDown":
           case "Home":
           case "End":
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._stopEvent( event );
             break;
         }
       }
     },
 
-    _onKeyUp : function( evt ) {
-      var keypress = evt.getKeyIdentifier();
-      var value = this._focusedTextField.getText();
-      value = this._removeLeadingZero( value );
-      if( rwt.widgets.DateTimeTime._isNoModifierPressed( evt ) ) {
-        switch( keypress ) {
+    _onKeyUp : function( event ) {
+      if( event.getModifiers() === 0 ) {
+        switch( event.getKeyIdentifier() ) {
           case "0": case "1": case "2": case "3": case "4":
           case "5": case "6": case "7": case "8": case "9":
-            var maxChars = this._focusedTextField.getUserData( "maxLength" );
-            var newValue = keypress;
-            if( value.length < maxChars && !this._initialEditing ) {
-              newValue = value + keypress;
-            }
-            var intValue = parseInt( newValue, 10 );
-            if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
-              this._spinner.setValue( intValue );
-            } else {
-              newValue = keypress;
-              intValue = parseInt( newValue, 10 );
-              if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
-                this._spinner.setValue( intValue );
-              }
-            }
-            this._initialEditing = false;
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyNumber( event );
             break;
           case "Home":
-            var newValue = this._spinner.getMin();
-            this._spinner.setValue( newValue );
-            this._initialEditing = true;
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyHome( event );
             break;
           case "End":
-            var newValue = this._spinner.getMax();
-            this._spinner.setValue( newValue );
-            this._initialEditing = true;
-            evt.preventDefault();
-            evt.stopPropagation();
+            this._handleKeyEnd( event );
             break;
         }
       }
     },
 
-    _onMouseWheel : function( evt ) {
-      if( this.getFocused() ) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        this._spinner._onmousewheel( evt );
+    _handleKeyEnter : function( event ) {
+      rwt.remote.EventUtil.notifyDefaultSelected( this );
+    },
+
+    _handleKeyLeft : function( event ) {
+      if( this._focusedTextField === this._hoursTextField ) {
+        if( this._short ) {
+          this._setFocusedTextField( this._minutesTextField );
+        } else {
+          this._setFocusedTextField( this._secondsTextField );
+        }
+      } else if( this._focusedTextField === this._minutesTextField ) {
+        this._setFocusedTextField( this._hoursTextField );
+      } else if( this._focusedTextField === this._secondsTextField ) {
+        this._setFocusedTextField( this._minutesTextField );
       }
+      this._stopEvent( event );
+    },
+
+    _handleKeyRight : function( event ) {
+      if( this._focusedTextField === this._hoursTextField ) {
+        this._setFocusedTextField( this._minutesTextField );
+      } else if( this._focusedTextField === this._minutesTextField ) {
+        if( this._short ) {
+          this._setFocusedTextField( this._hoursTextField );
+        } else {
+          this._setFocusedTextField( this._secondsTextField );
+        }
+      } else if( this._focusedTextField === this._secondsTextField ) {
+        this._setFocusedTextField( this._hoursTextField );
+      }
+      this._stopEvent( event );
+    },
+
+    _handleKeyDown : function( event ) {
+      var value = this._spinner.getValue();
+      if( value == this._spinner.getMin() ) {
+        this._spinner.setValue( this._spinner.getMax() );
+      } else {
+        this._spinner.setValue( value - 1 );
+      }
+      this._stopEvent( event );
+    },
+
+    _handleKeyUp : function( event ) {
+      var value = this._spinner.getValue();
+      if( value == this._spinner.getMax() ) {
+        this._spinner.setValue( this._spinner.getMin() );
+      } else {
+        this._spinner.setValue( value + 1 );
+      }
+      this._stopEvent( event );
+    },
+
+    _handleKeyNumber : function( event ) {
+      var key = event.getKeyIdentifier();
+      var value = this._removeLeadingZero( this._focusedTextField.getText() );
+      var maxChars = this._focusedTextField.getUserData( "maxLength" );
+      var newValue = value.length < maxChars && !this._initialEditing ? value + key : key;
+      var intValue = parseInt( newValue, 10 );
+      if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
+        this._spinner.setValue( intValue );
+      } else {
+        intValue = parseInt( key, 10 );
+        if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
+          this._spinner.setValue( intValue );
+        }
+      }
+      this._initialEditing = false;
+      this._stopEvent( event );
+    },
+
+    _handleKeyHome : function( event ) {
+      this._spinner.setValue( this._spinner.getMin() );
+      this._initialEditing = true;
+      this._stopEvent( event );
+    },
+
+    _handleKeyEnd : function( event ) {
+      this._spinner.setValue( this._spinner.getMax() );
+      this._initialEditing = true;
+      this._stopEvent( event );
+    },
+
+    _onMouseWheel : function( event ) {
+      if( this.getFocused() ) {
+        this._stopEvent( event );
+        this._spinner._onmousewheel( event );
+      }
+    },
+
+    _stopEvent : function( event ) {
+      event.preventDefault();
+      event.stopPropagation();
     },
 
     _addLeadingZero : function( value ) {
@@ -363,7 +328,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+        var connection = rwt.remote.Connection.getInstance();
+        var remoteObject = connection.getRemoteObject( this );
         var hours = parseInt( this._removeLeadingZero( this._hoursTextField.getText() ), 10 );
         remoteObject.set( "hours", hours );
         var minutes = parseInt( this._removeLeadingZero( this._minutesTextField.getText() ), 10 );
@@ -371,13 +337,13 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
         var seconds = parseInt( this._removeLeadingZero( this._secondsTextField.getText() ), 10 );
         remoteObject.set( "seconds", seconds );
         if( remoteObject.isListening( "Selection" ) ) {
-          this._requestTimer.restart();
+          connection.onNextSend( this._onSend, this );
+          connection.sendDelayed( 200 );
         }
       }
     },
 
-    _onInterval : function() {
-      this._requestTimer.stop();
+    _onSend : function() {
       rwt.remote.EventUtil.notifySelected( this );
     },
 
@@ -402,34 +368,36 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       }
     },
 
-    setBounds : function( ind, x, y, width, height ) {
+    setBounds : function( index, x, y, width, height ) {
       var widget;
-      switch( ind ) {
-        case rwt.widgets.DateTimeTime.HOURS_TEXTFIELD:
-          widget = this._hoursTextField;
-        break;
-        case rwt.widgets.DateTimeTime.MINUTES_TEXTFIELD:
-          widget = this._minutesTextField;
-        break;
-        case rwt.widgets.DateTimeTime.SECONDS_TEXTFIELD:
-          widget = this._secondsTextField;
-        break;
-        case rwt.widgets.DateTimeTime.HOURS_MINUTES_SEPARATOR:
-          widget = this._separator3;
-        break;
-        case rwt.widgets.DateTimeTime.MINUTES_SECONDS_SEPARATOR:
-          widget = this._separator4;
-        break;
-        case rwt.widgets.DateTimeTime.SPINNER:
+      switch( index ) {
+        case 7:
           widget = this._spinner;
         break;
+        case 8:
+          widget = this._hoursTextField;
+        break;
+        case 9:
+          widget = this._minutesTextField;
+        break;
+        case 10:
+          widget = this._secondsTextField;
+        break;
+        case 11:
+          widget = this._separator3;
+        break;
+        case 12:
+          widget = this._separator4;
+        break;
       }
-      widget.set({
+      widget.set( {
         left: x,
         top: y,
         width: width,
         height: height
-      });
+      } );
     }
+
   }
+
 } );

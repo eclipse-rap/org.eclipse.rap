@@ -71,7 +71,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DateTime", {
     }
   } ),
 
-  events : [ "Selection" ],
+  events : [ "Selection", "DefaultSelection" ],
 
   listeners : rwt.remote.HandlerUtil.extendControlListeners( [] ),
 

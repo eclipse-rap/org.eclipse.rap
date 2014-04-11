@@ -2867,6 +2867,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if( this._customVariant !== null ) {
         this.addState( this._customVariant );
       }
+      var subWidgets = this._getSubWidgets ? this._getSubWidgets() : [];
+      for( var i = 0; i < subWidgets.length; i++ ) {
+        subWidgets[ i ].setCustomVariant( this._customVariant );
+      }
     },
 
     hasState : function(vState) {

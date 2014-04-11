@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -25,23 +26,22 @@ import java.util.Arrays;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -317,7 +317,6 @@ public class DateTimeLCA_Test {
     assertEquals( WidgetUtil.getId( dateTime.getParent() ), operation.getParent() );
   }
 
-
   @Test
   public void testRenderAddSelectionListener() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
@@ -325,7 +324,7 @@ public class DateTimeLCA_Test {
     Fixture.markInitialized( dateTime );
     Fixture.preserveWidgets();
 
-    dateTime.addSelectionListener( new SelectionAdapter() { } );
+    dateTime.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
@@ -335,13 +334,13 @@ public class DateTimeLCA_Test {
   @Test
   public void testRenderRemoveSelectionListener() throws Exception {
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    SelectionListener listener = new SelectionAdapter() { };
-    dateTime.addSelectionListener( listener );
+    Listener listener = mock( Listener.class );
+    dateTime.addListener( SWT.Selection, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( dateTime );
     Fixture.preserveWidgets();
 
-    dateTime.removeSelectionListener( listener );
+    dateTime.removeListener( SWT.Selection, listener );
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
@@ -355,12 +354,57 @@ public class DateTimeLCA_Test {
     Fixture.markInitialized( dateTime );
     Fixture.preserveWidgets();
 
-    dateTime.addSelectionListener( new SelectionAdapter() { } );
+    dateTime.addListener( SWT.Selection, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( dateTime, "selection" ) );
+    assertNull( message.findListenOperation( dateTime, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderAddDefaultSelectionListener() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( dateTime, "DefaultSelection" ) );
+  }
+
+  @Test
+  public void testRenderRemoveDefaultSelectionListener() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    Listener listener = mock( Listener.class );
+    dateTime.addListener( SWT.DefaultSelection, listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.removeListener( SWT.DefaultSelection, listener );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( dateTime, "DefaultSelection" ) );
+  }
+
+  @Test
+  public void testRenderDefaultSelectionListenerUnchanged() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( dateTime, "DefaultSelection" ) );
   }
 
   @Test

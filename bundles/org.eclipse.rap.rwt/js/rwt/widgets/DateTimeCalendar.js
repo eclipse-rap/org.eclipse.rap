@@ -17,81 +17,43 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
     this.base( arguments );
     this.setOverflow( "hidden" );
     this.setAppearance( "datetime-calendar" );
-
     // Get names of weekdays and months
     rwt.widgets.base.Calendar.MONTH_NAMES = monthNames;
     rwt.widgets.base.Calendar.WEEKDAY_NAMES = weekdayNames;
-
     // The Calendar
     this._calendar = new rwt.widgets.base.Calendar();
     this._calendar.setDate( new Date( 74, 5, 6 ) );
     this._calendar.setTabIndex( null );
     this._calendar.addEventListener( "changeDate", this._onChangeDate, this );
+    this._calendar.addEventListener( "select", this._onSelect, this );
     this.add( this._calendar );
-
-    this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
-    this.addEventListener( "mousewheel", this._onmousewheel, this );
-    this.addEventListener( "focus", this._onFocusIn, this );
-    this.addEventListener( "blur", this._onFocusOut, this );
-
+    this.addEventListener( "mousewheel", this._onMouseWheel, this );
+    this.addEventListener( "focus", this._onFocusChange, this );
+    this.addEventListener( "blur", this._onFocusChange, this );
     this._updateSelectedDayState();
   },
 
   destruct : function() {
-    this._calendar.removeEventListener( "changeDate", this._onChangeDate, this );
-    this.removeEventListener( "contextmenu", this._onContextMenu, this );
-    this.removeEventListener( "keypress", this._onKeyPress, this );
-    this.removeEventListener( "mousewheel", this._onmousewheel, this );
-    this.removeEventListener( "focus", this._onFocusIn, this );
-    this.removeEventListener( "blur", this._onFocusOut, this );
     this._disposeObjects( "_calendar" );
   },
 
   members : {
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._calendar.addState( state );
-      }
+
+    _getSubWidgets : function() {
+      return [ this._calendar ];
     },
 
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._calendar.removeState( state );
-      }
+    _onKeyPress : function( event ) {
+      this._calendar._onkeypress( event );
     },
 
-    _onChangeDate : function() {
-      var date = this._calendar.getDate();
-      this._sendChanges( date.getDate(), date.getMonth(), date.getFullYear() );
+    _onMouseWheel : function( event ) {
+      event.preventDefault();
+      event.stopPropagation();
     },
 
-    _onContextMenu : function( evt ) {
-      var menu = this.getContextMenu();
-      if( menu != null ) {
-        menu.setLocation( evt.getPageX(), evt.getPageY() );
-        menu.setOpener( this );
-        menu.show();
-        evt.stopPropagation();
-      }
-    },
-
-    _onKeyPress : function( evt ) {
-      this._calendar._onkeypress( evt );
-    },
-
-    _onmousewheel : function( evt ) {
-      evt.preventDefault();
-      evt.stopPropagation();
-    },
-
-    _onFocusIn : function( evt ) {
-      this._updateSelectedDayState();
-    },
-
-    _onFocusOut : function( evt ) {
+    _onFocusChange : function( event ) {
       this._updateSelectedDayState();
     },
 
@@ -105,14 +67,27 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       }
     },
 
-    _sendChanges : function( date, month, year ) {
+    _onChangeDate : function( event ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-        remoteObject.set( "day", date );
-        remoteObject.set( "month", month );
-        remoteObject.set( "year", year );
-        rwt.remote.EventUtil.notifySelected( this );
+        var connection = rwt.remote.Connection.getInstance();
+        var remoteObject = connection.getRemoteObject( this );
+        var date = this._calendar.getDate();
+        remoteObject.set( "day", date.getDate() );
+        remoteObject.set( "month", date.getMonth() );
+        remoteObject.set( "year", date.getFullYear() );
+        if( remoteObject.isListening( "Selection" ) ) {
+          connection.onNextSend( this._onSend, this );
+          connection.sendDelayed( 200 );
+        }
       }
+    },
+
+    _onSend : function() {
+      rwt.remote.EventUtil.notifySelected( this );
+    },
+
+    _onSelect : function( event ) {
+      rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
     setMonth : function( value ) {
@@ -136,5 +111,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
     setFont : function() {
       // TODO: [if] Calendar font is not implemented
     }
+
   }
+
 } );
