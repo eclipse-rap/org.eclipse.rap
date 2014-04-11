@@ -106,6 +106,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           }
         }
       }
+      this._renderHtmlAttributes( item );
       this.dispatchSimpleEvent( "itemRendered", item );
     },
 
@@ -656,6 +657,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._elementStyleCache.textShadow = this._styleMap.textShadow;
         Style.setTextShadow( element, this._styleMap.textShadow );
       }
+    },
+
+    _renderHtmlAttributes : function( item ) {
+      this.clearHtmlAttributes();
+      this.setHtmlAttributes( item ? item.getHtmlAttributes() : {} );
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {

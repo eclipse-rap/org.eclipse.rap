@@ -1537,6 +1537,36 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 20, parseInt( style.width, 10 ) );
     },
 
+    testRenderHtmlAttributes : function() {
+      var item = this._createItem( tree );
+
+      item.setHtmlAttribute( "foo", "bar" );
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( "bar", row.getHtmlAttribute( "foo" ) );
+    },
+
+    testRenderHtmlAttributes_removeAttributesOfPreviousItem : function() {
+      var item = this._createItem( tree );
+      var item2 = this._createItem( tree );
+
+      item.setHtmlAttribute( "foo", "bar" );
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( item2, tree._config, false, null );
+
+      assertEquals( "", row.getHtmlAttribute( "foo" ) );
+    },
+
+    testRenderHtmlAttributes_removeAttributesForNullItem : function() {
+      var item = this._createItem( tree );
+
+      item.setHtmlAttribute( "foo", "bar" );
+      row.renderItem( item, tree._config, false, null );
+      row.renderItem( null, tree._config, false, null );
+
+      assertEquals( "", row.getHtmlAttribute( "foo" ) );
+    },
+
     testIsCheckBoxClick : function() {
       this._createTree( false, "check" );
       this._setCheckBox( "mycheckbox.gif" );

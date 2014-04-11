@@ -1445,6 +1445,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       root.dispose();
     },
 
+    testGetHtmlAttributes_returnEmptyObjectWhenNoAttributesSet : function() {
+      var item = new rwt.widgets.GridItem();
+
+      assertEquals( {}, item.getHtmlAttributes() );
+      item.dispose();
+    },
+
+    testSetHtmlAttribute : function() {
+      var item = new rwt.widgets.GridItem();
+
+      item.setHtmlAttribute( "foo", "bar" );
+      item.setHtmlAttribute( "foo2", "bar2" );
+
+      var expected = { "foo" : "bar", "foo2" : "bar2" };
+      assertEquals( expected, item.getHtmlAttributes() );
+      item.dispose();
+    },
+
+    testSetHtmlAttribute_removesAttribute : function() {
+      var item = new rwt.widgets.GridItem();
+
+      item.setHtmlAttribute( "foo", "bar" );
+      item.setHtmlAttribute( "foo", null );
+
+      assertEquals( {}, item.getHtmlAttributes() );
+      item.dispose();
+    },
+
     //////////////////////
     // create complex tree
 

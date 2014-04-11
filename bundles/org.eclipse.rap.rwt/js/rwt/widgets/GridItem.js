@@ -13,6 +13,7 @@
 rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
   extend : rwt.qx.Target,
+  include : rwt.widgets.util.HtmlAttributesMixin,
 
   construct : function( parent, index, placeholder ) {
     // Dispose is only needed to remove items from the tree and widget manager.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       label.setWidth( column.getWidth() );
       label.setHoverEffect( column.getMoveable() );
       label.setVisibility( column.getVisibility() && column.getWidth() > 0 );
-      column.applyHtmlAttributes( label );
+      label.clearHtmlAttributes();
+      label.setHtmlAttributes( column.getHtmlAttributes() );
       if( this._footer ) {
         label.setText( column.getFooterText() );
         label.setImage( column.getFooterImage() );

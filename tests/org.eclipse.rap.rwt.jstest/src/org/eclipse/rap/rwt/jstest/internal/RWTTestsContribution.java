@@ -109,7 +109,6 @@ public class RWTTestsContribution implements TestContribution {
     "tests/EventBinding_Test.js",
     "tests/EventProxy_Test.js",
     "tests/Synchronizer_Test.js",
-    "tests/WidgetProxyFactory_Test.js",
     "tests/DropDown_Test.js",
     "tests/BrowserTest.js"
   };

@@ -763,6 +763,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
+    testSetHtmlAttribute_setsHtmlAttribute : function() {
+      var widget = this._createWidget();
+
+      widget.setHtmlAttribute( "foo", "bar" );
+
+      assertEquals( "bar", widget.getHtmlAttribute( "foo" ) );
+      assertEquals( "bar", widget.getElement().getAttribute( "foo" ) );
+      widget.destroy();
+    },
+
+    testSetClientHtmlAttribute_removesHtmlAttribute : function() {
+      var widget = this._createWidget();
+
+      widget.setHtmlAttribute( "foo", "bar" );
+      widget.setHtmlAttribute( "foo", null );
+
+      assertEquals( "", widget.getHtmlAttribute( "foo" ) );
+      if( rwt.client.Client.isMshtml() ) {
+        assertTrue( widget.getElement()[ "foo" ] === undefined );
+      } else {
+        assertFalse( widget.getElement().hasAttribute( "foo" ) );
+      }
+      widget.destroy();
+    },
+
     // Bug 432909 - Client may crash in IE7/8/9 due to implementation error
     //              in Parent._computeVisibleChildren
     testPrepareEnhancedBorderBeforeChildrenAppear : function() {

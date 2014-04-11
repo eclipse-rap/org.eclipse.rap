@@ -468,7 +468,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
-
     testSetHtmlAttribute : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );
@@ -478,6 +477,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
       var label = this._getColumnLabel( tree, column );
       assertEquals( "bar", label.getHtmlAttribute( "foo" ) );
+      tree.destroy();
+    },
+
+    testSetHtmlAttribute_removesHtmlAttribute : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      column.setHtmlAttribute( "foo", "bar" );
+      TestUtil.flush();
+      column.setHtmlAttribute( "foo", null );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertEquals( "", label.getHtmlAttribute( "foo" ) );
+      if( rwt.client.Client.isMshtml() ) {
+        assertTrue( label.getElement()[ "foo" ] === undefined );
+      } else {
+        assertFalse( label.getElement().hasAttribute( "foo" ) );
+      }
       tree.destroy();
     },
 

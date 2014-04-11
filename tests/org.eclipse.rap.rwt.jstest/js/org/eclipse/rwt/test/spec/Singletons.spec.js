@@ -15,8 +15,14 @@ describe( "Singletons", function() {
   var Foo = function() {};
   var Bar = function() {};
 
+  var holder = Singletons._holder;
+
   beforeEach( function() {
     Singletons.clear();
+  } );
+
+  afterEach( function() {
+   Singletons._holder = holder; // do not destroy work from Fixture.setup()
   } );
 
   describe( "get", function() {

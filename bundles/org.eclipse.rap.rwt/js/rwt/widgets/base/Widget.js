@@ -27,6 +27,7 @@
 rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
   extend : rwt.qx.Target,
+  include : rwt.widgets.util.HtmlAttributesMixin,
 
   construct : function() {
     this.base( arguments );
@@ -3038,6 +3039,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     //////////////////
     // HTML PROPERTIES
 
+    // TODO : can be removed if IE8 is no longer supported
     setHtmlProperty : function(propName, value) {
       if (!this._htmlProperties) {
         this._htmlProperties = {};
@@ -3047,37 +3049,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this.getElement()[propName] = value;
       }
       return true;
-    },
-
-    removeHtmlProperty : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function(propName) {
-        if (!this._htmlProperties) {
-          return;
-        }
-        delete this._htmlProperties[propName];
-        if (this._isCreated) {
-          this.getElement().removeAttribute(propName);
-        }
-        return true;
-      },
-      "default" : function(propName) {
-        if (!this._htmlProperties) {
-          return;
-        }
-        delete this._htmlProperties[propName];
-        if (this._isCreated) {
-          this.getElement().removeAttribute(propName);
-          delete this.getElement()[propName];
-        }
-        return true;
-      }
-    } ),
-
-    getHtmlProperty : function(propName) {
-      if (!this._htmlProperties) {
-        return "";
-      }
-      return this._htmlProperties[propName] || "";
     },
 
     _applyHtmlProperties : function(elem) {
@@ -3090,44 +3061,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    //////////////////
-    // HTML ATTRIBUTES
-
-    setHtmlAttribute : function(propName, value) {
-      if (!this._htmlAttributes) {
-        this._htmlAttributes = {};
-      }
-      this._htmlAttributes[propName] = value;
-      if (this._isCreated) {
-        this.getElement().setAttribute(propName, value);
-      }
-      return true;
-    },
-
-    removeHtmlAttribute : function(propName) {
-      if (!this._htmlAttributes) {
-        return;
-      }
-      delete this._htmlAttributes[propName];
-      if (this._isCreated) {
-        this.getElement().removeAttribute(propName);
-      }
-      return true;
-    },
-
-    getHtmlAttribute : function(propName) {
-      if (!this._htmlAttributes) {
-        return "";
-      }
-      return this._htmlAttributes[propName] || "";
-    },
-
-    _applyHtmlAttributes : function(elem) {
-      var vAttributes = this._htmlAttributes;
-      if (vAttributes) {
-        var propName;
-        for (propName in vAttributes) {
-          elem.setAttribute(propName, vAttributes[propName]);
+    _applyHtmlAttributes : function( element ) {
+      if( this._htmlAttributes ) {
+        for( var property in this._htmlAttributes ) {
+          element.setAttribute( property, this._htmlAttributes[ property ] );
         }
       }
     },

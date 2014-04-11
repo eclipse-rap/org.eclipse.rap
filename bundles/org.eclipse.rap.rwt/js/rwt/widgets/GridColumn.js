@@ -13,6 +13,7 @@
 rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
   extend : rwt.qx.Target,
+  include : rwt.widgets.util.HtmlAttributesMixin,
 
   construct : function( grid, isGroup ) {
     this.base( arguments );
@@ -269,28 +270,6 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     isGroup : function() {
       return this._isGroup;
-    },
-
-    /**
-     * Implemented for UI testing. Implementation mostly identical to Widget.js
-     */
-    setHtmlAttribute : function( propName, value ) {
-      if( !this._htmlAttributes ) {
-        this._htmlAttributes = {};
-      }
-      this._htmlAttributes[ propName ] = value;
-      this._update();
-      return true;
-    },
-
-    applyHtmlAttributes : function( widget ) {
-      var attributes = this._htmlAttributes;
-      if( attributes ) {
-        var propName;
-        for( propName in attributes ) {
-          widget.setHtmlAttribute( propName, attributes[ propName ] );
-        }
-      }
     },
 
     _update : function() {

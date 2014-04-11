@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ var Synchronizer = rwt.scripting.Synchronizer;
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
+/*jshint nonew:false */
 rwt.scripting.WidgetProxyFactory = {
 
   _wrapperMap : {},
@@ -46,6 +47,7 @@ rwt.scripting.WidgetProxyFactory = {
     new Synchronizer( originalWidget );
     this._attachSetter( wrapper, originalWidget );
     this._attachMethods( wrapper, originalWidget );
+    this._attach$el( wrapper, originalWidget );
     originalWidget.addEventListener( "destroy", function() {
       rwt.scripting.WidgetProxyFactory._disposeWidgetProxy( originalWidget );
     } );
@@ -91,6 +93,13 @@ rwt.scripting.WidgetProxyFactory = {
       for( var name in methods ) {
         proxy[ name ] = rwt.util.Functions.bind( methods[ name ], source );
       }
+    }
+  },
+
+  _attach$el : function( proxy, source ) {
+    // instanceof is not a good way here since not all "widgets" extend the Widget class
+    if( source.classname.match( /rwt\.widgets\.[a-zA-Z]*$/ ) ) {
+      proxy.$el = new rwt.util.RWTQuery( source, true );
     }
   },
 
