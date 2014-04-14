@@ -26,8 +26,6 @@ rwt.widgets.util.Template = function( cells ) {
 
 rwt.widgets.util.Template.prototype = {
 
-  hasCellLayout : true,
-
   /**
    * @param {Object} options The options object.
    *
@@ -39,7 +37,7 @@ rwt.widgets.util.Template.prototype = {
    *
    * @returns {object} the container reference
    */
-  createContainer : function( options ) {
+  _createContainer : function( options ) {
     if( !options.element || typeof options.element.nodeName !== "string" ) {
       throw new Error( "Not a valid target for TemplateContainer:" + options.element );
     }
@@ -55,11 +53,11 @@ rwt.widgets.util.Template.prototype = {
     };
   },
 
-  getCellElement : function( container, cell ) {
+  _getCellElement : function( container, cell ) {
     return container.cellElements[ cell ] || null;
   },
 
-  getCellByElement : function( container, element ) {
+  _getCellByElement : function( container, element ) {
     return container.cellElements.indexOf( element );
   },
 
@@ -72,7 +70,7 @@ rwt.widgets.util.Template.prototype = {
    * @param {boolean} options.markupEnabled Set to true to prevent escaping
    * @param {int[]} options.bounds The bounds in pixel and order of left, top, width, height
    */
-  render : function( options ) {
+  _render : function( options ) {
     if( !options.container || options.container.template !== this ) {
       throw new Error( "No valid TemplateContainer: " + options.container );
     }
@@ -301,33 +299,58 @@ rwt.widgets.util.Template.prototype = {
     return cellRenderer ? cellRenderer.contentType : null;
   },
 
-  _getCellLeft : function( options, cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.left !== undefined
-           ? options.bounds[ 0 ] + cellData.left
-           : options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - cellData.right;
-  },
-
-  _getCellTop : function( options, cell ) {
-    // TODO [tb] : render offset is currently not respected since widget uses it
-    var cellData = this._cells[ cell ];
-    return   cellData.top !== undefined
-           ? cellData.top
-           : options.bounds[ 3 ] - cellData.height - cellData.bottom;
-  },
-
   _getCellWidth : function( options, cell ) {
-    var cellData = this._cells[ cell ];
-    return   cellData.width !== undefined
-           ? cellData.width
-           : options.bounds[ 2 ] - cellData.left - cellData.right;
+    if( this._cells[ cell ].width !== undefined ) {
+      return this._cells[ cell ].width;
+    }
+    return   options.bounds[ 2 ]
+           - ( this._getCellLeft( options, cell ) - options.bounds[ 0 ] )
+           - this._getCellRight( options, cell );
   },
 
   _getCellHeight : function( options, cell ) {
+    if( this._cells[ cell ].height !== undefined ) {
+      return this._cells[ cell ].height;
+    }
+    return   options.bounds[ 3 ]
+           - ( this._getCellTop( options, cell ) - options.bounds[ 1 ] )
+           - this._getCellBottom( options, cell );
+  },
+
+  _getCellLeft : function( options, cell ) {
     var cellData = this._cells[ cell ];
-    return   cellData.height !== undefined
-           ? cellData.height
-           : options.bounds[ 3 ] - cellData.top - cellData.bottom;
+    if( cellData.left !== undefined ) {
+      return   options.bounds[ 0 ]
+             + Math.round( cellData.left[ 0 ] * options.bounds[ 2 ] / 100 )
+             + cellData.left[ 1 ];
+    }
+    return options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - cellData.right[ 1 ];
+  },
+
+  _getCellTop : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    if( cellData.top !== undefined ) {
+      return   options.bounds[ 1 ]
+             + Math.round( cellData.top[ 0 ] * options.bounds[ 3 ] / 100 )
+             + cellData.top[ 1 ];
+    }
+    return options.bounds[ 1 ] + options.bounds[ 3 ] - cellData.height - cellData.bottom[ 1 ];
+  },
+
+  _getCellRight : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    if( cellData.right !== undefined ) {
+      return Math.round( cellData.right[ 0 ] * options.bounds[ 2 ] / 100 ) + cellData.right[ 1 ];
+    }
+    return 0;
+  },
+
+  _getCellBottom : function( options, cell ) {
+    var cellData = this._cells[ cell ];
+    if( cellData.bottom !== undefined ) {
+      return Math.round( cellData.bottom[ 0 ] * options.bounds[ 3 ] / 100 ) + cellData.bottom[ 1 ];
+    }
+    return 0;
   },
 
   _hasText : function( item, cell ) {

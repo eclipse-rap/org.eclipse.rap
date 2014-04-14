@@ -2562,8 +2562,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var template = mockTemplate( [ 0, "text", 10, 20 ] );
       var log = [];
-      var render = template.render;
-      template.render = function() {
+      var render = template._render;
+      template._render = function() {
         log.push( rwt.util.Arrays.fromArguments( arguments ) );
         render.apply( this, arguments );
       };
@@ -2591,8 +2591,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var template = mockTemplate( [ 0, "text", 10, 20 ] );
       var log = [];
-      var render = template.render;
-      template.render = function() {
+      var render = template._render;
+      template._render = function() {
         log.push( rwt.util.Arrays.fromArguments( arguments ) );
         render.apply( this, arguments );
       };
@@ -2639,8 +2639,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( itemParent );
       var template = mockTemplate( [ 0, "text", 10, 20 ] );
       var log = [];
-      var render = template.render;
-      template.render = function() {
+      var render = template._render;
+      template._render = function() {
         log.push( rwt.util.Arrays.fromArguments( arguments ) );
         //render.apply( this, arguments );
       };
@@ -2657,8 +2657,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.setHeight( 15 );
       var template = mockTemplate( [ 0, "text", 10, 20 ] );
       var log = [];
-      var render = template.render;
-      template.render = function() {
+      var render = template._render;
+      template._render = function() {
         log.push( rwt.util.Arrays.fromArguments( arguments ) );
         render.apply( this, arguments );
       };
@@ -2881,7 +2881,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         { "name" : "fooName" },
         { "selectable" : true },
         { "name" : "barName", "selectable" : true }
-       );
+      );
       var log = [];
       row.addEventListener( "mousedown", function( event ) {
         log.push( row.getTargetIdentifier( event ) );
@@ -3235,8 +3235,8 @@ var mockTemplate = function() {
       cells.push(  {
         "bindingIndex" : arguments[ i ][ 0 ],
         "type" : arguments[ i ][ 1 ],
-        "left" : arguments[ i ][ 2 ] || 0,
-        "top" : arguments[ i ][ 3 ] || 0,
+        "left" : [ 0, arguments[ i ][ 2 ] || 0 ],
+        "top" : [ 0, arguments[ i ][ 3 ] || 0 ],
         "width" : arguments[ i ][ 4 ] || 0,
         "height" : arguments[ i ][ 5 ] || 0
       } );
@@ -3244,8 +3244,8 @@ var mockTemplate = function() {
       var cellData =  {
         "type" : "text",
         "bindingIndex" : i,
-        "left" : 0,
-        "top" : 0,
+        "left" : [ 0, 0 ],
+        "top" : [ 0, 0 ],
         "width" : 10,
         "height" : 10
       };

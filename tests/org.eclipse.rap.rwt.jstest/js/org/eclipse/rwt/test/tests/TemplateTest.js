@@ -42,7 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       try {
-        template.createContainer( {
+        template._createContainer( {
           "element" : null,
           "zIndexOffset" : 100
         } );
@@ -56,7 +56,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       try {
-        template.createContainer( {
+        template._createContainer( {
           "element" : document.createElement( "div" ),
           "zIndexOffset" : null
         } );
@@ -69,7 +69,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testCreateContainerDoesNotFailWithMinimalArguments : function() {
       var template = createTemplate( [ "text", "text", "text" ] );
 
-      var container = template.createContainer( {
+      var container = template._createContainer( {
         "element" : document.createElement( "div" ),
         "zIndexOffset" : 100
       } );
@@ -80,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       try {
-        template.render( { "bounds" : [ 0, 0, 100, 100 ], "container" : {}, "item" : null } );
+        template._render( { "bounds" : [ 0, 0, 100, 100 ], "container" : {}, "item" : null } );
         fail();
       } catch( ex ) {
         // expected
@@ -133,12 +133,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "text", "text", "text" ] );
 
       var container = createContainer( template );
-      template.render( {
+      template._render( {
         "container" : container,
         "bounds" : [ 0, 0, 100, 100 ],
         "item" : createGridItem( [ "foo", "foo", "foo" ] )
       } );
-      template.render( {
+      template._render( {
         "container" : container,
         "bounds" : [ 0, 0, 100, 100 ],
         "item" : createGridItem( [ "foo", "foo", "foo" ] )
@@ -167,7 +167,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testRenderCellLeft_LeftIsOffset : function() {
-      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : 15 } );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : [ 0, 15 ] } );
 
       var element = render( template, createGridItem( [ "foo" ] ) );
 
@@ -175,10 +175,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testRenderCellLeft_LeftIsOffsetWithRenderOffset : function() {
-      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : 15 } );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : [ 0, 15 ] } );
 
       var bounds = [ 20, 0, 100, 100 ];
       var element = render( template, createGridItem( [ "foo" ] ), { "bounds" : bounds } );
+
+      assertEquals( 35, getLeft( element.firstChild ) );
+    },
+
+    testRenderCellLeft_LeftIsPercentage : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : [ 10, 0 ] } );
+
+      var bounds = [ 0, 0, 200, 200 ];
+      var element = render( template, createGridItem( [ "foo" ] ), { "bounds" : bounds } );
+
+      assertEquals( 20, getLeft( element.firstChild ) );
+    },
+
+    testRenderCellLeft_LeftIsPercentageAndOffset : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : [ 10, 15 ] } );
+
+      var bounds = [ 0, 0, 200, 200 ];
+      var element = render( template, createGridItem( [ "foo" ] ), { "bounds" : bounds }  );
 
       assertEquals( 35, getLeft( element.firstChild ) );
     },
@@ -188,7 +206,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "bindingIndex" : 0,
         "type" : "text",
         "width" : 10,
-        "right" : 15,
+        "right" : [ 0, 15 ],
         "left" : undefined
       } );
       var element = render( template,
@@ -203,7 +221,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "bindingIndex" : 0,
         "type" : "text",
         "width" : 10,
-        "right" : 15,
+        "right" : [ 0, 15 ],
         "left" : undefined
       } );
       var element = render( template,
@@ -214,7 +232,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     },
 
     testGetCellTop_TopIsOffset : function() {
-      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : 12 } );
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : [ 0, 12 ] } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -222,12 +240,39 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 12, getTop( element.firstChild ) );
     },
 
+    testGetCellTop_TopIsPercentage : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : [ 10, 0 ] } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 3, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsPercentageAndOffset : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : [ 10, 3 ] } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 6, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsOffsetWithRenderOffset : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : [ 0, 12 ] } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 10, 100, 30 ] } );
+
+      assertEquals( 22, getTop( element.firstChild ) );
+    },
+
     testGetCellTop_TopIsUndefined : function() {
       var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
         "height" : 10,
-        "bottom" : 15,
+        "bottom" : [ 0, 15 ],
         "top" : undefined
       } );
       var element = render( template,
@@ -235,6 +280,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
                             { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 5, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsUndefinedWithRenderOffset : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "height" : 10,
+        "bottom" : [ 0, 15 ],
+        "top" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 5, 100, 30 ] } );
+
+      assertEquals( 10, getTop( element.firstChild ) );
     },
 
     testGetCellWidth_WidthIsSet : function() {
@@ -250,11 +310,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
-        "left" : 10,
-        "right" : 15,
+        "left" : [ 0, 10 ],
+        "right" : [ 0, 15 ],
         "width" : undefined
       } );
-      var element = render( template, createGridItem( [ "foo" ] ), [ 100, 30 ] );
+      var element = render( template,
+                           createGridItem( [ "foo" ] ),
+                           { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 75, getWidth( element.firstChild ) );
+    },
+
+    testGetCellWidth_WidthIsUndefinedAndRightIsPercentage : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "left" : [ 0, 10 ],
+        "right" : [ 10, 0 ],
+        "width" : undefined
+      } );
+      var element = render( template,
+                           createGridItem( [ "foo" ] ),
+                           { "bounds" : [ 0, 0, 200, 30 ] } );
+
+      assertEquals( 170, getWidth( element.firstChild ) );
+    },
+
+    testGetCellWidth_WidthIsUndefinedAndRightIsPercentageWithOffset : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "left" : [ 0, 10 ],
+        "right" : [ 10, 15 ],
+        "width" : undefined
+      } );
+      var element = render( template,
+                           createGridItem( [ "foo" ] ),
+                           { "bounds" : [ 0, 0, 200, 30 ] } );
+
+      assertEquals( 155, getWidth( element.firstChild ) );
+    },
+
+    testGetCellWidth_WidthIsUndefinedWithRenderOffset : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "left" : [ 0, 10 ],
+        "right" : [ 0, 15 ],
+        "width" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 5, 0, 100, 30 ] }  );
 
       assertEquals( 75, getWidth( element.firstChild ) );
     },
@@ -272,13 +379,58 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( {
         "bindingIndex" : 0,
         "type" : "text",
-        "top" : 10,
-        "bottom" : 15,
+        "top" : [ 0, 10 ],
+        "bottom" : [ 0, 15 ],
         "height" : undefined
       } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 5, getHeight( element.firstChild ) );
+    },
+
+    testGetCellHeight_HeightIsUndefinedAndBottomIsPercentage : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "top" : [ 0, 10 ],
+        "bottom" : [ 10, 0 ],
+        "height" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 17, getHeight( element.firstChild ) );
+    },
+
+    testGetCellHeight_HeightIsUndefinedAndBottomIsPercentageWithOffset : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "top" : [ 0, 10 ],
+        "bottom" : [ 10, 5 ],
+        "height" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 12, getHeight( element.firstChild ) );
+    },
+
+    testGetCellHeight_HeightIsUndefinedWithTopRenderOffset : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "top" : [ 0, 10 ],
+        "bottom" : [ 0, 15 ],
+        "height" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 10, 100, 30 ] } );
 
       assertEquals( 5, getHeight( element.firstChild ) );
     },
@@ -640,7 +792,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "enabled" : true
       };
 
-      template.render( options );
+      template._render( options );
 
       var cellRenderOptions = {
         "markupEnabled" : false,
@@ -649,7 +801,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "height" : 10,
         "enabled" : true
       };
-      assertIdentical( template.getCellElement( container, 0 ), renderArgs[ 0 ] );
+      assertIdentical( template._getCellElement( container, 0 ), renderArgs[ 0 ] );
       assertIdentical( "bar", renderArgs[ 1 ] );
       assertIdentical( cellData.type, renderArgs[ 2 ].type );
       assertEquals( cellRenderOptions, renderArgs[ 3 ] );
@@ -679,9 +831,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testDefaultTextRenderer_RenderNullItemClearsContent : function() {
       var template = createTemplate( [ "text" ] );
       var container = createContainer( template );
-      template.render( createRenderOptions( container, createGridItem( [ "bar" ] ) ) );
+      template._render( createRenderOptions( container, createGridItem( [ "bar" ] ) ) );
 
-      template.render( createRenderOptions( container, null ) );
+      template._render( createRenderOptions( container, null ) );
 
       assertEquals( "", container.element.firstChild.innerHTML );
     },
@@ -724,9 +876,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var template = createTemplate( [ "image" ] );
       var container = createContainer( template );
       var item = createGridItem( [], [ [ "foo.jpg", 10, 10 ], [ "bar", 10, 10 ] ] );
-      template.render( createRenderOptions( container, item ) );
+      template._render( createRenderOptions( container, item ) );
 
-      template.render( createRenderOptions( container, null ) );
+      template._render( createRenderOptions( container, null ) );
 
       assertEquals( "", container.element.style.backgroundImage );
     },
@@ -750,10 +902,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellBackgrounds( [ "#ff00ff" ] );
       var container = createContainer( template );
       var renderOptions = createRenderOptions( container, item );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       item.setCellBackgrounds( [ null ] );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       assertNull( TestUtil.getCssBackgroundColor( container.element.firstChild ) );
     },
@@ -777,10 +929,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellForegrounds( [ "#ff00ff" ] );
       var container = createContainer( template );
       var renderOptions = createRenderOptions( container, item );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       item.setCellForegrounds( [ null ] );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       var color = container.element.firstChild.style.color;
       assertTrue( color === "" || color === "inherit" );
@@ -806,10 +958,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       item.setCellFonts( [ "14px Arial", "14px Arial" ] );
       var container = createContainer( template );
       var renderOptions = createRenderOptions( container, item );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       item.setCellFonts( [ null, "14px Arial" ] );
-      template.render( renderOptions );
+      template._render( renderOptions );
 
       var style = container.element.firstChild.style;
       if( !rwt.client.Client.isMobileSafari() ) {
@@ -823,9 +975,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
     testGetCellByElement : function() {
       var template = createTemplate( [ "text", "text" ] );
       var container = createContainer( template );
-      template.render( createRenderOptions( container, createGridItem( [ "bar", "foo" ] ) ) );
+      template._render( createRenderOptions( container, createGridItem( [ "bar", "foo" ] ) ) );
 
-      var cell = template.getCellByElement( container, container.element.lastChild );
+      var cell = template._getCellByElement( container, container.element.lastChild );
 
       assertEquals( 1, cell );
     },
@@ -864,8 +1016,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       var container = createContainer( template );
       var renderOptions = createRenderOptions( container, item );
 
-      template.render( renderOptions );
-      template.render( renderOptions );
+      template._render( renderOptions );
+      template._render( renderOptions );
 
       assertEquals( 2, counter );
     }
@@ -891,8 +1043,8 @@ var createTemplate = function( cellTypes ) {
       cells[ i ] = {
         "type" : cellTypes[ i ],
         "bindingIndex" : i,
-        "left" : 0,
-        "top" : 0,
+        "left" : [ 0, 0 ],
+        "top" : [ 0, 0 ],
         "width" : 10,
         "height" : 10
       };
@@ -902,8 +1054,8 @@ var createTemplate = function( cellTypes ) {
     var cellData =  {
       "type" : "text",
       "bindingIndex" : 0,
-      "left" : 0,
-      "top" : 0,
+      "left" : [ 0, 0 ],
+      "top" : [ 0, 0 ],
       "width" : 10,
       "height" : 10
     };
@@ -925,7 +1077,7 @@ var render = function( template, item, options ) {
   var container = createContainer( template );
   var renderOptions = createRenderOptions( container, item );
   rwt.util.Objects.mergeWith( renderOptions, options, true );
-  template.render( renderOptions );
+  template._render( renderOptions );
   return container.element;
 };
 
@@ -941,7 +1093,7 @@ var createRenderOptions = function( container, item ) {
 
 
 var createContainer = function( template ) {
-  return template.createContainer( {
+  return template._createContainer( {
     "element" : document.createElement( "div" ),
     "zIndexOffset" : 100
   } );

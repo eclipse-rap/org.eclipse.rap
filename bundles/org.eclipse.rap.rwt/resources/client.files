@@ -1,3 +1,4 @@
+
 # Contains all files to be included in client.js, in build order
 
 rwt/runtime/Bootstrap.js
@@ -269,6 +270,7 @@ rwt/util/RWTQuery.js
 rwt/scripting/WidgetProxyFactory.js
 rwt/remote/handler/FunctionHandler.js
 rwt/widgets/util/Template.js
+rwt/widgets/util/TemplateRenderer.js
 rwt/widgets/DropDown.js
 rwt/widgets/util/DropDownSynchronizer.js
 rwt/remote/handler/DropDownHandler.js

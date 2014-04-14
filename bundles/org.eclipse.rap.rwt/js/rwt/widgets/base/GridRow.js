@@ -21,7 +21,7 @@ var INHERIT = rwt.client.Client.isMshtml() ? "" : "inherit";
 var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
-var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
+var cellRenderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
@@ -48,8 +48,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._miscNodes = [];
     this._usedMiscNodes = 0;
     this._cellsRendered = 0;
-    this._template = null;
-    this._templateContainer = null;
+    this._templateRenderer = null;
   },
 
   destruct : function() {
@@ -124,10 +123,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         while( node !== this.getElement() && result[ 0 ] === "other" ) { // Can be removed?
           if( this._treeColumnElements.indexOf( node ) != -1 ) {
             result = [ "treeColumn" ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
-          } else if( this._template ) {
-            var cell = this._template.getCellByElement( this._templateContainer, node );
-            if( cell !== -1 && this._template.isCellSelectable( cell ) ) {
-              result = [ "selectableCell", this._template.getCellName( cell ) ];
+          } else if( this._templateRenderer ) {
+            if( this._templateRenderer.isCellSelectable( node ) ) {
+              result = [ "selectableCell", this._templateRenderer.getCellName( node ) ];
             }
           }
           node = node.parentNode;
@@ -161,30 +159,23 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
                          && typeof config.treeColumn === "number"
                          && config.treeColumn > -1;
       var xOffset = hasIndention ? this._correctOffset( 0, item, config ) : 0;
-      config.rowTemplate.render( {
-        "container" : this._getTemplateContainer( config ),
-        "item" : item,
-        "bounds" : [
-          xOffset,
-          0,
-          this.getWidth() - xOffset,
-          this.getHeight()
-        ],
-        "enabled" : config.enabled,
-        "markupEnabled" : config.markupEnabled,
-        "seeable" : this.isSeeable()
-      } );
-      this._template = config.rowTemplate; // needed by getTargetIdentifier
+      var renderer = this._getTemplateRenderer( config );
+      renderer.targetBounds = [ xOffset, 0, this.getWidth() - xOffset, this.getHeight() ];
+      renderer.markupEnabled = config.markupEnabled;
+      renderer.targetIsEnabled = config.enabled;
+      renderer.targetIsSeeable = this.isSeeable();
+      renderer.renderItem( item );
     },
 
-    _getTemplateContainer : function( config ) {
-      if( this._templateContainer == null ) {
-        this._templateContainer = config.rowTemplate.createContainer( {
-          "element" : this._getTargetNode(),
-          "zIndexOffset" : 100
-        } );
+    _getTemplateRenderer : function( config ) {
+      if( this._templateRenderer == null ) {
+        this._templateRenderer = new rwt.widgets.util.TemplateRenderer(
+          config.rowTemplate,
+          this._getTargetNode(),
+          100
+        );
       }
-      return this._templateContainer;
+      return this._templateRenderer;
     },
 
     _renderHeight : function( item, config ) {
@@ -575,11 +566,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellImageBounds : function( item, cell, config ) {
       var element = this._cellImages[ cell ];
       if( element ) {
-        if( item == null || !item.hasCellLayout ) {
-          var left = this._getItemImageLeft( item, cell, config );
-          var width = this._getItemImageWidth( item, cell, config );
-          this._setBounds( element, left, 0, width, this.getHeight() );
-        }
+        var left = this._getItemImageLeft( item, cell, config );
+        var width = this._getItemImageWidth( item, cell, config );
+        this._setBounds( element, left, 0, width, this.getHeight() );
       }
     },
 
@@ -611,14 +600,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabelBounds : function( item, cell, config ) {
       var element = this._cellLabels[ cell ];
       if( element ) {
-        if( item == null || !item.hasCellLayout ) {
-          var left = this._getItemTextLeft( item, cell, config );
-          var width = this._getItemTextWidth( item, cell, config );
-          var top = this._getCellPadding( config )[ 0 ];
-          // TODO : for vertical center rendering line-height should also be set,
-          //        but not otherwise. Also not sure about bottom alignment.
-          this._setBounds( element, left, top, width, this.getHeight() - top );
-        }
+        var left = this._getItemTextLeft( item, cell, config );
+        var width = this._getItemTextWidth( item, cell, config );
+        var top = this._getCellPadding( config )[ 0 ];
+        // TODO : for vertical center rendering line-height should also be set,
+        //        but not otherwise. Also not sure about bottom alignment.
+        this._setBounds( element, left, top, width, this.getHeight() - top );
       }
     },
 
@@ -628,10 +615,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         "seeable" : this.isSeeable(),
         "removeNewLines" : true
       };
-      renderer.text.renderContent( element,
-                                   item ? item.getText( cell ) : null,
-                                   null,
-                                   options );
+      cellRenderer.text.renderContent( element,
+                                       item ? item.getText( cell ) : null,
+                                       null,
+                                       options );
     },
 
     _styleLabel : function( element, item, cell, config ) {
