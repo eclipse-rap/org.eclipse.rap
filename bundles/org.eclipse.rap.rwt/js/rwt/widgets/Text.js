@@ -25,7 +25,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this.setAllowStretchY( true );
       this.__oninput = rwt.util.Functions.bindEvent( this._oninputDomTextarea, this );
     }
-    this._modifyScheduled = false;
     this._message = null;
     this._messageElement = null;
     this._searchIconElement = null;
@@ -139,22 +138,22 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _handleModification : function() {
-      var connection = rwt.remote.Connection.getInstance();
-      var remoteObject = connection.getRemoteObject( this );
-      if( !this._modifyScheduled && remoteObject.isListening( "Modify" ) ) {
-        this._modifyScheduled = true;
-        connection.onNextSend( this._onSend, this );
-        connection.sendDelayed( 500 );
-      }
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
       remoteObject.set( "text", this.getComputedValue() );
+      this._notifyModify();
       this._detectSelectionChange();
     },
 
-    _onSend : function() {
-      if( this._modifyScheduled ) {
-        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
-        this._modifyScheduled = false;
+    _notifyModify : function() {
+      var connection = rwt.remote.Connection.getInstance();
+      if( connection.getRemoteObject( this ).isListening( "Modify" ) ) {
+        connection.onNextSend( this._onSend, this );
+        connection.sendDelayed( 500 );
       }
+    },
+
+    _onSend : function() {
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
     },
 
     ///////////////////

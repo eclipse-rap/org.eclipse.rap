@@ -14,7 +14,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
   construct : function( isCCombo ) {
     this.base( arguments );
-    this._modifyScheduled = false;
     this._editable = true;
     this._userSelection = true;
     this._listMinWidth = -1;
@@ -333,14 +332,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     _onTextInput : function( event ) {
       if( this._editable ) {
-        var connection = rwt.remote.Connection.getInstance();
-        var remoteObject = connection.getRemoteObject( this );
-        if( !this._modifyScheduled && remoteObject.isListening( "Modify" ) ) {
-          this._modifyScheduled = true;
-          connection.onNextSend( this._onSend, this );
-          connection.sendDelayed( 500 );
-        }
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "text", this._field.getComputedValue() );
+        this._notifyModify( true );
         this._internalSelectionChanged = true;
         this._list.setSelectionIndex( -1 );
         this._internalSelectionChanged = false;
@@ -394,16 +388,24 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         }
         remoteObject.set( "selectionIndex", event.index );
         rwt.remote.EventUtil.notifySelected( this );
-        remoteObject.notify( "Modify" );
-        this._modifyScheduled = false;
+        this._notifyModify();
+      }
+    },
+
+    _notifyModify : function( delayed ) {
+      var connection = rwt.remote.Connection.getInstance();
+      if( connection.getRemoteObject( this ).isListening( "Modify" ) ) {
+        connection.onNextSend( this._onSend, this );
+        if( delayed ) {
+          connection.sendDelayed( 500 );
+        } else {
+          connection.send();
+        }
       }
     },
 
     _onSend : function( event ) {
-      if( this._modifyScheduled ) {
-        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify" );
-        this._modifyScheduled = false;
-      }
+      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
     }
 
     ////////////////////////////

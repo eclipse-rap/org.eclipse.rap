@@ -666,6 +666,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
     },
 
+    testSendModify_onChangeSelection : function() {
+      TestUtil.fakeListener( combo, "Modify", true );
+      combo.setEditable( true );
+      combo.setListVisible( true );
+      combo.select( 3 );
+      TestUtil.flush();
+      combo.focus();
+      TestUtil.initRequestLog();
+
+      field.setValue( "a" );
+      field._oninput();
+      TestUtil.press( field, "Down" );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertEquals( "Eiffel", message.findSetProperty( "w3", "text" ) );
+      assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
+    },
+
     testSelectionByFirstLetter_ReadOnly : function() {
       TestUtil.press( field, "R" );
 
