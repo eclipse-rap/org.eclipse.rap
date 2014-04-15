@@ -15,9 +15,6 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
 
   construct : function( parent ) {
     this.base( arguments );
-    if( parent.classname != "rwt.widgets.ExpandBar" ) {
-      throw new Error( "illegal parent, must be a ExpandBar" );
-    }
     this._expandBar = parent;
     this.setAppearance( "expand-item" );
     this._headerHeight = 24; // Chevron size with top/bottom insets
@@ -54,37 +51,20 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     this._disposeObjects( "_header", "_chevron" );
   },
 
-  statics : {
-    STATE_EXPANDED : "expanded",
-    STATE_OVER : "over"
-  },
-
   members : {
 
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._header.addState( state );
-        this._chevron.addState( state );
-      }
-    },
-
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._header.removeState( state );
-        this._chevron.removeState( state );
-      }
+    _getSubWidgets : function() {
+      return [ this._header, this._chevron ];
     },
 
     setExpanded : function( expanded ) {
       this._expanded = expanded;
       if( expanded ) {
-        this._chevron.addState( rwt.widgets.ExpandItem.STATE_EXPANDED );
-        this._header.addState( rwt.widgets.ExpandItem.STATE_EXPANDED );
+        this._chevron.addState( "expanded" );
+        this._header.addState( "expanded" );
       } else {
-        this._chevron.removeState( rwt.widgets.ExpandItem.STATE_EXPANDED );
-        this._header.removeState( rwt.widgets.ExpandItem.STATE_EXPANDED );
+        this._chevron.removeState( "expanded" );
+        this._header.removeState( "expanded" );
       }
     },
 
@@ -120,11 +100,11 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     },
 
     _onHandleMouseOver : function( evt ) {
-      this._chevron.addState( rwt.widgets.ExpandItem.STATE_OVER );
+      this._chevron.addState( "over" );
     },
 
     _onHandleMouseOut : function( evt ) {
-      this._chevron.removeState( rwt.widgets.ExpandItem.STATE_OVER );
+      this._chevron.removeState( "over" );
     }
 
   }

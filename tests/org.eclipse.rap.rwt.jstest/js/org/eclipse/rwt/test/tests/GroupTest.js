@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 
@@ -18,10 +21,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
   members : {
 
     testCreateGroupByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Group",
@@ -41,9 +42,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testDestroyGroupWithChildrenByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var MessageProcessor = rwt.remote.MessageProcessor;
       MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
@@ -73,10 +72,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testSetTextByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Group",
@@ -94,7 +91,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testSetMnemonicIndexByProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
 
       var group = createMnemonicGroup();
@@ -104,7 +100,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testSetTextResetsMnemonicIndex : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "text" : "baa" } );
@@ -115,7 +110,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testRenderMnemonic_OnActivate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.flush();
@@ -129,7 +123,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testRenderMnemonic_OnDeActivate : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.flush();
@@ -144,7 +137,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testMnemonicTrigger_FocusFirstChild : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
@@ -164,7 +156,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testMnemonicTrigger_FocusFirstVisibleChild : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
@@ -184,7 +175,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testMnemonicTrigger_FocusFirstEnabledChild : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "children" : [ "w4", "w5" ] } );
@@ -204,7 +194,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testMnemonicTrigger_FocusChildInComposite : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "children" : [ "w4" ] } );
@@ -225,7 +214,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
     },
 
     testMnemonicTrigger_FocusNothing : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var group = createMnemonicGroup();
       TestUtil.protocolSet( "w3", { "children" : [ "w4" ] } );
@@ -242,14 +230,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       assertTrue( success );
       assertFalse( widget.getFocused() );
       shell.destroy();
+    },
+
+    testSetCustomVariant : function() {
+      var group = new rwt.widgets.Group();
+
+      group.setCustomVariant( "foo" );
+
+      assertTrue( group.hasState( "foo" ) );
+      assertTrue( group._legendObject.hasState( "foo" ) );
+      assertTrue( group._frameObject.hasState( "foo" ) );
+      group.dispose();
     }
 
     // TODO [tb] : breaks IE7 (commented to be able to run all other tests)
 //    testApplyGroupLabelId : function(){
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var shell = TestUtil.createShellByProtocol( "w2" );
-//      var processor = rwt.remote.MessageProcessor;
-//      processor.processOperation( {
+//      MessageProcessor.processOperation( {
 //        "target" : "w3",
 //        "action" : "create",
 //        "type" : "rwt.widgets.Group",
@@ -273,8 +270,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 } );
 
 var createMnemonicGroup = function() {
-  var processor = rwt.remote.MessageProcessor;
-  processor.processOperation( {
+  MessageProcessor.processOperation( {
     "target" : "w3",
     "action" : "create",
     "type" : "rwt.widgets.Group",
@@ -288,4 +284,4 @@ var createMnemonicGroup = function() {
   return rwt.remote.ObjectRegistry.getObject( "w3" );
 };
 
-}());
+}() );

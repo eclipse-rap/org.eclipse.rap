@@ -94,11 +94,8 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    setCustomVariant : function( value ) {
-      this.base( arguments, value );
-      this._field.setCustomVariant( value );
-      this._button.setCustomVariant( value );
-      this._list.setCustomVariant( value );
+    _getSubWidgets : function() {
+      return [ this._field, this._button, this._list ];
     },
 
     _registerListeners : function() {

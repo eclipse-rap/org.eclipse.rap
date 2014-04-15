@@ -104,13 +104,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       shell.destroy();
     },
 
-
     testSetItemCustomVariantByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "customVariant" : "variant_blue" } );
       assertTrue( item.hasState( "variant_blue" ) );
+      assertTrue( item._header.hasState( "variant_blue" ) );
+      assertTrue( item._chevron.hasState( "variant_blue" ) );
       shell.destroy();
       bar.destroy();
       item.destroy();

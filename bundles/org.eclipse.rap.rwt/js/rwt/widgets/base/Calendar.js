@@ -294,36 +294,11 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
   */
 
   members : {
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._monthYearLabel.addState( state );
-        for( var i = 0; i < 7; i++ ) {
-          this._weekdayLabelArr[ i ].addState( state );
-        }
-        for( var i = 0; i < 6 * 7; i++ ) {
-          this._dayLabelArr[ i ].addState( state );
-        }
-        for( var i = 0; i < 6; i++ ) {
-          this._weekLabelArr[ i ].addState( state );
-        }
-      }
-    },
 
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._monthYearLabel.removeState( state );
-        for( var i = 0; i < 7; i++ ) {
-          this._weekdayLabelArr[ i ].removeState( state );
-        }
-        for( var i = 0; i < 6 * 7; i++ ) {
-          this._dayLabelArr[ i ].removeState( state );
-        }
-        for( var i = 0; i < 6; i++ ) {
-          this._weekLabelArr[ i ].removeState( state );
-        }
-      }
+    _getSubWidgets : function() {
+      var result = [ this._monthYearLabel ];
+      result.concat( this._weekdayLabelArr, this._dayLabelArr, this._weekLabelArr );
+      return result;
     },
 
     // property checker

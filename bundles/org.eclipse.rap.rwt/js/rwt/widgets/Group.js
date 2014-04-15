@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,46 +36,30 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     }
     labelObject = this.getLegendObject().getLabelObject();
     labelObject.setMode( "html" );
-    this.addEventListener( "changeBackgroundColor",
-                           this._onChangeBackgroundColor,
-                           this );
-    this.addEventListener( "changeFont",
-                           this._onChangeFont,
-                           this );
-    this.getLegendObject().addEventListener( "mouseover",
-                                             this._onMouseOver,
-                                             this );
-    this.getLegendObject().addEventListener( "mouseout",
-                                             this._onMouseOut,
-                                             this );
+    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
+    this.addEventListener( "changeFont", this._onChangeFont, this );
+    this.getLegendObject().addEventListener( "mouseover", this._onMouseOver, this );
+    this.getLegendObject().addEventListener( "mouseout", this._onMouseOut, this );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
   },
 
   destruct : function() {
-    this.removeEventListener( "changeBackgroundColor",
-                              this._onChangeBackgroundColor,
-                              this );
-    this.removeEventListener( "changeFont",
-                              this._onChangeFont,
-                              this );
-    this.getLegendObject().removeEventListener( "mouseover",
-                                                this._onMouseOver,
-                                                this );
-    this.getLegendObject().removeEventListener( "mouseout",
-                                                this._onMouseOut,
-                                                this );
+    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
+    this.removeEventListener( "changeFont", this._onChangeFont, this );
+    this.getLegendObject().removeEventListener( "mouseover", this._onMouseOver, this );
+    this.getLegendObject().removeEventListener( "mouseout", this._onMouseOut, this );
     this._disposeObjects("_legendObject", "_frameObject");
     this.setMnemonicIndex( null );
   },
 
-  properties :
-  {
-    appearance :
-    {
+  properties : {
+
+    appearance : {
       refine : true,
       init : "group-box"
     }
+
   },
 
   members : {
@@ -135,20 +119,8 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       }
     },
 
-    addState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._legendObject.addState( state );
-        this._frameObject.addState( state );
-      }
-    },
-
-    removeState : function( state ) {
-      this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" ) {
-        this._legendObject.removeState( state );
-        this._frameObject.removeState( state );
-      }
+    _getSubWidgets : function() {
+      return [ this._legendObject, this._frameObject ];
     },
 
     _onChangeBackgroundColor : function( evt ) {
@@ -315,7 +287,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       return result;
     }
 
-
   }
 
-});
+} );
