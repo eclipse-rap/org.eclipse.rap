@@ -128,7 +128,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     getComputedValue : function() {
       var result;
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         result = this._inputElement.value;
       } else {
         result = this.getValue();
@@ -137,6 +137,14 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     getInputElement : function() {
+      if( !this._inputElement && !this.isDisposed() ) {
+        this._inputElement = document.createElement( this._inputTag );
+        if( this._inputType ) {
+          this._inputElement.type = this._inputType;
+        }
+        this._inputElement.autoComplete = "off";
+        this._inputElement.setAttribute( "autoComplete", "off" );
+      }
       return this._inputElement || null;
     },
 
@@ -347,41 +355,35 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     _applyElement : function( value, old ) {
       this.base( arguments, value, old );
       if( value ) {
-        this._inputElement = document.createElement( this._inputTag );
-        if( this._inputType ) {
-          this._inputElement.type = this._inputType;
-        }
-        this._inputElement.autoComplete = "off";
-        this._inputElement.setAttribute( "autoComplete", "off" );
-        this._inputElement.disabled = this.getEnabled() === false;
-        this._inputElement.readOnly = this.getReadOnly();
+        var inputElement = this.getInputElement();
+        inputElement.disabled = this.getEnabled() === false;
+        inputElement.readOnly = this.getReadOnly();
         if( rwt.client.Client.isMshtml() ) {
           if( this.getValue() != null && this.getValue() !== "" ) {
-            this._inputElement.value = this.getValue();
+            inputElement.value = this.getValue();
           } else {
-          // See Bug 243557 - [Text] Pasting text from clipboard does not trigger ModifyListener
-            this._inputElement.value = " ";
+           // See Bug 243557 - [Text] Pasting text from clipboard does not trigger ModifyListener
+            inputElement.value = " ";
           }
         } else {
-          this._inputElement.value = this.getValue() != null ? this.getValue().toString() : "";
+          inputElement.value = this.getValue() != null ? this.getValue().toString() : "";
         }
         if( this.getMaxLength() != null ) {
-          this._inputElement.maxLength = this.getMaxLength();
+          inputElement.maxLength = this.getMaxLength();
         }
-        var istyle = this._inputElement.style;
-        istyle.padding = 0;
-        istyle.margin = 0;
-        istyle.border = "0 none";
-        istyle.background = "transparent";
+        inputElement.style.padding = 0;
+        inputElement.style.margin = 0;
+        inputElement.style.border = "0 none";
+        inputElement.style.background = "transparent";
         // See Bug 419676: [Text] Input element of Text field may not be vertically centered in IE
         if( rwt.client.Client.isNewMshtml() ) {
-          istyle.verticalAlign = "top";
+          inputElement.style.verticalAlign = "top";
         }
-        istyle.overflow = this._inputOverflow;
-        istyle.outline = "none";
-        istyle.resize = "none";
-        istyle.WebkitAppearance = "none";
-        istyle.MozAppearance = "none";
+        inputElement.style.overflow = this._inputOverflow;
+        inputElement.style.outline = "none";
+        inputElement.style.resize = "none";
+        inputElement.style.WebkitAppearance = "none";
+        inputElement.style.MozAppearance = "none";
         this._renderFont();
         this._renderTextColor();
         this._renderTextAlign();
@@ -437,7 +439,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _applyCursor : function( value, old ) {
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         this._renderCursor();
       }
     },
@@ -467,7 +469,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _applyEnabled : function( value, old ) {
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         this._inputElement.disabled = value === false;
       }
       return this.base( arguments, value, old );
@@ -481,7 +483,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     _renderValue : function() {
       this._inValueProperty = true;
       var value = this.getValue();
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         if (value === null) {
           value = "";
         }
@@ -519,7 +521,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderTextColor : function() {
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         this._inputElement.style.color = this.__textColor || "";
       }
     },
@@ -535,7 +537,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderFont : function() {
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         if( this.__font != null ) {
           this.__font.renderElement( this._inputElement );
         } else {
@@ -545,7 +547,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _updateLineHeight : function() {
-      if( this._inputElement != null ) {
+      if( this.isCreated() ) {
         var font = this.getFont();
         var height = Math.floor( font.getSize() * this._LINE_HEIGT_FACTOR );
         this._inputElement.style.lineHeight = height + "px";

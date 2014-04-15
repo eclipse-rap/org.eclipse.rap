@@ -100,6 +100,9 @@ rwt.scripting.WidgetProxyFactory = {
     // instanceof is not a good way here since not all "widgets" extend the Widget class
     if( source.classname.match( /rwt\.widgets\.[a-zA-Z]*$/ ) ) {
       proxy.$el = new rwt.util.RWTQuery( source, true );
+      if( source.classname === "rwt.widgets.Text" ) {
+        proxy.$input = new rwt.util.RWTQuery( source.getInputElement(), true );
+      }
     }
   },
 

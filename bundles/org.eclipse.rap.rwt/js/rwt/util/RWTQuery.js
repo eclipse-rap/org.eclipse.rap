@@ -14,7 +14,9 @@ namespace( "rwt.util" );
 (function(){
 
 rwt.util.RWTQuery = function( target ) {
-  this.__access = function( args, callback ) {
+  var isWidget = ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0;
+  this.__access = function( args, callbackWidget, callbackElement ) {
+    var callback = isWidget ? callbackWidget : callbackElement;
     return callback.apply( this, [ target, args ] );
   };
 };
@@ -22,7 +24,7 @@ rwt.util.RWTQuery = function( target ) {
 rwt.util.RWTQuery.prototype = {
 
   attr : function() {
-    return this.__access( arguments, attr_widget );
+    return this.__access( arguments, attr_widget, attr_element );
   }
 
 };
@@ -43,9 +45,18 @@ var unwrapArgsFor = function( setter ) {
 
 var attr_widget = unwrapArgsFor( function( widget, args ) {
   if( args.length === 1 ) {
-    return widget.getHtmlAttributes()[ args[ 0 ] ] || "";
+    return widget.getHtmlAttributes()[ args[ 0 ] ];
   } else if( !restrictedAttributes[ args[ 0 ] ] ) {
     widget.setHtmlAttribute( args[ 0 ], args[ 1 ] );
+  }
+  return this;
+} );
+
+var attr_element = unwrapArgsFor( function( element, args ) {
+  if( args.length === 1 ) {
+    return element.getAttribute( args[ 0 ] ) || undefined;
+  } else if( !restrictedAttributes[ args[ 0 ] ] ) {
+    element.setAttribute( args[ 0 ], args[ 1 ] );
   }
   return this;
 } );

@@ -218,6 +218,38 @@ describe( "WidgetProxyFactory", function() {
 
     } );
 
+    describe( "$input", function() {
+
+      it( "does not exist for any widget in rwt.widgets.base", function() {
+        var fake = new rwt.widgets.base.Terminator();
+        fake.classname = "rwt.widgets.Foo";
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( fake );
+
+        expect( widgetProxy.$input ).toBeUndefined();
+      } );
+
+      it( "exists for text", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+        expect( widgetProxy.$input instanceof Object ).toBeTruthy();
+      } );
+
+      it( "has type attribute", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+        expect( widgetProxy.$input.attr( "type" ) ).toBe( "text" );
+      } );
+
+      it( "sets html attribute", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+
+        widgetProxy.$input.attr( "foo", "bar" );
+
+        expect( text.getInputElement().getAttribute( "foo" )  ).toBe( "bar" );
+      } );
+
+    } );
+
   } );
 
   describe( "text proxy", function() {

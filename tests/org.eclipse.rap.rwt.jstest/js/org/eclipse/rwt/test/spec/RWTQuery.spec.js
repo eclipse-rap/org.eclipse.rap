@@ -21,6 +21,7 @@ describe( "RWTQuery", function() {
 
     beforeEach( function() {
       widget = jasmine.createSpyObj( "widget", [ "setHtmlAttribute", "getHtmlAttributes" ] );
+      widget.classname = "rwt.widgets.Foo";
     } );
 
     afterEach( function() {
@@ -34,9 +35,9 @@ describe( "RWTQuery", function() {
         expect( $( widget ).attr( "foo" ) ).toBe( "bar" );
       } );
 
-      it( "returns empty string for non-existing attribute", function() {
+      it( "returns undefined for non-existing attribute", function() {
         widget.getHtmlAttributes.andReturn( { } );
-        expect( $( widget ).attr( "foo" ) ).toBe( "" );
+        expect( $( widget ).attr( "foo" ) ).toBeUndefined();
       } );
 
       it( "sets single attribute", function() {
@@ -77,6 +78,71 @@ describe( "RWTQuery", function() {
 
     } );
 
+  } );
+
+  describe( "for element:", function() {
+
+    var element;
+
+    beforeEach( function() {
+      element = document.createElement( "div" );
+    } );
+
+    afterEach( function() {
+      element = null;
+    } );
+
+    describe( "attr", function() {
+
+      it( "returns existing attribute", function() {
+        element.setAttribute( "foo", "bar" );
+        expect( $( element ).attr( "foo" ) ).toBe( "bar" );
+      } );
+
+      it( "returns undefined for non-existing attribute", function() {
+        expect( $( element ).attr( "foo" ) ).toBeUndefined();
+      } );
+
+      it( "sets single attribute", function() {
+        $( element ).attr( "foo", "bar" );
+        expect( element.getAttribute( "foo" ) ).toBe( "bar" );
+      } );
+
+      it( "sets multiple attribute", function() {
+        $( element ).attr( {
+          "foo" : "bar",
+          "foo2" : "bar2"
+        } );
+
+        expect( element.getAttribute( "foo" ) ).toBe( "bar" );
+        expect( element.getAttribute( "foo2" ) ).toBe( "bar2" );
+      } );
+
+      it( "is chainable as setter", function() {
+        $( element ).attr( "foo", "bar" ).attr( "foo2", "bar2" );
+
+        expect( element.getAttribute( "foo" ) ).toBe( "bar" );
+        expect( element.getAttribute( "foo2" ) ).toBe( "bar2" );
+      } );
+
+      it( "is chainable as multiple setter", function() {
+        $( element ).attr( { "foo" : "bar" } ).attr( { "foo2" : "bar2" } );
+
+        expect( element.getAttribute( "foo" ) ).toBe( "bar" );
+        expect( element.getAttribute( "foo2" ) ).toBe( "bar2" );
+      } );
+
+      it( "does not set forbidden attributes", function() {
+        $( element ).attr( "id", "foo" );
+        $( element ).attr( "style", "bar" );
+        $( element ).attr( "class", "foobar" );
+
+        expect( element.getAttribute( "id" ) ).toBeFalsy();
+        expect( element.getAttribute( "style" ) ).toBeFalsy();
+        expect( element.getAttribute( "class" ) ).toBeFalsy();
+      } );
+
+    } );
 
   } );
 

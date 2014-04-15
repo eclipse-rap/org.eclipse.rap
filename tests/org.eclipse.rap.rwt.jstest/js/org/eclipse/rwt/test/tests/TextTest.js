@@ -339,6 +339,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 0, 0 ], text.getComputedSelection() );
     },
 
+    testGetInputElement_createInputLazily : function() {
+      createText( true );
+
+      var input = text.getInputElement();
+      TestUtil.flush();
+
+      assertIdentical( text._getTargetNode(), input.parentElement );
+    },
+
+    testGetInputElement_ReturnNullIfDisposed : function() {
+      createText();
+      text.destroy();
+      TestUtil.flush();
+
+      assertNull( text.getInputElement() );
+    },
+
     testInputMinWidth : function() {
       createText();
 
@@ -347,7 +364,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       assertEquals( 2, parseInt( text.getInputElement().style.width, 10 ) );
     },
-
 
     testSetSelection : function() {
       createText();
