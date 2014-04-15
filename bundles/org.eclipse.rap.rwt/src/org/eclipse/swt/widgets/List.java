@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
@@ -1150,14 +1151,7 @@ public class List extends Scrollable {
   }
 
   private int getItemWidth( String item ) {
-    int result = 0;
-    Font font = getFont();
-    if( isMarkupEnabledFor( this ) ) {
-      result = TextSizeUtil.markupExtent( font, item, 0 ).x;
-    } else {
-      result = TextSizeUtil.stringExtent( font, item ).x;
-    }
-    return result + getItemPadding().width;
+    return stringExtent( getFont(), item, isMarkupEnabledFor( this ) ).x + getItemPadding().width;
   }
 
   private int getMaxItemWidth() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.textExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
@@ -206,12 +207,7 @@ public class CLabel extends Canvas {
       size.y += imageBounds.height;
     }
     if ( text != null && text.length() > 0 ) {
-      Point extent;
-      if( isMarkupEnabledFor( this ) ) {
-        extent = TextSizeUtil.markupExtent( getFont(), text, SWT.DEFAULT );
-      } else {
-        extent = TextSizeUtil.textExtent( getFont(), text, SWT.DEFAULT );
-      }
+      Point extent = textExtent( getFont(), text, SWT.DEFAULT, isMarkupEnabledFor( this ) );
       size.x += extent.x;
       size.y = Math.max( size.y, extent.y );
       if ( image != null ) {

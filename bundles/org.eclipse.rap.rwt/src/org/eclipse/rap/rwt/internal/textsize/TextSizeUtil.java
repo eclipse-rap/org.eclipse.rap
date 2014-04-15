@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,14 +30,25 @@ public class TextSizeUtil {
   static final int TEXT_EXTENT = 1;
   static final int MARKUP_EXTENT = 2;
 
-  public static Point stringExtent( Font font, String string ) {
-    Point result;
-    if( isEmptyString( string ) ) {
-      result = createSizeForEmptyString( font );
-    } else {
-      result = determineTextSize( font, string, SWT.DEFAULT, STRING_EXTENT );
+  public static Point stringExtent( Font font, String string, boolean markup ) {
+    if( markup ) {
+      return determineTextSize( font, string, SWT.DEFAULT, MARKUP_EXTENT );
     }
-    return result;
+    return stringExtent( font, string );
+  }
+
+  public static Point stringExtent( Font font, String string ) {
+    if( isEmptyString( string ) ) {
+      return createSizeForEmptyString( font );
+    }
+    return determineTextSize( font, string, SWT.DEFAULT, STRING_EXTENT );
+  }
+
+  public static Point textExtent( Font font, String text, int wrapWidth, boolean markup ) {
+    if( markup ) {
+      return determineTextSize( font, text, wrapWidth, MARKUP_EXTENT );
+    }
+    return textExtent( font, text, wrapWidth );
   }
 
   public static Point textExtent( Font font, String text, int wrapWidth ) {
@@ -47,10 +58,6 @@ public class TextSizeUtil {
       result = adjustWrapDetermination( font, text, wrapWidth );
     }
     return result;
-  }
-
-  public static Point markupExtent( Font font, String markup, int wrapWidth ) {
-    return determineTextSize( font, markup, wrapWidth, MARKUP_EXTENT );
   }
 
   public static int getCharHeight( Font font ) {

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.markupExtent;
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
@@ -1845,7 +1844,7 @@ public class Tree extends Composite {
   int getVisualTextWidth( TreeItem item, int index ) {
     int result = 0;
     if( index == 0 && getColumnCount() == 0 ) {
-      result = getTextExtent( item.getFont(), item.getText( 0 ) ).x + TEXT_MARGIN.width;
+      result = getStringExtent( item.getFont(), item.getText( 0 ) ).x + TEXT_MARGIN.width;
     } else if( index >= 0 && index < getColumnCount() ) {
       result = getTextWidth( index ) - getIndentionOffset( item );
       result = Math.max( 0, result );
@@ -1857,7 +1856,7 @@ public class Tree extends Composite {
     int result;
     if( getColumnCount() == 0 && index == 0 ) {
       Rectangle padding = getCellPadding();
-      int textWidth = getTextExtent( item.getFont(), item.getText( 0 ) ).x;
+      int textWidth = getStringExtent( item.getFont(), item.getText( 0 ) ).x;
       result = padding.width + getItemImageOuterWidth( index ) + textWidth + TEXT_MARGIN.width;
     } else {
       result = getColumn( index ).getWidth();
@@ -1877,7 +1876,7 @@ public class Tree extends Composite {
     if( !item.hasPreferredWidthBuffer( index ) ) {
       Rectangle padding = getCellPadding();
       result = getTextOffset( index ) ;
-      result += getTextExtent( item.getFont(), item.getTextWithoutMaterialize( index ) ).x;
+      result += getStringExtent( item.getFont(), item.getTextWithoutMaterialize( index ) ).x;
       result += padding.width - padding.x;
       if( isTreeColumn( index ) ) {
         result += TEXT_MARGIN.width - TEXT_MARGIN.x;
@@ -1887,8 +1886,8 @@ public class Tree extends Composite {
     return result;
   }
 
-  private Point getTextExtent( Font font, String text ) {
-    return isMarkupEnabledFor( this ) ? markupExtent( font, text, -1 ) : stringExtent( font, text );
+  private Point getStringExtent( Font font, String text ) {
+    return stringExtent( font, text, isMarkupEnabledFor( this ) );
   }
 
   boolean isTreeColumn( int index ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.textExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
@@ -289,12 +290,7 @@ public class Label extends Control {
       if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent;
-      if( isMarkupEnabledFor( this ) ) {
-        extent = TextSizeUtil.markupExtent( getFont(), text, wrapWidth );
-      } else {
-        extent = TextSizeUtil.textExtent( getFont(), text, wrapWidth );
-      }
+      Point extent = textExtent( getFont(), text, wrapWidth, isMarkupEnabledFor( this ) );
       width = extent.x;
       height = extent.y + 2;
     } else {

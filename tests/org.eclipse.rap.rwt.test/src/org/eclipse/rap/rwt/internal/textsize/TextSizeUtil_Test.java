@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentAssignsUnknownStringsToTextSizeMeasuring() {
+  public void testStringExtent_assignsUnknownStringsToTextSizeMeasuring() {
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
     assertEquals( 1, getMeasurementItems().length );
@@ -55,7 +55,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentDoesNotAssignsUnknownStringsToTextSizeMeasuringIfTemporaryResize() {
+  public void testStringExtent_doesNotAssignsUnknownStringsToTextSizeMeasuringIfTemporaryResize() {
     markTemporaryResize();
 
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
@@ -64,7 +64,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentAssignsUnknownFontToFontProbing() {
+  public void testStringExtent_assignsUnknownFontToFontProbing() {
     TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
     assertEquals( 1, getProbes().length );
@@ -72,7 +72,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentUsesEstimationForUnknownStrings() {
+  public void testStringExtent_usesEstimationForUnknownStrings() {
     Point determined = TextSizeUtil.stringExtent( getFont(), TEST_STRING );
     Point estimated = TextSizeEstimation.stringExtent( getFont(), TEST_STRING );
 
@@ -80,7 +80,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentUsesStoreageForKnowStrings() {
+  public void testStringExtent_usesStoreageForKnowStrings() {
     Point storedSize = new Point( 100, 10 );
     fakeMeasurement( TEST_STRING, SWT.DEFAULT, TextSizeUtil.STRING_EXTENT, storedSize );
 
@@ -90,14 +90,14 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentForEmptyString() {
+  public void testStringExtent_forEmptyString() {
     Point emptyStringSize = TextSizeUtil.stringExtent( getFont(), "" );
 
     assertEquals( new Point( 0, 10 ), emptyStringSize );
   }
 
   @Test
-  public void testStringExtentMustNotExpandLineBreaks() {
+  public void testStringExtent_mustNotExpandLineBreaks() {
     Point singleLine = TextSizeUtil.stringExtent( getFont(), "First Line" );
     Point multiLine = TextSizeUtil.stringExtent( getFont(), "First Line\nSecond Line" );
 
@@ -105,7 +105,7 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testStringExtentConsideresLeadingAndTrailingSpaces() {
+  public void testStringExtent_consideresLeadingAndTrailingSpaces() {
     Point str = TextSizeUtil.stringExtent( getFont(), "  First Line    " );
     Point trimStr = TextSizeUtil.stringExtent( getFont(), "First Line" );
 
@@ -113,11 +113,35 @@ public class TextSizeUtil_Test {
   }
 
   @Test
-  public void testTextExtentExpandLineBreaks() {
+  public void testStringExtend_withMarkup() {
+    Point stringExtend = TextSizeUtil.stringExtent( getFont(), "<b>foo</b>", false );
+    Point markupExtend = TextSizeUtil.stringExtent( getFont(), "<b>foo</b>", true );
+
+    assertTrue( stringExtend.x > markupExtend.x );
+  }
+
+  @Test
+  public void testTextExtent_expandLineBreaks() {
     Point singleLine = TextSizeUtil.textExtent( getFont(), "First Line", 0 );
     Point multiLine = TextSizeUtil.textExtent( getFont(), "First Line\nSecond Line", 0 );
 
     assertTrue( singleLine.y < multiLine.y );
+  }
+
+  @Test
+  public void testTextExtent_withMarkup() {
+    Point textExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b>", 0, false );
+    Point markupExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b>", 0, true );
+
+    assertTrue( textExtend.x > markupExtend.x );
+  }
+
+  @Test
+  public void testTextExtent_withMarkupAndLineBreak() {
+    Point textExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b></br>", 0, false );
+    Point markupExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b></br>", 0, true );
+
+    assertTrue( textExtend.y < markupExtend.y );
   }
 
   @Test

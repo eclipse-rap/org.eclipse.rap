@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.markupExtent;
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
@@ -2706,8 +2705,8 @@ public class Table extends Composite {
 
   private TableItem max( TableItem item1, TableItem item2 ) {
     TableItem result;
-    int item1TextWidth = getTextExtent( item1.getFont(), item1.getText( 0 ) ).x;
-    int item2TextWidth = getTextExtent( item2.getFont(), item2.getText( 0 ) ).x;
+    int item1TextWidth = getStringExtent( item1.getFont(), item1.getText( 0 ) ).x;
+    int item2TextWidth = getStringExtent( item2.getFont(), item2.getText( 0 ) ).x;
     if( item1TextWidth > item2TextWidth ) {
       result = item1;
     } else {
@@ -2716,8 +2715,8 @@ public class Table extends Composite {
     return result;
   }
 
-  Point getTextExtent( Font font, String text ) {
-    return isMarkupEnabledFor( this ) ? markupExtent( font, text, -1 ) : stringExtent( font, text );
+  Point getStringExtent( Font font, String text ) {
+    return stringExtent( font, text, isMarkupEnabledFor( this ) );
   }
 
   ///////////////////

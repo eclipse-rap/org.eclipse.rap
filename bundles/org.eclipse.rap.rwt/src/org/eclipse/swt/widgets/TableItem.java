@@ -1091,7 +1091,7 @@ public class TableItem extends Item {
     int result = 0;
     if( hasData( index ) ) {
       if( data[ index ].textWidth == Data.UNKNOWN_WIDTH ) {
-        data[ index ].textWidth = parent.getTextExtent( font, data[ index ].text ).x;
+        data[ index ].textWidth = parent.getStringExtent( font, data[ index ].text ).x;
       }
       result = data[ index ].textWidth;
     }
