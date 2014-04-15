@@ -59,6 +59,9 @@ rwt.widgets.util.CellRendererRegistry = function() {
       result.style.overflow = "hidden";
       // NOTE : older IE can (in quirksmode) not deal with multiple css classes!
       var cssClass = cellData.selectable ? "rwt-cell-selectable" : "rwt-cell";
+      if( isValidCssClass( cellData.name ) ) {
+        cssClass += " " + cellData.name;
+      }
       if( rwt.client.Client.isMshtml() ) {
         result.className = cssClass;
       } else {
@@ -75,6 +78,15 @@ rwt.widgets.util.CellRendererRegistry = function() {
   this.add( defaultTextRenderer );
   this.add( defaultImageRenderer );
 
+};
+
+var isValidCssClass = function( name ) {
+  if( name && name.length > 1 ) {
+    return    name.charAt( 0 ).match( /[a-zA-Z]/ )
+           && name.match( /^[a-zA-Z0-9_-]*$/ );
+  } else {
+    return false;
+  }
 };
 
 rwt.widgets.util.CellRendererRegistry.getInstance = function() {

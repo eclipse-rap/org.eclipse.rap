@@ -148,6 +148,39 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CellRendererRegistryTest", {
       assertEquals( "rwt-cell-selectable", element.className || element.getAttribute( "class" ) );
     },
 
+    testAddFunctionCreateElement_ForNamedCell : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement( { "name" :  "foo_bar-1"} );
+      assertEquals( "rwt-cell foo_bar-1", element.className || element.getAttribute( "class" ) );
+    },
+
+    testAddFunctionCreateElement_ForNamedCellNotStartingWithLetter : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement( { "name" :  "1foobar"} );
+      assertEquals( "rwt-cell", element.className || element.getAttribute( "class" ) );
+    },
+
+    testAddFunctionCreateElement_ForNamedCellContainingInvalidCharacer : function() {
+      registry.add(  {
+        "cellType" : "foo",
+        "contentType" : "bar",
+        "renderContent" : function(){}
+      } );
+
+      var element = registry.getRendererFor( "foo" ).createElement( { "name" :  "foo$bar"} );
+      assertEquals( "rwt-cell", element.className || element.getAttribute( "class" ) );
+    },
+
     testGetAll : function() {
       registry.add( {
         "cellType" : "bar1",

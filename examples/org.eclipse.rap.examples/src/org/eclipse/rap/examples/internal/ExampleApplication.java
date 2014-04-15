@@ -35,6 +35,7 @@ public class ExampleApplication implements ApplicationConfiguration {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.PAGE_TITLE, "RAP Examples" );
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
+    properties.put( WebClient.HEAD_HTML, readTextFromResource( "resources/head.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     application.addEntryPoint( "/", MainUi.class, properties );
