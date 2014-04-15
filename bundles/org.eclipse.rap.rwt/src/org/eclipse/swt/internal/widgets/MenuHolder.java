@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
-
 
 public final class MenuHolder implements SerializableCompatibility {
 
@@ -43,11 +43,11 @@ public final class MenuHolder implements SerializableCompatibility {
   public static Menu[] getMenus( Widget widget ) {
     return getMenuHolder( widget ).getMenus();
   }
-  
+
   private final List<Menu> menus;
 
   public MenuHolder() {
-    menus = new SlimList<Menu>();
+    menus = new ArrayList<Menu>();
   }
 
   private void addMenu( Menu menu ) {
@@ -66,11 +66,9 @@ public final class MenuHolder implements SerializableCompatibility {
     return menus.size();
   }
 
-  ///////////////////
-  // Helping methods
-  
   private static MenuHolder getMenuHolder( Widget widget ) {
     Object adapter = widget.getAdapter( IMenuHolderAdapter.class );
     return ( MenuHolder )adapter;
   }
+
 }

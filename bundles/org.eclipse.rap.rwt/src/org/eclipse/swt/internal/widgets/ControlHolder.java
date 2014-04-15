@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -18,16 +19,12 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-
-/*
- * Holds the child controls of Composites
- */
 public final class ControlHolder implements IControlHolderAdapter, SerializableCompatibility {
 
   private final List<Control> controls;
 
   public ControlHolder() {
-    controls = new SlimList<Control>();
+    controls = new ArrayList<Control>();
   }
 
   public int size() {
@@ -113,10 +110,8 @@ public final class ControlHolder implements IControlHolderAdapter, SerializableC
     return getControlHolder( composite ).indexOf( control );
   }
 
-  // ////////////////
-  // helping methods
-
   private static IControlHolderAdapter getControlHolder( Composite composite ) {
     return composite.getAdapter( IControlHolderAdapter.class );
   }
+
 }

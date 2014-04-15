@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -19,8 +20,8 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
 
-public final class ItemHolder<T extends Item> 
-  implements IItemHolderAdapter<T>, SerializableCompatibility 
+public final class ItemHolder<T extends Item>
+  implements IItemHolderAdapter<T>, SerializableCompatibility
 {
 
   @SuppressWarnings("unchecked")
@@ -41,7 +42,7 @@ public final class ItemHolder<T extends Item>
 
   public ItemHolder( Class<T> type ) {
     this.type = type;
-    this.items = new SlimList<T>();
+    this.items = new ArrayList<T>();
   }
 
   public int size() {
@@ -71,7 +72,7 @@ public final class ItemHolder<T extends Item>
     }
     items.add( index, item );
   }
-  
+
   public void remove( T item ) {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -81,7 +82,7 @@ public final class ItemHolder<T extends Item>
     }
     items.remove( item );
   }
-  
+
   @SuppressWarnings("unchecked")
   public T[] getItems() {
     T[] result = ( T[] )Array.newInstance( type, items.size() );
@@ -94,8 +95,9 @@ public final class ItemHolder<T extends Item>
     }
     return items.get( index );
   }
-  
+
   public int indexOf ( T item ) {
     return items.indexOf( item );
   }
+
 }
