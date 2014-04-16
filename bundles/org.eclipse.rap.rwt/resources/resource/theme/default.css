@@ -453,6 +453,9 @@ Group-Frame {
 Group-Label {
   padding: 2px 10px 2px 10px;
   background-color: #f0f0f0;
+  background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   border: 1px solid #bdbdbd;
   border-radius: 10px;
   color: inherit;

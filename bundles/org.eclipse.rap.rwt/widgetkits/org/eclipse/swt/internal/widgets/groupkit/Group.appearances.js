@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,10 @@ var appearances = {
         padding : tv.getCssBoxDimensions( "Group-Label", "padding" ),
         margin : tv.getCssBoxDimensions( "Group-Label", "margin" ),
         backgroundColor : tv.getCssColor( "Group-Label", "background-color" ),
+        backgroundImage : tv.getCssImage( "Group-Label", "background-image" ),
+        backgroundRepeat : tv.getCssIdentifier( "Group-Label", "background-repeat" ),
+        backgroundPosition : tv.getCssIdentifier( "Group-Label", "background-position" ),
+        backgroundGradient : tv.getCssGradient( "Group-Label", "background-image" ),
         font : tv.getCssFont( "Group", "font"),
         textColor : tv.getCssColor( "Group-Label", "color" ),
         textShadow : tv.getCssShadow( "Group-Label", "text-shadow" )

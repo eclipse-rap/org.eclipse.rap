@@ -18,12 +18,10 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     // Sub widgets
     this._createFrameObject();
     this._createLegendObject();
-
     // Processing parameters
     this.setLegend( "" );
-
     // Enable method remapping
-    this.remapChildrenHandlingTo(this._frameObject);
+    this.remapChildrenHandlingTo( this._frameObject );
     this.setOverflow( "hidden" );
     var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
@@ -36,8 +34,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     }
     labelObject = this.getLegendObject().getLabelObject();
     labelObject.setMode( "html" );
-    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
-    this.addEventListener( "changeFont", this._onChangeFont, this );
     this.getLegendObject().addEventListener( "mouseover", this._onMouseOver, this );
     this.getLegendObject().addEventListener( "mouseout", this._onMouseOut, this );
     // Disable scrolling (see bug 345903)
@@ -45,11 +41,9 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
   },
 
   destruct : function() {
-    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
-    this.removeEventListener( "changeFont", this._onChangeFont, this );
     this.getLegendObject().removeEventListener( "mouseover", this._onMouseOver, this );
     this.getLegendObject().removeEventListener( "mouseout", this._onMouseOut, this );
-    this._disposeObjects("_legendObject", "_frameObject");
+    this._disposeObjects( "_legendObject", "_frameObject" );
     this.setMnemonicIndex( null );
   },
 
@@ -123,16 +117,16 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       return [ this._legendObject, this._frameObject ];
     },
 
-    _onChangeBackgroundColor : function( evt ) {
-      var newColor = evt.getValue();
+    _applyBackgroundColor : function( value, old ) {
+      this.base( arguments, value, old );
       if( this._themeBackgroundColor === "undefined" ) {
-        this.getLegendObject().setBackgroundColor( newColor );
+        this.getLegendObject().setBackgroundColor( value );
       }
     },
 
-    _onChangeFont : function( evt ) {
-      var newFont = evt.getValue();
-      this.getLegendObject().setFont( newFont );
+    _applyFont : function( value, old ) {
+      this.base( arguments, value, old );
+      this.getLegendObject().setFont( value );
     },
 
     _onMouseOver : function( event ) {
@@ -185,15 +179,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       this.add( this._frameObject );
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      GETTER FOR SUB WIDGETS
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * Accessor method for the frame sub widget
      *
@@ -203,7 +188,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     getFrameObject : function() {
       return this._frameObject;
     },
-
 
     /**
      * Accessor method for the legend sub widget
@@ -215,12 +199,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       return this._legendObject;
     },
 
-    /*
-    ---------------------------------------------------------------------------
-      SETTER/GETTER
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * Sets the label of the legend sub widget if the given string is
      * valid. Otherwise the legend sub widget get not displayed.
@@ -229,12 +207,12 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
      * @param vLegend {String} new label of the legend sub widget
      * @return {void}
      */
-    setLegend : function(vLegend) {
-      if (vLegend !== "" && vLegend !== null) {
-        this._legendObject.setLabel(vLegend);
-        this._legendObject.setDisplay(true);
+    setLegend : function( vLegend ) {
+      if( vLegend !== "" && vLegend !== null ) {
+        this._legendObject.setLabel( vLegend );
+        this._legendObject.setDisplay( true );
       } else {
-        this._legendObject.setDisplay(false);
+        this._legendObject.setDisplay( false );
       }
     },
 
@@ -248,7 +226,6 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       return this._legendObject.getLabel();
     },
 
-
     /**
      * Sets the icon of the legend sub widget.
      *
@@ -256,10 +233,9 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
      * @param vIcon {String} source of the new icon of the legend sub widget
      * @return {void}
      */
-    setIcon : function(vIcon) {
-      this._legendObject.setIcon(vIcon);
+    setIcon : function( vIcon ) {
+      this._legendObject.setIcon( vIcon );
     },
-
 
     /**
      * Accessor method for the icon of the legend sub widget

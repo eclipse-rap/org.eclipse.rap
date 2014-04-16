@@ -241,6 +241,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       assertTrue( group._legendObject.hasState( "foo" ) );
       assertTrue( group._frameObject.hasState( "foo" ) );
       group.dispose();
+    },
+
+    testSetFont : function() {
+      var group = new rwt.widgets.Group();
+
+      group.setFont( rwt.html.Font.fromString( "Arial 20px" ) );
+
+      assertEquals( "20px Arial", group.getFont().toCss() );
+      assertEquals( "20px Arial", group.getLegendObject().getFont().toCss() );
+      group.dispose();
     }
 
     // TODO [tb] : breaks IE7 (commented to be able to run all other tests)
