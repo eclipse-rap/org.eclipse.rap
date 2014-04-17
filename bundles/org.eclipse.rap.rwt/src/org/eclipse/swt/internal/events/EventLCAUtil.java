@@ -11,8 +11,9 @@
 package org.eclipse.swt.internal.events;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValueAsString;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValue;
 
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Listener;
@@ -22,21 +23,23 @@ import org.eclipse.swt.widgets.Widget;
 public final class EventLCAUtil {
 
   public static int readStateMask( Widget widget, String eventName ) {
-    String altKey = readEventPropertyValueAsString( getId( widget ), eventName, "altKey" );
-    String ctrlKey = readEventPropertyValueAsString( getId( widget ), eventName, "ctrlKey" );
-    String shiftKey = readEventPropertyValueAsString( getId( widget ), eventName, "shiftKey" );
-    return translateModifier( altKey, ctrlKey, shiftKey );
+    JsonValue altKey = readEventPropertyValue( getId( widget ), eventName, "altKey" );
+    JsonValue ctrlKey = readEventPropertyValue( getId( widget ), eventName, "ctrlKey" );
+    JsonValue shiftKey = readEventPropertyValue( getId( widget ), eventName, "shiftKey" );
+    return translateModifier( JsonValue.TRUE.equals( altKey ),
+                              JsonValue.TRUE.equals( ctrlKey ),
+                              JsonValue.TRUE.equals( shiftKey ) );
   }
 
-  static int translateModifier( String altKey, String ctrlKey, String shiftKey ) {
+  static int translateModifier( boolean hasAltKey, boolean hasCtrlKey, boolean hasShiftKey ) {
     int result = 0;
-    if( "true".equals( ctrlKey ) ) {
+    if( hasCtrlKey ) {
       result |= SWT.CTRL;
     }
-    if( "true".equals( altKey ) ) {
+    if( hasAltKey ) {
       result |= SWT.ALT;
     }
-    if( "true".equals( shiftKey ) ) {
+    if( hasShiftKey ) {
       result |= SWT.SHIFT;
     }
     return result;

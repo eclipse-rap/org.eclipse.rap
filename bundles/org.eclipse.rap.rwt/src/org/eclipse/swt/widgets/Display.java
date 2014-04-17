@@ -39,7 +39,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
@@ -2306,22 +2305,18 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    JsonValue value = ProtocolUtil.readPropertyValue( getId( this ), BOUNDS );
-    return value == null ? new Rectangle( 0, 0, 1024, 768 ) : readRectangle( value );
+    JsonValue value = readPropertyValue( getId( this ), BOUNDS );
+    return value != null ? readRectangle( value ) : new Rectangle( 0, 0, 1024, 768 );
   }
 
   private Point readDPI() {
     JsonValue value = readPropertyValue( getId( this ), DPI );
-    return value == null ? new Point( 0, 0 ) : readPoint( value );
+    return value != null ? readPoint( value ) : new Point( 0, 0 );
   }
 
   private int readDepth() {
-    int result = 16;
-    String parameter = ProtocolUtil.readPropertyValueAsString( getId( this ), COLOR_DEPTH );
-    if( parameter != null ) {
-      result = Integer.parseInt( parameter );
-    }
-    return result;
+    JsonValue value = readPropertyValue( getId( this ), COLOR_DEPTH );
+    return value != null ? value.asInt() : 16;
   }
 
   /////////////////

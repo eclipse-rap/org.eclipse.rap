@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -105,54 +103,18 @@ public final class ProtocolUtil {
 
   public static JsonValue readPropertyValue( String target, String property ) {
     SetOperation operation =  getClientMessage().getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      return operation.getProperty( property );
-    }
-    return null;
+    return operation != null ? operation.getProperty( property ) : null;
   }
 
-  public static String readPropertyValueAsString( String target, String property ) {
-    JsonValue value = readPropertyValue( target, property );
-    return value == null ? null : jsonToJava( value ).toString();
-  }
-
-  public static String readEventPropertyValueAsString( String target,
-                                                       String eventName,
-                                                       String property )
-  {
-    String result = null;
-    ClientMessage message = getClientMessage();
-    NotifyOperation operation = message.getLastNotifyOperationFor( target, eventName );
-    if( operation != null ) {
-      Object value = jsonToJava( operation.getProperty( property ) );
-      if( value != null ) {
-        result = value.toString();
-      }
-    }
-    return result;
+  public static JsonValue readEventPropertyValue( String target, String eventName, String property ) {
+    NotifyOperation operation = getClientMessage().getLastNotifyOperationFor( target, eventName );
+    return operation != null ? operation.getProperty( property ) : null;
   }
 
   public static boolean wasEventSent( String target, String eventName ) {
     ClientMessage message = getClientMessage();
     NotifyOperation operation =  message.getLastNotifyOperationFor( target, eventName );
     return operation != null;
-  }
-
-  public static String readCallPropertyValueAsString( String target,
-                                                      String methodName,
-                                                      String property )
-  {
-    String result = null;
-    ClientMessage message = getClientMessage();
-    List<CallOperation> operations = message.getAllCallOperationsFor( target, methodName );
-    if( !operations.isEmpty() ) {
-      CallOperation operation = operations.get( operations.size() - 1 );
-      Object value = jsonToJava( operation.getProperty( property ) );
-      if( value != null ) {
-        result = value.toString();
-      }
-    }
-    return result;
   }
 
   public static boolean wasCallReceived( String target, String methodName ) {

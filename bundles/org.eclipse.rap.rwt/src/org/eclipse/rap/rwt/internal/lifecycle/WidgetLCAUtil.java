@@ -37,7 +37,6 @@ import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.AddListene
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveListener;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -97,33 +96,27 @@ public final class WidgetLCAUtil {
   }
 
   private static int readBoundsY( String widgetId, int defaultValue ) {
-    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_Y );
+    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_Y );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsX( String widgetId, int defaultValue ) {
-    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_X );
+    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_X );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsWidth( String widgetId, int defaultValue ) {
-    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_WIDTH );
+    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_WIDTH );
     return readBoundsValue( value, defaultValue );
   }
 
   private static int readBoundsHeight( String widgetId, int defaultValue ) {
-    String value = ProtocolUtil.readPropertyValueAsString( widgetId, PARAM_HEIGHT );
+    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
     return readBoundsValue( value, defaultValue );
   }
 
-  private static int readBoundsValue( String value, int current ) {
-    int result;
-    if( value != null && !"null".equals( value ) ) {
-      result = NumberFormatUtil.parseInt( value );
-    } else {
-      result = current;
-    }
-    return result;
+  private static int readBoundsValue( JsonValue value, int defaultValue ) {
+    return value == null || value.isNull() ? defaultValue : value.asInt();
   }
 
   public static void processHelp( Widget widget ) {
@@ -392,16 +385,6 @@ public final class WidgetLCAUtil {
                      PROP_ROUNDED_BORDER_RADIUS,
                      radius,
                      DEF_ROUNDED_BORDER_RADIUS );
-  }
-
-  public static String readPropertyValue( Widget widget, String property ) {
-    String widgetId = WidgetUtil.getId( widget );
-    return ProtocolUtil.readPropertyValueAsString( widgetId, property );
-  }
-
-  public static String readEventPropertyValue( Widget widget, String eventName, String property ) {
-    String widgetId = WidgetUtil.getId( widget );
-    return ProtocolUtil.readEventPropertyValueAsString( widgetId, eventName, property );
   }
 
   public static boolean wasEventSent( Widget widget, String eventName ) {

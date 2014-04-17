@@ -11,18 +11,34 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.readEventPropertyValue;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_OUT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_KEY_DOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MENU_DETECT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_DOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOUSE_UP;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_BUTTON;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_CHAR_CODE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_KEY_CODE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TIME;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_X;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_Y;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readEventPropertyValue;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.lang.reflect.Field;
 
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
-import org.eclipse.rap.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Cursor;
@@ -81,9 +97,9 @@ public class ControlLCAUtil {
   }
 
   public static void processMenuDetect( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MENU_DETECT ) ) {
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_MENU_DETECT ) ) {
       Event event = new Event();
-      Point point = readEventXYProperties( control, ClientMessageConst.EVENT_MENU_DETECT );
+      Point point = readEventXYProperties( control, EVENT_MENU_DETECT );
       point = control.getDisplay().map( control, null, point );
       event.x = point.x;
       event.y = point.y;
@@ -98,23 +114,23 @@ public class ControlLCAUtil {
   }
 
   private static void processFocusEvents( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_FOCUS_IN ) ) {
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_FOCUS_IN ) ) {
       control.notifyListeners( SWT.FocusIn, new Event() );
     }
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_FOCUS_OUT ) ) {
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_FOCUS_OUT ) ) {
       control.notifyListeners( SWT.FocusOut, new Event() );
     }
   }
 
   public static void processMouseEvents( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOWN ) ) {
-      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOWN, SWT.MouseDown );
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_MOUSE_DOWN ) ) {
+      sendMouseEvent( control, EVENT_MOUSE_DOWN, SWT.MouseDown );
     }
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
-      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_MOUSE_DOUBLE_CLICK ) ) {
+      sendMouseEvent( control, EVENT_MOUSE_DOUBLE_CLICK, SWT.MouseDoubleClick );
     }
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_UP ) ) {
-      sendMouseEvent( control, ClientMessageConst.EVENT_MOUSE_UP, SWT.MouseUp );
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_MOUSE_UP ) ) {
+      sendMouseEvent( control, EVENT_MOUSE_UP, SWT.MouseUp );
     }
   }
 
@@ -122,18 +138,14 @@ public class ControlLCAUtil {
     Event event = new Event();
     event.widget = control;
     event.type = eventType;
-    event.button = readEventIntProperty( control,
-                                         eventName,
-                                         ClientMessageConst.EVENT_PARAM_BUTTON );
+    event.button = readEventIntProperty( control, eventName, EVENT_PARAM_BUTTON );
     Point point = readEventXYProperties( control, eventName );
     event.x = point.x;
     event.y = point.y;
-    event.time = readEventIntProperty( control,
-                                       eventName,
-                                       ClientMessageConst.EVENT_PARAM_TIME );
+    event.time = readEventIntProperty( control, eventName, EVENT_PARAM_TIME );
     event.stateMask = EventLCAUtil.readStateMask( control, eventName )
                     | EventLCAUtil.translateButton( event.button );
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_MOUSE_DOUBLE_CLICK ) ) {
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_MOUSE_DOUBLE_CLICK ) ) {
       event.count = 2;
     } else {
       event.count = 1;
@@ -142,14 +154,10 @@ public class ControlLCAUtil {
   }
 
   public static void processKeyEvents( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_TRAVERSE ) ) {
-      int keyCode = readEventIntProperty( control,
-                                          ClientMessageConst.EVENT_TRAVERSE,
-                                          ClientMessageConst.EVENT_PARAM_KEY_CODE );
-      int charCode = readEventIntProperty( control,
-                                           ClientMessageConst.EVENT_TRAVERSE,
-                                           ClientMessageConst.EVENT_PARAM_CHAR_CODE );
-      int stateMask = EventLCAUtil.readStateMask( control, ClientMessageConst.EVENT_TRAVERSE );
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_TRAVERSE ) ) {
+      int keyCode = readEventIntProperty( control, EVENT_TRAVERSE, EVENT_PARAM_KEY_CODE );
+      int charCode = readEventIntProperty( control, EVENT_TRAVERSE, EVENT_PARAM_CHAR_CODE );
+      int stateMask = EventLCAUtil.readStateMask( control, EVENT_TRAVERSE );
       int traverseKey = getTraverseKey( keyCode, stateMask );
       if( traverseKey != SWT.TRAVERSE_NONE ) {
         Event event = createKeyEvent( keyCode, charCode, stateMask );
@@ -157,14 +165,10 @@ public class ControlLCAUtil {
         control.notifyListeners( SWT.Traverse, event );
       }
     }
-    if( WidgetLCAUtil.wasEventSent( control, ClientMessageConst.EVENT_KEY_DOWN ) ) {
-      int keyCode = readEventIntProperty( control,
-                                          ClientMessageConst.EVENT_KEY_DOWN,
-                                          ClientMessageConst.EVENT_PARAM_KEY_CODE );
-      int charCode = readEventIntProperty( control,
-                                           ClientMessageConst.EVENT_KEY_DOWN,
-                                           ClientMessageConst.EVENT_PARAM_CHAR_CODE );
-      int stateMask = EventLCAUtil.readStateMask( control, ClientMessageConst.EVENT_KEY_DOWN );
+    if( WidgetLCAUtil.wasEventSent( control, EVENT_KEY_DOWN ) ) {
+      int keyCode = readEventIntProperty( control, EVENT_KEY_DOWN, EVENT_PARAM_KEY_CODE );
+      int charCode = readEventIntProperty( control, EVENT_KEY_DOWN, EVENT_PARAM_CHAR_CODE );
+      int stateMask = EventLCAUtil.readStateMask( control, EVENT_KEY_DOWN );
       Event event = createKeyEvent( keyCode, charCode, stateMask );
       control.notifyListeners( SWT.KeyDown, event );
       event = createKeyEvent( keyCode, charCode, stateMask );
@@ -173,7 +177,7 @@ public class ControlLCAUtil {
   }
 
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_SELECTION ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, EVENT_SELECTION ) ) {
       Event event = createSelectionEvent( widget, readBounds, SWT.Selection );
       event.item = item;
       widget.notifyListeners( SWT.Selection, event );
@@ -181,7 +185,7 @@ public class ControlLCAUtil {
   }
 
   public static void processDefaultSelection( Widget widget, Item item ) {
-    if( WidgetLCAUtil.wasEventSent( widget, ClientMessageConst.EVENT_DEFAULT_SELECTION ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, EVENT_DEFAULT_SELECTION ) ) {
       Event event = createSelectionEvent( widget, false, SWT.DefaultSelection );
       event.item = item;
       widget.notifyListeners( SWT.DefaultSelection, event );
@@ -385,11 +389,9 @@ public class ControlLCAUtil {
       Rectangle bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
       result.setBounds( bounds );
     }
-    String eventName = type == SWT.Selection
-                     ? ClientMessageConst.EVENT_SELECTION
-                     : ClientMessageConst.EVENT_DEFAULT_SELECTION;
+    String eventName = type == SWT.Selection ? EVENT_SELECTION : EVENT_DEFAULT_SELECTION;
     result.stateMask = EventLCAUtil.readStateMask( widget, eventName );
-    String detail = readEventPropertyValue( widget, eventName, EVENT_PARAM_DETAIL );
+    String detail = readEventStringProperty( widget, eventName, EVENT_PARAM_DETAIL );
     if( "check".equals( detail ) ) {
       result.detail = SWT.CHECK;
     } else if( "search".equals( detail ) ) {
@@ -399,7 +401,7 @@ public class ControlLCAUtil {
     } else if( "hyperlink".equals( detail ) ) {
       result.detail = RWT.HYPERLINK;
     }
-    result.text = readEventPropertyValue( widget, eventName, EVENT_PARAM_TEXT );
+    result.text = readEventStringProperty( widget, eventName, EVENT_PARAM_TEXT );
     return result;
   }
 
@@ -437,22 +439,19 @@ public class ControlLCAUtil {
   }
 
   private static Point readEventXYProperties( Control control, String eventName ) {
-    int x = readEventIntProperty( control, eventName, ClientMessageConst.EVENT_PARAM_X );
-    int y = readEventIntProperty( control, eventName, ClientMessageConst.EVENT_PARAM_Y );
+    int x = readEventIntProperty( control, eventName, EVENT_PARAM_X );
+    int y = readEventIntProperty( control, eventName, EVENT_PARAM_Y );
     return control.getDisplay().map( null, control, x, y );
   }
 
-  private static int readEventIntProperty( Control control, String eventName, String property ) {
-    String value = readEventStringProperty( control, eventName, property );
-    return NumberFormatUtil.parseInt( value );
+  private static int readEventIntProperty( Widget widget, String eventName, String property ) {
+    return readEventPropertyValue( getId( widget ), eventName, property ).asInt();
   }
 
-  private static String readEventStringProperty( Control control,
-                                                 String eventName,
-                                                 String property )
+  private static String readEventStringProperty( Widget widget, String eventName, String property )
   {
-    WidgetLCAUtil.readEventPropertyValue( control, eventName, property );
-    return WidgetLCAUtil.readEventPropertyValue( control, eventName, property );
+    JsonValue value = readEventPropertyValue( getId( widget ), eventName, property );
+    return value != null ? value.asString() : null;
   }
 
   private static String[] getChildren( Control control ) {

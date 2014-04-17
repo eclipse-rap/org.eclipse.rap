@@ -67,7 +67,6 @@ public class WidgetLCAUtil_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     widget = new Button( shell, SWT.PUSH );
@@ -860,6 +859,79 @@ public class WidgetLCAUtil_Test {
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
     assertEquals( JsonValue.TRUE, operation.getProperty( "foo" ) );
+  }
+
+  @Test
+  public void testReadProperyValue_missingProperty() {
+    assertNull( WidgetLCAUtil.readPropertyValue( widget, "p0" ) );
+  }
+
+  @Test
+  public void testReadProperyValue_string() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeSetProperty( getId( widget ), "prop", JsonValue.valueOf( "foo" ) );
+
+    assertEquals( "foo", WidgetLCAUtil.readPropertyValue( widget, "prop" ) );
+  }
+
+  @Test
+  public void testReadProperyValue_int() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeSetProperty( getId( widget ), "prop", JsonValue.valueOf( 23 ) );
+
+    assertEquals( "23", WidgetLCAUtil.readPropertyValue( widget, "prop" ) );
+  }
+
+  @Test
+  public void testReadProperyValue_boolean() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeSetProperty( getId( widget ), "prop", JsonValue.TRUE );
+
+    assertEquals( "true", WidgetLCAUtil.readPropertyValue( widget, "prop" ) );
+  }
+
+  @Test
+  public void testReadProperyValue_null() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeSetProperty( getId( widget ), "prop", JsonValue.NULL );
+
+    assertEquals( "null", WidgetLCAUtil.readPropertyValue( widget, "prop" ) );
+  }
+
+  @Test
+  public void testReadPropertyValue_lastSetValue() {
+    Fixture.fakeNewRequest();
+    Fixture.fakeSetProperty( getId( widget ), "p1", "foo" );
+    Fixture.fakeSetProperty( getId( widget ), "p1", "bar" );
+
+    assertEquals( "bar", WidgetLCAUtil.readPropertyValue( widget, "p1" ) );
+  }
+
+  @Test
+  public void testReadEventPropertyValue_missingProperty() {
+    assertNull( WidgetLCAUtil.readEventPropertyValue( widget, "widgetSelected", "item" ) );
+  }
+
+  @Test
+  public void testReadEventPropertyValue_string() {
+    Fixture.fakeNewRequest();
+    JsonObject properties = new JsonObject().add( "detail", "check" );
+    Fixture.fakeNotifyOperation( getId( widget ), "widgetSelected", properties );
+
+    String value = WidgetLCAUtil.readEventPropertyValue( widget, "widgetSelected", "detail" );
+
+    assertEquals( "check", value );
+  }
+
+  @Test
+  public void testReadEventPropertyValue_int() {
+    Fixture.fakeNewRequest();
+    JsonObject properties = new JsonObject().add( "detail", 23 );
+    Fixture.fakeNotifyOperation( getId( widget ), "widgetSelected", properties );
+
+    String value = WidgetLCAUtil.readEventPropertyValue( widget, "widgetSelected", "detail" );
+
+    assertEquals( "23", value );
   }
 
 }

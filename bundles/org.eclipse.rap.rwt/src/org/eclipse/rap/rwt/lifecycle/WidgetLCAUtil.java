@@ -11,6 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+
+import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -405,7 +413,8 @@ public final class WidgetLCAUtil {
    *         was submitted for the given property
    */
   public static String readPropertyValue( Widget widget, String property ) {
-    return org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.readPropertyValue( widget, property );
+    JsonValue value = ProtocolUtil.readPropertyValue( getId( widget ), property );
+    return value == null ? null : jsonToJava( value ).toString();
   }
 
   /**
@@ -421,9 +430,15 @@ public final class WidgetLCAUtil {
    * @since 2.0
    */
   public static String readEventPropertyValue( Widget widget, String eventName, String property ) {
-    return org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.readEventPropertyValue( widget,
-                                                                                        eventName,
-                                                                                        property );
+    ClientMessage message = getClientMessage();
+    NotifyOperation operation = message.getLastNotifyOperationFor( getId( widget ), eventName );
+    if( operation != null ) {
+      JsonValue value = operation.getProperty( property );
+      if( value != null ) {
+        return jsonToJava( value ).toString();
+      }
+    }
+    return null;
   }
 
   /**

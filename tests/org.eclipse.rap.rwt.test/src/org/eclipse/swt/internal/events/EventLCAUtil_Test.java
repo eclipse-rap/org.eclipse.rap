@@ -81,25 +81,25 @@ public class EventLCAUtil_Test {
 
   @Test
   public void testTranslateModifier() {
-    int stateMask = EventLCAUtil.translateModifier( "false", "false", "false" );
+    int stateMask = EventLCAUtil.translateModifier( false, false, false );
     assertEquals( 0, stateMask & SWT.MODIFIER_MASK );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertEquals( 0, stateMask & SWT.SHIFT );
     assertEquals( 0, stateMask & SWT.ALT );
     // Shift
-    stateMask = EventLCAUtil.translateModifier( "false", "false", "true" );
+    stateMask = EventLCAUtil.translateModifier( false, false, true );
     assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertTrue( ( stateMask & SWT.SHIFT ) != 0 );
     assertEquals( 0, stateMask & SWT.ALT );
     // Alt
-    stateMask = EventLCAUtil.translateModifier( "true", "false", "false" );
+    stateMask = EventLCAUtil.translateModifier( true, false, false );
     assertTrue( ( stateMask & SWT.MODIFIER_MASK ) != 0 );
     assertEquals( 0, stateMask & SWT.CTRL );
     assertEquals( 0, stateMask & SWT.SHIFT );
     assertTrue( ( stateMask & SWT.ALT ) != 0 );
     // Shift + Ctrl + Alt
-    stateMask = EventLCAUtil.translateModifier( "true", "true", "true" );
+    stateMask = EventLCAUtil.translateModifier( true, true, true );
     assertEquals( SWT.SHIFT | SWT.CTRL | SWT.ALT, stateMask & SWT.MODIFIER_MASK );
     assertEquals( stateMask, stateMask & SWT.MODIFIER_MASK );
   }

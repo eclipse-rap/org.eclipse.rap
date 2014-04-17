@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.protocol;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -69,61 +68,6 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testReadProperyValue_MissingProperty() {
-    assertNull( ProtocolUtil.readPropertyValueAsString( "w3", "p0" ) );
-  }
-
-  @Test
-  public void testReadProperyValueAsString_string() {
-    Fixture.fakeSetProperty( "w3", "prop", JsonValue.valueOf( "foo" ) );
-
-    assertEquals( "foo", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
-  }
-
-  @Test
-  public void testReadProperyValueAsString_int() {
-    Fixture.fakeSetProperty( "w3", "prop", JsonValue.valueOf( 23 ) );
-
-    assertEquals( "23", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
-  }
-
-  @Test
-  public void testReadProperyValueAsString_boolean() {
-    Fixture.fakeSetProperty( "w3", "prop", JsonValue.TRUE );
-
-    assertEquals( "true", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
-  }
-
-  @Test
-  public void testReadProperyValueAsString_null() {
-    Fixture.fakeSetProperty( "w3", "prop", JsonValue.NULL );
-
-    assertEquals( "null", ProtocolUtil.readPropertyValueAsString( "w3", "prop" ) );
-  }
-
-  @Test
-  public void testReadPropertyValue_LastSetValue() {
-    Fixture.fakeSetProperty( "w3", "p1", "foo" );
-    Fixture.fakeSetProperty( "w3", "p1", "bar" );
-
-    assertEquals( "bar", ProtocolUtil.readPropertyValueAsString( "w3", "p1" ) );
-  }
-
-  @Test
-  public void testReadEventPropertyValue_MissingProperty() {
-    assertNull( ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "item" ) );
-  }
-
-  @Test
-  public void testReadEventPropertyValue() {
-    Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject().add( "detail", "check" ) );
-
-    String value = ProtocolUtil.readEventPropertyValueAsString( "w3", "widgetSelected", "detail" );
-
-    assertEquals( "check", value );
-  }
-
-  @Test
   public void testWasEventSent_sent() {
     Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject() );
 
@@ -153,25 +97,6 @@ public class ProtocolUtil_Test {
 
     assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
     assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
-  }
-
-  @Test
-  public void testReadCallProperty() {
-    Fixture.fakeCallOperation( "w3", "resize", new JsonObject().add( "width", 10 ) );
-
-    assertEquals( "10", ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
-  }
-
-  @Test
-  public void testReadCallProperty_missingProperty() {
-    Fixture.fakeCallOperation( "w3", "resize", null );
-
-    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
-  }
-
-  @Test
-  public void testReadCallProperty_missingOperation() {
-    assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
   }
 
 }
