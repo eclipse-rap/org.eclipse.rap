@@ -138,7 +138,6 @@ rwt/theme/ThemeStore.js
 rwt/remote/handler/ThemeStoreHandler.js
 rwt/widgets/base/MultiCellWidget.js
 rwt/widgets/ListItem.js
-rwt/event/DomEventPatch.js
 rwt/widgets/util/MenuManager.js
 rwt/widgets/MenuItem.js
 rwt/remote/handler/MenuItemHandler.js

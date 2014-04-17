@@ -80,7 +80,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
           rwt.qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
         }
       }
-      rwt.qx.Class.patch( rwt.event.DomEvent, rwt.event.DomEventPatch );
     },
 
     getStartupTime : function() {

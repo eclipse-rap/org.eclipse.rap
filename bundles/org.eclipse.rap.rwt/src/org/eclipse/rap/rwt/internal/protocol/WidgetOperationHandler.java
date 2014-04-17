@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_BUTTON;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_DETAIL;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_HEIGHT;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_TEXT;
@@ -68,6 +69,7 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     event.stateMask = readStateMask( properties );
     event.detail = readDetail( properties );
     event.text = readText( properties );
+    event.button = readButton( properties );
     event.setBounds( readBounds( properties ) );
     return event;
   }
@@ -126,6 +128,11 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
   private static String readText( JsonObject properties ) {
     JsonValue value = properties.get( EVENT_PARAM_TEXT );
     return value == null ? null : value.asString();
+  }
+
+  private static int readButton( JsonObject properties ) {
+    JsonValue value = properties.get( EVENT_PARAM_BUTTON );
+    return value == null ? 0 : value.asInt();
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,41 +11,21 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
-rwt.qx.Class.define("rwt.event.DomEvent",
-{
+rwt.qx.Class.define( "rwt.event.DomEvent", {
+
   extend : rwt.event.Event,
 
+  construct : function( vType, vDomEvent, vDomTarget, vTarget, vOriginalTarget ) {
+    this.base( arguments, vType );
 
+    this.setDomEvent( vDomEvent );
+    this.setDomTarget( vDomTarget );
 
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  construct : function(vType, vDomEvent, vDomTarget, vTarget, vOriginalTarget)
-  {
-    this.base(arguments, vType);
-
-    this.setDomEvent(vDomEvent);
-    this.setDomTarget(vDomTarget);
-
-    this.setTarget(vTarget);
-    this.setOriginalTarget(vOriginalTarget);
+    this.setTarget( vTarget );
+    this.setOriginalTarget( vOriginalTarget );
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     STATICS
-  *****************************************************************************
-  */
-
-  statics :
-  {
+  statics : {
 
     /** {int} The modifier mask for the shift key. */
     SHIFT_MASK : 1,
@@ -58,70 +38,57 @@ rwt.qx.Class.define("rwt.event.DomEvent",
 
     /** {int} The modifier mask for the meta key (e.g. apple key on Macs). */
     META_MASK  : 8
+
   },
 
+  properties : {
 
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    bubbles :
-    {
+    bubbles : {
       _fast        : true,
       defaultValue : true,
       noCompute    : true
     },
 
-    propagationStopped :
-    {
+    propagationStopped : {
       _fast        : true,
       defaultValue : false,
       noCompute    : true
     },
 
-    domEvent :
-    {
+    domEvent : {
       _fast       : true,
       setOnlyOnce : true,
       noCompute   : true
     },
 
-    domTarget :
-    {
+    domTarget : {
       _fast       : true,
       setOnlyOnce : true,
       noCompute   : true
     },
-
 
     /**
      * The modifiers. A mask of the pressed modifier keys. This is an OR-combination of
      * {@link #SHIFT_MASK}, {@link #CTRL_MASK}, {@link #ALT_MASK} and {@link #META_MASK}.
      */
-    modifiers :
-    {
+    modifiers : {
       _cached      : true,
       defaultValue : null
     }
+
   },
 
+  members : {
 
+    setDomEvent : function( domEvent ) {
+      this.base( arguments, domEvent );
+      rwt.remote.EventUtil._shiftKey = domEvent.shiftKey;
+      rwt.remote.EventUtil._ctrlKey = domEvent.ctrlKey;
+      rwt.remote.EventUtil._altKey = domEvent.altKey;
+      rwt.remote.EventUtil._metaKey = domEvent.metaKey;
+      rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_NONE;
+    },
 
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
     /**
      * property computer
      *
@@ -146,15 +113,6 @@ rwt.qx.Class.define("rwt.event.DomEvent",
       return mask;
     },
 
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      SPECIAL KEY SUPPORT
-    ---------------------------------------------------------------------------
-    */
-
     /**
      * Returns whether the the ctrl key is pressed.
      *
@@ -164,7 +122,6 @@ rwt.qx.Class.define("rwt.event.DomEvent",
     isCtrlPressed : function() {
       return this.getDomEvent().ctrlKey;
     },
-
 
     /**
      * Returns whether the the shift key is pressed.
@@ -176,7 +133,6 @@ rwt.qx.Class.define("rwt.event.DomEvent",
       return this.getDomEvent().shiftKey;
     },
 
-
     /**
      * Returns whether the the alt key is pressed.
      *
@@ -186,7 +142,6 @@ rwt.qx.Class.define("rwt.event.DomEvent",
     isAltPressed : function() {
       return this.getDomEvent().altKey;
     },
-
 
     /**
      * Returns whether the the meta key is pressed.
@@ -198,7 +153,6 @@ rwt.qx.Class.define("rwt.event.DomEvent",
       return this.getDomEvent().metaKey;
     },
 
-
     /**
      * Returns whether the ctrl key or (on the Mac) the command key is pressed.
      *
@@ -206,22 +160,13 @@ rwt.qx.Class.define("rwt.event.DomEvent",
      * @return {Boolean} <code>true</code> if the command key is pressed on the Mac
      *           or the ctrl key is pressed on another system.
      */
-    isCtrlOrCommandPressed : function()
-    {
+    isCtrlOrCommandPressed : function() {
       if( rwt.client.Client.getPlatform() === "mac" ) {
         return this.getDomEvent().metaKey;
       } else {
         return this.getDomEvent().ctrlKey;
       }
     },
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      PREVENT DEFAULT
-    ---------------------------------------------------------------------------
-    */
 
     /**
      * TODOC
@@ -236,21 +181,13 @@ rwt.qx.Class.define("rwt.event.DomEvent",
         throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
       }
       rwt.event.EventHandlerUtil.stopDomEvent( this.getDomEvent() );
-      this.base(arguments, vValue);
+      this.base( arguments, vValue );
     }
 
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
-
   destruct : function() {
-    this._disposeFields("_valueDomEvent", "_valueDomTarget");
+    this._disposeFields( "_valueDomEvent", "_valueDomTarget" );
   }
-});
+
+} );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -33,6 +33,7 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     if (vRelatedTarget) {
       this.setRelatedTarget(vRelatedTarget);
     }
+    this._storeButton( vType );
   },
 
 
@@ -391,7 +392,19 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
       }
     },
 
-
+    _storeButton : function( eventType ) {
+      switch( eventType ) {
+        case "mousedown":
+        case "mouseup":
+        case "click":
+        case "dblclick":
+        case "contextmenu":
+          rwt.remote.EventUtil._button = this.getButton();
+          break;
+        default:
+          rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_NONE;
+      }
+    },
 
     /*
     ---------------------------------------------------------------------------

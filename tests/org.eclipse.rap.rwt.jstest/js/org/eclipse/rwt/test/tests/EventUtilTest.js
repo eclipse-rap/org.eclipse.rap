@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-(function(){
+(function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
@@ -18,7 +18,6 @@ var widget;
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
 
   extend : rwt.qx.Object,
-
 
   members : {
 
@@ -129,10 +128,82 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       TestUtil.click( grandchild );
 
       assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
+    testNotifySelected : function() {
+      TestUtil.fakeListener( widget, "Selection", true );
+      rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_MIDDLE;
+      rwt.remote.EventUtil._ctrlKey = true;
+
+      rwt.remote.EventUtil.notifySelected( widget, 1, 2, 3, 4, "foo" );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w11", "Selection" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "Selection", "button" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selection", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w11", "Selection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selection", "altKey" ) );
+      assertEquals( 1, message.findNotifyProperty( "w11", "Selection", "x" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "Selection", "y" ) );
+      assertEquals( 3, message.findNotifyProperty( "w11", "Selection", "width" ) );
+      assertEquals( 4, message.findNotifyProperty( "w11", "Selection", "height" ) );
+      assertEquals( "foo", message.findNotifyProperty( "w11", "Selection", "detail" ) );
+    },
+
+    testNotifySelected_withSinglePropertiesObject : function() {
+      TestUtil.fakeListener( widget, "Selection", true );
+      rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_MIDDLE;
+      rwt.remote.EventUtil._ctrlKey = true;
+
+      rwt.remote.EventUtil.notifySelected( widget, { "foo" : "bar" } );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w11", "Selection" ) );
+      assertEquals( "bar", message.findNotifyProperty( "w11", "Selection", "foo" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "Selection", "button" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selection", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w11", "Selection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "Selection", "altKey" ) );
+    },
+
+    testNotifyDefaultSelected : function() {
+      TestUtil.fakeListener( widget, "DefaultSelection", true );
+      rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_MIDDLE;
+      rwt.remote.EventUtil._ctrlKey = true;
+
+      rwt.remote.EventUtil.notifyDefaultSelected( widget, 1, 2, 3, 4, "foo" );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w11", "DefaultSelection" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "DefaultSelection", "button" ) );
+      assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w11", "DefaultSelection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "altKey" ) );
+      assertEquals( 1, message.findNotifyProperty( "w11", "DefaultSelection", "x" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "DefaultSelection", "y" ) );
+      assertEquals( 3, message.findNotifyProperty( "w11", "DefaultSelection", "width" ) );
+      assertEquals( 4, message.findNotifyProperty( "w11", "DefaultSelection", "height" ) );
+      assertEquals( "foo", message.findNotifyProperty( "w11", "DefaultSelection", "detail" ) );
+    },
+
+    testNotifyDefaultSelected_withSinglePropertiesObject : function() {
+      TestUtil.fakeListener( widget, "DefaultSelection", true );
+      rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_MIDDLE;
+      rwt.remote.EventUtil._ctrlKey = true;
+
+      rwt.remote.EventUtil.notifyDefaultSelected( widget, { "foo" : "bar" } );
+
+      var message = TestUtil.getLastMessage();
+      assertNotNull( message.findNotifyOperation( "w11", "DefaultSelection" ) );
+      assertEquals( "bar", message.findNotifyProperty( "w11", "DefaultSelection", "foo" ) );
+      assertEquals( 2, message.findNotifyProperty( "w11", "DefaultSelection", "button" ) );
+      assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "shiftKey" ) );
+      assertTrue( message.findNotifyProperty( "w11", "DefaultSelection", "ctrlKey" ) );
+      assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "altKey" ) );
     }
 
   }
 
 } );
 
-}());
+}() );

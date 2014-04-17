@@ -10,355 +10,309 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/**
- * This class contains static listener functions for common events.
- */
-rwt.qx.Class.define( "rwt.remote.EventUtil", {
+namespace( "rwt.remote" );
 
-  statics : {
-    _suspended : false,
+(function() {
 
-    setSuspended : function( value ) {
-      this._suspended = value;
-    },
+var self;
 
-    getSuspended : function() {
-      return this._suspended;
-    },
+rwt.remote.EventUtil = {
 
-    DOUBLE_CLICK_TIME : 500,
+  _suspended : false,
 
-    _capturingWidget : null,
-    _lastMouseDown : {
-      widget : null,
-      button : "",
-      x : -1,
-      y : -1,
-      mouseUpCount : 0
-    },
-    _shiftKey : false,
-    _ctrlKey : false,
-    _altKey : false,
-    _metaKey : false,
+  setSuspended : function( value ) {
+    self._suspended = value;
+  },
 
-    eventTimestamp : function() {
-      var init = rwt.runtime.System.getInstance();
-      return new Date().getTime() - init.getStartupTime();
-    },
+  getSuspended : function() {
+    return self._suspended;
+  },
 
-    widgetDefaultSelected : function( evt, target ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        var properties = {};
-        rwt.remote.EventUtil.addModifierToProperties( properties );
-        var remoteObject = server.getRemoteObject( target ? target : evt.getTarget() );
-        remoteObject.notify( "DefaultSelection", properties );
-      }
-    },
+  DOUBLE_CLICK_TIME : 500,
 
-    widgetSelected : function( evt ) {
-      var left = evt.getTarget().getLeft();
-      var top = evt.getTarget().getTop();
-      var width = evt.getTarget().getWidth();
-      var height = evt.getTarget().getHeight();
-      rwt.remote.EventUtil.notifySelected( evt.getTarget(), left, top, width, height );
-    },
+  _capturingWidget : null,
+  _lastMouseDown : {
+    widget : null,
+    button : "",
+    x : -1,
+    y : -1,
+    mouseUpCount : 0
+  },
+  _shiftKey : false,
+  _ctrlKey : false,
+  _altKey : false,
+  _metaKey : false,
+  _button : rwt.event.MouseEvent.C_BUTTON_NONE,
 
-    notifySelected : function( target, left, top, width, height, detail ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        var properties;
-        if( arguments.length === 2 ) {
-          properties = left;
-        } else {
-          properties = {
-              "x" : left,
-              "y" : top,
-              "width" : width,
-              "height" : height,
-              "detail" : detail
-          };
-        }
-        rwt.remote.EventUtil.addModifierToProperties( properties );
-        server.getRemoteObject( target ).notify( "Selection", properties );
-      }
-    },
+  eventTimestamp : function() {
+    var init = rwt.runtime.System.getInstance();
+    return new Date().getTime() - init.getStartupTime();
+  },
 
-    notifyDefaultSelected : function( target, left, top, width, height, detail ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        var properties;
-        if( arguments.length === 2 ) {
-          properties = left;
-        } else {
-          properties = {
-              "x" : left,
-              "y" : top,
-              "width" : width,
-              "height" : height,
-              "detail" : detail
-          };
-        }
-        rwt.remote.EventUtil.addModifierToProperties( properties );
-        server.getRemoteObject( target ).notify( "DefaultSelection", properties );
-      }
-    },
+  widgetDefaultSelected : function( event ) {
+    self.notifyDefaultSelected( event.getTarget() );
+  },
 
-    addModifierToProperties : function( properties, event ) {
-      var isMac = rwt.client.Client.getPlatform() === "mac";
-      var commandKey = isMac && ( event ? event.metaKey : rwt.remote.EventUtil._metaKey ) === true;
-      properties.shiftKey = event ? event.shiftKey : rwt.remote.EventUtil._shiftKey;
-      properties.ctrlKey = ( event ? event.ctrlKey : rwt.remote.EventUtil._ctrlKey ) || commandKey;
-      properties.altKey = event ? event.altKey : rwt.remote.EventUtil._altKey;
-    },
+  widgetSelected : function( event ) {
+    var left = event.getTarget().getLeft();
+    var top = event.getTarget().getTop();
+    var width = event.getTarget().getWidth();
+    var height = event.getTarget().getHeight();
+    self.notifySelected( event.getTarget(), left, top, width, height );
+  },
 
-    _getKeyModifier : function() {
-      var modifier = ""; // TODO [tb] : use real array for json protocol
-      var commandKey
-        = rwt.client.Client.getPlatform() === "mac" && rwt.remote.EventUtil._metaKey;
-      if( rwt.remote.EventUtil._shiftKey ) {
-        modifier += "shift,";
-      }
-      if( rwt.remote.EventUtil._ctrlKey || commandKey ) {
-        modifier += "ctrl,";
-      }
-      if( rwt.remote.EventUtil._altKey ) {
-        modifier += "alt,";
-      }
-      return modifier;
-    },
+  notifySelected : function( target, left, top, width, height, detail ) {
+    if( !self.getSuspended() ) {
+      var connection = rwt.remote.Connection.getInstance();
+      var properties = self._createSelectionProperties.apply( this, arguments );
+      connection.getRemoteObject( target ).notify( "Selection", properties );
+    }
+  },
 
-    focusGained : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() );
-        remoteObject.notify( "FocusIn" );
-      }
-    },
+  notifyDefaultSelected : function( target, left, top, width, height, detail ) {
+    if( !self.getSuspended() ) {
+      var connection = rwt.remote.Connection.getInstance();
+      var properties = self._createSelectionProperties.apply( this, arguments );
+      connection.getRemoteObject( target ).notify( "DefaultSelection", properties );
+    }
+  },
 
-    focusLost : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( evt.getTarget() );
-        remoteObject.notify( "FocusOut" );
-      }
-    },
-
-    ///////////////////////
-    // Mouse event handling
-
-    mouseDown : function( evt ) {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
-      {
-        // disabled capturing as it interferes with Combo capturing
-        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        // from now on, redirect mouse event to this widget
-        // this.setCapture( true );
-        rwt.remote.EventUtil._capturingWidget = this;
-        // Collect request parameters and send
-        rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseDown" );
-      }
-    },
-
-    mouseUp : function( evt ) {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
-      {
-        // disabled capturing as it interferes with Combo capturing
-        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        // release mouse event capturing
-        // this.setCapture( false );
-        rwt.remote.EventUtil._capturingWidget = null;
-        // Add mouse-up request parameter
-        rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseUp" );
-      }
-    },
-
-    mouseDoubleClick : function( evt ) {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
-      {
-        // disabled capturing as it interferes with Combo capturing
-        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        // from now on, redirect mouse event to this widget
-        // this.setCapture( true );
-        rwt.remote.EventUtil._capturingWidget = this;
-        // Add parameters for double-click event
-        if( rwt.remote.EventUtil._isDoubleClick( this, evt ) ) {
-          rwt.remote.EventUtil._clearLastMouseDown();
-          rwt.remote.EventUtil._notifyMouseListeners( this, evt, "MouseDoubleClick" );
-        } else {
-          // Store relevant data of current event to detect double-clicks
-          var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
-          lastMouseDown.widget = this;
-          lastMouseDown.button = evt.getButton();
-          lastMouseDown.x = evt.getPageX();
-          lastMouseDown.y = evt.getPageY();
-          lastMouseDown.mouseUpCount = 0;
-          rwt.client.Timer.once( rwt.remote.EventUtil._clearLastMouseDown,
-                                this,
-                                rwt.remote.EventUtil.DOUBLE_CLICK_TIME );
-        }
-      }
-    },
-
-    mouseUpCounter : function( evt ) {
-      if(    !rwt.remote.EventUtil.getSuspended()
-          && rwt.remote.EventUtil._isRelevantMouseEvent( this, evt ) )
-      {
-        // disabled capturing as it interferes with Combo capturing
-        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
-        // release mouse event capturing
-        // this.setCapture( false );
-        rwt.remote.EventUtil._capturingWidget = null;
-        // increase number of mouse-up events since last stored mouse down
-        rwt.remote.EventUtil._lastMouseDown.mouseUpCount += 1;
-      }
-    },
-
-    /**
-     * Determines whether the event is relevant (i.e. should be sent) for the
-     * given widget.
-     * @param widget - the listening widget
-     * @param evt - the mouse event
-     */
-    _isRelevantMouseEvent : function( widget, evt ) {
-      var result = true;
-      if(    widget !== rwt.remote.EventUtil._capturingWidget
-          && widget !== evt.getOriginalTarget() )
-      {
-        // find parent control and ensure that it is the same as the widget-
-        // parameter. Otherwise the mouse event is ignored.
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var target = evt.getOriginalTarget();
-        var control = widgetManager.findEnabledControl( target );
-        result = widget === control;
-      }
-      return result;
-    },
-
-    _clearLastMouseDown : function() {
-      var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
-      lastMouseDown.widget = null;
-      lastMouseDown.button = "";
-      lastMouseDown.mouseUpCount = 0;
-      lastMouseDown.x = -1;
-      lastMouseDown.y = -1;
-    },
-
-    _isDoubleClick : function( widget, evt ) {
-      var lastMouseDown = rwt.remote.EventUtil._lastMouseDown;
-      return    lastMouseDown.mouseUpCount === 1
-             && lastMouseDown.widget === widget
-             && lastMouseDown.button === rwt.event.MouseEvent.C_BUTTON_LEFT
-             && lastMouseDown.button === evt.getButton()
-             && rwt.remote.EventUtil._isCloseTo( lastMouseDown.x,
-                                                 lastMouseDown.y,
-                                                 evt.getPageX(),
-                                                 evt.getPageY() );
-    },
-
-    _isCloseTo : function( lastX, lastY, x, y ) {
-      return x >= lastX - 5 && x <= lastX + 5 && y >= lastY - 5 && y <= lastY + 5;
-    },
-
-    _notifyMouseListeners : function( widget, evt, eventType ) {
-      var button = rwt.remote.EventUtil._determineMouseButton( evt );
-      var modifier = rwt.remote.EventUtil._getKeyModifier();
-      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
-      var properties = {
-        "button" : button,
-        "x" : evt.getPageX(),
-        "y" : evt.getPageY(),
-        "time" : this.eventTimestamp()
+  _createSelectionProperties : function() {
+    var properties;
+    if( arguments.length === 2 ) {
+      properties = arguments[ 1 ];
+    } else {
+      properties = {
+        "x" : arguments[ 1 ],
+        "y" : arguments[ 2 ],
+        "width" : arguments[ 3 ],
+        "height" : arguments[ 4 ],
+        "detail" : arguments[ 5 ]
       };
-      rwt.remote.EventUtil.addModifierToProperties( properties );
-      remoteObject.notify( eventType, properties );
-    },
+    }
+    self.addButtonToProperties( properties );
+    self.addModifierToProperties( properties );
+    return properties;
+  },
 
-    /**
-     * Returns an integer value that represents the button property from the
-     * given mouse event.
-     * 0 = unknown
-     * 1 = left button
-     * 2 = middle button
-     * 3 = right button
-     */
-    _determineMouseButton : function( evt ) {
-      var result = 0;
-      switch( evt.getButton() ) {
-        case rwt.event.MouseEvent.C_BUTTON_LEFT:
-          result = 1;
-          break;
-        case rwt.event.MouseEvent.C_BUTTON_MIDDLE:
-          result = 2;
-          break;
-        case rwt.event.MouseEvent.C_BUTTON_RIGHT:
-          result = 3;
-          break;
-      }
-      return result;
-    },
+  addButtonToProperties : function( properties, event ) {
+    var button = event ? event.getButton() : self._button;
+    switch( button ) {
+      case rwt.event.MouseEvent.C_BUTTON_LEFT:
+        properties.button = 1;
+        break;
+      case rwt.event.MouseEvent.C_BUTTON_MIDDLE:
+        properties.button = 2;
+        break;
+      case rwt.event.MouseEvent.C_BUTTON_RIGHT:
+        properties.button = 3;
+        break;
+    }
+  },
 
-    helpRequested : function( evt ) {
-      if( evt.getKeyIdentifier() === "F1" ) {
-        // stop further handling and default handling by the browser
-        evt.stopPropagation();
-        evt.preventDefault();
-        // send help request to server
-        var widget = evt.getTarget();
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( widget );
-        if( id === null ) {
-          // find parent control for the widget that received the event in case
-          // it wasn't the control itself that received the event
-          widget = widgetManager.findControl( widget );
-          id = widgetManager.findIdByWidget( widget );
-        }
-        if( id != null ) {
-          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
-          remoteObject.notify( "Help" );
-        }
-      }
-    },
+  addModifierToProperties : function( properties, event ) {
+    var isMac = rwt.client.Client.getPlatform() === "mac";
+    var commandKey = isMac && ( event ? event.metaKey : self._metaKey ) === true;
+    properties.shiftKey = event ? event.shiftKey : self._shiftKey;
+    properties.ctrlKey = ( event ? event.ctrlKey : self._ctrlKey ) || commandKey;
+    properties.altKey = event ? event.altKey : self._altKey;
+  },
 
-    menuDetectedByKey : function( evt ) {
-      if( evt.getKeyIdentifier() === "Apps" ) {
-        // stop further handling and default handling by the browser
-        evt.stopPropagation();
-        evt.preventDefault();
-        var x = rwt.event.MouseEvent.getPageX();
-        var y = rwt.event.MouseEvent.getPageY();
-        rwt.remote.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
-      }
-    },
+  focusGained : function( event ) {
+    if( !self.getSuspended() ) {
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( event.getTarget() );
+      remoteObject.notify( "FocusIn" );
+    }
+  },
 
-    menuDetectedByMouse : function( evt ) {
-      if( evt.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT ) {
-        // stop further handling and default handling by the browser
-        evt.stopPropagation();
-        evt.preventDefault();
-        var x = evt.getPageX();
-        var y = evt.getPageY();
-        rwt.remote.EventUtil.sendMenuDetected( evt.getTarget(), x, y );
-      }
-    },
+  focusLost : function( event ) {
+    if( !self.getSuspended() ) {
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( event.getTarget() );
+      remoteObject.notify( "FocusOut" );
+    }
+  },
 
-    sendMenuDetected : function( widget, x, y ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        // send menu detect request to server
-        var widgetManager = rwt.remote.WidgetManager.getInstance();
-        // find parent control for the widget that received the event in case
-        // it wasn't the control itself that received the event
-        while( widget != null && !widgetManager.isControl( widget ) ) {
-          widget = widget.getParent ? widget.getParent() : null;
-        }
-        var id = widgetManager.findIdByWidget( widget );
-        if( id != null ) {
-          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
-          remoteObject.notify( "MenuDetect", { "x" : x, "y" : y } );
-        }
+  ///////////////////////
+  // Mouse event handling
+
+  mouseDown : function( event ) {
+    if( !self.getSuspended() && self._isRelevantMouseEvent( this, event ) ) {
+      // disabled capturing as it interferes with Combo capturing
+      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+      // from now on, redirect mouse event to this widget
+      // this.setCapture( true );
+      self._capturingWidget = this;
+      // Collect request parameters and send
+      self._notifyMouseListeners( this, event, "MouseDown" );
+    }
+  },
+
+  mouseUp : function( event ) {
+    if( !self.getSuspended() && self._isRelevantMouseEvent( this, event ) ) {
+      // disabled capturing as it interferes with Combo capturing
+      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+      // release mouse event capturing
+      // this.setCapture( false );
+      self._capturingWidget = null;
+      // Add mouse-up request parameter
+      self._notifyMouseListeners( this, event, "MouseUp" );
+    }
+  },
+
+  mouseDoubleClick : function( event ) {
+    if( !self.getSuspended() && self._isRelevantMouseEvent( this, event ) ) {
+      // disabled capturing as it interferes with Combo capturing
+      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+      // from now on, redirect mouse event to this widget
+      // this.setCapture( true );
+      self._capturingWidget = this;
+      // Add parameters for double-click event
+      if( self._isDoubleClick( this, event ) ) {
+        self._clearLastMouseDown();
+        self._notifyMouseListeners( this, event, "MouseDoubleClick" );
+      } else {
+        // Store relevant data of current event to detect double-clicks
+        var lastMouseDown = self._lastMouseDown;
+        lastMouseDown.widget = this;
+        lastMouseDown.button = event.getButton();
+        lastMouseDown.x = event.getPageX();
+        lastMouseDown.y = event.getPageY();
+        lastMouseDown.mouseUpCount = 0;
+        rwt.client.Timer.once( self._clearLastMouseDown, this, self.DOUBLE_CLICK_TIME );
       }
     }
+  },
 
+  mouseUpCounter : function( event ) {
+    if( !self.getSuspended() && self._isRelevantMouseEvent( this, event ) ) {
+      // disabled capturing as it interferes with Combo capturing
+      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=262171
+      // release mouse event capturing
+      // this.setCapture( false );
+      self._capturingWidget = null;
+      // increase number of mouse-up events since last stored mouse down
+      self._lastMouseDown.mouseUpCount += 1;
+    }
+  },
+
+  /**
+   * Determines whether the event is relevant (i.e. should be sent) for the
+   * given widget.
+   * @param widget - the listening widget
+   * @param event - the mouse event
+   */
+  _isRelevantMouseEvent : function( widget, event ) {
+    var result = true;
+    if( widget !== self._capturingWidget && widget !== event.getOriginalTarget() ) {
+      // find parent control and ensure that it is the same as the widget-
+      // parameter. Otherwise the mouse event is ignored.
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
+      var target = event.getOriginalTarget();
+      var control = widgetManager.findEnabledControl( target );
+      result = widget === control;
+    }
+    return result;
+  },
+
+  _clearLastMouseDown : function() {
+    var lastMouseDown = self._lastMouseDown;
+    lastMouseDown.widget = null;
+    lastMouseDown.button = "";
+    lastMouseDown.mouseUpCount = 0;
+    lastMouseDown.x = -1;
+    lastMouseDown.y = -1;
+  },
+
+  _isDoubleClick : function( widget, event ) {
+    var lastMouseDown = self._lastMouseDown;
+    return    lastMouseDown.mouseUpCount === 1
+           && lastMouseDown.widget === widget
+           && lastMouseDown.button === rwt.event.MouseEvent.C_BUTTON_LEFT
+           && lastMouseDown.button === event.getButton()
+           && self._isCloseTo( lastMouseDown.x,
+                               lastMouseDown.y,
+                               event.getPageX(),
+                               event.getPageY() );
+  },
+
+  _isCloseTo : function( lastX, lastY, x, y ) {
+    return x >= lastX - 5 && x <= lastX + 5 && y >= lastY - 5 && y <= lastY + 5;
+  },
+
+  _notifyMouseListeners : function( widget, event, eventType ) {
+    var properties = {
+      "x" : event.getPageX(),
+      "y" : event.getPageY(),
+      "time" : self.eventTimestamp()
+    };
+    self.addButtonToProperties( properties, event );
+    self.addModifierToProperties( properties );
+    rwt.remote.Connection.getInstance().getRemoteObject( widget ).notify( eventType, properties );
+  },
+
+  helpRequested : function( event ) {
+    if( event.getKeyIdentifier() === "F1" ) {
+      // stop further handling and default handling by the browser
+      event.stopPropagation();
+      event.preventDefault();
+      // send help request to server
+      var widget = event.getTarget();
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( widget );
+      if( id === null ) {
+        // find parent control for the widget that received the event in case
+        // it wasn't the control itself that received the event
+        widget = widgetManager.findControl( widget );
+        id = widgetManager.findIdByWidget( widget );
+      }
+      if( id != null ) {
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+        remoteObject.notify( "Help" );
+      }
+    }
+  },
+
+  menuDetectedByKey : function( event ) {
+    if( event.getKeyIdentifier() === "Apps" ) {
+      // stop further handling and default handling by the browser
+      event.stopPropagation();
+      event.preventDefault();
+      var x = rwt.event.MouseEvent.getPageX();
+      var y = rwt.event.MouseEvent.getPageY();
+      self.sendMenuDetected( event.getTarget(), x, y );
+    }
+  },
+
+  menuDetectedByMouse : function( event ) {
+    if( event.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT ) {
+      // stop further handling and default handling by the browser
+      event.stopPropagation();
+      event.preventDefault();
+      var x = event.getPageX();
+      var y = event.getPageY();
+      self.sendMenuDetected( event.getTarget(), x, y );
+    }
+  },
+
+  sendMenuDetected : function( widget, x, y ) {
+    if( !self.getSuspended() ) {
+      // send menu detect request to server
+      var widgetManager = rwt.remote.WidgetManager.getInstance();
+      // find parent control for the widget that received the event in case
+      // it wasn't the control itself that received the event
+      while( widget != null && !widgetManager.isControl( widget ) ) {
+        widget = widget.getParent ? widget.getParent() : null;
+      }
+      var id = widgetManager.findIdByWidget( widget );
+      if( id != null ) {
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( widget );
+        remoteObject.notify( "MenuDetect", { "x" : x, "y" : y } );
+      }
+    }
   }
-} );
+
+};
+
+self = rwt.remote.EventUtil;
+
+}() );

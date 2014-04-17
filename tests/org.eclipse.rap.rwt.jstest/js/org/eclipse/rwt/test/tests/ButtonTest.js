@@ -12,7 +12,7 @@
 (function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
@@ -32,7 +32,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Button );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -53,7 +53,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_TOGGLE" ) );
       assertEquals( "push-button", widget.getAppearance() );
       shell.destroy();
@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_CHECK" ) );
       assertEquals( "check-box", widget.getAppearance() );
       shell.destroy();
@@ -89,7 +89,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_RADIO" ) );
       assertEquals( "radio-button", widget.getAppearance() );
       shell.destroy();
@@ -108,7 +108,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.getNoRadioGroup() );
       shell.destroy();
       widget.destroy();
@@ -125,7 +125,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 2, widget._flexibleCell );
       shell.destroy();
       widget.destroy();
@@ -143,7 +143,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "text" : "text\n & \"text"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
       widget.destroy();
@@ -162,7 +162,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "mnemonicIndex" : 6
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 6, widget.getMnemonicIndex() );
       shell.destroy();
       widget.destroy();
@@ -182,7 +182,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         }
       } );
       TestUtil.protocolSet( "w3", { "text" : "blue" } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertNull( widget.getMnemonicIndex() );
       shell.destroy();
       widget.destroy();
@@ -200,7 +200,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "text" : "text\n && \"text"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "text<br/> &amp;&amp; &quot;text", widget.getCellContent( 2 ) );
       shell.destroy();
       widget.destroy();
@@ -219,7 +219,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "alignment" : "right"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "right", widget.getHorizontalChildrenAlign() );
       assertEquals( "right", widget._alignment );
       shell.destroy();
@@ -238,7 +238,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "alignment" : "down"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_DOWN" ) );
       assertEquals( "down", widget._alignment );
       shell.destroy();
@@ -257,7 +257,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "image" : [ "image.png", 10, 20 ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( "image.png", widget.getCellContent( 1 ) );
       assertEquals( [ 10, 20 ], widget.getCellDimension( 1 ) );
       shell.destroy();
@@ -276,7 +276,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "selection" : true
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget._selected );
       shell.destroy();
       widget.destroy();
@@ -294,7 +294,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "grayed" : true
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "grayed" ) );
       shell.destroy();
       widget.destroy();
@@ -579,7 +579,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
     },
 
-    testSendModifier : function() {
+    testExecutePushButton_sendsModifier : function() {
       var button = this.createButton( "w11", "push" );
       TestUtil.fakeListener( button, "Selection", true );
 
@@ -589,6 +589,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( message.findNotifyProperty( "w11", "Selection", "shiftKey" ) );
       assertFalse( message.findNotifyProperty( "w11", "Selection", "altKey" ) );
       assertFalse( message.findNotifyProperty( "w11", "Selection", "ctrlKey" ) );
+    },
+
+    testExecutePushButton_byMouse_sendsButton : function() {
+      var button = this.createButton( "w11", "push" );
+      TestUtil.fakeListener( button, "Selection", true );
+
+      TestUtil.click( button );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, message.findNotifyProperty( "w11", "Selection", "button" ) );
+    },
+
+    testExecutePushButton_byKeyboard_doesNotSendButton : function() {
+      var button = this.createButton( "w11", "push" );
+      TestUtil.fakeListener( button, "Selection", true );
+
+      TestUtil.press( button, "Enter" );
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( undefined, message.findNotifyProperty( "w11", "Selection", "button" ) );
     },
 
     testWrap : function() {
@@ -728,7 +748,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "bounds" : [ 10, 10, 100, 20 ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       TestUtil.flush();
 
       var bounds = widget.getToolTipTargetBounds();
@@ -751,7 +771,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
           "bounds" : [ 10, 10, 100, 20 ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       widget.setSelectionIndicator( [ "foo.jpg", 7, 8 ] );
       widget.setPadding( 4 );
       TestUtil.flush();

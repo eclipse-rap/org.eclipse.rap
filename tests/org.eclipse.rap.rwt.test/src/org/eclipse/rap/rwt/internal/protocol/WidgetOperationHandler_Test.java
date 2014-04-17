@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,15 @@ public class WidgetOperationHandler_Test {
     Event event = createSelectionEvent( SWT.Selection, properties );
 
     assertEquals( "foo", event.text );
+  }
+
+  @Test
+  public void testCreateSelectionEvent_withButton() {
+    JsonObject properties = new JsonObject().add( "button", 2 );
+
+    Event event = createSelectionEvent( SWT.Selection, properties );
+
+    assertEquals( 2, event.button );
   }
 
   @Test
