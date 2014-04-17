@@ -1491,7 +1491,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
       }
 
       // pre check if we go out of the available area
-      if (!rwt.util.Numbers.isBetweenRange(e.getPageX(), s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Numbers.isBetweenRange(e.getPageY(), s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
+      if (!rwt.util.Numbers.isBetween(e.getPageX(), s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Numbers.isBetween(e.getPageY(), s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
         return;
       }
 
