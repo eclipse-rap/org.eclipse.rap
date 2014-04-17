@@ -956,7 +956,9 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
       // NOTE: a "visible" Child is actually every "displayable" child here
       this.forEachVisibleChild( function() {
         // Check if the nodes are actually connected - See Bug 359665
-        if( this.getElement().parentNode === this.getParent()._getTargetNode() ) {
+        if(    this.getElement()
+            && this.getElement().parentNode === this.getParent()._getTargetNode() )
+        {
           this._afterInsertDom();
         }
       } );

@@ -763,6 +763,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
+    // Bug 432909 - Client may crash in IE7/8/9 due to implementation error
+    //              in Parent._computeVisibleChildren
+    testPrepareEnhancedBorderBeforeChildrenAppear : function() {
+      var parent = new rwt.widgets.base.Parent();
+      parent.addToDocument();
+      TestUtil.flush();
+      var widget = new rwt.widgets.base.Terminator();
+      widget.setParent( parent );
+
+      parent.prepareEnhancedBorder();
+      TestUtil.flush();
+
+      assertTrue( widget.isInDom() );
+    },
+
     /////////
     // Helper
 
