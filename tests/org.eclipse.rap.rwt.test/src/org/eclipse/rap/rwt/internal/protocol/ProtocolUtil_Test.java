@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,14 +17,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -141,79 +135,6 @@ public class ProtocolUtil_Test {
     Fixture.fakeNotifyOperation( "w3", "widgetSelected", new JsonObject() );
 
     assertFalse( ProtocolUtil.wasEventSent( "w3", "widgetDefaultSelected" ) );
-  }
-
-  @Test
-  public void testReadPropertyValueAsPoint() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2 ) );
-
-    assertEquals( new Point( 1, 2 ), ProtocolUtil.readPropertyValueAsPoint( "w3", "prop" ) );
-  }
-
-  @Test( expected = IllegalStateException.class )
-  public void testReadPropertyValueAsPoint_notPoint() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
-
-    ProtocolUtil.readPropertyValueAsPoint( "w3", "prop" );
-  }
-
-  @Test
-  public void testReadPropertyValueAsRectangle() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
-
-    Rectangle expected = new Rectangle( 1, 2, 3, 4 );
-    assertEquals( expected, ProtocolUtil.readPropertyValueAsRectangle( "w3", "prop" ) );
-  }
-
-  @Test( expected = IllegalStateException.class )
-  public void testReadPropertyValueAsRectangle_notRectangle() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2 ) );
-
-    ProtocolUtil.readPropertyValueAsRectangle( "w3", "prop" );
-  }
-
-  @Test
-  public void testReadPropertyValueAsIntArray() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
-
-    int[] result = ProtocolUtil.readPropertyValueAsIntArray( "w3", "prop" );
-
-    int[] expected = { 1, 2, 3, 4 };
-    assertArrayEquals( expected, result );
-  }
-
-  @Test
-  public void testReadPropertyValueAsBooleanArray() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( true, false, true ) );
-
-    boolean[] result = ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "prop" );
-
-    boolean[] expected = { true, false, true };
-    assertTrue( Arrays.equals( expected, result ) );
-  }
-
-  @Test( expected = IllegalStateException.class )
-  public void testReadPropertyValueAsBooleanArray_NotBoolean() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( "a", "b", "c" ) );
-
-    ProtocolUtil.readPropertyValueAsBooleanArray( "w3", "prop" );
-  }
-
-  @Test
-  public void testReadPropertyValueAsStringArray() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( "a", "b", "c" ) );
-
-    String[] result = ProtocolUtil.readPropertyValueAsStringArray( "w3", "prop" );
-
-    String[] expected = { "a", "b", "c" };
-    assertTrue( Arrays.equals( expected, result ) );
-  }
-
-  @Test( expected = IllegalStateException.class )
-  public void testReadPropertyValueAsStringArray_NotString() {
-    Fixture.fakeSetProperty( "w3", "prop", createJsonArray( 1, 2, 3, 4 ) );
-
-    ProtocolUtil.readPropertyValueAsStringArray( "w3", "prop" );
   }
 
   @Test

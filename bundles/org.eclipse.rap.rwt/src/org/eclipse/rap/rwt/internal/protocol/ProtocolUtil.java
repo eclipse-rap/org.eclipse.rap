@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.jsonToJava;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -32,8 +33,6 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 
 
 public final class ProtocolUtil {
@@ -105,65 +104,16 @@ public final class ProtocolUtil {
   }
 
   public static JsonValue readPropertyValue( String target, String property ) {
-    JsonValue result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
+    SetOperation operation =  getClientMessage().getLastSetOperationFor( target, property );
     if( operation != null ) {
-      result = operation.getProperty( property );
+      return operation.getProperty( property );
     }
-    return result;
+    return null;
   }
 
   public static String readPropertyValueAsString( String target, String property ) {
-    return readPropertyValueAs( target, property, String.class );
-  }
-
-  public static Point readPropertyValueAsPoint( String target, String property ) {
-    return readPropertyValueAs( target, property, Point.class );
-  }
-
-  public static Rectangle readPropertyValueAsRectangle( String target, String property ) {
-    return readPropertyValueAs( target, property, Rectangle.class );
-  }
-
-  public static int[] readPropertyValueAsIntArray( String target, String property ) {
-    return readPropertyValueAs( target, property, int[].class );
-  }
-
-  public static boolean[] readPropertyValueAsBooleanArray( String target, String property ) {
-    return readPropertyValueAs( target, property, boolean[].class );
-  }
-
-  public static String[] readPropertyValueAsStringArray( String target, String property ) {
-    return readPropertyValueAs( target, property, String[].class );
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private static <T> T readPropertyValueAs( String target, String property, Class<T> clazz ) {
-    T result = null;
-    ClientMessage message = getClientMessage();
-    SetOperation operation =  message.getLastSetOperationFor( target, property );
-    if( operation != null ) {
-      Object value = jsonToJava( operation.getProperty( property ) );
-      if( value != null ) {
-        if( String.class.equals( clazz ) ) {
-          result = ( T )value.toString();
-        } else if( Point.class.equals( clazz ) ) {
-          result = ( T )toPoint( value );
-        } else if( Rectangle.class.equals( clazz ) ) {
-          result = ( T )toRectangle( value );
-        } else if( int[].class.equals( clazz ) ) {
-          result = ( T )toIntArray( value );
-        } else if( boolean[].class.equals( clazz ) ) {
-          result = ( T )toBooleanArray( value );
-        } else if( String[].class.equals( clazz ) ) {
-          result = ( T )toStringArray( value );
-        } else {
-          throw new IllegalStateException( "Could not convert property to " + clazz.getName() );
-        }
-      }
-    }
-    return result;
+    JsonValue value = readPropertyValue( target, property );
+    return value == null ? null : jsonToJava( value ).toString();
   }
 
   public static String readEventPropertyValueAsString( String target,
@@ -227,84 +177,6 @@ public final class ProtocolUtil {
       result[ i ] = matcher.replaceAll( "" );
     }
     return result;
-  }
-
-  public static Rectangle toRectangle( Object value ) {
-    int[] array = toIntArray( value );
-    checkArrayLength( array, 4 );
-    return new Rectangle( array[ 0 ], array[ 1 ], array[ 2 ], array[ 3 ] );
-  }
-
-  public static Point toPoint( Object value ) {
-    int[] array = toIntArray( value );
-    checkArrayLength( array, 2 );
-    return new Point( array[ 0 ], array[ 1 ] );
-  }
-
-  private static int[] toIntArray( Object value ) {
-    int[] result;
-    if( value instanceof Object[] ) {
-      Object[] array = ( Object[] )value;
-      result = new int[ array.length ];
-      for( int i = 0; i < array.length; i++ ) {
-        try {
-          result[ i ] = ( ( Integer )array[ i ] ).intValue();
-        } catch( ClassCastException exception ) {
-          String message = "Could not convert to int array: array contains non-int value";
-          throw new IllegalStateException( message );
-        }
-      }
-    } else {
-      throw new IllegalStateException( "Could not convert to int array: property is not an array" );
-    }
-    return result;
-  }
-
-  private static String[] toStringArray( Object value ) {
-    String[] result;
-    if( value instanceof Object[] ) {
-      Object[] array = ( Object[] )value;
-      result = new String[ array.length ];
-      for( int i = 0; i < array.length; i++ ) {
-        try {
-          result[ i ] = ( String )array[ i ];
-        } catch( ClassCastException exception ) {
-          String message = "Could not convert to string array: array contains non-string value";
-          throw new IllegalStateException( message );
-        }
-      }
-    } else {
-      String message = "Could not convert to string array: property is not a string";
-      throw new IllegalStateException( message );
-    }
-    return result;
-  }
-
-  private static boolean[] toBooleanArray( Object value ) {
-    boolean[] result;
-    if( value instanceof Object[] ) {
-      Object[] array = ( Object[] )value;
-      result = new boolean[ array.length ];
-      for( int i = 0; i < array.length; i++ ) {
-        try {
-          result[ i ] = ( ( Boolean )array[ i ] ).booleanValue();
-        } catch( ClassCastException exception ) {
-          String message = "Could not convert to boolean array: array contains non-boolean value";
-          throw new IllegalStateException( message );
-        }
-      }
-    } else {
-      String message = "Could not convert to boolean array: property is not an array";
-      throw new IllegalStateException( message );
-    }
-    return result;
-  }
-
-  private static void checkArrayLength( int[] array, int length ) {
-    if( array.length != length ) {
-      String message = "Could not convert property to point: invalid array length";
-      throw new IllegalStateException( message );
-    }
   }
 
 }

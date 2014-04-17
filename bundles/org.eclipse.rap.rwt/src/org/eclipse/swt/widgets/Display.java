@@ -14,6 +14,9 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.readPropertyValue;
+import static org.eclipse.rap.rwt.remote.JsonMapping.readPoint;
+import static org.eclipse.rap.rwt.remote.JsonMapping.readRectangle;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -25,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -2302,19 +2306,13 @@ public class Display extends Device implements Adaptable {
   }
 
   private Rectangle readInitialBounds() {
-    Rectangle result = ProtocolUtil.readPropertyValueAsRectangle( getId( this ), BOUNDS );
-    if( result == null ) {
-      result = new Rectangle( 0, 0, 1024, 768 );
-    }
-    return result;
+    JsonValue value = ProtocolUtil.readPropertyValue( getId( this ), BOUNDS );
+    return value == null ? new Rectangle( 0, 0, 1024, 768 ) : readRectangle( value );
   }
 
   private Point readDPI() {
-    Point result = ProtocolUtil.readPropertyValueAsPoint( getId( this ), DPI );
-    if( result == null ) {
-      result = new Point( 0, 0 );
-    }
-    return result;
+    JsonValue value = readPropertyValue( getId( this ), DPI );
+    return value == null ? new Point( 0, 0 ) : readPoint( value );
   }
 
   private int readDepth() {
