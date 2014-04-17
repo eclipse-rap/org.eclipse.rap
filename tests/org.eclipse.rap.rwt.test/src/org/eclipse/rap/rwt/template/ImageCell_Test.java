@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.template;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage;
-import static org.junit.Assert.*;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.template.ImageCell;
-import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.template.ImageCell.ScaleMode;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Image;
@@ -132,7 +132,7 @@ public class ImageCell_Test {
     cell.setImage( image );
     JsonObject json = cell.toJson();
 
-    assertEquals( getJsonForImage( image ), json.get( "image" ) );
+    assertEquals( toJson( image ), json.get( "image" ) );
   }
 
   @Test

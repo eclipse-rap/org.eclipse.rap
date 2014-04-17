@@ -10,14 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.template;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
-
 import java.io.Serializable;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -368,13 +366,13 @@ public abstract class Cell<T extends Cell> implements Serializable  {
       jsonObject.add( PROPERTY_NAME, name );
     }
     if( foreground != null ) {
-      jsonObject.add( PROPERTY_FOREGROUND, getJsonForColor( foreground, false ) );
+      jsonObject.add( PROPERTY_FOREGROUND, JsonMapping.toJson( foreground ) );
     }
     if( background != null ) {
-      jsonObject.add( PROPERTY_BACKGROUND, getJsonForColor( background, false ) );
+      jsonObject.add( PROPERTY_BACKGROUND, JsonMapping.toJson( background ) );
     }
     if( font != null ) {
-      jsonObject.add( PROPERTY_FONT, getJsonForFont( font ) );
+      jsonObject.add( PROPERTY_FONT, JsonMapping.toJson( font ) );
     }
     if( horizontalAlignment != SWT.NONE ) {
       jsonObject.add( PROPERTY_H_ALIGNMENT, hAlignmentToString( horizontalAlignment ) );

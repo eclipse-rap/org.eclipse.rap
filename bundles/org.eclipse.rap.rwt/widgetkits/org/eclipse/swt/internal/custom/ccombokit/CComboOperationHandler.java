@@ -14,13 +14,13 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
+import static org.eclipse.rap.rwt.remote.JsonMapping.readPoint;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.protocol.ControlOperationHandler;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
@@ -119,7 +119,7 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
   public void handleSetSelection( final CCombo ccombo, JsonObject properties ) {
     JsonValue value = properties.get( PROP_SELECTION );
     if( value != null ) {
-      final Point selection = ProtocolUtil.toPoint( value );
+      final Point selection = readPoint( value );
       if( isListening( ccombo, SWT.Verify ) ) {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {

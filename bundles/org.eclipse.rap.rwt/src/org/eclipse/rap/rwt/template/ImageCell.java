@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,8 @@
 package org.eclipse.rap.rwt.template;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.swt.graphics.Image;
 
 
@@ -98,7 +98,7 @@ public class ImageCell extends Cell<ImageCell> {
   protected JsonObject toJson() {
     JsonObject json = super.toJson();
     if( image != null ) {
-      json.add( PROPERTY_IMAGE, ProtocolUtil.getJsonForImage( image ) );
+      json.add( PROPERTY_IMAGE, JsonMapping.toJson( image ) );
     }
     if( scaleMode != null ) {
       json.add( PROPERTY_SCALE_MODE, scaleMode.name() );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.template;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -20,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.template.Cell;
-import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -683,7 +680,7 @@ public class Cell_Test {
     cell.setForeground( color );
     JsonObject json = cell.toJson();
 
-    assertEquals( getJsonForColor( color, false ), json.get( "foreground" ) );
+    assertEquals( toJson( color ), json.get( "foreground" ) );
   }
 
   @Test
@@ -694,7 +691,7 @@ public class Cell_Test {
     cell.setBackground( color );
     JsonObject json = cell.toJson();
 
-    assertEquals( getJsonForColor( color, false ), json.get( "background" ) );
+    assertEquals( toJson( color ), json.get( "background" ) );
   }
 
   @Test
@@ -705,7 +702,7 @@ public class Cell_Test {
     cell.setFont( font );
     JsonObject json = cell.toJson();
 
-    assertEquals( getJsonForFont( font ), json.get( "font" ) );
+    assertEquals( toJson( font ), json.get( "font" ) );
   }
 
   @Test

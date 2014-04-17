@@ -14,15 +14,11 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForColor;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForFont;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForImage;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForPoint;
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getJsonForRectangle;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemoteId;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
@@ -47,6 +43,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -285,13 +282,13 @@ public final class WidgetLCAUtil {
 
   public static void renderFont( Widget widget, Font font ) {
     if( hasChanged( widget, PROP_FONT, font, null ) ) {
-      getRemoteObject( widget ).set( PROP_FONT, getJsonForFont( font ) );
+      getRemoteObject( widget ).set( PROP_FONT, toJson( font ) );
     }
   }
 
   public static void renderForeground( Widget widget, Color newColor ) {
     if( hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
-      getRemoteObject( widget ).set( PROP_FOREGROUND, getJsonForColor( newColor, false ) );
+      getRemoteObject( widget ).set( PROP_FOREGROUND, toJson( newColor ) );
     }
   }
 
@@ -306,10 +303,9 @@ public final class WidgetLCAUtil {
                                               Boolean.FALSE );
     boolean colorChanged = hasChanged( widget, PROP_BACKGROUND, background, null );
     if( transparencyChanged || colorChanged ) {
-      JsonValue color = JsonValue.NULL;
-      if( transparency || background != null ) {
-        color = getJsonForColor( background, transparency );
-      }
+      JsonValue color = transparency && background == null
+                      ? toJson( new RGB( 0, 0, 0 ), 0 )
+                      : toJson( background, transparency ? 0 : 255 );
       getRemoteObject( widget ).set( PROP_BACKGROUND, color );
     }
   }
@@ -323,7 +319,7 @@ public final class WidgetLCAUtil {
       if( bgGradientColors!= null ) {
         JsonArray colors = new JsonArray();
         for( int i = 0; i < bgGradientColors.length; i++ ) {
-          colors.add( getJsonForColor( bgGradientColors[ i ], false ) );
+          colors.add( toJson( bgGradientColors[ i ] ) );
         }
         int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
         JsonValue percents = createJsonArray( bgGradientPercents );
@@ -367,7 +363,7 @@ public final class WidgetLCAUtil {
         Rectangle radius = graphicAdapter.getRoundedBorderRadius();
         args = new JsonArray()
           .add( width )
-          .add( getJsonForColor( color, false ) )
+          .add( toJson( color ) )
           .add( radius.x )
           .add( radius.y )
           .add( radius.width )
@@ -526,7 +522,7 @@ public final class WidgetLCAUtil {
                                      Image defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      getRemoteObject( widget ).set( property, getJsonForImage( newValue ) );
+      getRemoteObject( widget ).set( property, toJson( newValue ) );
     }
   }
 
@@ -538,7 +534,7 @@ public final class WidgetLCAUtil {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray images = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
-        images.add( getJsonForImage( newValue[ i ] ) );
+        images.add( toJson( newValue[ i ] ) );
       }
       getRemoteObject( widget ).set( property, images );
     }
@@ -550,7 +546,7 @@ public final class WidgetLCAUtil {
                                      Color defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      getRemoteObject( widget ).set( property, getJsonForColor( newValue, false ) );
+      getRemoteObject( widget ).set( property, toJson( newValue ) );
     }
   }
 
@@ -562,7 +558,7 @@ public final class WidgetLCAUtil {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray colors = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
-        colors.add( getJsonForColor( newValue[ i ], false ) );
+        colors.add( toJson( newValue[ i ] ) );
       }
       getRemoteObject( widget ).set( property, colors );
     }
@@ -576,7 +572,7 @@ public final class WidgetLCAUtil {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
       JsonArray fonts = new JsonArray();
       for( int i = 0; i < newValue.length; i++ ) {
-        fonts.add( getJsonForFont( newValue[ i ] ) );
+        fonts.add( toJson( newValue[ i ] ) );
       }
       getRemoteObject( widget ).set( property, fonts );
     }
@@ -588,7 +584,7 @@ public final class WidgetLCAUtil {
                                      Point defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      getRemoteObject( widget ).set( property, getJsonForPoint( newValue ) );
+      getRemoteObject( widget ).set( property, toJson( newValue ) );
     }
   }
 
@@ -598,7 +594,7 @@ public final class WidgetLCAUtil {
                                      Rectangle defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      getRemoteObject( widget ).set( property, getJsonForRectangle( newValue ) );
+      getRemoteObject( widget ).set( property, toJson( newValue ) );
     }
   }
 

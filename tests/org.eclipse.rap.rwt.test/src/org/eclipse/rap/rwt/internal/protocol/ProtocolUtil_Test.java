@@ -11,24 +11,22 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
 import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,147 +34,14 @@ import org.junit.Test;
 
 public class ProtocolUtil_Test {
 
-  private Display display;
-
   @Before
   public void setUp() {
     Fixture.setUp();
-    display = new Display();
-    Fixture.fakeNewRequest();
   }
 
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testGetJsonForColor() {
-    Color red = display.getSystemColor( SWT.COLOR_RED );
-
-    JsonValue result = ProtocolUtil.getJsonForColor( red, false );
-
-    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 255]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForColor_transparent() {
-    Color red = display.getSystemColor( SWT.COLOR_RED );
-
-    JsonValue result = ProtocolUtil.getJsonForColor( red, true );
-
-    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 0]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForColor_null() {
-    JsonValue result = ProtocolUtil.getJsonForColor( ( Color )null, false );
-
-    assertEquals( JsonValue.NULL, result );
-  }
-
-  @Test
-  public void testGetJsonForColor_RGB() {
-    RGB red = new RGB( 255, 0, 0 );
-
-    JsonValue result = ProtocolUtil.getJsonForColor( red, false );
-
-    assertEquals( JsonValue.readFrom( "[ 255, 0, 0, 255]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForFont() {
-    Font font = new Font( display, "Arial", 22, SWT.NONE );
-
-    JsonValue result = ProtocolUtil.getJsonForFont( font );
-
-    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, false ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForFont_bold() {
-    Font font = new Font( display, "Arial", 22, SWT.BOLD );
-
-    JsonValue result = ProtocolUtil.getJsonForFont( font );
-
-    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, true, false ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForFont_italic() {
-    Font font = new Font( display, "Arial", 22, SWT.ITALIC );
-
-    JsonValue result = ProtocolUtil.getJsonForFont( font );
-
-    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, true ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForFont_null() {
-    JsonValue result = ProtocolUtil.getJsonForFont( (Font) null );
-
-    assertEquals( JsonValue.NULL, result );
-  }
-
-  @Test
-  public void testGetJsonForFont_fontData() {
-    Font font = new Font( display, "Arial", 22, SWT.NONE );
-
-    JsonValue result = ProtocolUtil.getJsonForFont( font.getFontData()[0] );
-
-    assertEquals( JsonValue.readFrom( "[[\"Arial\"], 22, false, false ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForFont_fontData_null() {
-    JsonValue result = ProtocolUtil.getJsonForFont( (FontData) null );
-
-    assertEquals( JsonValue.NULL, result );
-  }
-
-  @Test
-  public void testGetJsonForPoint() {
-    JsonValue result = ProtocolUtil.getJsonForPoint( new Point( 23, 42 ) );
-
-    assertEquals( JsonValue.readFrom( "[ 23, 42 ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForPoint_null() {
-    JsonValue result = ProtocolUtil.getJsonForPoint( (Point) null );
-
-    assertEquals( JsonValue.NULL, result );
-  }
-
-  @Test
-  public void testGetJsonForRectangle() {
-    JsonValue result = ProtocolUtil.getJsonForRectangle( new Rectangle( 1, 2, 3, 4 ) );
-
-    assertEquals( JsonValue.readFrom( "[ 1, 2, 3, 4 ]" ), result );
-  }
-
-  @Test
-  public void testGetJsonForRectangle_null() {
-    JsonValue result = ProtocolUtil.getJsonForRectangle( (Rectangle) null );
-
-    assertEquals( JsonValue.NULL, result );
-  }
-
-  @Test
-  public void testGetJsonForImage() {
-    Image image = createImage( Fixture.IMAGE_100x50 );
-
-    JsonValue result = ProtocolUtil.getJsonForImage( image );
-
-    JsonArray array = result.asArray();
-    assertTrue( array.get( 0 ).isString() );
-    array.set( 0, "" );
-    assertEquals( new JsonArray().add( "" ).add( 100 ).add( 50 ), array );
-  }
-
-  @Test
-  public void testJsonForImage_null() {
-    assertEquals( JsonValue.NULL, ProtocolUtil.getJsonForImage( null ) );
   }
 
   @Test
@@ -386,71 +251,6 @@ public class ProtocolUtil_Test {
   @Test
   public void testReadCallProperty_missingOperation() {
     assertNull( ProtocolUtil.readCallPropertyValueAsString( "w3", "resize", "width" ) );
-  }
-
-  @Test
-  public void testToPoint() {
-    JsonValue value = new JsonArray().add( 23 ).add( 42 );
-
-    Point result = ProtocolUtil.toPoint( value );
-
-    assertEquals( new Point( 23, 42 ), result );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToPoint_withNull() {
-    ProtocolUtil.toPoint( null );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToPoint_withIllegalValue() {
-    ProtocolUtil.toPoint( JsonValue.valueOf( true ) );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToPoint_withWrongArraySize() {
-    ProtocolUtil.toPoint( new JsonArray().add( 1 ).add( 2 ).add( 3 ) );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToPoint_withWrongElementType() {
-    ProtocolUtil.toPoint( new JsonArray().add( 1 ).add( true ) );
-  }
-
-  @Test
-  public void testToRectangle() {
-    JsonValue value = new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 4 );
-
-    Rectangle result = ProtocolUtil.toRectangle( value );
-
-    assertEquals( new Rectangle( 1, 2, 3, 4 ), result );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToRectangle_withNull() {
-    ProtocolUtil.toRectangle( null );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToRectangle_withIllegalValue() {
-    ProtocolUtil.toRectangle( JsonValue.valueOf( true ) );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToRectangle_withWrongArraySize() {
-    ProtocolUtil.toRectangle( new JsonArray().add( 1 ).add( 2 ).add( 3 ).add( 4 ).add( 5 ) );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testToRectangle_withWrongElementType() {
-    ProtocolUtil.toRectangle( new JsonArray().add( 1 ).add( true ) );
-  }
-
-  @SuppressWarnings( "resource" )
-  private Image createImage( String name ) {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( name );
-    return new Image( display, stream );
   }
 
 }

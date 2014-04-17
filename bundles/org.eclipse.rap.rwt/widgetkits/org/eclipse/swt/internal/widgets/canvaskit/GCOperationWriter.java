@@ -12,11 +12,11 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -60,9 +60,9 @@ final class GCOperationWriter {
       JsonObject parameters = new JsonObject()
         .add( "width", size.x )
         .add( "height", size.y )
-        .add( "font", ProtocolUtil.getJsonForFont( control.getFont() ) )
-        .add( "fillStyle", ProtocolUtil.getJsonForColor( background, false ) )
-        .add( "strokeStyle", ProtocolUtil.getJsonForColor( foreground, false ) );
+        .add( "font", toJson( control.getFont() ) )
+        .add( "fillStyle", toJson( background ) )
+        .add( "strokeStyle", toJson( foreground ) );
       getRemoteObject( getGcId( control ) ).call( "init", parameters );
       operations = new JsonArray();
       initialized = true;
@@ -123,7 +123,7 @@ final class GCOperationWriter {
     addClientOperation( "save" );
     operations.add( new JsonArray()
       .add( "fillStyle" )
-      .add( ProtocolUtil.getJsonForColor( foreground, false ) ) );
+      .add( toJson( foreground ) ) );
     addClientOperation( "lineWidth", 1 );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x, y, 1, 1 );
@@ -170,11 +170,11 @@ final class GCOperationWriter {
     operations.add( new JsonArray()
       .add( "addColorStop" )
       .add( 0 )
-      .add( ProtocolUtil.getJsonForColor( startColor, false ) ) );
+      .add( toJson( startColor ) ) );
     operations.add( new JsonArray()
       .add( "addColorStop" )
       .add( 1 )
-      .add( ProtocolUtil.getJsonForColor( endColor, false ) ) );
+      .add( toJson( endColor ) ) );
     addClientOperation( "fillStyle", "linearGradient" );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x1, y1, width, height );
@@ -330,12 +330,12 @@ final class GCOperationWriter {
       case SetProperty.FOREGROUND:
         name = "strokeStyle";
         foreground = ( RGB )operation.value;
-        value = ProtocolUtil.getJsonForColor( foreground, false );
+        value = toJson( foreground );
       break;
       case SetProperty.BACKGROUND:
         name = "fillStyle";
         background = ( RGB )operation.value;
-        value = ProtocolUtil.getJsonForColor( background, false );
+        value = toJson( background );
       break;
       case SetProperty.ALPHA:
         float alpha = ( ( Integer )operation.value ).floatValue();
@@ -382,7 +382,7 @@ final class GCOperationWriter {
       break;
       case SetProperty.FONT:
         name = "font";
-        value = ProtocolUtil.getJsonForFont( ( FontData )operation.value );
+        value = toJson( ( FontData )operation.value );
       break;
       default:
         String msg = "Unsupported operation id: " + operation.id;

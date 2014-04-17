@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.eclipse.rap.rwt.remote.JsonMapping.readPoint;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -169,7 +170,7 @@ class MeasurementOperator implements SerializableCompatibility {
       if( results != null ) {
         JsonValue value = results.get( id );
         if( value != null ) {
-          result = ProtocolUtil.toPoint( value );
+          result = readPoint( value );
         }
       }
     }
