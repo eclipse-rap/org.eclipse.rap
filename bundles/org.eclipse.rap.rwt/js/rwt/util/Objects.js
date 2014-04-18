@@ -11,6 +11,8 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
+namespace( "rwt.util" );
+
 (function() {
 
 var shadowsKeys = !( { toString: null } ).propertyIsEnumerable( "toString" );

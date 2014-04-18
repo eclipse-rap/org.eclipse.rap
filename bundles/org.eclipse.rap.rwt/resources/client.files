@@ -1,17 +1,19 @@
 
 # Contains all files to be included in client.js, in build order
 
-rwt/runtime/Bootstrap.js
+rwt.js
 rwt/runtime/BrowserFixes.js
 rwt/util/Arrays.js
+rwt/util/Objects.js
+rwt/util/Strings.js
+rwt/util/Numbers.js
+rwt/util/Colors.js
 rwt/util/Variant.js
 rwt/client/Client.js
-rwt/util/Objects.js
 rwt/qx/Class.js
 rwt/qx/Mixin.js
 rwt/qx/LegacyProperty.js
 rwt/qx/Property.js
-rwt/util/Strings.js
 rwt/qx/Object.js
 rwt/util/Functions.js
 rwt/html/Viewport.js
@@ -53,13 +55,11 @@ rwt/widgets/util/IframeManager.js
 rwt/widgets/CoolBar.js
 rwt/remote/handler/CoolBarHandler.js
 rwt/widgets/util/LayoutImpl.js
-rwt/util/Numbers.js
 rwt/widgets/util/CanvasLayoutImpl.js
 rwt/widgets/base/ClientDocument.js
 rwt/widgets/base/Terminator.js
 rwt/widgets/base/ClientDocumentBlocker.js
 rwt/theme/AppearanceManager.js
-rwt/util/Colors.js
 rwt/html/Border.js
 rwt/html/Font.js
 rwt/widgets/util/FocusHandler.js
