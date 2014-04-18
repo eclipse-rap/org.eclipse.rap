@@ -222,46 +222,34 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
 
     /**
-     * Get the computed (CSS) style property of a given DOM element
-     *
-     * @type static
-     * @param vElement {Element} the DOM element
-     * @param propertyName {String} the name of the style property. e.g. "color", "border", ...
-     * @return {String} the (CSS) style property
-     * @signature function(vElement, propertyName)
+     * Gets the computed (CSS) style property of a given DOM element.
      */
-    getStyleProperty : rwt.util.Objects.select((document.defaultView && document.defaultView.getComputedStyle) ? "hasComputed" : "noComputed",
-    {
-      "hasComputed" : function(el, prop)
-      {
+    getStyleProperty : (document.defaultView && document.defaultView.getComputedStyle) ?
+      // has computedStyle
+      function( el, prop ) {
         try {
           return el.ownerDocument.defaultView.getComputedStyle(el, "")[prop];
         } catch(ex) {
           throw new Error("Could not evaluate computed style: " + el + "[" + prop + "]: " + ex);
         }
-      },
-
-      "noComputed" : rwt.util.Variant.select("qx.client",
-      {
-        "mshtml" : function(el, prop)
-        {
+      } :
+      // no computedStyle
+      rwt.util.Variant.select( "qx.client", {
+        "mshtml" : function( el, prop ) {
           try {
             return el.currentStyle[prop];
-          } catch(ex) {
-            throw new Error("Could not evaluate computed style: " + el + "[" + prop + "]: " + ex);
+          } catch( ex ) {
+            throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]: " + ex );
           }
         },
-
-        "default" : function(el, prop)
-        {
+        "default" : function( el, prop ) {
           try {
             return el.style[prop];
-          } catch(ex) {
-            throw new Error("Could not evaluate computed style: " + el + "[" + prop + "]");
+          } catch( ex ) {
+            throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]" );
           }
         }
-      })
-    }),
+      }),
 
 
     /**

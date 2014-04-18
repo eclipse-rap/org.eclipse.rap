@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -71,8 +71,6 @@ rwt.qx.Class.define( "rwt.widgets.util.IframeManager", {
     handleMouseDown : function(evt)
     {
       var iframeMap = this._blockData = rwt.util.Objects.copy(this.getAll());
-      // console.debug("Blocking frames: " + rwt.util.Objects.getLength(iframeMap));
-
       for (var key in iframeMap) {
         iframeMap[key].block();
       }
@@ -89,8 +87,6 @@ rwt.qx.Class.define( "rwt.widgets.util.IframeManager", {
     handleMouseUp : function(evt)
     {
       var iframeMap = this._blockData;
-      // console.debug("Releasing frames: " + rwt.util.Objects.getLength(iframeMap));
-
       for (var key in iframeMap) {
         iframeMap[key].release();
       }

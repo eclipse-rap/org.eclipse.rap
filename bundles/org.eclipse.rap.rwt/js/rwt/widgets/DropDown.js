@@ -598,7 +598,7 @@
 
   var notify = function( type, event ) {
     var listeners = this._.events[ type ];
-    var eventProxy = rwt.util.Objects.merge( {
+    var eventProxy = rwt.util.Objects.mergeWith( {
       "widget" : this,
       "type" : eventTypes[ type ]
     }, event );
