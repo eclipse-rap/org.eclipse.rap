@@ -82,7 +82,7 @@ describe( "Style", function() {
         } else {
           expect( TestUtil.getCssGradient( element ) ).toBe( "" );
         }
-        var cssColor = rwt.util.Colors.cssStringToRgb( element.style.backgroundColor );
+        var cssColor = rwt.util.Colors.stringToRgb( element.style.backgroundColor );
         expect( cssColor ).toEqual( [ 255, 0, 0 ] );
       } );
 
@@ -103,7 +103,7 @@ describe( "Style", function() {
 
       Style.setBackgroundImage( element, image );
 
-      var cssColor = rwt.util.Colors.cssStringToRgb( TestUtil.getCssBackgroundColor( element ) );
+      var cssColor = rwt.util.Colors.stringToRgb( TestUtil.getCssBackgroundColor( element ) );
       expect( cssColor ).toEqual( [ 255, 0, 0 ] );
       expect( TestUtil.getCssBackgroundImage( element ) ).toContain( image );
     } );
@@ -192,7 +192,7 @@ describe( "Style", function() {
     it( "sets background property", function() {
       Style.setBackgroundColor( element, color );
 
-      var cssColor = rwt.util.Colors.cssStringToRgb( TestUtil.getCssBackgroundColor( element ) );
+      var cssColor = rwt.util.Colors.stringToRgb( TestUtil.getCssBackgroundColor( element ) );
       expect( cssColor ).toEqual( [ 255, 0, 0 ] );
     } );
 
@@ -201,7 +201,7 @@ describe( "Style", function() {
 
       Style.setBackgroundColor( element, color );
 
-      var cssColor = rwt.util.Colors.cssStringToRgb( TestUtil.getCssBackgroundColor( element ) );
+      var cssColor = rwt.util.Colors.stringToRgb( TestUtil.getCssBackgroundColor( element ) );
       expect( cssColor ).toEqual( [ 255, 0, 0 ] );
       expect( TestUtil.getCssBackgroundImage( element ) ).toContain( image );
     } );

@@ -211,7 +211,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
             if( value == "transparent" || value === "" || value.slice( 0, 4 ) === "rgba" ) {
               result = null;
             } else {
-              result = rwt.util.Colors.cssStringToRgb( value );
+              result = rwt.util.Colors.stringToRgb( value );
             }
           }
         break;
@@ -221,7 +221,7 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
             for( var i = 0; i < value.length; i++ ) {
               result[ i ] = [
                 value[ i ][ 0 ],
-                rwt.util.Colors.cssStringToRgb( value[ i ][ 1 ] )
+                rwt.util.Colors.stringToRgb( value[ i ][ 1 ] )
               ];
             }
           }
