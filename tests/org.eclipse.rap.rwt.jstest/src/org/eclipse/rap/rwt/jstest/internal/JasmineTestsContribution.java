@@ -38,6 +38,7 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/RWTQuery.spec.js",
     "spec/Numbers.spec.js",
     "spec/Strings.spec.js",
+    "spec/Arrays.spec.js",
     "spec/Colors.spec.js"
   };
 
