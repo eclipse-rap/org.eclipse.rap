@@ -19,6 +19,13 @@ namespace( "rwt.util" );
 rwt.util.Numbers = {
 
   /**
+   * Checks whether a value is a valid number. NaN is not considered valid.
+   */
+  isNumber : function( value ) {
+    return typeof value === "number" && !isNaN( value );
+  },
+
+  /**
    * Check whether the number is between a given range.
    */
   isBetween : function( nr, vmin, vmax) {

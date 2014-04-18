@@ -71,7 +71,6 @@ rwt/html/Offset.js
 rwt/html/ScrollIntoView.js
 rwt/widgets/base/BoxLayout.js
 rwt/widgets/util/VerticalBoxLayoutImpl.js
-rwt/util/Validation.js
 rwt/widgets/util/HorizontalBoxLayoutImpl.js
 rwt/widgets/base/Atom.js
 rwt/remote/handler/LabelHandler.js

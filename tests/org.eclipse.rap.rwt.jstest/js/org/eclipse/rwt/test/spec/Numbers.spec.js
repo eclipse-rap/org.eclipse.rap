@@ -13,6 +13,26 @@ describe( "util.Numbers", function() {
 
   var Numbers = rwt.util.Numbers;
 
+  describe( "isNumber", function() {
+
+    it( "accepts number", function() {
+      expect( Numbers.isNumber( 3.14 ) ).toBe( true );
+    });
+
+    it( "accepts Infinity", function() {
+      expect( Numbers.isNumber( Infinity ) ).toBe( true );
+    });
+
+    it( "rejects NaN", function() {
+      expect( Numbers.isNumber( NaN ) ).toBe( false );
+    });
+
+    it( "rejects strings", function() {
+      expect( Numbers.isNumber( "3.14" ) ).toBe( false );
+    });
+
+  });
+
   describe( "isBetween", function() {
 
     it( "accepts number between bounds", function() {
