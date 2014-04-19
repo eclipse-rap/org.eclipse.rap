@@ -145,7 +145,9 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
 
     _applyParent : rwt.util.Functions.returnTrue,
 
-    getTopLevelWidget : rwt.util.Functions.returnThis,
+    getTopLevelWidget : function() {
+      return this;
+    },
 
     getWindowElement : function() {
       return this._window;

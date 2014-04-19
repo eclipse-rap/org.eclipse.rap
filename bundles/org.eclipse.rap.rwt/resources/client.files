@@ -7,6 +7,7 @@ rwt/util/Arrays.js
 rwt/util/Objects.js
 rwt/util/Strings.js
 rwt/util/Numbers.js
+rwt/util/Functions.js
 rwt/util/Colors.js
 rwt/util/Variant.js
 rwt/client/Client.js
@@ -15,7 +16,6 @@ rwt/qx/Mixin.js
 rwt/qx/LegacyProperty.js
 rwt/qx/Property.js
 rwt/qx/Object.js
-rwt/util/Functions.js
 rwt/html/Viewport.js
 rwt/qx/Target.js
 rwt/event/Event.js

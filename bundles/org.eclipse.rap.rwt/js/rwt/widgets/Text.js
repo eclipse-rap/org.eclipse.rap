@@ -23,7 +23,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this._inputOverflow = "auto";
       this.setAppearance( "text-area" );
       this.setAllowStretchY( true );
-      this.__oninput = rwt.util.Functions.bindEvent( this._oninputDomTextarea, this );
+      this.__oninput = rwt.util.Functions.bind( this._oninputDomTextarea, this );
     }
     this._message = null;
     this._messageElement = null;

@@ -27,7 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     this.add( this._vertScrollBar );
     this._configureScrollBars();
     this._configureClientArea();
-    this.__onscroll = rwt.util.Functions.bindEvent( this._onscroll, this );
+    this.__onscroll = rwt.util.Functions.bind( this._onscroll, this );
   },
 
   destruct : function() {
@@ -127,7 +127,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._clientArea.addEventListener( "create", this._onClientCreate, this );
       this._clientArea.addEventListener( "appear", this._onClientAppear, this );
       // TOOD [tb] : Do this with an eventlistner after fixing Bug 327023
-      this._clientArea._layoutPost = rwt.util.Functions.bindEvent( this._onClientLayout, this );
+      this._clientArea._layoutPost = rwt.util.Functions.bind( this._onClientLayout, this );
     },
 
     _configureScrollBars : function() {

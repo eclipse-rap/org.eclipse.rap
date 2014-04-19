@@ -1559,7 +1559,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     getChildrenLength : rwt.util.Functions.returnZero,
     hasChildren : rwt.util.Functions.returnFalse,
     isEmpty : rwt.util.Functions.returnTrue,
-    indexOf : rwt.util.Functions.returnNegativeIndex,
+    indexOf : function() { return -1; },
     contains : rwt.util.Functions.returnFalse,
     getVisibleChildren : rwt.util.Functions.returnNull,
     getVisibleChildrenLength : rwt.util.Functions.returnZero,

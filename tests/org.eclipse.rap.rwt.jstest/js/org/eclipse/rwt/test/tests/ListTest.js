@@ -1015,7 +1015,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     _createDefaultList : function( noflush ) {
       var list = new rwt.widgets.List( true );
       var onScrollFired = false;
-      list.__onscroll = rwt.util.Functions.bindEvent( function( ev ) {
+      list.__onscroll = rwt.util.Functions.bind( function( ev ) {
         list._onscroll.call( list, ev );
         onScrollFired = true;
       }, list );

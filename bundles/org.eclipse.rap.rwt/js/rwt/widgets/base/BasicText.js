@@ -25,7 +25,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     this.initTabIndex();
     this._selectionStart = 0;
     this._selectionLength = 0;
-    this.__oninput = rwt.util.Functions.bindEvent( this._oninput, this );
+    this.__oninput = rwt.util.Functions.bind( this._oninput, this );
     this.addEventListener( "blur", this._onblur );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );

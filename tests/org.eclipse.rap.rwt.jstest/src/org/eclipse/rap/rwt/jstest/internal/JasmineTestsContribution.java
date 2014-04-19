@@ -42,7 +42,8 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/Objects.spec.js",
     "spec/Colors.spec.js",
     "spec/HandlerUtil.spec.js",
-    "spec/rwt.spec.js"
+    "spec/rwt.spec.js",
+    "spec/Functions.spec.js"
   };
 
   public String getName() {
