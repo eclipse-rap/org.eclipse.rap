@@ -317,6 +317,7 @@ public class UISessionImpl
     }
     fireBeforeDestroy();
     synchronized( lock ) {
+      setApplicationContext( null );
       attributes.clear();
       listeners.clear();
       bound = false;

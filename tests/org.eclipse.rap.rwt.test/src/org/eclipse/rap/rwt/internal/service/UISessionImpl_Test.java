@@ -782,6 +782,21 @@ public class UISessionImpl_Test {
   }
 
   @Test
+  public void testDestroy_removesApplicationContextListener() {
+    uiSession.shutdown();
+
+    verify( applicationContext )
+      .removeApplicationContextListener( any( ApplicationContextListener.class ) );
+  }
+
+  @Test
+  public void testDestroy_nullsOutApplicationContext() {
+    uiSession.shutdown();
+
+    assertNull( uiSession.getApplicationContext() );
+  }
+
+  @Test
   public void testApplicationContextInUISessionIsNotSerialized() throws Exception {
     UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
 
