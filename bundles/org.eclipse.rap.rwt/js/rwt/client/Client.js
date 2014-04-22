@@ -312,11 +312,9 @@ rwt.qx.Class.define( "rwt.client.Client", {
 
     _initGecko : function() {
       if( !this._isBrowserDetected() ) {
-        var product = navigator.product;
         var userAgent = navigator.userAgent;
-        var isGecko =    window.controllers
-                      && typeof product === "string"
-                      && product === "Gecko"
+        var isGecko =    userAgent.indexOf( "like Gecko" ) === -1
+                      && userAgent.indexOf( "Gecko/" ) !== -1
                       && /rv\:([^\);]+)(\)|;)/.test( userAgent );
         if( isGecko ) {
           // http://www.mozilla.org/docs/dom/domref/dom_window_ref13.html
