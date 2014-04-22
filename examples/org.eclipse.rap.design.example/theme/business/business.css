@@ -345,6 +345,32 @@ Combo-List {
   box-shadow: 3px 3px 3px rgba( 0, 0, 0, 0.4 );
 }
 
+Combo-List-Item {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+  padding: 3px 5px;
+}
+
+Combo-List-Item:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dae9f7 ),
+    to( #d2e0ee )
+  );
+}
+
+Combo-List-Item:selected {
+  color: white;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #0078Bf ),
+    to( #00589f )
+  );
+}
+
 Combo-Field {
   padding: 2px 3px;
 }
@@ -360,7 +386,34 @@ Combo-FocusIndicator {
 
 DropDown {
   border: 1px solid #c1c1c1;
+  border-radius: 0px;
   box-shadow: none;
+}
+
+DropDown-Item {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+  padding: 3px 5px;
+}
+
+DropDown-Item:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dae9f7 ),
+    to( #d2e0ee )
+  );
+}
+
+DropDown-Item:selected {
+  color: white;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #0078Bf ),
+    to( #00589f )
+  );
 }
 
 /* CoolBar default theme */
@@ -1967,6 +2020,32 @@ CCombo-List {
   border: 1px solid #c1c1c1;
   border-radius: 0px 0px 2px 2px;
   box-shadow: 3px 3px 3px rgba( 0, 0, 0, 0.4 );
+}
+
+CCombo-List-Item {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+  padding: 3px 5px;
+}
+
+CCombo-List-Item:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dae9f7 ),
+    to( #d2e0ee )
+  );
+}
+
+CCombo-List-Item:selected {
+  color: white;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #0078Bf ),
+    to( #00589f )
+  );
 }
 
 CCombo-Field {

@@ -20,7 +20,45 @@
     <property name="border"
         description="Border for DropDown widget." />
 
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
+    </property>
+
     <property name="box-shadow" description="The shadow behind the DropDown." />
+
+    <element name="DropDown-Item">
+      <description>
+        Items of DropDown.
+      </description>
+
+      <property name="color"
+          description="Item text color" />
+
+      <property name="background-color"
+          description="Item background color" />
+
+      <property name="background-image"
+          description="Item background image/gradient" />
+
+      <property name="text-decoration"
+          description="Decoration for item text." />
+
+      <property name="text-shadow"
+          description="Shadow for item text." />
+
+      <property name="padding"
+          description="Defines the padding (i.e. the inner distance between border and content) for a DropDown item." />
+
+      <state name="selected"
+          description="Applies when DropDown item is selected." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the DropDown item." />
+
+    </element>
 
   </element>
 

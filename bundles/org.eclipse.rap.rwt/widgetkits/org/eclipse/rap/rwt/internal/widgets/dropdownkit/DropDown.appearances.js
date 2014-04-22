@@ -13,11 +13,51 @@ var appearances = {
 
   "dropdown" : {
     style : function( states ) {
+      return {};
+    }
+  },
+
+  "dropdown-popup" : {
+    style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "DropDown", "border" ),
         shadow : tv.getCssShadow( "DropDown", "box-shadow" )
       };
+    }
+  },
+
+  "dropdown-row" : {
+    style : function( states ) {
+      var tv = new rwt.theme.ThemeValues( states );
+      return {
+        foreground : tv.getCssColor( "DropDown-Item", "color" ),
+        background : tv.getCssColor( "DropDown-Item", "background-color" ),
+        backgroundImage : tv.getCssImage( "DropDown-Item", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "DropDown-Item", "background-image" ),
+        textDecoration : tv.getCssIdentifier( "DropDown-Item", "text-decoration" ),
+        textShadow : tv.getCssShadow( "DropDown-Item", "text-shadow" )
+      };
+    }
+  },
+
+  "dropdown-row-overlay" : {
+    style : function( states ) {
+      return {
+        foreground : "undefined",
+        background : "undefined",
+        backgroundImage : null,
+        backgroundGradient : null
+      };
+    }
+  },
+
+  "dropdown-cell" : {
+    style : function( states ) {
+       var tv = new rwt.theme.ThemeValues( states );
+       return {
+         padding : tv.getCssBoxDimensions( "DropDown-Item", "padding" )
+       };
     }
   }
 

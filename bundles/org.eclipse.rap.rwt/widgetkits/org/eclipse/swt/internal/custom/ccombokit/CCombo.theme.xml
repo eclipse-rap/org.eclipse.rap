@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2009, 2012 EclipseSource and others.
+ Copyright (c) 2009, 2014 EclipseSource and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -62,7 +62,7 @@
       </description>
     </property>
 
-    <property name="box-shadow" 
+    <property name="box-shadow"
         description="A shadow effect for ccombo text field." />
 
     <state name="disabled"
@@ -197,7 +197,38 @@
 
     </element>
 
-    <element name="CCombo-FocusIndicator" 
+    <element name="CCombo-List-Item">
+      <description>
+        Items of CCombo list.
+      </description>
+
+      <property name="color"
+          description="Item text color" />
+
+      <property name="background-color"
+          description="Item background color" />
+
+      <property name="background-image"
+          description="Item background image/gradient" />
+
+      <property name="text-decoration"
+          description="Decoration for item text." />
+
+      <property name="text-shadow"
+          description="Shadow for item text." />
+
+      <property name="padding"
+          description="Defines the padding (i.e. the inner distance between border and content) for a DropDown item." />
+
+      <state name="selected"
+          description="Applies when CCombo list item is selected." />
+
+      <state name="hover"
+          description="Applies while the user hovers over the CCombo list item." />
+
+    </element>
+
+    <element name="CCombo-FocusIndicator"
           description="The frame that is drawn when the ccombo is focused." >
 
       <property name="background-color"
@@ -205,7 +236,7 @@
 
       <property name="border">
         <description>
-          The border of the frame. 
+          The border of the frame.
           3D-styles inset, outset, etc are not supported.
         </description>
       </property>
@@ -216,7 +247,7 @@
         </description>
       </property>
 
-      <property name="opacity" 
+      <property name="opacity"
           description="The opacity of the indicator. A value between 0 and 1." />
 
     </element>

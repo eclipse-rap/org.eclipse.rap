@@ -13,5 +13,31 @@
 
 DropDown {
   border: 1px solid #c1c1c1;
+  border-radius: 0px;
   box-shadow: none;
+}
+
+DropDown-Item {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+  padding: 3px 5px;
+}
+
+DropDown-Item:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e9f3d2 ),
+    to( #d9e3c2 )
+  );
+}
+
+DropDown-Item:selected, DropDown-Item:selected:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
 }

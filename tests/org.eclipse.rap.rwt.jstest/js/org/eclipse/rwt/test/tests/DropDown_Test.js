@@ -54,14 +54,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
 
     testConstructor_SetsDefaultPopUpStyling : function() {
       assertEquals( "solid", popup.getBorder().getStyle() );
-      assertEquals( "#aaaaaa", popup.getBorder().getColor() );
+      assertEquals( "#000000", popup.getBorder().getColor() );
       assertEquals( [ 1, 1, 1, 1] , popup.getBorder().getWidths() );
       assertEquals( "#ffffff", popup.getBackgroundColor() );
     },
 
     testConstructor_WithAppearanceSetsPopUpStyling : function() {
       dropdown.destroy();
-      TestUtil.fakeAppearance( "foo", {
+      TestUtil.fakeAppearance( "dropdown-popup", {
         "style" : function( states ) {
           return {
             "border" : new rwt.html.Border( 3, "dotted", "#00ff00" ),
@@ -70,12 +70,13 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
         }
       } );
 
-      dropdown = new rwt.widgets.DropDown( widget, false, "foo" );
+      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
       popup = dropdown._.popup;
 
       assertEquals( "dotted", popup.getBorder().getStyle() );
       assertEquals( "#00ff00", popup.getBorder().getColor() );
       assertEquals( [ 3, 3, 3, 3] , popup.getBorder().getWidths() );
+      TestUtil.restoreAppearance();
     },
 
     testConstructor_DoesNotMakePopUpVisible : function() {
@@ -566,7 +567,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     testSetCustomVariant_UpdatesAppearanceStates : function() {
       dropdown.destroy();
       var log = {};
-      TestUtil.fakeAppearance( "foo", {
+      TestUtil.fakeAppearance( "dropdown-popup", {
         "style" : function( states ) {
           log.states = states;
           return {
@@ -576,10 +577,11 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
         }
       } );
 
-      dropdown = new rwt.widgets.DropDown( widget, false, "foo" );
+      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
       dropdown.setCustomVariant( "bar" );
 
       assertTrue( log.states.bar );
+      TestUtil.restoreAppearance();
     },
 
     testSetVisibleItemCount : function() {
@@ -1560,7 +1562,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       widget.setParent( shell );
       widget.setLocation( 10, 20 );
       widget.setDimension( 100, 30 );
-      dropdown = new rwt.widgets.DropDown( widget, false, "combo-list" );
+      dropdown = new rwt.widgets.DropDown( widget, false, "dropdown" );
       rwt.remote.ObjectRegistry.add(
         "w3",
         dropdown,

@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2014 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* Combo */
 
@@ -63,10 +64,39 @@ Combo-Button:pressed, CCombo-Button:pressed {
 Combo-List, CCombo-List {
   border: 1px solid #c1c1c1;
   border-radius: 0px 0px 2px 2px;
+  box-shadow: 3px 3px 3px rgba( 0, 0, 0, 0.4 );
+}
+
+Combo-List-Item, CCombo-List-Item {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  text-decoration: none;
+  text-shadow: none;
+  padding: 3px 5px;
+}
+
+Combo-List-Item:hover, CCombo-List-Item:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e9f3d2 ),
+    to( #d9e3c2 )
+  );
+}
+
+Combo-List-Item:selected,
+CCombo-List-Item:selected,
+Combo-List-Item:selected:hover,
+CCombo-List-Item:selected:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
 }
 
 Combo-FocusIndicator, CCombo-FocusIndicator {
-  background-color: transparent; 
+  background-color: transparent;
   border: 1px dotted #b8b8b8;
   margin: 1px 19px 1px 1px;
   opacity: 1;

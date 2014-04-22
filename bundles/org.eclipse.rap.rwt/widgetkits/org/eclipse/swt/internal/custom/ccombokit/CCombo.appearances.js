@@ -27,17 +27,52 @@ var appearances = {
   },
 
   "ccombo-list" : {
-    include : "list",
+    style : function( states ) {
+      return {};
+    }
+  },
+
+  "ccombo-list-popup" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var result = {};
-      result.border = tv.getCssBorder( "CCombo-List", "border" );
-      result.textColor = tv.getCssColor( "CCombo", "color" );
-      result.font = tv.getCssFont( "CCombo", "font" );
-      result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
-      result.shadow = tv.getCssShadow( "CCombo-List", "box-shadow" );
-      result.textShadow = tv.getCssShadow( "CCombo", "text-shadow" );
-      return result;
+      return {
+        border : tv.getCssBorder( "CCombo-List", "border" ),
+        shadow : tv.getCssShadow( "CCombo-List", "box-shadow" )
+      };
+    }
+  },
+
+  "ccombo-list-row" : {
+    style : function( states ) {
+      var tv = new rwt.theme.ThemeValues( states );
+      return {
+        foreground : tv.getCssColor( "CCombo-List-Item", "color" ),
+        background : tv.getCssColor( "CCombo-List-Item", "background-color" ),
+        backgroundImage : tv.getCssImage( "CCombo-List-Item", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "CCombo-List-Item", "background-image" ),
+        textDecoration : tv.getCssIdentifier( "CCombo-List-Item", "text-decoration" ),
+        textShadow : tv.getCssShadow( "CCombo-List-Item", "text-shadow" )
+      };
+    }
+  },
+
+  "ccombo-list-row-overlay" : {
+    style : function( states ) {
+      return {
+        foreground : "undefined",
+        background : "undefined",
+        backgroundImage : null,
+        backgroundGradient : null
+      };
+    }
+  },
+
+  "ccombo-list-cell" : {
+    style : function( states ) {
+       var tv = new rwt.theme.ThemeValues( states );
+       return {
+         padding : tv.getCssBoxDimensions( "CCombo-List-Item", "padding" )
+       };
     }
   },
 

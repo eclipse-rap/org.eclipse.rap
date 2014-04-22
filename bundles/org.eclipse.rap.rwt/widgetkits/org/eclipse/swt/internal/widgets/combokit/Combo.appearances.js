@@ -27,17 +27,52 @@ var appearances = {
   },
 
   "combo-list" : {
-    include : "list",
+    style : function( states ) {
+      return {};
+    }
+  },
+
+  "combo-list-popup" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var result = {};
-      result.border = tv.getCssBorder( "Combo-List", "border" );
-      result.textColor = tv.getCssColor( "Combo", "color" );
-      result.font = tv.getCssFont( "Combo", "font" );
-      result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
-      result.shadow = tv.getCssShadow( "Combo-List", "box-shadow" );
-      result.textShadow = tv.getCssShadow( "Combo", "text-shadow" );
-      return result;
+      return {
+        border : tv.getCssBorder( "Combo-List", "border" ),
+        shadow : tv.getCssShadow( "Combo-List", "box-shadow" )
+      };
+    }
+  },
+
+  "combo-list-row" : {
+    style : function( states ) {
+      var tv = new rwt.theme.ThemeValues( states );
+      return {
+        foreground : tv.getCssColor( "Combo-List-Item", "color" ),
+        background : tv.getCssColor( "Combo-List-Item", "background-color" ),
+        backgroundImage : tv.getCssImage( "Combo-List-Item", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Combo-List-Item", "background-image" ),
+        textDecoration : tv.getCssIdentifier( "Combo-List-Item", "text-decoration" ),
+        textShadow : tv.getCssShadow( "Combo-List-Item", "text-shadow" )
+      };
+    }
+  },
+
+  "combo-list-row-overlay" : {
+    style : function( states ) {
+      return {
+        foreground : "undefined",
+        background : "undefined",
+        backgroundImage : null,
+        backgroundGradient : null
+      };
+    }
+  },
+
+  "combo-list-cell" : {
+    style : function( states ) {
+       var tv = new rwt.theme.ThemeValues( states );
+       return {
+         padding : tv.getCssBoxDimensions( "Combo-List-Item", "padding" )
+       };
     }
   },
 
