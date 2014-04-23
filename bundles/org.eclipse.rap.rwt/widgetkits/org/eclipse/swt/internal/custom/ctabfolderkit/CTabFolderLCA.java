@@ -37,7 +37,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Widget;
 
@@ -108,7 +107,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     preserveListener( folder,
                       PROP_DEFAULT_SELECTION_LISTENER,
                       isListening( folder, SWT.DefaultSelection ) );
-    preserveListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ) );
   }
 
   @Override
@@ -125,9 +123,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       .add( SWT.getMessage( "SWT_ShowList" ) )
       .add( SWT.getMessage( "SWT_Close" ) );
     remoteObject.set( PROP_TOOLTIP_TEXTS, toolTipTexts );
-    // Always listen for Selection.
+    // Always listen for Selection and Folder.
     // Currently required for item's control visibility and bounds update.
     remoteObject.listen( PROP_SELECTION_LISTENER, true );
+    // Currently required for always sending close/showList notify operations.
+    remoteObject.listen( PROP_FOLDER_LISTENER, true );
   }
 
   @Override
@@ -160,7 +160,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
                     isListening( folder, SWT.DefaultSelection ),
                     false );
-    renderListener( folder, PROP_FOLDER_LISTENER, hasFolderListener( folder ), false );
   }
 
   /////////////////////////////////////////
@@ -262,14 +261,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabFolder folder ) {
     return folder.getAdapter( ICTabFolderAdapter.class );
-  }
-
-  private boolean hasFolderListener( CTabFolder folder ) {
-    return isListening( folder, EventTypes.CTAB_FOLDER_CLOSE )
-        || isListening( folder, EventTypes.CTAB_FOLDER_MAXIMIZE )
-        || isListening( folder, EventTypes.CTAB_FOLDER_MINIMIZE )
-        || isListening( folder, EventTypes.CTAB_FOLDER_RESTORE )
-        || isListening( folder, EventTypes.CTAB_FOLDER_SHOW_LIST );
   }
 
 }

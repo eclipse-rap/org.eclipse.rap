@@ -46,7 +46,6 @@ import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -250,6 +249,14 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderInitialization_rendersFolderListener() throws Exception {
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Folder" ) );
   }
 
   @Test
@@ -809,48 +816,6 @@ public class CTabFolderLCA_Test {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderAddFolderListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( folder );
-    Fixture.preserveWidgets();
-
-    folder.addCTabFolder2Listener( mock( CTabFolder2Adapter.class ) );
-    lca.renderChanges( folder );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Folder" ) );
-  }
-
-  @Test
-  public void testRenderRemoveFolderListener() throws Exception {
-    CTabFolder2Adapter listener = mock( CTabFolder2Adapter.class );
-    folder.addCTabFolder2Listener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( folder );
-    Fixture.preserveWidgets();
-
-    folder.removeCTabFolder2Listener( listener );
-    lca.renderChanges( folder );
-
-    Message message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( folder, "Folder" ) );
-  }
-
-  @Test
-  public void testRenderFolderListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( folder );
-    Fixture.preserveWidgets();
-
-    folder.addCTabFolder2Listener( mock( CTabFolder2Adapter.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( folder );
-
-    Message message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( folder, "Folder" ) );
   }
 
   private static final class CTabItemControl extends Composite {
