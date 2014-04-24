@@ -54,6 +54,11 @@
       <layout>p2</layout>
       <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/extra-dependencies</url>
     </repository>
+    <repository>
+      <id>license-feature</id>
+      <url>http://download.eclipse.org/cbi/updates/license/</url>
+      <layout>p2</layout>
+    </repository>
   </repositories>
 
   <build>

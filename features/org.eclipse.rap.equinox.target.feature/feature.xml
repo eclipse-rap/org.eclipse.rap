@@ -3,7 +3,9 @@
       id="org.eclipse.rap.equinox.target.feature"
       label="RAP Basic Equinox Target"
       version="2.3.0.qualifier"
-      provider-name="Eclipse.org - RAP">
+      provider-name="Eclipse.org - RAP"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
 
    <description url="http://eclipse.org/rap/">
       %description
@@ -13,12 +15,12 @@
       %copyright
    </copyright>
 
-   <license url="%licenseUrl">
+   <license url="%licenseURL">
       %license
    </license>
 
    <url>
-      <update label="RAP 2.2 Repository" url="http://download.eclipse.org/rt/rap/2.2/"/>
+      <update label="RAP 2.3 Repository" url="http://download.eclipse.org/rt/rap/2.3/"/>
    </url>
 
    <requires>
