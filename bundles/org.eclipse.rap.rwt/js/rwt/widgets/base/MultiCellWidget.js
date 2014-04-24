@@ -766,14 +766,6 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
     },
 
-    _applyTextColor : function( value, old ) {
-      if( value ) {
-        this.setStyleProperty( "color", value );
-      } else {
-        this.removeStyleProperty( "color" );
-      }
-    },
-
     _updateLabel : function( cell ) {
       this.getCellNode( cell ).innerHTML = this.getCellContent( cell );
     },

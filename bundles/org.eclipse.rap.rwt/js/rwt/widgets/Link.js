@@ -9,12 +9,9 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-/**
- * This class provides the client-side implementation for
- * rwt.widgets.Link
- */
 rwt.qx.Class.define( "rwt.widgets.Link", {
-  extend : rwt.widgets.base.Parent,
+
+  extend : rwt.widgets.base.Terminator,
 
   construct : function() {
     this.base( arguments );
@@ -24,9 +21,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     this._readyToSendChanges = true;
     this._focusedLinkIndex = -1;
     this._linksCount = 0;
-    this._link = new rwt.widgets.base.HtmlEmbed();
-    this._link.setAppearance( "link-text" );
-    this.add( this._link );
     this.setSelectable( false );
     this.setHideFocus( true );
     this.__onMouseDown = rwt.util.Functions.bindEvent( this._onMouseDown, this );
@@ -37,7 +31,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.addEventListener( "keypress", this._onKeyPress );
     this.addEventListener( "focusout", this._onFocusOut );
-    this._link.addEventListener( "changeHtml", this._onChangeHtml, this );
   },
 
   destruct : function() {
@@ -46,26 +39,12 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     delete this.__onMouseOver;
     delete this.__onMouseOut;
     delete this.__onKeyDown;
-    this.removeEventListener( "appear", this._onAppear, this );
-    this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
-    this.removeEventListener( "keypress", this._onKeyPress );
-    this.removeEventListener( "focusout", this._onFocusOut );
-    this._link.removeEventListener( "changeHtml", this._onChangeHtml, this );
-    this._link.dispose();
   },
 
   members : {
 
     _onAppear : function( evt ) {
-      this._link.setTabIndex( null );
-      this._link.setHideFocus( true );
-      this._applyHyperlinksStyleProperties();
-      this._addEventListeners();
-    },
-
-    _onChangeHtml : function( evt ) {
-      this._applyHyperlinksStyleProperties();
-      this._addEventListeners();
+      this._renderText();
     },
 
     _applyTextColor : function( value, old ) {
@@ -85,16 +64,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       return this.__states;
     },
 
-    addState : function( state ) {
-      this.base( arguments, state );
-      this._link.addState( state );
-    },
-
-    removeState : function( state ) {
-      this.base( arguments, state );
-      this._link.removeState( state );
-    },
-
     addText : function( text ) {
       this._text += text;
     },
@@ -111,7 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     },
 
     applyText : function() {
-      this._link.setHtml( this._text );
+      this._renderText();
       if( this._linksCount === 0 ) {
         this.setTabIndex( null );
       } else {
@@ -124,6 +93,22 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       this._text = "";
       this._linksCount = 0;
       this._focusedLinkIndex = -1;
+    },
+
+    _renderText : function() {
+      if( this._isCreated ) {
+        this._getTargetNode().innerHTML = this._text;
+        this._applyHyperlinksStyleProperties();
+        this._addEventListeners();
+      }
+    },
+
+    _applyFont : function( value, old ) {
+      if( value ) {
+        value.render( this );
+      } else {
+        rwt.html.Font.reset( this );
+      }
     },
 
     _applyHyperlinksStyleProperties : function() {

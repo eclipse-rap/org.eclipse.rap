@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,14 +27,6 @@ var appearances = {
         backgroundRepeat : tv.getCssIdentifier( "Link", "background-repeat" ),
         backgroundPosition : tv.getCssIdentifier( "Link", "background-position" ),
         textShadow : tv.getCssShadow( "Link", "text-shadow" )
-      };
-    }
-  },
-
-  "link-text" : {
-    style : function( states ) {
-      return {
-        textColor: "inherit"
       };
     }
   },

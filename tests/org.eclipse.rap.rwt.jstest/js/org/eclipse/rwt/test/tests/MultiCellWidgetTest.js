@@ -48,7 +48,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.initWidget( widget, true );
       widget.setCellContent( 0, null );
       widget.setCellContent( 1, null );
-      this.flush();
+      TestUtil.flush();
       assertEquals( 0, widget._getTargetNode().childNodes.length );
       this.disposeWidget( widget );
     },
@@ -57,7 +57,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
       widget.setDisplay( false );
-      this.flush();
+      TestUtil.flush();
       assertEquals( 2, widget._getTargetNode().childNodes.length );
       this.disposeWidget( widget );
     },
@@ -211,7 +211,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.initWidget( widget, true );
       widget.setCellDimension( 0, 11, 12 );
       widget.setCellDimension( 1, 13, 14 );
-      this.flush();
+      TestUtil.flush();
       var cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
       var cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertEquals( 11, cell0.width );
@@ -230,7 +230,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setSpacing( 6 );
       widget.setFlexibleCell( 1 );
       widget.setCellDimension( 1, 30, 30 );
-      this.flush();
+      TestUtil.flush();
       // Flexible cell has maximal value
       assertEquals( 52, widget.getPreferredInnerWidth() );
       assertEquals( 30, widget.getPreferredInnerHeight() );
@@ -260,15 +260,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setSpacing( 6 );
       widget.setFlexibleCell( 1 );
       widget.setCellContent( 1, "some longer text that wraps" );
-      this.flush();
+      TestUtil.flush();
       var originalTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       widget.setWidth( 80 );
-      this.flush();
+      TestUtil.flush();
       var newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( originalTextBounds.width > newTextBounds.width );
       assertTrue( originalTextBounds.height < newTextBounds.height );
       widget.setWidth( 400 );
-      this.flush();
+      TestUtil.flush();
       newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertEquals( originalTextBounds, newTextBounds );
       this.disposeWidget( widget );
@@ -362,7 +362,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertFalse( cell1.bottom < 0 );
       widget.setCellContent( 1, "looooooooooooooooooooooooooooooooooooooong");
       widget.setCellDimension( 0, 16, 150 );
-      this.flush();
+      TestUtil.flush();
       cell0 = TestUtil.getElementBounds( widget._getTargetNode().firstChild );
       cell1 = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( cell0.left < 0 );
@@ -401,15 +401,82 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setTextColor( "#FF0000" );
       this.initWidget( widget, true );
       var style = widget._getTargetNode().style;
-      var rgb = rwt.util.Colors.stringToRgb( style.color );
-      assertEquals( 255, rgb[ 0 ] );
-      assertEquals( 0, rgb[ 1 ] );
-      assertEquals( 0 , rgb[ 2 ] );
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
       widget.setTextColor( "#00FF00" );
-      rgb = rwt.util.Colors.stringToRgb( style.color );
-      assertEquals( 0, rgb[ 0 ] );
-      assertEquals( 255, rgb[ 1 ] );
-      assertEquals( 0 , rgb[ 2 ] );
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+      this.disposeWidget( widget );
+    },
+
+    testTextColor_byChangingEnabled_withoutUserColor : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "#FF0000" : "#00FF00"
+          };
+        }
+      } );
+      widget.setAppearance( "foo" );
+      var style = widget._getTargetNode().style;
+
+      widget.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      widget.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+      this.disposeWidget( widget );
+    },
+
+    testTextColor_byChangingEnabled_withUnchangedUserColor : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "#FF0000" : "#00FF00"
+          };
+        }
+      } );
+      widget.setAppearance( "foo" );
+      widget.setTextColor( "#0000FF" );
+      var style = widget._getTargetNode().style;
+
+      widget.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      widget.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
+      this.disposeWidget( widget );
+    },
+
+    testTextColor_byChangingEnabled_withChangedUserColor : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "#FF0000" : "#00FF00"
+          };
+        }
+      } );
+      widget.setAppearance( "foo" );
+      widget.setTextColor( "#0000FF" );
+      var style = widget._getTargetNode().style;
+
+      widget.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      widget.setTextColor( "#FF00FF" );
+      widget.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
       this.disposeWidget( widget );
     },
 
@@ -424,7 +491,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       }
     } ),
 
-
     /* ------------------------ helper ------------------------------- */
 
     createDefaultWidget : function() {
@@ -435,7 +501,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     disposeWidget : function( widget ) {
       widget.setParent( null );
       widget.dispose();
-      this.flush();
+      TestUtil.flush();
     },
 
     initWidget : function( widget, content ) {
@@ -448,11 +514,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       if( !widget.getParent() ) {
         widget.addToDocument();
       }
-      this.flush();
-    },
-
-    flush : function() {
-      rwt.widgets.base.Widget.flushGlobalQueues();
+      TestUtil.flush();
     },
 
     almostEqual : function( value1, value2 ) {

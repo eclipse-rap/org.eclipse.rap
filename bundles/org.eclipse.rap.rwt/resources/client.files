@@ -107,7 +107,6 @@ rwt/client/BrowserNavigation.js
 rwt/remote/handler/BrowserNavigationHandler.js
 rwt/event/DragAndDropHandler.js
 rwt/event/DragEvent.js
-rwt/widgets/base/HtmlEmbed.js
 rwt/widgets/base/Iframe.js
 rwt/widgets/util/MResizable.js
 rwt/widgets/base/ResizablePopup.js

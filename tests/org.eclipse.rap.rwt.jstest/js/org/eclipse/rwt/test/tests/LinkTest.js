@@ -61,7 +61,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
         + "<span tabIndex=\"1\" id=\"w3#0\">link1</span>"
         + " text2 "
         + "<span tabIndex=\"1\" id=\"w3#1\">link2</span>";
-      assertEquals( expected, widget._link.getHtml() );
+      assertEquals( expected, widget._text );
       assertEquals( 2, widget._linksCount );
       shell.destroy();
       widget.destroy();
@@ -85,7 +85,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
         + "<span tabIndex=\"1\" id=\"w3#0\">"
         + "link<br/>link"
         + "</span>";
-      assertEquals( expected, widget._link.getHtml() );
+      assertEquals( expected, widget._text );
       assertEquals( 1, widget._linksCount );
       shell.destroy();
       widget.destroy();
@@ -109,7 +109,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
         + "<span tabIndex=\"1\" id=\"w3#0\">"
         + "foo &amp;&amp; &lt;&gt; &quot; bar"
         + "</span>";
-      assertEquals( expected, widget._link.getHtml() );
+      assertEquals( expected, widget._text );
       shell.destroy();
       widget.destroy();
     },
@@ -151,7 +151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       TestUtil.flush();
       var widget = ObjectManager.getObject( "w3" );
 
-      //TestUtil.clickDOM( widget._link.getElement().lastChild );
+      //TestUtil.clickDOM( widget.getElement().lastChild );
       widget._sendChanges( 1 ); // Can not use fixture in this case
 
       assertEquals( 1, TestUtil.getRequestsSend() );

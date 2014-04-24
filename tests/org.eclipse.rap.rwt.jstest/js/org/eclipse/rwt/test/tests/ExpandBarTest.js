@@ -15,11 +15,28 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
+var shell;
+var bar;
+var item;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
 
   extend : rwt.qx.Object,
 
   members : {
+
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+      bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
+      item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
+      TestUtil.flush();
+    },
+
+    tearDown : function() {
+      shell.destroy();
+      bar.destroy();
+      item.destroy();
+    },
 
     testExpandBarHandlerEventsList : function() {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.ExpandBar" );
@@ -29,62 +46,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     },
 
     testCreateExpandBarByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      assertTrue( widget instanceof rwt.widgets.ExpandBar );
-      assertIdentical( shell, widget.getParent() );
-      assertTrue( widget.getUserData( "isControl") );
-      shell.destroy();
-      widget.destroy();
+      assertTrue( bar instanceof rwt.widgets.ExpandBar );
+      assertIdentical( shell, bar.getParent() );
+      assertTrue( bar.getUserData( "isControl") );
     },
 
     testSetBottomSpacingBoundsByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       TestUtil.protocolSet( "w3", { "bottomSpacingBounds"  : [ 1, 2, 3, 4] } );
-      assertEquals( 1, widget._bottomSpacing.getLeft() );
-      assertEquals( 2, widget._bottomSpacing.getTop() );
-      assertEquals( 3, widget._bottomSpacing.getWidth() );
-      assertEquals( 4, widget._bottomSpacing.getHeight() );
-      shell.destroy();
-      widget.destroy();
+      assertEquals( 1, bar._bottomSpacing.getLeft() );
+      assertEquals( 2, bar._bottomSpacing.getTop() );
+      assertEquals( 3, bar._bottomSpacing.getWidth() );
+      assertEquals( 4, bar._bottomSpacing.getHeight() );
     },
 
     testSetVScrollBarVisibleByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-
       TestUtil.protocolSet( "w3_vscroll", { "visibility" : true } );
 
-      assertTrue( widget._vertScrollBar.getDisplay() );
-      shell.destroy();
-      widget.destroy();
+      assertTrue( bar._vertScrollBar.getDisplay() );
     },
 
     testSetVScrollBarMaxByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var widget = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
       TestUtil.protocolSet( "w3", { "vScrollBarMax"  : 35 } );
-      assertEquals( 35, widget._vertScrollBar.getMaximum() );
-      shell.destroy();
-      widget.destroy();
+
+      assertEquals( 35, bar._vertScrollBar.getMaximum() );
     },
 
     testCreateExpandItemByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       assertTrue( item instanceof rwt.widgets.ExpandItem );
       assertIdentical( bar._clientArea, item.getParent() );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testDestroyExpandBarWithChildren : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       Processor.processOperationArray( [ "create", "w5", "rwt.widgets.Composite", {
           "style" : [ "BORDER" ],
           "parent" : "w3"
@@ -101,98 +93,59 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       assertTrue( ObjectRegistry.getObject( "w4" ) == null );
       assertTrue( control.isDisposed() );
       assertTrue( ObjectRegistry.getObject( "w5" ) == null );
-      shell.destroy();
     },
 
     testSetItemCustomVariantByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "customVariant" : "variant_blue" } );
+
       assertTrue( item.hasState( "variant_blue" ) );
       assertTrue( item._header.hasState( "variant_blue" ) );
       assertTrue( item._chevron.hasState( "variant_blue" ) );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSetItemBoundsByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "bounds" : [ 1, 2, 3, 4 ] } );
+
       assertEquals( 1, item.getLeft() );
       assertEquals( 2, item.getTop() );
       assertEquals( 3, item.getWidth() );
       assertEquals( 4, item.getHeight() );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSetItemTextByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
+
       assertEquals( "foo&lt;&gt;bar", item._text );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSetItemImageByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } );
+
       assertEquals( "image.gif", item._image );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSetItemExpandedByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "expanded" : true } );
+
       assertTrue( item._expanded );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSetItemHeaderHeightByProtocol : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       TestUtil.protocolSet( "w4", { "headerHeight" : 12 } );
+
       assertEquals( 12, item._headerHeight );
-      shell.destroy();
-      bar.destroy();
-      item.destroy();
     },
 
     testSendExpandEvent : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      TestUtil.flush();
       TestUtil.protocolListen( "w3", { "Expand" : true } );
 
       TestUtil.click( item._header );
 
       var message = TestUtil.getLastMessage();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Expand", "item" ) );
-      shell.destroy();
     },
 
     testSendCollapseEvent : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       item.setExpanded( true );
       TestUtil.flush();
       TestUtil.protocolListen( "w3", { "Collapse" : true } );
@@ -201,28 +154,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
 
       var message = TestUtil.getLastMessage();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Collapse", "item" ) );
-      shell.destroy();
     },
 
     testSendExpandedTrue : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
-      TestUtil.flush();
-
       TestUtil.click( item._header );
       rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getLastMessage();
       assertTrue( message.findSetProperty( "w4", "expanded" ) );
       assertTrue( item.getExpanded() );
-      shell.destroy();
     },
 
     testSendExpandedFalse : function() {
-      var shell = TestUtil.createShellByProtocol( "w2" );
-      var bar = this._createExpandBarByProtocol( "w3", "w2", [ "NONE" ] );
-      var item = this._createExpandItemByProtocol( "w4", "w3", [ "NONE" ] );
       item.setExpanded( true );
       TestUtil.flush();
 
@@ -232,7 +175,57 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       var message = TestUtil.getLastMessage();
       assertFalse( message.findSetProperty( "w4", "expanded" ) );
       assertFalse( item.getExpanded() );
-      shell.destroy();
+    },
+
+    testTextColor : function() {
+      bar.setTextColor( "#FF0000" );
+
+      var style = item._header.getLabelObject()._getTargetNode().style;
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      bar.setTextColor( "#00FF00" );
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+    },
+
+    testTextColor_byChangingEnabled_withoutUserColor : function() {
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "#FF0000" : "#00FF00"
+          };
+        }
+      } );
+      bar.setAppearance( "foo" );
+      var style = item._header.getLabelObject()._getTargetNode().style;
+
+      bar.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      bar.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+    },
+
+    testTextColor_byChangingEnabled_withUserColor : function() {
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "#FF0000" : "#00FF00"
+          };
+        }
+      } );
+      bar.setAppearance( "foo" );
+      bar.setTextColor( "#0000FF" );
+      var style = item._header.getLabelObject()._getTargetNode().style;
+
+      bar.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      bar.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
     },
 
     /////////
@@ -258,16 +251,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
           "visibility" : true
         }
       } );
-      Processor.processOperation( {
-        "target" : id + "_hscroll",
-        "action" : "create",
-        "type" : "rwt.widgets.ScrollBar",
-        "properties" : {
-          "parent" : id,
-          "style" : [ "HORIZONTAL" ],
-          "visibility" : true
-        }
-      } );
       return ObjectRegistry.getObject( id );
     },
 
@@ -278,7 +261,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
         "type" : "rwt.widgets.ExpandItem",
         "properties" : {
           "style" : [],
-          "parent" : parentId
+          "parent" : parentId,
+          "text" : "foo"
         }
       } );
       return ObjectRegistry.getObject( id );

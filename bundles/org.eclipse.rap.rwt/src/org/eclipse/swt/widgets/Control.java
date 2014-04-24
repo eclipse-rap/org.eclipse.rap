@@ -95,11 +95,7 @@ public abstract class Control extends Widget implements Drawable {
     }
 
     public Color getUserForeground() {
-      Color result = null;
-      if( isEnabled() ) {
-        result = foreground;
-      }
-      return result;
+      return foreground;
     }
 
     public Color getUserBackground() {

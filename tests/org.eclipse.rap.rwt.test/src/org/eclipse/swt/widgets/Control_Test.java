@@ -476,24 +476,11 @@ public class Control_Test {
     IControlAdapter adapter = ControlUtil.getControlAdapter( control );
     assertNull( adapter.getUserForeground() );
     Color themeColor = control.getForeground();
-    // enabled state:
+
     control.setForeground( blue );
     assertEquals( blue, adapter.getUserForeground() );
     assertEquals( blue, control.getForeground() );
-    // disabled directly
-    control.setEnabled( false );
-    assertEquals( null, adapter.getUserForeground() );
-    assertEquals( blue, control.getForeground() );
-    // disabled indirectly
-    control.setEnabled( true );
-    composite.setEnabled( false );
-    assertEquals( null, adapter.getUserForeground() );
-    assertEquals( blue, control.getForeground() );
-    // re-enabled
-    composite.setEnabled( true );
-    assertEquals( blue, adapter.getUserForeground() );
-    assertEquals( blue, control.getForeground() );
-    // reset
+
     control.setForeground( null );
     assertEquals( null, adapter.getUserForeground() );
     assertEquals( themeColor, control.getForeground() );

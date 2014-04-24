@@ -56,19 +56,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
     testSetStylePropertyOnWidgetBeforeCreate : function() {
       var widget = this._createWidget( true );
       var red = "red";
-      Style.setStyleProperty( widget, "color", red );
+      Style.setStyleProperty( widget, "foo", red );
       TestUtil.flush();
-      assertEquals( red, widget._style.color );
+      assertEquals( red, widget._style.foo );
       widget.destroy();
     },
 
     testRemoveStylePropertyOnWidgetBeforeCreate : function() {
       var red = "red";
       var widget = this._createWidget( true );
-      Style.setStyleProperty( widget, "color", red );
-      Style.removeStyleProperty( widget, "color" );
+      Style.setStyleProperty( widget, "foo", red );
+      Style.removeStyleProperty( widget, "foo" );
       TestUtil.flush();
-      assertTrue( widget._style.color === "" );
+      assertEquals( undefined, widget._style.foo );
       widget.destroy();
     },
 
