@@ -18,7 +18,7 @@ else
   SIGNPROFILE=""
 fi
 
-basedirectory="$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
+basedirectory="$WORKSPACE/org.eclipse.rap"
 
 ######################################################################
 # clean up local Maven repository to circumvent p2 cache problems
@@ -42,7 +42,7 @@ fi
 ######################################################################
 # rename ZIP archive
 
-repoDirectory="$basedirectory"/repository.luna/target/repository
+repoDirectory="$basedirectory"/releng/org.eclipse.rap.build/repository.luna/target/repository
 VERSION=$(ls "$repoDirectory"/features/org.eclipse.rap.sdk.feature_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
 echo "Version is $VERSION"
 test -n "$VERSION" || exit 1
@@ -53,4 +53,4 @@ test -n "$TIMESTAMP" || exit 1
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-mv "$basedirectory"/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+mv "$basedirectory"/releng/org.eclipse.rap.build/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1

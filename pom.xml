@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2014 EclipseSource and others.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+
+  Contributors:
+     EclipseSource - initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>RAP Runtime Build</name>
+
+  <groupId>org.eclipse.rap</groupId>
+  <artifactId>org.eclipse.rap.runtime-build</artifactId>
+  <version>2.3.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <!-- Runtime projects -->
+    <module>bundles/org.eclipse.rap.rwt</module>
+    <module>bundles/org.eclipse.rap.rwt.osgi</module>
+    <module>bundles/org.eclipse.rap.jface</module>
+    <module>bundles/org.eclipse.rap.jface.databinding</module>
+    <module>bundles/org.eclipse.rap.junit</module>
+    <module>bundles/org.eclipse.rap.junit.runtime</module>
+    <module>bundles/org.eclipse.rap.ui</module>
+    <module>bundles/org.eclipse.rap.ui.cheatsheets</module>
+    <module>bundles/org.eclipse.rap.ui.forms</module>
+    <module>bundles/org.eclipse.rap.ui.views</module>
+    <module>bundles/org.eclipse.rap.ui.workbench</module>
+    <!-- Examples projects -->
+    <module>examples/org.eclipse.rap.demo</module>
+    <module>examples/org.eclipse.rap.demo.databinding</module>
+    <module>examples/org.eclipse.rap.demo.controls</module>
+    <module>examples/org.eclipse.rap.design.example</module>
+    <module>examples/org.eclipse.rap.examples</module>
+    <module>examples/org.eclipse.rap.examples.pages</module>
+    <!-- Test projects -->
+    <module>tests/org.eclipse.rap.rwt.testfixture</module>
+    <module>tests/org.eclipse.rap.rwt.cluster.testfixture</module>
+    <module>tests/org.eclipse.rap.rwt.test</module>
+    <module>tests/org.eclipse.rap.rwt.osgi.test</module>
+    <module>tests/org.eclipse.rap.rwt.themes.test</module>
+    <module>tests/org.eclipse.rap.ui.forms.test</module>
+    <module>tests/org.eclipse.rap.rwt.cluster.test</module>
+    <module>tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
+    <!-- Packaging projects -->
+    <module>features/org.eclipse.rap.feature</module>
+    <module>features/org.eclipse.rap.sdk.feature</module>
+    <module>features/org.eclipse.rap.examples.feature</module>
+    <module>features/org.eclipse.rap.equinox.target.feature</module>
+    <module>releng/org.eclipse.rap.build/repository.luna</module>
+    <!-- Builder projects -->
+    <module>releng/org.eclipse.rap.clientbuilder</module>
+  </modules>
+
+</project>
