@@ -18,6 +18,8 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -103,6 +105,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
+    readClientMessage( request );
     setJsonResponseHeaders( response );
     if( isSessionShutdown() ) {
       shutdownUISession();
@@ -124,6 +127,28 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       runLifeCycle();
       writeProtocolMessage( response );
     }
+  }
+
+  private void readClientMessage( HttpServletRequest request ) {
+    try {
+      JsonObject json = JsonObject.readFrom( getReader( request ) );
+      ProtocolUtil.setClientMessage( new ClientMessage( json ) );
+    } catch( IOException ioe ) {
+      throw new IllegalStateException( "Unable to read the json message", ioe );
+    }
+  }
+
+  /*
+   * Workaround for bug in certain servlet containers where the reader is sometimes empty.
+   * 411616: Application crash with very long messages
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=411616
+   */
+  private static Reader getReader( HttpServletRequest request ) throws IOException {
+    String encoding = request.getCharacterEncoding();
+    if( encoding == null ) {
+      encoding = HTTP.CHARSET_UTF_8;
+    }
+    return new InputStreamReader( request.getInputStream(), encoding );
   }
 
   private void runLifeCycle() throws IOException {
@@ -202,7 +227,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void reinitializeServiceStore() {
-    ClientMessage clientMessage = ProtocolUtil.getClientMessage();
+    ClientMessage clientMessage = getClientMessage();
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.clear();
     ProtocolUtil.setClientMessage( clientMessage );

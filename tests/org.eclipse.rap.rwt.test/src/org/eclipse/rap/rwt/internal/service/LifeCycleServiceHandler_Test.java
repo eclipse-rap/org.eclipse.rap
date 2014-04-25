@@ -252,7 +252,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testClearServiceStoreAfterSessionRestart_RestoreMessage() throws IOException {
+  public void testClearServiceStoreAfterSessionRestart_restoresMessage() throws IOException {
     LifeCycleServiceHandler.markSessionStarted();
     simulateInitialUiRequest();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
@@ -261,7 +261,7 @@ public class LifeCycleServiceHandler_Test {
     ClientMessage message = ProtocolUtil.getClientMessage();
     service( new LifeCycleServiceHandler( getLifeCycleFactory(), mockStartupPage() ) );
 
-    assertSame( message, ProtocolUtil.getClientMessage() );
+    assertEquals( message.toString(), ProtocolUtil.getClientMessage().toString() );
   }
 
   @Test

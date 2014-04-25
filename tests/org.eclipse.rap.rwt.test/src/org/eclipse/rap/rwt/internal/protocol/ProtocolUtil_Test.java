@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -60,11 +61,22 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testGetClientMessage_SameInstance() {
+  public void testGetClientMessage_sameInstance() {
+    ProtocolUtil.setClientMessage( mock( ClientMessage.class ) );
+
     ClientMessage message1 = ProtocolUtil.getClientMessage();
     ClientMessage message2 = ProtocolUtil.getClientMessage();
 
     assertSame( message1, message2 );
+  }
+
+  @Test
+  public void testSetClientMessage() {
+    ClientMessage message = mock( ClientMessage.class );
+
+    ProtocolUtil.setClientMessage( message );
+
+    assertSame( message, ProtocolUtil.getClientMessage() );
   }
 
   @Test
@@ -89,14 +101,6 @@ public class ProtocolUtil_Test {
 
     JsonValue expected = JsonValue.readFrom( "[\"a\", 2, true]" );
     assertEquals( expected, result );
-  }
-
-  @Test
-  public void testWasCallReceived() {
-    Fixture.fakeCallOperation( "w3", "resize", null );
-
-    assertTrue( ProtocolUtil.wasCallReceived( "w3", "resize" ) );
-    assertFalse( ProtocolUtil.wasCallReceived( "w4", "resize" ) );
   }
 
 }

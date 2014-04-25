@@ -187,11 +187,13 @@ public final class Fixture {
 
   public static void createServiceContext() {
     TestRequest request = new TestRequest();
-    request.setBody( createEmptyMessage() );
+    ClientMessage message = createEmptyMessage();
+    request.setBody( message.toString() );
     TestResponse response = new TestResponse();
     HttpSession session = createTestSession();
     request.setSession( session );
     createNewServiceContext( request, response );
+    ProtocolUtil.setClientMessage( message );
   }
 
   private static TestSession createTestSession() {
@@ -325,8 +327,10 @@ public final class Fixture {
   public static TestRequest fakeNewRequest() {
     TestRequest request = createNewRequest( HTTP.METHOD_POST );
     request.setContentType( HTTP.CONTENT_TYPE_JSON );
-    request.setBody( createEmptyMessage() );
+    ClientMessage emptyMessage = createEmptyMessage();
+    request.setBody( emptyMessage.toString() );
     createNewServiceContext( request, new TestResponse() );
+    ProtocolUtil.setClientMessage( emptyMessage );
     fakeResponseWriter();
     return request;
   }
@@ -354,11 +358,11 @@ public final class Fixture {
     ensureUISession( serviceContext );
   }
 
-  public static String createEmptyMessage() {
+  public static ClientMessage createEmptyMessage() {
     JsonObject result = new JsonObject();
     result.add( ClientMessage.PROP_HEAD, new JsonObject() );
     result.add( ClientMessage.PROP_OPERATIONS, new JsonArray() );
-    return result.toString();
+    return new ClientMessage( result );
   }
 
   public static void fakeHeadParameter( String key, long value ) {
@@ -382,6 +386,7 @@ public final class Fixture {
       JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
       header.add( key, value );
       request.setBody( message.toString() );
+      ProtocolUtil.setClientMessage( new ClientMessage( message ) );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add header parameter", exception );
     }
@@ -416,6 +421,7 @@ public final class Fixture {
       newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
+      ProtocolUtil.setClientMessage( new ClientMessage( message ) );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add set operation", exception );
     }
@@ -438,6 +444,7 @@ public final class Fixture {
       newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
+      ProtocolUtil.setClientMessage( new ClientMessage( message ) );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add notify operation", exception );
     }
@@ -460,6 +467,7 @@ public final class Fixture {
       newOperation.add( parameters != null ? parameters : new JsonObject() );
       operations.add( newOperation );
       request.setBody( message.toString() );
+      ProtocolUtil.setClientMessage( new ClientMessage( message ) );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add call operation", exception );
     }
