@@ -68,7 +68,7 @@ public class ApplicationImpl implements Application {
   public void addPhaseListener( PhaseListener phaseListener ) {
     ParamCheck.notNull( phaseListener, "phaseListener" );
 
-    applicationContext.getPhaseListenerRegistry().add( phaseListener );
+    applicationContext.getPhaseListenerManager().addPhaseListener( phaseListener );
   }
 
   public void setSettingStoreFactory( SettingStoreFactory settingStoreFactory ) {

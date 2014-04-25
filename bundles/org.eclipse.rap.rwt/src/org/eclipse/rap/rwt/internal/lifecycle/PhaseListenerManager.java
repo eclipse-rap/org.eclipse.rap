@@ -16,54 +16,44 @@ import java.util.Set;
 
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 @SuppressWarnings( "deprecation" )
-class PhaseListenerManager {
+public class PhaseListenerManager {
 
-  private final LifeCycle eventSource;
   private final Object lock;
   private final Set<PhaseListener> phaseListeners;
 
-  PhaseListenerManager( LifeCycle eventSource ) {
-    this.eventSource = eventSource;
+  public PhaseListenerManager() {
     lock = new Object();
     phaseListeners = new HashSet<PhaseListener>();
   }
 
-  void addPhaseListener( PhaseListener phaseListener ) {
+  public void addPhaseListener( PhaseListener phaseListener ) {
     ParamCheck.notNull( phaseListener, "phaseListener" );
     synchronized( lock ) {
       phaseListeners.add( phaseListener );
     }
   }
 
-  void addPhaseListeners( PhaseListener[] phaseListeners ) {
-    ParamCheck.notNull( phaseListeners, "phaseListeners" );
-    for( int i = 0; i < phaseListeners.length; i++ ) {
-      addPhaseListener( phaseListeners[ i ] );
-    }
-  }
-
-  void removePhaseListener( PhaseListener phaseListener ) {
+  public void removePhaseListener( PhaseListener phaseListener ) {
     ParamCheck.notNull( phaseListener, "phaseListener" );
     synchronized( lock ) {
       phaseListeners.remove( phaseListener );
     }
   }
 
-  PhaseListener[] getPhaseListeners() {
+  public PhaseListener[] getPhaseListeners() {
     synchronized( lock ) {
-      PhaseListener[] result = new PhaseListener[ phaseListeners.size() ];
-      phaseListeners.toArray( result );
-      return result;
+      return phaseListeners.toArray( new PhaseListener[ 0 ] );
     }
   }
 
-  void notifyBeforePhase( PhaseId phase ) {
+  void notifyBeforePhase( PhaseId phase, ILifeCycle eventSource ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -78,7 +68,7 @@ class PhaseListenerManager {
     }
   }
 
-  void notifyAfterPhase( PhaseId phase ) {
+  void notifyAfterPhase( PhaseId phase, ILifeCycle eventSource ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -91,6 +81,10 @@ class PhaseListenerManager {
         }
       }
     }
+  }
+
+  public void clear() {
+    phaseListeners.clear();
   }
 
   private static boolean mustNotify( PhaseId phase, PhaseId listenerPhase ) {

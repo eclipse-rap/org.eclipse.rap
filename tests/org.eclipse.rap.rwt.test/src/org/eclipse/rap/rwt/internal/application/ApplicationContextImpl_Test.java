@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
+import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.service.StartupPageTestUtil.getStartupPageTemplate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,15 +32,14 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
@@ -91,9 +91,9 @@ public class ApplicationContextImpl_Test {
     assertNotNull( applicationContext.getThemeManager() );
     assertSame( applicationContext.getThemeManager(), applicationContext.getThemeManager() );
 
-    assertNotNull( applicationContext.getPhaseListenerRegistry() );
-    assertSame( applicationContext.getPhaseListenerRegistry(),
-                applicationContext.getPhaseListenerRegistry() );
+    assertNotNull( applicationContext.getPhaseListenerManager() );
+    assertSame( applicationContext.getPhaseListenerManager(),
+                applicationContext.getPhaseListenerManager() );
 
     assertNotNull( applicationContext.getLifeCycleFactory() );
     assertSame( applicationContext.getLifeCycleFactory(),
@@ -540,9 +540,8 @@ public class ApplicationContextImpl_Test {
   }
 
   private void checkPhaseListenersHaveBeenAdded() {
-    PhaseListenerRegistry phaseListenerRegistry = applicationContext.getPhaseListenerRegistry();
-
-    List<PhaseListener> registeredPhaseListeners = Arrays.asList( phaseListenerRegistry.getAll() );
+    List<PhaseListener> registeredPhaseListeners
+      = asList( applicationContext.getPhaseListenerManager().getPhaseListeners() );
 
     assertEquals( 2, registeredPhaseListeners.size() );
     assertTrue( registeredPhaseListeners.contains( phaseListener ) );
@@ -564,7 +563,7 @@ public class ApplicationContextImpl_Test {
   }
 
   private void checkPhaseListenerHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getPhaseListenerRegistry().getAll().length );
+    assertEquals( 0, applicationContext.getPhaseListenerManager().getPhaseListeners().length );
   }
 
   private void checkResourceHasBeenRemoved() {

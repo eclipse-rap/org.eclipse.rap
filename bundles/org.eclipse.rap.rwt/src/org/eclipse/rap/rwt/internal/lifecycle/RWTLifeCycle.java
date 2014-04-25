@@ -25,7 +25,6 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.widgets.Display;
 
@@ -78,14 +77,10 @@ public class RWTLifeCycle extends LifeCycle {
     new Render()
   };
 
-  private final ApplicationContextImpl applicationContext;
-  private final PhaseListenerManager phaseListenerManager;
   Runnable uiRunnable;
 
   public RWTLifeCycle( ApplicationContextImpl applicationContext ) {
     super( applicationContext );
-    this.applicationContext = applicationContext;
-    phaseListenerManager = new PhaseListenerManager( this );
     uiRunnable = new UIThreadController();
   }
 
@@ -105,16 +100,6 @@ public class RWTLifeCycle extends LifeCycle {
         runnable.run();
       }
     } while( runnable != null );
-  }
-
-  @Override
-  public void addPhaseListener( PhaseListener listener ) {
-    phaseListenerManager.addPhaseListener( listener );
-  }
-
-  @Override
-  public void removePhaseListener( PhaseListener listener ) {
-    phaseListenerManager.removePhaseListener( listener );
   }
 
   @Override
@@ -146,14 +131,14 @@ public class RWTLifeCycle extends LifeCycle {
         int phaseIndex = currentPhase.intValue();
         // A non-null currentPhase indicates that an IInterruptible phase was executed before. In
         // this case we now need to execute the AfterPhase events
-        phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseId() );
+        phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseId(), this );
         start = currentPhase.intValue() + 1;
       }
       boolean interrupted = false;
       for( int i = start; !interrupted && i < phaseOrder.length; i++ ) {
         IPhase phase = phaseOrder[ i ];
         CurrentPhase.set( phase.getPhaseId() );
-        phaseListenerManager.notifyBeforePhase( phase.getPhaseId() );
+        phaseListenerManager.notifyBeforePhase( phase.getPhaseId(), this );
         if( phase instanceof IInterruptible ) {
           // IInterruptible phases return control to the user code, thus they don't call
           // Phase#execute()
@@ -168,7 +153,7 @@ public class RWTLifeCycle extends LifeCycle {
             // call stack
             throw new PhaseExecutionError( e );
           }
-          phaseListenerManager.notifyAfterPhase( phase.getPhaseId() );
+          phaseListenerManager.notifyAfterPhase( phase.getPhaseId(), this );
         }
       }
       if( !interrupted ) {
@@ -319,4 +304,5 @@ public class RWTLifeCycle extends LifeCycle {
       }
     }
   }
+
 }

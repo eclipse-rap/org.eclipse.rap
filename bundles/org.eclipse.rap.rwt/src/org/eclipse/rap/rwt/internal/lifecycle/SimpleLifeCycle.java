@@ -16,8 +16,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -26,14 +26,10 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings( "deprecation" )
 public class SimpleLifeCycle extends LifeCycle {
 
-  private final ApplicationContextImpl applicationContext;
-  private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
 
   public SimpleLifeCycle( ApplicationContextImpl applicationContext ) {
     super( applicationContext );
-    this.applicationContext = applicationContext;
-    phaseListenerManager = new PhaseListenerManager( this );
     phases = new IPhase[] {
       new PrepareUIRoot( applicationContext ),
       new ReadData(),
@@ -48,7 +44,7 @@ public class SimpleLifeCycle extends LifeCycle {
     UISession uiSession = ContextProvider.getUISession();
     attachThread( LifeCycleUtil.getSessionDisplay(), uiSession );
     try {
-      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
+      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phases, this );
       phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     } finally {
       detachThread( LifeCycleUtil.getSessionDisplay(), uiSession );
@@ -58,16 +54,6 @@ public class SimpleLifeCycle extends LifeCycle {
   @Override
   public void requestThreadExec( Runnable runnable ) {
     runnable.run();
-  }
-
-  @Override
-  public void addPhaseListener( PhaseListener phaseListener ) {
-    phaseListenerManager.addPhaseListener( phaseListener );
-  }
-
-  @Override
-  public void removePhaseListener( PhaseListener phaseListener ) {
-    phaseListenerManager.removePhaseListener( phaseListener );
   }
 
   @Override
@@ -100,16 +86,17 @@ public class SimpleLifeCycle extends LifeCycle {
     LifeCycleUtil.setUIThread( uiSession, null );
   }
 
-  private static class SessionDisplayPhaseExecutor extends PhaseExecutor {
+  private class SessionDisplayPhaseExecutor extends PhaseExecutor {
 
-    SessionDisplayPhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
-      super( phaseListenerManager, phases );
+    SessionDisplayPhaseExecutor( IPhase[] phases, ILifeCycle lifecycle ) {
+      super( phaseListenerManager, phases, lifecycle );
     }
 
     @Override
     Display getDisplay() {
       return LifeCycleUtil.getSessionDisplay();
     }
+
   }
 
   private static class SimpleUIThreadHolder implements IUIThreadHolder {

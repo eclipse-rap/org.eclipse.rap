@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,15 +21,25 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 @SuppressWarnings( "deprecation" )
 public abstract class LifeCycle implements ILifeCycle {
 
+  protected final ApplicationContextImpl applicationContext;
+  protected final PhaseListenerManager phaseListenerManager;
+
   public LifeCycle( ApplicationContextImpl applicationContext ) {
+    this.applicationContext = applicationContext;
+    phaseListenerManager = applicationContext.getPhaseListenerManager();
   }
 
   public abstract void execute() throws IOException;
 
   public abstract void requestThreadExec( Runnable runnable );
 
-  public abstract void addPhaseListener( PhaseListener phaseListener );
-  public abstract void removePhaseListener( PhaseListener phaseListener );
+  public void addPhaseListener( PhaseListener listener ) {
+    phaseListenerManager.addPhaseListener( listener );
+  }
+
+  public void removePhaseListener( PhaseListener listener ) {
+    phaseListenerManager.removePhaseListener( listener );
+  }
 
   public abstract void sleep();
 

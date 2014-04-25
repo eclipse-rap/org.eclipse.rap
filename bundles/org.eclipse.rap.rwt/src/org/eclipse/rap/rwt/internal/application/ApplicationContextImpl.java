@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerRegistry;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerManager;
 import org.eclipse.rap.rwt.internal.resources.ClientResources;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.resources.ResourceManagerImpl;
@@ -87,7 +87,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ApplicationConfiguration applicationConfiguration;
   private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
-  private final PhaseListenerRegistry phaseListenerRegistry;
+  private final PhaseListenerManager phaseListenerManager;
   private final LifeCycleFactory lifeCycleFactory;
   private final EntryPointManager entryPointManager;
   private final LifeCycleAdapterFactory lifeCycleAdapterFactory;
@@ -119,7 +119,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     applicationStore = new ApplicationStoreImpl();
     resourceDirectory = new ResourceDirectory();
     resourceManager = new ResourceManagerImpl( resourceDirectory );
-    phaseListenerRegistry = new PhaseListenerRegistry();
+    phaseListenerManager = new PhaseListenerManager();
     entryPointManager = new EntryPointManager();
     lifeCycleFactory = new LifeCycleFactory( this );
     themeManager = new ThemeManager();
@@ -243,8 +243,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     return settingStoreManager;
   }
 
-  public PhaseListenerRegistry getPhaseListenerRegistry() {
-    return phaseListenerRegistry;
+  public PhaseListenerManager getPhaseListenerManager() {
+    return phaseListenerManager;
   }
 
   public LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
@@ -351,7 +351,7 @@ public class ApplicationContextImpl implements ApplicationContext {
       getResourceDirectory().deleteDirectory();
     }
     entryPointManager.deregisterAll();
-    phaseListenerRegistry.removeAll();
+    phaseListenerManager.clear();
     resourceRegistry.clear();
     settingStoreManager.deregisterFactory();
     resourceDirectory.reset();
@@ -372,7 +372,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   private void addInternalPhaseListeners() {
-    phaseListenerRegistry.add( new MeasurementListener() );
+    phaseListenerManager.addPhaseListener( new MeasurementListener() );
   }
 
   private void addInternalServiceHandlers() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
@@ -39,7 +40,7 @@ public class PhaseExecutor_Test {
   public void setUp() {
     Fixture.setUp();
     lifeCycle = mock( LifeCycle.class );
-    phaseListenerManager = new PhaseListenerManager( lifeCycle );
+    phaseListenerManager = new PhaseListenerManager();
   }
 
   @After
@@ -54,7 +55,7 @@ public class PhaseExecutor_Test {
       new TestPhase( executionLog, PhaseId.PREPARE_UI_ROOT, PhaseId.RENDER ),
       new TestPhase( executionLog, PhaseId.RENDER, null )
     };
-    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
+    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases, lifeCycle );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     assertEquals( 2, executionLog.size() );
     assertSame( phases[ 0 ], executionLog.get( 0 ) );
@@ -68,7 +69,7 @@ public class PhaseExecutor_Test {
     IPhase[] phases = new IPhase[] {
       new TestPhase( new LinkedList<IPhase>(), PhaseId.PREPARE_UI_ROOT, null ),
     };
-    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
+    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases, lifeCycle );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     PhaseEventInfo[] loggedEvents = phaseListener.getLoggedEvents();
     assertEquals( 2, loggedEvents.length );
@@ -84,8 +85,11 @@ public class PhaseExecutor_Test {
 
   private static class TestPhaseExecutor extends PhaseExecutor {
 
-    private TestPhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
-      super( phaseListenerManager, phases );
+    private TestPhaseExecutor( PhaseListenerManager phaseListenerManager,
+                               IPhase[] phases,
+                               ILifeCycle lifecycle )
+    {
+      super( phaseListenerManager, phases, lifecycle );
     }
 
     @Override

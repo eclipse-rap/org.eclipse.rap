@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
@@ -21,10 +22,13 @@ abstract class PhaseExecutor {
 
   private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
+  private final ILifeCycle lifecycle;
 
-  PhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
+  PhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases, ILifeCycle lifecycle )
+  {
     this.phaseListenerManager = phaseListenerManager;
     this.phases = phases;
+    this.lifecycle = lifecycle;
   }
 
   final void execute( PhaseId startPhaseId ) throws IOException {
@@ -32,9 +36,9 @@ abstract class PhaseExecutor {
     while( currentPhaseId != null ) {
       IPhase currentPhase = findPhase( currentPhaseId );
       CurrentPhase.set( currentPhaseId );
-      phaseListenerManager.notifyBeforePhase( currentPhaseId );
+      phaseListenerManager.notifyBeforePhase( currentPhaseId, lifecycle );
       PhaseId nextPhaseId = currentPhase.execute( getDisplay() );
-      phaseListenerManager.notifyAfterPhase( currentPhaseId );
+      phaseListenerManager.notifyAfterPhase( currentPhaseId, lifecycle );
       currentPhaseId = nextPhaseId;
     }
   }
@@ -50,4 +54,5 @@ abstract class PhaseExecutor {
     }
     return result;
   }
+
 }

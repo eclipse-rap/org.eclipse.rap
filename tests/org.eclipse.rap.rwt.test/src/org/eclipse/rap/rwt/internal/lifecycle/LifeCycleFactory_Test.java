@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -99,32 +96,11 @@ public class LifeCycleFactory_Test {
     assertEquals( applicationContext, lifeCycle.applicationContext );
   }
 
-  @Test
-  public void testGetLifeCycleWithRegisteredPhaseListeners() {
-    PhaseListener phaseListener = mock( PhaseListener.class );
-    applicationContext.getPhaseListenerRegistry().removeAll();
-    applicationContext.getPhaseListenerRegistry().add( phaseListener );
-    lifeCycleFactory.configure( TestLifeCycle.class );
-    lifeCycleFactory.activate();
-
-    TestLifeCycle lifeCycle = ( TestLifeCycle )lifeCycleFactory.getLifeCycle();
-
-    assertSame( phaseListener, lifeCycle.addedPhaseListener );
-  }
-
   private static class TestLifeCycle extends LifeCycle {
     final ApplicationContextImpl applicationContext;
-    PhaseListener addedPhaseListener;
     public TestLifeCycle( ApplicationContextImpl applicationContext ) {
       super( applicationContext );
       this.applicationContext = applicationContext;
-    }
-    @Override
-    public void addPhaseListener( PhaseListener listener ) {
-      addedPhaseListener = listener;
-    }
-    @Override
-    public void removePhaseListener( PhaseListener listener ) {
     }
     @Override
     public void execute() {

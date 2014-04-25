@@ -289,8 +289,7 @@ public class RWTLifeCycle_Test {
         return PhaseId.PREPARE_UI_ROOT;
       }
     };
-    getApplicationContext().getPhaseListenerRegistry().add( listener );
-    getApplicationContext().getLifeCycleFactory().activate();
+    getApplicationContext().getPhaseListenerManager().addPhaseListener( listener );
     // Run lifecycle in session one
     RWTLifeCycle lifeCycle1 = getLifeCycle();
     lifeCycle1.execute();

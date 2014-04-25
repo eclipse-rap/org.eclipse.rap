@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
@@ -49,7 +51,7 @@ public class PhaseListenerManager_Test {
   public void setUp() {
     Fixture.setUp();
     lifeCycle = mock( LifeCycle.class );
-    phaseListenerManager = new PhaseListenerManager( lifeCycle );
+    phaseListenerManager = new PhaseListenerManager();
     exceptionsInServletLog = new LinkedList<Throwable>();
     setupServletContextLog();
   }
@@ -60,98 +62,86 @@ public class PhaseListenerManager_Test {
   }
 
   @Test
-  public void testAddPhaseListenerWithNullArgument() {
-    try {
-      phaseListenerManager.addPhaseListener( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
   public void testAddPhaseListener() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( null );
+
     phaseListenerManager.addPhaseListener( phaseListener );
-    PhaseListener[] phaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 1, phaseListeners.length );
-    assertSame( phaseListener, phaseListeners[ 0 ] );
+
+    assertEquals( asList( phaseListener ), getPhaseListeners() );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testAddPhaseListener_failsWithNull() {
+    phaseListenerManager.addPhaseListener( null );
   }
 
   @Test
-  public void testAddPhaseListenerTwice() {
+  public void testAddPhaseListener_twice() {
     PhaseListener phaseListener = new EmptyPhaseListener();
+
     phaseListenerManager.addPhaseListener( phaseListener );
     phaseListenerManager.addPhaseListener( phaseListener );
-    PhaseListener[] phaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 1, phaseListeners.length );
+
+    assertEquals( asList( phaseListener ), getPhaseListeners() );
   }
 
-  @Test
-  public void testAddPhaseListeners() {
-    PhaseListener phaseListener1 = new EmptyPhaseListener();
-    PhaseListener phaseListener2 = new EmptyPhaseListener();
-    PhaseListener[] phaseListeners = new PhaseListener[] { phaseListener1, phaseListener2 };
-    phaseListenerManager.addPhaseListeners( phaseListeners );
-    PhaseListener[] returnedPhaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 2, returnedPhaseListeners.length );
-  }
-
-  @Test
-  public void testAddPhaseListenersWithNullArgument() {
-    try {
-      phaseListenerManager.addPhaseListeners( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testRemovePhaseListenerWithNullArgument() {
-    try {
-      phaseListenerManager.removePhaseListener( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+  @Test( expected = NullPointerException.class )
+  public void testRemovePhaseListener_failsWithNull() {
+    phaseListenerManager.removePhaseListener( null );
   }
 
   @Test
   public void testRemovePhaseListener() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( null );
     phaseListenerManager.addPhaseListener( phaseListener );
+
     phaseListenerManager.removePhaseListener( phaseListener );
-    PhaseListener[] phaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 0, phaseListeners.length );
+
+    assertEquals( asList(), getPhaseListeners() );
   }
 
   @Test
-  public void testRemovePhaseListenerTwice() {
+  public void testRemovePhaseListener_twice() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( null );
     phaseListenerManager.addPhaseListener( phaseListener );
+
     phaseListenerManager.removePhaseListener( phaseListener );
     phaseListenerManager.removePhaseListener( phaseListener );
-    PhaseListener[] phaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 0, phaseListeners.length );
+
+    assertEquals( asList(), getPhaseListeners() );
   }
 
   @Test
-  public void testRemovePhaseListenerWithUnknownPhaseListener() {
+  public void testRemovePhaseListener_withUnknownPhaseListener() {
     phaseListenerManager.addPhaseListener( new LoggingPhaseListener( null ) );
+
     phaseListenerManager.removePhaseListener( new LoggingPhaseListener( null ) );
-    PhaseListener[] phaseListeners = phaseListenerManager.getPhaseListeners();
-    assertEquals( 1, phaseListeners.length );
+
+    assertEquals( 1, getPhaseListeners().size() );
   }
 
   @Test
-  public void testGetPhaseListenersReturnsSafeCopy() {
+  public void testClear() {
     phaseListenerManager.addPhaseListener( new LoggingPhaseListener( null ) );
+
+    phaseListenerManager.clear();
+
+    assertTrue( getPhaseListeners().isEmpty() );
+  }
+
+  @Test
+  public void testGetPhaseListeners_returnsSafeCopy() {
+    phaseListenerManager.addPhaseListener( new LoggingPhaseListener( null ) );
+
     PhaseListener[] phaseListeners1 = phaseListenerManager.getPhaseListeners();
     phaseListeners1[ 0 ] = null;
     PhaseListener[] phaseListeners2 = phaseListenerManager.getPhaseListeners();
+
     assertNotNull( phaseListeners2[ 0 ] );
   }
 
   @Test
-  public void testAddRemovePhaseListenerConcurently() throws InterruptedException {
+  public void testAddRemovePhaseListenerConcurrently() throws InterruptedException {
     final int threadCount = 120;
     final List<Thread> succeededThreads = Collections.synchronizedList( new LinkedList<Thread>() );
     Runnable runnable = new Runnable() {
@@ -167,46 +157,52 @@ public class PhaseListenerManager_Test {
     Thread[] threads = Fixture.startThreads( threadCount, runnable );
     Fixture.joinThreads( threads );
     assertEquals( threadCount, succeededThreads.size() );
-    assertEquals( 0, phaseListenerManager.getPhaseListeners().length );
+    assertTrue( getPhaseListeners().isEmpty() );
   }
 
   @Test
-  public void testNotifyBeforePhaseWithSpecificListener() {
-    PhaseId phase = PhaseId.READ_DATA;
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener( phase );
+  public void testNotifyBeforePhase_withSpecificListener() {
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.READ_DATA );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyBeforePhase( phase );
+
+    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 1, phaseListener.getLoggedEvents().length );
     PhaseEventInfo phaseEvent = phaseListener.getLoggedEvents()[ 0 ];
     assertSame( lifeCycle, phaseEvent.source );
-    assertEquals( phase, phaseEvent.phaseId );
+    assertEquals( PhaseId.READ_DATA, phaseEvent.phaseId );
   }
 
   @Test
-  public void testNotifyBeforePhaseWithNonMatchingListener() {
+  public void testNotifyBeforePhase_withNonMatchingListener() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.RENDER );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
+
+    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 0, phaseListener.getLoggedEvents().length );
   }
 
   @Test
-  public void testNotifyBeforePhaseWithANYListener() {
-    PhaseId phase = PhaseId.READ_DATA;
+  public void testNotifyBeforePhase_withANYListener() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyBeforePhase( phase );
+
+    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 1, phaseListener.getLoggedEvents().length );
     PhaseEventInfo phaseEvent = phaseListener.getLoggedEvents()[ 0 ];
     assertSame( lifeCycle, phaseEvent.source );
-    assertEquals( phase, phaseEvent.phaseId );
+    assertEquals( PhaseId.READ_DATA, phaseEvent.phaseId );
   }
 
   @Test
   public void testExceptionsInBeforePhaseEvent() {
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
-    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
+
+    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 2, exceptionsInServletLog.size() );
   }
 
@@ -214,37 +210,40 @@ public class PhaseListenerManager_Test {
   public void testErrorInBeforePhaseEvent() {
     phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
     try {
-      phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
+      phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA, lifeCycle );
       fail();
     } catch( TestError expected ) {
     }
   }
 
   @Test
-  public void testNotifyAfterPhaseWithSpecificListener() {
-    PhaseId phase = PhaseId.READ_DATA;
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener( phase );
+  public void testNotifyAfterPhase_withSpecificListener() {
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.READ_DATA );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyAfterPhase( phase );
+
+    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 1, phaseListener.getLoggedEvents().length );
     assertSame( lifeCycle, phaseListener.getLoggedEvents()[ 0 ].source );
-    assertEquals( phase, phaseListener.getLoggedEvents()[ 0 ].phaseId );
+    assertEquals( PhaseId.READ_DATA, phaseListener.getLoggedEvents()[ 0 ].phaseId );
   }
 
   @Test
-  public void testNotifyAfterPhaseWithNonMatchingListener() {
+  public void testNotifyAfterPhase_withNonMatchingListener() {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.RENDER );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+
+    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 0, phaseListener.getLoggedEvents().length );
   }
 
   @Test
-  public void testNotifyAfterPhaseWithANYListener() {
+  public void testNotifyAfterPhase_withANYListener() {
     PhaseId phase = PhaseId.READ_DATA;
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     phaseListenerManager.addPhaseListener( phaseListener );
-    phaseListenerManager.notifyAfterPhase( phase );
+    phaseListenerManager.notifyAfterPhase( phase, lifeCycle );
     assertEquals( 1, phaseListener.getLoggedEvents().length );
     PhaseEventInfo phaseEvent = phaseListener.getLoggedEvents()[ 0 ];
     assertSame( lifeCycle, phaseEvent.source );
@@ -255,7 +254,9 @@ public class PhaseListenerManager_Test {
   public void testExceptionsInAfterPhaseEvent() {
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
-    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+
+    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA, lifeCycle );
+
     assertEquals( 2, exceptionsInServletLog.size() );
   }
 
@@ -263,7 +264,7 @@ public class PhaseListenerManager_Test {
   public void testErrorInAfterPhaseEvent() {
     phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
     try {
-      phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+      phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA, lifeCycle );
       fail();
     } catch( TestError expected ) {
     }
@@ -291,6 +292,10 @@ public class PhaseListenerManager_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( log.get( 0 ), log.get( 1 ) );
+  }
+
+  private List<PhaseListener> getPhaseListeners() {
+    return asList( phaseListenerManager.getPhaseListeners() );
   }
 
   private void setupServletContextLog() {
@@ -346,4 +351,5 @@ public class PhaseListenerManager_Test {
       return PhaseId.ANY;
     }
   }
+
 }

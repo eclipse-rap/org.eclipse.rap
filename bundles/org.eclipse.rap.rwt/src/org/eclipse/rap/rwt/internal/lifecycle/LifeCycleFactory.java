@@ -14,10 +14,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
-@SuppressWarnings( "deprecation" )
 public class LifeCycleFactory {
 
   private static final Class<? extends LifeCycle> DEFAULT_LIFE_CYCLE_CLASS = SimpleLifeCycle.class;
@@ -42,9 +40,6 @@ public class LifeCycleFactory {
 
   public void activate() {
     lifeCycle = newLifeCycle();
-    for( PhaseListener phaseListener : applicationContext.getPhaseListenerRegistry().getAll() ) {
-      lifeCycle.addPhaseListener( phaseListener );
-    }
   }
 
   public void deactivate() {
@@ -53,8 +48,8 @@ public class LifeCycleFactory {
   }
 
   private LifeCycle newLifeCycle() {
-    Class<?>[] argumentTypes = new Class<?>[] { ApplicationContextImpl.class };
-    Object[] arguments = new Object[] { applicationContext };
+    Class<?>[] argumentTypes = { ApplicationContextImpl.class };
+    Object[] arguments = { applicationContext };
     return ClassUtil.newInstance( lifeCycleClass, argumentTypes, arguments );
   }
 
