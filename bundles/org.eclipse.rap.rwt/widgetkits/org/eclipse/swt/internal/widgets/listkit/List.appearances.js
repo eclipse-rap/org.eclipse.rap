@@ -36,7 +36,8 @@ var appearances = {
         verticalChildrenAlign : "top",
         spacing : 4
       };
-      result.textColor = tv.getCssColor( "List-Item", "color" );
+      var textColor = tv.getCssColor( "List-Item", "color" );
+      result.textColor = textColor === "undefined" ? "inherit" : textColor;
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       result.backgroundImage = tv.getCssImage( "List-Item", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "List-Item", "background-image" );

@@ -618,8 +618,7 @@ List-Item {
 }
 
 List-Item:hover {
-  color: inherit;
-  background-color: #dae9f7;
+  color: #4a4a4a;
   background-image: gradient(
     linear, left top, left bottom,
     from( #ebebeb ),
@@ -629,7 +628,6 @@ List-Item:hover {
 
 List-Item:selected {
   color: #ffffff;
-  background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
     from( #5882b5 ),
@@ -638,7 +636,6 @@ List-Item:selected {
 }
 
 List-Item:selected:unfocused {
-  background-color: #959595;
   color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
@@ -653,7 +650,6 @@ List-Item:even {
 
 List-Item:even:hover {
   color: #4a4a4a;
-  background-color: #818181;
   background-image: gradient(
     linear, left top, left bottom,
     from( #ebebeb ),
@@ -663,7 +659,6 @@ List-Item:even:hover {
 
 List-Item:even:selected {
   color: #ffffff;
-  background-color: #818181;
   background-image: gradient(
     linear, left top, left bottom,
     from( #5882b5 ),
@@ -672,7 +667,6 @@ List-Item:even:selected {
 }
 
 List-Item:even:selected:unfocused {
-  background-color: #959595;
   color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
