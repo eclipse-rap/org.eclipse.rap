@@ -105,10 +105,11 @@ public final class ClientResources {
 
   private void append( ContentBuffer contentBuffer, String location ) throws IOException {
     InputStream inputStream = openResourceStream( location );
+    if( inputStream == null ) {
+      throw new IOException( "Failed to load resource: " + location );
+    }
     try {
       contentBuffer.append( inputStream );
-    } catch( Throwable t ) {
-      System.out.println();
     } finally {
       inputStream.close();
     }
