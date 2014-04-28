@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -27,8 +27,9 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
@@ -334,10 +335,9 @@ public class BrowserLCA_Test {
   }
 
   @Test
-  public void testRenderFunctionResult() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( browser );
-    getRemoteObject( browser ).setHandler( new BrowserOperationHandler( browser ) );
+  public void testRenderFunctionResult() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    BrowserOperationHandler handler = new BrowserOperationHandler( browser );
     new BrowserFunction( browser, "func" ) {
       @Override
       public Object function( Object[] arguments ) {
@@ -357,7 +357,8 @@ public class BrowserLCA_Test {
       .add( "arguments", new JsonArray().add( "eclipse" ).add( 3.6 ) );
     Fixture.fakeCallOperation( getId( browser ), "executeFunction", parameters );
 
-    Fixture.executeLifeCycleFromServerThread();
+    handler.handleCall( "executeFunction", parameters );
+    lca.renderChanges( browser );
 
     Message message = Fixture.getProtocolMessage();
     JsonArray expectedArgs = new JsonArray()
@@ -372,6 +373,31 @@ public class BrowserLCA_Test {
       .add( "func" )
       .add( expectedArgs )
       .add( JsonValue.NULL );
+    assertEquals( expected, message.findSetProperty( browser, "functionResult" ) );
+  }
+
+  @Test
+  public void testRenderFunctionResult_afterException() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    BrowserOperationHandler handler = new BrowserOperationHandler( browser );
+    new BrowserFunction( browser, "func" ) {
+      @Override
+      public Object function( Object[] arguments ) {
+        throw new RuntimeException( "exception" );
+      }
+    };
+    JsonObject parameters = new JsonObject()
+      .add( "name", "func" )
+      .add( "arguments", new JsonArray().add( "eclipse" ).add( 3.6 ) );
+
+    handler.handleCall( "executeFunction", parameters );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray()
+      .add( "func" )
+      .add( JsonValue.NULL )
+      .add( "exception" );
     assertEquals( expected, message.findSetProperty( browser, "functionResult" ) );
   }
 
