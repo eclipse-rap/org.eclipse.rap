@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
+import org.eclipse.rap.rwt.internal.service.RWTMessageHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
@@ -359,7 +360,8 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   private ServiceManagerImpl createServiceManager() {
-    return new ServiceManagerImpl( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
+    RWTMessageHandler messageHandler = new RWTMessageHandler( lifeCycleFactory );
+    return new ServiceManagerImpl( new LifeCycleServiceHandler( messageHandler, startupPage ) );
   }
 
   private String getContextDirectory() {

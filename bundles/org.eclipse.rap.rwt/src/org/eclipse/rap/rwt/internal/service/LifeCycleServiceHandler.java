@@ -11,11 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.SHUTDOWN;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.setClientMessage;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getServiceStore;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
+import static org.eclipse.rap.rwt.internal.util.HTTP.CHARSET_UTF_8;
+import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
+import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,14 +37,9 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 
@@ -51,11 +53,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static final String ATTR_SESSION_STARTED
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
-  private final LifeCycleFactory lifeCycleFactory;
+  private final RWTMessageHandler messageHandler;
   private final StartupPage startupPage;
 
-  public LifeCycleServiceHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
-    this.lifeCycleFactory = lifeCycleFactory;
+  public LifeCycleServiceHandler( RWTMessageHandler messageHandler, StartupPage startupPage ) {
+    this.messageHandler = messageHandler;
     this.startupPage = startupPage;
   }
 
@@ -64,7 +66,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   {
     // Do not use session store itself as a lock
     // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    UISessionImpl uiSession = ( UISessionImpl )getUISession();
     synchronized( uiSession.getRequestLock() ) {
       synchronizedService( request, response );
     }
@@ -73,7 +75,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   void synchronizedService( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    if( HTTP.METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request ) ) {
+    if( METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request ) ) {
       try {
         handleUIRequest( request, response );
       } finally {
@@ -105,7 +107,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    readClientMessage( request );
+    ClientMessage message = readClientMessage( request );
+    setClientMessage( message );
     setJsonResponseHeaders( response );
     if( isSessionShutdown() ) {
       shutdownUISession();
@@ -124,15 +127,14 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         reinitializeServiceStore();
       }
       UrlParameters.merge();
-      runLifeCycle();
-      writeProtocolMessage( response );
+      JsonObject outMessage = processMessage( message );
+      writeProtocolMessage( outMessage, response );
     }
   }
 
-  private void readClientMessage( HttpServletRequest request ) {
+  private ClientMessage readClientMessage( HttpServletRequest request ) {
     try {
-      JsonObject json = JsonObject.readFrom( getReader( request ) );
-      ProtocolUtil.setClientMessage( new ClientMessage( json ) );
+      return new ClientMessage( JsonObject.readFrom( getReader( request ) ) );
     } catch( IOException ioe ) {
       throw new IllegalStateException( "Unable to read the json message", ioe );
     }
@@ -146,25 +148,14 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static Reader getReader( HttpServletRequest request ) throws IOException {
     String encoding = request.getCharacterEncoding();
     if( encoding == null ) {
-      encoding = HTTP.CHARSET_UTF_8;
+      encoding = CHARSET_UTF_8;
     }
     return new InputStreamReader( request.getInputStream(), encoding );
   }
 
-  private void runLifeCycle() throws IOException {
-    if( hasInitializeParameter() ) {
-      // TODO [tb] : This is usually done in DisplayLCA#readData, but the ReadData
-      // phase is omitted in the first POST request. Since RemoteObjects may already be registered
-      // at this point, this workaround is currently required. We should find a solution that
-      // does not require RemoteObjectLifeCycleAdapter.readData to be called in different places.
-      RemoteObjectLifeCycleAdapter.readData();
-    }
-    LifeCycle lifeCycle = lifeCycleFactory.getLifeCycle();
-    lifeCycle.execute();
+  private JsonObject processMessage( ClientMessage inMessage ) {
+    return messageHandler.handleMessage( inMessage );
   }
-
-  //////////////////
-  // helping methods
 
   private static boolean isRequestCounterValid() {
     return hasInitializeParameter() || hasValidRequestCounter();
@@ -187,24 +178,22 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static boolean isContentTypeValid( ServletRequest request ) {
     String contentType = request.getContentType();
-    return contentType != null && contentType.startsWith( HTTP.CONTENT_TYPE_JSON );
+    return contentType != null && contentType.startsWith( CONTENT_TYPE_JSON );
   }
 
   private static void shutdownUISession() {
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    UISessionImpl uiSession = ( UISessionImpl )getUISession();
     uiSession.shutdown();
   }
 
   private static void writeInvalidRequestCounterError( HttpServletResponse response )
     throws IOException
   {
-    String errorType = "invalid request counter";
-    writeError( response, HttpServletResponse.SC_PRECONDITION_FAILED, errorType );
+    writeError( response, SC_PRECONDITION_FAILED, "invalid request counter" );
   }
 
   private static void writeSessionTimeoutError( HttpServletResponse response ) throws IOException {
-    String errorType = "session timeout";
-    writeError( response, HttpServletResponse.SC_FORBIDDEN, errorType );
+    writeError( response, SC_FORBIDDEN, "session timeout" );
   }
 
   private static void writeError( HttpServletResponse response,
@@ -218,8 +207,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void reinitializeUISession( HttpServletRequest request ) {
-    ServiceContext serviceContext = ContextProvider.getContext();
-    UISessionImpl uiSession = ( UISessionImpl )ContextProvider.getUISession();
+    ServiceContext serviceContext = getContext();
+    UISessionImpl uiSession = ( UISessionImpl )getUISession();
     uiSession.shutdown();
     UISessionBuilder builder = new UISessionBuilder( serviceContext );
     uiSession = builder.buildUISession();
@@ -228,9 +217,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static void reinitializeServiceStore() {
     ClientMessage clientMessage = getClientMessage();
-    ServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.clear();
-    ProtocolUtil.setClientMessage( clientMessage );
+    getServiceStore().clear();
+    setClientMessage( clientMessage );
   }
 
   /*
@@ -246,36 +234,33 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   static void markSessionStarted() {
-    UISession uiSession = ContextProvider.getUISession();
-    uiSession.setAttribute( ATTR_SESSION_STARTED, Boolean.TRUE );
+    getUISession().setAttribute( ATTR_SESSION_STARTED, Boolean.TRUE );
   }
 
   private static boolean isSessionStarted() {
-    UISession uiSession = ContextProvider.getUISession();
-    return Boolean.TRUE.equals( uiSession.getAttribute( ATTR_SESSION_STARTED ) );
+    return Boolean.TRUE.equals( getUISession().getAttribute( ATTR_SESSION_STARTED ) );
   }
 
   private static boolean isSessionShutdown() {
-    JsonValue shutdownHeader = getClientMessage().getHeader( SHUTDOWN );
-    return JsonValue.TRUE.equals( shutdownHeader );
+    return JsonValue.TRUE.equals( getClientMessage().getHeader( SHUTDOWN ) );
   }
 
   private static boolean hasInitializeParameter() {
-    JsonValue initializeHeader = getClientMessage().getHeader( RWT_INITIALIZE );
-    return JsonValue.TRUE.equals( initializeHeader );
+    return JsonValue.TRUE.equals( getClientMessage().getHeader( RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders( ServletResponse response ) {
-    response.setContentType( HTTP.CONTENT_TYPE_JSON );
-    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+    response.setContentType( CONTENT_TYPE_JSON );
+    response.setCharacterEncoding( CHARSET_UTF_8 );
   }
 
   private static void writeEmptyMessage( ServletResponse response ) throws IOException {
     new ProtocolMessageWriter().createMessage().writeTo( response.getWriter() );
   }
 
-  private static void writeProtocolMessage( ServletResponse response ) throws IOException {
-    JsonObject message = getProtocolWriter().createMessage();
+  private static void writeProtocolMessage( JsonObject message, ServletResponse response )
+    throws IOException
+  {
     bufferProtocolMessage( message );
     message.writeTo( response.getWriter() );
   }
