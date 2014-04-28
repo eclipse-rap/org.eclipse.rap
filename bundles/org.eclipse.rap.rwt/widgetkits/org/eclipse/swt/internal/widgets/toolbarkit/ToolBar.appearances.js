@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,8 @@ var appearances = {
       };
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.animation = tv.getCssAnimation( "ToolItem", "animation" );
-      result.textColor = tv.getCssColor( "ToolItem", "color" );
+      var textColor = tv.getCssColor( "ToolItem", "color" );
+      result.textColor = textColor === "undefined" ? "inherit" : textColor;
       result.textShadow = tv.getCssShadow( "ToolItem", "text-shadow" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
