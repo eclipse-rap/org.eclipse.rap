@@ -187,7 +187,6 @@ rwt/widgets/Scale.js
 rwt/remote/handler/ScaleHandler.js
 rwt/widgets/ToolItemSeparator.js
 rwt/theme/BorderDefinitions.js
-rwt/widgets/base/BasicList.js
 rwt/widgets/Combo.js
 rwt/remote/handler/ComboHandler.js
 rwt/widgets/util/FocusIndicator.js
