@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getServiceStore;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 import static org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler.markSessionStarted;
 import static org.junit.Assert.assertEquals;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -150,7 +152,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testShutdownUISession_RemoveUISessionFromHttpSession() throws IOException {
+  public void testShutdownUISession_removesUISessionFromHttpSession() throws IOException {
     UISession uiSession = getUISession();
     HttpSession httpSession = uiSession.getHttpSession();
 
@@ -230,10 +232,10 @@ public class LifeCycleServiceHandler_Test {
     service( serviceHandler );
 
     simulateInitialUiRequest();
-    ContextProvider.getServiceStore().setAttribute( "foo", "bar" );
+    getServiceStore().setAttribute( "foo", "bar" );
     service( serviceHandler );
 
-    assertNull( ContextProvider.getServiceStore().getAttribute( "foo" ) );
+    assertNull( getServiceStore().getAttribute( "foo" ) );
   }
 
   @Test
@@ -316,6 +318,21 @@ public class LifeCycleServiceHandler_Test {
     service( serviceHandler );
 
     verify( startupPage ).send( getResponse() );
+  }
+
+  @Test
+  public void testStartupRequest_shutsDownUISession_ifExceptionInStartupPage() throws IOException {
+    Fixture.fakeNewGetRequest();
+    Fixture.fakeClient( mock( WebClient.class ) );
+    StartupPage startupPage = mock( StartupPage.class );
+    doThrow( new RuntimeException() ).when( startupPage ).send( any( HttpServletResponse.class ) );
+
+    try {
+      service( new LifeCycleServiceHandler( messageHandler, startupPage ) );
+    } catch( RuntimeException exception ) {
+    }
+
+    assertNull( getUISession() );
   }
 
   @Test
@@ -437,6 +454,36 @@ public class LifeCycleServiceHandler_Test {
     assertEquals( message, JsonObject.readFrom( messageCaptor.getValue().toString() ) );
   }
 
+  @Test
+  public void testUIRequest_shutsDownUISession_ifRuntimeExceptionInHandler() throws IOException {
+    markSessionStarted();
+    simulateUiRequest();
+    RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
+    doThrow( new RuntimeException() ).when( messageHandler ).handleMessage( any( ClientMessage.class ) );
+
+    try {
+      service( new LifeCycleServiceHandler( messageHandler, startupPage ) );
+    } catch( RuntimeException exception ) {
+    }
+
+    assertNull( getUISession() );
+  }
+
+  @Test
+  public void testUIRequest_shutsDownUISession_ifIOException() throws IOException {
+    markSessionStarted();
+    simulateUiRequest();
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    doThrow( new IOException() ).when( response ).getWriter();
+
+    try {
+      serviceHandler.service( getRequest(), response );
+    } catch( IOException exception ) {
+    }
+
+    assertNull( getUISession() );
+  }
+
   private void simulateUiRequest() {
     Fixture.fakeNewRequest();
   }
@@ -475,7 +522,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   private static void service( LifeCycleServiceHandler serviceHandler ) throws IOException {
-    serviceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
+    serviceHandler.service( getRequest(), getResponse() );
   }
 
   private static TestRequest getRequest() {

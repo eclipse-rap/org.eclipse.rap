@@ -13,6 +13,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -103,7 +104,7 @@ public class RWTLifeCycle2_Test {
   }
 
   @Test
-  public void testSessionRestartAfterExceptionInUIThread() throws Exception {
+  public void testSessionShutdownAfterExceptionInUIThread() throws Exception {
     Class<? extends EntryPoint> entryPoint = ExceptionInReadAndDispatchEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
     // send initial request - response is index.html
@@ -131,21 +132,20 @@ public class RWTLifeCycle2_Test {
     } catch( RuntimeException e ) {
       assertEquals( EXCEPTION_MSG, e.getMessage() );
     }
+
     assertNotNull( session.getAttribute( TEST_SESSION_ATTRIBUTE ) );
     assertTrue( createUIEntered );
     assertTrue( createUIExited );
-    assertEquals( 0, eventLog.size() );
-
-    // send 'refresh' request - session is restarted
-    runRWTServlet( newPostRequest( 0 ) );
     assertEquals( 1, eventLog.size() );
     assertTrue( eventLog.get( 0 ) instanceof Event );
+    assertNull( getUISession() );
   }
 
   @Test
-  public void testSessionRestartAfterExceptionInInitialRequest() throws Exception {
+  public void testSessionShutdownAfterExceptionInInitialRequest() {
     Class<? extends EntryPoint> entryPoint = ExceptionInCreateUIEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
+
     // send initial request - response creates UI
     try {
       runRWTServlet( newPostRequest( 0 ) );
@@ -153,14 +153,12 @@ public class RWTLifeCycle2_Test {
     } catch( Exception expected ) {
       assertEquals( "/ by zero", expected.getMessage() );
     }
+
     assertTrue( createUIEntered );
     assertTrue( createUIExited );
-    assertEquals( 0, eventLog.size() );
-
-    // send 'refresh' request - session is restarted
-    runRWTServlet( newPostRequest( 0 ) );
     assertEquals( 1, eventLog.size() );
     assertTrue( eventLog.get( 0 ) instanceof Event );
+    assertNull( getUISession() );
   }
 
   /*

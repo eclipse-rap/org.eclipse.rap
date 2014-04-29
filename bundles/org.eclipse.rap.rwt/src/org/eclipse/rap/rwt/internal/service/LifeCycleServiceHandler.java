@@ -76,25 +76,39 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     throws IOException
   {
     if( METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request ) ) {
-      try {
-        handleUIRequest( request, response );
-      } finally {
-        if( !isSessionShutdown() ) {
-          markSessionStarted();
-        }
-      }
+      handleUIRequest( request, response );
     } else {
-      try {
-        handleStartupRequest( request, response );
-      } finally {
-        // The GET request currently creates a dummy UI session needed for accessing the client
-        // information. It is not meant to be reused by other requests.
-        shutdownUISession();
-      }
+      handleStartupRequest( request, response );
     }
   }
 
-  private void handleStartupRequest( ServletRequest request, HttpServletResponse response )
+  private void handleStartupRequest( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    try {
+      sendStartupContent( request, response );
+    } finally {
+      // The GET request currently creates a dummy UI session needed for accessing the client
+      // information. It is not meant to be reused by other requests.
+      shutdownUISession();
+    }
+  }
+
+  private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    try {
+      processUIRequest( request, response );
+    } catch( IOException exception ) {
+      shutdownUISession();
+      throw exception;
+    } catch( RuntimeException exception ) {
+      shutdownUISession();
+      throw exception;
+    }
+  }
+
+  private void sendStartupContent( ServletRequest request, HttpServletResponse response )
     throws IOException
   {
     if( RWT.getClient() instanceof WebClient ) {
@@ -104,7 +118,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
+  private void processUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
     ClientMessage message = readClientMessage( request );
@@ -129,6 +143,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       UrlParameters.merge();
       JsonObject outMessage = processMessage( message );
       writeProtocolMessage( outMessage, response );
+      markSessionStarted();
     }
   }
 
