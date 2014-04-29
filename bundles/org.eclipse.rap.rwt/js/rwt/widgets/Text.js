@@ -380,6 +380,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this._inputElement.onpropertychange = null;
       this._inputElement = null;
       this._firstInputFixApplied = false;
+      this._textColor = null;
       this._applyElement( this.getElement(), null );
       this._afterAppear();
       this._postApply();

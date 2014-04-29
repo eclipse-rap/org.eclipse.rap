@@ -514,8 +514,8 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     _renderTextColor : function() {
       if( this.isCreated() ) {
         var color = this.getEnabled() ? this.getTextColor() : this.__theme$textColor;
-        if( this.__textColor !== color ) {
-          this.__textColor = color;
+        if( this._textColor !== color ) {
+          this._textColor = color;
           rwt.html.Style.setStyleProperty( this._inputElement, "color", color || "" );
         }
       }

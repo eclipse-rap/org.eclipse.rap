@@ -777,6 +777,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var listItemId = list._.popup.getHtmlAttribute( "id" ) + "-listitem-3";
       var item3 = list._.grid.getRootItem().getChild( 3 );
       assertEquals( listItemId, item3.getHtmlAttribute( "id" ) );
+      rwt.widgets.base.Widget._renderHtmlIds = false;
     },
 
     testPropagateEscKey_ListIsVisible : function() {
