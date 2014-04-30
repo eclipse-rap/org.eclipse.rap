@@ -18,29 +18,12 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
 
   extend : rwt.qx.Object,
 
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
   construct : function() {
     this.base( arguments );
     this.__storage = [];
   },
 
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
   members : {
-    /*
-    ---------------------------------------------------------------------------
-      USER METHODS
-    ---------------------------------------------------------------------------
-    */
 
     /**
      * Add an item to the selection
@@ -50,7 +33,7 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
      * @return {void}
      */
     add : function( item ) {
-      var index = this._indexOf( item );
+      var index = this.__storage.indexOf( item );
       if( index === -1 ) {
         this.__storage.push( item );
       }
@@ -64,7 +47,7 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
      * @return {void}
      */
     remove : function( item ) {
-      var index = this._indexOf( item );
+      var index = this.__storage.indexOf( item );
       if( index !== -1 ) {
         this.__storage.splice( index, 1 );
       }
@@ -88,7 +71,7 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
      * @return {Boolean} whether the selection contains the item
      */
     contains : function( item ) {
-      return this._indexOf( item ) !== -1;
+      return this.__storage.indexOf( item ) !== -1;
     },
 
     /**
@@ -134,30 +117,9 @@ rwt.qx.Class.define( "rwt.widgets.util.Selection", {
      */
     isEmpty : function() {
       return this.__storage.length === 0;
-    },
-
-    _indexOf : function( item ) {
-      var result = -1;
-      if( this.__storage.indexOf ) {
-        result = this.__storage.indexOf( item );
-      } else {
-        for( var i = 0; i < this.__storage.length; i++ ) {
-          if( this.__storage[ i ] === item ) {
-            result = i;
-            break;
-          }
-        }
-      }
-      return result;
     }
 
   },
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
 
   destruct : function() {
     this._disposeFields( "__storage" );
