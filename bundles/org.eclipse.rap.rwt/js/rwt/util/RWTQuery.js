@@ -13,6 +13,14 @@ namespace( "rwt.util" );
 
 (function(){
 
+/**
+ * @private
+ * @class An JQuery-like object which allows manipulation of HTML elements.
+ * @exports rwt.util.RWTQuery as $
+ * @description The constructor is not public. Instances can currently only be obtained from
+ * {@link Widget#$el}.
+ * @since 2.3
+ */
 rwt.util.RWTQuery = function( target ) {
   var isWidget = ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0;
   this.__access = function( args, callbackWidget, callbackElement ) {
@@ -23,6 +31,16 @@ rwt.util.RWTQuery = function( target ) {
 
 rwt.util.RWTQuery.prototype = {
 
+
+  /**
+   * @description A method to either set or get the value of an HTML-attribute.
+   * Note that the attributes "id" and "class" can not be set this way.
+   * @param {string|Object} attribute The name of the attribute to return or modify. Alternatively
+   * a plain object with key-value pairs to set.
+   * @param {string} [value] The value to set the attribute to.
+   * @return {string|$} The the value of the given attribute, if the function is called with a
+   * string only. Otherwise a reference to this object.
+   */
   attr : function() {
     return this.__access( arguments, attr_widget, attr_element );
   }

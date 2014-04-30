@@ -364,10 +364,13 @@ rwt.remote.HandlerUtil = {
     }
   },
 
-
   /**
-   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Control
+   * @private
+   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Control. All controls given by
+   * {@link rap.getObject} are instances of this type, even if their specific subtype is not
+   * documented.
    * @name Control
+   * @extends Widget
    * @description The constructor is not public.
    * @since 2.2
    */

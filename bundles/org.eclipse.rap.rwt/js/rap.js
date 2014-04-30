@@ -81,10 +81,9 @@ rap = {
    * <code>org.eclipse.rap.rwt.remote.RemoteObject.getId</code>.
    * If there is no object registered for the given id, <code>null</code> is returned.
    * For internal objects (e.g. RWT/SWT widgets) a wrapper is returned that approximates
-   * the API of its Java analoge. {@link Composite} is a special case where additional API
-   * is present to allow HTML/DOM based custom widget development.
-   *
-   * @see Composite
+   * the API of its Java analoge. {@link Composite#append} and {@link Widget#$el} are special cases
+   * where additional scripting-only API is provided.
+   * @see Composite, Widget
    * @param {string} id The protocol id for a client object.
    * @returns {Object} The client object associated with the id.
    */

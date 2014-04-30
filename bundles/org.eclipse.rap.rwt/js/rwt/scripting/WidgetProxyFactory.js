@@ -16,6 +16,16 @@ var Synchronizer = rwt.scripting.Synchronizer;
 
 rwt.qx.Class.createNamespace( "rwt.scripting", {} );
 
+/**
+ * @private
+ * @class RWT Scripting analoge to org.eclipse.swt.widgets.Widget. All widgets given by
+ * {@link rap.getObject} are instances of this type, even if their specific subtype is not
+ * documented.
+ * @name Widget
+ * @description The constructor is not public.
+ * @since 2.2
+ */
+
 /*jshint nonew:false */
 rwt.scripting.WidgetProxyFactory = {
 
@@ -96,6 +106,16 @@ rwt.scripting.WidgetProxyFactory = {
     }
   },
 
+  /**
+   * @name $el
+   * @memberOf Widget#
+   * @description Instance of {@link $} wrapping the widgets HTML element.
+   */
+  /**
+   * @name $input
+   * @memberOf Text#
+   * @description Instance of {@link $} wrapping the widgets HTML <code>input</code> element.
+   */
   _attach$el : function( proxy, source ) {
     // instanceof is not a good way here since not all "widgets" extend the Widget class
     if( source.classname.match( /rwt\.widgets\.[a-zA-Z]*$/ ) ) {
