@@ -41,6 +41,7 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -394,9 +395,10 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", nextRequestId );
+    ClientMessage message = mock( ClientMessage.class );
+    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( nextRequestId ) );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
     assertTrue( valid );
   }
@@ -404,9 +406,10 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", 23 );
+    ClientMessage message = mock( ClientMessage.class );
+    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( 23 ) );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
     assertFalse( valid );
   }
@@ -414,10 +417,11 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
-    Fixture.fakeHeadParameter( "requestCounter", "not-a-number" );
+    ClientMessage message = mock( ClientMessage.class );
+    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( "not-a-number" ) );
 
     try {
-      LifeCycleServiceHandler.hasValidRequestCounter();
+      LifeCycleServiceHandler.hasValidRequestCounter( message );
       fail();
     } catch( Exception exception ) {
       assertTrue( exception.getMessage().contains( "Not a number" ) );
@@ -426,7 +430,9 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+    ClientMessage message = mock( ClientMessage.class );
+
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
     assertTrue( valid );
   }
@@ -434,8 +440,9 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
+    ClientMessage message = mock( ClientMessage.class );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter();
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
     assertFalse( valid );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -78,9 +80,9 @@ public class RemoteObjectLifeCycleAdapter_Test {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
-    Fixture.fakeSetOperation( "id", properties );
+    ClientMessage message = createMessage( createSetOperation( "id", properties ) );
 
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
 
     verify( handler ).handleSet( eq( properties ) );
   }
@@ -90,9 +92,9 @@ public class RemoteObjectLifeCycleAdapter_Test {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
-    Fixture.fakeCallOperation( "id", "method", properties );
+    ClientMessage message = createMessage( createCallOperation( "id", "method", properties ) );
 
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
 
     verify( handler ).handleCall( eq( "method" ), eq( properties ) );
   }
@@ -102,9 +104,9 @@ public class RemoteObjectLifeCycleAdapter_Test {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
-    Fixture.fakeNotifyOperation( "id", "event", properties );
+    ClientMessage message = createMessage( createNotifyOperation( "id", "event", properties ) );
 
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
 
     verifyZeroInteractions( handler );
   }
@@ -114,10 +116,10 @@ public class RemoteObjectLifeCycleAdapter_Test {
     OperationHandler handler = mock( OperationHandler.class );
     mockAndRegisterDeferredRemoteObject( "id", handler );
     JsonObject properties = new JsonObject().add( "foo", "bar" );
-    Fixture.fakeNotifyOperation( "id", "event", properties );
+    ClientMessage message = createMessage( createNotifyOperation( "id", "event", properties ) );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
 
     verify( handler ).handleNotify( eq( "event" ), eq( properties ) );
   }
@@ -125,17 +127,19 @@ public class RemoteObjectLifeCycleAdapter_Test {
   @Test
   public void testReadData_doesNotFailWhenNoHandlerRegistered() {
     mockAndRegisterDeferredRemoteObject( "id", null );
+    ClientMessage message = createMessage();
 
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
   }
 
   @Test
   public void testReadData_failsWhenNoHandlerRegisteredForOperations() {
     mockAndRegisterDeferredRemoteObject( "id", null );
-    Fixture.fakeCallOperation( "id", "method", new JsonObject().add( "foo", "bar" ) );
+    JsonObject properties = new JsonObject().add( "foo", "bar" );
+    ClientMessage message = createMessage( createCallOperation( "id", "method", properties ) );
 
     try {
-      RemoteObjectLifeCycleAdapter.readData();
+      RemoteObjectLifeCycleAdapter.readData( message );
       fail();
     } catch( UnsupportedOperationException exception ) {
       String expected = "No operation handler registered for remote object: id";
@@ -149,10 +153,11 @@ public class RemoteObjectLifeCycleAdapter_Test {
     OperationHandler lifecycleHandler = mock( OperationHandler.class );
     mockAndRegisterDeferredRemoteObject( "deferred", deferredHandler );
     mockAndRegisterLifeCycleRemoteObject( "lifecycle", lifecycleHandler );
-    Fixture.fakeCallOperation( "deferred", "method", new JsonObject().add( "foo", "bar" ) );
-    Fixture.fakeCallOperation( "lifecycle", "method", new JsonObject().add( "foo", "bar" ) );
+    ClientMessage message = createMessage(
+      createCallOperation( "deferred", "method", new JsonObject().add( "foo", "bar" ) ),
+      createCallOperation( "lifecycle", "method", new JsonObject().add( "foo", "bar" ) ) );
 
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( message );
 
     verify( deferredHandler ).handleCall( eq( "method" ), any( JsonObject.class ) );
     verify( lifecycleHandler, never() ).handleCall( eq( "method" ), any( JsonObject.class ) );
@@ -180,6 +185,31 @@ public class RemoteObjectLifeCycleAdapter_Test {
 
   private static void setDestroyed( RemoteObjectImpl remoteObject ) {
     when( Boolean.valueOf( remoteObject.isDestroyed() ) ).thenReturn( Boolean.TRUE );
+  }
+
+  // TODO [rst] Extract these methods to a utility, merge with Message, Operation?
+  private static ClientMessage createMessage( JsonArray... operations ) {
+    JsonArray operationsArray = new JsonArray();
+    for( JsonArray operation : operations ) {
+      operationsArray.add( operation );
+    }
+    return new ClientMessage( new JsonObject()
+      .add( "head", new JsonObject() )
+      .add( "operations", operationsArray ) );
+  }
+
+  private static JsonArray createSetOperation( String target, JsonObject properties ) {
+    return new JsonArray().add( "set" ).add( target ).add( properties );
+  }
+
+  private static JsonArray createCallOperation( String target, String method, JsonObject properties )
+  {
+    return new JsonArray().add( "call" ).add( target ).add( method ).add( properties );
+  }
+
+  private static JsonArray createNotifyOperation( String target, String event, JsonObject properties )
+  {
+    return new JsonArray().add( "notify" ).add( target ).add( event ).add( properties );
   }
 
 }

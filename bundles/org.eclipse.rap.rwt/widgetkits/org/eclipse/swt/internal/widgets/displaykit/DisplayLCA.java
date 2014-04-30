@@ -65,7 +65,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     handleOperations( display );
     visitWidgets( display );
     DNDSupport.handleOperations();
-    RemoteObjectLifeCycleAdapter.readData();
+    RemoteObjectLifeCycleAdapter.readData( ProtocolUtil.getClientMessage() );
   }
 
   public void preserveValues( Display display ) {

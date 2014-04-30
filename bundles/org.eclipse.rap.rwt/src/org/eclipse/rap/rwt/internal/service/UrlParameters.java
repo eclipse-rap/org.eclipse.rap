@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.QUERY_STRING;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
+import static org.eclipse.rap.rwt.internal.util.HTTP.CHARSET_UTF_8;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -20,17 +22,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 
 
 public final class UrlParameters {
 
   public static final String PARAM_CONNECTION_ID = "cid";
 
-  static void merge() {
-    if( hasInitializeParameter() ) {
-      Map<String, String[]> parameters = getAll();
+  static void merge( ClientMessage message ) {
+    if( hasInitializeParameter( message ) ) {
+      Map<String, String[]> parameters = getAll( message);
       if( parameters != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
         WrappedRequest wrappedRequest = new WrappedRequest( request, parameters );
@@ -40,8 +41,8 @@ public final class UrlParameters {
     }
   }
 
-  private static Map<String, String[]> getAll() {
-    JsonValue queryStringHeader = getClientMessage().getHeader( ClientMessageConst.QUERY_STRING );
+  private static Map<String, String[]> getAll( ClientMessage message ) {
+    JsonValue queryStringHeader = message.getHeader( QUERY_STRING );
     return queryStringHeader == null ? null : createParametersMap( queryStringHeader.asString() );
   }
 
@@ -51,8 +52,8 @@ public final class UrlParameters {
     for( String parameter : parameters ) {
       String[] parts = parameter.split( "=" );
       try {
-        String name = URLDecoder.decode( parts[ 0 ], HTTP.CHARSET_UTF_8 );
-        String value = parts.length == 1 ? "" : URLDecoder.decode( parts[ 1 ], HTTP.CHARSET_UTF_8 );
+        String name = URLDecoder.decode( parts[ 0 ], CHARSET_UTF_8 );
+        String value = parts.length == 1 ? "" : URLDecoder.decode( parts[ 1 ], CHARSET_UTF_8 );
         String[] oldValues = result.get( name );
         result.put( name, appendValue( oldValues, value ) );
       } catch( UnsupportedEncodingException exception ) {
@@ -74,9 +75,8 @@ public final class UrlParameters {
     return result;
   }
 
-  private static boolean hasInitializeParameter() {
-    JsonValue initializeHeader = getClientMessage().getHeader( ClientMessageConst.RWT_INITIALIZE );
-    return JsonValue.TRUE.equals( initializeHeader );
+  private static boolean hasInitializeParameter( ClientMessage message ) {
+    return JsonValue.TRUE.equals( message.getHeader( RWT_INITIALIZE ) );
   }
 
   private UrlParameters() {

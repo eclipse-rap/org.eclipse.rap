@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessage;
-
 import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
@@ -24,16 +22,15 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 
 
 public class RemoteObjectLifeCycleAdapter {
 
-  public static void readData() {
+  public static void readData( ClientMessage message ) {
     RemoteObjectRegistry registry = RemoteObjectRegistry.getInstance();
     for( RemoteObjectImpl remoteObject : registry.getRemoteObjects() ) {
       if( remoteObject instanceof DeferredRemoteObject ) {
-        dispatchOperations( remoteObject );
+        dispatchOperations( message, remoteObject );
       }
     }
   }
@@ -51,18 +48,14 @@ public class RemoteObjectLifeCycleAdapter {
     }
   }
 
-  private static void dispatchOperations( RemoteObjectImpl remoteObject ) {
-    List<Operation> operations = getOperations( remoteObject );
+  private static void dispatchOperations( ClientMessage message, RemoteObjectImpl remoteObject ) {
+    List<Operation> operations = message.getAllOperationsFor( remoteObject.getId() );
     if( !operations.isEmpty() ) {
       OperationHandler handler = getHandler( remoteObject );
       for( Operation operation : operations ) {
         dispatchOperation( handler, operation );
       }
     }
-  }
-
-  private static List<ClientMessage.Operation> getOperations( RemoteObject remoteObject ) {
-    return getClientMessage().getAllOperationsFor( remoteObject.getId() );
   }
 
   private static OperationHandler getHandler( RemoteObjectImpl remoteObject ) {

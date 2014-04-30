@@ -32,19 +32,19 @@ public class RWTMessageHandler {
   }
 
   public JsonObject handleMessage( ClientMessage message ) {
-    runMissingReadData( message );
     ProtocolUtil.setClientMessage( message );
+    workAroundMissingReadData( message );
     executeLifeCycle();
     return getProtocolWriter().createMessage();
   }
 
-  private void runMissingReadData( ClientMessage message ) {
+  private void workAroundMissingReadData( ClientMessage message ) {
     // TODO [tb] : This is usually done in DisplayLCA#readData, but the ReadData
     // phase is omitted in the first POST request. Since RemoteObjects may already be registered
     // at this point, this workaround is currently required. We should find a solution that
     // does not require RemoteObjectLifeCycleAdapter.readData to be called in different places.
     if( JsonValue.TRUE.equals( message.getHeader( RWT_INITIALIZE ) ) ) {
-      RemoteObjectLifeCycleAdapter.readData();
+      RemoteObjectLifeCycleAdapter.readData( message );
     }
   }
 
