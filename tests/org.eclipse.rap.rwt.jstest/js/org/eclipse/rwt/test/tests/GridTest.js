@@ -140,8 +140,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         "bindingIndex" : 0,
         "name" : "bar",
         "selectable" : true,
-        "left" : 0,
-        "top" : 0,
+        "left" : [ 0, 0 ],
+        "top" : [ 0, 0 ],
         "width" : 1,
         "height" : 1
       };
@@ -172,8 +172,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         "type" : "text",
         "bindingIndex" : 0,
         "name" : "bar",
-        "left" : 0,
-        "top" : 0,
+        "left" : [ 0, 0 ],
+        "top" : [ 0, 0 ],
         "width" : 1,
         "height" : 1
       };
@@ -202,8 +202,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
         "type" : "text",
         "bindingIndex" : 0,
         "selectable" : true,
-        "left" : 0,
-        "top" : 0,
+        "left" : [ 0, 0 ],
+        "top" : [ 0, 0 ],
         "width" : 1,
         "height" : 1
       };
@@ -228,8 +228,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testGridWithRowTempalteLimitsRowWidth: function() {
-      var cellData = { "type" : "text", "left" : 0, "top" : 0, "width" : 1, "height" : 1 };
+    testGridWithRowTempalteLimitsRowWidth : function() {
+      var cellData = { "type" : "text", "left" : [ 0, 0 ], "top" : [ 0, 0 ], "width" : 1, "height" : 1 };
       var template = new rwt.widgets.util.Template( [ cellData ] );
       var tree = this._createDefaultTree( false, false, "rowTemplate", template );
       tree.setItemCount( 1 );
