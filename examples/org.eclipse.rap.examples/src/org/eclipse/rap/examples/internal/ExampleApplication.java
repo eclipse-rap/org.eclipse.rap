@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,19 @@ import org.osgi.framework.FrameworkUtil;
 
 public class ExampleApplication implements ApplicationConfiguration {
 
+  // Bug 433179 - RAP application does not start in Firefox 29
+  private static final String FF29_COMPATIBILITY 
+    =   "<script type=\"text/javascript\">" 
+      + "(function(){try{var e=navigator.userAgent;"
+      + "if(e.indexOf(\"like Gecko\")===-1&&e.indexOf(\"Gecko/\")!==-1)"
+      + "{if(!window.controllers){window.controllers={}}" 
+      + "if(!navigator.product){navigator.product=\"Gecko\"}}}catch(t){}})()" 
+      + "</script>";
+
   public void configure( Application application ) {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.PAGE_TITLE, "RAP Examples" );
+    properties.put( WebClient.HEAD_HTML, FF29_COMPATIBILITY );
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );

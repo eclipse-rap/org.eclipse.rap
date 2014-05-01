@@ -17,6 +17,7 @@
    <extension
          point="org.eclipse.rap.ui.branding">
       <branding
+            body="body.html"
             favicon="img/business/favicon.png"
             id="org.eclipse.rap.design.example.business.branding"
             themeId="org.eclipse.rap.design.example.business.theme"
@@ -32,6 +33,7 @@
          </presentationFactory>
       </branding>
       <branding
+            body="body.html"
             favicon="img/fancy/favicon.png"
             id="org.eclipse.rap.design.example.fancy.branding"
             themeId="org.eclipse.rap.design.example.fancy.theme"
