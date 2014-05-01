@@ -25,7 +25,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.SingletonUtil;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.graphics.FontData;
@@ -37,9 +37,9 @@ class MeasurementOperator implements SerializableCompatibility {
 
   static final String TYPE = "rwt.client.TextSizeMeasurement";
   static final String METHOD_MEASURE_ITEMS = "measureItems";
-  static final String PROPERTY_ITEMS = "items";
+  static final String PARAM_ITEMS = "items";
   static final String METHOD_STORE_MEASUREMENTS = "storeMeasurements";
-  static final String PROPERTY_RESULTS = "results";
+  static final String PARAM_RESULTS = "results";
 
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
@@ -58,7 +58,7 @@ class MeasurementOperator implements SerializableCompatibility {
   void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
     JsonValue startupProbeObject = getStartupProbeObject();
     if( startupProbeObject != null ) {
-      JsonObject parameters = new JsonObject().add( PROPERTY_ITEMS, startupProbeObject );
+      JsonObject parameters = new JsonObject().add( PARAM_ITEMS, startupProbeObject );
       writer.appendCall( TYPE, METHOD_MEASURE_ITEMS, parameters );
     }
   }
@@ -166,7 +166,7 @@ class MeasurementOperator implements SerializableCompatibility {
   private static Point readMeasuredSize( List<CallOperation> operations, String id ) {
     Point result = null;
     for( CallOperation operation : operations ) {
-      JsonObject results = operation.getProperty( PROPERTY_RESULTS ).asObject();
+      JsonObject results = operation.getParameters().get( PARAM_RESULTS ).asObject();
       if( results != null ) {
         JsonValue value = results.get( id );
         if( value != null ) {
@@ -200,7 +200,7 @@ class MeasurementOperator implements SerializableCompatibility {
       for( int i = 0; i < items.length; i++ ) {
         itemsObject.add( MeasurementUtil.createItemParamObject( items[ i ] ) );
       }
-      callClientMethod( METHOD_MEASURE_ITEMS, PROPERTY_ITEMS, itemsObject );
+      callClientMethod( METHOD_MEASURE_ITEMS, PARAM_ITEMS, itemsObject );
     }
   }
 

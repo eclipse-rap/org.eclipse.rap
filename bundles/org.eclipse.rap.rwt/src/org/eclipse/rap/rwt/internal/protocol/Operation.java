@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,44 +15,160 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 
 
-final class Operation {
+public abstract class Operation {
 
   private final String action;
   private final String target;
-  private final String detail;
-  private final JsonObject properties;
 
-  Operation( String target, String action, String detail, JsonObject properties ) {
+  Operation( String target, String action ) {
     this.target = target;
     this.action = action;
-    this.detail = detail;
-    this.properties = properties == null ? new JsonObject() : properties;
   }
 
-  String getTarget() {
+  public String getTarget() {
     return target;
   }
 
-  String getAction() {
-    return action;
+  public JsonArray toJson() {
+    return new JsonArray().add( action ).add( target );
   }
 
-  void putProperty( String key, JsonValue value ) {
-    properties.remove( key );
-    properties.add( key, value );
+  public static class CreateOperation extends Operation {
+
+    private final JsonObject properties;
+    private final String type;
+
+    CreateOperation( String target, String type ) {
+      super( target, "create" );
+      this.type = type;
+      properties = new JsonObject();
+    }
+
+    @Override
+    public JsonArray toJson() {
+      return super.toJson().add( type ).add( properties );
+    }
+
+    void putProperty( String key, JsonValue value ) {
+      properties.set( key, value );
+    }
+
   }
 
-  JsonValue toJson() {
-    JsonArray json = new JsonArray();
-    json.add( action );
-    json.add( target );
-    if( detail != null ) {
-      json.add( detail );
+  public static class DestroyOperation extends Operation {
+
+    DestroyOperation( String target ) {
+      super( target, "destroy" );
     }
-    if( properties != null && !properties.isEmpty() ) {
-      json.add( properties );
+
+  }
+
+  public static class SetOperation extends Operation {
+
+    private final JsonObject properties;
+
+    SetOperation( String target ) {
+      this( target, new JsonObject() );
     }
-    return json;
+
+    SetOperation( String target, JsonObject properties ) {
+      super( target, "set" );
+      this.properties = properties;
+    }
+
+    public JsonObject getProperties() {
+      return properties;
+    }
+
+    @Override
+    public JsonArray toJson() {
+      return super.toJson().add( properties );
+    }
+
+    void putProperty( String key, JsonValue value ) {
+      properties.set( key, value );
+    }
+
+  }
+
+  public static class CallOperation extends Operation {
+
+    private final String method;
+    private final JsonObject parameters;
+
+    CallOperation( String target, String method, JsonObject parameters ) {
+      super( target, "call" );
+      this.method = method;
+      this.parameters = parameters != null ? parameters : new JsonObject();
+    }
+
+    public String getMethodName() {
+      return method;
+    }
+
+    public JsonObject getParameters() {
+      return parameters;
+    }
+
+    @Override
+    public JsonArray toJson() {
+      return super.toJson().add( method ).add( parameters );
+    }
+
+  }
+
+  public static class ListenOperation extends Operation {
+
+    private final JsonObject properties;
+
+    ListenOperation( String target ) {
+      super( target, "listen" );
+      properties = new JsonObject();
+    }
+
+    @Override
+    public JsonArray toJson() {
+      return super.toJson().add( properties );
+    }
+
+    void putListener( String event, boolean listening ) {
+      properties.set( event, JsonValue.valueOf( listening ) );
+    }
+
+  }
+
+  public static class NotifyOperation extends Operation {
+
+    private final JsonObject properties;
+    private final String event;
+
+    NotifyOperation( String target, String event ) {
+      this( target, event, new JsonObject() );
+    }
+
+    NotifyOperation( String target, String event, JsonObject properties ) {
+      super( target, "notify" );
+      this.event = event;
+      this.properties = properties;
+    }
+
+    public String getEventName() {
+      return event;
+    }
+
+    public JsonObject getProperties() {
+      return properties;
+    }
+
+    @Override
+    public JsonArray toJson() {
+      return super.toJson().add( event ).add( properties );
+    }
+
+    void putProperty( String key, JsonValue value ) {
+      properties.set( key, value );
+    }
+
   }
 
 }

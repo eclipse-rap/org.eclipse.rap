@@ -58,18 +58,6 @@ public class ProtocolMessageWriter_Test {
   }
 
   @Test
-  public void testHasNoOperations() {
-    assertFalse( writer.hasOperations() );
-  }
-
-  @Test
-  public void testHasOperationsAfterAppend() {
-    writer.appendSet( "target", "foo", 23 );
-
-    assertTrue( writer.hasOperations() );
-  }
-
-  @Test
   public void testEmptyMessage() {
     JsonObject message = writer.createMessage();
     JsonObject head = message.get( "head" ).asObject();
@@ -80,7 +68,7 @@ public class ProtocolMessageWriter_Test {
 
   @Test
   public void testMessageWithRequestCounter() {
-    writer.appendHead( ProtocolConstants.REQUEST_COUNTER, 1 );
+    writer.appendHead( "requestCounter", 1 );
 
     assertEquals( 1, getMessage().getRequestCounter() );
   }

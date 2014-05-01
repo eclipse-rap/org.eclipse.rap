@@ -17,7 +17,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.getClientMessag
 
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -433,7 +433,7 @@ public final class WidgetLCAUtil {
     ClientMessage message = getClientMessage();
     NotifyOperation operation = message.getLastNotifyOperationFor( getId( widget ), eventName );
     if( operation != null ) {
-      JsonValue value = operation.getProperty( property );
+      JsonValue value = operation.getProperties().get( property );
       if( value != null ) {
         return jsonToJava( value ).toString();
       }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
@@ -49,7 +52,7 @@ public class ClientMessage {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
     try {
-      operationsMap = new HashMap<String,List<Operation>>();
+      operationsMap = new HashMap<String, List<Operation>>();
       operationsList = new ArrayList<Operation>();
       processOperations( operations );
     } catch( UnsupportedOperationException exception ) {
@@ -95,9 +98,9 @@ public class ClientMessage {
     if( operations != null ) {
       for( Operation operation : operations ) {
         if( operation instanceof SetOperation ) {
-          SetOperation currentOperation = ( SetOperation )operation;
-          if( property == null || operation.getPropertyNames().contains( property ) ) {
-            result = currentOperation;
+          SetOperation setOperation = ( SetOperation )operation;
+          if( property == null || setOperation.getProperties().get( property ) != null ) {
+            result = setOperation;
           }
         }
       }
@@ -127,25 +130,37 @@ public class ClientMessage {
   }
 
   private void processOperations( JsonArray operations ) {
-    for( int i = 0; i < operations.size(); i++ ) {
-      Operation operation = createOperation( operations.get( i ).asArray() );
-      appendOperation( operation );
+    for( JsonValue element : operations ) {
+      appendOperation( createOperation( element.asArray() ) );
     }
   }
 
   private Operation createOperation( JsonArray data ) {
-    Operation result = null;
-    String action = getOperationAction( data );
-    if( action.equals( OPERATION_SET ) ) {
-      result = new SetOperation( data );
-    } else if( action.equals( OPERATION_NOTIFY ) ) {
-      result = new NotifyOperation( data );
-    } else if( action.equals( OPERATION_CALL ) ) {
-      result = new CallOperation( data );
-    } else {
-      throw new IllegalArgumentException( "Unknown operation action: " + action );
+    try {
+      return readOperation( data );
+    } catch( Exception exception ) {
+      throw new IllegalArgumentException( "Could not read operation: " + data );
     }
-    return result;
+  }
+
+  private Operation readOperation( JsonArray data ) {
+    String action = data.get( 0 ).asString();
+    String target = data.get( 1 ).asString();
+    if( action.equals( OPERATION_SET ) ) {
+      JsonObject properties = data.get( 2 ).asObject();
+      return new SetOperation( target, properties );
+    }
+    if( action.equals( OPERATION_NOTIFY ) ) {
+      String event = data.get( 2 ).asString();
+      JsonObject properties = data.get( 3 ).asObject();
+      return new NotifyOperation( target, event, properties );
+    }
+    if( action.equals( OPERATION_CALL ) ) {
+      String method = data.get( 2 ).asString();
+      JsonObject parameters = data.get( 3 ).asObject();
+      return new CallOperation( target, method, parameters );
+    }
+    throw new IllegalArgumentException( "Unknown operation action: " + action );
   }
 
   private void appendOperation( Operation operation ) {
@@ -157,124 +172,6 @@ public class ClientMessage {
     targetOperations.add( operation );
     operationsMap.put( target, targetOperations );
     operationsList.add( operation );
-  }
-
-  private String getOperationAction( JsonArray operation ) {
-    String result;
-    try {
-      result = operation.get( 0 ).asString();
-    } catch( Exception e ) {
-      throw new IllegalArgumentException( "Could not find action for operation " + operation );
-    }
-    return result;
-  }
-
-  public abstract class Operation {
-
-    private final String target;
-
-    private Operation( JsonArray operation ) {
-      try {
-        target = operation.get( 1 ).asString();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Invalid operation target", e );
-      }
-    }
-
-    public String getTarget() {
-      return target;
-    }
-
-    public List<String> getPropertyNames() {
-      return getProperties().names();
-    }
-
-    public JsonValue getProperty( String key ) {
-      return getProperties().get( key );
-    }
-
-    abstract public JsonObject getProperties();
-
-  }
-
-  public final class SetOperation extends Operation {
-
-    private final JsonObject properties;
-
-    private SetOperation( JsonArray operation ) {
-      super( operation );
-      try {
-        properties = operation.get( 2 ).asObject();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Properties object missing in operation", e );
-      }
-    }
-
-    @Override
-    public JsonObject getProperties() {
-      return properties;
-    }
-
-  }
-
-  public final class NotifyOperation extends Operation {
-
-    private final String eventName;
-    private final JsonObject properties;
-
-    private NotifyOperation( JsonArray operation ) {
-      super( operation );
-      try {
-        eventName = operation.get( 2 ).asString();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Event type missing in operation", e );
-      }
-      try {
-        properties = operation.get( 3 ).asObject();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Properties object missing in operation", e );
-      }
-    }
-
-    public String getEventName() {
-      return eventName;
-    }
-
-    @Override
-    public JsonObject getProperties() {
-      return properties;
-    }
-
-  }
-
-  public final class CallOperation extends Operation {
-
-    private final String methodName;
-    private final JsonObject properties;
-
-    private CallOperation( JsonArray operation ) {
-      super( operation );
-      try {
-        methodName = operation.get( 2 ).asString();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Method name missing in operation", e );
-      }
-      try {
-        properties = operation.get( 3 ).asObject();
-      } catch( Exception e ) {
-        throw new IllegalArgumentException( "Properties object missing in operation", e );
-      }
-    }
-
-    public String getMethodName() {
-      return methodName;
-    }
-
-    @Override
-    public JsonObject getProperties() {
-      return properties;
-    }
-
   }
 
 }

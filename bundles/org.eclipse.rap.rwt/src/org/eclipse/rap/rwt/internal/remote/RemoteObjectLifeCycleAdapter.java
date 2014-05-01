@@ -15,10 +15,10 @@ import java.util.List;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -70,13 +70,13 @@ public class RemoteObjectLifeCycleAdapter {
 
   private static void dispatchOperation( OperationHandler handler, Operation operation ) {
     if( operation instanceof SetOperation ) {
-      handler.handleSet( operation.getProperties() );
+      handler.handleSet( ( ( SetOperation )operation ).getProperties() );
     } else if( operation instanceof CallOperation ) {
       CallOperation callOperation = ( CallOperation )operation;
-      handler.handleCall( callOperation.getMethodName(), operation.getProperties() );
+      handler.handleCall( callOperation.getMethodName(), callOperation.getParameters() );
     } else if( operation instanceof NotifyOperation ) {
       NotifyOperation notifyOperation = ( NotifyOperation )operation;
-      scheduleHandleNotify( handler, notifyOperation.getEventName(), operation.getProperties() );
+      scheduleHandleNotify( handler, notifyOperation.getEventName(), notifyOperation.getProperties() );
     }
   }
 

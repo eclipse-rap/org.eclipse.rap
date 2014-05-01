@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,20 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.NotifyOperation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.junit.Test;
 
 
@@ -75,8 +78,8 @@ public class ClientMessage_Test {
     try {
       new ClientMessage( JsonObject.readFrom( json ) );
       fail();
-    } catch( IllegalArgumentException expected ) {
-      assertTrue( expected.getMessage().contains( "Unknown operation action: abc" ) );
+    } catch( IllegalArgumentException exception ) {
+      assertTrue( exception.getMessage().contains( "Could not read operation: [" ) );
     }
   }
 
@@ -173,7 +176,7 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "p1" );
 
-    assertEquals( "bar", operation.getProperty( "p1" ).asString() );
+    assertEquals( "bar", operation.getProperties().get( "p1" ).asString() );
   }
 
   @Test
@@ -190,7 +193,7 @@ public class ClientMessage_Test {
 
     assertNotNull( operation );
     assertEquals( "widgetSelected", operation.getEventName() );
-    assertNull( operation.getProperty( "detail" ) );
+    assertNull( operation.getProperties().get( "detail" ) );
   }
 
   @Test
@@ -267,8 +270,8 @@ public class ClientMessage_Test {
     List<CallOperation> operations = message.getAllCallOperationsFor( "w4", "foo" );
 
     assertEquals( 2, operations.size() );
-    assertEquals( "abc", operations.get( 0 ).getProperty( "p1" ).asString() );
-    assertEquals( "def", operations.get( 1 ).getProperty( "p2" ).asString() );
+    assertEquals( "abc", operations.get( 0 ).getParameters().get( "p1" ).asString() );
+    assertEquals( "def", operations.get( 1 ).getParameters().get( "p2" ).asString() );
   }
 
   @Test
@@ -334,7 +337,7 @@ public class ClientMessage_Test {
 
     assertEquals( "w3", operation.getTarget() );
     assertEquals( "store", operation.getMethodName() );
-    assertEquals( 123, operation.getProperty( "id" ).asInt() );
+    assertEquals( 123, operation.getParameters().get( "id" ).asInt() );
   }
 
   @Test
@@ -373,7 +376,7 @@ public class ClientMessage_Test {
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
     JsonArray expected = new JsonArray().add( 1 ).add( 2 );
-    assertEquals( expected, operation.getProperty( "result" ) );
+    assertEquals( expected, operation.getProperties().get( "result" ) );
   }
 
   @Test
@@ -386,7 +389,7 @@ public class ClientMessage_Test {
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
     JsonArray expected = new JsonArray().add( 1 ).add( "foo" ).add( 3 ).add( 4 );
-    assertEquals( expected, operation.getProperty( "result" ) );
+    assertEquals( expected, operation.getProperties().get( "result" ) );
   }
 
   @Test
@@ -398,7 +401,7 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    JsonObject value = operation.getProperty( "result" ).asObject();
+    JsonObject value = operation.getProperties().get( "result" ).asObject();
     assertEquals( "foo", value.get( "p1" ).asString() );
     assertEquals( "bar", value.get( "p2" ).asString() );
   }
@@ -412,35 +415,9 @@ public class ClientMessage_Test {
 
     SetOperation operation = message.getLastSetOperationFor( "w3", "result" );
 
-    JsonObject value = operation.getProperty( "result" ).asObject();
+    JsonObject value = operation.getProperties().get( "result" ).asObject();
     assertEquals( new JsonArray().add( 1 ).add( 2 ), value.get( "p1" ) );
     assertEquals( "bar", value.get( "p2" ).asString() );
-  }
-
-  @Test
-  public void testOperationGetPropertyNames() {
-    Operation operation = createOperation( "[ \"set\", \"w3\", { \"foo\" : 23, \"bar\" : 42 } ]" );
-
-    List<String> names = operation.getPropertyNames();
-
-    assertEquals( 2, names.size() );
-    assertTrue( names.contains( "foo" ) );
-    assertTrue( names.contains( "bar" ) );
-  }
-
-  @Test
-  public void testOperationGetPropertyNamesWhenEmtpy() {
-    Operation operation = createOperation( "[ \"set\", \"w3\", {} ]" );
-
-    List<String> names = operation.getPropertyNames();
-
-    assertTrue( names.isEmpty() );
-  }
-
-  private static Operation createOperation( String operationJson ) {
-    String json = "{ \"head\" : {}, \"operations\" : [" + operationJson + "] }";
-    ClientMessage message = new ClientMessage( JsonObject.readFrom( json ) );
-    return message.getAllOperations().get( 0 );
   }
 
 }

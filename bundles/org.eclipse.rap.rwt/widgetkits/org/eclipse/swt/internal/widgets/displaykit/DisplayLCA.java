@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;

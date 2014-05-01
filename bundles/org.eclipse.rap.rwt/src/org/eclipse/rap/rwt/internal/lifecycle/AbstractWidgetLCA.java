@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
