@@ -2,14 +2,14 @@ The pom.xml in this project helps to assemble the .war files of the
 RAP demo projects. As a default it uses the p2 repositories that are
 created from the nightly RAP and RAP incubator builds (see below).
 
-    mvn -e clean install
+    mvn -e clean verify
 
 At the moment it generates three .war files that can be deployed in
-any web container: controlsdemo.war, rapdemo.war, workbenchdemo.war.
+any web container: controls.war, rapdemo.war, workbench.war.
 
-The RAP Examples Demo requires bundles from additional projects. These
-bundles need to be compiled externally and added to the .war file
-manually.
+The RAP Examples Demo (rapdemo.war) requires bundles from additional
+projects. These bundles need to be compiled externally and added to
+the .war file manually.
 
 * Google Maps:
   https://github.com/eclipsesource/rap-gmap
@@ -45,4 +45,4 @@ Example with RAP 2.2 and RAP Incubator builds for 2.2:
     mvn -e \
       -Drap-repository=http://download.eclipse.org/rt/rap/2.2/ \
       -Drap-incubator-repository=http://download.eclipse.org/rt/rap/incubator/2.2/ \
-      clean install
+      clean verify
