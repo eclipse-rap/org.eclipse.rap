@@ -22,14 +22,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.Message;
 
 
 public final class UrlParameters {
 
   public static final String PARAM_CONNECTION_ID = "cid";
 
-  static void merge( ClientMessage message ) {
+  static void merge( Message message ) {
     if( hasInitializeParameter( message ) ) {
       Map<String, String[]> parameters = getAll( message);
       if( parameters != null ) {
@@ -41,8 +41,8 @@ public final class UrlParameters {
     }
   }
 
-  private static Map<String, String[]> getAll( ClientMessage message ) {
-    JsonValue queryStringHeader = message.getHeader( QUERY_STRING );
+  private static Map<String, String[]> getAll( Message message ) {
+    JsonValue queryStringHeader = message.getHead().get( QUERY_STRING );
     return queryStringHeader == null ? null : createParametersMap( queryStringHeader.asString() );
   }
 
@@ -75,8 +75,8 @@ public final class UrlParameters {
     return result;
   }
 
-  private static boolean hasInitializeParameter( ClientMessage message ) {
-    return JsonValue.TRUE.equals( message.getHeader( RWT_INITIALIZE ) );
+  private static boolean hasInitializeParameter( Message message ) {
+    return JsonValue.TRUE.equals( message.getHead().get( RWT_INITIALIZE ) );
   }
 
   private UrlParameters() {

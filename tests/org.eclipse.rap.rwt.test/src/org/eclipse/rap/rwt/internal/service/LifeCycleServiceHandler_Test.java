@@ -41,20 +41,20 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
@@ -148,8 +148,8 @@ public class LifeCycleServiceHandler_Test {
     TestResponse response = getResponse();
     JsonObject message = JsonObject.readFrom( response.getContent() );
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
-    assertNotNull( message.get( ClientMessage.PROP_HEAD ) );
-    assertNotNull( message.get( ClientMessage.PROP_OPERATIONS ) );
+    assertNotNull( message.get( "head" ) );
+    assertNotNull( message.get( "operations" ) );
   }
 
   @Test
@@ -345,8 +345,8 @@ public class LifeCycleServiceHandler_Test {
 
     assertEquals( HttpServletResponse.SC_PRECONDITION_FAILED, getResponse().getStatus() );
     Message message = getMessageFromResponse();
-    assertEquals( "invalid request counter", message.getError() );
-    assertEquals( 0, message.getOperationCount() );
+    assertEquals( "invalid request counter", getError( message ) );
+    assertTrue( message.getOperations().isEmpty() );
   }
 
   @Test
@@ -358,8 +358,8 @@ public class LifeCycleServiceHandler_Test {
     TestResponse response = getResponse();
     assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
     Message message = getMessageFromResponse();
-    assertEquals( "session timeout", message.getError() );
-    assertEquals( 0, message.getOperationCount() );
+    assertEquals( "session timeout", getError( message ) );
+    assertTrue( message.getOperations().isEmpty() );
   }
 
   @Test
@@ -389,14 +389,14 @@ public class LifeCycleServiceHandler_Test {
     service( serviceHandler );
     Message secondResponse = getMessageFromResponse();
 
-    assertEquals( firstResponse, secondResponse );
+    assertEquals( firstResponse.toString(), secondResponse.toString() );
   }
 
   @Test
   public void testHasValidRequestCounter_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    ClientMessage message = mock( ClientMessage.class );
-    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( nextRequestId ) );
+    Message message = new MessageImpl();
+    message.getHead().set( "requestCounter", nextRequestId );
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -406,8 +406,8 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
-    ClientMessage message = mock( ClientMessage.class );
-    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( 23 ) );
+    Message message = new MessageImpl();
+    message.getHead().set( "requestCounter", 23 );
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -417,8 +417,8 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
-    ClientMessage message = mock( ClientMessage.class );
-    when( message.getHeader( "requestCounter" ) ).thenReturn( JsonValue.valueOf( "not-a-number" ) );
+    Message message = new MessageImpl();
+    message.getHead().set( "requestCounter", "not-a-number" );
 
     try {
       LifeCycleServiceHandler.hasValidRequestCounter( message );
@@ -430,7 +430,7 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
-    ClientMessage message = mock( ClientMessage.class );
+    Message message = new MessageImpl();
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -440,7 +440,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
-    ClientMessage message = mock( ClientMessage.class );
+    Message message = new MessageImpl();
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -453,7 +453,7 @@ public class LifeCycleServiceHandler_Test {
     simulateUiRequest();
     JsonObject message = createExampleMessage();
     getRequest().setBody( message.toString() );
-    ArgumentCaptor<ClientMessage> messageCaptor = ArgumentCaptor.forClass( ClientMessage.class );
+    ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass( Message.class );
 
     service( serviceHandler );
 
@@ -466,7 +466,7 @@ public class LifeCycleServiceHandler_Test {
     markSessionStarted();
     simulateUiRequest();
     RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
-    doThrow( new RuntimeException() ).when( messageHandler ).handleMessage( any( ClientMessage.class ) );
+    doThrow( new RuntimeException() ).when( messageHandler ).handleMessage( any( Message.class ) );
 
     try {
       service( new LifeCycleServiceHandler( messageHandler, startupPage ) );
@@ -518,7 +518,7 @@ public class LifeCycleServiceHandler_Test {
   private static RWTMessageHandler mockMessageHandler() {
     RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
     JsonObject message = createExampleMessage();
-    when( messageHandler.handleMessage( any( ClientMessage.class ) ) ).thenReturn( message  );
+    when( messageHandler.handleMessage( any( Message.class ) ) ).thenReturn( message  );
     return messageHandler;
   }
 
@@ -541,7 +541,11 @@ public class LifeCycleServiceHandler_Test {
   }
 
   private static Message getMessageFromResponse() {
-    return new Message( JsonObject.readFrom( getResponse().getContent() ) );
+    return new ClientMessage( JsonObject.readFrom( getResponse().getContent() ) );
+  }
+
+  private static String getError( Message message ) {
+    return message.getHead().get( "error" ).asString();
   }
 
   private class TestHandler extends LifeCycleServiceHandler {

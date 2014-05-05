@@ -14,13 +14,11 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.QUERY_STR
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +40,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_InitialPostRequest() {
-    ClientMessage message = mock( ClientMessage.class );
+    Message message = new MessageImpl();
     fakeInitializeParameter( message );
     fakeQueryString( message, "key1=value1&key2=value2" );
 
@@ -54,7 +52,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_NotInitialPostRequest() {
-    ClientMessage message = mock( ClientMessage.class );
+    Message message = new MessageImpl();
     fakeQueryString( message, "key1=value1&key2=value2" );
 
     UrlParameters.merge( message );
@@ -115,12 +113,12 @@ public class UrlParameters_Test {
     assertEquals( "value/1", parametersMap.get( "key1" )[ 0 ] );
   }
 
-  private static void fakeInitializeParameter( ClientMessage message ) {
-    when( message.getHeader( RWT_INITIALIZE ) ).thenReturn( JsonValue.TRUE );
+  private static void fakeInitializeParameter( Message message ) {
+    message.getHead().set( RWT_INITIALIZE, true );
   }
 
-  private static void fakeQueryString( ClientMessage message, String queryString ) {
-    when( message.getHeader( QUERY_STRING ) ).thenReturn( JsonValue.valueOf( queryString ) );
+  private static void fakeQueryString( Message message, String queryString ) {
+    message.getHead().set( QUERY_STRING, queryString );
   }
 
 }

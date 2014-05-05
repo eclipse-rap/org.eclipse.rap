@@ -29,7 +29,7 @@ public final class DNDSupport {
 
   public static void handleOperations() {
     ClientMessage clientMessage = ProtocolUtil.getClientMessage();
-    for( Operation operation : clientMessage.getAllOperations() ) {
+    for( Operation operation : clientMessage.getOperations() ) {
       OperationHandler handler = getOperationHandler( operation.getTarget() );
       if( isDNDOperationHandler( handler) ) {
         handleOperation( handler, operation );

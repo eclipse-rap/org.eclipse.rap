@@ -19,6 +19,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 
@@ -31,9 +32,10 @@ public class RWTMessageHandler {
     this.lifeCycleFactory = lifeCycleFactory;
   }
 
-  public JsonObject handleMessage( ClientMessage message ) {
-    ProtocolUtil.setClientMessage( message );
-    workAroundMissingReadData( message );
+  public JsonObject handleMessage( Message message ) {
+    ClientMessage clientMessage = new ClientMessage( message );
+    ProtocolUtil.setClientMessage( clientMessage );
+    workAroundMissingReadData( clientMessage );
     executeLifeCycle();
     return getProtocolWriter().createMessage();
   }
@@ -43,7 +45,7 @@ public class RWTMessageHandler {
     // phase is omitted in the first POST request. Since RemoteObjects may already be registered
     // at this point, this workaround is currently required. We should find a solution that
     // does not require RemoteObjectLifeCycleAdapter.readData to be called in different places.
-    if( JsonValue.TRUE.equals( message.getHeader( RWT_INITIALIZE ) ) ) {
+    if( JsonValue.TRUE.equals( message.getHead().get( RWT_INITIALIZE ) ) ) {
       RemoteObjectLifeCycleAdapter.readData( message );
     }
   }

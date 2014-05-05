@@ -37,6 +37,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.service.ServiceHandler;
@@ -120,7 +121,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private void processUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    ClientMessage message = readClientMessage( request );
+    Message message = readMessage( request );
     setJsonResponseHeaders( response );
     if( isSessionShutdown( message ) ) {
       shutdownUISession();
@@ -145,7 +146,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private ClientMessage readClientMessage( HttpServletRequest request ) {
+  private Message readMessage( HttpServletRequest request ) {
     try {
       return new ClientMessage( JsonObject.readFrom( getReader( request ) ) );
     } catch( IOException ioe ) {
@@ -166,26 +167,26 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return new InputStreamReader( request.getInputStream(), encoding );
   }
 
-  private JsonObject processMessage( ClientMessage inMessage ) {
+  private JsonObject processMessage( Message inMessage ) {
     return messageHandler.handleMessage( inMessage );
   }
 
-  private static boolean isRequestCounterValid( ClientMessage message ) {
+  private static boolean isRequestCounterValid( Message message ) {
     return hasInitializeParameter( message ) || hasValidRequestCounter( message );
   }
 
-  static boolean hasValidRequestCounter( ClientMessage message ) {
+  static boolean hasValidRequestCounter( Message message ) {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = message.getHeader( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = message.getHead().get( PROP_REQUEST_COUNTER );
     if( sentRequestId == null ) {
       return currentRequestId == 0;
     }
     return currentRequestId == sentRequestId.asInt();
   }
 
-  private static boolean isDuplicateRequest( ClientMessage message ) {
+  private static boolean isDuplicateRequest( Message message ) {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = message.getHeader( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = message.getHead().get( PROP_REQUEST_COUNTER );
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
   }
 
@@ -237,11 +238,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   /*
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
-  private static boolean isSessionRestart( ClientMessage message ) {
+  private static boolean isSessionRestart( Message message ) {
     return isSessionStarted() && hasInitializeParameter( message );
   }
 
-  private static boolean isSessionTimeout( ClientMessage message ) {
+  private static boolean isSessionTimeout( Message message ) {
     // Session is not initialized because we got a new HTTPSession
     return !isSessionStarted() && !hasInitializeParameter( message );
   }
@@ -254,12 +255,12 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return Boolean.TRUE.equals( getUISession().getAttribute( ATTR_SESSION_STARTED ) );
   }
 
-  private static boolean isSessionShutdown( ClientMessage message ) {
-    return JsonValue.TRUE.equals( message.getHeader( SHUTDOWN ) );
+  private static boolean isSessionShutdown( Message message ) {
+    return JsonValue.TRUE.equals( message.getHead().get( SHUTDOWN ) );
   }
 
-  private static boolean hasInitializeParameter( ClientMessage message ) {
-    return JsonValue.TRUE.equals( message.getHeader( RWT_INITIALIZE ) );
+  private static boolean hasInitializeParameter( Message message ) {
+    return JsonValue.TRUE.equals( message.getHead().get( RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders( ServletResponse response ) {

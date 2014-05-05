@@ -59,6 +59,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
+import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -358,10 +359,10 @@ public final class Fixture {
     ensureUISession( serviceContext );
   }
 
-  public static ClientMessage createEmptyMessage() {
+  private static ClientMessage createEmptyMessage() {
     JsonObject result = new JsonObject();
-    result.add( ClientMessage.PROP_HEAD, new JsonObject() );
-    result.add( ClientMessage.PROP_OPERATIONS, new JsonArray() );
+    result.add( MessageImpl.PROP_HEAD, new JsonObject() );
+    result.add( MessageImpl.PROP_OPERATIONS, new JsonArray() );
     return new ClientMessage( result );
   }
 
@@ -383,7 +384,7 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonObject header = message.get( ClientMessage.PROP_HEAD ).asObject();
+      JsonObject header = message.get( MessageImpl.PROP_HEAD ).asObject();
       header.add( key, value );
       request.setBody( message.toString() );
       ProtocolUtil.setClientMessage( new ClientMessage( message ) );
@@ -414,9 +415,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( ClientMessage.OPERATION_SET );
+      newOperation.add( MessageImpl.OPERATION_SET );
       newOperation.add( target );
       newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
@@ -436,9 +437,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( ClientMessage.OPERATION_NOTIFY );
+      newOperation.add( MessageImpl.OPERATION_NOTIFY );
       newOperation.add( target );
       newOperation.add( eventName );
       newOperation.add( properties != null ? properties : new JsonObject() );
@@ -459,9 +460,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( ClientMessage.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( ClientMessage.OPERATION_CALL );
+      newOperation.add( MessageImpl.OPERATION_CALL );
       newOperation.add( target );
       newOperation.add( methodName );
       newOperation.add( parameters != null ? parameters : new JsonObject() );
