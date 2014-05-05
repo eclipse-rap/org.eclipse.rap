@@ -137,8 +137,13 @@ describe( "RWTQuery", function() {
         $( element ).attr( "style", "bar" );
         $( element ).attr( "class", "foobar" );
 
-        expect( element.getAttribute( "id" ) ).toBeFalsy();
-        expect( element.getAttribute( "style" ) ).toBeFalsy();
+        if( rwt.client.Client.isMshtml() ) {
+          expect( element.getAttribute( "id" ) ).toBe( "" );
+          expect( element.getAttribute( "style" ) ).not.toBe( "bar" );
+        } else {
+          expect( element.getAttribute( "id" ) ).toBeFalsy();
+          expect( element.getAttribute( "style" ) ).toBeFalsy();
+        }
         expect( element.getAttribute( "class" ) ).toBeFalsy();
       } );
 
