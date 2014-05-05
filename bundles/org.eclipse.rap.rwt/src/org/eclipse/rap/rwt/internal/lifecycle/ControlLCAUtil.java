@@ -493,9 +493,7 @@ public class ControlLCAUtil {
   }
 
   private static void resetTabIndices( Composite composite ) {
-    Control[] children = composite.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      Control control = children[ i ];
+    for( Control control : composite.getChildren() ) {
       ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
       if( control instanceof Composite ) {
         resetTabIndices( ( Composite )control );
@@ -504,18 +502,12 @@ public class ControlLCAUtil {
   }
 
   private static int computeTabIndices( Composite composite, int startIndex ) {
-    Control[] tabList = composite.getTabList();
     int result = startIndex;
-    for( int i = 0; i < tabList.length; i++ ) {
-      Control control = tabList[ i ];
+    for( Control control : composite.getTabList() ) {
       IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
       controlAdapter.setTabIndex( result );
       // for Links, leave a range out to be assigned to hrefs on the client
-      if( control instanceof Link ) {
-        result += 300;
-      } else {
-        result += 1;
-      }
+      result += control instanceof Link ? 300 : 1;
       if( control instanceof Composite ) {
         result = computeTabIndices( ( Composite )control, result );
       }
