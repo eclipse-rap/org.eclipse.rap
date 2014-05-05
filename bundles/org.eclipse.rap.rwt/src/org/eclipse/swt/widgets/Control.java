@@ -69,15 +69,6 @@ public abstract class Control extends Widget implements Drawable {
 
   private final class ControlAdapter implements IControlAdapter {
 
-    public int getZIndex() {
-      Composite parent = getParent();
-      int result = 0;
-      if( parent != null ) {
-        result = ControlHolder.indexOf( parent, Control.this );
-      }
-      return result;
-    }
-
     public Shell getShell() {
       return internalGetShell();
     }
