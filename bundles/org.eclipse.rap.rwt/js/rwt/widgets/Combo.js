@@ -136,11 +136,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this._field.setTextColor( value );
     },
 
-    _applyBackgroundColor : function( value, old ) {
-      this.base( arguments, value, old );
-      this._field.setBackgroundColor( value );
-    },
-
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );
       this._field.setCursor( value );

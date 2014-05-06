@@ -319,7 +319,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setBackgroundColor( "#00000F" );
 
       assertEquals( "#00000F", combo.getBackgroundColor() );
-      assertEquals( "#00000F", field.getBackgroundColor() );
+      assertNull( field.getBackgroundColor() );
     },
 
     testSetCursor : function() {
