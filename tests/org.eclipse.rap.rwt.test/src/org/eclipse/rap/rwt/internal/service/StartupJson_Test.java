@@ -37,8 +37,8 @@ import org.eclipse.rap.rwt.internal.resources.ClientResources;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
@@ -73,7 +73,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     assertEquals( "foo", message.getHead().get( PROPERTY_URL ).asString() );
   }
 
@@ -84,7 +84,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     assertEquals( "./", message.getHead().get( PROPERTY_URL ).asString() );
   }
 
@@ -92,7 +92,7 @@ public class StartupJson_Test {
   public void testGet_createDisplay() {
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     assertNotNull( message.findCreateOperation( "w1" ) );
   }
 
@@ -102,7 +102,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     CallOperation operation
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_FALLBACK_THEME );
     assertNotNull( operation );
@@ -116,7 +116,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     CallOperation operation
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
@@ -134,7 +134,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     CallOperation operation
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
@@ -148,7 +148,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     JsonValue clientMessages = message.findSetProperty( "rwt.client.ClientMessages", "messages" );
     assertFalse( clientMessages.asObject().isEmpty() );
   }
@@ -160,7 +160,7 @@ public class StartupJson_Test {
 
     JsonObject content = StartupJson.get();
 
-    Message message = new Message( content );
+    TestMessage message = new TestMessage( content );
     assertNull( message.findSetOperation( "rwt.client.ClientMessages", "messages" ) );
   }
 

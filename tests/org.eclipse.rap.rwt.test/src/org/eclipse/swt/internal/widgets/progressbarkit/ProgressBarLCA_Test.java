@@ -29,8 +29,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
@@ -85,7 +85,7 @@ public class ProgressBarLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertEquals( "rwt.widgets.ProgressBar", operation.getType() );
   }
@@ -114,7 +114,7 @@ public class ProgressBarLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertEquals( WidgetUtil.getId( progressBar.getParent() ), operation.getParent() );
   }
@@ -125,7 +125,7 @@ public class ProgressBarLCA_Test {
 
     lca.renderInitialization( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "VERTICAL" ) );
@@ -136,7 +136,7 @@ public class ProgressBarLCA_Test {
   public void testRenderInitialMinimum() throws IOException {
     lca.render( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
@@ -146,7 +146,7 @@ public class ProgressBarLCA_Test {
     progressBar.setMinimum( 10 );
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( progressBar, "minimum" ).asInt() );
   }
 
@@ -159,7 +159,7 @@ public class ProgressBarLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( progressBar, "minimum" ) );
   }
 
@@ -167,7 +167,7 @@ public class ProgressBarLCA_Test {
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
@@ -177,7 +177,7 @@ public class ProgressBarLCA_Test {
     progressBar.setMaximum( 10 );
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( progressBar, "maximum" ).asInt() );
   }
 
@@ -190,7 +190,7 @@ public class ProgressBarLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( progressBar, "maximum" ) );
   }
 
@@ -198,7 +198,7 @@ public class ProgressBarLCA_Test {
   public void testRenderInitialSelection() throws IOException {
     lca.render( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
@@ -208,7 +208,7 @@ public class ProgressBarLCA_Test {
     progressBar.setSelection( 10 );
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( progressBar, "selection" ).asInt() );
   }
 
@@ -221,7 +221,7 @@ public class ProgressBarLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( progressBar, "selection" ) );
   }
 
@@ -229,7 +229,7 @@ public class ProgressBarLCA_Test {
   public void testRenderInitialState() throws IOException {
     lca.render( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
     assertTrue( operation.getPropertyNames().indexOf( "state" ) == -1 );
   }
@@ -239,7 +239,7 @@ public class ProgressBarLCA_Test {
     progressBar.setState( SWT.ERROR );
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "error", message.findSetProperty( progressBar, "state" ).asString() );
   }
 
@@ -252,7 +252,7 @@ public class ProgressBarLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( progressBar, "state" ) );
   }
 
@@ -262,7 +262,7 @@ public class ProgressBarLCA_Test {
 
     lca.renderChanges( progressBar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( progressBar, "addListener" ) );
   }
 

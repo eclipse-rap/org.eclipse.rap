@@ -30,10 +30,10 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -80,7 +80,7 @@ public class DropTargetLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( target );
     assertEquals( "rwt.widgets.DropTarget", operation.getType() );
     assertEquals( getId( control ), operation.getProperty( "control" ).asString() );
@@ -108,7 +108,7 @@ public class DropTargetLCA_Test {
     } );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     SetOperation setOperation = message.findSetOperation( target, "transfer" );
     JsonArray expected = new JsonArray();
     expected.add( Integer.toString( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
@@ -125,7 +125,7 @@ public class DropTargetLCA_Test {
     control.dispose();
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
     assertNull( message.findDestroyOperation( target ) );
   }
@@ -140,7 +140,7 @@ public class DropTargetLCA_Test {
     control.dispose();
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( control ) );
     assertNull( message.findDestroyOperation( target ) );
   }
@@ -154,7 +154,7 @@ public class DropTargetLCA_Test {
     target.addDropListener( mock( DropTargetListener.class ) );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragEnter" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragOver" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( target, "DragLeave" ) );
@@ -173,7 +173,7 @@ public class DropTargetLCA_Test {
     target.removeDropListener( listener );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragEnter" ) );
     assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragOver" ) );
     assertEquals( JsonValue.FALSE, message.findListenProperty( target, "DragLeave" ) );
@@ -191,7 +191,7 @@ public class DropTargetLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( target, "DragEnter" ) );
     assertNull( message.findListenOperation( target, "DragOver" ) );
     assertNull( message.findListenOperation( target, "DragLeave" ) );
@@ -208,7 +208,7 @@ public class DropTargetLCA_Test {
     setDataTypeChanged( control, dataType );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDataType" );
     assertEquals( dataType.type, call.getProperty( "dataType" ).asInt() );
   }
@@ -222,7 +222,7 @@ public class DropTargetLCA_Test {
     setDataTypeChanged( mock( Control.class ), dataType );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( target, "changeDataType" ) );
   }
 
@@ -235,7 +235,7 @@ public class DropTargetLCA_Test {
     setFeedbackChanged( control, feedback );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeFeedback" );
     assertEquals( feedback, call.getProperty( "flags" ).asInt() );
     JsonArray expected = new JsonArray().add( "FEEDBACK_SCROLL" ).add( "FEEDBACK_SELECT" );
@@ -251,7 +251,7 @@ public class DropTargetLCA_Test {
     setFeedbackChanged( mock( Control.class ), feedback );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( target, "changeFeedback" ) );
   }
 
@@ -263,7 +263,7 @@ public class DropTargetLCA_Test {
     setDetailChanged( control, DND.DROP_COPY );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDetail" );
     assertEquals( "DROP_COPY", call.getProperty( "detail" ).asString() );
   }
@@ -276,7 +276,7 @@ public class DropTargetLCA_Test {
     setDetailChanged( mock( Control.class ), DND.DROP_COPY );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( target, "changeDetail" ) );
   }
 
@@ -288,7 +288,7 @@ public class DropTargetLCA_Test {
     setDetailChanged( control, DND.DROP_NONE );
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDetail" );
     assertEquals( "DROP_NONE", call.getProperty( "detail" ).asString() );
   }
@@ -297,7 +297,7 @@ public class DropTargetLCA_Test {
   public void testRenderFileDropEnabled_initialFalseRendersNothing() throws IOException {
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( target, "fileDropEnabled" ) );
   }
 
@@ -307,7 +307,7 @@ public class DropTargetLCA_Test {
 
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertTrue( message.findSetProperty( target, "fileDropEnabled" ).asBoolean() );
   }
 
@@ -320,7 +320,7 @@ public class DropTargetLCA_Test {
 
     lca.renderChanges( target );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertFalse( message.findSetProperty( target, "fileDropEnabled" ).asBoolean() );
   }
 

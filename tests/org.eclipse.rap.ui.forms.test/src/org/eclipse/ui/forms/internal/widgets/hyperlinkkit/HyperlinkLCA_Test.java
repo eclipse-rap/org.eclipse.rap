@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -32,6 +32,7 @@ import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.junit.Test;
+
 
 @SuppressWarnings("restriction")
 public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
@@ -50,7 +51,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertEquals( "forms.widgets.Hyperlink", operation.getType() );
   }
@@ -60,7 +61,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     lca.renderInitialization( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertEquals( "forms.widgets.Hyperlink", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -90,7 +91,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertEquals( WidgetUtil.getId( hyperlink.getParent() ), operation.getParent() );
   }
@@ -98,7 +99,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "text" ) );
   }
 
@@ -106,7 +107,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     hyperlink.setText( "test" );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( hyperlink, "text" ).asString() );
   }
 
@@ -118,14 +119,14 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "text" ) );
   }
 
   public void testRenderInitialUnderlined() throws IOException {
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "underlined" ) );
   }
 
@@ -133,7 +134,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     hyperlink.setUnderlined( true );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( hyperlink, "underlined" ) );
   }
 
@@ -145,14 +146,14 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "underlined" ) );
   }
 
   public void testRenderInitialUnderlineMode() throws IOException {
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "underlineMode" ) );
   }
 
@@ -160,7 +161,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     getAdapter( hyperlink ).setUnderlineMode( HyperlinkSettings.UNDERLINE_HOVER );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( hyperlink, "underlineMode" ).asInt() );
   }
 
@@ -172,14 +173,14 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "underlineMode" ) );
   }
 
   public void testRenderInitialActiveBackground() throws IOException {
     lca.render( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertTrue( operation.getPropertyNames().indexOf( "activeBackground" ) == -1 );
   }
@@ -188,7 +189,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     getAdapter( hyperlink ).setActiveBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "activeBackground" );
     assertEquals( 0, actual.get( 0 ).asInt() );
     assertEquals( 255, actual.get( 1 ).asInt() );
@@ -204,14 +205,14 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "activeBackground" ) );
   }
 
   public void testRenderInitialActiveForeground() throws IOException {
     lca.render( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertTrue( operation.getPropertyNames().indexOf( "activeForeground" ) == -1 );
   }
@@ -220,7 +221,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     getAdapter( hyperlink ).setActiveForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "activeForeground" );
     assertEquals( 0, actual.get( 0 ).asInt() );
     assertEquals( 255, actual.get( 1 ).asInt() );
@@ -236,14 +237,14 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "activeForeground" ) );
   }
 
   public void testRenderAddSelectionListener() throws Exception {
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( hyperlink, "DefaultSelection" ) );
   }
 
@@ -260,7 +261,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( hyperlink, "DefaultSelection" ) );
   }
 

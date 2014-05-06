@@ -300,10 +300,10 @@ public final class Fixture {
     fakePhase( bufferedPhaseId );
   }
 
-  public static Message getProtocolMessage() {
+  public static TestMessage getProtocolMessage() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     finishResponse( response );
-    return new Message( JsonObject.readFrom( response.getContent() ) );
+    return new TestMessage( JsonObject.readFrom( response.getContent() ) );
   }
 
   private static void finishResponse( TestResponse response ) {

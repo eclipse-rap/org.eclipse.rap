@@ -21,12 +21,12 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.ListenOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -50,13 +50,13 @@ public class Message_Test {
 
   @Test( expected = NullPointerException.class )
   public void testConstructWithNull() {
-    new Message( (JsonObject)null );
+    new TestMessage( (JsonObject)null );
   }
 
   @Test
   public void testConstructWithoutOperations() {
     try {
-      new Message( new JsonObject().add( "foo", 23 ) );
+      new TestMessage( new JsonObject().add( "foo", 23 ) );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -66,7 +66,7 @@ public class Message_Test {
   @Test
   public void testConstructWithInvalidOperations() {
     try {
-      new Message( new JsonObject().add( "operations", 23 ) );
+      new TestMessage( new JsonObject().add( "operations", 23 ) );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -139,7 +139,7 @@ public class Message_Test {
   @Test
   public void testGetOperationWithUnknownType() {
     JsonObject json = JsonObject.readFrom( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
-    Message message = new Message( json );
+    TestMessage message = new TestMessage( json );
     try {
       message.getOperation( 0 );
       fail();
@@ -152,7 +152,7 @@ public class Message_Test {
     writer.appendCreate( "w1", "type" );
     writer.appendCreate( "w2", "type" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 0, message.getOperation( 0 ).getPosition() );
     assertEquals( 1, message.getOperation( 1 ).getPosition() );
   }
@@ -222,7 +222,7 @@ public class Message_Test {
   public void testFindSetOperation() {
     writer.appendSet( "w1", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     SetOperation operation = message.findSetOperation( "w1", "key" );
     assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
@@ -232,7 +232,7 @@ public class Message_Test {
   public void testFindSetOperationFailed() {
     writer.appendSet( "w1", "key1", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertNull( message.findSetOperation( "w1", "key2" ) );
     assertNull( message.findSetOperation( "w2", "key1" ) );
@@ -242,7 +242,7 @@ public class Message_Test {
   public void testFindSetProperty() {
     writer.appendSet( "w1", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertEquals( JsonValue.TRUE, message.findSetProperty( "w1", "key" ) );
   }
@@ -251,7 +251,7 @@ public class Message_Test {
   public void testFindSetPropertyFailed() {
     writer.appendSet( "w1", "key1", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     try {
       message.findSetProperty( "w1", "key2" );
@@ -271,7 +271,7 @@ public class Message_Test {
   public void testFindListenOperation() {
     writer.appendListen( "w1", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     ListenOperation operation = message.findListenOperation( "w1", "key" );
     assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
@@ -281,7 +281,7 @@ public class Message_Test {
   public void testFindListenOperationFailed() {
     writer.appendListen( "w1", "key1", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertNull( message.findListenOperation( "w1", "key2" ) );
     assertNull( message.findListenOperation( "w2", "key1" ) );
@@ -291,7 +291,7 @@ public class Message_Test {
   public void testFindListenProperty() {
     writer.appendListen( "w1", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertEquals( JsonValue.TRUE, message.findListenProperty( "w1", "key" ) );
   }
@@ -300,7 +300,7 @@ public class Message_Test {
   public void testFindListenPropertyFailed() {
     writer.appendListen( "w1", "key1", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     try {
       message.findListenProperty( "w1", "key2" );
@@ -321,7 +321,7 @@ public class Message_Test {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     CreateOperation operation = message.findCreateOperation( "w2" );
     assertEquals( "w2", operation.getTarget() );
@@ -333,7 +333,7 @@ public class Message_Test {
   public void testFindCreateFailed() {
     writer.appendCreate( "w2", "myType" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertNull( message.findCreateOperation( "w1" ) );
   }
@@ -343,7 +343,7 @@ public class Message_Test {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertEquals( JsonValue.TRUE, message.findCreateProperty( "w2", "key" ) );
   }
@@ -353,7 +353,7 @@ public class Message_Test {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key1", true );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     try {
       message.findCreateProperty( "w1", "key1" );
@@ -373,7 +373,7 @@ public class Message_Test {
   public void testFindCallOperation() {
     writer.appendCall( "w1", "method", null );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     CallOperation operation = message.findCallOperation( "w1", "method" );
     assertEquals( "w1", operation.getTarget() );
@@ -385,7 +385,7 @@ public class Message_Test {
     writer.appendCall( "w2", "method1", null );
     writer.appendCall( "w1", "method2", null );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
 
     assertNull( message.findCallOperation( "w1", "method1" ) );
   }
@@ -445,8 +445,8 @@ public class Message_Test {
   public void testEquals() {
     JsonObject json = new JsonObject().add( "operations", new JsonArray() );
 
-    Message message1 = new Message( json );
-    Message message2 = new Message( json );
+    TestMessage message1 = new TestMessage( json );
+    TestMessage message2 = new TestMessage( json );
 
     assertEquals( message1, message2 );
   }
@@ -458,14 +458,14 @@ public class Message_Test {
       .add( "head", new JsonObject() )
       .add( "operations", new JsonArray() );
 
-    Message message1 = new Message( json1 );
-    Message message2 = new Message( json2 );
+    TestMessage message1 = new TestMessage( json1 );
+    TestMessage message2 = new TestMessage( json2 );
 
     assertFalse( message1.equals( message2 ) );
   }
 
-  private Message getMessage() {
-    return new Message( writer.createMessage() );
+  private TestMessage getMessage() {
+    return new TestMessage( writer.createMessage() );
   }
 
 }

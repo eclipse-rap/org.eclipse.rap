@@ -32,8 +32,8 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -192,7 +192,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
     java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -207,7 +207,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     java.util.List<String> propertyNames = operation.getPropertyNames();
     assertTrue( propertyNames.contains( "cellSize" ) );
@@ -246,7 +246,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
     java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -272,7 +272,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
     java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -298,7 +298,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     java.util.List<String> propertyNames = operation.getPropertyNames();
     assertTrue( propertyNames.contains( "cellSize" ) );
@@ -312,7 +312,7 @@ public class DateTimeLCA_Test {
 
     lca.renderInitialization( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( WidgetUtil.getId( dateTime.getParent() ), operation.getParent() );
   }
@@ -327,7 +327,7 @@ public class DateTimeLCA_Test {
     dateTime.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
@@ -343,7 +343,7 @@ public class DateTimeLCA_Test {
     dateTime.removeListener( SWT.Selection, listener );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( dateTime, "Selection" ) );
   }
 
@@ -358,7 +358,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( dateTime, "Selection" ) );
   }
 
@@ -372,7 +372,7 @@ public class DateTimeLCA_Test {
     dateTime.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( dateTime, "DefaultSelection" ) );
   }
 
@@ -388,7 +388,7 @@ public class DateTimeLCA_Test {
     dateTime.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( dateTime, "DefaultSelection" ) );
   }
 
@@ -403,7 +403,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( dateTime, "DefaultSelection" ) );
   }
 
@@ -413,7 +413,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
@@ -425,7 +425,7 @@ public class DateTimeLCA_Test {
     dateTime.setYear( 2000 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
   }
 
@@ -439,7 +439,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "year" ) );
   }
 
@@ -449,7 +449,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
@@ -462,7 +462,7 @@ public class DateTimeLCA_Test {
     dateTime.setMonth( 2 ); // 2 == March!
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
   }
 
@@ -477,7 +477,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "month" ) );
   }
 
@@ -487,7 +487,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
@@ -499,7 +499,7 @@ public class DateTimeLCA_Test {
     dateTime.setDay( 3 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
   }
 
@@ -513,7 +513,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "day" ) );
   }
 
@@ -523,7 +523,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
@@ -534,7 +534,7 @@ public class DateTimeLCA_Test {
 
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
     assertEquals( 9, actual.size() );
   }
@@ -548,7 +548,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
   }
 
@@ -558,7 +558,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "hours" ) );
   }
@@ -570,7 +570,7 @@ public class DateTimeLCA_Test {
     dateTime.setHours( 10 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( dateTime, "hours" ).asInt() );
   }
 
@@ -584,7 +584,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "hours" ) );
   }
 
@@ -594,7 +594,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "minutes" ) );
   }
@@ -606,7 +606,7 @@ public class DateTimeLCA_Test {
     dateTime.setMinutes( 10 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( dateTime, "minutes" ).asInt() );
   }
 
@@ -620,7 +620,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "minutes" ) );
   }
 
@@ -630,7 +630,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "seconds" ) );
   }
@@ -642,7 +642,7 @@ public class DateTimeLCA_Test {
     dateTime.setSeconds( 10 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( dateTime, "seconds" ).asInt() );
   }
 
@@ -656,7 +656,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "seconds" ) );
   }
 
@@ -666,7 +666,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
@@ -677,7 +677,7 @@ public class DateTimeLCA_Test {
 
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
     assertEquals( 6, actual.size() );
   }
@@ -691,7 +691,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
   }
 
@@ -701,7 +701,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
@@ -713,7 +713,7 @@ public class DateTimeLCA_Test {
     dateTime.setYear( 2000 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2000, message.findSetProperty( dateTime, "year" ).asInt() );
   }
 
@@ -727,7 +727,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "year" ) );
   }
 
@@ -737,7 +737,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
@@ -750,7 +750,7 @@ public class DateTimeLCA_Test {
     dateTime.setMonth( 2 ); // 2 == March!
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( dateTime, "month" ).asInt() );
   }
 
@@ -765,7 +765,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "month" ) );
   }
 
@@ -775,7 +775,7 @@ public class DateTimeLCA_Test {
 
     lca.render( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
@@ -787,7 +787,7 @@ public class DateTimeLCA_Test {
     dateTime.setDay( 3 );
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 3, message.findSetProperty( dateTime, "day" ).asInt() );
   }
 
@@ -801,7 +801,7 @@ public class DateTimeLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( dateTime, "day" ) );
   }
 

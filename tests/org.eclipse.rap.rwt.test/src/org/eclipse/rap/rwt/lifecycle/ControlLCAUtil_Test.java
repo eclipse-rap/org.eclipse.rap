@@ -43,7 +43,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
@@ -395,7 +395,7 @@ public class ControlLCAUtil_Test {
     control.setVisible( false );
     ControlLCAUtil.renderVisible( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( control, "visibility" ) );
   }
 
@@ -403,7 +403,7 @@ public class ControlLCAUtil_Test {
   public void testRenderVisibilityInitiallyTrue() {
     ControlLCAUtil.renderVisible( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
@@ -416,7 +416,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderVisible( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
@@ -426,7 +426,7 @@ public class ControlLCAUtil_Test {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[ 0, 0, 0, 0 ]" );
     assertEquals( expected, message.findSetProperty( control, "bounds" ) );
   }
@@ -437,7 +437,7 @@ public class ControlLCAUtil_Test {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[ 10, 20, 100, 200 ]" );
     assertEquals( expected, message.findSetProperty( control, "bounds" ) );
   }
@@ -452,7 +452,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderBounds( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "bounds" ) );
   }
 
@@ -461,7 +461,7 @@ public class ControlLCAUtil_Test {
   public void testRenderIntialMenu() {
     ControlLCAUtil.renderMenu( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "menu" ) );
   }
 
@@ -471,7 +471,7 @@ public class ControlLCAUtil_Test {
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderMenu( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = getId( control.getMenu() );
     assertEquals( expected, message.findSetProperty( control, "menu" ).asString() );
   }
@@ -486,7 +486,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderMenu( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "menu" ) );
   }
 
@@ -495,7 +495,7 @@ public class ControlLCAUtil_Test {
   public void testRenderIntialEnabled() {
     ControlLCAUtil.renderEnabled( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "enabled" ) );
   }
 
@@ -505,7 +505,7 @@ public class ControlLCAUtil_Test {
     control.setEnabled( false );
     ControlLCAUtil.renderEnabled( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( control, "enabled" ) );
   }
 
@@ -519,7 +519,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderEnabled( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "enabled" ) );
   }
 
@@ -527,7 +527,7 @@ public class ControlLCAUtil_Test {
   public void testRenderIntialBackgroundImage() {
     ControlLCAUtil.renderBackgroundImage( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
@@ -538,7 +538,7 @@ public class ControlLCAUtil_Test {
     control.setBackgroundImage( image );
     ControlLCAUtil.renderBackgroundImage( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
     assertEquals( expected, message.findSetProperty( control, "backgroundImage" ) );
@@ -553,7 +553,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderBackgroundImage( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
@@ -561,7 +561,7 @@ public class ControlLCAUtil_Test {
   public void testRenderInitialFont() {
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
@@ -570,7 +570,7 @@ public class ControlLCAUtil_Test {
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, false]" );
     assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
@@ -580,7 +580,7 @@ public class ControlLCAUtil_Test {
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, false]" );
     assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
@@ -590,7 +590,7 @@ public class ControlLCAUtil_Test {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, true]" );
     assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
@@ -600,7 +600,7 @@ public class ControlLCAUtil_Test {
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, true]" );
     assertEquals( expected, message.findSetProperty( control, "font" ) );
   }
@@ -614,7 +614,7 @@ public class ControlLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "font" ) );
   }
 
@@ -628,7 +628,7 @@ public class ControlLCAUtil_Test {
     control.setFont( null );
     ControlLCAUtil.renderFont( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( control, "font" ) );
   }
 

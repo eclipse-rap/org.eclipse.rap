@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class ServerPushRenderer_Test {
 
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCreateOperation( REMOTE_OBJECT_ID ) );
   }
 
@@ -60,7 +60,7 @@ public class ServerPushRenderer_Test {
   public void testNothingRenderedIfNotActivated() {
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -70,7 +70,7 @@ public class ServerPushRenderer_Test {
 
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
@@ -83,7 +83,7 @@ public class ServerPushRenderer_Test {
     ServerPushManager.getInstance().activateServerPushFor( HANDLE );
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( REMOTE_OBJECT_ID, "active" ) );
   }
 
@@ -96,7 +96,7 @@ public class ServerPushRenderer_Test {
     ServerPushManager.getInstance().deactivateServerPushFor( HANDLE );
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( REMOTE_OBJECT_ID, "active" ) );
   }
 
@@ -110,7 +110,7 @@ public class ServerPushRenderer_Test {
     ServerPushManager.getInstance().deactivateServerPushFor( HANDLE );
     renderer.render();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( REMOTE_OBJECT_ID, "active" ) );
   }
 

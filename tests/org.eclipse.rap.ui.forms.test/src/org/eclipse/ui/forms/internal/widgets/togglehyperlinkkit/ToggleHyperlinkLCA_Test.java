@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,12 +23,13 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.Twistie;
 import org.junit.Test;
+
 
 @SuppressWarnings("restriction")
 public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
@@ -47,7 +48,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( twistie );
     assertEquals( "forms.widgets.ToggleHyperlink", operation.getType() );
   }
@@ -75,7 +76,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( twistie );
     assertEquals( WidgetUtil.getId( twistie.getParent() ), operation.getParent() );
   }
@@ -83,7 +84,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderImages() throws IOException {
     lca.renderInitialization( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( twistie );
     JsonArray images = operation.getProperty( "images" ).asArray();
     assertNotNull( images.get( 0 ) );
@@ -95,7 +96,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderAddSelectionListener() throws Exception {
     lca.renderChanges( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
   }
 
@@ -108,14 +109,14 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( twistie, "DefaultSelection" ) );
   }
 
   public void testRenderInitialExpanded() throws IOException {
     lca.renderChanges( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( twistie, "expanded" ) );
   }
 
@@ -123,7 +124,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     twistie.setExpanded( true );
     lca.renderChanges( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( twistie, "expanded" ) );
   }
 
@@ -135,7 +136,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( twistie );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( twistie, "expanded" ) );
   }
 

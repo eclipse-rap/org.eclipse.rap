@@ -28,9 +28,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -162,7 +162,7 @@ public final class CoolBarLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( bar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( bar );
     assertEquals( "rwt.widgets.CoolBar", operation.getType() );
   }
@@ -191,7 +191,7 @@ public final class CoolBarLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( bar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( bar );
     assertEquals( WidgetUtil.getId( bar.getParent() ), operation.getParent() );
   }
@@ -202,7 +202,7 @@ public final class CoolBarLCA_Test {
     bar.setLocked( true );
     lca.renderChanges( bar );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( bar, "locked" );
     assertEquals( JsonValue.TRUE, operation.getProperty( "locked" ) );
   }

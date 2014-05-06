@@ -27,10 +27,10 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -74,7 +74,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertEquals( "rwt.widgets.ControlDecorator", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -88,7 +88,7 @@ public class ControlDecoratorLCA_Test {
 
     lca.renderInitialization( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "RIGHT" ) );
@@ -101,7 +101,7 @@ public class ControlDecoratorLCA_Test {
 
     lca.renderInitialization( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "LEFT" ) );
@@ -122,7 +122,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertEquals( getId( decorator.getParent() ), operation.getParent() );
   }
@@ -131,7 +131,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( getId( decorator ), operation.getTarget() );
@@ -143,7 +143,7 @@ public class ControlDecoratorLCA_Test {
 
     lca.renderDispose( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( getId( decorator ), operation.getTarget() );
@@ -153,7 +153,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderInitialBounds() throws IOException {
     lca.render( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findCreateProperty( decorator, "bounds" );
     assertEquals( 0, bounds.get( 2 ).asInt() );
     assertEquals( 0, bounds.get( 3 ).asInt() );
@@ -164,7 +164,7 @@ public class ControlDecoratorLCA_Test {
     decorator.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findSetProperty( decorator, "bounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
@@ -179,7 +179,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "bounds" ) );
   }
 
@@ -187,7 +187,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
@@ -197,7 +197,7 @@ public class ControlDecoratorLCA_Test {
     decorator.setText( "foo" );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( decorator, "text" ).asString() );
   }
 
@@ -210,7 +210,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "text" ) );
   }
 
@@ -218,7 +218,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.render( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "image" ) );
   }
 
@@ -229,7 +229,7 @@ public class ControlDecoratorLCA_Test {
     decorator.setImage( image );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = JsonArray.readFrom( "[\"" + imageLocation + "\", 100, 50 ]" );
     assertEquals( expected, message.findSetProperty( decorator, "image" ) );
@@ -245,7 +245,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "image" ) );
   }
 
@@ -260,7 +260,7 @@ public class ControlDecoratorLCA_Test {
     decorator.setImage( null );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( decorator, "image" ) );
   }
 
@@ -268,7 +268,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderInitialVisible() throws IOException {
     lca.render( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
   }
@@ -281,7 +281,7 @@ public class ControlDecoratorLCA_Test {
     decorator.show();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     decorator.isVisible();
     assertEquals( JsonValue.TRUE, message.findSetProperty( decorator, "visible" ) );
   }
@@ -297,7 +297,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "visible" ) );
   }
 
@@ -305,7 +305,7 @@ public class ControlDecoratorLCA_Test {
   public void testRenderInitialShowHover() throws IOException {
     lca.render( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertTrue( operation.getPropertyNames().indexOf( "showHover" ) == -1 );
   }
@@ -315,7 +315,7 @@ public class ControlDecoratorLCA_Test {
     decorator.setShowHover( false );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( decorator, "showHover" ) );
   }
 
@@ -328,7 +328,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( decorator, "showHover" ) );
   }
 
@@ -341,7 +341,7 @@ public class ControlDecoratorLCA_Test {
     decorator.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
@@ -357,7 +357,7 @@ public class ControlDecoratorLCA_Test {
     decorator.removeSelectionListener( listener );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "Selection" ) );
     assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
   }
@@ -372,7 +372,7 @@ public class ControlDecoratorLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( decorator, "Selection" ) );
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
@@ -386,7 +386,7 @@ public class ControlDecoratorLCA_Test {
     decorator.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
     assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
@@ -400,7 +400,7 @@ public class ControlDecoratorLCA_Test {
     decorator.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( decorator );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
     assertNull( message.findListenOperation( decorator, "Selection" ) );
   }

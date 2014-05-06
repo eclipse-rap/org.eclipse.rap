@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2013 EclipseSource and others.
+* Copyright (c) 2011, 2014 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -22,12 +22,12 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.ListenOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class LifeCycleRemoteObject_Test {
     remoteObject = new LifeCycleRemoteObject( "id", "type" );
     remoteObject.set( "foo", 23 );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 1, message.getOperationCount() );
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
     assertEquals( 23, message.getOperation( 0 ).getProperty( "foo" ).asInt() );
@@ -208,9 +208,9 @@ public class LifeCycleRemoteObject_Test {
     assertEquals( "id", operation.getTarget() );
   }
 
-  private Message getMessage() {
+  private TestMessage getMessage() {
     ProtocolMessageWriter writer = getProtocolWriter();
-    return new Message( writer.createMessage() );
+    return new TestMessage( writer.createMessage() );
   }
 
 }

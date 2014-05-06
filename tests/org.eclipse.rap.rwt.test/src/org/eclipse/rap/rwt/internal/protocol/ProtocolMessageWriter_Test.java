@@ -22,12 +22,12 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.ListenOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.ListenOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
@@ -154,7 +154,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendCreate( shellId, "org.Text" );
     writer.appendCreate( buttonId, "org.Shell" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
     assertTrue( message.getOperation( 1 ) instanceof CreateOperation );
   }
@@ -178,7 +178,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendDestroy( buttonId );
     writer.appendDestroy( shellId );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
     assertTrue( message.getOperation( 1 ) instanceof DestroyOperation );
   }
@@ -204,7 +204,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( "id", "property-1", "value-1" );
     writer.appendSet( "id", "property-2", 23 );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 1, message.getOperationCount() );
     assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property-1" ).asString() );
     assertEquals( 23, message.getOperation( 0 ).getProperty( "property-2" ).asInt() );
@@ -215,7 +215,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( "id-1", "property", "value-1" );
     writer.appendSet( "id-2", "property", "value-2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 2, message.getOperationCount() );
     assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
     assertEquals( "value-2", message.getOperation( 1 ).getProperty( "property" ).asString() );
@@ -229,7 +229,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( "id", "another-property", true );
     writer.appendSet( "id", "property", "value-2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 1, message.getOperationCount() );
     assertEquals( "value-2", message.getOperation( 0 ).getProperty( "property" ).asString() );
   }
@@ -240,7 +240,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendCall( "id", "method", null );
     writer.appendSet( "id", "property", "value-2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 3, message.getOperationCount() );
     assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ).asString() );
     assertEquals( "value-2", message.getOperation( 2 ).getProperty( "property" ).asString() );
@@ -252,7 +252,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( "id-2", "property", "value-2" );
     writer.appendSet( "id-1", "property", "value-3" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 3, message.getOperationCount() );
     assertEquals( "id-1", message.getOperation( 0 ).getTarget() );
     assertEquals( "value-1", message.getOperation( 0 ).getProperty( "property" ).asString() );
@@ -271,7 +271,7 @@ public class ProtocolMessageWriter_Test {
     addButtonCall( button );
     String buttonId = WidgetUtil.getId( button );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     assertEquals( 4, message.getOperationCount() );
 
     CreateOperation shellCreateOperation = ( CreateOperation )message.getOperation( 0 );
@@ -320,7 +320,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( "value1", operation.getProperty( "key1" ).asString() );
     assertEquals( "value2", operation.getProperty( "key2" ).asString() );
@@ -332,7 +332,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     CreateOperation createOperation = ( CreateOperation )message.getOperation( 0 );
     assertEquals( "value1", createOperation.getProperty( "key1" ).asString() );
     assertEquals( "value2", createOperation.getProperty( "key2" ).asString() );
@@ -346,7 +346,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( buttonId, "key2", "value2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     SetOperation firstOperation = ( SetOperation )message.getOperation( 0 );
     assertEquals( "value1", firstOperation.getProperty( "key1" ).asString() );
     assertFalse( firstOperation.getPropertyNames().contains( "key2" ) );
@@ -363,7 +363,7 @@ public class ProtocolMessageWriter_Test {
     writer.appendSet( buttonId, "key1", "value1" );
     writer.appendSet( buttonId, "key2", "value2" );
 
-    Message message = getMessage();
+    TestMessage message = getMessage();
     CreateOperation createOperation = ( CreateOperation )message.getOperation( 1 );
     assertEquals( shellId, createOperation.getParent() );
     assertEquals( "value1", createOperation.getProperty( "key1" ).asString() );
@@ -399,8 +399,8 @@ public class ProtocolMessageWriter_Test {
     assertEquals( "Hello", property.get( 1 ).asString() );
   }
 
-  private Message getMessage() {
-    return new Message( writer.createMessage() );
+  private TestMessage getMessage() {
+    return new TestMessage( writer.createMessage() );
   }
 
 }

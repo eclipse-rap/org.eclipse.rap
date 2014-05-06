@@ -25,10 +25,10 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -72,7 +72,7 @@ public class CTabItemLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.CTabItem", operation.getType() );
     assertEquals( 0, operation.getProperty( "index" ).asInt() );
@@ -84,7 +84,7 @@ public class CTabItemLCA_Test {
 
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CLOSE" ) );
@@ -98,7 +98,7 @@ public class CTabItemLCA_Test {
 
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
   }
@@ -107,7 +107,7 @@ public class CTabItemLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
   }
@@ -116,7 +116,7 @@ public class CTabItemLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
@@ -128,7 +128,7 @@ public class CTabItemLCA_Test {
 
     lca.renderChanges( item );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertTrue( "foo", message.findSetProperty( item, "toolTipMarkupEnabled" ).asBoolean() );
   }
 
@@ -139,7 +139,7 @@ public class CTabItemLCA_Test {
 
     lca.renderChanges( item );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( item, "toolTipMarkupEnabled" ) );
   }
 
@@ -147,7 +147,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialToolTip() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
@@ -157,7 +157,7 @@ public class CTabItemLCA_Test {
     item.setToolTipText( "foo" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( item, "toolTip" ).asString() );
   }
 
@@ -170,7 +170,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "toolTip" ) );
   }
 
@@ -178,7 +178,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
@@ -188,7 +188,7 @@ public class CTabItemLCA_Test {
     item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ).asString() );
   }
 
@@ -201,7 +201,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
@@ -209,7 +209,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialBounds() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findCreateProperty( item, "bounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
@@ -219,7 +219,7 @@ public class CTabItemLCA_Test {
   public void testRenderBounds() throws IOException {
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findSetProperty( item, "bounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
@@ -233,7 +233,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "bounds" ) );
   }
 
@@ -241,7 +241,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialFont() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
   }
@@ -251,7 +251,7 @@ public class CTabItemLCA_Test {
     item.setFont( new Font( display, "Arial", 20, SWT.BOLD ) );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 20, true, false ]" );
     assertEquals( expected, message.findSetProperty( item, "font" ) );
   }
@@ -265,7 +265,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "font" ) );
   }
 
@@ -273,7 +273,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
@@ -283,7 +283,7 @@ public class CTabItemLCA_Test {
     item.setText( "foo" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( item, "text" ).asString() );
   }
 
@@ -292,7 +292,7 @@ public class CTabItemLCA_Test {
     item.setText( "foo&bar" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foobar", message.findSetProperty( item, "text" ).asString() );
   }
 
@@ -305,7 +305,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "text" ) );
   }
 
@@ -313,7 +313,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
@@ -325,7 +325,7 @@ public class CTabItemLCA_Test {
     folder.setSelection( item );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( item, "image" ) );
@@ -342,7 +342,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "image" ) );
   }
 
@@ -358,7 +358,7 @@ public class CTabItemLCA_Test {
     item.setImage( null );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( item, "image" ) );
   }
 
@@ -366,7 +366,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialShowing() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "showing" ) == -1 );
   }
@@ -378,7 +378,7 @@ public class CTabItemLCA_Test {
     item.setText( "foo bar foo bar" );
     lca.renderChanges( lastItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( lastItem, "showing" ) );
   }
 
@@ -392,7 +392,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( lastItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( lastItem, "showing" ) );
   }
 
@@ -400,7 +400,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialShowClose() throws IOException {
     lca.render( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertTrue( operation.getPropertyNames().indexOf( "showClose" ) == -1 );
   }
@@ -410,7 +410,7 @@ public class CTabItemLCA_Test {
     item.setShowClose( true );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( item, "showClose" ) );
   }
 
@@ -423,7 +423,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "showClose" ) );
   }
 
@@ -431,7 +431,7 @@ public class CTabItemLCA_Test {
   public void testRenderInitialMnemonicIndex() throws IOException {
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
   }
 
@@ -440,7 +440,7 @@ public class CTabItemLCA_Test {
     item.setText( "te&st" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
@@ -454,7 +454,7 @@ public class CTabItemLCA_Test {
     item.setText( "aa&bb" );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( item, "mnemonicIndex" ).asInt() );
   }
 
@@ -467,7 +467,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "mnemonicIndex" ) );
   }
 
@@ -479,7 +479,7 @@ public class CTabItemLCA_Test {
 
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
     assertEquals( "string", data.get( "foo" ).asString() );
     assertEquals( 1, data.get( "bar" ).asInt() );
@@ -495,7 +495,7 @@ public class CTabItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 

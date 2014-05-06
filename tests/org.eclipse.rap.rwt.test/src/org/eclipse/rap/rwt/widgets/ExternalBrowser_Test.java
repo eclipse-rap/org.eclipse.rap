@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
@@ -102,7 +102,7 @@ public class ExternalBrowser_Test {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     int createIndex = indexOfCreateOperation( message );
     int open1Index = indexOfCallOperation( message, "open", "1" );
     int close1Index = indexOfCallOperation( message, "close", "1" );
@@ -116,7 +116,7 @@ public class ExternalBrowser_Test {
     assertTrue( open1Index < open2Index );
   }
 
-  private int indexOfCreateOperation( Message message ) {
+  private int indexOfCreateOperation( TestMessage message ) {
     int result = -1;
     int operationCount = message.getOperationCount();
     for( int position = 0; position < operationCount; position++ ) {
@@ -131,7 +131,7 @@ public class ExternalBrowser_Test {
     return result;
   }
 
-  private int indexOfCallOperation( Message message, String method, String idProperty ) {
+  private int indexOfCallOperation( TestMessage message, String method, String idProperty ) {
     int result = -1;
     int operationCount = message.getOperationCount();
     for( int position = 0; position < operationCount; position++ ) {

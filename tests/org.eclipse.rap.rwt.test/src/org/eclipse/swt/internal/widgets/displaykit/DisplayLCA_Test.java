@@ -60,9 +60,9 @@ import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -194,7 +194,7 @@ public class DisplayLCA_Test {
   public void testRenderInitialResizeListener() throws IOException {
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( getId( display ), "Resize" ) );
   }
 
@@ -205,7 +205,7 @@ public class DisplayLCA_Test {
 
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( getId( display ), "Resize" ) );
   }
 
@@ -217,7 +217,7 @@ public class DisplayLCA_Test {
     displayLCA.preserveValues( display );
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( getId( display ), "Resize" ) );
   }
 
@@ -306,7 +306,7 @@ public class DisplayLCA_Test {
 
     lifeCycle.execute();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
     String shellId = WidgetUtil.getId( shell[ 0 ] );
     assertEquals( shellId, message.getOperation( 0 ).getTarget() );
@@ -332,7 +332,7 @@ public class DisplayLCA_Test {
 
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findSetProperty( "rwt.client.ServerPush", "active" ) );
   }
 
@@ -341,7 +341,7 @@ public class DisplayLCA_Test {
     display.beep();
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( displayId, "beep" ) );
     assertFalse( display.getAdapter( IDisplayAdapter.class ).isBeepCalled() );
   }
@@ -352,7 +352,7 @@ public class DisplayLCA_Test {
 
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     // must be the first operation, before any widgets are rendered
     SetOperation firstOperation = (SetOperation)message.getOperation( 0 );
     assertEquals( DisplayUtil.getId( display ), firstOperation.getTarget() );
@@ -366,7 +366,7 @@ public class DisplayLCA_Test {
 
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( displayId, "enableUiTests" ) );
   }
 
@@ -392,7 +392,7 @@ public class DisplayLCA_Test {
     shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myShell" );
     WidgetUtil.getLCA( shell ).renderInitialization( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( "myShell" ) );
   }
 
@@ -402,7 +402,7 @@ public class DisplayLCA_Test {
 
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( displayId, "exitConfirmation" ).asString() );
   }
 
@@ -413,7 +413,7 @@ public class DisplayLCA_Test {
     displayLCA.preserveValues( display );
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( displayId, "exitConfirmation" ) );
   }
 
@@ -425,7 +425,7 @@ public class DisplayLCA_Test {
     RWT.getClient().getService( ExitConfirmation.class ).setMessage( null );
     displayLCA.render( display );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( displayId, "exitConfirmation" ) );
   }
 
@@ -465,7 +465,7 @@ public class DisplayLCA_Test {
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( control ) );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( getId( display ), "focusControl" ) );
   }
 
@@ -502,7 +502,7 @@ public class DisplayLCA_Test {
 
     // ensure that widgetSelected was called
     assertNotNull( childShell[ 0 ] );
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String focusControlId = message.findSetProperty( getId( display ), "focusControl" ).asString();
     assertEquals( getId( button ), focusControlId );
   }

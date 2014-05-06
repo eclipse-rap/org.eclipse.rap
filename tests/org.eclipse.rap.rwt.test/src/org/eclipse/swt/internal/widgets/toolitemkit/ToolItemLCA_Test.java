@@ -31,8 +31,8 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -99,7 +99,7 @@ public class ToolItemLCA_Test {
   public void testRenderCreatePush() throws IOException {
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
     assertEquals( 0, operation.getProperty( "index" ).asInt() );
@@ -113,7 +113,7 @@ public class ToolItemLCA_Test {
 
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
@@ -127,7 +127,7 @@ public class ToolItemLCA_Test {
 
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
@@ -141,7 +141,7 @@ public class ToolItemLCA_Test {
 
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
@@ -155,7 +155,7 @@ public class ToolItemLCA_Test {
 
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
     assertEquals( 1, operation.getProperty( "index" ).asInt() );
@@ -176,7 +176,7 @@ public class ToolItemLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( WidgetUtil.getId( toolitem.getParent() ), operation.getParent() );
   }
@@ -185,7 +185,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialEnabled() throws IOException {
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
   }
@@ -195,7 +195,7 @@ public class ToolItemLCA_Test {
     toolitem.setEnabled( false );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( toolitem, "enabled" ) );
   }
 
@@ -208,7 +208,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "enabled" ) );
   }
 
@@ -218,7 +218,7 @@ public class ToolItemLCA_Test {
 
     lca.renderChanges( toolitem );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertTrue( "foo", message.findSetProperty( toolitem, "toolTipMarkupEnabled" ).asBoolean() );
   }
 
@@ -229,7 +229,7 @@ public class ToolItemLCA_Test {
 
     lca.renderChanges( toolitem );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "toolTipMarkupEnabled" ) );
   }
 
@@ -237,7 +237,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialToolTip() throws IOException {
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
   }
@@ -247,7 +247,7 @@ public class ToolItemLCA_Test {
     toolitem.setToolTipText( "foo" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( toolitem, "toolTip" ).asString() );
   }
 
@@ -260,7 +260,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "toolTip" ) );
   }
 
@@ -268,7 +268,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
@@ -278,7 +278,7 @@ public class ToolItemLCA_Test {
     toolitem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( toolitem, "customVariant" ).asString() );
   }
 
@@ -291,7 +291,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "customVariant" ) );
   }
 
@@ -301,7 +301,7 @@ public class ToolItemLCA_Test {
 
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
   }
@@ -313,7 +313,7 @@ public class ToolItemLCA_Test {
     toolitem.setText( "foo bar" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( toolitem, "visible" ) );
   }
 
@@ -327,7 +327,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "visible" ) );
   }
 
@@ -335,7 +335,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
@@ -345,7 +345,7 @@ public class ToolItemLCA_Test {
     toolitem.setText( "foo" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( toolitem, "text" ).asString() );
   }
 
@@ -354,7 +354,7 @@ public class ToolItemLCA_Test {
     toolitem.setText( "fo&o" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( toolitem, "text" ).asString() );
   }
 
@@ -367,7 +367,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "text" ) );
   }
 
@@ -375,7 +375,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "image" ) );
   }
 
@@ -386,7 +386,7 @@ public class ToolItemLCA_Test {
     toolitem.setImage( image );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( toolitem, "image" ) );
@@ -402,7 +402,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "image" ) );
   }
 
@@ -410,7 +410,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialHotImage() throws IOException {
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "hotImage" ) );
   }
 
@@ -421,7 +421,7 @@ public class ToolItemLCA_Test {
     toolitem.setHotImage( image );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( toolitem, "hotImage" ) );
@@ -437,7 +437,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "hotImage" ) );
   }
 
@@ -452,7 +452,7 @@ public class ToolItemLCA_Test {
     toolitem.setImage( null );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( toolitem, "image" ) );
   }
 
@@ -462,7 +462,7 @@ public class ToolItemLCA_Test {
 
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "control" ) == -1 );
   }
@@ -476,7 +476,7 @@ public class ToolItemLCA_Test {
     toolitem.setControl( control );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( controlId, message.findSetProperty( toolitem, "control" ).asString() );
   }
 
@@ -491,7 +491,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "control" ) );
   }
 
@@ -501,7 +501,7 @@ public class ToolItemLCA_Test {
 
     lca.render( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
@@ -513,7 +513,7 @@ public class ToolItemLCA_Test {
     toolitem.setSelection( true );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( toolitem, "selection" ) );
   }
 
@@ -527,7 +527,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "selection" ) );
   }
 
@@ -540,7 +540,7 @@ public class ToolItemLCA_Test {
     toolitem.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
@@ -555,7 +555,7 @@ public class ToolItemLCA_Test {
     toolitem.removeListener( SWT.Selection, listener );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( toolitem, "Selection" ) );
   }
 
@@ -569,7 +569,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolitem, "Selection" ) );
   }
   
@@ -583,7 +583,7 @@ public class ToolItemLCA_Test {
     toolitem.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolitem, "Selection" ) );
   }
 
@@ -591,7 +591,7 @@ public class ToolItemLCA_Test {
   public void testRenderInitialMnemonicIndex() throws IOException {
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "mnemonicIndex" ) );
   }
 
@@ -600,7 +600,7 @@ public class ToolItemLCA_Test {
     toolitem.setText( "te&st" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( toolitem, "mnemonicIndex" ).asInt() );
   }
 
@@ -614,7 +614,7 @@ public class ToolItemLCA_Test {
     toolitem.setText( "aa&bb" );
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( toolitem, "mnemonicIndex" ).asInt() );
   }
 
@@ -627,7 +627,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolitem, "mnemonicIndex" ) );
   }
 
@@ -639,7 +639,7 @@ public class ToolItemLCA_Test {
 
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonObject data = ( JsonObject )message.findSetProperty( toolitem, "data" );
     assertEquals( "string", data.get( "foo" ).asString() );
     assertEquals( 1, data.get( "bar" ).asInt() );
@@ -655,7 +655,7 @@ public class ToolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolitem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 

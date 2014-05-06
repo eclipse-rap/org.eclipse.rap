@@ -32,10 +32,10 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
@@ -114,7 +114,7 @@ public class ExpandItemLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertEquals( "rwt.widgets.ExpandItem", operation.getType() );
     assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
@@ -133,7 +133,7 @@ public class ExpandItemLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertEquals( WidgetUtil.getId( expandBar ), operation.getParent() );
   }
@@ -142,7 +142,7 @@ public class ExpandItemLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( WidgetUtil.getId( expandItem ), operation.getTarget() );
@@ -152,7 +152,7 @@ public class ExpandItemLCA_Test {
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
@@ -162,7 +162,7 @@ public class ExpandItemLCA_Test {
     expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( expandItem, "customVariant" ).asString() );
   }
 
@@ -175,7 +175,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "customVariant" ) );
   }
 
@@ -185,7 +185,7 @@ public class ExpandItemLCA_Test {
 
     lca.render( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findCreateProperty( expandItem, "bounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
@@ -197,7 +197,7 @@ public class ExpandItemLCA_Test {
 
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray bounds = ( JsonArray )message.findSetProperty( expandItem, "bounds" );
     assertTrue( bounds.get( 2 ).asInt() > 0 );
     assertTrue( bounds.get( 3 ).asInt() > 0 );
@@ -212,7 +212,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "bounds" ) );
   }
 
@@ -220,7 +220,7 @@ public class ExpandItemLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
@@ -230,7 +230,7 @@ public class ExpandItemLCA_Test {
     expandItem.setText( "foo" );
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( expandItem, "text" ).asString() );
   }
 
@@ -243,7 +243,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "text" ) );
   }
 
@@ -251,7 +251,7 @@ public class ExpandItemLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "image" ) );
   }
 
@@ -262,7 +262,7 @@ public class ExpandItemLCA_Test {
     expandItem.setImage( image );
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( expandItem, "image" ) );
@@ -278,7 +278,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "image" ) );
   }
 
@@ -293,7 +293,7 @@ public class ExpandItemLCA_Test {
     expandItem.setImage( null );
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( expandItem, "image" ) );
   }
 
@@ -301,7 +301,7 @@ public class ExpandItemLCA_Test {
   public void testRenderInitialHeaderHeight() throws IOException {
     lca.render( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertTrue( operation.getPropertyNames().indexOf( "headerHeight" ) == -1 );
   }
@@ -311,7 +311,7 @@ public class ExpandItemLCA_Test {
     expandBar.setFont( new Font( display, "Arial", 22, SWT.BOLD )  );
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 26, message.findSetProperty( expandItem, "headerHeight" ).asInt() );
   }
 
@@ -324,7 +324,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandItem, "headerHeight" ) );
   }
 
@@ -336,7 +336,7 @@ public class ExpandItemLCA_Test {
 
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonObject data = ( JsonObject )message.findSetProperty( expandItem, "data" );
     assertEquals( "string", data.get( "foo" ).asString() );
     assertEquals( 1, data.get( "bar" ).asInt() );
@@ -352,7 +352,7 @@ public class ExpandItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( expandItem );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 

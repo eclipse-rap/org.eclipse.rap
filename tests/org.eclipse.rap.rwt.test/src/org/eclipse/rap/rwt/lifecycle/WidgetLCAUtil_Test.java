@@ -29,9 +29,9 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
@@ -177,7 +177,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderIntialBackgroundNull() {
     WidgetLCAUtil.renderBackground( widget, null );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
@@ -185,7 +185,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderBackground() {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
     assertEquals( expected, message.findSetProperty( widget, "background" ) );
   }
@@ -199,7 +199,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null, false );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
@@ -212,7 +212,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
@@ -220,7 +220,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderIntialBackgroundTransparent() {
     WidgetLCAUtil.renderBackground( widget, null, true );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
 
     JsonArray expected = JsonArray.readFrom( "[0, 0, 0, 0]" );
     assertEquals( expected, message.findSetProperty( widget, "background" ) );
@@ -238,7 +238,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null, true );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
@@ -254,7 +254,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ), false );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
 
     JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
     assertEquals( expected, message.findSetProperty( widget, "background" ) );
@@ -269,7 +269,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
@@ -277,7 +277,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderIntialForeground() {
     ControlLCAUtil.renderForeground( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
 
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
@@ -287,7 +287,7 @@ public class WidgetLCAUtil_Test {
     widget.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
 
     JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
     assertEquals( expected, message.findSetProperty( widget, "foreground" ) );
@@ -302,7 +302,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderForeground( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "foreground" ) );
   }
 
@@ -310,7 +310,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderInitialCustomVariant() {
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
 
@@ -319,7 +319,7 @@ public class WidgetLCAUtil_Test {
     widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( "variant_my_variant",
                   message.findSetProperty( widget, "customVariant" ).asString() );
   }
@@ -333,7 +333,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
 
@@ -341,7 +341,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderInitialListenHelp() {
     WidgetLCAUtil.renderListenHelp( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
@@ -350,7 +350,7 @@ public class WidgetLCAUtil_Test {
     widget.addHelpListener( mock( HelpListener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( widget, "Help" ) );
   }
 
@@ -363,7 +363,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderListenHelp( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findListenOperation( widget, "Help" ) );
   }
 
@@ -378,7 +378,7 @@ public class WidgetLCAUtil_Test {
     widget.removeHelpListener( listener );
     WidgetLCAUtil.renderListenHelp( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( widget, "Help" ) );
   }
 
@@ -396,7 +396,7 @@ public class WidgetLCAUtil_Test {
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     WidgetLCAUtil.renderBackgroundGradient( control );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     JsonArray expected
       = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
     assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
@@ -416,7 +416,7 @@ public class WidgetLCAUtil_Test {
     gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
     WidgetLCAUtil.renderBackgroundGradient( control );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     JsonArray expected
       = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], false]" );
     assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
@@ -439,7 +439,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.preserveBackgroundGradient( control );
     WidgetLCAUtil.renderBackgroundGradient( control );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundGradient" ) );
   }
 
@@ -461,7 +461,7 @@ public class WidgetLCAUtil_Test {
     gfxAdapter.setBackgroundGradient( null, null, true );
     WidgetLCAUtil.renderBackgroundGradient( control );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
@@ -475,7 +475,7 @@ public class WidgetLCAUtil_Test {
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.renderRoundedBorder( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[2,[0,255,0,255],5,6,7,8]" );
     assertEquals( expected, message.findSetProperty( widget, "roundedBorder" ) );
   }
@@ -493,7 +493,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.preserveRoundedBorder( widget );
     WidgetLCAUtil.renderRoundedBorder( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "roundedBorder" ) );
   }
 
@@ -511,7 +511,7 @@ public class WidgetLCAUtil_Test {
     graphicsAdapter.setRoundedBorder( 0, null, 0, 0, 0, 0 );
     WidgetLCAUtil.renderRoundedBorder( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
@@ -522,7 +522,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderMenu( widget, widget.getMenu() );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -535,7 +535,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderMenu( widget, widget.getMenu() );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( getId( menu ), message.findSetProperty( widget, "menu" ).asString() );
   }
 
@@ -549,7 +549,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderMenu( widget, null );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( widget, "menu" ) );
   }
 
@@ -557,7 +557,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderInitialData() {
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -569,7 +569,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     JsonObject data = ( JsonObject )message.findSetProperty( widget, "data" );
     assertEquals( "string", data.get( "foo" ).asString() );
     assertEquals( 1, data.get( "bar" ).asInt() );
@@ -581,7 +581,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -591,7 +591,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -601,7 +601,7 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -615,7 +615,7 @@ public class WidgetLCAUtil_Test {
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderData( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -625,7 +625,7 @@ public class WidgetLCAUtil_Test {
 
     renderToolTip( widget, "foo" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertTrue( "foo", message.findSetProperty( widget, "toolTipMarkupEnabled" ).asBoolean() );
   }
 
@@ -636,7 +636,7 @@ public class WidgetLCAUtil_Test {
 
     renderToolTip( widget, "foo" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTipMarkupEnabled" ) );
   }
 
@@ -644,7 +644,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderIntialToolTip() {
     renderToolTip( widget, null );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTip" ) );
   }
 
@@ -652,7 +652,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderToolTip() {
     renderToolTip( widget, "foo" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
   }
 
@@ -660,7 +660,7 @@ public class WidgetLCAUtil_Test {
   public void testRenderToolTip_withAmpersand() {
     renderToolTip( widget, "&foo" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( widget, "toolTip" ).asString() );
   }
 
@@ -670,7 +670,7 @@ public class WidgetLCAUtil_Test {
 
     renderToolTip( widget, "foo &#38; bar" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( "foo &#38; bar", message.findSetProperty( widget, "toolTip" ).asString() );
   }
 
@@ -683,7 +683,7 @@ public class WidgetLCAUtil_Test {
 
     renderToolTip( widget, "foo" );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "toolTip" ) );
   }
 
@@ -755,7 +755,7 @@ public class WidgetLCAUtil_Test {
     widget.addListener( SWT.Selection, listener );
     WidgetLCAUtil.renderClientListeners( widget );
 
-    Message message = getProtocolMessage();
+    TestMessage message = getProtocolMessage();
     assertEquals( 3, message.getOperationCount() );
     CallOperation operation = ( CallOperation )message.getOperation( 0 );
     assertEquals( "addListener", operation.getMethodName() );

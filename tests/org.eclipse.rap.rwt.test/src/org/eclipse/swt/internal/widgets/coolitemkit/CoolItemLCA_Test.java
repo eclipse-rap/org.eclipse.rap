@@ -28,9 +28,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
@@ -90,7 +90,7 @@ public class CoolItemLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.CoolItem", operation.getType() );
     assertArrayEquals( new String[] { "NONE" }, operation.getStyles() );
@@ -109,7 +109,7 @@ public class CoolItemLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( WidgetUtil.getId( bar ), operation.getParent() );
   }
@@ -119,7 +119,7 @@ public class CoolItemLCA_Test {
     item = new CoolItem( bar, SWT.VERTICAL );
     lca.renderInitialization( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertArrayEquals( new String[] { "VERTICAL" }, operation.getStyles() );
   }
@@ -130,7 +130,7 @@ public class CoolItemLCA_Test {
     lca.renderInitialization( item );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     JsonArray expected = JsonArray.readFrom( "[0, 0, 0, 20]" );
     assertEquals( expected, operation.getProperty( "bounds" ) );
@@ -144,7 +144,7 @@ public class CoolItemLCA_Test {
     item.setControl( button );
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( item, "control" );
     assertEquals( getId( button ), operation.getProperty( "control" ).asString() );
   }
@@ -157,7 +157,7 @@ public class CoolItemLCA_Test {
 
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonObject data = ( JsonObject )message.findSetProperty( item, "data" );
     assertEquals( "string", data.get( "foo" ).asString() );
     assertEquals( 1, data.get( "bar" ).asInt() );
@@ -173,7 +173,7 @@ public class CoolItemLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( item );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -202,7 +202,7 @@ public class CoolItemLCA_Test {
 
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findSetOperation( item, "bounds" ) );
   }
 

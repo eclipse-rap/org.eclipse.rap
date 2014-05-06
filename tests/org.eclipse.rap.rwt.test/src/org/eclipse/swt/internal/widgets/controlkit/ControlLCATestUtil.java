@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
@@ -108,7 +108,7 @@ public class ControlLCATestUtil {
     control.addListener( eventType, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String listenerName = getListenerName( eventType );
     assertEquals( JsonValue.TRUE, message.findListenProperty( control, listenerName ) );
 
@@ -126,7 +126,7 @@ public class ControlLCATestUtil {
     control.removeListener( eventType, listener );
     WidgetUtil.getLCA( control ).renderChanges( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String listenerName = getListenerName( eventType );
     assertEquals( JsonValue.FALSE, message.findListenProperty( control, listenerName ) );
   }
@@ -142,7 +142,7 @@ public class ControlLCATestUtil {
     Fixture.preserveWidgets();
     WidgetUtil.getLCA( control ).renderChanges( control );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String listenerName = getListenerName( eventType );
     assertNull( message.findListenOperation( control, listenerName ) );
 

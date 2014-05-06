@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
@@ -123,7 +123,7 @@ public class PreserveWidgets_Test {
                                                         null );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertTrue( message.getOperationCount() > 0 );
   }
 

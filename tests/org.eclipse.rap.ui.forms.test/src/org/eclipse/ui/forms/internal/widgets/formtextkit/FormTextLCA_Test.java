@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
@@ -48,7 +48,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( formText );
     assertEquals( "forms.widgets.FormText", operation.getType() );
   }
@@ -76,7 +76,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( formText );
     assertEquals( WidgetUtil.getId( formText.getParent() ), operation.getParent() );
   }
@@ -89,7 +89,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
     lca.renderChanges( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( formText, "hyperlinkSettings" );
     assertEquals( 3, actual.get( 0 ).asInt() );
     JsonArray foreground = actual.get( 1 ).asArray();
@@ -115,7 +115,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     lca.renderChanges( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( formText, "hyperlinkSettings" ) );
   }
 
@@ -134,7 +134,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
     lca.renderChanges( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
     assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
     assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );
@@ -167,7 +167,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     formText.setColor( "foo", display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
     assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
     assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );
@@ -189,7 +189,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     formText.setSize( 200, 400 );
     lca.renderChanges( formText );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( formText, "text" );
     assertEquals( "text", actual.get( 0 ).asArray().get( 0 ).asString() );
     assertEquals( "First paragraph", actual.get( 0 ).asArray().get( 1 ).asString() );

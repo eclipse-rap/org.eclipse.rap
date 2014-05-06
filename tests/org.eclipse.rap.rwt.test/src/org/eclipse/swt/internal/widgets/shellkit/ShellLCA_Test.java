@@ -35,8 +35,8 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -209,7 +209,7 @@ public class ShellLCA_Test {
     Fixture.fakeNotifyOperation( getId( shellToActivate ), EVENT_ACTIVATE, null );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shellToActivate, "active" ) );
   }
 
@@ -220,7 +220,7 @@ public class ShellLCA_Test {
     shell.setAlpha( 23 );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 23, message.findSetProperty( shell, "alpha" ).asInt() );
   }
 
@@ -228,7 +228,7 @@ public class ShellLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( shell );
     assertEquals( "rwt.widgets.Shell", operation.getType() );
   }
@@ -260,7 +260,7 @@ public class ShellLCA_Test {
     shell.setMaximized( true );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "maximized", message.findSetProperty( shell, "mode" ).asString() );
   }
 
@@ -275,7 +275,7 @@ public class ShellLCA_Test {
     shell.setFullScreen( false );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( shell, "mode" ) );
   }
 
@@ -286,7 +286,7 @@ public class ShellLCA_Test {
     shell.setFullScreen( true );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ).asString() );
   }
 
@@ -294,7 +294,7 @@ public class ShellLCA_Test {
   public void testRenderDefaultButtonIntiallyNull() throws IOException {
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
 
@@ -305,7 +305,7 @@ public class ShellLCA_Test {
     shell.setDefaultButton( button );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( getId( button ), message.findSetProperty( shell, "defaultButton" ).asString() );
   }
 
@@ -318,7 +318,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
 
@@ -333,7 +333,7 @@ public class ShellLCA_Test {
     button.dispose();
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
@@ -352,7 +352,7 @@ public class ShellLCA_Test {
     Fixture.fakeSetProperty( getId( display ), "focusControl", getId( text ) );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
   }
 
@@ -360,7 +360,7 @@ public class ShellLCA_Test {
   public void testRenderActiveControlIntiallyNull() throws IOException {
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
@@ -372,7 +372,7 @@ public class ShellLCA_Test {
     adapter.setActiveControl( button );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( getId( button ), message.findSetProperty( shell, "activeControl" ).asString() );
   }
 
@@ -387,7 +387,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
@@ -403,7 +403,7 @@ public class ShellLCA_Test {
     adapter.setActiveControl( null );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( shell, "activeControl" ) );
   }
 
@@ -414,7 +414,7 @@ public class ShellLCA_Test {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderBounds( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "bounds" ) );
   }
 
@@ -426,7 +426,7 @@ public class ShellLCA_Test {
 
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "[100,200]", message.findSetProperty( shell, "minimumSize" ).toString() );
   }
 
@@ -438,7 +438,7 @@ public class ShellLCA_Test {
 
     lca.renderInitialization( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( shell );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "NO_TRIM" ) );
@@ -454,7 +454,7 @@ public class ShellLCA_Test {
     shell.setText( "foo" );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( shell, "text" ).asString() );
   }
 
@@ -468,7 +468,7 @@ public class ShellLCA_Test {
 
     lca.renderInitialization( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Resize" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Move" ) );
   }
@@ -481,7 +481,7 @@ public class ShellLCA_Test {
 
     lca.render( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Activate" ) );
   }
 
@@ -493,7 +493,7 @@ public class ShellLCA_Test {
 
     lca.render( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( shell, "Close" ) );
   }
 
@@ -508,7 +508,7 @@ public class ShellLCA_Test {
     assertTrue( shell.getDisplay().getActiveShell() == shell );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "active" ) );
   }
 
@@ -522,7 +522,7 @@ public class ShellLCA_Test {
 
     lca.renderInitialization( dialogShell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String parentId = getId( parentShell );
     assertEquals( parentId, message.findCreateProperty( dialogShell, "parentShell" ).asString() );
   }
@@ -537,7 +537,7 @@ public class ShellLCA_Test {
     shell.setImage( image );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImage() );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
     assertEquals( expected, message.findSetProperty( shell, "image" ) );
@@ -553,7 +553,7 @@ public class ShellLCA_Test {
     shell.setImage( image );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -567,7 +567,7 @@ public class ShellLCA_Test {
     shell.setImage( image );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImage() );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
     assertEquals( expected, message.findSetProperty( shell, "image" ) );
@@ -583,7 +583,7 @@ public class ShellLCA_Test {
     shell.setImages( new Image[] { image } );
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( shell.getImages()[ 0 ] );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
     assertEquals( expected, message.findSetProperty( shell, "image" ) );
@@ -593,7 +593,7 @@ public class ShellLCA_Test {
   public void testRenderVisibilityIntiallyFalse() throws IOException {
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "visibility" ) );
   }
 
@@ -602,7 +602,7 @@ public class ShellLCA_Test {
     shell.open();
     lca.renderChanges( shell );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( shell, "visibility" ) );
   }
 
@@ -622,7 +622,7 @@ public class ShellLCA_Test {
     Fixture.fakeNotifyOperation( getId( otherShell ), "Activate", new JsonObject() );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String actual = message.findSetProperty( getId( display ), "focusControl" ).asString();
     assertEquals( getId( focusControl ),  actual );
   }

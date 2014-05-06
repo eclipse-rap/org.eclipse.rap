@@ -44,7 +44,7 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -270,7 +270,7 @@ public class RWTLifeCycle_Test {
 
     lifeCycle.execute();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 1, message.getRequestCounter() );
   }
 

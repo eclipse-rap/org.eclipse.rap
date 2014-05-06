@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -53,7 +53,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
 
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "image" ) );
   }
 
@@ -64,7 +64,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     hyperlink.setImage( image );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( hyperlink, "image" );
     assertNotNull( actual.get( 0 ) );
     assertEquals( 100, actual.get( 1 ).asInt() );
@@ -81,7 +81,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hyperlink, "image" ) );
   }
 
@@ -96,7 +96,7 @@ public class ImageHyperlinkLCA_Test extends TestCase {
     hyperlink.setImage( null );
     lca.renderChanges( hyperlink );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( hyperlink, "image" ) );
   }
 }

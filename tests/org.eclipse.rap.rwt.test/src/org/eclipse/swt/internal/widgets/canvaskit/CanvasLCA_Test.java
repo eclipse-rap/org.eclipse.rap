@@ -29,9 +29,9 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -88,7 +88,7 @@ public class CanvasLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation canvasCreate = message.findCreateOperation( canvas );
     assertEquals( "rwt.widgets.Canvas", canvasCreate.getType() );
     assertEquals( getId( shell ), canvasCreate.getProperty( "parent" ).asString() );
@@ -122,7 +122,7 @@ public class CanvasLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( canvas );
     assertEquals( getId( canvas.getParent() ), operation.getParent() );
   }
@@ -189,7 +189,7 @@ public class CanvasLCA_Test {
     gc.dispose();
     new CanvasLCA().renderChanges( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -252,7 +252,7 @@ public class CanvasLCA_Test {
 
     new CanvasLCA().renderChanges( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
 
@@ -334,7 +334,7 @@ public class CanvasLCA_Test {
 
     lca.renderClientArea( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Rectangle clientArea = canvas.getClientArea();
     assertEquals( clientArea, toRectangle( message.findSetProperty( canvas, "clientArea" ) ) );
   }
@@ -345,7 +345,7 @@ public class CanvasLCA_Test {
 
     lca.renderClientArea( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Rectangle clientArea = new Rectangle( 0, 0, 0, 0 );
     assertEquals( clientArea, toRectangle( message.findSetProperty( canvas, "clientArea" ) ) );
   }
@@ -358,7 +358,7 @@ public class CanvasLCA_Test {
     lca.preserveValues( canvas );
     lca.renderClientArea( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( canvas, "clientArea" ) );
   }
 
@@ -368,7 +368,7 @@ public class CanvasLCA_Test {
 
     lca.renderChanges( canvas );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( canvas, "addListener" ) );
   }
 
@@ -384,7 +384,7 @@ public class CanvasLCA_Test {
   }
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     return message.findCallOperation( getGcId( canvas ), method );
   }
 

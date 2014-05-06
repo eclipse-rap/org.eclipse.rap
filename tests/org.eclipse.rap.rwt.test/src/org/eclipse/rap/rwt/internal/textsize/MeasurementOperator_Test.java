@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -248,7 +248,7 @@ public class MeasurementOperator_Test {
   }
 
   private void checkResponseContainsMeasurementCall() {
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
     JsonValue itemsProperty = operation.getProperty( PARAM_ITEMS );
     String[] expected = getMeasurementCall();
@@ -256,7 +256,7 @@ public class MeasurementOperator_Test {
   }
 
   private void checkResponseContainsProbeCall() {
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
     JsonValue itemsProperty = operation.getProperty( PARAM_ITEMS );
     String[] expected = getProbeCall();

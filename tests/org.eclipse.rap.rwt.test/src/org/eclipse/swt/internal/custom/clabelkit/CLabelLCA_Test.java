@@ -31,8 +31,8 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -85,7 +85,7 @@ public class CLabelLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( "rwt.widgets.Label", operation.getType() );
     assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
@@ -117,7 +117,7 @@ public class CLabelLCA_Test {
 
     lca.renderInitialization( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
   }
@@ -128,7 +128,7 @@ public class CLabelLCA_Test {
 
     lca.renderInitialization( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -141,7 +141,7 @@ public class CLabelLCA_Test {
 
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "center", message.findCreateProperty( clabel, "alignment" ).asString() );
   }
 
@@ -149,7 +149,7 @@ public class CLabelLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( WidgetUtil.getId( clabel.getParent() ), operation.getParent() );
   }
@@ -158,7 +158,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
   }
@@ -168,7 +168,7 @@ public class CLabelLCA_Test {
     clabel.setText( "foo" );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( clabel, "text" ).asString() );
   }
 
@@ -181,7 +181,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "text" ) );
   }
 
@@ -189,7 +189,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "image" ) == -1 );
   }
@@ -201,7 +201,7 @@ public class CLabelLCA_Test {
     clabel.setImage( image );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( clabel, "image" ) );
@@ -217,7 +217,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "image" ) );
   }
 
@@ -232,7 +232,7 @@ public class CLabelLCA_Test {
     clabel.setImage( null );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( clabel, "image" ) );
   }
 
@@ -240,7 +240,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialAlignment() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
   }
@@ -250,7 +250,7 @@ public class CLabelLCA_Test {
     clabel.setAlignment( SWT.RIGHT );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "right", message.findSetProperty( clabel, "alignment" ).asString() );
   }
 
@@ -263,7 +263,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "alignment" ) );
   }
 
@@ -271,7 +271,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialLeftMargin() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "leftMargin" ) == -1 );
   }
@@ -281,7 +281,7 @@ public class CLabelLCA_Test {
     clabel.setLeftMargin( 5 );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 5, message.findSetProperty( clabel, "leftMargin" ).asInt() );
   }
 
@@ -294,7 +294,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "leftMargin" ) );
   }
 
@@ -303,7 +303,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialTopMargin() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "topMargin" ) == -1 );
   }
@@ -313,7 +313,7 @@ public class CLabelLCA_Test {
     clabel.setTopMargin( 5 );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 5, message.findSetProperty( clabel, "topMargin" ).asInt() );
   }
 
@@ -326,7 +326,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "topMargin" ) );
   }
 
@@ -334,7 +334,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialRightMargin() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "rightMargin" ) == -1 );
   }
@@ -344,7 +344,7 @@ public class CLabelLCA_Test {
     clabel.setRightMargin( 5 );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 5, message.findSetProperty( clabel, "rightMargin" ).asInt() );
   }
 
@@ -357,7 +357,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "rightMargin" ) );
   }
 
@@ -365,7 +365,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialBottomMargin() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "bottomMargin" ) == -1 );
   }
@@ -375,7 +375,7 @@ public class CLabelLCA_Test {
     clabel.setBottomMargin( 5 );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 5, message.findSetProperty( clabel, "bottomMargin" ).asInt() );
   }
 
@@ -388,7 +388,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "bottomMargin" ) );
   }
 
@@ -396,7 +396,7 @@ public class CLabelLCA_Test {
   public void testRenderInitialBackgroundGradient() throws IOException {
     lca.render( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertTrue( operation.getPropertyNames().indexOf( "backgroundGradient" ) == -1 );
   }
@@ -411,7 +411,7 @@ public class CLabelLCA_Test {
     clabel.setBackground( gradientColors , percents );
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected
       = JsonArray.readFrom( "[[[255, 0, 0, 255], [0, 255, 0, 255]], [0, 50], false]" );
     assertEquals( expected, message.findSetProperty( clabel, "backgroundGradient" ) );
@@ -431,7 +431,7 @@ public class CLabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( clabel, "backgroundGradient" ) );
   }
 

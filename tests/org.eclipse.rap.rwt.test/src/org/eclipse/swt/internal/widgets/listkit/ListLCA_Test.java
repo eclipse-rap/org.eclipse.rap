@@ -32,8 +32,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -189,7 +189,7 @@ public class ListLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertEquals( "rwt.widgets.List", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -212,7 +212,7 @@ public class ListLCA_Test {
 
     lca.renderInitialization( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
@@ -222,7 +222,7 @@ public class ListLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertEquals( WidgetUtil.getId( list.getParent() ), operation.getParent() );
   }
@@ -231,7 +231,7 @@ public class ListLCA_Test {
   public void testRenderInitialItems() throws IOException {
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
   }
@@ -241,7 +241,7 @@ public class ListLCA_Test {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = new JsonArray().add( "Item 1" ).add( "Item 2" ).add( "Item 3" );
     assertEquals( expected, message.findSetProperty( list, "items" ) );
   }
@@ -255,7 +255,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( list, "items" ) );
   }
 
@@ -263,7 +263,7 @@ public class ListLCA_Test {
   public void testRenderInitialSelectionIndices() throws IOException {
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertTrue( operation.getPropertyNames().indexOf( "selectionIndices" ) == -1 );
   }
@@ -275,7 +275,7 @@ public class ListLCA_Test {
     list.select( 1 );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = new JsonArray().add( 1 );
     assertEquals( expected, message.findSetProperty( list, "selectionIndices" ) );
   }
@@ -288,7 +288,7 @@ public class ListLCA_Test {
     list.setSelection( new int[] { 1, 2 } );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray exected = new JsonArray().add( 1 ).add( 2 );
     assertEquals( exected, message.findSetProperty( list, "selectionIndices" ) );
   }
@@ -303,7 +303,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( list, "selectionIndices" ) );
   }
 
@@ -311,7 +311,7 @@ public class ListLCA_Test {
   public void testRenderInitialTopIndex() throws IOException {
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertTrue( operation.getPropertyNames().indexOf( "topIndex" ) == -1 );
   }
@@ -323,7 +323,7 @@ public class ListLCA_Test {
     list.setTopIndex( 2 );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( list, "topIndex" ).asInt() );
   }
 
@@ -339,7 +339,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( list, "topIndex" ) );
   }
 
@@ -347,7 +347,7 @@ public class ListLCA_Test {
   public void testRenderInitialFocusIndex() throws IOException {
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertTrue( operation.getPropertyNames().indexOf( "focusIndex" ) == -1 );
   }
@@ -359,7 +359,7 @@ public class ListLCA_Test {
     setFocusIndex( list, 2 );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( list, "focusIndex" ).asInt() );
   }
 
@@ -373,7 +373,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( list, "focusIndex" ) );
   }
 
@@ -381,7 +381,7 @@ public class ListLCA_Test {
   public void testRenderInitialScrollBarsVisible() throws IOException {
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
@@ -394,7 +394,7 @@ public class ListLCA_Test {
     list.add( "Item 1" );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
@@ -406,7 +406,7 @@ public class ListLCA_Test {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
     assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
   }
@@ -424,7 +424,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( hScroll, "visibility" ) );
     assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
@@ -435,7 +435,7 @@ public class ListLCA_Test {
 
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findSetOperation( list, "itemDimensions" ) );
   }
 
@@ -444,7 +444,7 @@ public class ListLCA_Test {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray actual = ( JsonArray )message.findSetProperty( list, "itemDimensions" );
     assertEquals( list.getItemHeight(), actual.get( 1 ).asInt() );
   }
@@ -458,7 +458,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( list, "itemDimensions" ) );
   }
 
@@ -471,7 +471,7 @@ public class ListLCA_Test {
     list.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( list, "Selection" ) );
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
@@ -487,7 +487,7 @@ public class ListLCA_Test {
     list.removeListener( SWT.Selection, listener );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( list, "Selection" ) );
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
@@ -501,7 +501,7 @@ public class ListLCA_Test {
     list.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( list, "DefaultSelection" ) );
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
@@ -517,7 +517,7 @@ public class ListLCA_Test {
     list.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( list, "DefaultSelection" ) );
     assertNull( message.findListenOperation( list, "Selection" ) );
   }
@@ -532,7 +532,7 @@ public class ListLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( list, "Selection" ) );
     assertNull( message.findListenOperation( list, "DefaultSelection" ) );
   }
@@ -543,7 +543,7 @@ public class ListLCA_Test {
 
     lca.render( list );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findCreateProperty( list, "markupEnabled" ) );
   }
 

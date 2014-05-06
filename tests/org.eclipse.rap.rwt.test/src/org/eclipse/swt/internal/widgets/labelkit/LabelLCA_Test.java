@@ -35,9 +35,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -211,7 +211,7 @@ public class LabelLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "text" ) );
   }
 
@@ -220,7 +220,7 @@ public class LabelLCA_Test {
     label.setText( "test" );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( label, "text" ).asString() );
   }
 
@@ -229,7 +229,7 @@ public class LabelLCA_Test {
     label.setText( "te\"s't" );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "te\"s't", message.findSetProperty( label, "text" ).asString() );
   }
 
@@ -238,7 +238,7 @@ public class LabelLCA_Test {
     label.setText( "te&st" );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( label, "text" ).asString() );
   }
 
@@ -247,7 +247,7 @@ public class LabelLCA_Test {
     label.setText( "\ntes\r\nt\n" );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "\ntes\r\nt\n", message.findSetProperty( label, "text" ).asString() );
   }
 
@@ -261,7 +261,7 @@ public class LabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "text" ) );
   }
 
@@ -272,7 +272,7 @@ public class LabelLCA_Test {
 
     labelLCA.renderDispose( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );
     assertEquals( WidgetUtil.getId( label ), operation.getTarget() );
   }
@@ -283,7 +283,7 @@ public class LabelLCA_Test {
 
     lca.renderInitialization( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -328,7 +328,7 @@ public class LabelLCA_Test {
 
     lca.renderInitialization( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
   }
@@ -337,7 +337,7 @@ public class LabelLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "image" ) );
   }
 
@@ -348,7 +348,7 @@ public class LabelLCA_Test {
     label.setImage( image );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( label, "image" ) );
@@ -364,7 +364,7 @@ public class LabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "image" ) );
   }
 
@@ -379,7 +379,7 @@ public class LabelLCA_Test {
     label.setImage( null );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( label, "image" ) );
   }
 
@@ -387,7 +387,7 @@ public class LabelLCA_Test {
   public void testRenderInitialAlignment() throws IOException {
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "alignment" ) );
   }
 
@@ -396,7 +396,7 @@ public class LabelLCA_Test {
     label.setAlignment( SWT.RIGHT );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "right", message.findSetProperty( label, "alignment" ).asString() );
   }
 
@@ -409,7 +409,7 @@ public class LabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "alignment" ) );
   }
 
@@ -419,7 +419,7 @@ public class LabelLCA_Test {
 
     lca.renderInitialization( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( "rwt.widgets.Separator", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -431,7 +431,7 @@ public class LabelLCA_Test {
   public void testRenderInitialMnemonicIndex() throws IOException {
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "mnemonicIndex" ) );
   }
 
@@ -440,7 +440,7 @@ public class LabelLCA_Test {
     label.setText( "te&st" );
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( label, "mnemonicIndex" ).asInt() );
   }
 
@@ -453,7 +453,7 @@ public class LabelLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "mnemonicIndex" ) );
   }
 
@@ -463,7 +463,7 @@ public class LabelLCA_Test {
 
     lca.renderChanges( label );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( label, "addListener" ) );
   }
 

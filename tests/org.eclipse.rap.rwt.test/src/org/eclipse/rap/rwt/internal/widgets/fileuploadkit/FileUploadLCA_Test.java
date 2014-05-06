@@ -32,11 +32,11 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -101,7 +101,7 @@ public class FileUploadLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertEquals( "rwt.widgets.FileUpload", operation.getType() );
   }
@@ -111,7 +111,7 @@ public class FileUploadLCA_Test {
     fileUpload = new FileUpload( shell, SWT.MULTI );
     lca.renderInitialization( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertEquals( new JsonArray().add( "MULTI" ), operation.getProperty( "style" ) );
   }
@@ -140,7 +140,7 @@ public class FileUploadLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertEquals( WidgetUtil.getId( fileUpload.getParent() ), operation.getParent() );
   }
@@ -149,7 +149,7 @@ public class FileUploadLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( WidgetUtil.getId( fileUpload ), operation.getTarget() );
@@ -159,7 +159,7 @@ public class FileUploadLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "text" ) );
   }
 
@@ -168,7 +168,7 @@ public class FileUploadLCA_Test {
     fileUpload.setText( "test" );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( fileUpload, "text" ).asString() );
   }
 
@@ -181,7 +181,7 @@ public class FileUploadLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "text" ) );
   }
 
@@ -189,7 +189,7 @@ public class FileUploadLCA_Test {
   public void testRenderInitialImage() throws IOException {
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "image" ) );
   }
 
@@ -200,7 +200,7 @@ public class FileUploadLCA_Test {
     fileUpload.setImage( image );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( fileUpload, "image" ) );
@@ -216,7 +216,7 @@ public class FileUploadLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "image" ) );
   }
 
@@ -231,7 +231,7 @@ public class FileUploadLCA_Test {
     fileUpload.setImage( null );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( fileUpload, "image" ) );
   }
 
@@ -243,7 +243,7 @@ public class FileUploadLCA_Test {
     fileUpload.submit( "bar" );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( fileUpload, "submit" );
     assertEquals( "bar", operation.getProperty( "url" ).asString() );
   }
@@ -253,7 +253,7 @@ public class FileUploadLCA_Test {
     fileUpload.submit( "bar" );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( fileUpload, "submit" ) );
   }
 
@@ -261,7 +261,7 @@ public class FileUploadLCA_Test {
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
@@ -271,7 +271,7 @@ public class FileUploadLCA_Test {
     fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ).asString() );
   }
 
@@ -284,7 +284,7 @@ public class FileUploadLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "customVariant" ) );
   }
 
@@ -297,7 +297,7 @@ public class FileUploadLCA_Test {
     fileUpload.addSelectionListener( mock( SelectionListener.class ) );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( fileUpload, "Selection" ) );
   }
 
@@ -312,7 +312,7 @@ public class FileUploadLCA_Test {
     fileUpload.removeSelectionListener( listener );
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( fileUpload, "Selection" ) );
   }
 
@@ -326,7 +326,7 @@ public class FileUploadLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( fileUpload );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( fileUpload, "Selection" ) );
   }
 

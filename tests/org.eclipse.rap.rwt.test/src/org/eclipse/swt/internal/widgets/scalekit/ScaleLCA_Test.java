@@ -32,8 +32,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -157,7 +157,7 @@ public class ScaleLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertEquals( "rwt.widgets.Scale", operation.getType() );
   }
@@ -186,7 +186,7 @@ public class ScaleLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertEquals( WidgetUtil.getId( scale.getParent() ), operation.getParent() );
   }
@@ -197,7 +197,7 @@ public class ScaleLCA_Test {
 
     lca.renderInitialization( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
@@ -207,7 +207,7 @@ public class ScaleLCA_Test {
   public void testRenderInitialMinimum() throws IOException {
     lca.render( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
@@ -217,7 +217,7 @@ public class ScaleLCA_Test {
     scale.setMinimum( 10 );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( scale, "minimum" ).asInt() );
   }
 
@@ -230,7 +230,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( scale, "minimum" ) );
   }
 
@@ -238,7 +238,7 @@ public class ScaleLCA_Test {
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
@@ -248,7 +248,7 @@ public class ScaleLCA_Test {
     scale.setMaximum( 10 );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( scale, "maximum" ).asInt() );
   }
 
@@ -261,7 +261,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( scale, "maximum" ) );
   }
 
@@ -269,7 +269,7 @@ public class ScaleLCA_Test {
   public void testRenderInitialSelection() throws IOException {
     lca.render( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
@@ -279,7 +279,7 @@ public class ScaleLCA_Test {
     scale.setSelection( 10 );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( scale, "selection" ).asInt() );
   }
 
@@ -292,7 +292,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( scale, "selection" ) );
   }
 
@@ -300,7 +300,7 @@ public class ScaleLCA_Test {
   public void testRenderInitialIncrement() throws IOException {
     lca.render( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
   }
@@ -310,7 +310,7 @@ public class ScaleLCA_Test {
     scale.setIncrement( 2 );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( scale, "increment" ).asInt() );
   }
 
@@ -323,7 +323,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( scale, "increment" ) );
   }
 
@@ -331,7 +331,7 @@ public class ScaleLCA_Test {
   public void testRenderInitialPageIncrement() throws IOException {
     lca.render( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( scale );
     assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
   }
@@ -341,7 +341,7 @@ public class ScaleLCA_Test {
     scale.setPageIncrement( 20 );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 20, message.findSetProperty( scale, "pageIncrement" ).asInt() );
   }
 
@@ -354,7 +354,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( scale, "pageIncrement" ) );
   }
 
@@ -367,7 +367,7 @@ public class ScaleLCA_Test {
     scale.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( scale, "Selection" ) );
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
@@ -383,7 +383,7 @@ public class ScaleLCA_Test {
     scale.removeListener( SWT.Selection, listener );
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( scale, "Selection" ) );
     assertNull( message.findListenOperation( scale, "DefaultSelection" ) );
   }
@@ -398,7 +398,7 @@ public class ScaleLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( scale, "selection" ) );
   }
 
@@ -408,7 +408,7 @@ public class ScaleLCA_Test {
 
     lca.renderChanges( scale );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( scale, "addListener" ) );
   }
 

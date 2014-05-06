@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,12 @@ import org.eclipse.swt.widgets.Widget;
  * API. It may change or disappear without further notice. Use this class at
  * your own risk.
  */
-public final class Message {
+public final class TestMessage {
 
   private final JsonObject message;
   private final JsonArray operations;
 
-  public Message( JsonObject json ) {
+  public TestMessage( JsonObject json ) {
     ParamCheck.notNull( json, "json" );
     message = json;
     try {
@@ -179,7 +179,7 @@ public final class Message {
     if( this == obj ) {
       equals = true;
     } else if( obj != null && getClass() == obj.getClass() ) {
-      Message other = ( Message )obj;
+      TestMessage other = ( TestMessage )obj;
       equals = message.equals( other.message );
     }
     return equals;

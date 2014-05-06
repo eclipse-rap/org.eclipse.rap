@@ -30,10 +30,10 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -74,7 +74,7 @@ public class ToolTipLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
   }
@@ -85,7 +85,7 @@ public class ToolTipLCA_Test {
 
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -98,7 +98,7 @@ public class ToolTipLCA_Test {
 
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -111,7 +111,7 @@ public class ToolTipLCA_Test {
 
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -124,7 +124,7 @@ public class ToolTipLCA_Test {
 
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( "rwt.widgets.ToolTip", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -157,7 +157,7 @@ public class ToolTipLCA_Test {
 
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findCreateProperty( toolTip, "markupEnabled" ) );
   }
 
@@ -165,7 +165,7 @@ public class ToolTipLCA_Test {
   public void testRenderMarkupEnabled_default() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertTrue( operation.getPropertyNames().indexOf( "markupEnabled" ) == -1 );
   }
@@ -174,7 +174,7 @@ public class ToolTipLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertEquals( WidgetUtil.getId( toolTip.getParent() ), operation.getParent() );
   }
@@ -183,7 +183,7 @@ public class ToolTipLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( WidgetUtil.getId( toolTip ), operation.getTarget() );
@@ -193,7 +193,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialCustomVariant() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
@@ -203,7 +203,7 @@ public class ToolTipLCA_Test {
     toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( toolTip, "customVariant" ).asString() );
   }
 
@@ -215,7 +215,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "customVariant" ) );
   }
 
@@ -223,7 +223,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialRoundedBorder() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertTrue( operation.getPropertyNames().indexOf( "roundedBorder" ) == -1 );
   }
@@ -236,7 +236,7 @@ public class ToolTipLCA_Test {
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[2, [0, 255, 0, 255], 5, 6, 7, 8]" );
     assertEquals( expected, message.findSetProperty( toolTip, "roundedBorder" ) );
   }
@@ -251,7 +251,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "roundedBorder" ) );
   }
 
@@ -259,7 +259,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialBackgroundGradient() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolTip );
     assertTrue( operation.getPropertyNames().indexOf( "backgroundGradient" ) == -1 );
   }
@@ -276,7 +276,7 @@ public class ToolTipLCA_Test {
     graphicsAdapter.setBackgroundGradient( gradientColors, percents, true );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected
       = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
     assertEquals( expected, message.findSetProperty( toolTip, "backgroundGradient" ) );
@@ -296,7 +296,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "backgroundGradient" ) );
   }
 
@@ -304,7 +304,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialAutoHide() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "autoHide" ) );
   }
 
@@ -313,7 +313,7 @@ public class ToolTipLCA_Test {
     toolTip.setAutoHide( true );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( toolTip, "autoHide" ) );
   }
 
@@ -325,7 +325,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "autoHide" ) );
   }
 
@@ -333,7 +333,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "text" ) );
   }
 
@@ -342,7 +342,7 @@ public class ToolTipLCA_Test {
     toolTip.setText( "foo" );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( toolTip, "text" ).asString() );
   }
 
@@ -354,7 +354,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "text" ) );
   }
 
@@ -362,7 +362,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialMessage() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "message" ) );
   }
 
@@ -371,7 +371,7 @@ public class ToolTipLCA_Test {
     toolTip.setMessage( "foo" );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( toolTip, "message" ).asString() );
   }
 
@@ -383,7 +383,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "message" ) );
   }
 
@@ -391,7 +391,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialLocation() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "location" ) );
   }
 
@@ -400,7 +400,7 @@ public class ToolTipLCA_Test {
     toolTip.setLocation( 10, 20 );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[10, 20]" );
     assertEquals( expected, message.findSetProperty( toolTip, "location" ) );
   }
@@ -413,7 +413,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "location" ) );
   }
 
@@ -421,7 +421,7 @@ public class ToolTipLCA_Test {
   public void testRenderInitialVisible() throws IOException {
     lca.render( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "visible" ) );
   }
 
@@ -430,7 +430,7 @@ public class ToolTipLCA_Test {
     toolTip.setVisible( true );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( toolTip, "visible" ) );
   }
 
@@ -442,7 +442,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( toolTip, "visible" ) );
   }
 
@@ -454,7 +454,7 @@ public class ToolTipLCA_Test {
     toolTip.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( toolTip, "Selection" ) );
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
@@ -469,7 +469,7 @@ public class ToolTipLCA_Test {
     toolTip.removeSelectionListener( listener );
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( toolTip, "Selection" ) );
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
@@ -483,7 +483,7 @@ public class ToolTipLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( toolTip );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolTip, "selection" ) );
   }
 

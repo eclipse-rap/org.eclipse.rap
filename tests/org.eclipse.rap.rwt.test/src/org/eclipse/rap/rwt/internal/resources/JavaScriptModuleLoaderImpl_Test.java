@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,9 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -122,7 +122,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
   }
@@ -133,7 +133,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     Shell shell = new Shell( display );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     CreateOperation create = message.findCreateOperation( shell );
     CallOperation load = findLoadOperation( message, expected );
@@ -146,7 +146,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
     assertEquals( 1, message.getOperationCount() );
@@ -161,7 +161,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNull( findLoadOperation( message, expected ) );
   }
@@ -175,7 +175,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
   }
@@ -185,7 +185,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
     CallOperation operationOne = findLoadOperation( message, expectedOne );
@@ -199,7 +199,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_1, JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
     CallOperation operation = findLoadOperation( message, expectedOne );
@@ -214,7 +214,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_2 }, true );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expectedOne = "rwt-resources/" + getRegistryPath( false ) + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
     CallOperation operationOne = findLoadOperation( message, expectedOne );
@@ -231,7 +231,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_2 }, true );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String notExpected = "rwt-resources/" + getRegistryPath( false ) + "/" + JS_FILE_1;
     String expected = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
     assertNotNull( findLoadOperation( message, expected ) );
@@ -247,7 +247,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     ensureFiles( new String[]{ JS_FILE_2 } );
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     assertNotNull( findLoadOperation( message, expected ) );
   }
@@ -280,7 +280,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     return result;
   }
 
-  private CallOperation findLoadOperation( Message message, String file ) {
+  private CallOperation findLoadOperation( TestMessage message, String file ) {
     CallOperation result = null;
     for( int i = 0; i < message.getOperationCount(); i++ ) {
       if( message.getOperation( i ) instanceof CallOperation ) {

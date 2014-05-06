@@ -34,8 +34,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
@@ -115,7 +115,7 @@ public class TextLCA_Test {
     Fixture.executeLifeCycleFromServerThread();
 
     // ensure that no text and selection values are sent back to the client
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
     assertNull( message.findSetOperation( text, "selection" ) );
   }
@@ -169,7 +169,7 @@ public class TextLCA_Test {
 
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
@@ -177,7 +177,7 @@ public class TextLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( "rwt.widgets.Text", operation.getType() );
     Object[] styles = operation.getStyles();
@@ -199,7 +199,7 @@ public class TextLCA_Test {
 
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( "rwt.widgets.Text", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -214,7 +214,7 @@ public class TextLCA_Test {
 
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CENTER" ) );
@@ -227,7 +227,7 @@ public class TextLCA_Test {
 
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "MULTI" ) );
@@ -244,7 +244,7 @@ public class TextLCA_Test {
 
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "SEARCH" ) );
@@ -258,7 +258,7 @@ public class TextLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( WidgetUtil.getId( text.getParent() ), operation.getParent() );
   }
@@ -267,7 +267,7 @@ public class TextLCA_Test {
   public void testRenderInitialMessage() throws IOException {
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "message" ) );
   }
 
@@ -276,7 +276,7 @@ public class TextLCA_Test {
     text.setMessage( "test" );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( text, "message" ).asString() );
   }
 
@@ -289,7 +289,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "message" ) );
   }
 
@@ -299,7 +299,7 @@ public class TextLCA_Test {
 
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "?", message.findSetProperty( text, "echoChar" ).asString() );
   }
 
@@ -309,7 +309,7 @@ public class TextLCA_Test {
 
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
@@ -317,7 +317,7 @@ public class TextLCA_Test {
   public void testRenderInitialEchoChar() throws IOException {
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
@@ -326,7 +326,7 @@ public class TextLCA_Test {
     text.setEchoChar( '*' );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "*", message.findSetProperty( text, "echoChar" ).asString() );
   }
 
@@ -339,7 +339,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
   }
 
@@ -347,7 +347,7 @@ public class TextLCA_Test {
   public void testRenderInitialEditable() throws IOException {
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "editable" ) );
   }
 
@@ -356,7 +356,7 @@ public class TextLCA_Test {
     text.setEditable( false );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( text, "editable" ) );
   }
 
@@ -369,7 +369,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "editable" ) );
   }
 
@@ -379,7 +379,7 @@ public class TextLCA_Test {
 
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "selection" ) );
   }
 
@@ -390,7 +390,7 @@ public class TextLCA_Test {
     text.setSelection( 1, 3 );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[ 1, 3 ]" );
     assertEquals( expected, message.findSetProperty( text, "selection" ) );
   }
@@ -408,7 +408,7 @@ public class TextLCA_Test {
     text.selectAll();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[ 0, 7 ]" );
     assertEquals( expected, message.findSetProperty( text, "selection" ) );
   }
@@ -423,7 +423,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "selection" ) );
   }
 
@@ -431,7 +431,7 @@ public class TextLCA_Test {
   public void testRenderInitialTextLimit() throws IOException {
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
   }
 
@@ -440,7 +440,7 @@ public class TextLCA_Test {
     text.setTextLimit( 10 );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( text, "textLimit" ).asInt() );
   }
 
@@ -453,7 +453,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
   }
 
@@ -467,7 +467,7 @@ public class TextLCA_Test {
     text.setTextLimit( Text.LIMIT );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
@@ -481,7 +481,7 @@ public class TextLCA_Test {
     text.setTextLimit( -5 );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
@@ -494,7 +494,7 @@ public class TextLCA_Test {
     text.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( text, "DefaultSelection" ) );
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
@@ -510,7 +510,7 @@ public class TextLCA_Test {
     text.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( text, "DefaultSelection" ) );
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
@@ -525,7 +525,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( text, "Selection" ) );
   }
 
@@ -538,7 +538,7 @@ public class TextLCA_Test {
     text.addListener( SWT.Modify, mock( Listener.class ) );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
@@ -553,7 +553,7 @@ public class TextLCA_Test {
     text.removeListener( SWT.Modify, listener );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
@@ -567,7 +567,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
@@ -580,7 +580,7 @@ public class TextLCA_Test {
     text.addListener( SWT.Verify, mock( Listener.class ) );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( text, "Modify" ) );
   }
 
@@ -595,7 +595,7 @@ public class TextLCA_Test {
     text.removeListener( SWT.Verify, listener );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( text, "Modify" ) );
   }
 
@@ -609,7 +609,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( text, "Modify" ) );
   }
 
@@ -617,7 +617,7 @@ public class TextLCA_Test {
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
   }
 
@@ -626,7 +626,7 @@ public class TextLCA_Test {
     text.setText( "test" );
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( text, "text" ).asString() );
   }
 
@@ -639,7 +639,7 @@ public class TextLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
   }
 
@@ -649,7 +649,7 @@ public class TextLCA_Test {
 
     lca.renderChanges( text );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( text, "addListener" ) );
   }
 

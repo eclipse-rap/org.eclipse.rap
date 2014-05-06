@@ -40,10 +40,10 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -211,7 +211,7 @@ public class CTabFolderLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -225,7 +225,7 @@ public class CTabFolderLCA_Test {
 
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
@@ -247,7 +247,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialization_rendersSelectionListener() throws Exception {
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Selection" ) );
   }
 
@@ -255,7 +255,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialization_rendersFolderListener() throws Exception {
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "Folder" ) );
   }
 
@@ -276,7 +276,7 @@ public class CTabFolderLCA_Test {
 
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     List<Object> styles = Arrays.asList( operation.getStyles() );
     assertTrue( styles.contains( "SINGLE" ) );
@@ -288,7 +288,7 @@ public class CTabFolderLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( getId( folder.getParent() ), operation.getParent() );
   }
@@ -297,7 +297,7 @@ public class CTabFolderLCA_Test {
   public void testRenderToolTipTexts() throws IOException {
     lca.renderInitialization( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray texts = ( JsonArray )message.findCreateProperty( folder, "toolTipTexts" );
     assertEquals( 5, texts.size() );
   }
@@ -306,7 +306,7 @@ public class CTabFolderLCA_Test {
   public void testRenderDispose() throws IOException {
     lca.renderDispose( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     Operation operation = message.getOperation( 0 );
     assertTrue( operation instanceof DestroyOperation );
     assertEquals( getId( folder ), operation.getTarget() );
@@ -316,7 +316,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialTabPosition() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "tabPosition" ) == -1 );
   }
@@ -326,7 +326,7 @@ public class CTabFolderLCA_Test {
     folder.setTabPosition( SWT.BOTTOM );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "bottom", message.findSetProperty( folder, "tabPosition" ).asString() );
   }
 
@@ -339,7 +339,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "tabPosition" ) );
   }
 
@@ -347,7 +347,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialTabHeight() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findSetOperation( folder, "tabHeight" ) );
   }
 
@@ -356,7 +356,7 @@ public class CTabFolderLCA_Test {
     folder.setTabHeight( 20 );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 20, message.findSetProperty( folder, "tabHeight" ).asInt() );
   }
 
@@ -369,7 +369,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "tabHeight" ) );
   }
 
@@ -377,7 +377,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialMinMaxState() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "minMaxState" ) == -1 );
   }
@@ -387,7 +387,7 @@ public class CTabFolderLCA_Test {
     folder.setMaximized( true );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "max", message.findSetProperty( folder, "minMaxState" ).asString() );
   }
 
@@ -396,7 +396,7 @@ public class CTabFolderLCA_Test {
     folder.setMinimized( true );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "min", message.findSetProperty( folder, "minMaxState" ).asString() );
   }
 
@@ -409,7 +409,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "minMaxState" ) );
   }
 
@@ -419,7 +419,7 @@ public class CTabFolderLCA_Test {
 
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "minimizeBounds" ) == -1 );
     assertTrue( operation.getPropertyNames().indexOf( "minimizeVisible" ) == -1 );
@@ -432,7 +432,7 @@ public class CTabFolderLCA_Test {
     folder.setMinimizeVisible( true );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[129, 4, 18, 18]" );
     assertEquals( expected, message.findSetProperty( folder, "minimizeBounds" ) );
     assertEquals( JsonValue.TRUE, message.findSetProperty( folder, "minimizeVisible" ) );
@@ -448,7 +448,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "minimizeBounds" ) );
     assertNull( message.findSetOperation( folder, "minimizeVisible" ) );
   }
@@ -459,7 +459,7 @@ public class CTabFolderLCA_Test {
 
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "maximizeBounds" ) == -1 );
     assertTrue( operation.getPropertyNames().indexOf( "maximizeVisible" ) == -1 );
@@ -472,7 +472,7 @@ public class CTabFolderLCA_Test {
     folder.setMaximizeVisible( true );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[129, 4, 18, 18]" );
     assertEquals( expected, message.findSetProperty( folder, "maximizeBounds" ) );
     assertEquals( JsonValue.TRUE, message.findSetProperty( folder, "maximizeVisible" ) );
@@ -488,7 +488,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "maximizeBounds" ) );
     assertNull( message.findSetOperation( folder, "maximizeVisible" ) );
   }
@@ -499,7 +499,7 @@ public class CTabFolderLCA_Test {
 
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "chevronBounds" ) == -1 );
     assertTrue( operation.getPropertyNames().indexOf( "chevronVisible" ) == -1 );
@@ -514,7 +514,7 @@ public class CTabFolderLCA_Test {
     item.setText( "foo bar foo bar" );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[120, 6, 27, 18]" );
     assertEquals( expected, message.findSetProperty( folder, "chevronBounds" ) );
     assertEquals( JsonValue.TRUE, message.findSetProperty( folder, "chevronVisible" ) );
@@ -532,7 +532,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "chevronBounds" ) );
     assertNull( message.findSetOperation( folder, "chevronVisible" ) );
   }
@@ -541,7 +541,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialUnselectedCloseVisible() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "unselectedCloseVisible" ) == -1 );
   }
@@ -551,7 +551,7 @@ public class CTabFolderLCA_Test {
     folder.setUnselectedCloseVisible( false );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findSetProperty( folder, "unselectedCloseVisible" ) );
   }
 
@@ -564,7 +564,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "unselectedCloseVisible" ) );
   }
 
@@ -572,7 +572,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialSelection() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
@@ -584,7 +584,7 @@ public class CTabFolderLCA_Test {
     folder.setSelection( item );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( getId( item ), message.findSetProperty( folder, "selection" ).asString() );
   }
 
@@ -598,7 +598,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selection" ) );
   }
 
@@ -606,7 +606,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialSelectionBackground() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackground" ) == -1 );
   }
@@ -616,7 +616,7 @@ public class CTabFolderLCA_Test {
     folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[0, 0, 255, 255]" );
     assertEquals( expected, message.findSetProperty( folder, "selectionBackground" ) );
   }
@@ -630,7 +630,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selectionBackground" ) );
   }
 
@@ -638,7 +638,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialSelectionForeground() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "selectionForeground" ) == -1 );
   }
@@ -648,7 +648,7 @@ public class CTabFolderLCA_Test {
     folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = JsonArray.readFrom( "[0, 0, 255, 255]" );
     assertEquals( expected, message.findSetProperty( folder, "selectionForeground" ) );
   }
@@ -662,7 +662,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selectionForeground" ) );
   }
 
@@ -670,7 +670,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialSelectionBackgroundImage() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundImage" ) == -1 );
   }
@@ -682,7 +682,7 @@ public class CTabFolderLCA_Test {
     folder.setSelectionBackground( image );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JsonArray expected = new JsonArray().add( imageLocation ).add( 100 ).add( 50 );
     assertEquals( expected, message.findSetProperty( folder, "selectionBackgroundImage" ) );
@@ -698,7 +698,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selectionBackgroundImage" ) );
   }
 
@@ -706,7 +706,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialSelectionBackgroundGradient() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundGradient" ) == -1 );
   }
@@ -721,7 +721,7 @@ public class CTabFolderLCA_Test {
     folder.setSelectionBackground( gradientColors , percents );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected
       = JsonArray.readFrom( "[[[255, 0, 0, 255], [0, 255, 0, 255]], [0, 50], false]" );
     assertEquals( expected, message.findSetProperty( folder, "selectionBackgroundGradient" ) );
@@ -741,7 +741,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "selectionBackgroundGradient" ) );
   }
 
@@ -749,7 +749,7 @@ public class CTabFolderLCA_Test {
   public void testRenderInitialBorderVisible() throws IOException {
     lca.render( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertTrue( operation.getPropertyNames().indexOf( "borderVisible" ) == -1 );
   }
@@ -759,7 +759,7 @@ public class CTabFolderLCA_Test {
     folder.setBorderVisible( true );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findSetProperty( folder, "borderVisible" ) );
   }
 
@@ -772,7 +772,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( folder, "borderVisible" ) );
   }
 
@@ -785,7 +785,7 @@ public class CTabFolderLCA_Test {
     folder.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( folder, "DefaultSelection" ) );
   }
 
@@ -800,7 +800,7 @@ public class CTabFolderLCA_Test {
     folder.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( folder, "DefaultSelection" ) );
   }
 
@@ -814,7 +814,7 @@ public class CTabFolderLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( folder );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( folder, "DefaultSelection" ) );
   }
 

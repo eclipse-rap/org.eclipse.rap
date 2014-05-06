@@ -34,8 +34,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -209,7 +209,7 @@ public class SpinnerLCA_Test {
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertEquals( "rwt.widgets.Spinner", operation.getType() );
   }
@@ -238,7 +238,7 @@ public class SpinnerLCA_Test {
   public void testRenderParent() throws IOException {
     lca.renderInitialization( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertEquals( WidgetUtil.getId( spinner.getParent() ), operation.getParent() );
   }
@@ -249,7 +249,7 @@ public class SpinnerLCA_Test {
 
     lca.renderInitialization( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
@@ -260,7 +260,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialMinimum() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
   }
@@ -270,7 +270,7 @@ public class SpinnerLCA_Test {
     spinner.setMinimum( 10 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( spinner, "minimum" ).asInt() );
   }
 
@@ -283,7 +283,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "minimum" ) );
   }
 
@@ -291,7 +291,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialMaxmum() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
   }
@@ -301,7 +301,7 @@ public class SpinnerLCA_Test {
     spinner.setMaximum( 10 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( spinner, "maximum" ).asInt() );
   }
 
@@ -314,7 +314,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "maximum" ) );
   }
 
@@ -322,7 +322,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialSelection() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
@@ -332,7 +332,7 @@ public class SpinnerLCA_Test {
     spinner.setSelection( 10 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( spinner, "selection" ).asInt() );
   }
 
@@ -345,7 +345,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "selection" ) );
   }
 
@@ -353,7 +353,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialDigits() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "digits" ) == -1 );
   }
@@ -363,7 +363,7 @@ public class SpinnerLCA_Test {
     spinner.setDigits( 2 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( spinner, "digits" ).asInt() );
   }
 
@@ -376,7 +376,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "digits" ) );
   }
 
@@ -384,7 +384,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialIncrement() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
   }
@@ -394,7 +394,7 @@ public class SpinnerLCA_Test {
     spinner.setIncrement( 2 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 2, message.findSetProperty( spinner, "increment" ).asInt() );
   }
 
@@ -407,7 +407,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "increment" ) );
   }
 
@@ -415,7 +415,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialPageIncrement() throws IOException {
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
   }
@@ -425,7 +425,7 @@ public class SpinnerLCA_Test {
     spinner.setPageIncrement( 20 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 20, message.findSetProperty( spinner, "pageIncrement" ).asInt() );
   }
 
@@ -438,7 +438,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "pageIncrement" ) );
   }
 
@@ -446,7 +446,7 @@ public class SpinnerLCA_Test {
   public void testRenderInitialTextLimit() throws IOException {
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "textLimit" ) );
   }
 
@@ -455,7 +455,7 @@ public class SpinnerLCA_Test {
     spinner.setTextLimit( 10 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 10, message.findSetProperty( spinner, "textLimit" ).asInt() );
   }
 
@@ -468,7 +468,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "textLimit" ) );
   }
 
@@ -482,7 +482,7 @@ public class SpinnerLCA_Test {
     spinner.setTextLimit( Text.LIMIT );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
@@ -496,7 +496,7 @@ public class SpinnerLCA_Test {
     spinner.setTextLimit( -5 );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( spinner, "textLimit" ) );
   }
 
@@ -505,7 +505,7 @@ public class SpinnerLCA_Test {
     RWT.setLocale( Locale.US );
     lca.render( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
     assertTrue( operation.getPropertyNames().indexOf( "decimalSeparator" ) == -1 );
   }
@@ -515,7 +515,7 @@ public class SpinnerLCA_Test {
     RWT.setLocale( Locale.GERMANY );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( ",", message.findSetProperty( spinner, "decimalSeparator" ).asString() );
   }
 
@@ -528,7 +528,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( spinner, "decimalSeparator" ) );
   }
 
@@ -541,7 +541,7 @@ public class SpinnerLCA_Test {
     spinner.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( spinner, "Selection" ) );
     assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
   }
@@ -557,7 +557,7 @@ public class SpinnerLCA_Test {
     spinner.removeListener( SWT.Selection, listener );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( spinner, "Selection" ) );
     assertNull( message.findListenOperation( spinner, "DefaultSelection" ) );
   }
@@ -571,7 +571,7 @@ public class SpinnerLCA_Test {
     spinner.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( spinner, "DefaultSelection" ) );
     assertNull( message.findListenOperation( spinner, "Selection" ) );
   }
@@ -587,7 +587,7 @@ public class SpinnerLCA_Test {
     spinner.removeListener( SWT.DefaultSelection, listener );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( spinner, "DefaultSelection" ) );
     assertNull( message.findListenOperation( spinner, "Selection" ) );
   }
@@ -602,7 +602,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( spinner, "selection" ) );
   }
 
@@ -618,7 +618,7 @@ public class SpinnerLCA_Test {
     } );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( spinner, "Selection" ) );
   }
 
@@ -636,7 +636,7 @@ public class SpinnerLCA_Test {
     spinner.removeModifyListener( listener );
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( spinner, "Selection" ) );
   }
 
@@ -653,7 +653,7 @@ public class SpinnerLCA_Test {
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( spinner, "Modify" ) );
   }
 
@@ -663,7 +663,7 @@ public class SpinnerLCA_Test {
 
     lca.renderChanges( spinner );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( spinner, "addListener" ) );
   }
 

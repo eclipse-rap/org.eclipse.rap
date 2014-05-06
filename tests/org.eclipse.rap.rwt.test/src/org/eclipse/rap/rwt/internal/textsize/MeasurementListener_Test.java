@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -77,7 +77,7 @@ public class MeasurementListener_Test {
   public void testAfterPhaseWithoutMeasurementItemsOrProbes() {
     listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
@@ -87,7 +87,7 @@ public class MeasurementListener_Test {
 
     listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
@@ -97,7 +97,7 @@ public class MeasurementListener_Test {
 
     listener.afterPhase( createPhaseEvent( PhaseId.RENDER ) );
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
@@ -107,7 +107,7 @@ public class MeasurementListener_Test {
 
     executeNonRenderPhases();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
@@ -117,7 +117,7 @@ public class MeasurementListener_Test {
 
     executeNonRenderPhases();
 
-    Message message = Fixture.getProtocolMessage();
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS ) );
   }
 
