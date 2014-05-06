@@ -628,6 +628,9 @@ List-Item:hover {
 
 List-Item:selected {
   color: #ffffff;
+  /* background-color property is used on the server to compute system color with id
+     SWT.COLOR_LIST_SELECTION (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=434191) */
+  background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
     from( #5882b5 ),

@@ -42,6 +42,7 @@ List-Item:hover {
 
 List-Item:selected {
   color: #ffffff;
+  background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
     from( #5882b5 ),
