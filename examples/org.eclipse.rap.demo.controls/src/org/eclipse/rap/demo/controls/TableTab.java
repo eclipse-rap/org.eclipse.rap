@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,13 +63,11 @@ public class TableTab extends ExampleTab {
   private Image itemImage;
   private Image smallImage;
   private Image largeImage;
-  private ServerPushSession pushSession;
 
   private boolean markup;
 
   public TableTab() {
     super( "Table" );
-    pushSession = new ServerPushSession();
   }
 
   @Override
@@ -149,6 +147,7 @@ public class TableTab extends ExampleTab {
           final TableItem item = ( TableItem )event.item;
           if( updateVirtualItemsDelayed ) {
             final Display display = event.display;
+            final ServerPushSession pushSession = new ServerPushSession();
             Job job = new Job( "Delayed Table Item Update" ) {
               @Override
               protected IStatus run( IProgressMonitor monitor ) {
