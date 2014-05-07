@@ -66,7 +66,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MenuManager", {
               hide = true;
             }
             // 6. Execute of an menuItem
-            if ( isMouseUp && menu.isSubElement( target, true ) ) {
+            if ( isMouseUp && menu.isSubElement( target, true ) && target.isEnabled() ) {
               hide = true;
             }
           }

@@ -909,6 +909,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.clearRequestLog();
     },
 
+    //See Bug 434306 - [Menu] Application crashes when the preItem is clicked
+    testExecutePreItem_doNotSendSelection : function() {
+      createSimpleMenu( "push" );
+      menu.hide();
+      TestUtil.fakeListener( menu, "Show", true );
+      menu.show();
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+
+      TestUtil.click( menu._preItem );
+
+      assertTrue( menu._preItem.isSeeable() );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+    },
+
     testExecuteCheckItem: function() {
       createSimpleMenu( "check" );
       rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );

@@ -296,11 +296,13 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     // could be shared between Button, MenuItem and (future) ToolItem.
     // Then, also the corrosponding LCA-methods could be shared
     execute : function() {
-      this.base( arguments );
-      if( this._isSelectable ) {
-        this.setSelection( !( this._selected && this._isDeselectable ) );
-      } else {
-        this._notifySelected();
+      if( this.isEnabled() ) {
+        this.base( arguments );
+        if( this._isSelectable ) {
+          this.setSelection( !( this._selected && this._isDeselectable ) );
+        } else {
+          this._notifySelected();
+        }
       }
     },
 
