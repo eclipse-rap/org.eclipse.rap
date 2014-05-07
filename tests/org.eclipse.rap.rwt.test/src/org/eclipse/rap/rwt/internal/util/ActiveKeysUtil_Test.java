@@ -25,7 +25,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -203,7 +203,7 @@ public class ActiveKeysUtil_Test {
       .add( "," );
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    assertEquals( expected, operation.getProperty( "activeKeys" ) );
+    assertEquals( expected, operation.getProperties().get( "activeKeys" ) );
   }
 
   @Test
@@ -217,7 +217,7 @@ public class ActiveKeysUtil_Test {
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "activeKeys" );
     JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperty( "activeKeys" ) );
+    assertEquals( expected, operation.getProperties().get( "activeKeys" ) );
   }
 
   @Test
@@ -230,7 +230,7 @@ public class ActiveKeysUtil_Test {
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "cancelKeys" );
     JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperty( "cancelKeys" ) );
+    assertEquals( expected, operation.getProperties().get( "cancelKeys" ) );
   }
 
   @Test
@@ -244,7 +244,7 @@ public class ActiveKeysUtil_Test {
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
     JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperty( "cancelKeys" ) );
+    assertEquals( expected, operation.getProperties().get( "cancelKeys" ) );
   }
 
   @Test
@@ -367,7 +367,7 @@ public class ActiveKeysUtil_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    JsonArray activeKeys = ( JsonArray )operation.getProperties().get( "activeKeys" );
     assertEquals( 0, activeKeys.size() );
   }
 
@@ -383,7 +383,7 @@ public class ActiveKeysUtil_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JsonArray activeKeys = ( JsonArray )operation.getProperty( "activeKeys" );
+    JsonArray activeKeys = ( JsonArray )operation.getProperties().get( "activeKeys" );
     assertEquals( 0, activeKeys.size() );
   }
 

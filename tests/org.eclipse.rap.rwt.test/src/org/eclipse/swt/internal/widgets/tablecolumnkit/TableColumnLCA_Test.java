@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA.getLeft;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -29,14 +31,14 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -204,7 +206,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "style" ) );
     assertEquals( "right", message.findCreateProperty( column, "alignment" ).asString() );
   }
 
@@ -224,7 +226,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertEquals( WidgetUtil.getId( column.getParent() ), operation.getParent() );
+    assertEquals( getId( column.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -284,7 +286,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "toolTip" ) );
   }
 
   @Test
@@ -315,7 +317,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test
@@ -346,7 +348,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -427,7 +429,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "left" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "left" ) );
   }
 
   @Test
@@ -460,7 +462,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "width" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "width" ) );
   }
 
   @Test
@@ -491,7 +493,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "resizable" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "resizable" ) );
   }
 
   @Test
@@ -522,7 +524,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "moveable" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "moveable" ) );
   }
 
   @Test
@@ -553,7 +555,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "alignment" ) );
   }
 
   @Test
@@ -584,7 +586,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "fixed" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "fixed" ) );
   }
 
   @Test
@@ -657,7 +659,7 @@ public class TableColumnLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "font" ) );
   }
 
   @Test

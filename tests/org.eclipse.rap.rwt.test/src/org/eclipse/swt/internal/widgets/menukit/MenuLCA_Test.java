@@ -11,9 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -22,22 +24,21 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
@@ -103,7 +104,7 @@ public class MenuLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
     assertEquals( "rwt.widgets.Menu", operation.getType() );
-    assertTrue( Arrays.asList( operation.getStyles() ).contains( "BAR" ) );
+    assertTrue( getStyles( operation ).contains( "BAR" ) );
   }
 
   @Test
@@ -115,7 +116,7 @@ public class MenuLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
     assertEquals( "rwt.widgets.Menu", operation.getType() );
-    assertTrue( Arrays.asList( operation.getStyles() ).contains( "POP_UP" ) );
+    assertTrue( getStyles( operation ).contains( "POP_UP" ) );
   }
 
   @Test
@@ -127,7 +128,7 @@ public class MenuLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
     assertEquals( "rwt.widgets.Menu", operation.getType() );
-    assertTrue( Arrays.asList( operation.getStyles() ).contains( "DROP_DOWN" ) );
+    assertTrue( getStyles( operation ).contains( "DROP_DOWN" ) );
   }
 
   @Test
@@ -139,8 +140,8 @@ public class MenuLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
     assertEquals( "rwt.widgets.Menu", operation.getType() );
-    assertTrue( Arrays.asList( operation.getStyles() ).contains( "POP_UP" ) );
-    assertTrue( Arrays.asList( operation.getStyles() ).contains( "NO_RADIO_GROUP" ) );
+    assertTrue( getStyles( operation ).contains( "POP_UP" ) );
+    assertTrue( getStyles( operation ).contains( "NO_RADIO_GROUP" ) );
   }
 
   @Test
@@ -205,7 +206,7 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
-    assertTrue( operation.getPropertyNames().indexOf( "bounds" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "bounds" ) );
   }
 
   @Test
@@ -275,7 +276,7 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test
@@ -311,7 +312,7 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( menu );
-    assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "enabled" ) );
   }
 
   @Test
@@ -490,8 +491,8 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( menu, "showMenu" );
-    assertEquals( 1, operation.getProperty( "x" ).asInt() );
-    assertEquals( 2, operation.getProperty( "y" ).asInt() );
+    assertEquals( 1, operation.getParameters().get( "x" ).asInt() );
+    assertEquals( 2, operation.getParameters().get( "y" ).asInt() );
   }
 
   @Test
@@ -507,7 +508,7 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( menu, "unhideItems" );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "reveal" ) );
+    assertEquals( JsonValue.TRUE, operation.getParameters().get( "reveal" ) );
   }
 
 }

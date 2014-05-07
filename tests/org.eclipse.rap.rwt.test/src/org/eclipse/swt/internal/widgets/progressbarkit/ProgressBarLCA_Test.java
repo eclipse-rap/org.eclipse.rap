@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -20,17 +23,17 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
@@ -116,7 +119,7 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    assertEquals( WidgetUtil.getId( progressBar.getParent() ), operation.getParent() );
+    assertEquals( getId( progressBar.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -127,9 +130,9 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "VERTICAL" ) );
-    assertTrue( Arrays.asList( styles ).contains( "INDETERMINATE" ) );
+    List<String> styles = getStyles( operation );
+    assertTrue( styles.contains( "VERTICAL" ) );
+    assertTrue( styles.contains( "INDETERMINATE" ) );
   }
 
   @Test
@@ -138,7 +141,7 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "minimum" ) );
   }
 
   @Test
@@ -169,7 +172,7 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "maximum" ) );
   }
 
   @Test
@@ -200,7 +203,7 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -231,7 +234,7 @@ public class ProgressBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( progressBar );
-    assertTrue( operation.getPropertyNames().indexOf( "state" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "state" ) );
   }
 
   @Test

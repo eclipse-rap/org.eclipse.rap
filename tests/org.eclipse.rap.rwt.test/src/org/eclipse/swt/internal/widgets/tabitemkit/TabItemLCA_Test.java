@@ -13,7 +13,9 @@ package org.eclipse.swt.internal.widgets.tabitemkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,9 +26,9 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -92,8 +94,8 @@ public class TabItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertEquals( "rwt.widgets.TabItem", operation.getType() );
-    assertEquals( getId( item ), operation.getProperty( "id" ).asString() );
-    assertEquals( 0, operation.getProperty( "index" ).asInt() );
+    assertEquals( getId( item ), operation.getProperties().get( "id" ).asString() );
+    assertEquals( 0, operation.getProperties().get( "index" ).asInt() );
   }
 
   @Test
@@ -102,7 +104,7 @@ public class TabItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+    assertEquals( getId( item.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -132,7 +134,7 @@ public class TabItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "toolTip" ) );
   }
 
   @Test
@@ -163,7 +165,7 @@ public class TabItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -253,7 +255,7 @@ public class TabItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "control" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "control" ) );
   }
 
   @Test

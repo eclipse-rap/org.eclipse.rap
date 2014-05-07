@@ -12,18 +12,19 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.*;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -64,8 +65,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
     assertEquals( "forms.widgets.Hyperlink", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+    assertTrue( getStyles( operation ).contains( "WRAP" ) );
   }
 
   @Test
@@ -93,7 +93,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
-    assertEquals( WidgetUtil.getId( hyperlink.getParent() ), operation.getParent() );
+    assertEquals( getId( hyperlink.getParent() ), getParent( operation ) );
   }
 
   public void testRenderInitialText() throws IOException {
@@ -182,7 +182,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
-    assertTrue( operation.getPropertyNames().indexOf( "activeBackground" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "activeBackground" ) );
   }
 
   public void testRenderActiveBackground() throws IOException {
@@ -214,7 +214,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( hyperlink );
-    assertTrue( operation.getPropertyNames().indexOf( "activeForeground" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "activeForeground" ) );
   }
 
   public void testRenderActiveForeground() throws IOException {

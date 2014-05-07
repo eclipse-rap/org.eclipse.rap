@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_ACTIVATE;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +24,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -31,12 +31,12 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -440,8 +440,7 @@ public class ShellLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( shell );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "NO_TRIM" ) );
+    assertTrue( getStyles( operation ).contains( "NO_TRIM" ) );
   }
 
   @Test

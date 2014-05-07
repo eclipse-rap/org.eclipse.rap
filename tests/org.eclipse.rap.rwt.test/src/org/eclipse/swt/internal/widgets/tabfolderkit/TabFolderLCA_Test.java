@@ -14,6 +14,8 @@ package org.eclipse.swt.internal.widgets.tabfolderkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -21,17 +23,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -160,8 +161,7 @@ public class TabFolderLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.TabFolder", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "TOP" ) );
+    assertTrue( getStyles( operation ).contains( "TOP" ) );
   }
 
   @Test
@@ -173,8 +173,7 @@ public class TabFolderLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.TabFolder", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "BOTTOM" ) );
+    assertTrue( getStyles( operation ).contains( "BOTTOM" ) );
   }
 
   @Test
@@ -211,7 +210,7 @@ public class TabFolderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( getId( folder.getParent() ), operation.getParent() );
+    assertEquals( getId( folder.getParent() ), getParent( operation ) );
   }
 
   @Test

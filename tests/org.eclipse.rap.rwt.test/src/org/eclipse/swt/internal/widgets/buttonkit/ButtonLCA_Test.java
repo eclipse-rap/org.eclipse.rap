@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -32,15 +34,15 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -322,8 +324,7 @@ public class ButtonLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( button );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+    assertTrue( getStyles( operation ).contains( "WRAP" ) );
   }
 
   @Test
@@ -335,8 +336,7 @@ public class ButtonLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( pushButton );
     assertEquals( "rwt.widgets.Button", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
+    assertTrue( getStyles( operation ).contains( "PUSH" ) );
   }
 
   @Test
@@ -348,8 +348,7 @@ public class ButtonLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( pushButton );
     assertEquals( "rwt.widgets.Button", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "ARROW" ) );
+    assertTrue( getStyles( operation ).contains( "ARROW" ) );
   }
 
   @Test
@@ -369,7 +368,7 @@ public class ButtonLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( pushButton );
-    assertEquals( WidgetUtil.getId( pushButton.getParent() ), operation.getParent() );
+    assertEquals( getId( pushButton.getParent() ), getParent( operation ) );
   }
 
   @Test

@@ -13,7 +13,9 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +34,7 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -239,7 +241,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertEquals( WidgetUtil.getId( combo.getParent() ), operation.getParent() );
+    assertEquals( getId( combo.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -261,7 +263,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "visibleItemCount" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "visibleItemCount" ) );
   }
 
   @Test
@@ -292,7 +294,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "items" ) );
   }
 
   @Test
@@ -325,7 +327,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "listVisible" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "listVisible" ) );
   }
 
   @Test
@@ -356,7 +358,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "editable" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "editable" ) );
   }
 
   @Test
@@ -367,7 +369,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertEquals( JsonValue.FALSE, operation.getProperty( "editable" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperties().get( "editable" ) );
   }
 
   @Test
@@ -376,7 +378,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selectionIndex" ) );
   }
 
   @Test
@@ -410,7 +412,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -452,7 +454,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -487,7 +489,7 @@ public class ComboLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
-    assertTrue( operation.getPropertyNames().indexOf( "textLimit" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "textLimit" ) );
   }
 
   @Test

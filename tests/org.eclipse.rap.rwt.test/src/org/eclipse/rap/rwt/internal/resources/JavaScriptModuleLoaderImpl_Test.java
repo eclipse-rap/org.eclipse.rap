@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
@@ -24,8 +26,9 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -131,13 +134,15 @@ public class JavaScriptModuleLoaderImpl_Test {
   public void testLoadBeforeCreateWidget() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     Shell shell = new Shell( display );
+
     Fixture.executeLifeCycleFromServerThread();
 
     TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation createOperation = message.findCreateOperation( shell );
     String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
-    CreateOperation create = message.findCreateOperation( shell );
-    CallOperation load = findLoadOperation( message, expected );
-    assertTrue( load.getPosition() < create.getPosition() );
+    CallOperation loadOperation = findLoadOperation( message, expected );
+    List<Operation> operations = message.getOperations();
+    assertTrue( operations.indexOf( loadOperation ) < operations.indexOf( createOperation ) );
   }
 
   @Test
@@ -191,7 +196,8 @@ public class JavaScriptModuleLoaderImpl_Test {
     CallOperation operationOne = findLoadOperation( message, expectedOne );
     CallOperation operationTwo = findLoadOperation( message, expectedTwo );
     assertNotNull( operationOne );
-    assertEquals( operationOne.getPosition(), operationTwo.getPosition() );
+    List<Operation> operations = message.getOperations();
+    assertEquals( operations.indexOf( operationOne ), operations.indexOf( operationTwo ) );
   }
 
   @Test
@@ -203,7 +209,7 @@ public class JavaScriptModuleLoaderImpl_Test {
     String expectedOne = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
     String expectedTwo = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_2;
     CallOperation operation = findLoadOperation( message, expectedOne );
-    JsonArray files = operation.getProperty( "files" ).asArray();
+    JsonArray files = operation.getParameters().get( "files" ).asArray();
     assertEquals( expectedOne, files.get( 0 ).asString() );
     assertEquals( expectedTwo, files.get( 1 ).asString() );
   }
@@ -219,7 +225,8 @@ public class JavaScriptModuleLoaderImpl_Test {
     String expectedTwo = "rwt-resources/" + getRegistryPath( true ) + "/" + JS_FILE_2;
     CallOperation operationOne = findLoadOperation( message, expectedOne );
     CallOperation operationTwo = findLoadOperation( message, expectedTwo );
-    assertTrue( operationOne.getPosition() < operationTwo.getPosition() );
+    List<Operation> operations = message.getOperations();
+    assertTrue( operations.indexOf( operationOne ) < operations.indexOf( operationTwo ) );
   }
 
   @Test
@@ -288,7 +295,7 @@ public class JavaScriptModuleLoaderImpl_Test {
         if(    operation.getTarget().equals( "rwt.client.JavaScriptLoader" )
             && "load".equals( operation.getMethodName() )
         ) {
-          JsonArray files = operation.getProperty( "files" ).asArray();
+          JsonArray files = operation.getParameters().get( "files" ).asArray();
           for( int j = 0; j < files.size(); j++ ) {
             if( files.get( j ).asString().equals( file ) ) {
               result = operation;

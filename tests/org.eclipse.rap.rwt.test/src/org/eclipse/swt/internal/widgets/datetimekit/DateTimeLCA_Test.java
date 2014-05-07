@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.datetimekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -29,11 +31,11 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -195,7 +197,7 @@ public class DateTimeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
-    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "DATE" ) );
     assertTrue( styles.contains( "SHORT" ) );
     assertTrue( styles.contains( "DROP_DOWN" ) );
@@ -209,7 +211,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    java.util.List<String> propertyNames = operation.getPropertyNames();
+    java.util.List<String> propertyNames = operation.getProperties().names();
     assertTrue( propertyNames.contains( "cellSize" ) );
     assertTrue( propertyNames.contains( "monthNames" ) );
     assertTrue( propertyNames.contains( "weekdayNames" ) );
@@ -249,7 +251,7 @@ public class DateTimeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
-    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "TIME" ) );
     assertTrue( styles.contains( "MEDIUM" ) );
   }
@@ -275,7 +277,7 @@ public class DateTimeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     assertEquals( "rwt.widgets.DateTime", operation.getType() );
-    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "CALENDAR" ) );
     assertTrue( styles.contains( "LONG" ) );
   }
@@ -300,7 +302,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    java.util.List<String> propertyNames = operation.getPropertyNames();
+    java.util.List<String> propertyNames = operation.getProperties().names();
     assertTrue( propertyNames.contains( "cellSize" ) );
     assertTrue( propertyNames.contains( "monthNames" ) );
     assertTrue( propertyNames.contains( "weekdayShortNames" ) );
@@ -314,7 +316,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertEquals( WidgetUtil.getId( dateTime.getParent() ), operation.getParent() );
+    assertEquals( getId( dateTime.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -415,7 +417,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "year" ) );
+    assertTrue( operation.getProperties().names().contains( "year" ) );
   }
 
   @Test
@@ -451,7 +453,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "month" ) );
+    assertTrue( operation.getProperties().names().contains( "month" ) );
   }
 
   @Test
@@ -489,7 +491,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "day" ) );
+    assertTrue( operation.getProperties().names().contains( "day" ) );
   }
 
   @Test
@@ -525,7 +527,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
+    assertTrue( operation.getProperties().names().contains( "subWidgetsBounds" ) );
   }
 
   @Test
@@ -560,7 +562,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "hours" ) );
+    assertTrue( operation.getProperties().names().contains( "hours" ) );
   }
 
   @Test
@@ -596,7 +598,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "minutes" ) );
+    assertTrue( operation.getProperties().names().contains( "minutes" ) );
   }
 
   @Test
@@ -632,7 +634,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "seconds" ) );
+    assertTrue( operation.getProperties().names().contains( "seconds" ) );
   }
 
   @Test
@@ -668,7 +670,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
+    assertTrue( operation.getProperties().names().contains( "subWidgetsBounds" ) );
   }
 
   @Test
@@ -703,7 +705,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "year" ) );
+    assertTrue( operation.getProperties().names().contains( "year" ) );
   }
 
   @Test
@@ -739,7 +741,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "month" ) );
+    assertTrue( operation.getProperties().names().contains( "month" ) );
   }
 
   @Test
@@ -777,7 +779,7 @@ public class DateTimeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().contains( "day" ) );
+    assertTrue( operation.getProperties().names().contains( "day" ) );
   }
 
   @Test

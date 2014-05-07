@@ -16,7 +16,7 @@ import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;

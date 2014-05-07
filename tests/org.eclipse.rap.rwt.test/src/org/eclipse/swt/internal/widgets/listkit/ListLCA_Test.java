@@ -12,7 +12,10 @@
 package org.eclipse.swt.internal.widgets.listkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -21,19 +24,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -192,8 +194,7 @@ public class ListLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
     assertEquals( "rwt.widgets.List", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
+    assertTrue( getStyles( operation ).contains( "SINGLE" ) );
   }
 
   @Test
@@ -214,8 +215,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+    assertTrue( getStyles( operation ).contains( "MULTI" ) );
   }
 
   @Test
@@ -224,7 +224,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertEquals( WidgetUtil.getId( list.getParent() ), operation.getParent() );
+    assertEquals( getId( list.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -233,7 +233,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "items" ) );
   }
 
   @Test
@@ -265,7 +265,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "selectionIndices" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selectionIndices" ) );
   }
 
   @Test
@@ -313,7 +313,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "topIndex" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "topIndex" ) );
   }
 
   @Test
@@ -349,7 +349,7 @@ public class ListLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "focusIndex" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "focusIndex" ) );
   }
 
   @Test

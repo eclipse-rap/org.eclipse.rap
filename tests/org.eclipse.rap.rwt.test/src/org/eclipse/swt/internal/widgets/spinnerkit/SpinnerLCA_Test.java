@@ -11,9 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -22,20 +25,20 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -240,7 +243,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertEquals( WidgetUtil.getId( spinner.getParent() ), operation.getParent() );
+    assertEquals( getId( spinner.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -251,9 +254,9 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
-    assertTrue( Arrays.asList( styles ).contains( "READ_ONLY" ) );
+    List<String> styles = getStyles( operation );
+    assertTrue( styles.contains( "WRAP" ) );
+    assertTrue( styles.contains( "READ_ONLY" ) );
   }
 
   @Test
@@ -262,7 +265,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "minimum" ) );
   }
 
   @Test
@@ -293,7 +296,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "maximum" ) );
   }
 
   @Test
@@ -324,7 +327,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -355,7 +358,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "digits" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "digits" ) );
   }
 
   @Test
@@ -386,7 +389,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "increment" ) );
   }
 
   @Test
@@ -417,7 +420,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "pageIncrement" ) );
   }
 
   @Test
@@ -507,7 +510,7 @@ public class SpinnerLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( spinner );
-    assertTrue( operation.getPropertyNames().indexOf( "decimalSeparator" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "decimalSeparator" ) );
   }
 
   @Test

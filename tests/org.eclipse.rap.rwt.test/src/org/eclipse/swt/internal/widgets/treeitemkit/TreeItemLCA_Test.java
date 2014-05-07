@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,15 +28,15 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -319,7 +320,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+    assertEquals( getId( item.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -330,7 +331,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( treeItem );
-    assertEquals( 1, operation.getProperty( "index" ).asInt() );
+    assertEquals( 1, operation.getProperties().get( "index" ).asInt() );
   }
 
   @Test
@@ -390,7 +391,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "itemCount" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "itemCount" ) );
   }
 
   @Test
@@ -425,7 +426,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "texts" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "texts" ) );
   }
 
   @Test
@@ -465,7 +466,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "images" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "images" ) );
   }
 
   @Test
@@ -506,7 +507,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "background" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "background" ) );
   }
 
   @Test
@@ -539,7 +540,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "foreground" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "foreground" ) );
   }
 
   @Test
@@ -571,7 +572,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "font" ) );
   }
 
   @Test
@@ -607,7 +608,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "cellBackgrounds" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "cellBackgrounds" ) );
   }
 
   @Test
@@ -647,7 +648,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "cellForegrounds" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "cellForegrounds" ) );
   }
 
   @Test
@@ -687,7 +688,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "cellFonts" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "cellFonts" ) );
   }
 
   @Test
@@ -724,7 +725,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "expanded" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "expanded" ) );
   }
 
   @Test
@@ -761,7 +762,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "checked" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "checked" ) );
   }
 
   @Test
@@ -800,7 +801,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "grayed" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "grayed" ) );
   }
 
   @Test
@@ -836,7 +837,7 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test

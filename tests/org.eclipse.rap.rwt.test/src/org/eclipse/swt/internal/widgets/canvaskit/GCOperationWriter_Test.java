@@ -20,7 +20,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -621,7 +621,7 @@ public class GCOperationWriter_Test {
     writeGCOperations( canvas );
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation draw = message.findCallOperation( getGcId( canvas ), "draw" );
-    return draw.getProperty( "operations" ).asArray();
+    return draw.getParameters().get( "operations" ).asArray();
   }
 
   private static String getOperation( int i, JsonArray operations ) {

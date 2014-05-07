@@ -8,32 +8,32 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.protocol;
+package org.eclipse.rap.rwt.testfixture;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.ListenOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class Message_Test {
+public class TestMessage_Test {
 
   private ProtocolMessageWriter writer;
 
@@ -137,27 +137,6 @@ public class Message_Test {
   }
 
   @Test
-  public void testGetOperationWithUnknownType() {
-    JsonObject json = JsonObject.readFrom( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
-    TestMessage message = new TestMessage( json );
-    try {
-      message.getOperation( 0 );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-  }
-
-  @Test
-  public void testGetOperationPosition() {
-    writer.appendCreate( "w1", "type" );
-    writer.appendCreate( "w2", "type" );
-
-    TestMessage message = getMessage();
-    assertEquals( 0, message.getOperation( 0 ).getPosition() );
-    assertEquals( 1, message.getOperation( 1 ).getPosition() );
-  }
-
-  @Test
   public void testCreateOperation() {
     writer.appendCreate( "w1", "type" );
 
@@ -176,8 +155,8 @@ public class Message_Test {
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "method", operation.getMethodName() );
-    assertEquals( "a", operation.getProperty( "key1" ).asString() );
-    assertEquals( 2, operation.getProperty( "key2" ).asInt() );
+    assertEquals( "a", operation.getParameters().get( "key1" ).asString() );
+    assertEquals( 2, operation.getParameters().get( "key2" ).asInt() );
   }
 
   @Test
@@ -187,8 +166,8 @@ public class Message_Test {
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
-    assertEquals( JsonValue.valueOf( "value" ), operation.getProperty( "key2" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "key" ) );
+    assertEquals( JsonValue.valueOf( "value" ), operation.getProperties().get( "key2" ) );
   }
 
   @Test
@@ -197,25 +176,8 @@ public class Message_Test {
     writer.appendListen( "w1", "event2", false );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
-    assertTrue( operation.listensTo( "event" ) );
-    assertFalse( operation.listensTo( "event2" ) );
-  }
-
-  @Test
-  public void testOperationGetPropertyNames() {
-    writer.appendSet( "w1", "key", true );
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-
-    assertEquals( 1, operation.getPropertyNames().size() );
-    assertTrue( operation.getPropertyNames().contains( "key" ) );
-  }
-
-  @Test
-  public void testOperationGetPropertyNames_whenEmpty() {
-    writer.appendCall( "w1", "foo", null );
-    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
-
-    assertTrue( operation.getPropertyNames().isEmpty() );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "event" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperties().get( "event2" ) );
   }
 
   @Test
@@ -225,7 +187,7 @@ public class Message_Test {
     TestMessage message = getMessage();
 
     SetOperation operation = message.findSetOperation( "w1", "key" );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "key" ) );
   }
 
   @Test
@@ -274,7 +236,7 @@ public class Message_Test {
     TestMessage message = getMessage();
 
     ListenOperation operation = message.findListenOperation( "w1", "key" );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "key" ) );
   }
 
   @Test
@@ -326,7 +288,7 @@ public class Message_Test {
     CreateOperation operation = message.findCreateOperation( "w2" );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "myType", operation.getType() );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "key" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "key" ) );
   }
 
   @Test
@@ -395,18 +357,7 @@ public class Message_Test {
     writer.appendSet( "w1", "foo", 23 );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
 
-    assertEquals( 23, operation.getProperty( "foo" ).asInt() );
-  }
-
-  @Test
-  public void testNonExistingOperation() {
-    writer.appendSet( "w1", "key", true );
-
-    try {
-      getMessage().getOperation( 1 );
-      fail();
-    } catch ( IllegalStateException expected ) {
-    }
+    assertEquals( 23, operation.getProperties().get( "foo" ).asInt() );
   }
 
   @Test
@@ -462,6 +413,47 @@ public class Message_Test {
     TestMessage message2 = new TestMessage( json2 );
 
     assertFalse( message1.equals( message2 ) );
+  }
+
+  @Test
+  public void testGetParent() {
+    CreateOperation operation = mock( CreateOperation.class );
+    when( operation.getProperties() ).thenReturn( new JsonObject().add( "parent", "w3" ) );
+
+    String parent = TestMessage.getParent( operation );
+
+    assertEquals( "w3", parent );
+  }
+
+  @Test
+  public void testGetParent_withoutParentProperty() {
+    CreateOperation operation = mock( CreateOperation.class );
+    when( operation.getProperties() ).thenReturn( new JsonObject() );
+
+    String parent = TestMessage.getParent( operation );
+
+    assertNull( parent );
+  }
+
+  @Test
+  public void testGetStyles() {
+    CreateOperation operation = mock( CreateOperation.class );
+    JsonArray stylesJson = new JsonArray().add( "FOO" ).add( "BAR" );
+    when( operation.getProperties() ).thenReturn( new JsonObject().add( "style", stylesJson ) );
+
+    List<String> styles = TestMessage.getStyles( operation );
+
+    assertEquals( asList( "FOO", "BAR" ), styles );
+  }
+
+  @Test
+  public void testGetStyles_withoutStylesProperty() {
+    CreateOperation operation = mock( CreateOperation.class );
+    when( operation.getProperties() ).thenReturn( new JsonObject().add( "style", new JsonArray() ) );
+
+    List<String> styles = TestMessage.getStyles( operation );
+
+    assertEquals( emptyList(), styles );
   }
 
   private TestMessage getMessage() {

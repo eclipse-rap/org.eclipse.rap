@@ -61,8 +61,8 @@ import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -356,7 +356,7 @@ public class DisplayLCA_Test {
     // must be the first operation, before any widgets are rendered
     SetOperation firstOperation = (SetOperation)message.getOperation( 0 );
     assertEquals( DisplayUtil.getId( display ), firstOperation.getTarget() );
-    assertEquals( JsonValue.TRUE, firstOperation.getProperty( "enableUiTests" ) );
+    assertEquals( JsonValue.TRUE, firstOperation.getProperties().get( "enableUiTests" ) );
   }
 
   @Test

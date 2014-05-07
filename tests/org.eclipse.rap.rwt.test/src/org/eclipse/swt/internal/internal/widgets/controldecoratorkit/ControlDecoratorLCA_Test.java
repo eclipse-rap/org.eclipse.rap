@@ -11,26 +11,28 @@
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -77,7 +79,7 @@ public class ControlDecoratorLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
     assertEquals( "rwt.widgets.ControlDecorator", operation.getType() );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "LEFT" ) );
     assertTrue( styles.contains( "CENTER" ) );
   }
@@ -90,7 +92,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "RIGHT" ) );
     assertTrue( styles.contains( "BOTTOM" ) );
   }
@@ -103,7 +105,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "LEFT" ) );
     assertTrue( styles.contains( "TOP" ) );
   }
@@ -124,7 +126,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    assertEquals( getId( decorator.getParent() ), operation.getParent() );
+    assertEquals( getId( decorator.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -189,7 +191,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertTrue( operation.getProperties().names().indexOf( "text" ) == -1 );
   }
 
   @Test
@@ -270,7 +272,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "visible" ) );
   }
 
   @Test
@@ -307,7 +309,7 @@ public class ControlDecoratorLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( decorator );
-    assertTrue( operation.getPropertyNames().indexOf( "showHover" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "showHover" ) );
   }
 
   @Test

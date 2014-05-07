@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,20 +24,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
@@ -180,8 +181,7 @@ public class TextLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( "rwt.widgets.Text", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
+    assertTrue( getStyles( operation ).contains( "SINGLE" ) );
   }
 
   @Test
@@ -202,7 +202,7 @@ public class TextLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( "rwt.widgets.Text", operation.getType() );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "MULTI" ) );
     assertTrue( styles.contains( "WRAP" ) );
   }
@@ -216,8 +216,7 @@ public class TextLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "CENTER" ) );
+    assertTrue( getStyles( operation ).contains( "CENTER" ) );
   }
 
   @Test
@@ -229,7 +228,7 @@ public class TextLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "MULTI" ) );
     assertTrue( styles.contains( "H_SCROLL" ) );
     assertTrue( styles.contains( "V_SCROLL" ) );
@@ -246,7 +245,7 @@ public class TextLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
+    List<String> styles = getStyles( operation );
     assertTrue( styles.contains( "SEARCH" ) );
     assertTrue( styles.contains( "ICON_CANCEL" ) );
     assertTrue( styles.contains( "ICON_SEARCH" ) );
@@ -260,7 +259,7 @@ public class TextLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
-    assertEquals( WidgetUtil.getId( text.getParent() ), operation.getParent() );
+    assertEquals( getId( text.getParent() ), getParent( operation ) );
   }
 
   @Test

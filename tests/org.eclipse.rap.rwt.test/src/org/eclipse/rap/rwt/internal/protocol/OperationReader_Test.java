@@ -18,6 +18,9 @@ import static org.junit.Assert.fail;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.junit.Test;
@@ -51,6 +54,36 @@ public class OperationReader_Test {
   }
 
   @Test
+  public void testCreateOperation() {
+    JsonValue json = JsonValue.readFrom( "[ \"create\", \"w3\", \"type\", { \"foo\": 23 } ]" );
+
+    CreateOperation operation = ( CreateOperation )OperationReader.readOperation( json );
+
+    assertEquals( "w3", operation.getTarget() );
+    assertEquals( "type", operation.getType() );
+    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperties() );
+  }
+
+  @Test
+  public void testCreateOperation_withoutType() {
+    assertOperationRejected( "[ \"create\", \"w3\" ]" );
+  }
+
+  @Test
+  public void testCreateOperation_withoutProperties() {
+    assertOperationRejected( "[ \"create\", \"w3\", \"type\" ]" );
+  }
+
+  @Test
+  public void testDestroyOperation() {
+    JsonValue json = JsonValue.readFrom( "[ \"destroy\", \"w3\" ]" );
+
+    DestroyOperation operation = ( DestroyOperation )OperationReader.readOperation( json );
+
+    assertEquals( "w3", operation.getTarget() );
+  }
+
+  @Test
   public void testSetOperation() {
     JsonValue json = JsonValue.readFrom( "[ \"set\", \"w3\", { \"foo\": 23 } ]" );
 
@@ -63,27 +96,6 @@ public class OperationReader_Test {
   @Test
   public void testSetOperation_withoutProperties() {
     assertOperationRejected( "[ \"set\", \"w3\" ]" );
-  }
-
-  @Test
-  public void testNotifyOperation() {
-    JsonValue json = JsonValue.readFrom( "[ \"notify\", \"w3\", \"event\", { \"foo\" : 23 } ]" );
-
-    NotifyOperation operation = ( NotifyOperation )OperationReader.readOperation( json );
-
-    assertEquals( "w3", operation.getTarget() );
-    assertEquals( "event", operation.getEventName() );
-    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperties() );
-  }
-
-  @Test
-  public void testNotifyOperation_withoutEventType() {
-    assertOperationRejected( "[ \"notify\", \"w3\", { \"check\" : true } ]" );
-  }
-
-  @Test
-  public void testNotifyOperation_withoutProperties() {
-    assertOperationRejected( "[ \"notify\", \"w3\", \"widgetSelected\" ]" );
   }
 
   @Test
@@ -105,6 +117,42 @@ public class OperationReader_Test {
   @Test
   public void testCallOperation_withoutProperties() {
     assertOperationRejected( "[ \"call\", \"w3\", \"store\" ]" );
+  }
+
+  @Test
+  public void testListenOperation() {
+    JsonValue json = JsonValue.readFrom( "[ \"listen\", \"w3\", { \"foo\": false, \"bar\": true } ]" );
+
+    ListenOperation operation = ( ListenOperation )OperationReader.readOperation( json );
+
+    assertEquals( "w3", operation.getTarget() );
+    assertEquals( new JsonObject().add( "foo", false ).add( "bar", true ), operation.getProperties() );
+  }
+
+  @Test
+  public void testListenOperation_withoutProperties() {
+    assertOperationRejected( "[ \"listen\", \"w3\" ]" );
+  }
+
+  @Test
+  public void testNotifyOperation() {
+    JsonValue json = JsonValue.readFrom( "[ \"notify\", \"w3\", \"event\", { \"foo\" : 23 } ]" );
+
+    NotifyOperation operation = ( NotifyOperation )OperationReader.readOperation( json );
+
+    assertEquals( "w3", operation.getTarget() );
+    assertEquals( "event", operation.getEventName() );
+    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperties() );
+  }
+
+  @Test
+  public void testNotifyOperation_withoutEventType() {
+    assertOperationRejected( "[ \"notify\", \"w3\", { \"check\" : true } ]" );
+  }
+
+  @Test
+  public void testNotifyOperation_withoutProperties() {
+    assertOperationRejected( "[ \"notify\", \"w3\", \"widgetSelected\" ]" );
   }
 
   private static void assertOperationRejected( String json ) {

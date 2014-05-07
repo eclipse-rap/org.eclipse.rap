@@ -27,9 +27,9 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -80,9 +80,9 @@ public class DragSourceLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( source );
     assertEquals( "rwt.widgets.DragSource", operation.getType() );
-    assertEquals( getId( control ), operation.getProperty( "control" ).asString() );
+    assertEquals( getId( control ), operation.getProperties().get( "control" ).asString() );
     JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
-    assertEquals( expected, operation.getProperty( "style" ) );
+    assertEquals( expected, operation.getProperties().get( "style" ) );
   }
 
   @Test
@@ -110,7 +110,7 @@ public class DragSourceLCA_Test {
     JsonArray expected = new JsonArray()
       .add( Integer.toString( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type ) )
       .add( Integer.toString( HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
-    assertEquals( expected, setOperation.getProperty( "transfer" ) );
+    assertEquals( expected, setOperation.getProperties().get( "transfer" ) );
   }
 
   @Test

@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
@@ -22,15 +23,15 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -193,7 +194,7 @@ public final class CoolBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( bar );
-    assertEquals( WidgetUtil.getId( bar.getParent() ), operation.getParent() );
+    assertEquals( getId( bar.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -204,7 +205,7 @@ public final class CoolBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( bar, "locked" );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "locked" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "locked" ) );
   }
 
 }

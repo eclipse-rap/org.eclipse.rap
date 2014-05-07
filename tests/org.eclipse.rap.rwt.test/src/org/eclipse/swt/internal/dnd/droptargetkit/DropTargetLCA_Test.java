@@ -31,9 +31,9 @@ import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -83,9 +83,9 @@ public class DropTargetLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( target );
     assertEquals( "rwt.widgets.DropTarget", operation.getType() );
-    assertEquals( getId( control ), operation.getProperty( "control" ).asString() );
+    assertEquals( getId( control ), operation.getProperties().get( "control" ).asString() );
     JsonArray expected = new JsonArray().add( "DROP_COPY" ).add( "DROP_MOVE" );
-    assertEquals( expected, operation.getProperty( "style" ) );
+    assertEquals( expected, operation.getProperties().get( "style" ) );
   }
 
   @Test
@@ -113,7 +113,7 @@ public class DropTargetLCA_Test {
     JsonArray expected = new JsonArray();
     expected.add( Integer.toString( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
     expected.add( Integer.toString( HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type ) );
-    assertEquals( expected, setOperation.getProperty( "transfer" ) );
+    assertEquals( expected, setOperation.getProperties().get( "transfer" ) );
   }
 
   @Test
@@ -210,7 +210,7 @@ public class DropTargetLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDataType" );
-    assertEquals( dataType.type, call.getProperty( "dataType" ).asInt() );
+    assertEquals( dataType.type, call.getParameters().get( "dataType" ).asInt() );
   }
 
   @Test
@@ -237,9 +237,9 @@ public class DropTargetLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeFeedback" );
-    assertEquals( feedback, call.getProperty( "flags" ).asInt() );
+    assertEquals( feedback, call.getParameters().get( "flags" ).asInt() );
     JsonArray expected = new JsonArray().add( "FEEDBACK_SCROLL" ).add( "FEEDBACK_SELECT" );
-    assertEquals( expected, call.getProperty( "feedback" ) );
+    assertEquals( expected, call.getParameters().get( "feedback" ) );
   }
 
   @Test
@@ -265,7 +265,7 @@ public class DropTargetLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDetail" );
-    assertEquals( "DROP_COPY", call.getProperty( "detail" ).asString() );
+    assertEquals( "DROP_COPY", call.getParameters().get( "detail" ).asString() );
   }
 
   @Test
@@ -290,7 +290,7 @@ public class DropTargetLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( target, "changeDetail" );
-    assertEquals( "DROP_NONE", call.getProperty( "detail" ).asString() );
+    assertEquals( "DROP_NONE", call.getParameters().get( "detail" ).asString() );
   }
 
   @Test

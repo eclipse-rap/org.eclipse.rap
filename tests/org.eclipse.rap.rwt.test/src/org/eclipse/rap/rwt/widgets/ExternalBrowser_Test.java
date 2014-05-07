@@ -22,9 +22,9 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
@@ -139,7 +139,7 @@ public class ExternalBrowser_Test {
       if( operation instanceof CallOperation ) {
         CallOperation callOperation = ( CallOperation )operation;
         if(    method.equals( callOperation.getMethodName() )
-            && idProperty.equals( callOperation.getProperty( "id" ).asString() ) )
+            && idProperty.equals( callOperation.getParameters().get( "id" ).asString() ) )
         {
           result = position;
         }

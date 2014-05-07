@@ -30,8 +30,8 @@ import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
@@ -704,8 +704,8 @@ public class WidgetLCAUtil_Test {
 
     CallOperation operation = ( CallOperation )getProtocolMessage().getOperation( 0 );
     assertEquals( "addListener", operation.getMethodName() );
-    assertEquals( "Selection", operation.getProperty( "eventType" ).asString() );
-    assertEquals( listenerId, operation.getProperty( "listenerId" ).asString() );
+    assertEquals( "Selection", operation.getParameters().get( "eventType" ).asString() );
+    assertEquals( listenerId, operation.getParameters().get( "listenerId" ).asString() );
   }
 
   @Test
@@ -730,8 +730,8 @@ public class WidgetLCAUtil_Test {
 
     CallOperation operation = ( CallOperation )getProtocolMessage().getOperation( 0 );
     assertEquals( "removeListener", operation.getMethodName() );
-    assertEquals( "Selection", operation.getProperty( "eventType" ).asString() );
-    assertEquals( listenerId, operation.getProperty( "listenerId" ).asString() );
+    assertEquals( "Selection", operation.getParameters().get( "eventType" ).asString() );
+    assertEquals( listenerId, operation.getParameters().get( "listenerId" ).asString() );
   }
 
   @Test
@@ -770,7 +770,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", "bar", null );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.valueOf( "bar" ), operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.valueOf( "bar" ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -778,7 +778,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", null, "" );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.NULL, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -786,7 +786,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", Integer.valueOf( 23 ), Integer.valueOf( 0 ) );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.valueOf( 23 ), operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.valueOf( 23 ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -794,7 +794,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", null, Integer.valueOf( 0 ) );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.NULL, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -802,7 +802,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", new String[] { "bar" }, null );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( new JsonArray().add( "bar" ), operation.getProperty( "foo" ) );
+    assertEquals( new JsonArray().add( "bar" ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -810,7 +810,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", null, new String[ 0 ] );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.NULL, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -818,7 +818,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", new boolean[] { true }, null );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( new JsonArray().add( true ), operation.getProperty( "foo" ) );
+    assertEquals( new JsonArray().add( true ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -826,7 +826,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", null, new boolean[ 0 ] );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.NULL, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -834,7 +834,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", new int[] { 23 }, null );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( new JsonArray().add( 23 ), operation.getProperty( "foo" ) );
+    assertEquals( new JsonArray().add( 23 ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -842,7 +842,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", null, new int[ 0 ] );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.NULL, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.NULL, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -850,7 +850,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", 23, 0 );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.valueOf( 23 ), operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.valueOf( 23 ), operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -858,7 +858,7 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderProperty( widget, "foo", true, false );
 
     SetOperation operation = ( SetOperation )getProtocolMessage().getOperation( 0 );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "foo" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "foo" ) );
   }
 
   @Test

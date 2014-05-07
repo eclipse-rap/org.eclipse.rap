@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -21,18 +23,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -88,7 +88,7 @@ public class CLabelLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( "rwt.widgets.Label", operation.getType() );
-    assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
+    assertFalse( operation.getProperties().names().contains( "markupEnabled" ) );
   }
 
   @Test
@@ -119,7 +119,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "markupEnabled" ) );
   }
 
   @Test
@@ -131,8 +131,7 @@ public class CLabelLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
     assertEquals( "rwt.widgets.Label", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
+    assertTrue( getStyles( operation ).contains( "SHADOW_IN" ) );
   }
 
   @Test
@@ -151,7 +150,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertEquals( WidgetUtil.getId( clabel.getParent() ), operation.getParent() );
+    assertEquals( getId( clabel.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -160,7 +159,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -191,7 +190,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "image" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "image" ) );
   }
 
   @Test
@@ -242,7 +241,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
+    assertTrue( operation.getProperties().names().indexOf( "alignment" ) == -1 );
   }
 
   @Test
@@ -273,7 +272,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "leftMargin" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "leftMargin" ) );
   }
 
   @Test
@@ -305,7 +304,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "topMargin" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "topMargin" ) );
   }
 
   @Test
@@ -336,7 +335,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "rightMargin" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "rightMargin" ) );
   }
 
   @Test
@@ -367,7 +366,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "bottomMargin" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "bottomMargin" ) );
   }
 
   @Test
@@ -398,7 +397,7 @@ public class CLabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( clabel );
-    assertTrue( operation.getPropertyNames().indexOf( "backgroundGradient" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "backgroundGradient" ) );
   }
 
   @Test

@@ -14,25 +14,27 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
 import static org.eclipse.rap.rwt.testfixture.Fixture.getProtocolMessage;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -102,9 +104,8 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( 0, operation.getProperty( "index" ).asInt() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
+    assertEquals( 0, operation.getProperties().get( "index" ).asInt() );
+    assertTrue( getStyles( operation ).contains( "PUSH" ) );
   }
 
   @Test
@@ -116,9 +117,8 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( 1, operation.getProperty( "index" ).asInt() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
+    assertEquals( 1, operation.getProperties().get( "index" ).asInt() );
+    assertTrue( getStyles( operation ).contains( "CHECK" ) );
   }
 
   @Test
@@ -130,9 +130,8 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( 1, operation.getProperty( "index" ).asInt() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "RADIO" ) );
+    assertEquals( 1, operation.getProperties().get( "index" ).asInt() );
+    assertTrue( getStyles( operation ).contains( "RADIO" ) );
   }
 
   @Test
@@ -144,9 +143,8 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( 1, operation.getProperty( "index" ).asInt() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "DROP_DOWN" ) );
+    assertEquals( 1, operation.getProperties().get( "index" ).asInt() );
+    assertTrue( getStyles( operation ).contains( "DROP_DOWN" ) );
   }
 
   @Test
@@ -158,9 +156,8 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
     assertEquals( "rwt.widgets.ToolItem", operation.getType() );
-    assertEquals( 1, operation.getProperty( "index" ).asInt() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "SEPARATOR" ) );
+    assertEquals( 1, operation.getProperties().get( "index" ).asInt() );
+    assertTrue( getStyles( operation ).contains( "SEPARATOR" ) );
   }
 
   @Test
@@ -178,7 +175,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertEquals( WidgetUtil.getId( toolitem.getParent() ), operation.getParent() );
+    assertEquals( getId( toolitem.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -187,7 +184,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "enabled" ) );
   }
 
   @Test
@@ -239,7 +236,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "toolTip" ) );
   }
 
   @Test
@@ -270,7 +267,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test
@@ -303,7 +300,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "visible" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "visible" ) );
   }
 
   @Test
@@ -337,7 +334,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -464,7 +461,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "control" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "control" ) );
   }
 
   @Test
@@ -503,7 +500,7 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( toolitem );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -572,7 +569,7 @@ public class ToolItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( toolitem, "Selection" ) );
   }
-  
+
   @Test
   public void testRenderSelectionListener_onSeparator() throws Exception {
     toolitem = new ToolItem( toolbar, SWT.SEPARATOR );

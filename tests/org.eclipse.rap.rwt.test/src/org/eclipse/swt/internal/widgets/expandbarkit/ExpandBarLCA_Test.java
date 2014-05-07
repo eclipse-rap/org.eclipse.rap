@@ -11,8 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,21 +24,19 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
@@ -159,8 +159,7 @@ public class ExpandBarLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandBar );
     assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
-    List<Object> styles = Arrays.asList( operation.getStyles() );
-    assertFalse( styles.contains( "V_SCROLL" ) );
+    assertFalse( getStyles( operation ).contains( "V_SCROLL" ) );
   }
 
   @Test
@@ -205,7 +204,7 @@ public class ExpandBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandBar );
-    assertEquals( WidgetUtil.getId( expandBar.getParent() ), operation.getParent() );
+    assertEquals( WidgetUtil.getId( expandBar.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -305,7 +304,7 @@ public class ExpandBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandBar );
-    assertTrue( operation.getPropertyNames().indexOf( "vScrollBarMax" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "vScrollBarMax" ) );
   }
 
   @Test

@@ -38,7 +38,7 @@ import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
@@ -107,7 +107,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_FALLBACK_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Fallback.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
+    assertEquals( expected, operation.getParameters().get( PROPERTY_URL ).asString() );
   }
 
   @Test
@@ -121,7 +121,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Default.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
+    assertEquals( expected, operation.getParameters().get( PROPERTY_URL ).asString() );
   }
 
   @Test
@@ -139,7 +139,7 @@ public class StartupJson_Test {
       = message.findCallOperation( THEME_STORE_TYPE, METHOD_LOAD_ACTIVE_THEME );
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Custom_1465393d.json";
-    assertEquals( expected, operation.getProperty( PROPERTY_URL ).asString() );
+    assertEquals( expected, operation.getParameters().get( PROPERTY_URL ).asString() );
   }
 
   @Test

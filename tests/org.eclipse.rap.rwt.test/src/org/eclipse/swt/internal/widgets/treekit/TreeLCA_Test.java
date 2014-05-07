@@ -12,9 +12,11 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +28,6 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,16 +35,17 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -608,11 +610,11 @@ public class TreeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
     assertEquals( "rwt.widgets.Grid", operation.getType() );
-    assertEquals( "tree", operation.getProperty( "appearance" ).asString() );
-    assertEquals( 16, operation.getProperty( "indentionWidth" ).asInt() );
-    assertEquals( JsonArray.readFrom( "[3, 5]" ), operation.getProperty( "selectionPadding" ) );
-    assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
-    assertEquals( JsonValue.FALSE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( "tree", operation.getProperties().get( "appearance" ).asString() );
+    assertEquals( 16, operation.getProperties().get( "indentionWidth" ).asInt() );
+    assertEquals( JsonArray.readFrom( "[3, 5]" ), operation.getProperties().get( "selectionPadding" ) );
+    assertFalse( operation.getProperties().names().contains( "checkBoxMetrics" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperties().get( "markupEnabled" ) );
   }
 
   @Test
@@ -623,7 +625,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "splitContainer" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "splitContainer" ) );
   }
 
   @Test
@@ -642,7 +644,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertEquals( WidgetUtil.getId( tree.getParent() ), operation.getParent() );
+    assertEquals( getId( tree.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -654,10 +656,10 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "VIRTUAL" ) );
-    assertTrue( Arrays.asList( styles ).contains( "NO_SCROLL" ) );
-    assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+    List<String> styles = getStyles( operation );
+    assertTrue( styles.contains( "VIRTUAL" ) );
+    assertTrue( styles.contains( "NO_SCROLL" ) );
+    assertTrue( styles.contains( "MULTI" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "SetData" ) );
   }
 
@@ -694,9 +696,8 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "FULL_SELECTION" ) );
-    assertFalse( operation.getPropertyNames().contains( "selectionPadding" ) );
+    assertTrue( getStyles( operation ).contains( "FULL_SELECTION" ) );
+    assertFalse( operation.getProperties().names().contains( "selectionPadding" ) );
   }
 
   @Test
@@ -707,10 +708,9 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
+    assertTrue( getStyles( operation ).contains( "CHECK" ) );
     JsonArray exptected = JsonArray.readFrom( "[0, 21]" );
-    assertEquals( exptected, operation.getProperty( "checkBoxMetrics" ) );
+    assertEquals( exptected, operation.getProperties().get( "checkBoxMetrics" ) );
   }
 
   @Test
@@ -719,7 +719,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "itemCount" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "itemCount" ) );
   }
 
   @Test
@@ -817,7 +817,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "columnCount" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "columnCount" ) );
   }
 
   @Test
@@ -848,7 +848,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "fixedColumns" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "fixedColumns" ) );
   }
 
   @Test
@@ -885,7 +885,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "treeColumn" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "treeColumn" ) );
   }
 
   @Test
@@ -921,7 +921,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "headerHeight" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "headerHeight" ) );
   }
 
   @Test
@@ -952,7 +952,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "headerVisible" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "headerVisible" ) );
   }
 
   @Test
@@ -983,7 +983,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "linesVisible" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "linesVisible" ) );
   }
 
   @Test
@@ -1014,7 +1014,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "topItemIndex" ) );
   }
 
   @Test
@@ -1041,9 +1041,10 @@ public class TreeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( item ) );
     assertNotNull( message.findCreateOperation( column ) );
-    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    List<Operation> operations = message.getOperations();
+    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
     assertEquals( getId( tree ), lastOperation.getTarget() );
-    assertEquals( 1, lastOperation.getProperty( "topItemIndex" ).asInt() );
+    assertEquals( 1, lastOperation.getProperties().get( "topItemIndex" ).asInt() );
   }
 
   @Test
@@ -1067,7 +1068,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "scrollLeft" ) );
   }
 
   @Test
@@ -1092,9 +1093,10 @@ public class TreeLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateOperation( item ) );
     assertNotNull( message.findCreateOperation( column ) );
-    Operation lastOperation = message.getOperation( message.getOperationCount() - 1 );
+    List<Operation> operations = message.getOperations();
+    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
     assertEquals( getId( tree ), lastOperation.getTarget() );
-    assertEquals( 10, lastOperation.getProperty( "scrollLeft" ).asInt() );
+    assertEquals( 10, lastOperation.getProperties().get( "scrollLeft" ).asInt() );
   }
 
   @Test
@@ -1116,7 +1118,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -1391,7 +1393,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "enableCellToolTip" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "enableCellToolTip" ) );
   }
 
   @Test
@@ -1481,7 +1483,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "sortDirection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "sortDirection" ) );
   }
 
   @Test
@@ -1517,7 +1519,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "sortColumn" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "sortColumn" ) );
   }
 
   @Test
@@ -1551,7 +1553,7 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( tree );
-    assertTrue( operation.getPropertyNames().indexOf( "focusItem" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "focusItem" ) );
   }
 
   @Test

@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,15 +28,15 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.events.ExpandListener;
@@ -117,7 +118,7 @@ public class ExpandItemLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
     assertEquals( "rwt.widgets.ExpandItem", operation.getType() );
-    assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "style" ) );
   }
 
   @Test
@@ -135,7 +136,7 @@ public class ExpandItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
-    assertEquals( WidgetUtil.getId( expandBar ), operation.getParent() );
+    assertEquals( getId( expandBar ), getParent( operation ) );
   }
 
   @Test
@@ -154,7 +155,7 @@ public class ExpandItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test
@@ -222,7 +223,7 @@ public class ExpandItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
-    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "text" ) );
   }
 
   @Test
@@ -303,7 +304,7 @@ public class ExpandItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandItem );
-    assertTrue( operation.getPropertyNames().indexOf( "headerHeight" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "headerHeight" ) );
   }
 
   @Test

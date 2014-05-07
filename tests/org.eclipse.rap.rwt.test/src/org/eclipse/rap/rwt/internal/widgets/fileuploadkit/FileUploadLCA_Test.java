@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -26,17 +28,17 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.Operation;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -113,7 +115,7 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
-    assertEquals( new JsonArray().add( "MULTI" ), operation.getProperty( "style" ) );
+    assertEquals( new JsonArray().add( "MULTI" ), operation.getProperties().get( "style" ) );
   }
 
   @Test
@@ -142,7 +144,7 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
-    assertEquals( WidgetUtil.getId( fileUpload.getParent() ), operation.getParent() );
+    assertEquals( getId( fileUpload.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -245,7 +247,7 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( fileUpload, "submit" );
-    assertEquals( "bar", operation.getProperty( "url" ).asString() );
+    assertEquals( "bar", operation.getParameters().get( "url" ).asString() );
   }
 
   @Test
@@ -263,7 +265,7 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( fileUpload );
-    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
   }
 
   @Test

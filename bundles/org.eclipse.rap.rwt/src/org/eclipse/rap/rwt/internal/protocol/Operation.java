@@ -39,9 +39,21 @@ public abstract class Operation {
     private final String type;
 
     CreateOperation( String target, String type ) {
+      this( target, type, new JsonObject() );
+    }
+
+    CreateOperation( String target, String type, JsonObject properties ) {
       super( target, "create" );
       this.type = type;
-      properties = new JsonObject();
+      this.properties = properties;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public JsonObject getProperties() {
+      return properties;
     }
 
     @Override
@@ -122,8 +134,16 @@ public abstract class Operation {
     private final JsonObject properties;
 
     ListenOperation( String target ) {
+      this( target, new JsonObject() );
+    }
+
+    ListenOperation( String target, JsonObject properties ) {
       super( target, "listen" );
-      properties = new JsonObject();
+      this.properties = properties;
+    }
+
+    public JsonObject getProperties() {
+      return properties;
     }
 
     @Override

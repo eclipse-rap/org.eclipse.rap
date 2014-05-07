@@ -11,9 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.sliderkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -21,17 +24,16 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -178,7 +180,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertEquals( WidgetUtil.getId( slider.getParent() ), operation.getParent() );
+    assertEquals( getId( slider.getParent() ), getParent( operation ) );
   }
 
   @Test
@@ -189,8 +191,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
+    assertTrue( getStyles( operation ).contains( "HORIZONTAL" ) );
   }
 
   @Test
@@ -199,7 +200,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "minimum" ) );
   }
 
   @Test
@@ -230,7 +231,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "maximum" ) );
   }
 
   @Test
@@ -261,7 +262,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "selection" ) );
   }
 
   @Test
@@ -292,7 +293,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "increment" ) );
   }
 
   @Test
@@ -323,7 +324,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "pageIncrement" ) );
   }
 
   @Test
@@ -354,7 +355,7 @@ public class SliderLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( slider );
-    assertTrue( operation.getPropertyNames().indexOf( "thumb" ) == -1 );
+    assertFalse( operation.getProperties().names().contains( "thumb" ) );
   }
 
   @Test

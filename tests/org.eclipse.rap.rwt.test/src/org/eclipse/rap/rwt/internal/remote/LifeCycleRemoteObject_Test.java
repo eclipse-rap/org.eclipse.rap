@@ -12,22 +12,23 @@ package org.eclipse.rap.rwt.internal.remote;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CallOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.ListenOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.SetOperation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,10 +70,10 @@ public class LifeCycleRemoteObject_Test {
     remoteObject = new LifeCycleRemoteObject( "id", "type" );
     remoteObject.set( "foo", 23 );
 
-    TestMessage message = getMessage();
-    assertEquals( 1, message.getOperationCount() );
-    assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
-    assertEquals( 23, message.getOperation( 0 ).getProperty( "foo" ).asInt() );
+    List<Operation> operations = getMessage().getOperations();
+    assertEquals( 1, operations.size() );
+    CreateOperation createOperation = ( CreateOperation )operations.get( 0 );
+    assertEquals( 23, createOperation.getProperties().get( "foo" ).asInt() );
   }
 
   @Test
@@ -86,12 +87,12 @@ public class LifeCycleRemoteObject_Test {
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( "id", operation.getTarget() );
-    assertEquals( JsonValue.valueOf( 2 ), operation.getProperty( "int" ) );
-    assertEquals( JsonValue.valueOf( 3.5 ), operation.getProperty( "double" ) );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "boolean" ));
-    assertEquals( JsonValue.valueOf( "foo" ), operation.getProperty( "string" ) );
-    assertEquals( new JsonArray().add( 23 ).add( 42 ), operation.getProperty( "array" ) );
-    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperty( "object" ) );
+    assertEquals( JsonValue.valueOf( 2 ), operation.getProperties().get( "int" ) );
+    assertEquals( JsonValue.valueOf( 3.5 ), operation.getProperties().get( "double" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "boolean" ));
+    assertEquals( JsonValue.valueOf( "foo" ), operation.getProperties().get( "string" ) );
+    assertEquals( new JsonArray().add( 23 ).add( 42 ), operation.getProperties().get( "array" ) );
+    assertEquals( new JsonObject().add( "foo", 23 ), operation.getProperties().get( "object" ) );
   }
 
   @Test
@@ -146,8 +147,8 @@ public class LifeCycleRemoteObject_Test {
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( "id", operation.getTarget() );
-    assertTrue( operation.listensTo( "foo" ) );
-    assertFalse( operation.listensTo( "bar" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "foo" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperties().get( "bar" ) );
   }
 
   @Test
@@ -157,7 +158,7 @@ public class LifeCycleRemoteObject_Test {
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( "id", operation.getTarget() );
-    assertFalse( operation.listensTo( "foo" ) );
+    assertEquals( JsonValue.FALSE, operation.getProperties().get( "foo" ) );
   }
 
   @Test
@@ -187,8 +188,8 @@ public class LifeCycleRemoteObject_Test {
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( "id", operation.getTarget() );
     assertEquals( "method2", operation.getMethodName() );
-    assertEquals( "a", operation.getProperty( "key1" ).asString() );
-    assertEquals( 3, operation.getProperty( "key2" ).asInt() );
+    assertEquals( "a", operation.getParameters().get( "key1" ).asString() );
+    assertEquals( 3, operation.getParameters().get( "key2" ).asInt() );
   }
 
   @Test

@@ -11,8 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,21 +24,21 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.TestMessage.DestroyOperation;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -286,9 +287,8 @@ public class LabelLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( "rwt.widgets.Label", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
-    assertFalse( operation.getPropertyNames().contains( "markupEnabled" ) );
+    assertTrue( getStyles( operation ).contains( "WRAP" ) );
+    assertFalse( operation.getProperties().names().contains( "markupEnabled" ) );
   }
 
   @Test
@@ -330,7 +330,7 @@ public class LabelLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
-    assertEquals( JsonValue.TRUE, operation.getProperty( "markupEnabled" ) );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "markupEnabled" ) );
   }
 
   @Test
@@ -422,9 +422,9 @@ public class LabelLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( "rwt.widgets.Separator", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
-    assertTrue( Arrays.asList( styles ).contains( "VERTICAL" ) );
+    List<String> styles = getStyles( operation );
+    assertTrue( styles.contains( "SHADOW_IN" ) );
+    assertTrue( styles.contains( "VERTICAL" ) );
   }
 
   @Test
