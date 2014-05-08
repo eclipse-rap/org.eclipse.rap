@@ -627,7 +627,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderItemForeground : function( item, config ) {
-      this._setForeground( this.getElement(), this._getItemColor( item, config ) );
+      this._setForeground( this._getTargetNode(), this._getItemColor( item, config ) );
     },
 
     _renderItemFont : function( item, config ) {
