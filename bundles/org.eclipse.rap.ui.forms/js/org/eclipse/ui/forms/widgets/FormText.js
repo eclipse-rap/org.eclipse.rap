@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
       var widgetManager = rwt.remote.WidgetManager.getInstance();
       widgetManager.setToolTip( textHyperlink, toolTip );
       if( font != null ) {
-        widgetManager.setFont( textHyperlink, font[ 0 ], font[ 1 ], font[ 2 ], font[ 3 ] );
+        textHyperlink.setFont( rwt.html.Font.fromArray( font ) );
       }
       textHyperlink.addEventListener( "mousemove", this._onMouseMove, this );
       textHyperlink.addEventListener( "mouseout", this._onMouseOut, this );
