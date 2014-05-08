@@ -21,7 +21,6 @@ var Connection = rwt.remote.Connection;
 
 var shell;
 var text;
-var log;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
@@ -585,18 +584,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testFiresChangeReadOnlyEvent : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var text = new rwt.widgets.Text( false );
       text.addToDocument();
       TestUtil.flush();
-      var log = 0;
-      text.addEventListener( "changeReadOnly", function(){
-        log++;
-      } );
+      var logger = TestUtil.getLogger();
+      text.addEventListener( "changeReadOnly", logger.log );
 
       text.setReadOnly( true );
 
-      assertTrue( log > 0 );
+      assertEquals( 1, logger.getLog().length );
       text.destroy();
     },
 
@@ -610,6 +606,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertEquals( "", text._inputElement.value );
         }
     } ),
+
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=434311
+    // Note [if]: IE8 fires onpropertychange event for "value" property even it's not changed.
+    // In some cases IE8 fires such event when setting readOnly property.
+    testInputEventIsNotFiredOnSameText : function() {
+      createText();
+      text.setValue( "foo" );
+      TestUtil.flush();
+      var logger = TestUtil.getLogger();
+      text.addEventListener( "input", logger.log );
+
+      text.getInputElement().value = "foo";
+
+      assertEquals( 0, logger.getLog().length );
+    },
 
     testBoxShadowAndNonRoundedBorder : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
@@ -651,7 +662,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testLiveUpdate : function() {
       createText();
-      createChangeLogger();
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getTarget().getValue() );
+      };
+      text.addEventListener( "changeValue", logger );
 
       typeCharacter( "A" );
 
@@ -1118,10 +1133,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       "newmshtml" : function() {
         createText();
         text.setValue( "foobar" );
-        var log = [];
-        text.addEventListener( "input", function( event ) {
-          log.push( event );
-        }, this );
+        var logger = TestUtil.getLogger();
+        text.addEventListener( "input", logger.log, this );
 
         TestUtil.keyDown( text, "Delete" );
         text.getInputElement().value = "fooba";
@@ -1131,7 +1144,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
         assertEquals( "fooba", text.getValue() );
         assertEquals( "fooba", text.getComputedValue() );
-        assertEquals( 1, log.length );
+        assertEquals( 1, logger.getLog().length );
       }
     } ),
 
@@ -1140,10 +1153,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       "newmshtml" : function() {
         createText();
         text.setValue( "foobar" );
-        var log = [];
-        text.addEventListener( "input", function( event ) {
-          log.push( event );
-        }, this );
+        var logger = TestUtil.getLogger();
+        text.addEventListener( "input", logger.log, this );
         var mod = rwt.event.DomEvent.CTRL_MASK;
 
         // Important: Fire no keypress:
@@ -1155,7 +1166,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
         assertEquals( "fooba", text.getValue() );
         assertEquals( "fooba", text.getComputedValue() );
-        assertEquals( 1, log.length );
+        assertEquals( 1, logger.getLog().length );
       }
     } ),
 
@@ -1164,10 +1175,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       "newmshtml" : function() {
         createText();
         text.setValue( "foobar" );
-        var log = [];
-        text.addEventListener( "input", function( event ) {
-          log.push( event );
-        }, this );
+        var logger = TestUtil.getLogger();
+        text.addEventListener( "input", logger.log, this );
 
         text.getInputElement().value = "fooba";
         text.blur();
@@ -1175,7 +1184,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
         assertEquals( "fooba", text.getValue() );
         assertEquals( "fooba", text.getComputedValue() );
-        assertEquals( 1, log.length );
+        assertEquals( 1, logger.getLog().length );
       }
     } ),
 
@@ -1456,7 +1465,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       TestUtil.clearRequestLog();
-      log = [];
     },
 
     tearDown : function() {
@@ -1494,13 +1502,6 @@ var createButton = function( visible, enabled ) {
   button.setEnabled( enabled );
   TestUtil.flush();
   return button;
-};
-
-var createChangeLogger = function() {
-  var logger = function( event ) {
-    log.push( event.getTarget().getValue() );
-  };
-  text.addEventListener( "changeValue", logger );
 };
 
 var typeCharacter = function( character ) {
