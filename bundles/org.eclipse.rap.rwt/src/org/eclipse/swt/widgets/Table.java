@@ -590,15 +590,18 @@ public class Table extends Composite {
   //      method to ensure that items are drawn when inside the visible bounds
   public void setItemCount( int count ) {
     checkWidget();
+    int oldItemCount = itemCount;
     int newItemCount = Math.max( 0, count );
-    if( newItemCount != itemCount && !isInDispose() ) {
-      while( newItemCount < itemCount ) {
-        TableItem item = items[ newItemCount ];
+    if( newItemCount != oldItemCount && !isInDispose() ) {
+      int deleteIndex = oldItemCount - 1;
+      while( deleteIndex >= newItemCount ) {
+        TableItem item = items[ deleteIndex ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         } else {
-          destroyItem( null, newItemCount );
+          destroyItem( null, deleteIndex );
         }
+        deleteIndex--;
       }
       int length = Math.max( 4, ( newItemCount + 3 ) / 4 * 4 );
       TableItem[] newItems = new TableItem[ length ];
@@ -769,7 +772,7 @@ public class Table extends Composite {
   public void removeAll() {
     checkWidget();
     while( itemCount > 0 ) {
-      removeItem( 0 );
+      removeItem( itemCount - 1 );
     }
   }
 

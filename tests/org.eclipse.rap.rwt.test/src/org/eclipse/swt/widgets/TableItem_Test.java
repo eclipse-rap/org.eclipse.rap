@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -843,28 +841,6 @@ public class TableItem_Test {
       selection[ i ].dispose();
     }
     assertEquals( 0, table.getItemCount() );
-  }
-
-  @Test
-  public void testSetItemCountDisposeOrder() {
-    final java.util.List<Object> log = new ArrayList<Object>();
-    Table table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 30; i++ ) {
-      final TableItem item = new TableItem( table, SWT.NONE );
-      item.setData( new Integer( i ) );
-      item.addDisposeListener( new DisposeListener() {
-        public void widgetDisposed( DisposeEvent event ) {
-          log.add( item.getData() );
-        }
-      } );
-    }
-    table.setItemCount( 25 );
-    assertEquals( 5, log.size() );
-    assertEquals( new Integer( 25 ), log.get( 0 ) );
-    assertEquals( new Integer( 26 ), log.get( 1 ) );
-    assertEquals( new Integer( 27 ), log.get( 2 ) );
-    assertEquals( new Integer( 28 ), log.get( 3 ) );
-    assertEquals( new Integer( 29 ), log.get( 4 ) );
   }
 
   /////////////////////////

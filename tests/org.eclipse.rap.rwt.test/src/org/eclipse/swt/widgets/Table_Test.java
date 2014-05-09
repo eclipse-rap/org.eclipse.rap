@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,7 +23,9 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -612,7 +615,7 @@ public class Table_Test {
   }
 
   @Test
-  public void testRemoveAllVirtual() {
+  public void testRemoveAll_virtual() {
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
@@ -627,6 +630,30 @@ public class Table_Test {
     table.setItemCount( 10 );
     table.removeAll();
     assertEquals( 0, table.getItemCount() );
+  }
+
+  /*
+   * Disposing the items in reverse order (like in GTK) avoids performance critical operations like
+   * shifting item/data arrays, item index recalculation etc.
+   * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=396172
+   */
+  @Test
+  public void testRemoveAll_disposeInReverseOrder() {
+    final List<String> log = new ArrayList<String>();
+    createTableItems( table, 5 );
+    for( TableItem item : table.getItems() ) {
+      item.addDisposeListener( new DisposeListener() {
+        public void widgetDisposed( DisposeEvent event ) {
+          TableItem item = ( TableItem )event.getSource();
+          log.add( item.getText() );
+        }
+      } );
+    }
+
+    table.removeAll();
+
+    String[] expected = { "item4", "item3", "item2", "item1", "item0" };
+    assertArrayEquals( expected, log.toArray( new String[ 0 ] ) );
   }
 
   @Test
@@ -1612,7 +1639,7 @@ public class Table_Test {
   }
 
   @Test
-  public void testSetItemCountNonVirtual() {
+  public void testSetItemCount_nonVirtual() {
     // Setting itemCount to a higher value than getItemCount() creates the
     // missing items
     table.setItemCount( 2 );
@@ -1639,7 +1666,7 @@ public class Table_Test {
   }
 
   @Test
-  public void testSetItemCountVirtual() {
+  public void testSetItemCount_virtual() {
     Table table = new Table( shell, SWT.VIRTUAL );
 
     table.setItemCount( 1 );
@@ -1651,6 +1678,30 @@ public class Table_Test {
     assertEquals( 2, table.getItemCount() );
     items = ItemHolder.getItemHolder( table ).getItems();
     assertEquals( 1, items.length );
+  }
+
+  /*
+   * Disposing the items in reverse order (like in GTK) avoids performance critical operations like
+   * shifting item/data arrays, item index recalculation etc.
+   * see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=396172
+   */
+  @Test
+  public void testSetItemCount_disposeInReverseOrder() {
+    final List<String> log = new ArrayList<String>();
+    createTableItems( table, 30 );
+    for( TableItem item : table.getItems() ) {
+      item.addDisposeListener( new DisposeListener() {
+        public void widgetDisposed( DisposeEvent event ) {
+          TableItem item = ( TableItem )event.getSource();
+          log.add( item.getText() );
+        }
+      } );
+    }
+
+    table.setItemCount( 25 );
+
+    String[] expected = { "item29", "item28", "item27", "item26", "item25" };
+    assertArrayEquals( expected, log.toArray( new String[ 0 ] ) );
   }
 
   @Test
