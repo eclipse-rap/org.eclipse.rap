@@ -400,7 +400,9 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         this._openItem.setSubMenuOpen( false );
         var oldMenu = this._openItem.getMenu();
         oldMenu.hide();
-        this._makeActive();
+        if( this.getVisibility() ) {
+          this._makeActive();
+        }
       }
       this._openItem = item;
       // in theory an item could have lost it's assigned menu (by eval-code)

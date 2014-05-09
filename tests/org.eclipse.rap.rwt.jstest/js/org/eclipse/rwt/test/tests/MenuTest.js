@@ -1047,6 +1047,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( TestUtil.getMessageObject().findSetProperty( "w2", "selection" ) );
     },
 
+    testExecuteSubItem_resetCaptureWidget : function() {
+      createSimpleMenu();
+      var subMenu = new Menu();
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
+      var subMenuItem = new MenuItem( "push" );
+      rwt.remote.ObjectRegistry.add( "w71", subMenuItem, menuItemHandler );
+      subMenu.addMenuItemAt( subMenuItem, 0 );
+      menuItem.setSubMenu( subMenu );
+      TestUtil.flush();
+
+      TestUtil.press( menu, "Down", true );
+      TestUtil.press( menu, "Right", true );
+      TestUtil.flush();
+      TestUtil.press( subMenuItem, "Enter", true );
+      TestUtil.flush();
+
+      assertNull( rwt.event.EventHandler.getCaptureWidget() );
+      menu.destroy();
+    },
+
     testKeyboardControl_KeyDownHoversFirstItemAfterItemsUnhide : function() {
       createSimpleMenu();
       menu.addMenuItemAt( new MenuItem( "push" ), 1 );
