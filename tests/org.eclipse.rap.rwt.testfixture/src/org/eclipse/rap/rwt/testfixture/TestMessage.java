@@ -18,14 +18,13 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
-import org.eclipse.rap.rwt.internal.protocol.OperationReader;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
-import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
@@ -35,51 +34,22 @@ import org.eclipse.swt.widgets.Widget;
  * API. It may change or disappear without further notice. Use this class at
  * your own risk.
  */
-public final class TestMessage {
-
-  private final JsonObject message;
-  private final List<Operation> operations;
+public final class TestMessage extends MessageImpl {
 
   public TestMessage( JsonObject json ) {
-    ParamCheck.notNull( json, "json" );
-    message = json;
-    try {
-      operations = readOperations( message.get( "operations" ).asArray() );
-    } catch( Exception exception ) {
-      throw new IllegalArgumentException( "Missing operations array: " + json, exception );
-    }
-  }
-
-  private List<Operation> readOperations( JsonArray operationsArray ) {
-    ArrayList<Operation> operations = new ArrayList<Operation>( operationsArray.size() );
-    for( JsonValue operation : operationsArray ) {
-      operations.add( OperationReader.readOperation( operation ) );
-    }
-    return operations;
-  }
-
-  public JsonObject getHead() {
-    return message.get( "head" ).asObject();
+    super( json );
   }
 
   public int getRequestCounter() {
-    return message.get( "head" ).asObject().get( "requestCounter" ).asInt();
-  }
-
-  public String getError() {
-    return message.get( "head" ).asObject().get( "error" ).asString();
-  }
-
-  public String getErrorMessage() {
-    return message.get( "head" ).asObject().get( "message" ).asString();
+    return getHead().get( "requestCounter" ).asInt();
   }
 
   public int getOperationCount() {
-    return operations.size();
+    return getOperations().size();
   }
 
   public Operation getOperation( int position ) {
-    return operations.get( position );
+    return getOperations().get( position );
   }
 
   public JsonValue findSetProperty( Widget widget, String property ) {
@@ -119,7 +89,6 @@ public final class TestMessage {
     return findListenProperty( getId( widget ), property );
   }
 
-  @Deprecated
   public JsonValue findListenProperty( String target, String property ) {
     ListenOperation operation = findListenOperation( target, property );
     if( operation == null ) {
@@ -195,32 +164,6 @@ public final class TestMessage {
       }
     }
     return result;
-  }
-
-  @Override
-  public String toString() {
-    return message.toString();
-  }
-
-  @Override
-  public int hashCode() {
-    return message.hashCode();
-  }
-
-  @Override
-  public boolean equals( Object obj ) {
-    boolean equals = false;
-    if( this == obj ) {
-      equals = true;
-    } else if( obj != null && getClass() == obj.getClass() ) {
-      TestMessage other = ( TestMessage )obj;
-      equals = message.equals( other.message );
-    }
-    return equals;
-  }
-
-  public List<Operation> getOperations() {
-    return operations;
   }
 
   public static String getParent( CreateOperation operation ) {
