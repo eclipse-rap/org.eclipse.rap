@@ -11,4 +11,5 @@ Import-Package: org.eclipse.rap.rwt.testfixture;version="[2.3.0,3.0.0)",
  org.eclipse.rap.rwt.testfixture.internal;version="[2.3.0,3.0.0)",
  org.mockito;version="[1.9.5,2.0.0)",
  org.mockito.invocation;version="[1.9.5,2.0.0)",
- org.mockito.stubbing;version="[1.9.5,2.0.0)"
+ org.mockito.stubbing;version="[1.9.5,2.0.0)",
+ org.objenesis;version="[1.0.0,2.0.0)"
