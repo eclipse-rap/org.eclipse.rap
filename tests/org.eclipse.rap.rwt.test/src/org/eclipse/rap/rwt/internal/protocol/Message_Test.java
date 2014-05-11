@@ -15,11 +15,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Test;
 
 
@@ -175,6 +177,18 @@ public class Message_Test {
     String string = message.toString();
 
     assertEquals( JsonObject.readFrom( json ), JsonObject.readFrom( string ) );
+  }
+
+  @Test
+  public void testSerialize() throws Exception {
+    JsonObject head = new JsonObject().add( "foo", 23 );
+    List<Operation> operations = new ArrayList<Operation>();
+    operations.add( new SetOperation( "w3", new JsonObject().add( "bar", 42 ) ) );
+    Message message = new Message( head, operations );
+
+    Message deserialized = Fixture.serializeAndDeserialize( message );
+
+    assertEquals( message.toJson(), deserialized.toJson() );
   }
 
 }

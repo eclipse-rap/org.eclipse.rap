@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.testfixture;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -273,7 +275,7 @@ public class TestMessage_Test {
   }
 
   private TestMessage getMessage() {
-    return new TestMessage( writer.createMessage() );
+    return new TestMessage( writer.createMessage().toJson() );
   }
 
 }

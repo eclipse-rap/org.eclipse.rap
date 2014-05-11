@@ -140,7 +140,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         reinitializeServiceStore();
       }
       UrlParameters.merge( message );
-      JsonObject outMessage = processMessage( message );
+      Message outMessage = processMessage( message );
       writeProtocolMessage( outMessage, response );
       markSessionStarted();
     }
@@ -167,7 +167,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return new InputStreamReader( request.getInputStream(), encoding );
   }
 
-  private JsonObject processMessage( Message inMessage ) {
+  private Message processMessage( Message inMessage ) {
     return messageHandler.handleMessage( inMessage );
   }
 
@@ -217,7 +217,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     response.setStatus( statusCode );
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     writer.appendHead( PROP_ERROR, JsonValue.valueOf( errorType ) );
-    writer.createMessage().writeTo( response.getWriter() );
+    writer.createMessage().toJson().writeTo( response.getWriter() );
   }
 
   private static void reinitializeUISession( HttpServletRequest request ) {
@@ -269,29 +269,29 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private static void writeEmptyMessage( ServletResponse response ) throws IOException {
-    new ProtocolMessageWriter().createMessage().writeTo( response.getWriter() );
+    new ProtocolMessageWriter().createMessage().toJson().writeTo( response.getWriter() );
   }
 
-  private static void writeProtocolMessage( JsonObject message, ServletResponse response )
+  private static void writeProtocolMessage( Message message, ServletResponse response )
     throws IOException
   {
-    bufferProtocolMessage( message );
-    message.writeTo( response.getWriter() );
+    bufferMessage( message );
+    message.toJson().writeTo( response.getWriter() );
   }
 
   private static void writeBufferedResponse( HttpServletResponse response ) throws IOException {
-    getBufferedMessage().writeTo( response.getWriter() );
+    getBufferedMessage().toJson().writeTo( response.getWriter() );
   }
 
-  private static void bufferProtocolMessage( JsonObject message ) {
+  private static void bufferMessage( Message message ) {
     UISession uiSession = getUISession();
     if( uiSession != null ) {
       uiSession.setAttribute( ATTR_LAST_PROTOCOL_MESSAGE, message );
     }
   }
 
-  private static JsonObject getBufferedMessage() {
-    return ( JsonObject )getUISession().getAttribute( ATTR_LAST_PROTOCOL_MESSAGE );
+  private static Message getBufferedMessage() {
+    return ( Message )getUISession().getAttribute( ATTR_LAST_PROTOCOL_MESSAGE );
   }
 
 }

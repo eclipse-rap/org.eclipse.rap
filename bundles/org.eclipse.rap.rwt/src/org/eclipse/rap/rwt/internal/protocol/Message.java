@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.internal.protocol;
 
 import static org.eclipse.rap.rwt.internal.protocol.OperationReader.readOperation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
-public class Message {
+public class Message implements Serializable {
 
   private static final String HEAD = "head";
   private static final String OPERATIONS = "operations";

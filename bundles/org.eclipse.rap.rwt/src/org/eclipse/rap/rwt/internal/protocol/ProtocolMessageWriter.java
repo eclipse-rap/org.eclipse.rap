@@ -10,26 +10,28 @@
 *******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import org.eclipse.rap.json.JsonArray;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
-import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 
 
 public class ProtocolMessageWriter {
 
   private final JsonObject head;
-  private final JsonArray operations;
+  private final List<Operation> operations;
   private Operation pendingOperation;
   private boolean alreadyCreated;
 
   public ProtocolMessageWriter() {
     head = new JsonObject();
-    operations = new JsonArray();
+    operations = new ArrayList<Operation>();
   }
 
   public void appendHead( String property, int value ) {
@@ -102,7 +104,7 @@ public class ProtocolMessageWriter {
     pendingOperation = operation;
   }
 
-  public JsonObject createMessage() {
+  public Message createMessage() {
     ensureMessagePending();
     alreadyCreated = true;
     return createMessageObject();
@@ -114,12 +116,9 @@ public class ProtocolMessageWriter {
     }
   }
 
-  private JsonObject createMessageObject() {
-    JsonObject message = new JsonObject();
-    message.add( "head", head );
+  private Message createMessageObject() {
     appendPendingOperation();
-    message.add( "operations", operations );
-    return message;
+    return new Message( head, operations );
   }
 
   @SuppressWarnings( "unchecked" )
@@ -132,7 +131,7 @@ public class ProtocolMessageWriter {
 
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
-      operations.add( pendingOperation.toJson() );
+      operations.add( pendingOperation );
     }
   }
 

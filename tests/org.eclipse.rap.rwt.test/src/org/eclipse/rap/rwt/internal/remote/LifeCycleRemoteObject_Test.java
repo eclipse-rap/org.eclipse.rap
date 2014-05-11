@@ -211,7 +211,7 @@ public class LifeCycleRemoteObject_Test {
 
   private TestMessage getMessage() {
     ProtocolMessageWriter writer = getProtocolWriter();
-    return new TestMessage( writer.createMessage() );
+    return new TestMessage( writer.createMessage().toJson() );
   }
 
 }

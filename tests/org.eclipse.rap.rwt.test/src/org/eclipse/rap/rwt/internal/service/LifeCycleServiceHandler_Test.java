@@ -344,9 +344,9 @@ public class LifeCycleServiceHandler_Test {
     service( serviceHandler );
 
     assertEquals( HttpServletResponse.SC_PRECONDITION_FAILED, getResponse().getStatus() );
-    Message message = getMessageFromResponse();
+    JsonObject message = JsonObject.readFrom( getResponse().getContent() );
     assertEquals( "invalid request counter", getError( message ) );
-    assertTrue( message.getOperations().isEmpty() );
+    assertTrue( message.get( "operations" ).asArray().isEmpty() );
   }
 
   @Test
@@ -357,9 +357,9 @@ public class LifeCycleServiceHandler_Test {
 
     TestResponse response = getResponse();
     assertEquals( HttpServletResponse.SC_FORBIDDEN, response.getStatus() );
-    Message message = getMessageFromResponse();
+    JsonObject message = JsonObject.readFrom( getResponse().getContent() );
     assertEquals( "session timeout", getError( message ) );
-    assertTrue( message.getOperations().isEmpty() );
+    assertTrue( message.get( "operations" ).asArray().isEmpty() );
   }
 
   @Test
@@ -382,14 +382,25 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeHeadParameter( "requestCounter", requestCounter );
 
     service( serviceHandler );
-    Message firstResponse = getMessageFromResponse();
+    RequestCounter.getInstance().nextRequestId();
+    JsonObject firstResponse = JsonObject.readFrom( getResponse().getContent() );
 
     simulateUiRequest();
     Fixture.fakeHeadParameter( "requestCounter", requestCounter );
     service( serviceHandler );
-    Message secondResponse = getMessageFromResponse();
+    JsonObject secondResponse = JsonObject.readFrom( getResponse().getContent() );
 
-    assertEquals( firstResponse.toString(), secondResponse.toString() );
+    assertEquals( firstResponse, secondResponse );
+  }
+
+  @Test
+  public void testWritesValidJson() throws IOException {
+    markSessionStarted();
+    simulateUiRequest();
+
+    service( serviceHandler );
+
+    JsonObject.readFrom( getResponse().getContent() );
   }
 
   @Test
@@ -458,7 +469,7 @@ public class LifeCycleServiceHandler_Test {
     service( serviceHandler );
 
     verify( messageHandler ).handleMessage( messageCaptor.capture() );
-    assertEquals( message, JsonObject.readFrom( messageCaptor.getValue().toString() ) );
+    assertEquals( message, messageCaptor.getValue().toJson() );
   }
 
   @Test
@@ -517,7 +528,8 @@ public class LifeCycleServiceHandler_Test {
 
   private static RWTMessageHandler mockMessageHandler() {
     RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
-    JsonObject message = createExampleMessage();
+    Message message = new TestMessage();
+    message.getHead().add( "test", true );
     when( messageHandler.handleMessage( any( Message.class ) ) ).thenReturn( message  );
     return messageHandler;
   }
@@ -540,12 +552,8 @@ public class LifeCycleServiceHandler_Test {
     return ( TestResponse )ContextProvider.getResponse();
   }
 
-  private static Message getMessageFromResponse() {
-    return new TestMessage( JsonObject.readFrom( getResponse().getContent() ) );
-  }
-
-  private static String getError( Message message ) {
-    return message.getHead().get( "error" ).asString();
+  private static String getError( JsonObject message ) {
+    return message.get( "head" ).asObject().get( "error" ).asString();
   }
 
   private class TestHandler extends LifeCycleServiceHandler {

@@ -258,7 +258,7 @@ public class DeferredRemoteObject_Test {
   }
 
   private static TestMessage getMessage() {
-    return new TestMessage( getProtocolWriter().createMessage() );
+    return new TestMessage( getProtocolWriter().createMessage().toJson() );
   }
 
 }

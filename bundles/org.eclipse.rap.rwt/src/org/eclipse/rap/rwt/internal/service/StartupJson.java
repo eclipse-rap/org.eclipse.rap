@@ -59,7 +59,7 @@ public class StartupJson {
     appendLoadThemeDefinitions( writer );
     appendCreateDisplay( "w1", writer );
     MeasurementUtil.appendStartupTextSizeProbe( writer );
-    return writer.createMessage();
+    return writer.createMessage().toJson();
   }
 
   private static void appendClientMessages( ProtocolMessageWriter writer ) {

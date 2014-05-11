@@ -313,7 +313,7 @@ public final class Fixture {
   private static void finishResponse( TestResponse response ) {
     if( response.getContent().length() == 0 ) {
       try {
-        getProtocolWriter().createMessage().writeTo( response.getWriter() );
+        getProtocolWriter().createMessage().toJson().writeTo( response.getWriter() );
       } catch( IOException exception ) {
         throw new IllegalStateException( "Failed to get response writer", exception );
       }

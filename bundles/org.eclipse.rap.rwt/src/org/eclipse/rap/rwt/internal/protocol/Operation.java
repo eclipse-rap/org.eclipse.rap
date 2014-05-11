@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import java.io.Serializable;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 
 
-public abstract class Operation {
+public abstract class Operation implements Serializable {
 
   private final String action;
   private final String target;

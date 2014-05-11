@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Test;
 
 
@@ -177,6 +178,15 @@ public class Operation_Test {
     operation.putProperty( "prop", JsonValue.FALSE );
 
     assertEquals( new JsonObject().add( "prop", false ), operation.getProperties() );
+  }
+
+  @Test
+  public void testOperationsAreSerializable() throws Exception {
+    SetOperation operation = new SetOperation( "target", new JsonObject().add( "foo", 23 ) );
+
+    SetOperation deserialized = Fixture.serializeAndDeserialize( operation );
+
+    assertEquals( operation.toJson(), deserialized.toJson() );
   }
 
 }

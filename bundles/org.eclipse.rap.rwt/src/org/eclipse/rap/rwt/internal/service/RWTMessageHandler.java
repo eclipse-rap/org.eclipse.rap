@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 
 import java.io.IOException;
 
-import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
@@ -32,7 +31,7 @@ public class RWTMessageHandler {
     this.lifeCycleFactory = lifeCycleFactory;
   }
 
-  public JsonObject handleMessage( Message message ) {
+  public Message handleMessage( Message message ) {
     ClientMessage clientMessage = new ClientMessage( message );
     ProtocolUtil.setClientMessage( clientMessage );
     workAroundMissingReadData( clientMessage );
