@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 
 
-public class ClientMessage extends MessageImpl {
+public class ClientMessage extends Message {
 
   private Map<String, List<Operation>> index;
 
@@ -32,7 +32,7 @@ public class ClientMessage extends MessageImpl {
   }
 
   public ClientMessage( Message message ) {
-    super( message );
+    super( message.getHead(), message.getOperations() );
     createOperationsIndex();
   }
 

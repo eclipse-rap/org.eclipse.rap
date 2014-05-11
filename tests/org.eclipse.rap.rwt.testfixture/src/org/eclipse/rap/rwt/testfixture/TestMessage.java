@@ -18,14 +18,14 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -34,7 +34,11 @@ import org.eclipse.swt.widgets.Widget;
  * API. It may change or disappear without further notice. Use this class at
  * your own risk.
  */
-public final class TestMessage extends MessageImpl {
+public class TestMessage extends Message {
+
+  public TestMessage() {
+    super( new JsonObject(), new ArrayList<Operation>() );
+  }
 
   public TestMessage( JsonObject json ) {
     super( json );

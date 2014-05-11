@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,44 +23,44 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.junit.Test;
 
 
-public class MessageImpl_Test {
+public class Message_Test {
 
   @Test
-  public void testDefaultConstructor() {
-    Message message = new MessageImpl();
-
-    assertEquals( new JsonObject(), message.getHead() );
-    assertEquals( new ArrayList<Operation>(), message.getOperations() );
-  }
-
-  @Test
-  public void testConstructor_Message() {
+  public void testConstructor_Head_Operations() {
     JsonObject head = new JsonObject().add( "foo", 23 );
-    Operation operation = new SetOperation( "target", new JsonObject().add( "bar", 42 ) );
-    Message originalMessage = mock( Message.class );
-    when( originalMessage.getHead() ).thenReturn( head );
-    when( originalMessage.getOperations() ).thenReturn( asList( operation ) );
+    ArrayList<Operation> operations = new ArrayList<Operation>();
+    operations.add( new SetOperation( "w23" ) );
 
-    MessageImpl message = new MessageImpl( originalMessage );
+    Message message = new Message( head, operations );
 
     assertEquals( head, message.getHead() );
-    assertEquals( asList( operation ), message.getOperations() );
+    assertEquals( operations, message.getOperations() );
   }
 
   @Test( expected = NullPointerException.class )
-  public void testConstructor_Message_withNull() {
-    new MessageImpl( (Message)null );
+  public void testConstructor_Head_Operations_withNullHead() {
+    ArrayList<Operation> operations = new ArrayList<Operation>();
+    operations.add( new SetOperation( "w23" ) );
+
+    new Message( null, operations );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testConstructor_Head_Operations_withNullOperations() {
+    JsonObject head = new JsonObject().add( "foo", 23 );
+
+    new Message( head, null );
   }
 
   @Test( expected = NullPointerException.class )
   public void testConstructor_JsonObject_withNull() {
-    new MessageImpl( (JsonObject)null );
+    new Message( (JsonObject)null );
   }
 
   @Test
   public void testConstructor_JsonObject_withEmptyObject() {
     try {
-      new MessageImpl( new JsonObject() );
+      new Message( new JsonObject() );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertTrue( exception.getMessage().startsWith( "Failed to read head from JSON message" ) );
@@ -71,7 +70,7 @@ public class MessageImpl_Test {
   @Test
   public void testConstructor_JsonObject_withoutOperations() {
     try {
-      new MessageImpl( new JsonObject().add( "head", new JsonObject() ) );
+      new Message( new JsonObject().add( "head", new JsonObject() ) );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertTrue( exception.getMessage().contains( "Failed to read operations from JSON message" ) );
@@ -83,7 +82,7 @@ public class MessageImpl_Test {
     String json = "{ \"head\" : {}, \"operations\" : 23 }";
 
     try {
-      new MessageImpl( JsonObject.readFrom( json ) );
+      new Message( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertTrue( exception.getMessage().contains( "Failed to read operations from JSON message" ) );
@@ -95,7 +94,7 @@ public class MessageImpl_Test {
     String json = "{ \"head\" : {}, \"operations\" : [ [ \"illegal\" ] ] }";
 
     try {
-      new MessageImpl( JsonObject.readFrom( json ) );
+      new Message( JsonObject.readFrom( json ) );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertThat( exception.getMessage(), containsString( "Failed to read operations" ) );
@@ -106,7 +105,7 @@ public class MessageImpl_Test {
   @Test
   public void testGetHead() {
     String json = "{ \"head\": { \"foo\" : 23 }, \"operations\": [] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     assertEquals( new JsonObject().add( "foo", 23 ), message.getHead() );
   }
@@ -114,7 +113,7 @@ public class MessageImpl_Test {
   @Test
   public void testGetHead_isModifiable() {
     String json = "{ \"head\": { \"foo\" : 23 }, \"operations\": [] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     message.getHead().set( "foo", 42 );
 
@@ -124,7 +123,7 @@ public class MessageImpl_Test {
   @Test
   public void testGetHead_withEmptyMessage() {
     String json = "{ \"head\": {}, \"operations\": [] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     assertEquals( new JsonObject(), message.getHead() );
   }
@@ -136,7 +135,7 @@ public class MessageImpl_Test {
                 + "[ \"call\", \"w4\", \"method\", { \"bar\" : 42 } ],"
                 + "[ \"notify\", \"w3\", \"widgetSelected\", {} ]"
                 + "] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     List<Operation> operations = message.getOperations();
 
@@ -149,7 +148,7 @@ public class MessageImpl_Test {
         + "[ \"set\", \"w3\", { \"foo\" : 23 } ],"
         + "[ \"call\", \"w4\", \"method\", { \"bar\" : 42 } ]"
         + "] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     message.getOperations().remove( 1 );
 
@@ -159,7 +158,7 @@ public class MessageImpl_Test {
   @Test
   public void testGetOperations_withEmptyMessage() {
     String json = "{ \"head\" : {}, \"operations\" : [] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     List<Operation> operations = message.getOperations();
 
@@ -171,7 +170,7 @@ public class MessageImpl_Test {
     String json = "{ \"head\" : {}, \"operations\" : ["
         + "[ \"set\", \"w3\", { \"foo\" : 23 } ]"
         + "] }";
-    MessageImpl message = new MessageImpl( JsonObject.readFrom( json ) );
+    Message message = new Message( JsonObject.readFrom( json ) );
 
     String string = message.toString();
 

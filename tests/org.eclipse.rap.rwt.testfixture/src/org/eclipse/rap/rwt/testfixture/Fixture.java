@@ -59,7 +59,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -91,6 +90,11 @@ import org.eclipse.swt.widgets.Widget;
 @SuppressWarnings( "deprecation" )
 public final class Fixture {
 
+  private static final String HEAD = "head";
+  private static final String OPERATIONS = "operations";
+  private static final String SET = "set";
+  private static final String CALL = "call";
+  private static final String NOTIFY = "notify";
   public final static File TEMP_DIR = createTempDir();
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   public static final File WEB_CONTEXT_RWT_RESOURCES_DIR
@@ -360,10 +364,9 @@ public final class Fixture {
   }
 
   private static ClientMessage createEmptyMessage() {
-    JsonObject result = new JsonObject();
-    result.add( MessageImpl.PROP_HEAD, new JsonObject() );
-    result.add( MessageImpl.PROP_OPERATIONS, new JsonArray() );
-    return new ClientMessage( result );
+    return new ClientMessage( new JsonObject()
+      .add( HEAD, new JsonObject() )
+      .add( OPERATIONS, new JsonArray() ) );
   }
 
   public static void fakeHeadParameter( String key, long value ) {
@@ -384,7 +387,7 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonObject header = message.get( MessageImpl.PROP_HEAD ).asObject();
+      JsonObject header = message.get( HEAD ).asObject();
       header.add( key, value );
       request.setBody( message.toString() );
       ProtocolUtil.setClientMessage( new ClientMessage( message ) );
@@ -415,9 +418,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( MessageImpl.OPERATION_SET );
+      newOperation.add( SET );
       newOperation.add( target );
       newOperation.add( properties != null ? properties : new JsonObject() );
       operations.add( newOperation );
@@ -437,9 +440,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( MessageImpl.OPERATION_NOTIFY );
+      newOperation.add( NOTIFY );
       newOperation.add( target );
       newOperation.add( eventName );
       newOperation.add( properties != null ? properties : new JsonObject() );
@@ -460,9 +463,9 @@ public final class Fixture {
     String json = request.getBody();
     try {
       JsonObject message = JsonObject.readFrom( json );
-      JsonArray operations = message.get( MessageImpl.PROP_OPERATIONS ).asArray();
+      JsonArray operations = message.get( OPERATIONS ).asArray();
       JsonArray newOperation = new JsonArray();
-      newOperation.add( MessageImpl.OPERATION_CALL );
+      newOperation.add( CALL );
       newOperation.add( target );
       newOperation.add( methodName );
       newOperation.add( parameters != null ? parameters : new JsonObject() );

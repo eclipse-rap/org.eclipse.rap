@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +20,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.junit.Test;
 
 
@@ -40,18 +40,12 @@ public class ClientMessage_Test {
 
   @Test
   public void testConstructor_Message_createsIndex() {
-    ClientMessage message = new ClientMessage( new Message() {
-      public JsonObject getHead() {
-        return new JsonObject();
-      }
-      public List<Operation> getOperations() {
-        return asList( (Operation)new SetOperation( "w3", new JsonObject().add( "foo", 23 ) ) );
-      }
-    } );
+    TestMessage testMessage = new TestMessage();
+    testMessage.getOperations().add( new SetOperation( "w3", new JsonObject().add( "foo", 23 ) ) );
 
-    List<Operation> operations = message.getAllOperationsFor( "w3" );
+    ClientMessage message = new ClientMessage( testMessage );
 
-    assertFalse( operations.isEmpty() );
+    assertFalse( message.getAllOperationsFor( "w3" ).isEmpty() );
   }
 
   @Test

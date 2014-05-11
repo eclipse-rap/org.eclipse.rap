@@ -48,13 +48,13 @@ import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Message;
-import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
@@ -395,7 +395,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
     message.getHead().set( "requestCounter", nextRequestId );
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
@@ -406,7 +406,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
     message.getHead().set( "requestCounter", 23 );
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
@@ -417,7 +417,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
     message.getHead().set( "requestCounter", "not-a-number" );
 
     try {
@@ -430,7 +430,7 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -440,7 +440,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
 
@@ -541,7 +541,7 @@ public class LifeCycleServiceHandler_Test {
   }
 
   private static Message getMessageFromResponse() {
-    return new ClientMessage( JsonObject.readFrom( getResponse().getContent() ) );
+    return new TestMessage( JsonObject.readFrom( getResponse().getContent() ) );
   }
 
   private static String getError( Message message ) {

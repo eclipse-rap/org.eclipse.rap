@@ -18,8 +18,8 @@ import static org.junit.Assert.assertNull;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.Message;
-import org.eclipse.rap.rwt.internal.protocol.MessageImpl;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_InitialPostRequest() {
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
     fakeInitializeParameter( message );
     fakeQueryString( message, "key1=value1&key2=value2" );
 
@@ -52,7 +52,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_NotInitialPostRequest() {
-    Message message = new MessageImpl();
+    Message message = new TestMessage();
     fakeQueryString( message, "key1=value1&key2=value2" );
 
     UrlParameters.merge( message );
