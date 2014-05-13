@@ -90,7 +90,9 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     _applyOpacity : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       this._checkAntiAlias( value );
-      this._applyShadow( this.getShadow() );
+      if( value !== oldValue && oldValue !== undefined ) { // apply method used for initialization?
+        this._applyShadow( this.getShadow() );
+      }
    },
 
     _checkAntiAlias : rwt.util.Variant.select( "qx.client", {
