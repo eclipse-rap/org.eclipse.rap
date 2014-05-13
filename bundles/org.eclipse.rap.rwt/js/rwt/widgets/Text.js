@@ -460,6 +460,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           var style = this._messageElement.style;
           style.position = "absolute";
           style.outline = "none";
+          style.overflow = "hidden";
           var styleMap = this._getMessageStyle();
           style.color = styleMap.textColor || "";
           style.left = styleMap.paddingLeft + "px";

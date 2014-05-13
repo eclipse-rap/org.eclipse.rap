@@ -910,6 +910,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       var style = text._getTargetNode().firstChild.style;
       assertEquals( "absolute", style.position );
+      assertEquals( "hidden", style.overflow );
       if( !Client.isMshtml() && !Client.isNewMshtml() ) {
         assertTrue( style.outline.indexOf( "none" ) !== -1 );
       }
