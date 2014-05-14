@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
   extend : rwt.qx.Object,
-  
+
   members : {
-    
+
     testSynchronize : function() {
       this._createDummyTarget( 0 );
       var iterations = 1000;
@@ -27,7 +27,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
       logger.log( "protocol-in-eval: " + mixedTime );
     },
 
-    
+
     testSynchronizeLittleDataOnWidgetWithManyProperties : function() {
       this._createDummyTarget( 50 );
       var iterations = 1000;
@@ -90,20 +90,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
     // NOTE: Values need to change due to potential setter optimizations.
     _syncMixed : function( iterations ) {
       var evalProc1 = "rwt.remote.MessageProcessor.processSet( \"dummyId\",";
-      evalProc1 += "{ \"textColor\" : \"#c20017\",\"left\" : 100,\"top\" : 100,\"label\" : \"foo\"\ }";
-      evalProc1 += ");"
+      evalProc1 += "{ \"textColor\" : \"#c20017\",\"left\" : 100,\"top\" : 100,\"label\" : \"foo\" }";
+      evalProc1 += ");";
       var evalProc2 = "rwt.remote.MessageProcessor.processSet( \"dummyId\",";
-      evalProc2 += "{ \"textColor\" : \"#000000\",\"left\" : 200,\"top\" : 200,\"label\" : \"bar\"\ }";
-      evalProc2 += ");"
+      evalProc2 += "{ \"textColor\" : \"#000000\",\"left\" : 200,\"top\" : 200,\"label\" : \"bar\" }";
+      evalProc2 += ");";
       var startTime = ( new Date() ).getTime();
       for( var i = 0; i < iterations; i++ ) {
         eval( evalProc1 );
         eval( evalProc2 );
-      }      
+      }
       var endTime = ( new Date() ).getTime();
       return endTime - startTime;
     },
-    
+
     /////////
     // Helper
 
@@ -129,5 +129,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
     }
 
   }
-  
+
 } );

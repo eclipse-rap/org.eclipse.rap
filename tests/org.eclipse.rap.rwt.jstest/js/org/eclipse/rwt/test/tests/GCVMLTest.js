@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       }
       assertIdentical( shape.node, vmlCanvas.node.childNodes[ 0 ] );
       assertEquals( 4, VML.getStrokeWidth( shape ) );
-      glob = shape.node.strokeColor;
       assertEquals( [ 4, 5, 6 ], rwt.util.Colors.stringToRgb( shape.node.strokeColor.value ) );
       assertNotNull( shape.stroke );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
@@ -115,7 +114,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      context = gc._context;
       gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "rect", 40, 30, 1, 1 ], [ "fill" ] ] );
       var expected = "m395,295 l405,295,405,305,395,305 xe";
@@ -134,7 +132,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      context = gc._context;
       gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       gc.draw( [ [ "beginPath" ], [ "rect", 10.5, 20.5, 30, 40 ], [ "stroke" ] ] );
       var expected = "m100,200 l400,200,400,600,100,600 xe";
@@ -150,7 +147,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      context = gc._context;
       gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       this._drawRoundRectangle( gc, 2, 4, 20, 30, 4, 10 );
       var expected =   "m15,95 l15,275 qb15,335 l45,335,185,335 qb215,335 l215,275,215,95 qb215,35 l185,35,45,35 qb15,35 l15,95 e";
@@ -166,10 +162,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      context = gc._context;
       gc.init( 300, 300, [ [ "Arial" ], 10, false, false ], [ 255, 0, 0 ], [ 0, 0, 255 ] );
       this._fillGradientRectangle( gc, 40, 60, -30, -40, [ 255, 0, 0 ], [ 0, 0, 255 ] );
-      var expected = "m395,595 l95,595,95,195,395,195 xe"
+      var expected = "m395,595 l95,595,95,195,395,195 xe";
       assertEquals( expected, this._getLastPath( gc ) );
       expected = "0 red;.25 #bf0040;.5 purple;.75 #4000bf;1 blue";
       assertEquals( expected, gc._canvas.lastChild.fill.colors.value );
@@ -238,9 +233,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       gc.draw( [
         [ "beginPath" ],
         [ "moveTo", 10, 10 ],
-        [ "lineTo", 100, 70, ],
-        [ "lineTo", 70, 100, ],
-        [ "lineTo", 10, 10, ],
+        [ "lineTo", 100, 70 ],
+        [ "lineTo", 70, 100 ],
+        [ "lineTo", 10, 10 ],
         [ "fill" ]
       ] );
       var expected = "m95,95 l995,695,695,995,95,95 e";
@@ -269,10 +264,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
                                         [ 0.1, 0.2, 0.3, 0.4 ] );
       rwt.graphics.VML.addToCanvas( vmlCanvas, shape );
       assertEquals( "test.jpg", shape.node.src );
-      assertEquals( 40, parseInt( shape.node.style.left ) );
-      assertEquals( 50, parseInt( shape.node.style.top ) );
-      assertEquals( 100, parseInt( shape.node.style.width ) );
-      assertEquals( 200, parseInt( shape.node.style.height ) );
+      assertEquals( 40, parseInt( shape.node.style.left, 10 ) );
+      assertEquals( 50, parseInt( shape.node.style.top, 10 ) );
+      assertEquals( 100, parseInt( shape.node.style.width, 10 ) );
+      assertEquals( 200, parseInt( shape.node.style.height, 10 ) );
       assertEquals( 1, Math.round( shape.node.cropTop * 10 ) );
       assertEquals( 2, Math.round( shape.node.cropRight * 10 ) );
       assertEquals( 3, Math.round( shape.node.cropBottom * 10 ) );
@@ -290,7 +285,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var gc = new rwt.widgets.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc._initFields( [ [ "Arial" ], 10, false, false ], [ 1, 2, 3 ], [ 4, 5, 6 ] );
-      this._drawRectangle( gc,  10, 10, 20, 20, true )
+      this._drawRectangle( gc,  10, 10, 20, 20, true );
       this._drawRectangle( gc,  10, 10, 20, 20, false );
       var node1 = vmlCanvas.node.childNodes[ 0 ];
       var node2 = vmlCanvas.node.childNodes[ 1 ];
@@ -326,16 +321,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     // Helper
 
     _getLastPath : function( gc ) {
+      var result;
       try {
-        var result = gc._context._canvas.node.lastChild.path.v.toLowerCase();
+        result = gc._context._canvas.node.lastChild.path.v.toLowerCase();
       } catch( ex ) {
         // NOTE: Due to a ie-bug, filles paths cant be read from DOM.
         throw new Error( "_getLastPath failed" );
       }
-      if( result.charAt( 0 ) == " " ) {
-        result = result.slice( 1 );
-      }
-      return result;
+      return result.charAt( 0 ) === " " ? result.slice( 1 ) : result;
     },
 
     _setProperty : function( gc, property, value ) {

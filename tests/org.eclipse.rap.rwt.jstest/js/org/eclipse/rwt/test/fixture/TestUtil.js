@@ -186,9 +186,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       "type" : type,
       "target" : target,
       "relatedTarget" : null,
-      "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0,
-      "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) != 0,
-      "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) != 0
+      "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) !== 0,
+      "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) !== 0,
+      "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) !== 0
     };
     return result;
   },
@@ -278,9 +278,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     domEvent.clientY = clientY;
     domEvent.screenX = left;
     domEvent.screenY = top;
-    domEvent.ctrlKey = ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0;
-    domEvent.altKey = ( rwt.event.DomEvent.ALT_MASK & mod ) != 0;
-    domEvent.shiftKey = ( rwt.event.DomEvent.SHIFT_MASK & mod ) != 0;
+    domEvent.ctrlKey = ( rwt.event.DomEvent.CTRL_MASK & mod ) !== 0;
+    domEvent.altKey = ( rwt.event.DomEvent.ALT_MASK & mod ) !== 0;
+    domEvent.shiftKey = ( rwt.event.DomEvent.SHIFT_MASK & mod ) !== 0;
     if( this.isMobileWebkit() ) {
       domEvent.originalEvent = {};
     }
@@ -669,9 +669,9 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
       var domEv = {
         "type" : type,
-        "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) != 0,
-        "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) != 0,
-        "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) != 0,
+        "ctrlKey" : ( rwt.event.DomEvent.CTRL_MASK & mod ) !== 0,
+        "altKey" :  ( rwt.event.DomEvent.ALT_MASK  & mod ) !== 0,
+        "shiftKey" : ( rwt.event.DomEvent.SHIFT_MASK  & mod ) !== 0,
         preventDefault : function(){}
       };
       var ev = new rwt.event.KeyEvent(
