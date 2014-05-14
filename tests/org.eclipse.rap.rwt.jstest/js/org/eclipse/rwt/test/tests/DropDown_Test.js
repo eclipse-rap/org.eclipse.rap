@@ -133,6 +133,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( "help", grid.getCursor() );
     },
 
+    testSetNullCursorRendersDefaultOnGrid : function() {
+      widget.setCursor( "help" );
+
+      widget.setCursor( null );
+
+      assertEquals( "default", grid.getCursor() );
+    },
+
     testSetData_SetDataWithTwoParameters : function() {
       dropdown.setData( "foo", "bar" );
 

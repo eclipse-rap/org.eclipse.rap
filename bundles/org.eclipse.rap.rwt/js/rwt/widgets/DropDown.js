@@ -639,7 +639,9 @@
     this._.grid.setFont( this._.parent.getFont() );
     this._.grid.setTextColor( this._.parent.getTextColor() );
     this._.grid.setBackgroundColor( this._.parent.getBackgroundColor() );
-    this._.grid.setCursor( this._.parent.getCursor() );
+    // [if] "default" fallback is needed to suppress ibeam cursor shown in Chrome and IE, when no
+    // cursor (null) is set - bug 434311
+    this._.grid.setCursor( this._.parent.getCursor() || "default" );
   };
 
   var checkDisposed = function( dropdown ) {
