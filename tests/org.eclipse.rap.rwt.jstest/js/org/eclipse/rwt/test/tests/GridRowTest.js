@@ -510,6 +510,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 3, parseInt( node.style.zIndex, 10 ) );
       assertEquals( "absolute", node.style.position );
       assertEquals( "nowrap", node.style.whiteSpace );
+      assertEquals( "inherit", node.style.textDecoration );
       assertEquals( "hidden", node.style.overflow );
       if( rwt.client.Client.isNewMshtml() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
@@ -810,9 +811,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       item.setForeground( "red" );
-      
+
       row.renderItem( item, tree._config, false, null );
-      
+
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "red", node.style.color );
     },
@@ -832,9 +833,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.prepareEnhancedBorder();
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
-      
+
       row.renderItem( item, tree._config, false, null );
-      
+
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "red", row._getTargetNode().style.color );
       assertTrue( "inherit" === node.style.color || "" === node.style.color );
@@ -845,9 +846,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       item.setForeground( "red" );
-      
+
       row.renderItem( item, tree._config, false, null );
-      
+
       var node = row._getTargetNode().childNodes[ 1 ];
       assertEquals( "black", row._getTargetNode().style.color );
       assertTrue( "inherit" === node.style.color || "" === node.style.color );

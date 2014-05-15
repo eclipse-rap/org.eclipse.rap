@@ -817,6 +817,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !result ) {
         result = this._createElement( 3 );
         result.style.whiteSpace = "nowrap";
+        result.style.textDecoration = "inherit";
         Style.setBackgroundColor( result, null );
         this._cellLabels[ cell ] = result;
       }
