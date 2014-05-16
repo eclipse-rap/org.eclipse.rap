@@ -35,8 +35,8 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       anonymous : true
     } );
     this.add( this._layout );
-    this.addEventListener( "mousedown", this._unhoverSubMenu );
-    this.addEventListener( "mousedown", this._onMouseUp );
+    this.addEventListener( "mousedown", this._onMouseDown );
+    this.addEventListener( "mouseup", this._onMouseUp );
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "keypress", this._onKeyPress );
@@ -451,6 +451,16 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         }
         this._unhoverSubMenu();
       } else {
+        // This is a capture widget, re-dispatch on original
+        target._dispatchEvent( event );
+        event.stopPropagation();
+      }
+    },
+
+    _onMouseDown : function( event ) {
+      this._unhoverSubMenu();
+      var target = event.getOriginalTarget();
+      if( !this.contains( target ) ) {
         // This is a capture widget, re-dispatch on original
         target._dispatchEvent( event );
         event.stopPropagation();

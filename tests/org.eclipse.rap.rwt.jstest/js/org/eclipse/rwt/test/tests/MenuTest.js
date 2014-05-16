@@ -1067,6 +1067,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu.destroy();
     },
 
+    testExecute_onMouseUp : function() {
+      createSimpleMenu( "push" );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
+      TestUtil.fakeListener( menuItem, "Selection", true );
+      TestUtil.flush();
+      TestUtil.clearRequestLog();
+
+      TestUtil.fakeMouseEventDOM( menuItem._getTargetNode(), "mousedown" );
+      assertEquals( 0, TestUtil.getRequestsSend() );
+
+      TestUtil.fakeMouseEventDOM( menuItem._getTargetNode(), "mouseup" );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
+    },
+
     testKeyboardControl_KeyDownHoversFirstItemAfterItemsUnhide : function() {
       createSimpleMenu();
       menu.addMenuItemAt( new MenuItem( "push" ), 1 );
