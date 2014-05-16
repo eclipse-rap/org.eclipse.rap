@@ -19,6 +19,7 @@ else
 fi
 
 basedirectory="$WORKSPACE/org.eclipse.rap"
+tempdirectory="$WORKSPACE/tmp"
 
 ######################################################################
 # clean up local Maven repository to circumvent p2 cache problems
@@ -33,7 +34,8 @@ done
 
 cd "$basedirectory"
 echo "Running maven on $PWD, $SIGNPROFILE"
-${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH}
+mkdir -p "$tempdirectory"
+${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Djava.io.tmpdir="$tempdirectory"
 exitcode=$?
 if [ "$exitcode" != "0" ]; then
   echo "Maven exited with error code " + $exitcode
