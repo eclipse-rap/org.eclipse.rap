@@ -481,11 +481,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._topItem = null;
       }
       if( this._allowRender() ) {
-        this.dispatchSimpleEvent( "topItemChanged" );
         this._updateTopItem( true );
       } else {
         this._scheduleUpdate( "topItem" );
       }
+      this.dispatchSimpleEvent( "topItemChanged" );
     },
 
     _onHorzScrollBarChangeValue : function() {

@@ -70,27 +70,29 @@ rwt.widgets.util.GridSynchronizer.prototype = {
   },
 
   _onTopItemChanged : function( event ) {
-    var vScroll = this._grid.getVerticalBar();
-    var connection = rwt.remote.Connection.getInstance();
-    var remoteObject = connection.getRemoteObject( this._grid );
-    remoteObject.set( "topItemIndex", this._grid.getTopItemIndex() );
-    if( vScroll.getHasSelectionListener() ) {
-      connection.onNextSend( function() {
-        connection.getRemoteObject( vScroll ).notify( "Selection" );
-      }, this );
-    }
-    if( remoteObject.isListening( "SetData" ) ) {
-      connection.onNextSend( function() {
-        remoteObject.notify( "SetData" );
-      }, this );
-    }
-    if( vScroll.getHasSelectionListener() || remoteObject.isListening( "SetData" ) ) {
-      connection.sendDelayed( 400 );
+    if( !rwt.remote.EventUtil.getSuspended() ) {
+      var vScroll = this._grid.getVerticalBar();
+      var connection = rwt.remote.Connection.getInstance();
+      var remoteObject = connection.getRemoteObject( this._grid );
+      remoteObject.set( "topItemIndex", this._grid.getTopItemIndex() );
+      if( vScroll.getHasSelectionListener() ) {
+        connection.onNextSend( function() {
+          connection.getRemoteObject( vScroll ).notify( "Selection" );
+        }, this );
+      }
+      if( remoteObject.isListening( "SetData" ) ) {
+        connection.onNextSend( function() {
+          remoteObject.notify( "SetData" );
+        }, this );
+      }
+      if( vScroll.getHasSelectionListener() || remoteObject.isListening( "SetData" ) ) {
+        connection.sendDelayed( 400 );
+      }
     }
   },
 
   _onScrollLeftChanged : function( event ) {
-    // TODO [tb] : There should be a check for _inServerResponse,
+    // TODO [tb] : There should be a check for suspended,
     // but currently this is needed to sync the value with the
     // server when the scrollbars are hidden by the server.
     var hScroll = this._grid.getHorizontalBar();

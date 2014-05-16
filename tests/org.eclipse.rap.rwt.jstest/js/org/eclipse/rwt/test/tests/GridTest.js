@@ -2669,6 +2669,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testFireTopItemChangedEventInResponse : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      var logger = TestUtil.getLogger();
+      tree.addEventListener( "topItemChanged", logger.log );
+      TestUtil.flush();
+
+      rwt.remote.EventUtil.setSuspended( true );
+      tree._vertScrollBar.setValue( 160 );
+      rwt.remote.EventUtil.setSuspended( false );
+
+      assertEquals( 1, logger.getLog().length );
+      tree.destroy();
+    },
+
     testScrollWidth : function() {
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 3, 500, 700, 0, 0, 0, 500 );
