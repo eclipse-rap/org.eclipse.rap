@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1702,6 +1705,19 @@ public class Table_Test {
 
     String[] expected = { "item29", "item28", "item27", "item26", "item25" };
     assertArrayEquals( expected, log.toArray( new String[ 0 ] ) );
+  }
+
+  @Test
+  public void testSetItemCount_redrawsItems() {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 100, 100 );
+    Listener listener = mock( Listener.class );
+    table.addListener( SWT.SetData, listener );
+
+    table.setItemCount( 25 );
+    display.readAndDispatch();
+
+    verify( listener, times( 4 ) ).handleEvent( any( Event.class ) );
   }
 
   @Test

@@ -586,8 +586,6 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this
-  //      method to ensure that items are drawn when inside the visible bounds
   public void setItemCount( int count ) {
     checkWidget();
     int oldItemCount = itemCount;
@@ -620,6 +618,7 @@ public class Table extends Composite {
       if( ( style & SWT.VIRTUAL ) != 0 ) {
         updateScrollBars();
       }
+      redraw();
     }
   }
 
