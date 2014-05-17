@@ -7,7 +7,7 @@
 ######################################################################
 # set up environment
 
-export MVN=${MVN:-"/opt/public/common/apache-maven-3.0.4/bin/mvn"}
+export MVN=${MVN:-"/opt/public/common/apache-maven-3.2.1/bin/mvn"}
 
 export MAVEN_LOCAL_REPO_PATH=${MAVEN_LOCAL_REPO_PATH:-"/shared/rt/rap/m2/repository"}
 echo "Local Maven repository location: ${MAVEN_LOCAL_REPO_PATH}"
