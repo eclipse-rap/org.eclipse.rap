@@ -20,10 +20,12 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
+import org.eclipse.rap.rwt.internal.remote.MessageFilter;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 
 
-public class RWTMessageHandler {
+public class RWTMessageHandler implements MessageFilter {
 
   private final LifeCycleFactory lifeCycleFactory;
 
@@ -31,7 +33,7 @@ public class RWTMessageHandler {
     this.lifeCycleFactory = lifeCycleFactory;
   }
 
-  public Message handleMessage( Message message ) {
+  public Message handleMessage( Message message, MessageFilterChain chain ) {
     ClientMessage clientMessage = new ClientMessage( message );
     ProtocolUtil.setClientMessage( clientMessage );
     workAroundMissingReadData( clientMessage );

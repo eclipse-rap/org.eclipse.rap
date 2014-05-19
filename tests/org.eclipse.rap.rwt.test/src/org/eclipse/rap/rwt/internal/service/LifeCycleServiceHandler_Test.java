@@ -49,6 +49,10 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
+import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
+import org.eclipse.rap.rwt.internal.remote.MessageFilter;
+import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -72,7 +76,8 @@ public class LifeCycleServiceHandler_Test {
   private static final String ENTER = "enter|";
   private static final String EXIT = "exit|";
 
-  private RWTMessageHandler messageHandler;
+  private MessageFilter filter;
+  private MessageChainReference messageChainReference;
   private StartupPage startupPage;
   private LifeCycleServiceHandler serviceHandler;
   private StringBuilder log;
@@ -80,9 +85,11 @@ public class LifeCycleServiceHandler_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    messageHandler = mockMessageHandler();
+    filter = mockMessageFilter();
+    MessageChainElement handlerWrapper = new MessageChainElement( filter, null );
+    messageChainReference = new MessageChainReference( handlerWrapper );
     startupPage = mock( StartupPage.class );
-    serviceHandler = new LifeCycleServiceHandler( messageHandler, startupPage );
+    serviceHandler = new LifeCycleServiceHandler( messageChainReference, startupPage );
     log = new StringBuilder();
   }
 
@@ -98,7 +105,7 @@ public class LifeCycleServiceHandler_Test {
     getUISession();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
-      ServiceHandler syncHandler = new TestHandler( messageHandler, startupPage );
+      ServiceHandler syncHandler = new TestHandler( messageChainReference, startupPage );
       Thread thread = new Thread( new Worker( context, syncHandler ) );
       thread.setDaemon( true );
       thread.start();
@@ -329,7 +336,7 @@ public class LifeCycleServiceHandler_Test {
     doThrow( new RuntimeException() ).when( startupPage ).send( any( HttpServletResponse.class ) );
 
     try {
-      service( new LifeCycleServiceHandler( messageHandler, startupPage ) );
+      service( new LifeCycleServiceHandler( messageChainReference, startupPage ) );
     } catch( RuntimeException exception ) {
     }
 
@@ -468,7 +475,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( serviceHandler );
 
-    verify( messageHandler ).handleMessage( messageCaptor.capture() );
+    verify( filter ).handleMessage( messageCaptor.capture(), any( MessageFilterChain.class ) );
     assertEquals( message, messageCaptor.getValue().toJson() );
   }
 
@@ -476,11 +483,11 @@ public class LifeCycleServiceHandler_Test {
   public void testUIRequest_shutsDownUISession_ifRuntimeExceptionInHandler() throws IOException {
     markSessionStarted();
     simulateUiRequest();
-    RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
-    doThrow( new RuntimeException() ).when( messageHandler ).handleMessage( any( Message.class ) );
+    doThrow( new RuntimeException() )
+      .when( filter ).handleMessage( any( Message.class ), any( MessageFilterChain.class ) );
 
     try {
-      service( new LifeCycleServiceHandler( messageHandler, startupPage ) );
+      service( new LifeCycleServiceHandler( messageChainReference, startupPage ) );
     } catch( RuntimeException exception ) {
     }
 
@@ -526,12 +533,13 @@ public class LifeCycleServiceHandler_Test {
     getRequest().setContentType( "text/plain" );
   }
 
-  private static RWTMessageHandler mockMessageHandler() {
-    RWTMessageHandler messageHandler = mock( RWTMessageHandler.class );
+  private static MessageFilter mockMessageFilter() {
+    MessageFilter filter = mock( MessageFilter.class );
     Message message = new TestMessage();
     message.getHead().add( "test", true );
-    when( messageHandler.handleMessage( any( Message.class ) ) ).thenReturn( message  );
-    return messageHandler;
+    when( filter.handleMessage( any( Message.class ), any( MessageFilterChain.class ) ) )
+      .thenReturn( message  );
+    return filter;
   }
 
   private static JsonObject createExampleMessage() {
@@ -558,8 +566,8 @@ public class LifeCycleServiceHandler_Test {
 
   private class TestHandler extends LifeCycleServiceHandler {
 
-    public TestHandler( RWTMessageHandler messageHandler, StartupPage startupPage ) {
-      super( messageHandler, startupPage );
+    public TestHandler( MessageChainReference messageChainReference, StartupPage startupPage ) {
+      super( messageChainReference, startupPage );
     }
 
     @Override

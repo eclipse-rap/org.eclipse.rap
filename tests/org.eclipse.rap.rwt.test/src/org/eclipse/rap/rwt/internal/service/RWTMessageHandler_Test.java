@@ -52,7 +52,7 @@ public class RWTMessageHandler_Test {
     RWTMessageHandler messageHandler = new RWTMessageHandler( mockLifeCycleFactory( lifeCycle ) );
     Message message = new TestMessage();
 
-    messageHandler.handleMessage( message );
+    messageHandler.handleMessage( message, null );
 
     assertEquals( 1, log.size() );
     assertEquals( message.toString(), log.get( 0 ).toString() );

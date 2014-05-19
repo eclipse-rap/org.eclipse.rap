@@ -40,6 +40,7 @@ import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 
@@ -53,11 +54,13 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private static final String ATTR_SESSION_STARTED
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
-  private final RWTMessageHandler messageHandler;
+  private final MessageChainReference messageChainReference;
   private final StartupPage startupPage;
 
-  public LifeCycleServiceHandler( RWTMessageHandler messageHandler, StartupPage startupPage ) {
-    this.messageHandler = messageHandler;
+  public LifeCycleServiceHandler( MessageChainReference messageChainReference,
+                                  StartupPage startupPage )
+  {
+    this.messageChainReference = messageChainReference;
     this.startupPage = startupPage;
   }
 
@@ -168,7 +171,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   }
 
   private Message processMessage( Message inMessage ) {
-    return messageHandler.handleMessage( inMessage );
+    return messageChainReference.get().handleMessage( inMessage );
   }
 
   private static boolean isRequestCounterValid( Message message ) {
