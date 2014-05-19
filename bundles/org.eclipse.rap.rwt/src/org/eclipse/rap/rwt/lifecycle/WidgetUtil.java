@@ -21,11 +21,14 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * This is a helper class to obtain different aspects for a widget
- * related to the handling of widgets in RAP.
+ * Helper class to access RWT specific properties of widgets.
  *
  * @since 2.0
+ * @deprecated Most of the helper methods in this class will not be supported in the next release.
+ *             For the remaining methods, use org.eclipse.rap.rwt.widgets.WidgetUtil instead.
+ * @see org.eclipse.rap.rwt.widgets.WidgetUtil
  */
+@Deprecated
 public final class WidgetUtil {
 
   /**
@@ -106,25 +109,27 @@ public final class WidgetUtil {
   }
 
   /**
-   * Returns the id of the given <code>widget</code> that is used to identify
-   * the widget on the client.
+   * Returns the id of the given <code>widget</code> that is used to identify the widget on the
+   * client.
    *
-   * @param widget the widget to obtain the id for, must not be
-   *          <code>null</code>
+   * @param widget the widget to obtain the id for, must not be <code>null</code>
    * @return the id for the given <code>widget</code>
+   * @deprecated Use org.eclipse.rap.rwt.widgets.WidgetUtil#getId(Widget) instead.
    */
+  @Deprecated
   public static String getId( Widget widget ) {
     return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId( widget );
   }
 
   /**
-   * Returns the widget variant defined for the given widget using
-   * <code>Widget.setData()</code>.
+   * Returns the widget variant defined for the given widget using <code>Widget.setData()</code>.
    *
    * @param widget the widget whose variant is requested
-   * @return the variant or <code>null</code> if no variant has been specified
-   *         for the given widget
+   * @return the variant or <code>null</code> if no variant has been specified for the given widget
+   * @deprecated Application code should obtain the variant using
+   *             <code>Widget.getData(RWT.CUSTOM_VARIANT)</code>.
    */
+  @Deprecated
   public static String getVariant( Widget widget ) {
     return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getVariant( widget );
   }
@@ -178,14 +183,16 @@ public final class WidgetUtil {
   }
 
   /**
-   * This method searches for a widget with the given <code>id</code> within
-   * the widget hierarchy starting at <code>root</code>.
+   * This method searches for a widget with the given <code>id</code> within the widget hierarchy
+   * starting at <code>root</code>.
    *
    * @param root the root widget where to start the search
    * @param id the id of the widget to search for
-   * @return the widget or <code>null</code> if there was no widget found with
-   * the given <code>id</code> within the widget hierarchy
+   * @return the widget or <code>null</code> if there was no widget found with the given
+   *         <code>id</code> within the widget hierarchy
+   * @deprecated Custom widgets that use RemoteObject should not require this method.
    */
+  @Deprecated
   public static Widget find( Composite root, final String id ) {
     return org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find( root, id );
   }
@@ -203,7 +210,9 @@ public final class WidgetUtil {
    * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
    * @param keys The keys to add to the list.
    * @since 2.2
+   * @deprecated Use org.eclipse.rap.rwt.widgets.WidgetUtil#registerDataKeys(String...) instead.
    */
+  @Deprecated
   public static void registerDataKeys( String... keys ) {
     org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys( keys );
   }
