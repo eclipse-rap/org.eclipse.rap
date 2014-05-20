@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -87,13 +87,10 @@ public class BrowserUtil_Test {
     assertEquals( expected, browser.getAdapter( IBrowserAdapter.class ).getExecuteScript() );
   }
 
-  @Test
+  @Test( expected=IllegalStateException.class )
   public void testExecuteTwice() {
     BrowserUtil.evaluate( browser, "return true;", browserCallback );
     BrowserUtil.evaluate( browser, "return false;", browserCallback );
-
-    String expected = "(function(){return true;})();";
-    assertEquals( expected, browser.getAdapter( IBrowserAdapter.class ).getExecuteScript() );
   }
 
   @Test

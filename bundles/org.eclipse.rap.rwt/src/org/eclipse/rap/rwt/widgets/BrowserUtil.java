@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,17 @@ public final class BrowserUtil {
    * dedicated UI thread where <code>evaluate()</code> does not block the program execution flow.
    * </p>
    *
+   * <p>
+   * This method will throw an IllegalStateException if called while another script is
+   * still pending to be executed.
+   * </p>
+
    * @param browser the browser to execute the script, must not be <code>null</code>.
    * @param script the script to execute, must not be <code>null</code>.
    * @param browserCallback the callback to be notified when the result from the script execution is
    * available, must not be <code>null</code>.
+   *
+   * @exception IllegalStateException when another script is already being executed.
    *
    * @see Browser
    * @see BrowserCallback

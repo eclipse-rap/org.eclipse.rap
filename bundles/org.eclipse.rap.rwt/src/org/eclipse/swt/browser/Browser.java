@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -223,6 +223,10 @@ public class Browser extends Composite {
    * application.</p>
    * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
    * Use BrowserUtil#evaluate instead.</p>
+   * <p>This method will throw an IllegalStateException if called while another script is still
+   * pending or executed. This can happen if called within a BrowserFunction, or if an SWT event
+   * is pending to be executed. (E.g. clicking a Button twice very fast.)
+   * </p>
    * <!-- End RAP specific -->
    *
    * @param script the script with javascript commands
@@ -240,6 +244,7 @@ public class Browser extends Composite {
    * </ul>
    *
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
+   * @exception IllegalStateException when another script is already being executed.
    *
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
    *
@@ -251,21 +256,20 @@ public class Browser extends Composite {
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    boolean result = false;
-    if( executeScript == null ) {
-      executeScript = script;
-      executeResult = null;
-      while( executeResult == null ) {
-        Display display = getDisplay();
-        if( !display.readAndDispatch() )  {
-          display.sleep();
-        }
-      }
-      executeScript = null;
-      executePending = false;
-      result = executeResult.booleanValue();
+    if( executeScript != null ) {
+      throw new IllegalStateException( "Another script is already pending" );
     }
-    return result;
+    executeScript = script;
+    executeResult = null;
+    while( executeResult == null ) {
+      Display display = getDisplay();
+      if( !display.readAndDispatch() )  {
+        display.sleep();
+      }
+    }
+    executeScript = null;
+    executePending = false;
+    return executeResult.booleanValue();
   }
 
   /**
@@ -301,6 +305,10 @@ public class Browser extends Composite {
    * application.</p>
    * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
    * Use BrowserUtil#evaluate instead.</p>
+   * <p>This method will throw an IllegalStateException if called while another script is still
+   * pending or executed. This can happen if called within a BrowserFunction, or if an SWT
+   * event is pending to be executed. (E.g. clicking a Button twice very fast.)
+   * </p>
    * <!-- End RAP specific -->
    *
    * @param script the script with javascript commands
@@ -319,7 +327,8 @@ public class Browser extends Composite {
    * </ul>
    *
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
-   *
+   * @exception IllegalStateException when another script is already being executed.
+
    * @see ProgressListener#completed(ProgressEvent)
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
    *
@@ -584,10 +593,11 @@ public class Browser extends Composite {
 
   private void evaluateNonBlocking( String script, BrowserCallback browserCallback ) {
     checkWidget();
-    if( executeScript == null ) {
-      this.browserCallback = browserCallback;
-      executeScript = prepareScript( script );
+    if( executeScript != null ) {
+      throw new IllegalStateException( "Another script is already pending" );
     }
+    this.browserCallback = browserCallback;
+    executeScript = prepareScript( script );
   }
 
   private static SWTException createException() {
