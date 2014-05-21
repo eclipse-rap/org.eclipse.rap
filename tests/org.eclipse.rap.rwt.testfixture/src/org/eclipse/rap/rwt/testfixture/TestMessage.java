@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +19,13 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Widget;
  * API. It may change or disappear without further notice. Use this class at
  * your own risk.
  */
-public class TestMessage extends Message {
+public class TestMessage extends RequestMessage {
 
   public TestMessage() {
     super( new JsonObject(), new ArrayList<Operation>() );

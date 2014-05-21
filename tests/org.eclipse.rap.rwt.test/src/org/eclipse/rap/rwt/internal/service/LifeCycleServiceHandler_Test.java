@@ -47,12 +47,13 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
-import org.eclipse.rap.rwt.internal.remote.MessageFilter;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
+import org.eclipse.rap.rwt.internal.remote.MessageFilter;
+import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -61,6 +62,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rap.rwt.testfixture.TestResponseMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -413,7 +415,7 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
-    Message message = new TestMessage();
+    RequestMessage message = new TestMessage();
     message.getHead().set( "requestCounter", nextRequestId );
 
     boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
@@ -424,10 +426,10 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new TestMessage();
-    message.getHead().set( "requestCounter", 23 );
+    RequestMessage requestMessage = new TestMessage();
+    requestMessage.getHead().set( "requestCounter", 23 );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
 
     assertFalse( valid );
   }
@@ -435,11 +437,11 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new TestMessage();
-    message.getHead().set( "requestCounter", "not-a-number" );
+    RequestMessage requestMessage = new TestMessage();
+    requestMessage.getHead().set( "requestCounter", "not-a-number" );
 
     try {
-      LifeCycleServiceHandler.hasValidRequestCounter( message );
+      LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
       fail();
     } catch( Exception exception ) {
       assertTrue( exception.getMessage().contains( "Not a number" ) );
@@ -448,9 +450,9 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
-    Message message = new TestMessage();
+    RequestMessage requestMessage = new TestMessage();
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
 
     assertTrue( valid );
   }
@@ -458,9 +460,9 @@ public class LifeCycleServiceHandler_Test {
   @Test
   public void testHasValidRequestCounter_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
-    Message message = new TestMessage();
+    RequestMessage requestMessage = new TestMessage();
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
+    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
 
     assertFalse( valid );
   }
@@ -471,7 +473,7 @@ public class LifeCycleServiceHandler_Test {
     simulateUiRequest();
     JsonObject message = createExampleMessage();
     getRequest().setBody( message.toString() );
-    ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass( Message.class );
+    ArgumentCaptor<RequestMessage> messageCaptor = ArgumentCaptor.forClass( RequestMessage.class );
 
     service( serviceHandler );
 
@@ -484,7 +486,7 @@ public class LifeCycleServiceHandler_Test {
     markSessionStarted();
     simulateUiRequest();
     doThrow( new RuntimeException() )
-      .when( filter ).handleMessage( any( Message.class ), any( MessageFilterChain.class ) );
+      .when( filter ).handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) );
 
     try {
       service( new LifeCycleServiceHandler( messageChainReference, startupPage ) );
@@ -535,10 +537,10 @@ public class LifeCycleServiceHandler_Test {
 
   private static MessageFilter mockMessageFilter() {
     MessageFilter filter = mock( MessageFilter.class );
-    Message message = new TestMessage();
-    message.getHead().add( "test", true );
-    when( filter.handleMessage( any( Message.class ), any( MessageFilterChain.class ) ) )
-      .thenReturn( message  );
+    ResponseMessage responseMessage = new TestResponseMessage();
+    responseMessage.getHead().add( "test", true );
+    when( filter.handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) ) )
+      .thenReturn( responseMessage  );
     return filter;
   }
 

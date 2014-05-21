@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.NotifyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 
 
-public class ClientMessage extends Message {
+public class ClientMessage extends RequestMessage {
 
   private Map<String, List<Operation>> index;
 

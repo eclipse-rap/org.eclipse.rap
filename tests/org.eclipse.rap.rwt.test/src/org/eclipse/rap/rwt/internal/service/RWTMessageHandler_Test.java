@@ -22,8 +22,8 @@ import java.util.List;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.junit.After;
@@ -50,12 +50,12 @@ public class RWTMessageHandler_Test {
   public void testHandleMessage_executesLifeCycleWithMessage() {
     LifeCycle lifeCycle = createLoggingLifeCycle( getApplicationContext() );
     RWTMessageHandler messageHandler = new RWTMessageHandler( mockLifeCycleFactory( lifeCycle ) );
-    Message message = new TestMessage();
+    RequestMessage requestMessage = new TestMessage();
 
-    messageHandler.handleMessage( message, null );
+    messageHandler.handleMessage( requestMessage, null );
 
     assertEquals( 1, log.size() );
-    assertEquals( message.toString(), log.get( 0 ).toString() );
+    assertEquals( requestMessage.toString(), log.get( 0 ).toString() );
   }
 
   private LifeCycle createLoggingLifeCycle( ApplicationContextImpl applicationContext ) {

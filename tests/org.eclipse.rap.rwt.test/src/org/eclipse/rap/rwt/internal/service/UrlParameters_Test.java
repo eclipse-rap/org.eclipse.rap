@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.junit.After;
@@ -40,7 +40,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_InitialPostRequest() {
-    Message message = new TestMessage();
+    RequestMessage message = new TestMessage();
     fakeInitializeParameter( message );
     fakeQueryString( message, "key1=value1&key2=value2" );
 
@@ -52,7 +52,7 @@ public class UrlParameters_Test {
 
   @Test
   public void testMerge_NotInitialPostRequest() {
-    Message message = new TestMessage();
+    RequestMessage message = new TestMessage();
     fakeQueryString( message, "key1=value1&key2=value2" );
 
     UrlParameters.merge( message );
@@ -113,12 +113,12 @@ public class UrlParameters_Test {
     assertEquals( "value/1", parametersMap.get( "key1" )[ 0 ] );
   }
 
-  private static void fakeInitializeParameter( Message message ) {
-    message.getHead().set( RWT_INITIALIZE, true );
+  private static void fakeInitializeParameter( RequestMessage requestMessage ) {
+    requestMessage.getHead().set( RWT_INITIALIZE, true );
   }
 
-  private static void fakeQueryString( Message message, String queryString ) {
-    message.getHead().set( QUERY_STRING, queryString );
+  private static void fakeQueryString( RequestMessage requestMessage, String queryString ) {
+    requestMessage.getHead().set( QUERY_STRING, queryString );
   }
 
 }

@@ -18,10 +18,11 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageFilter;
+import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 
 
@@ -33,8 +34,8 @@ public class RWTMessageHandler implements MessageFilter {
     this.lifeCycleFactory = lifeCycleFactory;
   }
 
-  public Message handleMessage( Message message, MessageFilterChain chain ) {
-    ClientMessage clientMessage = new ClientMessage( message );
+  public ResponseMessage handleMessage( RequestMessage request, MessageFilterChain chain ) {
+    ClientMessage clientMessage = new ClientMessage( request );
     ProtocolUtil.setClientMessage( clientMessage );
     workAroundMissingReadData( clientMessage );
     executeLifeCycle();

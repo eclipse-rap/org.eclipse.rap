@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 
 
 /**
@@ -20,7 +21,7 @@ import org.eclipse.rap.rwt.internal.protocol.Message;
  * perform actions before and after message processing.
  * <pre>
  * request message  --> |message| --> |message| --> |RWT|
- * response message <-- |handler| <-- |handler| <-- |   |
+ * response message <-- |filter | <-- |filter | <-- |   |
  * </pre>
  * <p>
  * Message filters can be used for tasks such as logging, tracking, measuring or setting up some
@@ -47,6 +48,6 @@ public interface MessageFilter {
    * @param chain the filter chain to delegate to
    * @return the message to send to the client in response
    */
-  Message handleMessage( Message request, MessageFilterChain chain );
+  ResponseMessage handleMessage( RequestMessage request, MessageFilterChain chain );
 
 }

@@ -104,7 +104,7 @@ public class ProtocolMessageWriter {
     pendingOperation = operation;
   }
 
-  public Message createMessage() {
+  public ResponseMessage createMessage() {
     ensureMessagePending();
     alreadyCreated = true;
     return createMessageObject();
@@ -116,9 +116,9 @@ public class ProtocolMessageWriter {
     }
   }
 
-  private Message createMessageObject() {
+  private ResponseMessage createMessageObject() {
     appendPendingOperation();
-    return new Message( head, operations );
+    return new ResponseMessage( head, operations );
   }
 
   @SuppressWarnings( "unchecked" )

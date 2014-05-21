@@ -22,8 +22,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestResponseMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +33,7 @@ import org.junit.Test;
 public class MessageChainElement_Test {
 
   private List<String> log;
-  private Message message;
+  private RequestMessage message;
 
   @Before
   public void setUp() {
@@ -52,13 +54,13 @@ public class MessageChainElement_Test {
 
   @Test
   public void testHandleMessage_returnsResultFromFilter() {
-    Message response = new TestMessage();
+    ResponseMessage response = new TestResponseMessage();
     MessageFilter filter = mock( MessageFilter.class );
-    when( filter.handleMessage( any( Message.class ), any( MessageFilterChain.class ) ) )
+    when( filter.handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) ) )
       .thenReturn( response );
     MessageChainElement element = new MessageChainElement( filter, null );
 
-    Message result = element.handleMessage( message );
+    ResponseMessage result = element.handleMessage( message );
 
     assertSame( response, result );
   }
@@ -122,12 +124,12 @@ public class MessageChainElement_Test {
 
   private MessageFilter createLoggingFilter( final String name ) {
     return new MessageFilter() {
-      public Message handleMessage( Message message, MessageFilterChain parent ) {
+      public ResponseMessage handleMessage( RequestMessage message, MessageFilterChain parent ) {
         log.add( name );
         if( parent != null ) {
           return parent.handleMessage( message );
         }
-        return new TestMessage();
+        return new TestResponseMessage();
       }
     };
   }

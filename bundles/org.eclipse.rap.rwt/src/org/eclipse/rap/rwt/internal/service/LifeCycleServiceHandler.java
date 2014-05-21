@@ -37,9 +37,10 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
-import org.eclipse.rap.rwt.internal.protocol.Message;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
@@ -49,8 +50,8 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static final String PROP_ERROR = "error";
   private static final String PROP_REQUEST_COUNTER = "requestCounter";
-  private static final String ATTR_LAST_PROTOCOL_MESSAGE
-    = LifeCycleServiceHandler.class.getName() + "#lastProtocolMessage";
+  private static final String ATTR_LAST_RESPONSE_MESSAGE
+    = LifeCycleServiceHandler.class.getName() + "#lastResponseMessage";
   private static final String ATTR_SESSION_STARTED
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
@@ -124,32 +125,32 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   private void processUIRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    Message message = readMessage( request );
+    RequestMessage requestMessage = readRequestMessage( request );
     setJsonResponseHeaders( response );
-    if( isSessionShutdown( message ) ) {
+    if( isSessionShutdown( requestMessage ) ) {
       shutdownUISession();
       writeEmptyMessage( response );
-    } else if( isSessionTimeout( message ) ) {
+    } else if( isSessionTimeout( requestMessage ) ) {
       writeSessionTimeoutError( response );
-    } else if( !isRequestCounterValid( message ) ) {
-      if( isDuplicateRequest( message ) ) {
+    } else if( !isRequestCounterValid( requestMessage ) ) {
+      if( isDuplicateRequest( requestMessage ) ) {
         writeBufferedResponse( response );
       } else {
         writeInvalidRequestCounterError( response );
       }
     } else {
-      if( isSessionRestart( message ) ) {
+      if( isSessionRestart( requestMessage ) ) {
         reinitializeUISession( request );
         reinitializeServiceStore();
       }
-      UrlParameters.merge( message );
-      Message outMessage = processMessage( message );
-      writeProtocolMessage( outMessage, response );
+      UrlParameters.merge( requestMessage );
+      ResponseMessage responseMessage = processMessage( requestMessage );
+      writeResponseMessage( responseMessage, response );
       markSessionStarted();
     }
   }
 
-  private Message readMessage( HttpServletRequest request ) {
+  private RequestMessage readRequestMessage( HttpServletRequest request ) {
     try {
       return new ClientMessage( JsonObject.readFrom( getReader( request ) ) );
     } catch( IOException ioe ) {
@@ -170,26 +171,26 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return new InputStreamReader( request.getInputStream(), encoding );
   }
 
-  private Message processMessage( Message inMessage ) {
-    return messageChainReference.get().handleMessage( inMessage );
+  private ResponseMessage processMessage( RequestMessage requestMessage ) {
+    return messageChainReference.get().handleMessage( requestMessage );
   }
 
-  private static boolean isRequestCounterValid( Message message ) {
-    return hasInitializeParameter( message ) || hasValidRequestCounter( message );
+  private static boolean isRequestCounterValid( RequestMessage requestMessage ) {
+    return hasInitializeParameter( requestMessage ) || hasValidRequestCounter( requestMessage );
   }
 
-  static boolean hasValidRequestCounter( Message message ) {
+  static boolean hasValidRequestCounter( RequestMessage requestMessage ) {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = message.getHead().get( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = requestMessage.getHead().get( PROP_REQUEST_COUNTER );
     if( sentRequestId == null ) {
       return currentRequestId == 0;
     }
     return currentRequestId == sentRequestId.asInt();
   }
 
-  private static boolean isDuplicateRequest( Message message ) {
+  private static boolean isDuplicateRequest( RequestMessage requestMessage ) {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = message.getHead().get( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = requestMessage.getHead().get( PROP_REQUEST_COUNTER );
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
   }
 
@@ -241,11 +242,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   /*
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
-  private static boolean isSessionRestart( Message message ) {
-    return isSessionStarted() && hasInitializeParameter( message );
+  private static boolean isSessionRestart( RequestMessage requestMessage ) {
+    return isSessionStarted() && hasInitializeParameter( requestMessage );
   }
 
-  private static boolean isSessionTimeout( Message message ) {
+  private static boolean isSessionTimeout( RequestMessage message ) {
     // Session is not initialized because we got a new HTTPSession
     return !isSessionStarted() && !hasInitializeParameter( message );
   }
@@ -258,12 +259,12 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return Boolean.TRUE.equals( getUISession().getAttribute( ATTR_SESSION_STARTED ) );
   }
 
-  private static boolean isSessionShutdown( Message message ) {
-    return JsonValue.TRUE.equals( message.getHead().get( SHUTDOWN ) );
+  private static boolean isSessionShutdown( RequestMessage requestMessage ) {
+    return JsonValue.TRUE.equals( requestMessage.getHead().get( SHUTDOWN ) );
   }
 
-  private static boolean hasInitializeParameter( Message message ) {
-    return JsonValue.TRUE.equals( message.getHead().get( RWT_INITIALIZE ) );
+  private static boolean hasInitializeParameter( RequestMessage requestMessage ) {
+    return JsonValue.TRUE.equals( requestMessage.getHead().get( RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders( ServletResponse response ) {
@@ -275,26 +276,27 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     new ProtocolMessageWriter().createMessage().toJson().writeTo( response.getWriter() );
   }
 
-  private static void writeProtocolMessage( Message message, ServletResponse response )
+  private static void writeResponseMessage( ResponseMessage responseMessage,
+                                            ServletResponse response )
     throws IOException
   {
-    bufferMessage( message );
-    message.toJson().writeTo( response.getWriter() );
+    bufferMessage( responseMessage );
+    responseMessage.toJson().writeTo( response.getWriter() );
   }
 
   private static void writeBufferedResponse( HttpServletResponse response ) throws IOException {
     getBufferedMessage().toJson().writeTo( response.getWriter() );
   }
 
-  private static void bufferMessage( Message message ) {
+  private static void bufferMessage( ResponseMessage responseMessage ) {
     UISession uiSession = getUISession();
     if( uiSession != null ) {
-      uiSession.setAttribute( ATTR_LAST_PROTOCOL_MESSAGE, message );
+      uiSession.setAttribute( ATTR_LAST_RESPONSE_MESSAGE, responseMessage );
     }
   }
 
-  private static Message getBufferedMessage() {
-    return ( Message )getUISession().getAttribute( ATTR_LAST_PROTOCOL_MESSAGE );
+  private static ResponseMessage getBufferedMessage() {
+    return ( ResponseMessage )getUISession().getAttribute( ATTR_LAST_RESPONSE_MESSAGE );
   }
 
 }

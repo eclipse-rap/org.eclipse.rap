@@ -10,11 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 
 
 /**
- * The handler chain that must process incoming messages.
+ * The filter chain that must process incoming messages.
  *
  * @noimplement This interface is not intended to be implemented by clients.
  */
@@ -26,6 +27,6 @@ public interface MessageFilterChain {
    * @param request the incoming message to process
    * @return the message to be sent to the client in response
    */
-  Message handleMessage( Message request );
+  ResponseMessage handleMessage( RequestMessage request );
 
 }

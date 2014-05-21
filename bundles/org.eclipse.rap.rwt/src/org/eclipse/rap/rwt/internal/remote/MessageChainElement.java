@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 
 
 public class MessageChainElement implements MessageFilterChain {
@@ -23,8 +24,8 @@ public class MessageChainElement implements MessageFilterChain {
     this.nextElement = nextElement;
   }
 
-  public Message handleMessage( Message message ) {
-    return filter.handleMessage( message, nextElement );
+  public ResponseMessage handleMessage( RequestMessage request ) {
+    return filter.handleMessage( request, nextElement );
   }
 
   public MessageChainElement remove( MessageFilter filter ) {

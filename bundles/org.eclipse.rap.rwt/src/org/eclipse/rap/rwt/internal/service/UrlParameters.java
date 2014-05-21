@@ -22,16 +22,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 
 
 public final class UrlParameters {
 
   public static final String PARAM_CONNECTION_ID = "cid";
 
-  static void merge( Message message ) {
-    if( hasInitializeParameter( message ) ) {
-      Map<String, String[]> parameters = getAll( message);
+  static void merge( RequestMessage requestMessage ) {
+    if( hasInitializeParameter( requestMessage ) ) {
+      Map<String, String[]> parameters = getAll( requestMessage);
       if( parameters != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
         WrappedRequest wrappedRequest = new WrappedRequest( request, parameters );
@@ -41,8 +41,8 @@ public final class UrlParameters {
     }
   }
 
-  private static Map<String, String[]> getAll( Message message ) {
-    JsonValue queryStringHeader = message.getHead().get( QUERY_STRING );
+  private static Map<String, String[]> getAll( RequestMessage requestMessage ) {
+    JsonValue queryStringHeader = requestMessage.getHead().get( QUERY_STRING );
     return queryStringHeader == null ? null : createParametersMap( queryStringHeader.asString() );
   }
 
@@ -75,8 +75,8 @@ public final class UrlParameters {
     return result;
   }
 
-  private static boolean hasInitializeParameter( Message message ) {
-    return JsonValue.TRUE.equals( message.getHead().get( RWT_INITIALIZE ) );
+  private static boolean hasInitializeParameter( RequestMessage requestMessage ) {
+    return JsonValue.TRUE.equals( requestMessage.getHead().get( RWT_INITIALIZE ) );
   }
 
   private UrlParameters() {

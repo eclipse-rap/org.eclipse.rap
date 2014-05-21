@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.Message;
+import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.TestResponseMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +38,7 @@ public class MessageChainReference_Test {
 
   @Test
   public void testHandleMessage_callsDefaultHandler() {
-    Message response = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response = reference.get().handleMessage( new TestMessage() );
 
     assertEquals( asList( "default" ), getLog( response ) );
   }
@@ -46,7 +48,7 @@ public class MessageChainReference_Test {
     reference.add( new LoggingFilter( "custom1" ) );
     reference.add( new LoggingFilter( "custom2" ) );
 
-    Message response = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response = reference.get().handleMessage( new TestMessage() );
 
     assertEquals( asList( "custom2", "custom1", "default" ), getLog( response ) );
   }
@@ -58,7 +60,7 @@ public class MessageChainReference_Test {
 
     reference.remove( filter );
 
-    Message response = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response = reference.get().handleMessage( new TestMessage() );
     assertEquals( asList( "default" ), getLog( response ) );
   }
 
@@ -71,7 +73,7 @@ public class MessageChainReference_Test {
 
     reference.remove( filter );
 
-    Message response = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response = reference.get().handleMessage( new TestMessage() );
     assertEquals( asList( "custom3", "custom1", "default" ), getLog( response ) );
   }
 
@@ -79,20 +81,20 @@ public class MessageChainReference_Test {
   public void testRemove_filterCanRemoveItself() {
     reference.add( new LoggingFilter( "custom" ) {
       @Override
-      public Message handleMessage( Message message, MessageFilterChain parent ) {
+      public ResponseMessage handleMessage( RequestMessage message, MessageFilterChain parent ) {
         reference.remove( this );
         return super.handleMessage( message, parent );
       }
     } );
 
-    Message response1 = reference.get().handleMessage( new TestMessage() );
-    Message response2 = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response1 = reference.get().handleMessage( new TestMessage() );
+    ResponseMessage response2 = reference.get().handleMessage( new TestMessage() );
 
     assertEquals( asList( "custom", "default" ), getLog( response1 ) );
     assertEquals( asList( "default" ), getLog( response2 ) );
   }
 
-  private static List<String> getLog( Message response ) {
+  private static List<String> getLog( ResponseMessage response ) {
     List<String> list = new ArrayList<String>();
     for( JsonValue element : response.getHead().get( "log" ).asArray() ) {
       list.add( element.asString() );
@@ -108,12 +110,18 @@ public class MessageChainReference_Test {
       this.name = name;
     }
 
-    public Message handleMessage( Message message, MessageFilterChain parent ) {
-      if( message.getHead().get( "log" ) == null ) {
-        message.getHead().add( "log", new JsonArray() );
+    public ResponseMessage handleMessage( RequestMessage request, MessageFilterChain chain )
+    {
+      if( request.getHead().get( "log" ) == null ) {
+        request.getHead().add( "log", new JsonArray() );
       }
-      message.getHead().get( "log" ).asArray().add( name );
-      return parent != null ? parent.handleMessage( message ) : message;
+      request.getHead().get( "log" ).asArray().add( name );
+      if( chain == null ) {
+        TestResponseMessage response = new TestResponseMessage();
+        response.getHead().add( "log", request.getHead().get( "log" ) );
+        return response;
+      }
+      return chain.handleMessage( request );
     }
 
   }
