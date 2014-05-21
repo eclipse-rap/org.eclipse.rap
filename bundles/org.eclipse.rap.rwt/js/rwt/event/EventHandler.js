@@ -100,7 +100,7 @@ rwt.event.EventHandler = {
   },
 
   getCaptureWidget : function() {
-    return this._captureWidget;
+    return this._captureWidget && this._captureWidget.getEnabled() ? this._captureWidget : null;
   },
 
   setFocusRoot : function( widget ) {

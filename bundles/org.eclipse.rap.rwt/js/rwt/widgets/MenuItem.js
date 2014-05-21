@@ -100,7 +100,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     setAccelerator : function( value ) {
       var acc = null;
       if( value ) {
-        // assumign a tab is rendered as four spaces
+        // assuming a tab is rendered as four spaces
         acc = rwt.util.Encoding.escapeText( value );
         acc = rwt.util.Encoding.replaceWhiteSpaces( "    " + acc );
       }

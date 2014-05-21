@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ rwt.qx.Class.define("rwt.html.EventRegistration",
     /**
      * Assign a function to an event.
      *
-     * @type static
+     * @type function
      * @param vElement {Element} DOM Element
      * @param vType {String} Name of the event
      * @param vFunction {Function} The pointer to the function to assign
@@ -46,7 +46,7 @@ rwt.qx.Class.define("rwt.html.EventRegistration",
     /**
      * Unassign a function from an event.
      *
-     * @type static
+     * @type function
      * @param vElement {Element} DOM Element
      * @param vType {String} Name of the event
      * @param vFunction {Function} The pointer to the function to assign

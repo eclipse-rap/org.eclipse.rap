@@ -250,7 +250,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         if( this.hasSubmenu( newHover ) && ( this._openItem != newHover ) ) {
           this._openTimer.setEnabled( true );
         }
-        // handle close tiemr
+        // handle close timer
         if( this._openItem ) {
           if( this._openItem == newHover || newHover == null ) {
             this._closeTimer.setEnabled( false );

@@ -183,8 +183,8 @@ rwt.qx.Class.define( "rwt.qx.Object", {
     /**
      * Call the same method of the super class.
      *
-     * @param args {arguments} the arguments variable of the calling method
-     * @param varags {var} variable number of arguments passed to the overwritten function
+     * @param args {*} the arguments variable of the calling method
+     * @param varags {...*} variable number of arguments passed to the overwritten function
      * @return {var} the return value of the method of the base class.
      */
     base : function( args, varags ) {
