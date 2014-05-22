@@ -281,17 +281,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !config.fullSelection && config.rowTemplate ) {
         return false;
       }
-      var result =    this._overlayStyleMap.background !== "undefined"
-                   || this._overlayStyleMap.backgroundImage !== null
-                   || this._overlayStyleMap.backgroundGradient !== null;
-      return result;
+      return    this._overlayStyleMap.background !== "undefined"
+             || this._overlayStyleMap.backgroundImage !== null
+             || this._overlayStyleMap.backgroundGradient !== null;
     },
 
     _renderIndention : function( item, config, hoverTarget ) {
       var expandSymbol = this._getExpandSymbol( item, config, hoverTarget );
       if( expandSymbol != null ) {
-        var element =  this._addIndentSymbol( item.getLevel(), config, expandSymbol );
-        this._expandElement = element;
+        this._expandElement = this._addIndentSymbol( item.getLevel(), config, expandSymbol );
       } else {
         this._expandElement = null;
       }
@@ -354,7 +352,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = null;
       var nextLevelOffset = ( level + 1 ) * config.indentionWidth;
       var cellWidth = config.itemWidth[ config.treeColumn ];
-      if( nextLevelOffset <= cellWidth ) {
+      if( nextLevelOffset <= cellWidth || config.rowTemplate ) {
         var offset = level * config.indentionWidth;
         var height = this.getHeight();
         var width = nextLevelOffset - offset;

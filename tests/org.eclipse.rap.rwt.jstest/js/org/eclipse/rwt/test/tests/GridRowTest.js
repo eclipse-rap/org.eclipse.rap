@@ -21,7 +21,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
   extend : rwt.qx.Object,
 
-  // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the
+  // TODO [tb] : Since GridRow has been refactored to work without reference to Tree, the
   //             tests could also be refactored to not use the an tree instance anymore.
   members : {
 
@@ -2658,6 +2658,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
     testRenderTemplate_RenderIndentSymbol : function() {
       tree.setTreeColumn( 0 );
+      var itemParent = this._createItem( tree );
+      var item = this._createItem( itemParent );
+      tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
+
+      row.renderItem( itemParent, tree._config, false, null );
+
+      var url = TestUtil.getCssBackgroundImage( row.getElement().childNodes[ 0 ] );
+      assertTrue( url.indexOf( "single-collapsed.gif" ) !== -1 );
+    },
+
+    testRenderTemplate_RenderIndentSymbolWithColumnWidthZero : function() {
+      tree.setTreeColumn( 0 );
+      tree.setItemMetrics( 0, 0,0, 0, 0, 0, 0 );
       var itemParent = this._createItem( tree );
       var item = this._createItem( itemParent );
       tree.getRenderConfig().rowTemplate = mockTemplate( [ 0, "text", 10, 20 ] );
