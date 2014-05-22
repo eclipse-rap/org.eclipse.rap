@@ -121,6 +121,7 @@ rwt.remote.HandlerUtil = {
     "data" : function( target, value ) {
       var map = rwt.remote.HandlerUtil.getServerData( target );
       rwt.util.Objects.mergeWith( map, value );
+      target.dispatchSimpleEvent( "dataChanged" );
     },
     "children" : function( widget, value ) {
       if( value !== null ) {
@@ -366,7 +367,7 @@ rwt.remote.HandlerUtil = {
 
   /**
    * @private
-   * @class RWT Scripting analoge to org.eclipse.swt.widgets.Control. All controls given by
+   * @class RWT Scripting analog to org.eclipse.swt.widgets.Control. All controls given by
    * {@link rap.getObject} are instances of this type, even if their specific subtype is not
    * documented.
    * @name Control
@@ -406,7 +407,7 @@ rwt.remote.HandlerUtil = {
      *   properties if the name was registered with WidgetUtil.registerDataKeys.
      * </p>
      * @param {string} property the name of the property
-     * @param {var} value the new value for the property
+     * @param {*} value the new value for the property
      * @see Control#getData
      */
     setData : function( property, value ) {
@@ -416,6 +417,7 @@ rwt.remote.HandlerUtil = {
       }
       var data = rwt.remote.HandlerUtil.getServerData( this );
       data[ property ] = value;
+      this.dispatchSimpleEvent( "dataChanged" );
     },
 
     /**
@@ -426,7 +428,7 @@ rwt.remote.HandlerUtil = {
      *   property name was registered with WidgetUtil.registerDataKeys.
      * </p>
      * @param {string} property the name of the property
-     * @return {var} the value
+     * @return {*} the value
      * @see Control#setData
      */
     getData : function( property ) {

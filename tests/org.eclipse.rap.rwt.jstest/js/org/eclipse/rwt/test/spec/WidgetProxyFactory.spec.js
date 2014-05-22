@@ -108,6 +108,16 @@ describe( "WidgetProxyFactory", function() {
       expect( widgetProxy2.getData( "myKey" ) ).toBe( 24 );
     } );
 
+    it( "setData fires dataChanged event on original", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var listener = jasmine.createSpy( "listener" );
+      text.addEventListener( "dataChanged", listener );
+
+      widgetProxy.setData( "myKey", 24 );
+
+      expect( listener ).toHaveBeenCalled();
+    } );
+
     describe( "setData", function() {
 
       it( "throws exception for too many arguments", function() {

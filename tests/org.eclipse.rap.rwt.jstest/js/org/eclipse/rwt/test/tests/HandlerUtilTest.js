@@ -161,17 +161,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       rwt.remote.ObjectRegistry.add( "c", child );
       rwt.remote.HandlerUtil.setParent( child, "w" );
       rwt.remote.HandlerUtil.setParent( widget, "p" );
-
       rwt.remote.HandlerUtil.getWidgetDestructor()( widget );
       TestUtil.flush();
 
       assertTrue( widget.isDisposed() );
+
       assertTrue( child.isDisposed() );
       assertEquals( [], rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
       parent.destroy();
     },
 
-    testDataHandler : function() {
+    testDataHandler_setsServerData : function() {
       var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "data" );
       var widget = new rwt.widgets.Composite();
 
@@ -180,6 +180,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var map = rwt.remote.HandlerUtil.getServerData( widget );
       assertEquals( "bar", map.foo );
       assertEquals( "two", map.one );
+      widget.destroy();
+    },
+
+    testDataHandler_setsFiresChangeEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "data" );
+      var widget = new rwt.widgets.Composite();
+      var logger = TestUtil.getLogger();
+      widget.addEventListener( "dataChanged", logger.log );
+
+      handler( widget, { "foo" : "bar", "one" : "two" } );
+
+      assertEquals( 1, logger.getLog().length );
       widget.destroy();
     },
 
