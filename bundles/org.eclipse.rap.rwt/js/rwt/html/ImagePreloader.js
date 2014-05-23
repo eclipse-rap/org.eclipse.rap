@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -213,17 +213,18 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
      * @type member
      * @return {void}
      */
-    __onload : function()
-    {
-      if (this._isLoaded || this._isErroneous) {
-        return;
-      }
-
-      this._isLoaded = true;
-      this._isErroneous = false;
-
-      if (this.hasEventListeners("load")) {
-        this.dispatchEvent(new rwt.event.Event("load"), true);
+    __onload : function() {
+      try {
+        if( this._isLoaded || this._isErroneous ) {
+          return;
+        }
+        this._isLoaded = true;
+        this._isErroneous = false;
+        if( this.hasEventListeners( "load" ) ) {
+          this.dispatchEvent( new rwt.event.Event( "load" ), true );
+        }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -234,17 +235,18 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
      * @type member
      * @return {void}
      */
-    __onerror : function()
-    {
-      if (this._isLoaded || this._isErroneous) {
-        return;
-      }
-
-      this._isLoaded = false;
-      this._isErroneous = true;
-
-      if (this.hasEventListeners("error")) {
-        this.dispatchEvent(new rwt.event.Event("error"), true);
+    __onerror : function() {
+      try {
+        if( this._isLoaded || this._isErroneous ) {
+          return;
+        }
+        this._isLoaded = false;
+        this._isErroneous = true;
+        if( this.hasEventListeners( "error" ) ) {
+          this.dispatchEvent( new rwt.event.Event( "error" ), true );
+        }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     }
   },

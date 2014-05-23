@@ -1237,7 +1237,11 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @return {void}
      */
     _onwindowmousedown : function(e) {
-      this.focus();
+      try {
+        this.focus();
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
 

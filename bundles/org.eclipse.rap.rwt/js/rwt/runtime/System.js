@@ -36,9 +36,8 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
       rwt.graphics.GraphicsUtil.init();
       this._applyPatches();
-      var eventHandler = rwt.event.EventHandler;
-      eventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
-      eventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
+      rwt.event.EventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
+      rwt.event.EventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
     }
   },
 
@@ -86,12 +85,16 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       return this._startupTime;
     },
 
-    _onload : function(e) {
-      if( !this._onloadDone ) {
-        this._onloadDone = true;
-        rwt.widgets.base.ClientDocument.getInstance();
-        rwt.runtime.MobileWebkitSupport.init();
-        rwt.client.Timer.once( this._preload, this, 0 );
+    _onload : function( event ) {
+      try {
+        if( !this._onloadDone ) {
+          this._onloadDone = true;
+          rwt.widgets.base.ClientDocument.getInstance();
+          rwt.runtime.MobileWebkitSupport.init();
+          rwt.client.Timer.once( this._preload, this, 0 );
+        }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -122,19 +125,27 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       this.__postloader = null;
     },
 
-    _onbeforeunload : function( e ) {
-      var event = new rwt.event.DomEvent( "beforeunload", e, window, this );
-      this.dispatchEvent( event, false );
-      var msg = event.getUserData( "returnValue" );
-      event.dispose();
-      return msg !== null ? msg : undefined;
+    _onbeforeunload : function( event ) {
+      try {
+        var domEvent = new rwt.event.DomEvent( "beforeunload", event, window, this );
+        this.dispatchEvent( domEvent, false );
+        var msg = domEvent.getUserData( "returnValue" );
+        domEvent.dispose();
+        return msg !== null ? msg : undefined;
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
-    _onunload : function( e ) {
-      this.createDispatchEvent( "unload" );
-      rwt.event.EventHandler.detachEvents();
-      rwt.event.EventHandler.cleanUp();
-      rwt.qx.Object.dispose( true );
+    _onunload : function( event ) {
+      try {
+        this.createDispatchEvent( "unload" );
+        rwt.event.EventHandler.detachEvents();
+        rwt.event.EventHandler.cleanUp();
+        rwt.qx.Object.dispose( true );
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
     _isBrowserSupported : function() {

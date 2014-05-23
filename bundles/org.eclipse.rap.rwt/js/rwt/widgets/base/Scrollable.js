@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -254,17 +254,21 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     },
 
     _onscroll : function( evt ) {
-      var positionChanged =    this._ignoreScrollTo[ 0 ] !== this._clientArea.getScrollLeft()
-                            || this._ignoreScrollTo[ 1 ] !== this._clientArea.getScrollTop();
-      if( !this._internalChangeFlag && positionChanged ) {
-        this._ignoreScrollTo = [ -1, -1 ];
-        rwt.event.EventHandlerUtil.stopDomEvent( evt );
-        var blockH = this._blockScrolling || !this._horzScrollBar.getDisplay();
-        var blockV = this._blockScrolling || !this._vertScrollBar.getDisplay();
-        this._internalChangeFlag = true;
-        this._syncClientArea( blockH, blockV );
-        this._internalChangeFlag = false;
-        this._syncScrollBars();
+      try {
+        var positionChanged =    this._ignoreScrollTo[ 0 ] !== this._clientArea.getScrollLeft()
+                              || this._ignoreScrollTo[ 1 ] !== this._clientArea.getScrollTop();
+        if( !this._internalChangeFlag && positionChanged ) {
+          this._ignoreScrollTo = [ -1, -1 ];
+          rwt.event.EventHandlerUtil.stopDomEvent( evt );
+          var blockH = this._blockScrolling || !this._horzScrollBar.getDisplay();
+          var blockV = this._blockScrolling || !this._vertScrollBar.getDisplay();
+          this._internalChangeFlag = true;
+          this._syncClientArea( blockH, blockV );
+          this._internalChangeFlag = false;
+          this._syncScrollBars();
+        }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

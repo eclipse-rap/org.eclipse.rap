@@ -115,9 +115,13 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     },
 
     _onValueChange : function( event ) {
-      var fileNames = this._formatFileNames( this._getFileNames() );
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "fileNames", fileNames );
-      this._notifySelected();
+      try {
+        var fileNames = this._formatFileNames( this._getFileNames() );
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "fileNames", fileNames );
+        this._notifySelected();
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
     _getFileNames : function() {

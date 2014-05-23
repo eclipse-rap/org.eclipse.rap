@@ -178,30 +178,42 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     },
 
     _onMouseDown : function( evt ) {
-      if( this.isEnabled() && this._isLeftMouseButtonPressed( evt ) ) {
-        var target = this._getEventTarget( evt );
-        var index = this._getLinkIndex( target );
-        this._setFocusedLink( index );
-        if( this._readyToSendChanges ) {
-          // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
-          this._readyToSendChanges = false;
-          rwt.client.Timer.once( function() {
-            this._sendChanges( index );
-          }, this, rwt.remote.EventUtil.DOUBLE_CLICK_TIME );
+      try {
+        if( this.isEnabled() && this._isLeftMouseButtonPressed( evt ) ) {
+          var target = this._getEventTarget( evt );
+          var index = this._getLinkIndex( target );
+          this._setFocusedLink( index );
+          if( this._readyToSendChanges ) {
+            // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
+            this._readyToSendChanges = false;
+            rwt.client.Timer.once( function() {
+              this._sendChanges( index );
+            }, this, rwt.remote.EventUtil.DOUBLE_CLICK_TIME );
+          }
         }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
     _onMouseOver : function( evt ) {
-      var target = this._getEventTarget( evt );
-      var style = this._getHyperlinkStyle( true );
-      rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      try {
+        var target = this._getEventTarget( evt );
+        var style = this._getHyperlinkStyle( true );
+        rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
     _onMouseOut : function( evt ) {
-      var target = this._getEventTarget( evt );
-      var style = this._getHyperlinkStyle( false );
-      rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      try {
+        var target = this._getEventTarget( evt );
+        var style = this._getHyperlinkStyle( false );
+        rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
+      }
     },
 
     _isLeftMouseButtonPressed : function( evt ) {
@@ -219,10 +231,14 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     },
 
     _onKeyDown : function( evt ) {
-      if( this.isEnabled() && evt.keyCode === 13 ) {
-        var target = this._getEventTarget( evt );
-        var index = this._getLinkIndex( target );
-        this._sendChanges( index );
+      try {
+        if( this.isEnabled() && evt.keyCode === 13 ) {
+          var target = this._getEventTarget( evt );
+          var index = this._getLinkIndex( target );
+          this._sendChanges( index );
+        }
+      } catch( ex ) {
+        rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
