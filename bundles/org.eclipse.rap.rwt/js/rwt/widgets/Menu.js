@@ -407,7 +407,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       this._openItem = item;
       // in theory an item could have lost it's assigned menu (by eval-code)
       // since the timer has been started/the item opend, so check for it
-      if( item && item.getMenu() ) {
+      if( item && item.getMenu() && item.getEnabled() ) {
         var subMenu = item.getMenu();
         item.setSubMenuOpen( true );
         subMenu.setOpener( item );

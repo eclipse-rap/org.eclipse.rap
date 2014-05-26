@@ -743,6 +743,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       subMenu.destroy();
     },
 
+    testDoesNotOpenSubmenuByMouseOver_onDisabledItem : function() {
+      createSimpleMenu();
+      var subMenu = new Menu();
+      menuItem.setSubMenu( subMenu );
+      menuItem.setEnabled( false );
+      var subMenuItem = new MenuItem( "push" );
+      subMenu.addMenuItemAt( subMenuItem, 0 );
+      rwt.remote.ObjectRegistry.add( "w7", subMenu, menuHandler );
+      TestUtil.flush();
+
+      TestUtil.mouseOver( menuItem );
+      TestUtil.forceInterval( menu._openTimer );
+      TestUtil.flush();
+
+      assertFalse( subMenu.isSeeable() );
+      subMenu.destroy();
+    },
+
     testCloseSubmenuByMouseOverSiblingItem : function() {
       createSimpleMenu();
       var subMenu = new Menu();

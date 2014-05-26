@@ -550,6 +550,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuBarTest", {
 
       assertTrue( control.getFocused() );
       control.destroy();
+    },
+
+    testClickOnDisabledItemDoesNotOpenMenu : function() {
+      createMenuBar( "push" );
+      menuBarItem.setEnabled( false );
+      TestUtil.flush();
+
+      TestUtil.click( menuBarItem );
+      TestUtil.flush();
+
+      assertFalse( menu.isSeeable() );
     }
 
   }
