@@ -744,7 +744,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     testDoesNotOpenSubmenuByMouseOver_onDisabledItem : function() {
-      createSimpleMenu();
+      openSimpleMenu();
       var subMenu = new Menu();
       menuItem.setSubMenu( subMenu );
       menuItem.setEnabled( false );

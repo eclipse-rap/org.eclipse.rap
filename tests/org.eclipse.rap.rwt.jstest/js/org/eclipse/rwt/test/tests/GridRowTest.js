@@ -510,7 +510,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 3, parseInt( node.style.zIndex, 10 ) );
       assertEquals( "absolute", node.style.position );
       assertEquals( "nowrap", node.style.whiteSpace );
-      assertEquals( "inherit", node.style.textDecoration );
+      assertTrue( "inherit" === node.style.textDecoration || "" === node.style.textDecoration );
       assertEquals( "hidden", node.style.overflow );
       if( rwt.client.Client.isNewMshtml() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
