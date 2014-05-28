@@ -756,10 +756,10 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     },
 
     testSetColumns_separatesItemsByTabulator : function() {
-      dropdown.setColumns( [ 30, 40 ] );
       var tab = String.fromCharCode( 9 );
-
       dropdown.setItems( [ "foo" + tab + "bar" ] );
+
+      dropdown.setColumns( [ 30, 40 ] );
       showDropDown();
 
       var gridItem = grid.getRootItem().getChild( 0 );
@@ -773,6 +773,18 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       dropdown.setItems( [ "a", "b", "c" ] );
 
       assertEquals( 3, dropdown.getItemCount() );
+    },
+
+    testSetItems_separatesItemsByTabulator : function() {
+      var tab = String.fromCharCode( 9 );
+      dropdown.setColumns( [ 30, 40 ] );
+
+      dropdown.setItems( [ "foo" + tab + "bar" ] );
+      showDropDown();
+
+      var gridItem = grid.getRootItem().getChild( 0 );
+      assertEquals( "foo", gridItem.getText( 0 ) );
+      assertEquals( "bar", gridItem.getText( 1 ) );
     },
 
     testGetVisible_returnsFalse : function() {

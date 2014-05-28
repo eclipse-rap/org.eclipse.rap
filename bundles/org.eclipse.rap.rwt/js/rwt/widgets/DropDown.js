@@ -230,6 +230,7 @@
     setColumns : function( columns ) {
       this._.columns = columns;
       this._.grid.setColumnCount( columns.length );
+      renderGridItems.call( this );
       if( this._.grid.isSeeable() ) {
         renderLayout.call( this );
       }
