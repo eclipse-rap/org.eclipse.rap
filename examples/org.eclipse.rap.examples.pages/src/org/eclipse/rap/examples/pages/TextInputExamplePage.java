@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,21 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.pages.internal.Countries;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.widgets.DropDown;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,7 +36,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
@@ -36,6 +47,8 @@ public class TextInputExamplePage implements IExamplePage {
 
   protected Image errorImage;
   protected Image warningImage;
+  private String[] currentTexts = Countries.VALUES;
+  private String userText = "";
 
   public void createControl( Composite parent ) {
     createImages();
@@ -68,7 +81,7 @@ public class TextInputExamplePage implements IExamplePage {
     final Text lastNameText = createLastNameField( composite );
     final Text passwordText = createPasswordField( composite );
     final Spinner spinner = createSpinner( composite );
-    final Combo countryCombo = createCountryCombo( composite );
+    final Text countryDropDown = createCountryDropDown( composite );
     final Combo classCombo = createReadOnlyCombo( composite );
     final DateTime dateTime = createDateField( composite );
     final Button enabledCheckbox = new Button( composite, SWT.CHECK );
@@ -82,7 +95,7 @@ public class TextInputExamplePage implements IExamplePage {
         lastNameText.setEnabled( editable );
         passwordText.setEnabled( editable );
         spinner.setEnabled( editable );
-        countryCombo.setEnabled( editable );
+        countryDropDown.setEnabled( editable );
         classCombo.setEnabled( editable );
         dateTime.setEnabled( editable );
       }
@@ -181,14 +194,111 @@ public class TextInputExamplePage implements IExamplePage {
     return spinner;
   }
 
-  private Combo createCountryCombo( Composite formComp ) {
+  private Text createCountryDropDown( Composite formComp ) {
     new Label( formComp, SWT.NONE ).setText( "Country:" );
-    Combo combo = new Combo( formComp, SWT.BORDER );
-    String[] countries = new String[] { "Germany", "Canada", "USA", "Bulgaria" };
-    combo.setItems( countries );
-    combo.setLayoutData( ExampleUtil.createHorzFillData() );
-    combo.select( 0 );
-    return combo;
+    Text text = new Text( formComp, SWT.BORDER );
+    text.setLayoutData( ExampleUtil.createHorzFillData() );
+    DropDown dropdown = new DropDown( text );
+    dropdown.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    dropdown.setItems( format( currentTexts, "" ) );
+    addModifyListener( text, dropdown );
+    addSelectionListener( text, dropdown );
+    addDefaultSelectionListener( text, dropdown );
+    addFocusListener( text, dropdown );
+    text.setText( "Germany" );
+    return text;
+  }
+
+  private void addModifyListener( final Text text, final DropDown dropdown ) {
+    text.addListener( SWT.Modify, new Listener() {
+      public void handleEvent( Event event ) {
+        if( !Boolean.TRUE.equals( text.getData( "selecting" ) ) ) {
+          userText = text.getText();
+          if( userText.length() == 0 ) {
+            currentTexts = Countries.VALUES;
+            dropdown.setItems( Countries.VALUES );
+          } else {
+            String searchStr = userText.toLowerCase();
+            currentTexts = filter( Countries.VALUES, searchStr, 10 );
+            dropdown.setItems( format( currentTexts, searchStr ) );
+            if( currentTexts.length > 10 ) {
+              dropdown.setSelectionIndex( -1 );
+            } else if( currentTexts.length == 1 ) {
+              dropdown.setSelectionIndex( 0 );
+            }
+          }
+          dropdown.setVisible( true );
+        }
+      }
+    } );
+  }
+
+  private void addFocusListener( final Text text, final DropDown dropdown ) {
+    text.addFocusListener( new FocusListener() {
+      public void focusGained( FocusEvent event ) {
+        dropdown.setVisible( true );
+      }
+      public void focusLost( FocusEvent event ) {
+        dropdown.setVisible( false );
+        if( !Arrays.asList( Countries.VALUES ).contains( userText ) ) {
+          currentTexts = Countries.VALUES;
+          dropdown.setItems( Countries.VALUES );
+          text.setData( "selecting", Boolean.TRUE );
+          text.setText( "" );
+          text.setData( "selecting", Boolean.FALSE );
+        }
+      }
+    } );
+  }
+
+  private void addSelectionListener( final Text text, final DropDown dropdown ) {
+    dropdown.addListener( SWT.Selection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( event.index != -1 ) {
+          text.setData( "selecting", Boolean.TRUE );
+          text.setText( currentTexts[ event.index ] );
+          text.setData( "selecting", Boolean.FALSE );
+          text.selectAll();
+        } else {
+          text.setText( userText );
+          text.setSelection( userText.length(), userText.length() );
+          text.setFocus();
+        }
+      }
+    } );
+  }
+
+  private void addDefaultSelectionListener( final Text text, final DropDown dropdown ) {
+    dropdown.addListener( SWT.DefaultSelection, new Listener() {
+      public void handleEvent( Event event ) {
+        if( event.index != -1 ) {
+          text.setText( currentTexts[ event.index ] );
+          text.setSelection( event.text.length() );
+          dropdown.setVisible( false );
+        }
+      }
+    } );
+  }
+
+  private static String[] filter( String[] values, String text, int limit ) {
+    List<String> result = new ArrayList<String>( limit );
+    for( int i = 0; result.size() < limit && i < values.length; i++ ) {
+      String item = values[ i ];
+      if( item.toLowerCase().startsWith( text ) ) {
+        result.add( item );
+      }
+    }
+    return result.toArray( new String[ result.size() ] );
+  }
+
+  private static String[] format( String[] values, String text ) {
+    String[] result = new String[ values.length ];
+    for( int i = 0; i < values.length; i++ ) {
+      String item = values[ i ];
+      int length = text.length();
+      result[ i ] = "<b>" + item.substring( 0, length ) + "</b>" + item.substring( length );
+    }
+    return result;
   }
 
   private Combo createReadOnlyCombo( Composite formComp ) {
