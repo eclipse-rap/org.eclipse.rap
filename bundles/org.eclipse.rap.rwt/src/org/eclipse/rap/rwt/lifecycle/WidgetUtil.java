@@ -65,15 +65,21 @@ public final class WidgetUtil {
    * A custom widget id must be unique within the user session. It is the
    * clients' responsibility to choose a unique id. Assigning an id that is used
    * by another widget will lead to indeterministic behavior.
-   * <p>
    * </p>
+   * <p>
    * A custom widget id must only contain characters that are valid according to
    * the <a href="http://www.w3.org/TR/html401/types.html#type-cdata">W3C
    * recommendation for id and name attributes</a>. </p>
+   * </p>
    *
    * @see Widget#setData(String,Object)
    * @see #getId(Widget)
+   * @deprecated For UI tests, use the web client JavaScript API to set HTML attributes that can
+   * be used to identify widgets. Details can be found in the Developers Guide Chapter "Scripting",
+   * section "Widget HTML".
+   *
    */
+  @Deprecated
   public static final String CUSTOM_WIDGET_ID
     = org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.CUSTOM_WIDGET_ID;
 
