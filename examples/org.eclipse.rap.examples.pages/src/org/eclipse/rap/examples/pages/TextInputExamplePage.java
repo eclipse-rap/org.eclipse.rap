@@ -47,8 +47,8 @@ public class TextInputExamplePage implements IExamplePage {
 
   protected Image errorImage;
   protected Image warningImage;
-  private String[] currentTexts = Countries.VALUES;
-  private String userText = "";
+  private String userText = "Germany";
+  private String[] currentTexts = { "Germany" };
 
   public void createControl( Composite parent ) {
     createImages();
@@ -198,14 +198,15 @@ public class TextInputExamplePage implements IExamplePage {
     new Label( formComp, SWT.NONE ).setText( "Country:" );
     Text text = new Text( formComp, SWT.BORDER );
     text.setLayoutData( ExampleUtil.createHorzFillData() );
+    text.setText( userText );
     DropDown dropdown = new DropDown( text );
     dropdown.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    dropdown.setItems( format( currentTexts, "" ) );
+    dropdown.setItems( currentTexts );
+    dropdown.setSelectionIndex( 0 );
     addModifyListener( text, dropdown );
     addSelectionListener( text, dropdown );
     addDefaultSelectionListener( text, dropdown );
     addFocusListener( text, dropdown );
-    text.setText( "Germany" );
     return text;
   }
 
