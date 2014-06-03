@@ -173,6 +173,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       assertEquals( "pointer", style.cursor );
       assertEquals( [0, 0, 255], rwt.util.Colors.stringToRgb( style.color ) );
       link.destroy();
+    },
+
+    // bug 436494
+    testHyperlinkElementDoesNotChangeAfterAppearsAgain : function() {
+      var link = new rwt.widgets.Link();
+      link.addToDocument();
+      link.addLink( "foo", 0 );
+      link.applyText();
+      TestUtil.flush();
+      var lastChild = link._getTargetNode().lastChild;
+
+      link.hide();
+      link.show();
+
+      assertTrue( lastChild === link._getTargetNode().lastChild );
+      link.destroy();
     }
 
   }

@@ -27,7 +27,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     this.__onMouseOver = rwt.util.Functions.bindEvent( this._onMouseOver, this );
     this.__onMouseOut = rwt.util.Functions.bindEvent( this._onMouseOut, this );
     this.__onKeyDown = rwt.util.Functions.bindEvent( this._onKeyDown, this );
-    this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "create", this._onCreate, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     this.addEventListener( "keypress", this._onKeyPress );
     this.addEventListener( "focusout", this._onFocusOut );
@@ -43,7 +43,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
 
   members : {
 
-    _onAppear : function( evt ) {
+    _onCreate : function( evt ) {
       this._renderText();
     },
 
