@@ -68,8 +68,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testSupportsFileDrop : function() {
-      var expected = typeof window.FormData === "function";
-      assertIdentical( expected, rwt.client.Client.supportsFileDrop() );
+      assertTrue( typeof rwt.client.Client.supportsFileDrop() === "boolean" );
     },
 
     testLocale : function() {

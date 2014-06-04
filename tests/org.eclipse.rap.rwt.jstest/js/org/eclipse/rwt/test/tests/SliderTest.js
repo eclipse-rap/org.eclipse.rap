@@ -547,6 +547,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       slider.destroy();
     },
 
+    // NOTE: This test may fail if there the document is too small, like on an a tablet.
+    // Changing the orientation can help.
     testClickLineVertical : function() {
       var slider = this._createSlider( false );
       slider.setSelection( 2 );

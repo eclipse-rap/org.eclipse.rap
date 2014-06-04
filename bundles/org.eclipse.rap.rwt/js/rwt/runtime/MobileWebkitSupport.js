@@ -132,13 +132,15 @@ rwt.runtime.MobileWebkitSupport = {
       target.addEventListener( "touchcancel", this.__onTouchEvent, false );
       target.addEventListener( "deviceorientation", this.__onOrientationEvent, false );
     } else {
+      // older iOs versions didn't recognize touch listener registered by AddEventListener:
       target.ontouchstart = this.__onTouchEvent;
       target.ontouchmove = this.__onTouchEvent;
       target.ontouchend = this.__onTouchEvent;
       target.ontouchcancel = this.__onTouchEvent;
-      target.ongesturestart = this.__onGestureEvent;
-      target.ongesturechange = this.__onGestureEvent;
-      target.ongestureend = this.__onGestureEvent;
+      // on new iOS versions on the "ongestureXYZ" setter no longer works
+      target.addEventListener( "gesturestart", this.__onGestureEvent );
+      target.addEventListener( "gesturechange", this.__onGestureEvent );
+      target.addEventListener( "gestureend", this.__onGestureEvent );
       target.onorientationchange = this.__onOrientationEvent;
     }
   },
@@ -156,9 +158,9 @@ rwt.runtime.MobileWebkitSupport = {
       target.ontouchmove = null;
       target.ontouchend = null;
       target.ontouchcancel = null;
-      target.ongesturestart = null;
-      target.ongesturechange = null;
-      target.ongestureend = null;
+      target.removeEventListener( "gesturestart", this.__onGestureEvent );
+      target.removeEventListener( "gesturechange", this.__onGestureEvent );
+      target.removeEventListener( "gestureend", this.__onGestureEvent );
       target.onorientationchange = null;
     }
   },

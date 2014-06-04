@@ -17,6 +17,8 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
 var ObjectManager = rwt.remote.ObjectRegistry;
 
+var shell;
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
   extend : rwt.qx.Object,
@@ -49,6 +51,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
     TARGETENGINE : [ "webkit" ],
     TARGETPLATFORM : [ "ios", "android" ],
+
+    tearDown : function() {
+      if( shell && !shell.isDisposed() ) {
+        shell.destroy();
+      }
+      shell = null;
+    },
 
     ///////////////
     // Test helpers
@@ -180,9 +189,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         div.ontouchmove = logger;
         div.ontouchend = logger;
         div.ontouchcancel = logger;
-        div.ongesturestart = logger;
-        div.ongesturechange = logger;
-        div.ongestureend = logger;
+        div.addEventListener( "gesturestart", logger, false );
+        div.addEventListener( "gesturechange", logger, false );
+        div.addEventListener( "gestureend", logger, false );
         this.gesture( div, "gesturestart" );
         this.gesture( div, "gesturechange" );
         this.gesture( div, "gestureend" );
@@ -1448,7 +1457,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
 
     _createGridByProtocol : function( inScrolledComposite ) {
-      TestUtil.createShellByProtocol( "w2" );
+      shell = TestUtil.createShellByProtocol( "w2" );
       var parentId = "w2";
       if( inScrolledComposite ) {
         parentId = "w5";

@@ -287,6 +287,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       spinner.setSpace( 0, 60, 5, 30 );
       TestUtil.flush();
       spinner.focus();
+      // ensure caret position on iOs:
+      spinner._textfield._setSelectionStart( 0 );
 
       var domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "-" );
       assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
