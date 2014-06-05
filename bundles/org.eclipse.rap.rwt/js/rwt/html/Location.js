@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -77,46 +77,22 @@ rwt.qx.Class.define("rwt.html.Location",
      * @param elem {Element} DOM element to query
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> scroll offsets
      */
-    __computeScroll : function(elem)
-    {
+    __computeScroll : function( elem ) {
       var left = 0, top = 0;
-
-      // Use faster getBoundingClientRect() if available
-      // Hint: The viewport workaround here only needs to be applied for
-      // MSHTML and gecko clients currently.
-      if (elem.getBoundingClientRect)
-      {
-        // Find window
-        var win = rwt.html.Nodes.getWindow(elem);
-
-        // Reduce by viewport scrolling. getBoundingClientRect returns the
-        // location of the element in relation to the viewport which includes
-        // its scrolling, except in mobile webkit
-        if( !rwt.client.Client.isMobileSafari() ) {
-          left -= rwt.html.Viewport.getScrollLeft(win);
-          top -= rwt.html.Viewport.getScrollTop(win);
-        }
-      }
-      else
-      {
-        // Find body element
-        var body = rwt.html.Nodes.getDocument(elem).body;
-
-        // Only the parents are influencing the scroll position
+      if( elem.getBoundingClientRect ) {
+        var win = rwt.html.Nodes.getWindow( elem );
+        // getBoundingClientRect works in relation to the viewport, not - as desired - the document
+        left -= rwt.html.Viewport.getScrollLeft( win );
+        top -= rwt.html.Viewport.getScrollTop( win );
+      } else {
+        var body = rwt.html.Nodes.getDocument( elem ).body;
         elem = elem.parentNode;
-
-        // Get scroll offsets
-        // stop at the body => the body scroll position is irrelevant
-        while (elem && elem != body)
-        {
+        while( elem && elem != body ) {
           left += elem.scrollLeft;
           top += elem.scrollTop;
-
-          // One level up (children hierarchy)
           elem = elem.parentNode;
         }
       }
-
       return {
         left : Math.ceil( left ),
         top : Math.ceil( top )
