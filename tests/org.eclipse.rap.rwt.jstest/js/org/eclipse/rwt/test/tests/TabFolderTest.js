@@ -247,34 +247,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
     testSetControlByProtocol : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      var control =  new rwt.widgets.Button( "push" );
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      widgetManager.add( control, "w5", true, "rwt.widgets.Button" );
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "set",
-        "properties" : {
-          "control" : "w5"
-        }
-      } );
+      var control = TestUtil.createWidgetByProtocol( "w5", "w3" );
+
+      TestUtil.protocolSet( "w4", { "control" : "w5" } );
+
       assertTrue( control.getParent() instanceof rwt.widgets.base.TabFolderPage );
-      assertIdentical( widgetManager.findWidgetById( "w4pg" ), control.getParent() );
+      assertIdentical( ObjectManager.getObject( "w4pg" ), control.getParent() );
       folder.destroy();
     },
 
     testControlSurvivesItemDisposal : function() {
       var folder = this._createTabFolderByProtocol( "w3", "w2" );
       var item = this._createTabItemByProtocol( "w4", "w3" );
-      var control =  new rwt.widgets.Button( "push" );
-      var widgetManager = rwt.remote.WidgetManager.getInstance();
-      widgetManager.add( control, "w5", true, "rwt.widgets.Button" );
-      Processor.processOperation( {
-        "target" : "w4",
-        "action" : "set",
-        "properties" : {
-          "control" : "w5"
-        }
-      } );
+      var control = TestUtil.createWidgetByProtocol( "w5", "w3" );
+      TestUtil.protocolSet( "w4", { "control" : "w5" } );
 
       Processor.processOperation( { "target" : "w4", "action" : "destroy" } );
       TestUtil.flush();
@@ -282,6 +268,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertFalse( control.isDisposed() );
       assertNull( control.getParent() );
       folder.destroy();
+    },
+
+    // 436757: Disposing TabFolder does not destruct TabFolder children on Client side
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=436757
+    testControlDisposedWithFolder : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      var control = TestUtil.createWidgetByProtocol( "w5", "w3" );
+      TestUtil.protocolSet( "w4", { "control" : "w5" } );
+
+      Processor.processOperation( { "target" : "w3", "action" : "destroy" } );
+      TestUtil.flush();
+
+      assertTrue( control.isDisposed() );
     },
 
     testSetToolTipMarkupEnabledByProtocol : function() {
