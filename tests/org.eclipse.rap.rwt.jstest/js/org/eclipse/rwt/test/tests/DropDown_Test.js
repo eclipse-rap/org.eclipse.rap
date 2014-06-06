@@ -340,6 +340,17 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertFalse( popup.isSeeable() );
     },
 
+    testShellClickAfterWidgetSetParentNullDoesNotCrash : function() {
+      widget.focus();
+      widget.setParent( null );
+      TestUtil.flush();
+
+      TestUtil.click( shell );
+      forceTimer();
+
+      assertFalse( popup.isSeeable() );
+    },
+
     testShow_CalledBeforeCreatedMakesPopUpVisible : function() {
       dropdown.destroy();
       this.createExample();
