@@ -26,7 +26,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
   destructor : function( widget ) {
     var control = widget.getUserData( "control" );
     if( control ) {
-      control.setParent( null );
+      if( !control._isInGlobalDisposeQueue ) {
+        control.setParent( null );
+      }
       widget.setUserData( "control", null );
     }
     rwt.widgets.util.TabUtil.releaseTabItem( widget );
