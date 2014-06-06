@@ -667,9 +667,11 @@
 
   var hasFocus = function( control ) {
     var root = control.getFocusRoot();
-    var result =    control.getFocused()
-                 || ( control.contains && control.contains( root.getFocusedChild() ) );
-    return result;
+    if( root ) {
+      return    control.getFocused()
+             || ( control.contains && control.contains( root.getFocusedChild() ) );
+    }
+    return false;
   };
 
   var filterArray = function( arr, func, limit ) {
