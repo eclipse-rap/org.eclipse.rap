@@ -83,7 +83,7 @@ rwt.widgets.util.CellRendererRegistry = function() {
 var isValidCssClass = function( name ) {
   if( name && name.length > 1 ) {
     return    name.charAt( 0 ).match( /[a-zA-Z]/ )
-           && name.match( /^[a-zA-Z0-9_-]*$/ );
+           && name.match( /^[a-zA-Z0-9_\-]*$/ );
   } else {
     return false;
   }
