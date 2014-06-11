@@ -11,9 +11,9 @@
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
+import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 

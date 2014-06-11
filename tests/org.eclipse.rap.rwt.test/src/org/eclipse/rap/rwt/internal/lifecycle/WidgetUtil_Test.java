@@ -109,7 +109,7 @@ public class WidgetUtil_Test {
     WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
 
     assertNotNull( adapter );
-    assertSame( shell.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class ), adapter );
+    assertSame( shell.getAdapter( WidgetAdapter.class ), adapter );
   }
 
   @Test

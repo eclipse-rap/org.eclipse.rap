@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ package org.eclipse.ui.forms.internal.widgets.imagehyperlinkkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkLCA;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;

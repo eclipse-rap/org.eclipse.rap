@@ -17,12 +17,11 @@ import java.util.Map;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
 public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompatibility {
 
   private final String id;

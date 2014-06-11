@@ -33,9 +33,8 @@ public final class DisplayUtil {
     return getAdapter( display ).getId();
   }
 
-  @SuppressWarnings( "deprecation" )
   public static WidgetAdapter getAdapter( Display display ) {
-    WidgetAdapter result = display.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class );
+    WidgetAdapter result = display.getAdapter( WidgetAdapter.class );
     if( result == null ) {
       throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }

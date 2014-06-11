@@ -11,12 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
-public interface WidgetAdapter extends IWidgetAdapter {
+public interface WidgetAdapter {
 
   String getId();
 

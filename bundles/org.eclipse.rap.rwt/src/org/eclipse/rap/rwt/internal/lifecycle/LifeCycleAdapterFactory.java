@@ -16,13 +16,11 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
 public final class LifeCycleAdapterFactory {
 
   private final Object displayAdapterLock;

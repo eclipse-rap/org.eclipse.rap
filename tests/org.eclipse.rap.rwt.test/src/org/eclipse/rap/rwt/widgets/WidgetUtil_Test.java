@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;

@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -23,7 +22,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
 public final class WidgetUtil {
 
   public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
@@ -33,7 +31,7 @@ public final class WidgetUtil {
   }
 
   public static WidgetAdapter getAdapter( Widget widget ) {
-    WidgetAdapter adapter = widget.getAdapter( org.eclipse.rap.rwt.lifecycle.WidgetAdapter.class );
+    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
     if( adapter == null ) {
       throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }

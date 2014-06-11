@@ -11,8 +11,8 @@
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
+import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.eclipse.rap.json.*;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
@@ -80,7 +79,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( twistie );
-    assertEquals( WidgetUtil.getId( twistie.getParent() ), getParent( operation ) );
+    assertEquals( getId( twistie.getParent() ), getParent( operation ) );
   }
 
   public void testRenderImages() throws IOException {
