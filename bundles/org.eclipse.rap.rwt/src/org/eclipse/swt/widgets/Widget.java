@@ -35,6 +35,7 @@ import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.IdGenerator;
+import org.eclipse.swt.internal.widgets.ParentHolderAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
@@ -155,8 +156,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     this.style = style;
     display = parent.display;
     reskinWidget();
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class );
-    adapter.setParent( parent );
+    widgetAdapter = new ParentHolderAdapter( parent );
   }
 
   /**
@@ -175,8 +175,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     T result = null;
     if( adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        String id = IdGenerator.getInstance().createId( this );
-        widgetAdapter = new WidgetAdapterImpl( id );
+        widgetAdapter = createWidgetAdapter( null );
+      } else if( widgetAdapter instanceof ParentHolderAdapter ) {
+        widgetAdapter = createWidgetAdapter( widgetAdapter.getParent() );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
@@ -195,6 +196,13 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       result = ( T )lifeCycleAdapterFactory.getAdapter( this );
     }
     return result;
+  }
+
+  private WidgetAdapter createWidgetAdapter( Widget parent ) {
+    String id = IdGenerator.getInstance().createId( this );
+    WidgetAdapterImpl widgetAdapter = new WidgetAdapterImpl( id );
+    widgetAdapter.setParent( parent );
+    return widgetAdapter;
   }
 
   private ApplicationContextImpl getApplicationContext() {
@@ -859,8 +867,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         state |= RELEASED;
         releaseParent();
         releaseWidget();
-        WidgetAdapter adapter = getAdapter( WidgetAdapter.class );
-        adapter.markDisposed( this );
+        getAdapter( WidgetAdapter.class ).markDisposed( this );
       }
     }
   }
