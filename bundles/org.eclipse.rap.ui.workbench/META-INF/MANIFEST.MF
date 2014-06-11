@@ -99,7 +99,7 @@ Export-Package:  org.eclipse.rap.ui.resources;version="2.3.0",
  org.eclipse.ui.wizards
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)";visibility:=reexport,
  org.eclipse.rap.jface;bundle-version="[2.3.0,3.0.0)",
- org.eclipse.rap.rwt;bundle-version="[2.3.0,3.0.0)",
+ org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.help;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.core.expressions;bundle-version="[3.4.0,4.0.0)",
  org.eclipse.equinox.http.registry,
@@ -112,7 +112,7 @@ Import-Package: com.ibm.icu.text,
  javax.servlet;version="2.3.0",
  javax.servlet.http;version="2.3.0",
  javax.xml.parsers,
- org.eclipse.rap.rwt.osgi;version="[2.3.0,3.0.0)",
+ org.eclipse.rap.rwt.osgi;version="[3.0.0,4.0.0)",
  org.w3c.dom,
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
