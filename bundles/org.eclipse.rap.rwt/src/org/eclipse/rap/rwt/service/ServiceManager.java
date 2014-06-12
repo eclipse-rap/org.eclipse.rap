@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-@SuppressWarnings( "deprecation" )
-public interface ServiceManager extends IServiceManager {
+public interface ServiceManager {
 
   /**
    * Registers a new service handler with the given unique id. The id is used to address the service

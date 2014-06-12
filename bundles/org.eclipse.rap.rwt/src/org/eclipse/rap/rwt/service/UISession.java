@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,7 @@ import org.eclipse.rap.rwt.remote.Connection;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-@SuppressWarnings( "deprecation" )
-public interface UISession extends ISessionStore {
+public interface UISession {
 
   /**
    * Binds an object to this UI Session, using the name specified. If an object of the same name is
@@ -105,12 +104,6 @@ public interface UISession extends ISessionStore {
   boolean addUISessionListener( UISessionListener listener );
 
   /**
-   * @deprecated Use addUISessionListener instead
-   */
-  @Deprecated
-  boolean addSessionStoreListener( UISessionListener listener );
-
-  /**
    * Removes a <code>UISessionListener</code> from this UI session. UISessionListeners are used to
    * receive notifications before the UI session is destroyed. If the given listener was not added
    * to the session store this method has no effect.
@@ -119,19 +112,13 @@ public interface UISession extends ISessionStore {
    * removed. In this case, this method returns <code>false</code>. A return value of
    * <code>true</code> ensures that the listener is removed and will not be called anymore.
    * </p>
-   * 
+   *
    * @param listener the listener to be removed
    * @return <code>true</code> if the listener was removed and will not be called anymore, or
    *         <code>false</code> if the listener could not be removed
    * @see #isBound()
    */
   boolean removeUISessionListener( UISessionListener listener );
-
-  /**
-   * @deprecated Use removeUISessionListener instead
-   */
-  @Deprecated
-  boolean removeSessionStoreListener( UISessionListener listener );
 
   /**
    * Returns the ApplicationContext this UISession belongs to.

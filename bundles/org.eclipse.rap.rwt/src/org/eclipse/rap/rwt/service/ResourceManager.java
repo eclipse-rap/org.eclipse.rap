@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,7 @@ import java.io.InputStream;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-@SuppressWarnings( "deprecation" )
-public interface ResourceManager extends IResourceManager {
+public interface ResourceManager {
 
   /**
    * Registers a given resource and makes it available for download. The URL for the registered

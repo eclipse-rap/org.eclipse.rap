@@ -233,10 +233,6 @@ public class UISessionImpl
     ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
   }
 
-  public boolean addSessionStoreListener( UISessionListener listener ) {
-    return addUISessionListener( listener );
-  }
-
   public boolean addUISessionListener( UISessionListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
@@ -247,10 +243,6 @@ public class UISessionImpl
       }
     }
     return result;
-  }
-
-  public boolean removeSessionStoreListener( UISessionListener listener ) {
-    return removeUISessionListener( listener );
   }
 
   public boolean removeUISessionListener( UISessionListener listener ) {

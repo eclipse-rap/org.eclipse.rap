@@ -168,45 +168,6 @@ public class RWT_Test {
     }
   }
 
-  @SuppressWarnings( "deprecation" )
-  @Test
-  public void testGetServiceStore_failsFromBackgroundThread() throws Throwable {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.getServiceStore();
-      }
-    };
-
-    try {
-      Fixture.runInThread( runnable );
-      fail();
-    } catch( IllegalStateException exception ) {
-      assertEquals( "Invalid thread access", exception.getMessage() );
-    }
-  }
-
-  @SuppressWarnings( "deprecation" )
-  @Test
-  public void testGetServiceStoreFromSessionThread() throws Throwable {
-    final Display display = new Display();
-    final Runnable runnable = new Runnable() {
-      public void run() {
-        RWT.getServiceStore();
-      }
-    };
-
-    try {
-      Fixture.runInThread( new Runnable() {
-        public void run() {
-          RWT.getUISession( display ).exec( runnable );
-        }
-      } );
-      fail();
-    } catch( IllegalStateException exception ) {
-      assertEquals( "Invalid thread access", exception.getMessage() );
-    }
-  }
-
   @Test
   public void testGetApplicationContext() {
     ApplicationContext result = RWT.getApplicationContext();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,7 @@ import org.eclipse.rap.rwt.application.ApplicationRunner;
  * @since 2.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-@SuppressWarnings( "deprecation" )
-public interface ApplicationContext extends IApplicationStore {
+public interface ApplicationContext {
 
   /**
    * Stores the given value in this application context, associated with the given name. If another
@@ -70,7 +69,7 @@ public interface ApplicationContext extends IApplicationStore {
    * will not be added and this method will return <code>false</code>. A return value of
    * <code>true</code> asserts that this listener is registered and will be called on destroy.
    * </p>
-   * 
+   *
    * @param listener the listener to be added
    * @return <code>true</code> if the listener is registered, <code>false</code> if not
    * @since 2.2

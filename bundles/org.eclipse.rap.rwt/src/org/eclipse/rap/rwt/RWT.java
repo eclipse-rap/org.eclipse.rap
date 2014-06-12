@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
-import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
@@ -36,7 +35,6 @@ import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ApplicationContext;
-import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.ServiceManager;
 import org.eclipse.rap.rwt.service.SettingStore;
@@ -549,23 +547,6 @@ public final class RWT {
   }
 
   /**
-   * Returns the service store that is mapped to the currently processed request.
-   *
-   * @return the service store
-   * @deprecated The interface {@link IServiceStore} is deprecated and will be removed in a future
-   *             release without a replacement. If you need to store data in the scope of a request,
-   *             consider to use the request object (e.g.
-   *             {@link HttpServletRequest#setAttribute(String, Object)}).
-   * @see RWT#getRequest()
-   */
-  @Deprecated
-  public static IServiceStore getServiceStore() {
-    checkContext();
-    checkPhase();
-    return ContextProvider.getServiceStore();
-  }
-
-  /**
    * Returns the current UI session. This method must be executed from the UI thread.
    *
    * @return the current UI session instance, never <code>null</code>
@@ -587,14 +568,6 @@ public final class RWT {
   }
 
   /**
-   * @deprecated Use {@link #getUISession()} instead
-   */
-  @Deprecated
-  public static UISession getSessionStore() {
-    return getUISession();
-  }
-
-  /**
    * Returns the <code>ApplicationContext</code> instance that represents the web context's
    * global data storage area.
    *
@@ -603,14 +576,6 @@ public final class RWT {
   public static ApplicationContext getApplicationContext() {
     checkContext();
     return ContextProvider.getApplicationContext();
-  }
-
-  /**
-   * @deprecated Use {@link #getApplicationContext()} instead.
-   */
-  @Deprecated
-  public static ApplicationContext getApplicationStore() {
-    return getApplicationContext();
   }
 
   /**
@@ -667,15 +632,6 @@ public final class RWT {
    */
   public static void setLocale( Locale locale ) {
     getUISession().setLocale( locale );
-  }
-
-  /**
-   * @deprecated use {@link BrowserNavigation} client service instead, see
-   *             {@link Client#getService(Class)}
-   */
-  @Deprecated
-  public static BrowserNavigation getBrowserHistory() {
-    return getClient().getService( BrowserNavigation.class );
   }
 
   /**
