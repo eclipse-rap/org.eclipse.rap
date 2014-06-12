@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.application.Application;
-import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
@@ -36,8 +35,6 @@ import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.IServiceStore;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -518,20 +515,6 @@ public final class RWT {
    * @since 2.2
    */
   public static final int CELL = 1 << 27;
-
-  /**
-   * Returns the instance of the life cycle which is currently processed.
-   *
-   * @return instance of {@link ILifeCycle}
-   * @deprecated As of 2.0, PhaseListeners should only be registered in an
-   *             {@link ApplicationConfiguration}. For new applications and custom widgets, consider
-   *             the {@link RemoteObject} API which is going to replace PhaseListener.
-   * @see Application#addPhaseListener(PhaseListener)
-   */
-  @Deprecated
-  public static ILifeCycle getLifeCycle() {
-    return ContextProvider.getApplicationContext().getLifeCycleFactory().getLifeCycle();
-  }
 
   /**
    * Returns the instance of the resource manager for the current application context. This is a

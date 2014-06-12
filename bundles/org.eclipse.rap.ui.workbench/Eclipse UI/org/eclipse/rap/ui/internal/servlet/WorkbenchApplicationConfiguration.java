@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 EclipseSource and others.
+ * Copyright (c) 2006, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -112,7 +113,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
       try {
         Object instance = elements[ i ].createExecutableExtension( "class" );
         PhaseListener listener = ( PhaseListener )instance;
-        application.addPhaseListener( listener );
+        ( ( ApplicationImpl )application ).addPhaseListener( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }

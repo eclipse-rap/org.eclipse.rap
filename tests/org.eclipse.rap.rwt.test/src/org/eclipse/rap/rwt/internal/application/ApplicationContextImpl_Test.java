@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.application;
 
-import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.service.StartupPageTestUtil.getStartupPageTemplate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,7 +31,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.ServletContext;
@@ -45,10 +43,8 @@ import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.StartupPageTestUtil;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ApplicationContextEvent;
 import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -70,7 +66,6 @@ public class ApplicationContextImpl_Test {
   private static final String STYLE_SHEET = "resources/theme/TestExample.css";
   private static final String STYLE_SHEET_CONTRIBUTION = "resources/theme/TestExample2.css";
   private static final String SERVICE_HANDLER_ID = "SERVICE_HANDLER_ID";
-  private PhaseListener phaseListener;
   private SettingStoreFactory settingStoreFactory;
   private ServiceHandler serviceHandler;
   private ApplicationContextImpl applicationContext;
@@ -78,7 +73,6 @@ public class ApplicationContextImpl_Test {
 
   @Before
   public void setUp() {
-    phaseListener = mock( PhaseListener.class );
     settingStoreFactory = mock( SettingStoreFactory.class );
     serviceHandler = mock( ServiceHandler.class );
     listener = mock( ApplicationContextListener.class );
@@ -178,7 +172,6 @@ public class ApplicationContextImpl_Test {
     applicationContext.activate();
 
     checkContextDirectoryHasBeenSet();
-    checkPhaseListenersHaveBeenAdded();
     checkSettingStoreManagerHasBeenSet();
     checkEntryPointsHaveBeenAdded();
     checkResourceHasBeenAdded();
@@ -470,18 +463,17 @@ public class ApplicationContextImpl_Test {
 
   private ApplicationConfiguration createConfiguration() {
     return new ApplicationConfiguration() {
-      public void configure( Application configuration ) {
-        configuration.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
+      public void configure( Application application ) {
+        application.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
-        configuration.addEntryPoint( "/entryPointViaFactory", factory, null );
-        configuration.addResource( TEST_RESOURCE, new TestResourceLoader() );
-        configuration.addPhaseListener( phaseListener );
-        configuration.setSettingStoreFactory( settingStoreFactory );
-        configuration.addServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
-        configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
-        configuration.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
-        configuration.addThemableWidget( TestWidget.class );
-        configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+        application.addEntryPoint( "/entryPointViaFactory", factory, null );
+        application.addResource( TEST_RESOURCE, new TestResourceLoader() );
+        application.setSettingStoreFactory( settingStoreFactory );
+        application.addServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
+        application.addStyleSheet( THEME_ID, STYLE_SHEET );
+        application.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
+        application.addThemableWidget( TestWidget.class );
+        application.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
   }
@@ -537,15 +529,6 @@ public class ApplicationContextImpl_Test {
 
   private void checkSettingStoreManagerHasBeenSet() {
     assertTrue( applicationContext.getSettingStoreManager().hasFactory() );
-  }
-
-  private void checkPhaseListenersHaveBeenAdded() {
-    List<PhaseListener> registeredPhaseListeners
-      = asList( applicationContext.getPhaseListenerManager().getPhaseListeners() );
-
-    assertEquals( 2, registeredPhaseListeners.size() );
-    assertTrue( registeredPhaseListeners.contains( phaseListener ) );
-    assertTrue( containsType( registeredPhaseListeners, MeasurementListener.class ) );
   }
 
   private void checkContextDirectoryHasBeenSet() {
@@ -604,15 +587,6 @@ public class ApplicationContextImpl_Test {
 
   private void checkStartupPageTemplateHasBeenReset() {
     assertNull( StartupPageTestUtil.getStartupPageTemplate( applicationContext.getStartupPage() ) );
-  }
-
-  private static boolean containsType( List<?> list, Class<?> type ) {
-    for( Object object : list ) {
-      if( object.getClass().equals( type ) ) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private static ApplicationContextImpl createApplicationContextSpy() {

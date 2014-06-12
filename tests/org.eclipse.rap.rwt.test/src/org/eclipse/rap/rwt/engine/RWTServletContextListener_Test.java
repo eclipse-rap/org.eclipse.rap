@@ -31,9 +31,6 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
-import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.junit.After;
@@ -62,7 +59,7 @@ public class RWTServletContextListener_Test {
 
   @Test
   public void testResourceManagerIsInitialized() {
-    String className = TestConfigurator.class.getName();
+    String className = TestConfiguration.class.getName();
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
 
     rwtServletContextListener.contextInitialized( contextInitializedEvent );
@@ -106,25 +103,24 @@ public class RWTServletContextListener_Test {
   }
 
   @Test
-  public void testConfigurator() {
-    String className = TestConfigurator.class.getName();
+  public void testConfiguration() {
+    String className = TestConfiguration.class.getName();
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, className );
 
     rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
     assertEntryPointIsRegistered();
     assertEntryPointPath( "/test" );
-    assertPhaseListenersAreRegistered();
   }
 
   @SuppressWarnings( "unchecked" )
   @Test
-  public void testConfiguratorWithThreadContextClassLoader() throws ClassNotFoundException {
+  public void testConfigurationWithThreadContextClassLoader() throws ClassNotFoundException {
     // See bug 367033
     // use a class name that cannot be found by RWT's class loader
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, "not.Existing" );
     ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
-    Class configuratorClass = TestConfigurator.class;
+    Class configuratorClass = TestConfiguration.class;
     // set a context class loader that can find the class
     ClassLoader contextClassLoader = mock( ClassLoader.class );
     when( contextClassLoader.loadClass( anyString() ) ).thenReturn( configuratorClass );
@@ -157,35 +153,14 @@ public class RWTServletContextListener_Test {
     assertEquals( path, servletPaths[ 0 ] );
   }
 
-  private void assertPhaseListenersAreRegistered() {
-    ApplicationContextImpl applicationContext = ApplicationContextImpl.getFrom( servletContext );
-    assertEquals( 2, applicationContext.getPhaseListenerManager().getPhaseListeners().length );
-  }
-
-  public static class TestPhaseListener implements PhaseListener {
-
-    private static final long serialVersionUID = 1L;
-
-    public void beforePhase( PhaseEvent event ) {
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.ANY;
-    }
-  }
-
   private void setServletMapping( String path ) {
     servletContext.addServlet( RWT_SERVLET_NAME, mock( Servlet.class ) );
     servletContext.getServletRegistration( RWT_SERVLET_NAME ).addMapping( path );
   }
 
-  private static class TestConfigurator implements ApplicationConfiguration {
-    public void configure( Application configuration ) {
-      configuration.addEntryPoint( "/test", TestEntryPoint.class, null );
-      configuration.addPhaseListener( mock( PhaseListener.class ) );
+  private static class TestConfiguration implements ApplicationConfiguration {
+    public void configure( Application application ) {
+      application.addEntryPoint( "/test", TestEntryPoint.class, null );
     }
   }
 

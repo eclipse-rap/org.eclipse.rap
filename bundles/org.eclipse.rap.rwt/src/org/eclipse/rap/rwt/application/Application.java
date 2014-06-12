@@ -16,12 +16,11 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ApplicationContext;
-import org.eclipse.rap.rwt.service.SettingStore;
-import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.SettingStore;
+import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -40,7 +39,6 @@ import org.eclipse.swt.widgets.Widget;
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 2.0
  */
-@SuppressWarnings( "deprecation" )
 public interface Application {
 
   /**
@@ -169,17 +167,6 @@ public interface Application {
    * @see RWT#DEFAULT_THEME_ID
    */
   void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
-
-  /**
-   * Add a phase listener to the application to perform custom tasks during the
-   * processing of a request.
-   *
-   * @param phaseListener the phase listener to add
-   * @see PhaseListener
-   * @deprecated Support for PhaseListeners is going to be removed in the future.
-   */
-  @Deprecated
-  void addPhaseListener( PhaseListener phaseListener );
 
   /**
    * Set an initial attribute in the application context.
