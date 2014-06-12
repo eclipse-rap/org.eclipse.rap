@@ -12,8 +12,6 @@ package org.eclipse.ui.internal.forms.widgets;
 
 import java.util.HashMap;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
-
 import org.eclipse.jface.resource.DeviceResourceException;
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -22,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.widgets.Display;
 
 public class FormFonts {

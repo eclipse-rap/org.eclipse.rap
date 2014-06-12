@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,16 @@
 package org.eclipse.rap.internal.design.example.business.layoutsets;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 
 
 public class StackInitializer implements ILayoutSetInitializer {
 
-  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+  public void initializeLayoutSet( LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
     layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_ACTIVE, 
                             path + "stack_tab_conf_active.png" ); //$NON-NLS-1$
@@ -100,4 +100,5 @@ public class StackInitializer implements ILayoutSetInitializer {
     fdConfPos.right = new FormAttachment( 100 );
     layoutSet.addPosition( ILayoutSetConstants.STACK_CONF_POS, fdConfPos );
   }
+
 }

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rap.rwt.graphics;
+package org.eclipse.swt.internal.graphics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;

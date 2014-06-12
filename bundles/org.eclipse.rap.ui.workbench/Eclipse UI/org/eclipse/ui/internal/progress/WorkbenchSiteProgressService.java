@@ -14,6 +14,7 @@ package org.eclipse.ui.internal.progress;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,7 +28,6 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -43,6 +43,7 @@ import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.internal.graphics.Graphics;
 
 /**
  * The WorkbenchSiteProgressService is the concrete implementation of the

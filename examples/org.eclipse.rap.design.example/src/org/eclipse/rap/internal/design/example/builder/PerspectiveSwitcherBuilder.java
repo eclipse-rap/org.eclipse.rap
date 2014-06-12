@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.internal.preferences.SessionScope;
 import org.eclipse.swt.SWT;
@@ -27,6 +26,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -69,10 +69,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
   private final PerspectiveAdapter perspectiveAdapter = new PerspectiveAdapter() {
 
     @Override
-    public void perspectiveActivated(
-      final IWorkbenchPage page,
-      final IPerspectiveDescriptor perspective )
-    {
+    public void perspectiveActivated( IWorkbenchPage page, IPerspectiveDescriptor perspective ) {
       addIdToStore( perspective.getId() );
 
       Button button = createPerspectiveButton( perspective );
@@ -87,9 +84,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     }
   };
 
-  public PerspectiveSwitcherBuilder(
-    final Composite parent, final String subSetId )
-  {
+  public PerspectiveSwitcherBuilder( Composite parent, String subSetId ) {
     super( parent, subSetId );
     background = new Composite( parent, SWT.NONE );
     background.setData( RWT.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
@@ -111,14 +106,14 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
   }
 
   @Override
-  public void addControl( final Control control, final Object layoutData ) {
+  public void addControl( Control control, Object layoutData ) {
   }
 
   @Override
-  public void addControl( final Control control, final String positionId ) {
+  public void addControl( Control control, String positionId ) {
   }
 
-  private void addIdToStore( final String id ) {
+  private void addIdToStore( String id ) {
     if( !perspectiveList.contains( id ) ) {
       perspectiveList.add( id );
     }
@@ -126,11 +121,11 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
   }
 
   @Override
-  public void addImage( final Image image, final Object layoutData ) {
+  public void addImage( Image image, Object layoutData ) {
   }
 
   @Override
-  public void addImage( final Image image, final String positionId ) {
+  public void addImage( Image image, String positionId ) {
   }
 
   @Override
@@ -171,7 +166,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
   /*
    * redesign the buttons
    */
-  private void cleanButtons( final Button current ) {
+  private void cleanButtons( Button current ) {
     for( int i = 0; i < buttonList.size(); i++ ) {
       Button button = ( Button ) buttonList.get( i );
       Composite parent = button.getParent();
@@ -195,9 +190,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     }
   }
 
-  private void cleanUpButton(
-    final IPerspectiveDescriptor perspective, final Button button )
-  {
+  private void cleanUpButton( IPerspectiveDescriptor perspective, Button button ) {
     buttonList.remove( button );
     perspectiveButtonMap.remove( perspective );
     buttonPerspectiveMap.remove( button );
@@ -210,7 +203,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     parent.getParent().layout( true );
   }
 
-  private void closePerspective( final IPerspectiveDescriptor desc ) {
+  private void closePerspective( IPerspectiveDescriptor desc ) {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
     IWorkbenchPage activePage = workbenchWindow.getActivePage();
@@ -350,7 +343,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     return result;
   }
 
-  private void removeIdFromStore( final String id ) {
+  private void removeIdFromStore( String id ) {
     perspectiveList.remove( id );
     Preferences store = createSessionScope();
     store.remove( id );
@@ -371,7 +364,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     }
   }
 
-  private void switchPerspective( final String perspectiveId) {
+  private void switchPerspective( String perspectiveId) {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     try {
@@ -380,4 +373,5 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
       e.printStackTrace();
     }
   }
+
 }

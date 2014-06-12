@@ -13,13 +13,12 @@ package org.eclipse.ui.forms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.graphics.Graphics;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.widgets.Display;
 
 /**

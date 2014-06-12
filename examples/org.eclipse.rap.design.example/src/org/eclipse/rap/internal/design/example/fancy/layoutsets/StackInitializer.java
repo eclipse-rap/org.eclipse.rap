@@ -11,16 +11,16 @@
 package org.eclipse.rap.internal.design.example.fancy.layoutsets;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 
 
 public class StackInitializer implements ILayoutSetInitializer {
 
-  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+  public void initializeLayoutSet( LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_FANCY;
     layoutSet.addImagePath( ILayoutSetConstants.STACK_CONF_ACTIVE, 
                             path + "stack_tab_conf_active.png" ); //$NON-NLS-1$
@@ -79,7 +79,7 @@ public class StackInitializer implements ILayoutSetInitializer {
                             path + "stack_border_top_active_standalone.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.STACK_TOP_STANDALONE_INACTIVE, 
                             path + "stack_border_top_standalone.png" ); //$NON-NLS-1$
-    
+
     FormData fdConfButton = new FormData();
     fdConfButton.top = new FormAttachment( 0, 3 );
     fdConfButton.right = new FormAttachment( 100, -5 ); 
@@ -105,4 +105,5 @@ public class StackInitializer implements ILayoutSetInitializer {
     fdConfPos.right = new FormAttachment( 100, -6 );
     layoutSet.addPosition( ILayoutSetConstants.STACK_CONF_POS, fdConfPos );
   }
+
 }

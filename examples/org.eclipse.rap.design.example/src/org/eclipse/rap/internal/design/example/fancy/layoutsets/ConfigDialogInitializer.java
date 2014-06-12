@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,14 @@
 package org.eclipse.rap.internal.design.example.fancy.layoutsets;
 
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
-import org.eclipse.rap.rwt.graphics.Graphics;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
+import org.eclipse.swt.internal.graphics.Graphics;
 
 
 public class ConfigDialogInitializer implements ILayoutSetInitializer {
 
-  public void initializeLayoutSet( final LayoutSet layoutSet ) {
+  public void initializeLayoutSet( LayoutSet layoutSet ) {
     layoutSet.addColor( ILayoutSetConstants.CONFIG_BLACK, 
                         Graphics.getColor( 0, 0, 0 ) );
     layoutSet.addColor( ILayoutSetConstants.CONFIG_WHITE, 
@@ -30,4 +30,5 @@ public class ConfigDialogInitializer implements ILayoutSetInitializer {
                             ILayoutSetConstants.IMAGE_PATH_FANCY 
                             + "conf_dialog_icon.png" ); //$NON-NLS-1$
   }
+
 }
