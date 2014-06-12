@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
 

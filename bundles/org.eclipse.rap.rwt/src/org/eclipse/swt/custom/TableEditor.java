@@ -14,9 +14,9 @@ package org.eclipse.swt.custom;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;

@@ -19,8 +19,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.widgets.Display;

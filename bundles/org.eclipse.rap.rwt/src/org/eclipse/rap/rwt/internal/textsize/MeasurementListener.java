@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 
 
 @SuppressWarnings( "deprecation" )

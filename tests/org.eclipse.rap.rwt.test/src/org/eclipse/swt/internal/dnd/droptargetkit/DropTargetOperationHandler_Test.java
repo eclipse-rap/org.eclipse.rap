@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;

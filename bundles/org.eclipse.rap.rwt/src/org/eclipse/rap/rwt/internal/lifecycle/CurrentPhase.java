@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 
 
 @SuppressWarnings( "deprecation" )

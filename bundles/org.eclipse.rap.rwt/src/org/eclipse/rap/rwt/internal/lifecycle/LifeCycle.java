@@ -14,8 +14,6 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rap.rwt.lifecycle.PhaseListener;
 
 
 @SuppressWarnings( "deprecation" )

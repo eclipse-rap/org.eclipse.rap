@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,8 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 
@@ -49,7 +48,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
  *             {@link ApplicationConfiguration}. For new applications and custom widgets, consider
  *             the (still internal) {@link RemoteObject} API which is going to replace
  *             PhaseListener.
- * @see Application#addPhaseListener(PhaseListener)
  */
 @Deprecated
 public interface ILifeCycle {

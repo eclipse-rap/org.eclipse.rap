@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 
 
 @SuppressWarnings( "deprecation" )

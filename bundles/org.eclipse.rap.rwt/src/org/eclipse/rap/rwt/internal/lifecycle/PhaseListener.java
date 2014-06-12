@@ -9,12 +9,10 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rap.rwt.lifecycle;
+package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.Serializable;
 import java.util.EventListener;
-
-import org.eclipse.rap.rwt.application.Application;
 
 
 /**
@@ -23,7 +21,6 @@ import org.eclipse.rap.rwt.application.Application;
  * lifecycle.
  *
  * @since 2.0
- * @see Application#addPhaseListener(PhaseListener)
  * @deprecated Support for PhaseListeners is going to be removed in the future.
  */
 // TODO [rh] why is this Serializable?

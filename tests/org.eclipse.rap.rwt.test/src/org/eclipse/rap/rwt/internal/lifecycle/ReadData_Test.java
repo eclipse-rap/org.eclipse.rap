@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

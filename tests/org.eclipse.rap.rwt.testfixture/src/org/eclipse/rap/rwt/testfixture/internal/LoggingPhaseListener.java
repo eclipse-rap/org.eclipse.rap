@@ -13,7 +13,9 @@ package org.eclipse.rap.rwt.testfixture.internal;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 
 
 @SuppressWarnings( "deprecation" )

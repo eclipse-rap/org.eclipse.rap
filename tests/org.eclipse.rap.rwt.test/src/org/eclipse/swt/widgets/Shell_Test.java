@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
