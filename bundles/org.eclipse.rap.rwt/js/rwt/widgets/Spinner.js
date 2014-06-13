@@ -55,6 +55,11 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
 
   members : {
 
+    _applyTextColor : function( value, old ) {
+      this.base( arguments, value, old );
+      this._textfield.setTextColor( value );
+    },
+
     setFont : function( value ) {
       this._textfield.setFont( value );
     },

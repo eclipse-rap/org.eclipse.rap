@@ -34,238 +34,145 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
 
     testCreateSpinnerByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertTrue( widget instanceof rwt.widgets.Spinner );
-      assertIdentical( shell, widget.getParent() );
-      assertTrue( widget.getUserData( "isControl") );
-      assertEquals( "spinner", widget.getAppearance() );
-      assertTrue( widget.getEditable() );
-      assertFalse( widget.getWrap() );
-      assertEquals( 0, widget.getMin() );
-      assertEquals( 100, widget.getMax() );
-      assertEquals( 0, widget.getValue() );
-      assertEquals( 0, widget.getDigits() );
+
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      assertTrue( spinner instanceof rwt.widgets.Spinner );
+      assertIdentical( shell, spinner.getParent() );
+      assertTrue( spinner.getUserData( "isControl") );
+      assertEquals( "spinner", spinner.getAppearance() );
+      assertTrue( spinner.getEditable() );
+      assertFalse( spinner.getWrap() );
+      assertEquals( 0, spinner.getMin() );
+      assertEquals( 100, spinner.getMax() );
+      assertEquals( 0, spinner.getValue() );
+      assertEquals( 0, spinner.getDigits() );
       shell.destroy();
-      widget.destroy();
     },
 
     testCreateSpinnerWithWrapAdndReadOnlyByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [ "READ_ONLY", "WRAP" ],
-          "parent" : "w2"
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertFalse( widget.getEditable() );
-      assertTrue( widget.getWrap() );
+
+      var spinner = this._createSpinnerByProtocol( "w3", "w2", [ "READ_ONLY", "WRAP" ] );
+
+      assertFalse( spinner.getEditable() );
+      assertTrue( spinner.getWrap() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetMinimumByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "minimum" : 50
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 50, widget.getMin() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "minimum" : 50 } );
+
+      assertEquals( 50, spinner.getMin() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetMaximumByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "maximum" : 150
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 150, widget.getMax() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "maximum" : 150 } );
+
+      assertEquals( 150, spinner.getMax() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetMinimumBiggerThanCurrentMaximumByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "minimum" : 150,
-          "maximum" : 200
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 150, widget.getMin() );
-      assertEquals( 200, widget.getMax() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "minimum" : 150, "maximum" : 200 } );
+
+      assertEquals( 150, spinner.getMin() );
+      assertEquals( 200, spinner.getMax() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetSelectionByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "selection" : 50
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 50, widget.getValue() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "selection" : 50 } );
+
+      assertEquals( 50, spinner.getValue() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetDigitsByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "digits" : 2
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 2, widget.getDigits() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "digits" : 2 } );
+
+      assertEquals( 2, spinner.getDigits() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetIncrementByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "increment" : 5
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 5, widget.getIncrementAmount() );
-      assertEquals( 5, widget.getWheelIncrementAmount() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "increment" : 5 } );
+
+      assertEquals( 5, spinner.getIncrementAmount() );
+      assertEquals( 5, spinner.getWheelIncrementAmount() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetPageIncrementByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "pageIncrement" : 20
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 20, widget.getPageIncrementAmount() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "pageIncrement" : 20 } );
+
+      assertEquals( 20, spinner.getPageIncrementAmount() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetTextLimitByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "textLimit" : 3
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 3, widget._textfield.getMaxLength() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "textLimit" : 3 } );
+
+      assertEquals( 3, spinner._textfield.getMaxLength() );
       shell.destroy();
-      widget.destroy();
     },
 
     testSetDecimalSeparatorLimitByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2",
-          "decimalSeparator" : ","
-        }
-      } );
-      var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( ",", widget.getDecimalSeparator() );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+
+      TestUtil.protocolSet( "w3", { "decimalSeparator" : "," } );
+
+      assertEquals( ",", spinner.getDecimalSeparator() );
       shell.destroy();
-      widget.destroy();
     },
 
     testGetManager : function() {
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.setSpace( 59, 60, 5, 20 );
+      var spinner = this._createDefaultSpinner();
+
       spinner.setZIndex( 299 );
       spinner.setTabIndex( 58 );
+
       assertTrue( spinner.getManager() instanceof rwt.util.Range );
       spinner.destroy();
     },
 
     testDispose : function() {
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.setSpace( 59, 60, 5, 20 );
-      TestUtil.flush();
+      var spinner = this._createDefaultSpinner();
+
       spinner.destroy();
       TestUtil.flush();
+
       assertTrue( spinner.isDisposed() );
     },
 
     testAcceptNumbersOnly : function() {
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.setSpace( 0, 60, 5, 30 );
-      TestUtil.flush();
+      var spinner = this._createDefaultSpinner();
       spinner.focus();
 
       var domEvent = TestUtil.fireFakeKeyDomEvent( spinner._textfield, "keypress", "1" );
@@ -282,10 +189,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     },
 
     testAcceptMinus : function() {
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.setSpace( 0, 60, 5, 30 );
-      TestUtil.flush();
+      var spinner = this._createDefaultSpinner();
       spinner.focus();
       // ensure caret position on iOs:
       spinner._textfield._setSelectionStart( 0 );
@@ -303,10 +207,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     },
 
     testCopyPasteIsNotBlocked : function() {
-      var spinner = new rwt.widgets.Spinner();
-      spinner.addToDocument();
-      spinner.setSpace( 0, 60, 5, 30 );
-      TestUtil.flush();
+      var spinner = this._createDefaultSpinner();
       spinner.focus();
 
       var ctrl = rwt.event.DomEvent.CTRL_MASK;
@@ -318,19 +219,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
 
     testSendSelectionEvent : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var widget = ObjectRegistry.getObject( "w3" );
 
-      widget.setValue( 10 );
+      spinner.setValue( 10 );
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
@@ -342,21 +234,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
 
     testMergeSendSelectionEvent : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      Processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Spinner",
-        "properties" : {
-          "style" : [],
-          "parent" : "w2"
-        }
-      } );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
-      var widget = ObjectRegistry.getObject( "w3" );
 
-      widget.setValue( 10 );
-      widget.setValue( 20 );
-      widget.setValue( 30 );
+      spinner.setValue( 10 );
+      spinner.setValue( 20 );
+      spinner.setValue( 30 );
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
@@ -364,6 +247,108 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       assertEquals( 30, messages[ 0 ].findSetProperty( "w3", "selection" ) );
       assertNotNull( messages[ 0 ].findNotifyOperation( "w3", "Selection" ) );
       shell.destroy();
+    },
+
+    testTextColor : function() {
+      var spinner = this._createDefaultSpinner();
+      spinner.setTextColor( "#FF0000" );
+      var style = spinner._textfield.getInputElement().style;
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      spinner.setTextColor( "#00FF00" );
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+      spinner.destroy();
+    },
+
+    testTextColor_byChangingEnabled_withoutUserColor : function() {
+      var spinner = this._createDefaultSpinner();
+      this._fakeAppearance( "#00FF00", "#FF0000" );
+      var style = spinner._textfield.getInputElement().style;
+
+      spinner.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      spinner.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 255, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+      spinner.destroy();
+    },
+
+    testTextColor_byChangingEnabled_withUnchangedUserColor : function() {
+      var spinner = this._createDefaultSpinner();
+      this._fakeAppearance( "#00FF00", "#FF0000" );
+      spinner.setTextColor( "#0000FF" );
+      var style = spinner._textfield.getInputElement().style;
+
+      spinner.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      spinner.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 0, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
+      spinner.destroy();
+    },
+
+    testTextColor_byChangingEnabled_withChangedUserColor : function() {
+      var spinner = this._createDefaultSpinner();
+      this._fakeAppearance( "#00FF00", "#FF0000" );
+      spinner.setTextColor( "#0000FF" );
+      var style = spinner._textfield.getInputElement().style;
+
+      spinner.setEnabled( false );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
+
+      spinner.setTextColor( "#FF00FF" );
+      spinner.setEnabled( true );
+      TestUtil.flush();
+      assertEquals( [ 255, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
+      spinner.destroy();
+    },
+
+    //////////
+    // Helpers
+
+    _createDefaultSpinner : function() {
+      var spinner = new rwt.widgets.Spinner();
+      spinner.addToDocument();
+      spinner.setSpace( 0, 60, 5, 30 );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Spinner" );
+      rwt.remote.ObjectRegistry.add( "w3", spinner, handler );
+      TestUtil.flush();
+      return spinner;
+    },
+
+    _fakeAppearance : function( defaultTextColor, disabledTextColor) {
+      TestUtil.fakeAppearance( "spinner", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? disabledTextColor : defaultTextColor
+          };
+        }
+      } );
+      TestUtil.fakeAppearance( "spinner-text-field", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? disabledTextColor : defaultTextColor
+          };
+        }
+      } );
+    },
+
+    _createSpinnerByProtocol : function( id, parentId, style ) {
+      Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Spinner",
+        "properties" : {
+          "style" : style ? style : [],
+          "parent" : parentId
+        }
+      } );
+      return rwt.remote.ObjectRegistry.getObject( id );
     }
 
   }
