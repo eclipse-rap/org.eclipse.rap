@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.json.JsonArray;
@@ -62,10 +60,6 @@ public final class JsonUtil {
     return result;
   }
 
-  /**
-   * @deprecated
-   */
-  @Deprecated
   public static JsonValue createJsonObject( Map properties ) {
     JsonValue result;
     if( properties != null ) {
@@ -114,11 +108,7 @@ public final class JsonUtil {
     return array;
   }
 
-  /**
-   * @deprecated
-   */
-  @Deprecated
-  public static JsonValue createJsonArray( Object[] values ) {
+  private static JsonValue createJsonArray( Object[] values ) {
     JsonValue result;
     if( values != null ) {
       JsonArray array = new JsonArray();
@@ -128,59 +118,6 @@ public final class JsonUtil {
       result = array;
     } else {
       result = JsonValue.NULL;
-    }
-    return result;
-  }
-
-  /**
-   * @deprecated
-   */
-  @Deprecated
-  public static Object jsonToJava( JsonValue object ) {
-    Object result = null;
-    if( object != null ) {
-      if( object.isNull() ) {
-        result = object;
-      } else if( object.isBoolean() ) {
-        result = Boolean.valueOf( object.asBoolean() );
-      } else if( object.isString() ) {
-        result = object.asString();
-      } else if( object.isNumber() ) {
-        try {
-          result = Integer.valueOf( object.asInt() );
-        } catch( NumberFormatException e ) {
-          result = Double.valueOf( object.asDouble() );
-        }
-      } else if( object instanceof JsonArray ) {
-        result = jsonToJava( ( JsonArray )object );
-      } else if( object instanceof JsonObject ) {
-        result = jsonToJava( ( JsonObject )object );
-      }
-    }
-    return result;
-  }
-
-  private static Object[] jsonToJava( JsonArray object ) {
-    Object[] result = new Object[ object.size() ];
-    try {
-      for( int i = 0; i < result.length; i++ ) {
-        result[ i ] = jsonToJava( object.get( i ) );
-      }
-    } catch( Exception e ) {
-      throw new RuntimeException( "Unable to convert JsonArray to Java: " + object );
-    }
-    return result;
-  }
-
-  private static Map<String,Object> jsonToJava( JsonObject object ) {
-    Map<String,Object> result = new HashMap<String, Object>();
-    List<String> names = object.names();
-    for( String name : names ) {
-      try {
-        result.put( name, jsonToJava( object.get( name ) ) );
-      } catch( Exception e ) {
-        throw new RuntimeException( "Unable to convert JsonObject to Java: " + object );
-      }
     }
     return result;
   }
