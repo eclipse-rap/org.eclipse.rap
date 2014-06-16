@@ -99,21 +99,84 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       widget.destroy();
     },
 
-    testSendAllFieldsTogether : function() {
+    testSendDate_allFieldsTogether : function() {
       var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
       dateTime.setDay( 10 );
       dateTime.setMonth( 10 );
       dateTime.setYear( 2010 );
-      TestUtil.clearRequestLog();
+      TestUtil.flush();
 
       TestUtil.press( dateTime, "Right" );
       rwt.remote.Connection.getInstance().send();
 
-      assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( 11, message.findSetProperty( "w3", "day" ) );
       assertEquals( 10, message.findSetProperty( "w3", "month" ) );
       assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testDateChanged_onNextMonthButtonClick : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.click( dateTime._calendar._nextMonthBt );
+
+      var date = dateTime._calendar.getDate();
+      assertEquals( 1, date.getDate() );
+      assertEquals( 11, date.getMonth() );
+      assertEquals( 2010, date.getFullYear() );
+      dateTime.destroy();
+    },
+
+    testDateChanged_onLastMonthButtonClick : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.click( dateTime._calendar._lastMonthBt );
+
+      var date = dateTime._calendar.getDate();
+      assertEquals( 1, date.getDate() );
+      assertEquals( 9, date.getMonth() );
+      assertEquals( 2010, date.getFullYear() );
+      dateTime.destroy();
+    },
+
+    testDateChanged_onNextYearButtonClick : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.click( dateTime._calendar._nextYearBt );
+
+      var date = dateTime._calendar.getDate();
+      assertEquals( 1, date.getDate() );
+      assertEquals( 10, date.getMonth() );
+      assertEquals( 2011, date.getFullYear() );
+      dateTime.destroy();
+    },
+
+    testDateChanged_onLastYearButtonClick : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.click( dateTime._calendar._lastYearBt );
+
+      var date = dateTime._calendar.getDate();
+      assertEquals( 1, date.getDate() );
+      assertEquals( 10, date.getMonth() );
+      assertEquals( 2009, date.getFullYear() );
       dateTime.destroy();
     },
 
@@ -124,6 +187,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       TestUtil.flush();
 
       TestUtil.press( dateTime, "Up" );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getMessageObject();
+      assertNotNull( message.findNotifyOperation( "w3", "Selection" ) );
+      dateTime.destroy();
+    },
+
+    testSendSelectionEvent_onNavButtonClick : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      TestUtil.fakeListener( dateTime, "Selection", true );
+      TestUtil.clearRequestLog();
+      TestUtil.flush();
+
+      TestUtil.click( dateTime._calendar._nextMonthBt );
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
       assertEquals( 1, TestUtil.getRequestsSend() );

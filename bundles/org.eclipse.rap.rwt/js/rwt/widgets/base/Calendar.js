@@ -388,6 +388,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       }
 
       this.showMonth(month, year);
+      this.setDate( new Date( year, month, 1 ) );
     },
 
     /**
