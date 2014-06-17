@@ -11,10 +11,11 @@
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -26,12 +27,14 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "restriction" )
 public class DNDEntryPoint implements EntryPoint {
 
   public static final String ID_DRAG_SOURCE = "dragSourceId";
@@ -71,7 +74,14 @@ public class DNDEntryPoint implements EntryPoint {
   }
 
   private static void assignWidgetId( Widget widget, String id ) {
-    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, id );
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )widget.getAdapter( WidgetAdapter.class );
+    try {
+      Field field = adapter.getClass().getDeclaredField( "id" );
+      field.setAccessible( true );
+      field.set( adapter, id );
+    } catch( Exception exception ) {
+      throw new RuntimeException( exception );
+    }
   }
 
   private static class LabelDragSourceListener extends DragSourceAdapter implements Serializable {

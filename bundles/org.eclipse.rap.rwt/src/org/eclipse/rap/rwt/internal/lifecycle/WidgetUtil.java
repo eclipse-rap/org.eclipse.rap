@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class WidgetUtil {
 
-  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rap.rwt.customWidgetId";
-
   private WidgetUtil() {
     // prevent instantiation
   }

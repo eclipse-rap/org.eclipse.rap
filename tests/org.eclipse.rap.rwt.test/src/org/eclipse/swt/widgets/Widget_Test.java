@@ -36,7 +36,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -237,25 +236,6 @@ public class Widget_Test {
     widget.dispose();
 
     widget.getData( "foo" );
-  }
-
-  @Test
-  public void testSetData_handlesCustomId() {
-    UITestUtilAdapter.setUITestEnabled( true );
-
-    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
-
-    assertEquals( "custom-id", WidgetUtil.getId( widget ) );
-  }
-
-  @Test
-  public void testGetCustomIdOnDisposedWidget() {
-    UITestUtilAdapter.setUITestEnabled( true );
-
-    widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "custom-id" );
-    widget.dispose();
-
-    assertEquals( "custom-id", WidgetUtil.getId( widget ) );
   }
 
   @Test

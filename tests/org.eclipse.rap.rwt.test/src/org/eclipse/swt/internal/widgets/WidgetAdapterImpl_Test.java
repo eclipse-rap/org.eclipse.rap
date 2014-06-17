@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
@@ -75,51 +74,6 @@ public class WidgetAdapterImpl_Test {
     String id = adapter.getId();
 
     assertEquals( "id", id );
-  }
-
-  @Test
-  public void testGetId_ignoresCustomIdWhenUITestDisabled() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "default-id" );
-
-    adapter.setCustomId( "custom-id" );
-
-    assertEquals( "default-id", adapter.getId() );
-  }
-
-  @Test
-  public void testGetId_returnsCustomIdWhenUITestEnabled() {
-    UITestUtilAdapter.setUITestEnabled( true );
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "default-id" );
-
-    adapter.setCustomId( "custom-id" );
-
-    assertEquals( "custom-id", adapter.getId() );
-  }
-
-  @Test
-  public void testSetCustomId_failsAfterWidgetIsInitialised() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "default-id" );
-    adapter.setInitialized( true );
-
-    try {
-      adapter.setCustomId( "custom-id" );
-      fail();
-    } catch( IllegalStateException expected ) {
-      assertEquals( "Widget is already initialized", expected.getMessage() );
-    }
-  }
-
-  @Test
-  public void testSetCustomId_failsWithIllegalId() {
-    UITestUtilAdapter.setUITestEnabled( true );
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "default-id" );
-
-    try {
-      adapter.setCustomId( "#!pf" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-      assertEquals( "The widget id contains illegal characters: #!pf", expected.getMessage() );
-    }
   }
 
   @Test

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Widget;
 public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompatibility {
 
   private final String id;
-  private String customId;
   private boolean initialized;
   private transient Map<String,Object> preservedValues;
   private transient IRenderRunnable renderRunnable;
@@ -42,7 +40,7 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
   }
 
   public String getId() {
-    return customId != null ? customId : id;
+    return id;
   }
 
   public void setParent( Widget parent ) {
@@ -51,16 +49,6 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
 
   public Widget getParent() {
     return parent;
-  }
-
-  public void setCustomId( String customId ) {
-    if( isInitialized() ) {
-      throw new IllegalStateException( "Widget is already initialized" );
-    }
-    if( UITestUtil.isEnabled() ) {
-      UITestUtil.checkId( customId );
-      this.customId = customId;
-    }
   }
 
   public boolean isInitialized() {

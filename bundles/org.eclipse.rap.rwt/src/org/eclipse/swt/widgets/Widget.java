@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.scripting.ClientListener;
@@ -338,7 +337,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    handleCustomId( key, value );
     int index = 1;
     Object[] table = null;
     if( ( state & KEYED_DATA ) != 0 ) {
@@ -383,13 +381,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     if( key.equals( SWT.SKIN_CLASS ) || key.equals( SWT.SKIN_ID ) ) {
       reskin( SWT.ALL );
-    }
-  }
-
-  private void handleCustomId( String key, Object value ) {
-    if( key.equals( WidgetUtil.CUSTOM_WIDGET_ID ) && value instanceof String ) {
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( WidgetAdapter.class );
-      adapter.setCustomId( ( String )value );
     }
   }
 

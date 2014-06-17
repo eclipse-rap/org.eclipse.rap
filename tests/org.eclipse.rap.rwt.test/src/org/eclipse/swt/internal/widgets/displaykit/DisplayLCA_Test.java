@@ -371,32 +371,6 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testInvalidCustomId() {
-    Fixture.markInitialized( display );
-    setEnableUiTests( true );
-    Shell shell = new Shell( display );
-
-    try {
-      shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "in/valid id" );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().contains( "widget id contains illegal characters" ) );
-    }
-  }
-
-  @Test
-  public void testRenderWithCustomId() throws IOException {
-    Shell shell = new Shell( display, SWT.NONE );
-    setEnableUiTests( true );
-
-    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myShell" );
-    WidgetUtil.getLCA( shell ).renderInitialization( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( "myShell" ) );
-  }
-
-  @Test
   public void testRendersExitConfirmation() throws IOException {
     RWT.getClient().getService( ExitConfirmation.class ).setMessage( "test" );
 
