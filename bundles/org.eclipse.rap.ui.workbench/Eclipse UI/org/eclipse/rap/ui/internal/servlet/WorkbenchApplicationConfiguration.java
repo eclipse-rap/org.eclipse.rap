@@ -38,9 +38,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DefaultEntryPointFactory;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
@@ -66,7 +64,6 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
   private static final String ELEMENT_THEME = "theme";
   private static final String ELEMENT_THEME_CONTRIBUTION = "themeContribution";
   private static final String ID_THEMEABLE_WIDGETS = "org.eclipse.rap.ui.themeableWidgets";
-  private static final String ID_PHASE_LISTENER = "org.eclipse.rap.ui.phaselistener";
   private static final String ID_SERVICE_HANDLER = "org.eclipse.rap.ui.serviceHandler";
   private static final String ID_SETTING_STORES = "org.eclipse.rap.ui.settingstores";
 
@@ -94,7 +91,6 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
 
   public void configure( Application application ) {
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
-    registerPhaseListener( application );
     registerSettingStoreFactory( application );
     registerThemeableWidgets( application );
     registerThemes( application );
@@ -103,21 +99,6 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
     registerServiceHandlers( application );
     registerBrandings( application ); // [rh] brandings must be red before apps/entry points
     registerEntryPoints( application );
-  }
-
-  private void registerPhaseListener( Application application ) {
-    IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint point = registry.getExtensionPoint( ID_PHASE_LISTENER );
-    IConfigurationElement[] elements = point.getConfigurationElements();
-    for( int i = 0; i < elements.length; i++ ) {
-      try {
-        Object instance = elements[ i ].createExecutableExtension( "class" );
-        PhaseListener listener = ( PhaseListener )instance;
-        ( ( ApplicationImpl )application ).addPhaseListener( listener );
-      } catch( final CoreException ce ) {
-        WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
-      }
-    }
   }
 
   private void registerSettingStoreFactory( Application application ) {

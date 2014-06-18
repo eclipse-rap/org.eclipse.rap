@@ -22,7 +22,6 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -36,7 +35,6 @@ import org.eclipse.rap.rwt.service.SettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
 public class ApplicationImpl implements Application {
 
   private final ApplicationContextImpl applicationContext;
@@ -63,12 +61,6 @@ public class ApplicationImpl implements Application {
       default:
         throw new IllegalArgumentException( "Unsupported operation mode: " + operationMode );
     }
-  }
-
-  public void addPhaseListener( PhaseListener phaseListener ) {
-    ParamCheck.notNull( phaseListener, "phaseListener" );
-
-    applicationContext.getPhaseListenerManager().addPhaseListener( phaseListener );
   }
 
   public void setSettingStoreFactory( SettingStoreFactory settingStoreFactory ) {
