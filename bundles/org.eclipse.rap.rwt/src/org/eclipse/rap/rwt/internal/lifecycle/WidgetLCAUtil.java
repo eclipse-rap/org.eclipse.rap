@@ -29,14 +29,12 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.AddListener;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation.RemoveListener;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
-import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -46,17 +44,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
 
 public final class WidgetLCAUtil {
-
-  private static final String PARAM_X = "bounds.x";
-  private static final String PARAM_Y = "bounds.y";
-  private static final String PARAM_WIDTH = "bounds.width";
-  private static final String PARAM_HEIGHT = "bounds.height";
 
   private static final String PROP_TOOLTIP = "toolTip";
   private static final String PROP_TOOLTIP_MARKUP_ENABLED = "toolTipMarkupEnabled";
@@ -81,48 +73,6 @@ public final class WidgetLCAUtil {
 
   private WidgetLCAUtil() {
     // prevent instantiation
-  }
-
-  public static Rectangle readBounds( Widget widget, Rectangle defaultValue ) {
-    return readBounds( WidgetUtil.getId( widget ), defaultValue );
-  }
-
-  public static Rectangle readBounds( String widgetId, Rectangle defaultValue ) {
-    int x = readBoundsX( widgetId, defaultValue.x );
-    int y = readBoundsY( widgetId, defaultValue.y );
-    int width = readBoundsWidth( widgetId, defaultValue.width );
-    int height = readBoundsHeight( widgetId, defaultValue.height );
-    return new Rectangle( x, y, width, height );
-  }
-
-  private static int readBoundsY( String widgetId, int defaultValue ) {
-    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_Y );
-    return readBoundsValue( value, defaultValue );
-  }
-
-  private static int readBoundsX( String widgetId, int defaultValue ) {
-    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_X );
-    return readBoundsValue( value, defaultValue );
-  }
-
-  private static int readBoundsWidth( String widgetId, int defaultValue ) {
-    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_WIDTH );
-    return readBoundsValue( value, defaultValue );
-  }
-
-  private static int readBoundsHeight( String widgetId, int defaultValue ) {
-    JsonValue value = ProtocolUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
-    return readBoundsValue( value, defaultValue );
-  }
-
-  private static int readBoundsValue( JsonValue value, int defaultValue ) {
-    return value == null || value.isNull() ? defaultValue : value.asInt();
-  }
-
-  public static void processHelp( Widget widget ) {
-    if( wasEventSent( widget, ClientMessageConst.EVENT_HELP ) ) {
-      widget.notifyListeners( SWT.Help, new Event() );
-    }
   }
 
   public static void preserveBounds( Widget widget, Rectangle bounds ) {
@@ -410,17 +360,6 @@ public final class WidgetLCAUtil {
     adapter.preserve( LISTENER_PREFIX + listener, new Boolean( value ) );
   }
 
-  @SuppressWarnings( "deprecation" )
-  public static void renderProperty( Widget widget,
-                                     String property,
-                                     Object newValue,
-                                     Object defaultValue )
-  {
-    if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      getRemoteObject( widget ).set( property, createJsonValue( newValue ) );
-    }
-  }
-
   public static void renderProperty( Widget widget,
                                      String property,
                                      String newValue,
@@ -641,10 +580,6 @@ public final class WidgetLCAUtil {
       result = !equals( newValue, defaultValue );
     }
     return result;
-  }
-
-  public static String replaceNewLines( String input, String replacement ) {
-    return EncodingUtil.replaceNewLines( input, replacement );
   }
 
   public static String[] getStyles( Widget widget, String[] styles ) {
