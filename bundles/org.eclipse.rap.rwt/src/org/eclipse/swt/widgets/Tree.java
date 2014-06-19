@@ -183,14 +183,14 @@ public class Tree extends Composite {
     if( isVirtual() ) {
       int count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null && items[ i ].isCached() ) {
+        if( items[ i ] != null ) {
           count++;
         }
       }
       result = new TreeItem[ count ];
       count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null && items[ i ].isCached() ) {
+        if( items[ i ] != null ) {
           result[ count ] = items[ i ];
           count++;
         }
@@ -972,6 +972,9 @@ public class Tree extends Composite {
       if( recursive ) {
         item.clearAll( true, false );
       }
+      if( isVirtual() ) {
+        redraw();
+      }
     }
   }
 
@@ -1064,8 +1067,8 @@ public class Tree extends Composite {
         }
       }
     }
-    if( isVirtual() && itemCount != 0 ) {
-      updateAllItems();
+    if( isVirtual() ) {
+      redraw();
     }
   }
 
@@ -2162,7 +2165,7 @@ public class Tree extends Composite {
       item.setFlatIndex( newFlatIndex );
     }
     newFlatIndex++;
-    if( item != null && item.isCached() && item.getExpanded() ) {
+    if( item != null && item.getExpanded() ) {
       for( int i = 0; i < item.itemCount; i++ ) {
         newFlatIndex = updateAllItemsRecursively( item, i, newFlatIndex );
       }

@@ -253,6 +253,27 @@ public class TreeItem_Test {
   }
 
   @Test
+  public void testClear_onVirtual_redrawsTree() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item, SWT.NONE );
+
+    item.clear( 0, false );
+
+    assertTrue( display.needsRedraw( tree ) );
+  }
+
+  @Test
+  public void testClearAll_onVirtual_redrawsTree() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.clearAll( false );
+
+    assertTrue( display.needsRedraw( tree ) );
+  }
+
+  @Test
   public void testClearAll() {
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem root = new TreeItem( tree, SWT.NONE );
@@ -2102,20 +2123,6 @@ public class TreeItem_Test {
     item.setItemCount( 100 );
 
     item.setExpanded( true );
-
-    assertTrue( item.getCreatedItems().length < 10 );
-  }
-
-  @Test
-  public void testGetCreatedItems_DoesNotContainPlaceholderItems() {
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
-    tree.setSize( 100, 100 );
-    tree.setItemCount( 1 );
-    TreeItem item = tree.getItem( 0 );
-    item.setItemCount( 100 );
-
-    item.setExpanded( true );
-    item.getItems(); // create placeholder items
 
     assertTrue( item.getCreatedItems().length < 10 );
   }

@@ -1114,6 +1114,9 @@ public class TreeItem extends Item {
       if( recursive ) {
         item.clearAll( true, false );
       }
+      if( parent.isVirtual() ) {
+        parent.redraw();
+      }
     }
   }
 
@@ -1223,6 +1226,9 @@ public class TreeItem extends Item {
         }
       }
     }
+    if( parent.isVirtual() && doVisualUpdate ) {
+      parent.redraw();
+    }
   }
 
   ////////////////////////////////////////
@@ -1268,14 +1274,14 @@ public class TreeItem extends Item {
     if( parent.isVirtual() ) {
       int count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null && items[ i ].isCached() ) {
+        if( items[ i ] != null ) {
           count++;
         }
       }
       result = new TreeItem[ count ];
       count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null && items[ i ].isCached() ) {
+        if( items[ i ] != null ) {
           result[ count ] = items[ i ];
           count++;
         }
@@ -1535,11 +1541,7 @@ public class TreeItem extends Item {
   }
 
   boolean isCached() {
-    boolean result = true;
-    if( parent.isVirtual() ) {
-      result = cached;
-    }
-    return result;
+    return parent.isVirtual() ? cached : true;
   }
 
   private static boolean equals( Object object1, Object object2 ) {
