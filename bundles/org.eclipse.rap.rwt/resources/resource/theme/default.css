@@ -1082,6 +1082,7 @@ TableColumn {
   color: inherit;
   border-bottom: 1px solid #bdbdbd;
   text-shadow: 0 1px 0 #ffffff;
+  text-overflow: ellipsis;
 }
 
 TableColumn:hover {
@@ -1099,6 +1100,7 @@ TableItem:linesvisible:even:rowtemplate {
   text-decoration: none;
   text-shadow: none;
   background-image: none;
+  text-overflow: ellipsis;
 }
 
 TableItem:linesvisible:even {
@@ -1377,6 +1379,7 @@ TreeItem:linesvisible:even:rowtemplate {
   text-decoration: none;
   text-shadow: none;
   background-image: none;
+  text-overflow: ellipsis;
 }
 
 TreeItem:linesvisible:even {
@@ -1463,6 +1466,7 @@ TreeColumn {
   padding: 8px 10px 8px 6px;
   border-bottom: 1px solid #bdbdbd;
   text-shadow: none;
+  text-overflow: ellipsis;
 }
 
 TreeColumn:hover {

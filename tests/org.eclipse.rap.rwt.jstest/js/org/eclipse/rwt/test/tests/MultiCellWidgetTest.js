@@ -374,6 +374,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
+    testTextOverflow : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+
+      widget.setTextOverflow( "ellipsis" );
+
+      var style = widget._getTargetNode().lastChild.style;
+      assertEquals( "ellipsis", style.textOverflow );
+      assertEquals( "nowrap", style.whiteSpace );
+
+      widget.setTextOverflow( "clip" );
+      assertEquals( "", style.textOverflow );
+      assertEquals( "", style.whiteSpace );
+      widget.destroy();
+    },
+
+    testTextOverflow_byTheming : function() {
+      var widget = this.createDefaultWidget();
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textOverflow : "ellipsis"
+          };
+        }
+      } );
+      widget.setAppearance( "foo" );
+      this.initWidget( widget, true );
+
+      var style = widget._getTargetNode().lastChild.style;
+      assertEquals( "ellipsis", style.textOverflow );
+
+      widget.destroy();
+    },
+
     testTextAlign : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget );

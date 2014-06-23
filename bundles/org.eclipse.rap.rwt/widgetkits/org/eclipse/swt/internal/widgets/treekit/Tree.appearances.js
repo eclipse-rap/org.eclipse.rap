@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ var appearances = {
       result.foreground = tv.getCssColor( "TreeItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
       result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
+      result.textOverflow = tv.getCssIdentifier( "TreeItem", "text-overflow" );
       return result;
     }
   },
@@ -116,6 +117,7 @@ var appearances = {
       }
       result.border = new rwt.html.Border( borderWidths, borderStyles, borderColors );
       result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
+      result.textOverflow = tv.getCssIdentifier( "TreeColumn", "text-overflow" );
       return result;
     }
   },

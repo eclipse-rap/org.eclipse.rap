@@ -170,8 +170,8 @@ public class TableTab extends ExampleTab {
     }
     for( int i = 0; i < columns; i++ ) {
       final TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setText( "Col " + i );
-      column.setToolTipText( "Col " + i );
+      column.setText( "Column " + i );
+      column.setToolTipText( "Column " + i );
       if( columnImages ) {
         column.setImage( columnImage );
       }

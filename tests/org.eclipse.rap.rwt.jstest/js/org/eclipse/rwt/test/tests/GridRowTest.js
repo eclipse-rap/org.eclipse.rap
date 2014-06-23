@@ -511,6 +511,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "absolute", node.style.position );
       assertEquals( "nowrap", node.style.whiteSpace );
       assertTrue( "inherit" === node.style.textDecoration || "" === node.style.textDecoration );
+      assertTrue( "inherit" === node.style.textOverflow || "" === node.style.textOverflow );
       assertEquals( "hidden", node.style.overflow );
       if( rwt.client.Client.isTrident() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
@@ -535,6 +536,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       row.renderItem( item, tree._config, false, null );
       var node = row.getElement();
       assertEquals( "line-through", node.style.textDecoration );
+    },
+
+    testLabelOverflow : function() {
+      TestUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          result.background = "blue";
+          result.backgroundGradient = null;
+          result.backgroundImage = null;
+          result.foreground = "white";
+          result.textOverflow = "ellipsis";
+          return result;
+        }
+      } );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      row.renderItem( item, tree._config, false, null );
+      var node = row.getElement();
+      assertEquals( "ellipsis", node.style.textOverflow );
     },
 
     testRenderNoElementForEmptyText : function() {

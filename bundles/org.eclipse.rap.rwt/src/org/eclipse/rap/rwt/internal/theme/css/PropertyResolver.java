@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,8 @@ public final class PropertyResolver {
       result = readBackgroundPosition( unit );
     } else if( isTextDecorationProperty( name ) ) {
       result = readTextDecoration( unit );
+    } else if( isTextOverflowProperty( name ) ) {
+      result = readTextOverflow( unit );
     } else if( isTextAlignProperty( name ) ) {
       result = readTextAlign( unit );
     } else if( isCursorProperty( name ) ) {
@@ -774,6 +776,27 @@ public final class PropertyResolver {
     }
     if( result == null ) {
       throw new IllegalArgumentException( "Failed to parse text-decoration " + toString( unit ) );
+    }
+    return result;
+  }
+
+  static boolean isTextOverflowProperty( String property ) {
+    return "text-overflow".equals( property );
+  }
+
+  static QxIdentifier readTextOverflow( LexicalUnit unit ) {
+    QxIdentifier result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = unit.getStringValue();
+      if( "clip".equals( value ) || "ellipsis".equals( value ) ) {
+        result = new QxIdentifier( value );
+      } else {
+        throw new IllegalArgumentException( "Invalid value for text-overflow: " + value );
+      }
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse text-overflow " + toString( unit ) );
     }
     return result;
   }

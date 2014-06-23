@@ -994,6 +994,7 @@ TableItem {
   text-decoration: none;
   text-shadow: none;
   background-image: none;
+  text-overflow: clip;
 }
 
 TableItem:linesvisible:even {
@@ -1046,6 +1047,7 @@ TableColumn {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
   text-shadow: none;
+  text-overflow: clip;
 }
 
 TableColumn:hover {
@@ -1260,6 +1262,7 @@ TreeItem {
   text-decoration: none;
   text-shadow: none;
   background-image: none;
+  text-overflow: clip;
 }
 
 TreeItem:linesvisible:even {
@@ -1312,6 +1315,7 @@ TreeColumn {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
   text-shadow: none;
+  text-overflow: clip;
 }
 
 TreeColumn:hover {

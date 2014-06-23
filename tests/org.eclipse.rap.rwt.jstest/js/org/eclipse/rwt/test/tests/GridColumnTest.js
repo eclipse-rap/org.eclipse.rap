@@ -52,6 +52,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       assertIdentical( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
+      assertEquals( 1, label.getFlexibleCell() );
       column.dispose();
       tree.destroy();
     },

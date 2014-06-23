@@ -75,6 +75,13 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       apply : "_applyVerticalChildrenAlign"
     },
 
+    textOverflow : {
+      check : [ "clip", "ellipsis" ],
+      init : "clip",
+      themeable : true,
+      apply : "_applyTextOverflow"
+    },
+
     /////////////////////////////////
     // refined properties from Widget
 
@@ -281,6 +288,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( !this.getEnabled() ) {
         this._applyEnabled( false );
       }
+      this._applyTextOverflow( this.getTextOverflow() );
     },
 
     /*
@@ -330,6 +338,16 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     _applyEnabled : function( value, old ) {
       this.base( arguments, value, old );
       this._styleAllImagesEnabled();
+    },
+
+    _applyTextOverflow : function( value, old ) {
+      for( var i = 0; i < this.__cellCount; i++ ) {
+        if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
+          var node = this.getCellNode( i );
+          rwt.html.Style.setStyleProperty( node, "textOverflow", value === "clip" ? "" : value );
+          rwt.html.Style.setStyleProperty( node, "whiteSpace", value === "clip" ? "" : "nowrap" );
+        }
+      }
     },
 
     /*

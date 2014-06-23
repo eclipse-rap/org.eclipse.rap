@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ TableColumn {
   color: #4a4a4a;
   border-bottom: 1px solid #aaaaaa;
   text-shadow: none;
+  text-overflow: clip;
 }
 
 TableItem {
@@ -40,6 +41,7 @@ TableItem {
   text-decoration: none;
   text-shadow: none;
   background-image: none;
+  text-overflow: clip;
 }
 
 TableItem:hover {
@@ -83,7 +85,7 @@ Table-GridLine:horizontal {
 }
 
 Table-Checkbox {
-  /* 
+  /*
   For backward compatibility we have to keep the width property.
   Deprecated, use "margin" instead.
   */

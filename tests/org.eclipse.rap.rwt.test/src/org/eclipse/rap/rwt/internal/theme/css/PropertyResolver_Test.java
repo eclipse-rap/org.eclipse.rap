@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -997,6 +997,23 @@ public class PropertyResolver_Test {
   @Test( expected = IllegalArgumentException.class )
   public void testTextDecoration_Invalid() throws Exception {
     PropertyResolver.readTextDecoration( parseProperty( "foo" ) );
+  }
+
+  @Test
+  public void testIsTextOverflowProperty() {
+    assertTrue( PropertyResolver.isTextOverflowProperty( "text-overflow" ) );
+  }
+
+  @Test
+  public void testTextOverflow_Valid() throws Exception {
+    QxIdentifier identifier = PropertyResolver.readTextOverflow( parseProperty( "ellipsis" ) );
+
+    assertEquals( "ellipsis", identifier.value );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testTextOverflow_Invalid() throws Exception {
+    PropertyResolver.readTextOverflow( parseProperty( "foo" ) );
   }
 
   @Test

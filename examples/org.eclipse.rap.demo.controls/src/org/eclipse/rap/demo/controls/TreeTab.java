@@ -146,17 +146,18 @@ public class TreeTab extends ExampleTab {
     }
     tree.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     for( int i = 0; i < INITIAL_COLUMNS; i++ ) {
-      final TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-      col1.setText( "Col " + i );
+      final TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setText( "Column " + i );
+      column.setToolTipText( "Column " + i );
       if( columnImages ) {
-        col1.setImage( columnImage );
+        column.setImage( columnImage );
       }
-      col1.setWidth( 150 );
-      col1.setMoveable( columnsMoveable );
-      col1.addListener( SWT.Selection, new Listener() {
+      column.setWidth( 150 );
+      column.setMoveable( columnsMoveable );
+      column.addListener( SWT.Selection, new Listener() {
         public void handleEvent( Event event ) {
-          Tree tree = col1.getParent();
-          if( tree.getSortColumn() == col1 ) {
+          Tree tree = column.getParent();
+          if( tree.getSortColumn() == column ) {
             if( tree.getSortDirection() == SWT.UP ) {
               tree.setSortDirection( SWT.DOWN );
             } else {
@@ -164,7 +165,7 @@ public class TreeTab extends ExampleTab {
             }
           } else {
             tree.setSortDirection( SWT.UP );
-            tree.setSortColumn( col1 );
+            tree.setSortColumn( column );
           }
         }
       } );
