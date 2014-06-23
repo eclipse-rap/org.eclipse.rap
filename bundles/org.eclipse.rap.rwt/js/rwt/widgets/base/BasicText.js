@@ -376,7 +376,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         inputElement.style.border = "0 none";
         inputElement.style.background = "transparent";
         // See Bug 419676: [Text] Input element of Text field may not be vertically centered in IE
-        if( rwt.client.Client.isNewMshtml() ) {
+        if( rwt.client.Client.isTrident() ) {
           inputElement.style.verticalAlign = "top";
         }
         inputElement.style.overflow = this._inputOverflow;
@@ -719,7 +719,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyBrowserFixes : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "newmshtml" : function() {
+      "trident" : function() {
         // See Bug 372193 - Text widget: Modify Event not fired for Backspace key in IE
         this._checkTimer = new rwt.client.Timer( 0 );
         this._checkTimer.addEventListener( "interval", this._checkValueChanged, this );

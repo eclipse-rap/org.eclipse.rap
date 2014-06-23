@@ -37,7 +37,7 @@ rwt.client.Client = {
     this._initKonqueror();
     this._initWebkit();
     this._initGecko();
-    this._initMshtml();
+    this._initTrident();
     this._initBoxSizing();
     this._initLocale();
     this._initPlatform();
@@ -75,12 +75,13 @@ rwt.client.Client = {
     return this._engineVersionBuild;
   },
 
+  // TODO [tb] : To be removed before 3.0
   isMshtml : function() {
     return this._engineName === "mshtml";
   },
 
-  isNewMshtml : function() {
-    return this._engineName === "newmshtml";
+  isTrident : function() {
+    return this._engineName === "trident";
   },
 
   isGecko : function() {
@@ -173,7 +174,7 @@ rwt.client.Client = {
     var result =    engine === "gecko" && version >= 1.8
                  || engine === "webkit" && version >= 523
                  || engine === "opera" && version >= 9
-                 || engine === "newmshtml";
+                 || engine === "trident";
     if( this.isAndroidBrowser() ) {
       result = version >= 534; // only Android 3+ supports SVG
     }
@@ -194,7 +195,7 @@ rwt.client.Client = {
     var version = rwt.client.Client.getVersion();
     var result =    engine === "webkit" && version >= 522
                  || engine === "gecko" && version >= 2 // firefox 4+
-                 || engine === "newmshtml" && version >= 10; // IE10 +
+                 || engine === "trident" && version >= 10; // IE10 +
     return result;
   },
 
@@ -202,7 +203,7 @@ rwt.client.Client = {
   // Inspired by https://github.com/yonran/detect-zoom
   isZoomed : function() {
     var result = false;
-    if( this._engineName === "mshtml" || this._engineName === "newmshtml" ) {
+    if( this._engineName === "mshtml" || this._engineName === "trident" ) {
       if( this._engineVersionMajor >= 8 ) {
         result = ( screen.deviceXDPI / screen.logicalXDPI ) !== 1;
       } else {
@@ -333,23 +334,18 @@ rwt.client.Client = {
     }
   },
 
-  _initMshtml : function() {
+  _initTrident : function() {
     if( !this._isBrowserDetected() ) {
       var userAgent = navigator.userAgent;
-      var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( userAgent );
-      if( isMshtml ) {
+      if( /MSIE\s+([^\);]+)(\)|;)/.test( userAgent ) ) {
         this._parseVersion( RegExp.$1 );
-        if( this._engineVersion >= 9 ) {
-          this._engineName = "newmshtml";
-        } else {
-          this._engineName = "mshtml";
-        }
+        this._engineName = "trident";
         this._browserName = "explorer";
       } else {
         // IE11 does not have MSIE in his userAgent string - see bug 421529
         if( userAgent.indexOf( "Trident" ) != -1 && /rv\:([^\);]+)(\)|;)/.test( userAgent ) ) {
           this._parseVersion( RegExp.$1 );
-          this._engineName = "newmshtml";
+          this._engineName = "trident";
           this._browserName = "explorer";
         }
       }
@@ -388,7 +384,7 @@ rwt.client.Client = {
   },
 
   _initLocale : function() {
-    var language =   ( this._engineName.indexOf( "mshtml" ) !== -1 )
+    var language =   ( this._engineName === "trident" )
                    ? navigator.userLanguage
                    : navigator.language;
     var browserLocale = language.toLowerCase();

@@ -258,7 +258,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     },
 
     _isConnectionError : rwt.util.Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function( statusCode ) {
+      "mshtml|trident" : function( statusCode ) {
         // for a description of the IE status codes, see
         // http://support.microsoft.com/kb/193625
         var result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
 
   members : {
 
-    TARGETENGINE : [ "gecko", "webkit", "newmshtml" ],
+    TARGETENGINE : [ "gecko", "webkit", "trident" ],
 
     testDrawShapeInWidget : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -180,7 +180,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isTrident() ) {
         expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
@@ -200,7 +200,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isTrident() ) {
         expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
@@ -270,7 +270,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.appendChild( GraphicsUtil.getCanvasNode( canvas ) );
       GraphicsUtil.handleAppear( canvas );
       var hash = rwt.qx.Object.toHashCode( shape );
-      var ieTen = rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() > 9;
+      var ieTen = rwt.client.Client.isTrident() && rwt.client.Client.getMajor() > 9;
       var expected = ieTen ? "url(\"#filter_" + hash + "\")" : "url(#filter_" + hash + ")";
       assertEquals( expected, shape.node.getAttribute( "filter" ) );
       var filterNode = canvas.defsNode.firstChild;
@@ -346,7 +346,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertIdentical( canvas.node, canvas.group.parentNode );
       assertIdentical( canvas.group, shape.node.parentNode );
       var transform = canvas.group.getAttribute( "transform" );
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isTrident() ) {
         transform = transform.split( " " ).join( "," );
       } else {
         transform = transform.split( " " ).join( "" );

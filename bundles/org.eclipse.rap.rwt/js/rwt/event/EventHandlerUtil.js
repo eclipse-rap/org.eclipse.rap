@@ -229,7 +229,7 @@ rwt.event.EventHandlerUtil = {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.charCode : 0;
     },
-    "mshtml|newmshtml|opera" : function( event ) {
+    "mshtml|trident|opera" : function( event ) {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.keyCode : 0;
     }

@@ -152,7 +152,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       var result = true;
       var engine = rwt.client.Client.getEngine();
       var version = rwt.client.Client.getMajor();
-      if( engine === "mshtml" && version < 7 ) {
+      if( engine === "trident" && version < 9 ) {
         result = false;
       }
       return result;
@@ -161,7 +161,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
     _isModeSupported : function() {
       var result = true;
       var engine = rwt.client.Client.getEngine();
-      if( engine === "newmshtml" && document.documentMode < 9 ) {
+      if( engine === "trident" && document.documentMode < 9 ) {
         result = false;
       }
       return result;

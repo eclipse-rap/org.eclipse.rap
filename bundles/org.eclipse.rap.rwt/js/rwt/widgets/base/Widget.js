@@ -2195,7 +2195,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE RANGES
 
     _recomputeRangeX : rwt.util.Variant.select("qx.client", {
-      "mshtml|newmshtml|opera|webkit" : function() {
+      "mshtml|trident|opera|webkit" : function() {
         if (this._computedLeftTypeNull || this._computedRightTypeNull) {
           return false;
         }
@@ -2208,7 +2208,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeRangeY : rwt.util.Variant.select("qx.client", {
-      "mshtml|newmshtml|opera|webkit" : function() {
+      "mshtml|trident|opera|webkit" : function() {
         if (this._computedTopTypeNull || this._computedBottomTypeNull) {
           return false;
         }
@@ -2224,7 +2224,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE STRETCHING
 
     _recomputeStretchingX : rwt.util.Variant.select("qx.client", {
-      "mshtml|newmshtml|opera|webkit" : function() {
+      "mshtml|trident|opera|webkit" : function() {
         if (this.getAllowStretchX() && this._computedWidthTypeNull) {
           this._computedWidthValue = null;
           this.addToLayoutChanges("width");
@@ -2241,7 +2241,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeStretchingY : rwt.util.Variant.select("qx.client", {
-      "mshtml|newmshtml|opera|webkit" : function() {
+      "mshtml|trident|opera|webkit" : function() {
         if (this.getAllowStretchY() && this._computedHeightTypeNull) {
           this._computedHeightValue = null;
           this.addToLayoutChanges("height");

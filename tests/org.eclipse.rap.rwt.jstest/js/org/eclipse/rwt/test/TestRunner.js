@@ -359,7 +359,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       rwt.event.EventHandler.detachEvents();
       rwt.qx.Target.prototype.dispatchEvent = function(){};
       rwt.animation.Animation._stopLoop();
-      rwt.runtime.MobileWebkitSupport._removeListeners();
+      if( rwt.client.Client.supportsTouch() ) {
+        rwt.runtime.MobileWebkitSupport._removeListeners();
+      }
     },
 
     getLog : function(){

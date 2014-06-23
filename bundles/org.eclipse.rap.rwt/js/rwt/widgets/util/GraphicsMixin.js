@@ -80,7 +80,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
           this._handleGfxShadow();
         }
       },
-      "newmshtml" : function( value, oldValue ) {
+      "trident" : function( value, oldValue ) {
         // Use CSS3 shadows for i9+
         this.base( arguments, value, oldValue );
       }
@@ -187,7 +187,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
 
     _handleCssRadii : rwt.util.Variant.select( "qx.client", {
       "default" : rwt.util.Functions.returnTrue,
-      "newmshtml" : function( radii ) {
+      "trident" : function( radii ) {
         // NOTE : While the actual border is rendred with vector graphics, CSS radii
         //        are set anyway to provide clipping and rounded CSS-shadows
         var props = rwt.html.Border._BORDERRADII;

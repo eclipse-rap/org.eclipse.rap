@@ -529,7 +529,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.press( widget, "Enter" );
       var expected = rwt.util.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
-        "mshtml|opera|newmshtml" : [ 13, undefined ],
+        "mshtml|opera|trident" : [ 13, undefined ],
         "default" : [ 13, 0 ]
       } );
       assertEquals( expected, log );

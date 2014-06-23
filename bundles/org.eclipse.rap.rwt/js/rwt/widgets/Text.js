@@ -166,7 +166,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       }
       var client = rwt.client.Client;
       if(    client.isMshtml()
-          || client.isNewMshtml() && client.getVersion() === 9 && this._isTextArea() )
+          || client.isTrident() && client.getVersion() === 9 && this._isTextArea() )
       {
         // Bug 427828 - [Text] Loses focus on click in IE8
         // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9

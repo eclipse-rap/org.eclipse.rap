@@ -187,7 +187,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     },
 
     _onClientLayout : ( function() {
-      if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() === 9 ) {
+      if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
         return function() {
           // NOTE [tb] : there is a bug in IE9 where the scrollbar is substracted from the inner
           //             size of an element, not added. Therefore add the barWidth twice.

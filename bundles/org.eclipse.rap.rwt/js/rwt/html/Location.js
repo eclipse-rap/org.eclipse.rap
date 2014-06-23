@@ -253,7 +253,7 @@ rwt.qx.Class.define("rwt.html.Location",
      */
     __computeOffset : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|newmshtml|webkit|opera" : function(elem)
+      "mshtml|trident|webkit|opera" : function(elem)
       {
         var doc = rwt.html.Nodes.getDocument(elem);
 

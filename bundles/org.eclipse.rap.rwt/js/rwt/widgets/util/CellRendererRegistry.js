@@ -124,7 +124,7 @@ var defaultTextRenderer = {
     return result;
   },
   "renderContent" : Variant.select( "qx.client", {
-    "mshtml|newmshtml" : function( element, content, cellData, options ) {
+    "mshtml|trident" : function( element, content, cellData, options ) {
       var text = content || "";
       if( options.markupEnabled ) {
         if( element.rap_Markup !== text ) {

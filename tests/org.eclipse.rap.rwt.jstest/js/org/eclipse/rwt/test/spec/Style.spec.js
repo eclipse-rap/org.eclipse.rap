@@ -233,7 +233,7 @@ describe( "Style", function() {
       Style.setBackgroundColor( element, null );
 
       expect( TestUtil.getCssBackgroundColor( element ) ).toBeNull();
-      if( Client.isNewMshtml() ) {
+      if( Client.isTrident() ) {
         expect( element.style.backgroundColor ).toBe( "rgba(0, 0, 0, 0)" );
       }
     } );
@@ -244,7 +244,7 @@ describe( "Style", function() {
       Style.setBackgroundColor( element, "transparent" );
 
       expect( TestUtil.getCssBackgroundColor( element ) ).toBeNull();
-      if( Client.isNewMshtml() ) {
+      if( Client.isTrident() ) {
         expect( element.style.backgroundColor ).toBe( "rgba(0, 0, 0, 0)" );
       }
     } );

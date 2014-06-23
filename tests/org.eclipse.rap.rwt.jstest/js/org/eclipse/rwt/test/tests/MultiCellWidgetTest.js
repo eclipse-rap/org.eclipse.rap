@@ -481,7 +481,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     },
 
     testContentNotSelectable : rwt.util.Variant.select("qx.client", {
-      "mshtml|newmshtml|opera" : function(){},
+      "mshtml|trident|opera" : function(){},
       "default": function() {
         var widget = this.createDefaultWidget();
         this.initWidget( widget, true );

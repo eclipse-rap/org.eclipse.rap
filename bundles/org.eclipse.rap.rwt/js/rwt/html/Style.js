@@ -711,7 +711,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
     },
 
     _clearCssBackground : function( target ) {
-      if( Client.isNewMshtml() ) {
+      if( Client.isTrident() ) {
         this.setStyleProperty( target, "background", "rgba(0, 0, 0, 0)" );
       } else {
         this.removeStyleProperty( target, "background" );

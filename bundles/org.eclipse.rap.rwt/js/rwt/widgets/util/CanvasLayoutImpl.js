@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -250,7 +250,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
      */
     layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
+      "mshtml|trident|opera|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.width || vJobs.minWidth || vJobs.maxWidth || vJobs.left || vJobs.right)
         {
@@ -285,7 +285,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
      */
     layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
+      "mshtml|trident|opera|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.height || vJobs.minHeight || vJobs.maxHeight || vJobs.top || vJobs.bottom)
         {

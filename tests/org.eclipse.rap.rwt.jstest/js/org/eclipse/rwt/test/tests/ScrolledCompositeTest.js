@@ -247,7 +247,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isNewMshtml() && rwt.client.Client.getMajor() === 9 ) {
+      if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {
@@ -535,7 +535,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isNewMshtml()  && rwt.client.Client.getMajor() === 9 ) {
+      if( rwt.client.Client.isTrident()  && rwt.client.Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {

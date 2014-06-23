@@ -911,7 +911,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var style = text._getTargetNode().firstChild.style;
       assertEquals( "absolute", style.position );
       assertEquals( "hidden", style.overflow );
-      if( !Client.isMshtml() && !Client.isNewMshtml() ) {
+      if( !Client.isMshtml() && !Client.isTrident() ) {
         assertTrue( style.outline.indexOf( "none" ) !== -1 );
       }
     },
@@ -1131,7 +1131,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testMissedDeleteInputEvent  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "newmshtml" : function() {
+      "trident" : function() {
         createText();
         text.setValue( "foobar" );
         var logger = TestUtil.getLogger();
@@ -1151,7 +1151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testMissedCtrlXInputEvent  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "newmshtml" : function() {
+      "trident" : function() {
         createText();
         text.setValue( "foobar" );
         var logger = TestUtil.getLogger();
@@ -1173,7 +1173,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testMissedInputEventCatchOnBlur  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "newmshtml" : function() {
+      "trident" : function() {
         createText();
         text.setValue( "foobar" );
         var logger = TestUtil.getLogger();
@@ -1414,7 +1414,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
       var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
       assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
-      if( Client.isNewMshtml() ) {
+      if( Client.isTrident() ) {
         assertEquals( "top", text._inputElement.style.verticalAlign );
       } else {
         assertEquals( "", text._inputElement.style.verticalAlign );
@@ -1445,7 +1445,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       // Bug 427828 - [Text] Loses focus on click in IE8
       // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
-      var expected = Client.isMshtml() || Client.isNewMshtml() && Client.getVersion() === 9;
+      var expected = Client.isMshtml() || Client.isTrident() && Client.getVersion() === 9;
       assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
     },
 

@@ -574,7 +574,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
     testBackgroundColorTransparent : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "newmshtml" : function() {
+      "trident" : function() {
         var widget = this._createWidget();
         assertEquals( "rgba(0, 0, 0, 0)", widget._style.backgroundColor );
         widget.setBackgroundColor( "red" );

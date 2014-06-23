@@ -27,15 +27,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testEngine : function() {
-      var engines = [ "mshtml", "gecko", "webkit", "opera", "newmshtml" ];
+      var engines = [ "gecko", "webkit", "opera", "trident" ];
       var currentEngine = Client.getEngine();
       assertTrue( engines.indexOf( currentEngine ) != -1 );
       var isEngine = 0;
-      isEngine = Client.isMshtml() ? isEngine + 1 : isEngine;
       isEngine = Client.isGecko() ? isEngine + 1 : isEngine;
       isEngine = Client.isOpera() ? isEngine + 1 : isEngine;
       isEngine = Client.isWebkit() ? isEngine + 1 : isEngine;
-      isEngine = Client.isNewMshtml() ? isEngine + 1 : isEngine;
+      isEngine = Client.isTrident() ? isEngine + 1 : isEngine;
       assertEquals( 1, isEngine );
       assertEquals( "string", typeof Client.getBrowser() );
       // NOTE: No check for specific browsers since there many clones that are

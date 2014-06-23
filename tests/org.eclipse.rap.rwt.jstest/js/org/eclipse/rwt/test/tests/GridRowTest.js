@@ -512,7 +512,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "nowrap", node.style.whiteSpace );
       assertTrue( "inherit" === node.style.textDecoration || "" === node.style.textDecoration );
       assertEquals( "hidden", node.style.overflow );
-      if( rwt.client.Client.isNewMshtml() ) {
+      if( rwt.client.Client.isTrident() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
       }
       assertFalse( row.getSelectable() );
@@ -2487,7 +2487,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundRendering_Bug373900 : rwt.util.Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function() {
+      "mshtml|trident" : function() {
         TestUtil.fakeAppearance( "tree-row", {
           style : function( states ) {
             var result = {};

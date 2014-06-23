@@ -134,7 +134,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       TestUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
-      var isMshtml = Client.isMshtml() || Client.isNewMshtml();
+      var isMshtml = Client.isMshtml() || Client.isTrident();
       if( isMshtml && Client.getMajor() < 10 ) {
         assertFalse( css.indexOf( "text-shadow:" ) !== -1 );
       } else {
