@@ -17,7 +17,6 @@ namespace( "rwt.event" );
 
 rwt.event.EventHandlerUtil = {
 
-  // TODO [tb] : integrate rwt.html.EventRegistration
   _lastUpDownType : {},
   _lastKeyCode : null,
 
@@ -48,9 +47,7 @@ rwt.event.EventHandlerUtil = {
           event.preventDefault();
         }
       };
-      rwt.html.EventRegistration.addEventListener( docElement,
-                                                  "mousedown",
-                                                  this._ffMouseFixListener );
+      docElement.addEventListener( "mousedown", this._ffMouseFixListener, false );
     },
     "default" : function() { }
   } ),
@@ -93,14 +90,13 @@ rwt.event.EventHandlerUtil = {
 
 
   blockUserDomEvents : function( element, value ) {
-    var eventUtil = rwt.html.EventRegistration;
     if( value ) {
       for( var i = 0; i < this._userEventTypes.length; i++ ) {
-        eventUtil.addEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );
+        element.addEventListener( this._userEventTypes[ i ], this._domEventBlocker, false );
       }
     } else {
       for( var i = 0; i < this._userEventTypes.length; i++ ) {
-        eventUtil.removeEventListener( element, this._userEventTypes[ i ], this._domEventBlocker );
+        element.removeEventListener( this._userEventTypes[ i ], this._domEventBlocker, false );
       }
     }
   },

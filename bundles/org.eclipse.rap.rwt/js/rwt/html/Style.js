@@ -735,13 +735,12 @@ rwt.qx.Class.define( "rwt.html.Style", {
     _passEventsThrough : function( target, value ) {
       // TODO [tb] : This is a very limited implementation that allowes
       // to click "through" the elmement, but won't handle hover and cursor.
-      var EventRegistration = rwt.html.EventRegistration;
       var types = rwt.event.EventHandler._mouseEventTypes;
       var handler = this._passEventThroughHandler;
       if( value === "none" ) {
         this.setStyleProperty( target, "cursor", "default" );
         for( var i = 0; i < types.length; i++ ) {
-          EventRegistration.addEventListener( target, types[ i ], handler );
+          target.addEventListener( types[ i ], handler, false );
         }
       } else {
         // TODO

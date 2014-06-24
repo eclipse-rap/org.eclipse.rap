@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,12 +29,11 @@ rwt.qx.Class.define("rwt.html.Scroll",
      * @param el {Element} html-element
      * @return {void}
      */
-    disableScrolling : function(el)
-    {
-      this.enableScrolling(el);
+    disableScrolling : function( el ) {
+      this.enableScrolling( el );
       el.scrollLeft = 0;
       el.scrollTop = 0;
-      rwt.html.EventRegistration.addEventListener(el, "scroll", this._onscroll);
+      el.addEventListener( "scroll", this._onscroll, false );
     },
 
 
@@ -46,7 +45,7 @@ rwt.qx.Class.define("rwt.html.Scroll",
      * @return {void}
      */
     enableScrolling : function( el ) {
-      rwt.html.EventRegistration.removeEventListener( el, "scroll", this._onscroll );
+      el.removeEventListener( "scroll", this._onscroll, false );
     },
 
 

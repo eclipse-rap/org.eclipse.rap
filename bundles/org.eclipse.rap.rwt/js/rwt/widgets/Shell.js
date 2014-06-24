@@ -165,9 +165,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     var document = rwt.widgets.base.ClientDocument.getInstance();
     document.removeEventListener( "windowresize", this._onWindowResize, this );
     if( this.isCreated() ) {
-      rwt.html.EventRegistration.removeEventListener( this.getElement(),
-                                                      "mousedown",
-                                                      this.__onwindowmousedown );
+      this.getElement().removeEventListener( "mousedown", this.__onwindowmousedown, false );
     }
   },
 
@@ -185,9 +183,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _onCreate : function( evt ) {
-      rwt.html.EventRegistration.addEventListener( this.getElement(),
-                                                  "mousedown",
-                                                  this.__onwindowmousedown );
+      this.getElement().addEventListener( "mousedown", this.__onwindowmousedown, false );
       this.removeEventListener( "create", this._onCreate, this );
     },
 

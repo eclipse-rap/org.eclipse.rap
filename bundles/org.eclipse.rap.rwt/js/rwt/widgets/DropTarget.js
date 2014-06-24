@@ -12,8 +12,6 @@
 namespace( "rwt.widgets" );
 
 (function() {
-  var addListener = rwt.html.EventRegistration.addEventListener;
-  var removeListener = rwt.html.EventRegistration.removeEventListener;
   var callWithElement = rwt.widgets.util.WidgetUtil.callWithElement;
 
   rwt.widgets.DropTarget = function( control, operations ) {
@@ -50,13 +48,13 @@ namespace( "rwt.widgets" );
         var listener = this._onDragEvent;
         callWithElement( this.control, function( element ) {
           if( enabled ) {
-            addListener( element, "dragenter", listener, false );
-            addListener( element, "dragover", listener, false );
-            addListener( element, "drop", listener, false );
+            element.addEventListener( "dragenter", listener, false );
+            element.addEventListener( "dragover", listener, false );
+            element.addEventListener( "drop", listener, false );
           } else {
-            removeListener( element, "dragenter", listener, false );
-            removeListener( element, "dragover", listener, false );
-            removeListener( element, "drop", listener, false );
+            element.removeEventListener( "dragenter", listener, false );
+            element.removeEventListener( "dragover", listener, false );
+            element.removeEventListener( "drop", listener, false );
           }
         } );
       }

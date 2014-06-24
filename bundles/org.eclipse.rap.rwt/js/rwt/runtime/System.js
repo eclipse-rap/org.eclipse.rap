@@ -31,9 +31,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       this._onloadWrapped = rwt.util.Functions.bind( this._onload, this );
       this._onbeforeunloadWrapped = rwt.util.Functions.bind( this._onbeforeunload, this );
       this._onunloadWrapped = rwt.util.Functions.bind( this._onunload, this );
-      rwt.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
-      rwt.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-      rwt.html.EventRegistration.addEventListener( window, "unload", this._onunloadWrapped );
+      window.addEventListener( "load", this._onloadWrapped, false );
+      window.addEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
+      window.addEventListener( "unload", this._onunloadWrapped, false );
       rwt.graphics.GraphicsUtil.init();
       this._applyPatches();
       rwt.event.EventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
@@ -174,9 +174,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
   },
 
   destruct : function() {
-    rwt.html.EventRegistration.removeEventListener( window, "load", this._onloadWrapped );
-    rwt.html.EventRegistration.removeEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
-    rwt.html.EventRegistration.removeEventListener( window, "unload", this._onunloadWrapped );
+    window.removeEventListener( "load", this._onloadWrapped, false );
+    window.removeEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
+    window.removeEventListener( "unload", this._onunloadWrapped, false );
   },
 
   defer : function( statics, proto, properties )  {

@@ -23,7 +23,6 @@ rwt/event/DataEvent.js
 rwt/event/ChangeEvent.js
 rwt/client/Timer.js
 rwt/html/Entity.js
-rwt/html/EventRegistration.js
 rwt/runtime/Singletons.js
 rwt/event/EventHandlerUtil.js
 rwt/remote/HandlerRegistry.js

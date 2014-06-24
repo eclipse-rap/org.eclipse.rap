@@ -55,26 +55,24 @@ rwt.event.EventHandler = {
   },
 
   attachEvents : function() {
-    var eventUtil = rwt.html.EventRegistration;
     this.attachEventTypes( this._mouseEventTypes, this.__onmouseevent );
     this.attachEventTypes( this._dragEventTypes, this.__ondragevent );
     this.attachEventTypes( this._keyEventTypes, this.__onKeyEvent );
-    eventUtil.addEventListener( window, "blur", this.__onwindowblur );
-    eventUtil.addEventListener( window, "focus", this.__onwindowfocus );
-    eventUtil.addEventListener( window, "resize", this.__onwindowresize );
+    window.addEventListener( "blur", this.__onwindowblur, false );
+    window.addEventListener( "focus", this.__onwindowfocus, false  );
+    window.addEventListener( "resize", this.__onwindowresize, false  );
     document.body.onselect = this.__onselectevent;
     document.onselectstart = this.__onselectevent;
     document.onselectionchange = this.__onselectevent;
   },
 
   detachEvents : function() {
-    var eventUtil = rwt.html.EventRegistration;
     this.detachEventTypes( this._mouseEventTypes, this.__onmouseevent);
     this.detachEventTypes( this._dragEventTypes, this.__ondragevent);
     this.detachEventTypes( this._keyEventTypes, this.__onKeyEvent );
-    eventUtil.removeEventListener( window, "blur", this.__onwindowblur );
-    eventUtil.removeEventListener( window, "focus", this.__onwindowfocus );
-    eventUtil.removeEventListener( window, "resize", this.__onwindowresize );
+    window.removeEventListener( "blur", this.__onwindowblur, false );
+    window.removeEventListener( "focus", this.__onwindowfocus, false );
+    window.removeEventListener( "resize", this.__onwindowresize, false );
     document.body.onselect = null;
     document.onselectstart = null;
     document.onselectionchange = null;
@@ -582,7 +580,7 @@ rwt.event.EventHandler = {
       // 'window', so there we use the 'body' element
       var el = rwt.client.Client.isGecko() ? window : document.body;
       for( var i=0, l=vEventTypes.length; i<l; i++ ) {
-        rwt.html.EventRegistration.addEventListener( el, vEventTypes[i], vFunctionPointer );
+        el.addEventListener( vEventTypes[ i ], vFunctionPointer, false );
       }
     }
     catch( ex ) {
@@ -594,7 +592,7 @@ rwt.event.EventHandler = {
     try {
       var el = rwt.client.Client.isGecko() ? window : document.body;
       for(var i=0, l=vEventTypes.length; i<l; i++) {
-        rwt.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
+        el.removeEventListener( vEventTypes[ i ], vFunctionPointer, false );
       }
     } catch( ex ) {
       throw new Error( "EventHandler: Failed to detach window event types: " + vEventTypes + ": " + ex );
