@@ -191,58 +191,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       animation.dispose();
     },
 
-    testExclusiveAnimation : function() {
-      var animation = new rwt.animation.Animation();
-      var animation2 = new rwt.animation.Animation();
-      animation.setDuration( 1000 );
-      animation2.setDuration( 1000 );
-      var start = new Date().getTime();
-
-      animation.setExclusive( true );
-      animation2.start();
-      animation.start();
-      rwt.animation.Animation._mainLoop();
-
-      assertTrue( animation.isRunning() );
-      assertFalse( animation2.isRunning() );
-      animation.dispose();
-      animation2.dispose();
-    },
-
-    testSingleExclusiveAnimation : function() {
-      var animation = new rwt.animation.Animation();
-      animation.setDuration( 1000 );
-
-      animation.setExclusive( true );
-      animation.start();
-      rwt.animation.Animation._mainLoop();
-
-      assertTrue( animation.isRunning() );
-      animation.dispose();
-    },
-
-
-    testExclusiveAnimationCanceled : function() {
-      var animation = new rwt.animation.Animation();
-      var animation2 = new rwt.animation.Animation();
-      animation.setDuration( 1000 );
-      animation2.setDuration( 1000 );
-      var start = new Date().getTime();
-
-      animation.setExclusive( true );
-      animation2.start();
-      animation.start();
-      rwt.animation.Animation._mainLoop();
-      animation.cancel(); // TODO [tb] : split
-      rwt.animation.Animation._mainLoop();
-
-      assertFalse( animation.isRunning() );
-      assertTrue( animation2.isRunning() );
-      animation.dispose();
-      animation2.dispose();
-    },
-
-
     /////////////////////////
     // AnimationRenderer core
 

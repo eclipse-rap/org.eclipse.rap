@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
     // state info:
     this._isRunning = false;
     this._inQueue = false;
-    this._exclusive = false;
   },
 
   destruct : function() {
@@ -100,14 +99,6 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
 
     getConfig : function() {
       return this._config;
-    },
-
-    setExclusive : function( value ) {
-      this._exclusive = value;
-    },
-
-    getExclusive : function() {
-      return this._exclusive;
     },
 
     // config can by any value, but "appear", "disappear" and "change" are
@@ -243,26 +234,17 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
     FPS : 60,
     _queue : [],
     _interval : null,
-    _exclusive : null,
 
     _addToQueue : function( animation ) {
-      if( animation.getExclusive() ) {
-        this._exclusive = animation;
-      } else {
-        this._queue.push( animation );
-      }
+      this._queue.push( animation );
       if ( this._interval == null ) {
         this._startLoop();
       }
     },
 
     _removeFromLoop : function( animation ) {
-      if( animation === this._exclusive ) {
-        this._exclusive = null;
-      } else {
-        rwt.util.Arrays.remove( this._queue, animation );
-      }
-      if( this._exclusive === null && this._queue.length === 0 ) {
+      rwt.util.Arrays.remove( this._queue, animation );
+      if( this._queue.length === 0 ) {
         this._stopLoop();
       }
     },
@@ -282,13 +264,9 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
           var time = new Date().getTime();
           var Animation = rwt.animation.Animation;
           try {
-            if( Animation._exclusive !== null ) {
-              Animation._exclusive._loop( time );
-            } else {
-              for( var i=0, len = Animation._queue.length; i < len; i++ ) {
-                if( Animation._queue[ i ] ) {
-                  Animation._queue[ i ]._loop( time );
-                }
+            for( var i=0, len = Animation._queue.length; i < len; i++ ) {
+              if( Animation._queue[ i ] ) {
+                Animation._queue[ i ]._loop( time );
               }
             }
           } catch( e ) {
