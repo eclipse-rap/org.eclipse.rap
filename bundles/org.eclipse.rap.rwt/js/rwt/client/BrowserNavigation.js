@@ -47,68 +47,13 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
 
   },
 
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
-
-  /**
-   * @signature function()
-   */
-  construct : rwt.util.Variant.select("qx.client",
-  {
-    "mshtml" : function()
-    {
-      this.base(arguments);
-      this._hasNavigationListener = false;
-
-      this._iframe = document.createElement("iframe");
-      this._iframe.style.visibility = "hidden";
-      this._iframe.style.position = "absolute";
-      this._iframe.style.left = "-1000px";
-      this._iframe.style.top = "-1000px";
-
-      /*
-       * IMPORTANT NOTE FOR IE:
-       * Setting the source before adding the iframe to the document.
-       * Otherwise IE will bring up a "Unsecure items ..." warning in SSL mode
-       */
-      var src = rwt.remote.Connection.RESOURCE_PATH + "static/html/blank.html";
-      this._iframe.src = src;
-      document.body.appendChild(this._iframe);
-
-      this._titles = {};
-      this._state = decodeURIComponent(this.__getHash());
-      this._locationState = decodeURIComponent(this.__getHash());
-
-      this.__waitForIFrame(function()
-      {
-        this.__storeState(this._state);
-        this.__startTimer();
-      }, this);
-    },
-
-    "default" : function()
-    {
-      this.base(arguments);
-      this._hasNavigationListener = false;
-
-      this._titles = {};
-      this._state = this.__getState();
-
-      this.__startTimer();
-    }
-  }),
-
-
-
-
-  /*
-  *****************************************************************************
-     EVENTS
-  *****************************************************************************
-  */
+  construct : function() {
+    this.base(arguments);
+    this._hasNavigationListener = false;
+    this._titles = {};
+    this._state = this.__getState();
+    this.__startTimer();
+  },
 
   events: {
     /**
@@ -119,43 +64,17 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
   },
 
 
+  properties : {
 
-
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    /**
-     * Interval for the timer, which periodically checks the browser history state
-     * in milliseconds.
-     */
-    timeoutInterval :
-    {
+    timeoutInterval : {
       check: "Number",
       init : 100,
       apply : "_applyTimeoutInterval"
     }
+
   },
 
-
-
-
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
+  members : {
 
     /**
      * Adds an entry to the browser history.
@@ -179,7 +98,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
       }
     },
 
-
     /**
      * Get the current state of the browser history.
      *
@@ -189,7 +107,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
       return this._state;
     },
 
-
     /**
      * Navigates back in the browser history.
      * Simulates a back button click.
@@ -198,7 +115,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
        rwt.client.Timer.once(function() {history.back();}, 0);
      },
 
-
     /**
      * Navigates forward in the browser history.
      * Simulates a forward button click.
@@ -206,7 +122,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
      navigateForward : function() {
        rwt.client.Timer.once(function() {history.forward();}, 0);
      },
-
 
     /**
      * Apply the interval of the timer.
@@ -217,7 +132,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
     _applyTimeoutInterval : function(value) {
       this._timer.setInterval(value);
     },
-
 
     /**
      * called on changes to the history using the browser buttons
@@ -273,32 +187,9 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
      *
      * @return {String} current state of the browser history
      */
-    __getState : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        // the location only changes if the user manually changes the fragment
-        // identifier.
-        var locationState = decodeURIComponent(this.__getHash());
-        if (locationState != this._locationState)
-        {
-          this._locationState = locationState;
-          this.__storeState(locationState);
-          return locationState;
-        }
-
-        var doc = this._iframe.contentWindow.document;
-        var elem = doc.getElementById("state");
-        var iframeState = elem ? decodeURIComponent(elem.innerText) : "";
-
-        return iframeState;
-      },
-
-      "default" : function() {
-        return decodeURIComponent(this.__getHash());
-      }
-    }),
-
+    __getState : function() {
+      return decodeURIComponent(this.__getHash());
+    },
 
     /**
      * Save a state into the browser history.
@@ -308,53 +199,12 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
      *   fail on the Internet Explorer if the hidden IFrame is not yet fully
      *   loaded.
      */
-    __storeState : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function( state ) {
-        var html = '<html><body><div id="state">' + encodeURIComponent(state) + '</div></body></html>';
-        try {
-          var doc = this._iframe.contentWindow.document;
-          doc.open();
-          doc.write(html);
-          doc.close();
-        } catch( ex ) {
-          return false;
-        }
-        return true;
-      },
-
-      "default" : function( state ) {
-        // RAP [if] Fix for bug 295816
-        //top.location.hash = "#" + encodeURIComponent(state);
-        window.location.hash = "#" + encodeURIComponent( state ).replace( /%2F/g, "/" );
-        return true;
-      }
-    }),
-
-
-    /**
-     * Waits for the IFrame being loaded. Once the IFrame is loaded
-     * the callback is called with the provided context.
-     *
-     * @param callback {Function} This function will be called once the iframe is loaded
-     * @param context {Object?window} The context for the callback.
-     */
-    __waitForIFrame : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(callback, context)
-      {
-        if ( !this._iframe.contentWindow || !this._iframe.contentWindow.document ) {
-            // Check again in 10 msec...
-            rwt.client.Timer.once(function() {
-              this.__waitForIFrame(callback, context);
-            }, this, 10);
-            return;
-        }
-        callback.call(context || window);
-      },
-
-      "default" : null
-    }),
+    __storeState : function( state ) {
+      // RAP [if] Fix for bug 295816
+      //top.location.hash = "#" + encodeURIComponent(state);
+      window.location.hash = "#" + encodeURIComponent( state ).replace( /%2F/g, "/" );
+      return true;
+    },
 
     setHasNavigationListener : function( value ) {
       this._hasNavigationListener = value;
@@ -380,12 +230,6 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
     }
 
   },
-
-  /*
-  *****************************************************************************
-     DESTRUCTOR
-  *****************************************************************************
-  */
 
   destruct : function()
   {
