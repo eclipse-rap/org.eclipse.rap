@@ -10,14 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_COLLAPSE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_EXPAND;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_PARAM_ITEM;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.find;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -190,9 +190,12 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param item (string) id of expanded item
    */
   public void handleNotifyExpand( Tree tree, JsonObject properties ) {
-    Event event = new Event();
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Expand, event );
+    TreeItem item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    if( item != null ) {
+      Event event = new Event();
+      event.item = item;
+      tree.notifyListeners( SWT.Expand, event );
+    }
   }
 
   /*
@@ -201,9 +204,12 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * @param item (string) id of collapsed item
    */
   public void handleNotifyCollapse( Tree tree, JsonObject properties ) {
-    Event event = new Event();
-    event.item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
-    tree.notifyListeners( SWT.Collapse, event );
+    TreeItem item = getItem( tree, properties.get( EVENT_PARAM_ITEM ).asString() );
+    if( item != null ) {
+      Event event = new Event();
+      event.item = item;
+      tree.notifyListeners( SWT.Collapse, event );
+    }
   }
 
   /*
