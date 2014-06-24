@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_COLLAPSE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_EXPAND;
@@ -24,9 +25,9 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOU
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SET_DATA;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -420,7 +421,23 @@ public class TreeOperationHandler_Test {
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( spyTree ).notifyListeners( eq( SWT.Expand ), captor.capture() );
-    assertEquals( item, captor.getValue().item );
+    assertSame( item, captor.getValue().item );
+  }
+
+  /* 438023: [Tree] Expand/Collapse event has null item in some cases
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=438023
+   */
+  @Test
+  public void testHandleNotifyExpand_withDisposedItem() {
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+    TreeItem item = new TreeItem( spyTree, SWT.NONE );
+    item.dispose();
+
+    JsonObject properties = new JsonObject().add( "item", getId( item ) );
+    handler.handleNotify( EVENT_EXPAND, properties );
+
+    verify( spyTree, never() ).notifyListeners( eq( SWT.Expand ), any( Event.class ) );
   }
 
   @Test
@@ -434,7 +451,23 @@ public class TreeOperationHandler_Test {
 
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( spyTree ).notifyListeners( eq( SWT.Collapse ), captor.capture() );
-    assertEquals( item, captor.getValue().item );
+    assertSame( item, captor.getValue().item );
+  }
+
+  /* 438023: [Tree] Expand/Collapse event has null item in some cases
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=438023
+   */
+  @Test
+  public void testHandleNotifyCollapse_withDisposedItem() {
+    Tree spyTree = spy( tree );
+    handler = new TreeOperationHandler( spyTree );
+    TreeItem item = new TreeItem( spyTree, SWT.NONE );
+    item.dispose();
+
+    JsonObject properties = new JsonObject().add( "item", getId( item ) );
+    handler.handleNotify( EVENT_COLLAPSE, properties );
+
+    verify( spyTree, never() ).notifyListeners( eq( SWT.Collapse ), any( Event.class ) );
   }
 
   @Test
