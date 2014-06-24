@@ -13,21 +13,26 @@
 
 /*global rwt:true, namespace:true*/
 
-rwt = {};
+rwt = {
 
-var namespace = function( name ) {
-  var splits = name.split( "." );
-  var parent = window;
-  var part = splits[ 0 ];
-  for( var i = 0, len = splits.length - 1; i < len; i++, part = splits[ i ] ) {
-    if( !parent[ part ] ) {
-      parent = parent[ part ] = {};
-    } else {
-      parent = parent[ part ];
+  define: function( name, object ) {
+    var splits = name.split( "." );
+    var parent = window;
+    var part = splits[ 0 ];
+    for( var i = 0, len = splits.length - 1; i < len; i++, part = splits[ i ] ) {
+      if( !parent[ part ] ) {
+        parent = parent[ part ] = {};
+      } else {
+        parent = parent[ part ];
+      }
     }
+    if( !( part in parent ) ) {
+      parent[ part ] = object || {};
+    }
+    return part;
   }
-  if( !( part in parent ) ) {
-    parent[ part ] = {};
-  }
-  return part;
+
 };
+
+// TODO [rst] Use rwt.define instead of namespace
+var namespace = rwt.define;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@
 
 (function(){
 
-rwt.qx.Class.createNamespace( "rwt.scripting", {} );
+rwt.define( "rwt.scripting", {} );
+
 /**
  * @private
  * @class RWT Scripting analoge to org.eclipse.swt.widgets.Composite and basis for Custom Widgets.
@@ -20,7 +21,9 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
  * @extends Control
  * @since 2.0
  */
- rwt.scripting.CompositeProxy = function( composite ) {
+// TODO [rst] Define directly using rwt.define, remove surrounding function scope
+rwt.scripting.CompositeProxy = function( composite ) {
+
   var children = null;
   if( !composite.isCreated() ) {
     children = [];
@@ -32,6 +35,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
       children = null;
     } );
   }
+
   /**
    * @name append
    * @methodOf Composite#
@@ -45,6 +49,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
       composite._getTargetNode().appendChild( childElement );
     }
   };
+
   /**
    * @name getClientArea
    * @methodOf Composite#

@@ -87,7 +87,7 @@ rwt.qx.Class.define( "rwt.qx.Mixin", {
       // Attach toString
       mixin.toString = this.genericToString;
       // Assign to namespace
-      mixin.basename = rwt.qx.Class.createNamespace( name, mixin );
+      mixin.basename = rwt.define( name, mixin );
       // Store class reference in global mixin registry
       this.__registry[ name ] = mixin;
       // Return final mixin

@@ -14,7 +14,7 @@
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Synchronizer = rwt.scripting.Synchronizer;
 
-rwt.qx.Class.createNamespace( "rwt.scripting", {} );
+rwt.define( "rwt.scripting", {} );
 
 /**
  * @private
@@ -27,6 +27,7 @@ rwt.qx.Class.createNamespace( "rwt.scripting", {} );
  */
 
 /*jshint nonew:false */
+// TODO [rst] Define directly using rwt.define, remove surrounding function scope
 rwt.scripting.WidgetProxyFactory = {
 
   _wrapperMap : {},
