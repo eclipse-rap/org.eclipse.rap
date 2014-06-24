@@ -748,9 +748,8 @@ rwt.qx.Class.define( "rwt.html.Style", {
       }
     },
 
-    _passEventThroughHandler : function() {
+    _passEventThroughHandler : function( domEvent ) {
       var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      var domEvent = EventHandlerUtil.getDomEvent( arguments );
       var domTarget = EventHandlerUtil.getDomTarget( domEvent );
       var type = domEvent.type;
       domTarget.style.display = "none";

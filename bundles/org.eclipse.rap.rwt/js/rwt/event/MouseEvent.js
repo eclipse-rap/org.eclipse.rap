@@ -60,23 +60,11 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     _pageY : 0,
     _button : null,
 
-    buttons : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" :
-      {
-        left   : 1,
-        right  : 2,
-        middle : 4
-      },
-
-      "default" :
-      {
-        left   : 0,
-        right  : 2,
-        middle : 1
-      }
-    }),
-
+    buttons : {
+      left   : 0,
+      right  : 2,
+      middle : 1
+    },
 
     /**
      * TODOC
@@ -215,43 +203,13 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     ---------------------------------------------------------------------------
     */
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     * @signature function()
-     */
-    getPageX : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function() {
-        return Math.round( this.getDomEvent().clientX + rwt.html.Viewport.getScrollLeft( window ) );
-      },
+    getPageX : function() {
+      return Math.round( this.getDomEvent().pageX );
+    },
 
-      "default" : function() {
-        return Math.round( this.getDomEvent().pageX );
-      }
-    }),
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     * @signature function()
-     */
-    getPageY : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function() {
-        return Math.round( this.getDomEvent().clientY + rwt.html.Viewport.getScrollTop( window ) );
-      },
-
-      "default" : function() {
-        return Math.round( this.getDomEvent().pageY );
-      }
-    }),
-
-
+    getPageY : function() {
+      return Math.round( this.getDomEvent().pageY );
+    },
 
     /*
     ---------------------------------------------------------------------------
@@ -305,69 +263,23 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
     ---------------------------------------------------------------------------
     */
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     * @signature function()
-     */
-    isLeftButtonPressed : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        // IE does not set e.button in click events
-        if (this.getType() == "click") {
-          return true;
-        } else {
-          return this.getButton() === rwt.event.MouseEvent.C_BUTTON_LEFT;
-        }
-      },
+    isLeftButtonPressed : function() {
+      return this.getButton() === rwt.event.MouseEvent.C_BUTTON_LEFT;
+    },
 
-     "default": function() {
-        return this.getButton() === rwt.event.MouseEvent.C_BUTTON_LEFT;
-      }
-    }),
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     */
     isMiddleButtonPressed : function() {
       return this.getButton() === rwt.event.MouseEvent.C_BUTTON_MIDDLE;
     },
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {var} TODOC
-     */
     isRightButtonPressed : function() {
       return this.getButton() === rwt.event.MouseEvent.C_BUTTON_RIGHT;
     },
 
-
-    __buttons : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" :
-      {
-        1 : "left",
-        2 : "right",
-        4 : "middle"
-      },
-
-      "default" :
-      {
-        0 : "left",
-        2 : "right",
-        1 : "middle"
-      }
-    }),
-
+    __buttons : {
+      0 : "left",
+      2 : "right",
+      1 : "middle"
+    },
 
     /**
      * During mouse events caused by the depression or release of a mouse button,

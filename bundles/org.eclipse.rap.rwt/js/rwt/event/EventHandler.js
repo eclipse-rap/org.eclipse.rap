@@ -24,10 +24,6 @@ rwt.event.EventHandler = {
   _menuManager : null,
   // state storage:
   _focused : false,
-  _lastMouseEventType : null,
-  _lastMouseDown : false,
-  _lastMouseEventDate : 0,
-  _mouseIsDown : false,
   _blockKeyEvents : false,
 
   ///////////////////
@@ -53,9 +49,6 @@ rwt.event.EventHandler = {
     delete this.__onwindowfocus;
     delete this.__onwindowresize;
     delete this.__onKeyEvent;
-    delete this._lastMouseEventType;
-    delete this._lastMouseDown;
-    delete this._lastMouseEventDate;
     delete this._lastMouseDownDomTarget;
     delete this._lastMouseDownDispatchTarget;
     rwt.event.EventHandlerUtil.cleanUp();
@@ -176,10 +169,9 @@ rwt.event.EventHandler = {
   //////////////
   // KEY EVENTS:
 
-  _onKeyEvent : function() {
+  _onKeyEvent : function( event ) {
     try {
       var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      var event = EventHandlerUtil.getDomEvent( arguments );
       var keyCode = EventHandlerUtil.getKeyCode( event );
       var charCode = EventHandlerUtil.getCharCode( event );
       if( this._blockKeyEvents ) {
@@ -291,71 +283,23 @@ rwt.event.EventHandler = {
   },
 
   // TODO [tb] : refactor to work like _onKeyEvent
-  _processMouseEvent : rwt.util.Variant.select("qx.client",  {
-    "mshtml" : function() {
-      var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      var vDomEvent = EventHandlerUtil.getDomEvent( arguments );
-      var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
-      var vType = vDomEvent.type;
-      if( vType == "mousemove" ) {
-        if( this._mouseIsDown && vDomEvent.button === 0 ) {
-          this._onmouseevent_post( vDomEvent, "mouseup", vDomTarget );
-          this._mouseIsDown = false;
+  _processMouseEvent : function( vDomEvent ) {
+    var EventHandlerUtil = rwt.event.EventHandlerUtil;
+    var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
+    var vType = vDomEvent.type;
+    switch(vType) {
+      case "DOMMouseScroll":
+        vType = "mousewheel";
+      break;
+      case "click":
+      case "dblclick":
+        // ignore click or dblclick events with other then the left mouse button
+        if( vDomEvent.which !== 1 ) {
+          return;
         }
-      } else {
-        if( vType == "mousedown" ) {
-          this._mouseIsDown = true;
-        } else if( vType == "mouseup" ) {
-          this._mouseIsDown = false;
-        }
-        if(    vType == "mouseup"
-            && !this._lastMouseDown
-            && ( ( new Date() ).valueOf() - this._lastMouseEventDate ) < 250
-        ) {
-          // Fix MSHTML Mouseup, should be after a normal click
-          // or contextmenu event, like Mozilla does this
-          this._onmouseevent_post( vDomEvent, "mousedown", vDomTarget );
-        } else if(    vType == "dblclick"
-                    && this._lastMouseEventType == "mouseup"
-                    && ( ( new Date() ).valueOf() - this._lastMouseEventDate ) < 250
-        ) {
-          // Fix MSHTML Doubleclick, should be after a normal click event,
-           // like Mozilla does this
-          this._onmouseevent_post(vDomEvent, "click", vDomTarget);
-        }
-        switch( vType ) {
-          case "mousedown":
-          case "mouseup":
-          case "click":
-          case "dblclick":
-          case "contextmenu":
-            this._lastMouseEventType = vType;
-            this._lastMouseEventDate = ( new Date() ).valueOf();
-            this._lastMouseDown = vType == "mousedown";
-          break;
-        }
-      }
-      this._onmouseevent_post(vDomEvent, vType, vDomTarget);
-    },
-
-    "default" : function( vDomEvent ) {
-      var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
-      var vType = vDomEvent.type;
-      switch(vType) {
-        case "DOMMouseScroll":
-          vType = "mousewheel";
-        break;
-        case "click":
-        case "dblclick":
-          // ignore click or dblclick events with other then the left mouse button
-          if( vDomEvent.which !== 1 ) {
-            return;
-          }
-      }
-      this._onmouseevent_post( vDomEvent, vType, vDomTarget );
     }
-  } ),
+    this._onmouseevent_post( vDomEvent, vType, vDomTarget );
+  },
 
   _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
     var eventConsumed = false;
@@ -526,15 +470,14 @@ rwt.event.EventHandler = {
   ////////////////
   // SELECT EVENTS
 
-  _onselectevent : function( ) {
+  _onselectevent : function( event ) {
     try {
       var EventHandlerUtil = rwt.event.EventHandlerUtil;
-      var e = EventHandlerUtil.getDomEvent( arguments );
-      var target = EventHandlerUtil.getOriginalTargetObjectFromEvent( e );
+      var target = EventHandlerUtil.getOriginalTargetObjectFromEvent( event );
       while( target ) {
         if( target.getSelectable() != null ) {
           if( !target.getSelectable() ) {
-            EventHandlerUtil.stopDomEvent( e );
+            EventHandlerUtil.stopDomEvent( event );
           }
           break;
         }

@@ -58,19 +58,7 @@ rwt.event.EventHandlerUtil = {
   /////////////////////////
   // GENERAL EVENT HANDLING
 
-  getDomEvent : rwt.util.Variant.select( "qx.client", {
-    "mshtml" : function( args ) {
-      return args.length > 0 ? args[ 0 ] : window.event;
-    },
-    "default" : function( args ) {
-      return args[ 0 ];
-    }
-  } ),
-
   getDomTarget : rwt.util.Variant.select( "qx.client", {
-    "mshtml" : function( vDomEvent ) {
-      return vDomEvent.target || vDomEvent.srcElement;
-    },
     "webkit" : function( vDomEvent ) {
       var vNode = vDomEvent.target || vDomEvent.srcElement;
       // Safari takes text nodes as targets for events
@@ -229,7 +217,7 @@ rwt.event.EventHandlerUtil = {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.charCode : 0;
     },
-    "mshtml|trident|opera" : function( event ) {
+    "trident|opera" : function( event ) {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.keyCode : 0;
     }
