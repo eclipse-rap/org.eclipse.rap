@@ -1,7 +1,7 @@
 Client library builder for RWT WebClient
 ========================================
 
-The JsCompressor is used for assembling the JavaScript library for the WebClient.
+The ClientBuilder is used for assembling the JavaScript library for the WebClient.
 It reads JavaScript files from the project org.eclipse.rap.rwt, compresses and
 concatenates them, and writes the resulting JavaScript file back into the project
 as client.js.

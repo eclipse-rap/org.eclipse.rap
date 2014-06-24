@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientbuilder;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -55,28 +56,32 @@ public class JSFile {
     return file;
   }
 
+  public String getContent() {
+    try {
+      return readLines( new FileInputStream( file ) );
+    } catch( IOException exception ) {
+      throw new RuntimeException( exception );
+    }
+  }
+
   public TokenList getTokens() {
     return tokens;
   }
 
   public String compress( DebugFileWriter debugFileWriter ) throws IOException {
-    String result;
-    StringWriter stringWriter = new StringWriter();
     String fileName = file.getName();
     debugFileWriter.beforeCleanup( tokens, fileName );
     QxCodeCleaner codeCleaner = new QxCodeCleaner( tokens );
     codeCleaner.cleanupQxCode();
     debugFileWriter.afterCleanup( tokens, fileName );
-    compressor.compress( stringWriter,
-                         -1,
-                         true,
-                         VERBOSE,
-                         PRESERVE_ALL_SEMICOLONS,
-                         DISABLE_OPTIMIZATIONS );
-    stringWriter.flush();
-    result = stringWriter.getBuffer().toString();
-    stringWriter.close();
-    return result;
+    return compress();
+  }
+
+  private String compress() throws IOException {
+    StringWriter writer = new StringWriter();
+    compressor.compress( writer, -1, true, VERBOSE, PRESERVE_ALL_SEMICOLONS, DISABLE_OPTIMIZATIONS );
+    writer.flush();
+    return writer.getBuffer().toString();
   }
 
   public static void writeToFile( File outputFile, String compressed )
@@ -89,6 +94,18 @@ public class JSFile {
     } finally {
       outputWriter.close();
     }
+  }
+
+  private static String readLines( InputStream inputStream ) throws IOException {
+    StringBuilder builder = new StringBuilder();
+    BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream, CHARSET ) );
+    String line = reader.readLine();
+    while( line != null ) {
+      builder.append( line );
+      builder.append( '\n' );
+      line = reader.readLine();
+    }
+    return builder.toString();
   }
 
   private static final class SystemErrorReporter implements ErrorReporter {

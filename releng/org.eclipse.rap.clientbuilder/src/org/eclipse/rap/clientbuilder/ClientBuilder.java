@@ -29,12 +29,16 @@ import java.util.List;
  *
  *   --output-file <file>
  *       compressed javascript file
+ *
+ *   --no-compress
+ *       concatenate only, do not compress
  */
-public class JsCompressor {
+public class ClientBuilder {
 
   private static final String OPT_INPUT_PATH = "--input-path";
   private static final String OPT_INPUT_LIST = "--input-list";
   private static final String OPT_OUTPUT_FILE = "--output-file";
+  private static final String OPT_NO_COMPRESS = "--no-compress";
 
   private static final boolean CREATE_DEBUG_FILES
     = "true".equals( System.getProperty( "jscompressor.debug" ) );
@@ -44,10 +48,13 @@ public class JsCompressor {
     List<File> inputPaths = new ArrayList<File>();
     File inputListFile = null;
     File outputFile = null;
+    boolean compress = true;
     String last = null;
     for( int i = 0; i < args.length; i++ ) {
       String arg = args[ i ];
-      if( OPT_INPUT_PATH.equals( last ) ) {
+      if( OPT_NO_COMPRESS.equals( arg ) ) {
+        compress = false;
+      } else if( OPT_INPUT_PATH.equals( last ) ) {
         inputPaths.add( new File( arg ) );
       } else if( OPT_INPUT_LIST.equals( last ) ) {
         inputListFile = new File( arg );
@@ -66,19 +73,19 @@ public class JsCompressor {
       System.err.println( "Input list file not found: " + inputListFile.getAbsolutePath() );
     } else {
       List<JSFile> inputFiles = getInputFiles( inputListFile, inputPaths );
-      JsCompressor compressor = new JsCompressor();
-      compressor.compressFiles( inputFiles, outputFile );
+      ClientBuilder builder = new ClientBuilder();
+      builder.build( inputFiles, outputFile, compress );
     }
   }
 
-  public JsCompressor() {
+  public ClientBuilder() {
     debugFileWriter = createDebugFileWriter();
   }
 
-  public void compressFiles( List<JSFile> inputFiles, File outputFile ) {
+  public void build( List<JSFile> inputFiles, File outputFile, boolean compress ) {
     try {
       long start = System.currentTimeMillis();
-      String compressed = compressFiles( inputFiles );
+      String compressed = build( inputFiles, compress );
       long time = System.currentTimeMillis() - start;
       JSFile.writeToFile( outputFile, compressed );
       int count = inputFiles.size();
@@ -89,7 +96,7 @@ public class JsCompressor {
     }
   }
 
-  private String compressFiles( List<JSFile> inputFiles ) throws IOException {
+  private String build( List<JSFile> inputFiles, boolean compress  ) throws IOException {
     StringReplacer stringReplacer = new StringReplacer();
     for( JSFile inputFile : inputFiles ) {
       stringReplacer.discoverStrings( inputFile.getTokens() );
@@ -98,8 +105,10 @@ public class JsCompressor {
     StringBuilder buffer = new StringBuilder();
     buffer.append( "(function($){" );
     for( JSFile inputFile : inputFiles ) {
-      stringReplacer.replaceStrings( inputFile.getTokens() );
-      String result = inputFile.compress( debugFileWriter );
+      if( compress ) {
+        stringReplacer.replaceStrings( inputFile.getTokens() );
+      }
+      String result = compress ? inputFile.compress( debugFileWriter ) : inputFile.getContent();
       buffer.append( result );
       buffer.append( "\n" );
       System.out.println( inputFile.getFile().getAbsolutePath()
@@ -118,7 +127,8 @@ public class JsCompressor {
   private static boolean isValidOption( String arg ) {
     return    OPT_INPUT_PATH.equals( arg )
            || OPT_INPUT_LIST.equals( arg )
-           || OPT_OUTPUT_FILE.equals( arg );
+           || OPT_OUTPUT_FILE.equals( arg )
+           || OPT_NO_COMPRESS.equals( arg );
   }
 
   private static DebugFileWriter createDebugFileWriter() {
