@@ -14,6 +14,7 @@ import static org.eclipse.rap.clientbuilder.InputListReader.getInputFiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,14 +41,14 @@ public class JsCompressor {
   private final DebugFileWriter debugFileWriter;
 
   public static void main( String[] args ) {
-    File inputPrefix = null;
+    List<File> inputPaths = new ArrayList<File>();
     File inputListFile = null;
     File outputFile = null;
     String last = null;
     for( int i = 0; i < args.length; i++ ) {
       String arg = args[ i ];
       if( OPT_INPUT_PATH.equals( last ) ) {
-        inputPrefix = new File( arg );
+        inputPaths.add( new File( arg ) );
       } else if( OPT_INPUT_LIST.equals( last ) ) {
         inputListFile = new File( arg );
       } else if( OPT_OUTPUT_FILE.equals( last ) ) {
@@ -64,7 +65,7 @@ public class JsCompressor {
     } else if( !inputListFile.exists() ) {
       System.err.println( "Input list file not found: " + inputListFile.getAbsolutePath() );
     } else {
-      List<JSFile> inputFiles = getInputFiles( inputListFile, inputPrefix );
+      List<JSFile> inputFiles = getInputFiles( inputListFile, inputPaths );
       JsCompressor compressor = new JsCompressor();
       compressor.compressFiles( inputFiles, outputFile );
     }

@@ -25,11 +25,11 @@ public class InputListReader {
   private static final String CHARSET = "UTF-8";
 
   private final File inputFile;
-  private final File baseDir;
+  private final List<File> basePaths;
   private final ArrayList<JSFile> files;
 
-  public static final List<JSFile> getInputFiles( File inputFile, File baseDir ) {
-    InputListReader reader = new InputListReader( inputFile, baseDir );
+  public static final List<JSFile> getInputFiles( File inputFile, List<File> basePaths ) {
+    InputListReader reader = new InputListReader( inputFile, basePaths );
     try {
       reader.read();
     } catch( IOException exception ) {
@@ -39,9 +39,9 @@ public class InputListReader {
     return reader.getFiles();
   }
 
-  InputListReader( File inputFile, File baseDir ) {
+  InputListReader( File inputFile, List<File> basePaths ) {
     this.inputFile = inputFile;
-    this.baseDir = baseDir;
+    this.basePaths = basePaths;
     files = new ArrayList<JSFile>();
   }
 
@@ -75,7 +75,17 @@ public class InputListReader {
   private void readLine( String line ) throws IOException {
     String text = line.trim();
     if( text.length() > 0 && !text.startsWith( "#" ) ) {
-      files.add( new JSFile( new File( baseDir, text ) ) );
+      addFile( text );
+    }
+  }
+
+  private void addFile( String filename ) throws IOException {
+    for( File path : basePaths ) {
+      File file = new File( path, filename );
+      if( file.exists() ) {
+        files.add( new JSFile( file ) );
+        break;
+      }
     }
   }
 
