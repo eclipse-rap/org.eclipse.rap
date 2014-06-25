@@ -41,6 +41,7 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/Arrays.spec.js",
     "spec/Objects.spec.js",
     "spec/Colors.spec.js",
+    "spec/HandlerUtil.spec.js",
     "spec/rwt.spec.js"
   };
 

@@ -578,8 +578,10 @@ rwt.remote.HandlerUtil = {
   // Helper for handler
 
   addStatesForStyles : function( targetObject, styleArray ) {
-    for( var i = 0; i < styleArray.length; i++ ) {
-      targetObject.addState( "rwt_" + styleArray[ i ] );
+    if( styleArray ) {
+      for( var i = 0; i < styleArray.length; i++ ) {
+        targetObject.addState( "rwt_" + styleArray[ i ] );
+      }
     }
     targetObject._renderAppearance();
     delete targetObject._isInGlobalStateQueue;
@@ -587,8 +589,10 @@ rwt.remote.HandlerUtil = {
 
   createStyleMap : function( styleArray ) {
     var result = {};
-    for( var i = 0; i < styleArray.length; i++ ) {
-      result[ styleArray[ i ] ] = true;
+    if( styleArray ) {
+      for( var i = 0; i < styleArray.length; i++ ) {
+        result[ styleArray[ i ] ] = true;
+      }
     }
     return result;
   },

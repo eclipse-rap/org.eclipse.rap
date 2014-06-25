@@ -73,7 +73,9 @@ org.eclipse.rwt.test.JasmineStartup = {
         rwt.qx.Class.__initializeClass( constr );
       }
       var result = createObjectWithPrototype( constr.prototype );
-      result.jasmineToString = function() { return "mock" + ( name ? " of " + name : "" ); };
+      result.jasmineToString = function() {
+        return name ? "mock of " + name : "mock";
+      };
       for( var key in constr.prototype ) {
         if( constr.prototype[ key ] instanceof Function ) {
           result[ key ] = jasmine.createSpy( ( name || "mock" ) + '.' + key );
