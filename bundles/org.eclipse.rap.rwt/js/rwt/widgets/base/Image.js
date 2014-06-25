@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -492,35 +492,12 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _updateContent : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        var i = this._image;
-        var pl = this.getPreloader();
+    _updateContent : function() {
+      var pl = this.getPreloader();
+      var source = pl && pl.isLoaded() ? pl.getSource() : this._blank;
 
-        var source = pl && pl.isLoaded() ? pl.getSource() : this._blank;
-
-        if (pl && pl.getIsPng() && this.getEnabled())
-        {
-          i.src = this._blank;
-          i.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + source + "',sizingMethod='scale')";
-        }
-        else
-        {
-          i.src = source;
-          i.style.filter = this.getEnabled() ? "" : "Gray() Alpha(Opacity=30)";
-        }
-      },
-
-      "default" : function()
-      {
-        var pl = this.getPreloader();
-        var source = pl && pl.isLoaded() ? pl.getSource() : this._blank;
-
-        this._image.src = source;
-      }
-    }),
+      this._image.src = source;
+    },
 
 
     /**
@@ -530,19 +507,9 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _resetContent : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        this._image.src = this._blank;
-        this._image.style.filter = "";
-      },
-
-      "default" : function() {
-        this._image.src = this._blank;
-      }
-    }),
-
+    _resetContent : function() {
+      this._image.src = this._blank;
+    },
 
     /**
      * Sets the style values for the states enabled/disabled
@@ -551,24 +518,15 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _styleEnabled : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
+    _styleEnabled : function() {
+      if (this._image)
       {
-        this._updateContent();
-      },
+        var o = this.getEnabled()===false ? 0.3 : "";
+        var s = this._image.style;
 
-      "default" : function()
-      {
-        if (this._image)
-        {
-          var o = this.getEnabled()===false ? 0.3 : "";
-          var s = this._image.style;
-
-          s.opacity = s.KhtmlOpacity = s.MozOpacity = o;
-        }
+        s.opacity = s.KhtmlOpacity = s.MozOpacity = o;
       }
-    }),
+    },
 
 
 
@@ -620,57 +578,27 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function()
      */
-    _postApplyDimensions : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
+    _postApplyDimensions : function() {
+      try
       {
-        try
-        {
-          var vImageStyle = this._image.style;
+        var vImageNode = this._image;
 
-          if (this.getResizeToInner())
-          {
-            vImageStyle.pixelWidth = this.getInnerWidth();
-            vImageStyle.pixelHeight = this.getInnerHeight();
-          }
-          else
-          {
-            vImageStyle.pixelWidth = this.getPreferredInnerWidth();
-            vImageStyle.pixelHeight = this.getPreferredInnerHeight();
-          }
-        }
-        catch(ex)
+        if (this.getResizeToInner())
         {
-          throw new Error( "postApplyDimensions failed " + ex );
+          vImageNode.width = this.getInnerWidth();
+          vImageNode.height = this.getInnerHeight();
         }
-      },
-
-      "default" : function()
-      {
-        try
+        else
         {
-          var vImageNode = this._image;
-
-          if (this.getResizeToInner())
-          {
-            vImageNode.width = this.getInnerWidth();
-            vImageNode.height = this.getInnerHeight();
-          }
-          else
-          {
-            vImageNode.width = this.getPreferredInnerWidth();
-            vImageNode.height = this.getPreferredInnerHeight();
-          }
-        }
-        catch(ex)
-        {
-          throw new Error( "postApplyDimensions failed " + ex );
+          vImageNode.width = this.getPreferredInnerWidth();
+          vImageNode.height = this.getPreferredInnerHeight();
         }
       }
-    }),
-
-
-
+      catch(ex)
+      {
+        throw new Error( "postApplyDimensions failed " + ex );
+      }
+    },
 
     /*
     ---------------------------------------------------------------------------
@@ -687,22 +615,11 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerWidth : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vNew, vOld)
-      {
-        if (this.getResizeToInner()) {
-          this._image.style.pixelWidth = vNew;
-        }
-      },
-
-      "default" : function(vNew, vOld)
-      {
-        if (this.getResizeToInner()) {
-          this._image.width = vNew;
-        }
+    _changeInnerWidth : function(vNew, vOld) {
+      if (this.getResizeToInner()) {
+        this._image.width = vNew;
       }
-    }),
+    },
 
 
     /**
@@ -714,22 +631,12 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerHeight : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vNew, vOld)
-      {
-        if (this.getResizeToInner()) {
-          this._image.style.pixelHeight = vNew;
-        }
-      },
-
-      "default" : function(vNew, vOld)
-      {
-        if (this.getResizeToInner()) {
-          this._image.height = vNew;
-        }
+    _changeInnerHeight : function(vNew, vOld) {
+      if (this.getResizeToInner()) {
+        this._image.height = vNew;
       }
-    })
+    }
+
   },
 
 

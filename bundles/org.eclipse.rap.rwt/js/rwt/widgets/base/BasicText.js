@@ -20,7 +20,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     if( value != null ) {
       this.setValue( value );
     }
-    this.initHideFocus();
     this.initWidth();
     this.initHeight();
     this.initTabIndex();

@@ -75,13 +75,6 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     this.base(arguments);
 
     // ************************************************************************
-    //   BEHAVIOR
-    // ************************************************************************
-    if( rwt.client.Client.isMshtml() ) {
-      this.setStyleProperty("fontSize", "0px");
-    }
-
-    // ************************************************************************
     //   TEXTFIELD
     // ************************************************************************
     this._textfield = new rwt.widgets.base.BasicText();

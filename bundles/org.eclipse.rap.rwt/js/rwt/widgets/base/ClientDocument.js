@@ -52,7 +52,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
     // enable as focus root behavior
     this.activateFocusRoot();
     // initialize properties
-    this.initHideFocus();
     this.initSelectable();
     // register as current focus root
     rwt.event.EventHandler.setFocusRoot( this );
@@ -238,68 +237,15 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
     // GLOBAL CURSOR SUPPORT
     // ------------------------------------------------------------------------
 
-    _applyGlobalCursor : rwt.util.Variant.select( "qx.client", {
-      // MSHTML uses special code here. The default code works, too in MSHTML
-      // but is really really slow. To change style sheets or class names
-      // in documents with a deep structure is nearly impossible in MSHTML. It
-      // runs multiple seconds to minutes just for adding a new rule to a global
-      // style sheet. For the highly interactive use cases of this method, this
-      // is not practicable. The alternative implementation directly patches
-      // all DOM elements with a manual cursor setting (to work-around the
-      // inheritance blocking nature of these local values). This solution does
-      // not work as perfect as the style sheet modification in other browsers.
-      // While a global cursor is applied the normal cursor property would overwrite
-      // the forced global cursor value. This site effect was decided to be less
-      // important than the expensive performance issue of the better working code.
-      // See also bug: http://bugzilla.qooxdoo.org/show_bug.cgi?id=487
-      "mshtml" : function( value, old ) {
-        if( value == "pointer" ) {
-          value = "hand";
-        }
-        if( old == "pointer" ) {
-          old = "hand";
-        }
-        var elem, current;
-        var list = this._cursorElements;
-        if( list ) {
-          for( var i = 0, l = list.length; i < l; i++ ) {
-            elem = list[ i ];
-            if( elem.style.cursor == old ) {
-              elem.style.cursor = elem._oldCursor;
-              elem._oldCursor = null;
-            }
-          }
-        }
-        var all = document.all;
-        var list = this._cursorElements = [];
-        if( value != null && value !== "" && value !== "auto" ) {
-          for( var i = 0, l = all.length; i < l; i++ ) {
-            elem = all[ i ];
-            current = elem.style.cursor;
-            if( current != null && current !== "" && current !== "auto" ) {
-              elem._oldCursor = current;
-              elem.style.cursor = value;
-              list.push( elem );
-            }
-          }
-          // Also apply to body element
-          document.body.style.cursor = value;
-        } else {
-          // Reset from body element
-          document.body.style.cursor = "";
-        }
-      },
-
-      "default" : function( value ) {
-        if( !this._globalCursorStyleSheet ) {
-          this._globalCursorStyleSheet = this.createStyleElement();
-        }
-        this.removeCssRule( this._globalCursorStyleSheet, "*" );
-        if( value ) {
-          this.addCssRule( this._globalCursorStyleSheet, "*", "cursor:" + value + " !important" );
-        }
+    _applyGlobalCursor : function( value ) {
+      if( !this._globalCursorStyleSheet ) {
+        this._globalCursorStyleSheet = this.createStyleElement();
       }
-    } ),
+      this.removeCssRule( this._globalCursorStyleSheet, "*" );
+      if( value ) {
+        this.addCssRule( this._globalCursorStyleSheet, "*", "cursor:" + value + " !important" );
+      }
+    },
 
     // ------------------------------------------------------------------------
     // WINDOW RESIZE HANDLING

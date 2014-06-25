@@ -16,8 +16,6 @@
 
 (function() {
 
-var INHERIT = rwt.client.Client.isMshtml() ? "" : "inherit";
-
 var Style = rwt.html.Style;
 var Variant = rwt.util.Variant;
 
@@ -684,7 +682,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = this._overlayStyleMap.rowForeground;
       }
        if( result === "undefined" ) {
-         result = INHERIT;
+         result = "inherit";
       }
       return result;
     },
@@ -701,7 +699,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = config.textColor;
       }
       if( result === "undefined" ) {
-        result = INHERIT;
+        result = "inherit"
       }
       return result;
     },
@@ -765,25 +763,14 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _resetFont : Variant.select( "qx.client", {
-      "default" : function( element ) {
-        element.style.font = "";
-        element.style.fontFamily = "";
-        element.style.fontSize = "";
-        element.style.fontVariant = "";
-        element.style.fontStyle = "";
-        element.style.fontWeight = "";
-      },
-      "mshtml" : function( element ) {
-        // Resetting style.font causes errors in IE with any of these syntaxes:
-        // node.style.font = null | undefined | "inherit" | "";
-        element.style.fontFamily = "";
-        element.style.fontSize = "";
-        element.style.fontVariant = "";
-        element.style.fontStyle = "";
-        element.style.fontWeight = "";
-      }
-    } ),
+    _resetFont : function( element ) {
+      element.style.font = "";
+      element.style.fontFamily = "";
+      element.style.fontSize = "";
+      element.style.fontVariant = "";
+      element.style.fontStyle = "";
+      element.style.fontWeight = "";
+    },
 
     _setTextDecoration : function( element, decoration ) {
       if( decoration == null || decoration === "none" ) {
@@ -827,8 +814,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !result ) {
         result = this._createElement( 3 );
         result.style.whiteSpace = "nowrap";
-        result.style.textDecoration = INHERIT;
-        result.style.textOverflow = INHERIT;
+        result.style.textDecoration = "inherit";
+        result.style.textOverflow = "inherit";
         Style.setBackgroundColor( result, null );
         this._cellLabels[ cell ] = result;
       }
@@ -974,21 +961,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         arr[ pos ] = null;
       }
     },
-
-    _ieFixLayoutOnAppear : Variant.select( "qx.client", {
-      "mshtml" : function() {
-        // TODO [tb] : find a faster alternative, possibly delete hidden nodes on disappear or collect hidden elements
-        this.base( arguments );
-        var node = this._getTargetNode();
-        for( var i = 0; i < node.childNodes.length; i++ ) {
-          if( node.childNodes[ i ].style.display === "none" ) {
-            node.childNodes[ i ].style.display = "";
-            node.childNodes[ i ].style.display = "none";
-          }
-        }
-      },
-      "default" : rwt.util.Functions.returnTrue
-    } ),
 
     ////////////////
     // layout-helper

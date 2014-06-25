@@ -669,45 +669,16 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     ---------------------------------------------------------------------------
     */
 
-    // TODO [tb] : refactor
-    _getImageHtml : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( cell ) {
-        if( rwt.client.Client.getVersion() < 7 ) {
-          var content = this.getCellContent( cell );
-          var cssImageStr = "";
-          if( content ) {
-            cssImageStr
-              = "filter:progid:DXImageTransform.Microsoft"
-              + ".AlphaImageLoader(src='"
-              + content
-              + "',sizingMethod='crop')";
-          }
-          return    '<div style="position:absolute;border:0 none;line-height:0px;font-size:0px;'
-                  + cssImageStr
-                  + '"></div>';
-        } else {
-          var content = this.getCellContent( cell );
-          var cssImageStr = "";
-          if( content ) {
-            var path =  rwt.html.Style._resolveResource( content );
-            cssImageStr = "background-image:url(" + path + ")";
-          }
-          return   "<div style='position:absolute;border:0 none;line-height:0px;font-size:0px;"
-                 + cssImageStr
-                 + ";background-repeat:no-repeat;' ></div>";
-        }
-      },
-      "default" : function( cell ) {
-        var content = this.getCellContent( cell );
-        var cssImageStr = "";
-        if( content ) {
-          cssImageStr = "background-image:url(" + content + ")";
-        }
-        return   "<div style='position:absolute;border:0 none;"
-               + cssImageStr
-               + ";background-repeat:no-repeat;' ></div>";
+    _getImageHtml : function( cell ) {
+      var content = this.getCellContent( cell );
+      var cssImageStr = "";
+      if( content ) {
+        cssImageStr = "background-image:url(" + content + ")";
       }
-    } ),
+      return   "<div style='position:absolute;border:0 none;"
+             + cssImageStr
+             + ";background-repeat:no-repeat;' ></div>";
+    },
 
     _updateImage : function( cell ) {
       var node = this.getCellNode( cell );

@@ -33,7 +33,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     this.base( arguments );
     this._layoutChanges = {};
     this._outerFrame = [ 0, 0 ];
-    this.initHideFocus();
   },
 
   events: {
@@ -975,7 +974,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     hideFocus : {
       check : "Boolean",
       init : true,
-      apply : "_applyHideFocus",
       themeable : true
     },
 
@@ -1717,7 +1715,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
             var index = vParent.getChildren().indexOf( this );
             vParent.getLayoutImpl().updateChildrenOnRemoveChild( this, index );
             vParent.addToJobQueue( "removeChild" );
-            var parentNode = rwt.client.Client.isMshtml() ? this.getElement().parentElement : this.getElement().parentNode;
+            var parentNode = this.getElement().parentNode;
             if( parentNode ){
               parentNode.removeChild( this.getElement() );
               this._afterRemoveDom();
@@ -1749,26 +1747,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       this._isSeeable = true;
       this.dispatchSimpleEvent( "appear" );
     },
-
-    _ieFixLayoutOnAppear : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        var width = this._style.width;
-        var height = this._style.height;
-        this._style.width = "0px";
-        this._style.height = "0px";
-        this._style.width = width;
-        this._style.height = height;
-        if( this._innerStyle ) {
-          width = this._innerStyle.width;
-          height = this._innerStyle.height;
-          this._innerStyle.width = "0px";
-          this._innerStyle.height = "0px";
-          this._innerStyle.width = width;
-          this._innerStyle.height = height;
-        }
-      },
-      "default" : rwt.util.Functions.returnTrue
-    } ),
 
     _beforeDisappear : function() {
       // Remove any hover/pressed styles
@@ -1833,7 +1811,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this.removeStyleProperty("display");
         if ( this._isDisplayable && this._isCreated ) {
           this._afterAppear();
-          this._ieFixLayoutOnAppear();
         }
       } else {
         if ( this._isDisplayable && this._isCreated ) {
@@ -2195,7 +2172,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE RANGES
 
     _recomputeRangeX : rwt.util.Variant.select("qx.client", {
-      "mshtml|trident|opera|webkit" : function() {
+      "trident|opera|webkit" : function() {
         if (this._computedLeftTypeNull || this._computedRightTypeNull) {
           return false;
         }
@@ -2208,7 +2185,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeRangeY : rwt.util.Variant.select("qx.client", {
-      "mshtml|trident|opera|webkit" : function() {
+      "trident|opera|webkit" : function() {
         if (this._computedTopTypeNull || this._computedBottomTypeNull) {
           return false;
         }
@@ -2224,7 +2201,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE STRETCHING
 
     _recomputeStretchingX : rwt.util.Variant.select("qx.client", {
-      "mshtml|trident|opera|webkit" : function() {
+      "trident|opera|webkit" : function() {
         if (this.getAllowStretchX() && this._computedWidthTypeNull) {
           this._computedWidthValue = null;
           this.addToLayoutChanges("width");
@@ -2241,7 +2218,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeStretchingY : rwt.util.Variant.select("qx.client", {
-      "mshtml|trident|opera|webkit" : function() {
+      "trident|opera|webkit" : function() {
         if (this.getAllowStretchY() && this._computedHeightTypeNull) {
           this._computedHeightValue = null;
           this.addToLayoutChanges("height");
@@ -2911,7 +2888,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * @throws an error if the incoming data field is not a map.
      */
     _styleFromMap : function( data ) {
-      this._prepareStyleMap( data );
       var styler = rwt.qx.Property.$$method.style;
       var unstyler = rwt.qx.Property.$$method.unstyle;
       var value;
@@ -2931,20 +2907,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this[unstyler[data[i]]]();
       }
     },
-
-    _prepareStyleMap : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function( map ) {
-        if( map.shadow && map.border && map.border.getStyle() !== "rounded" ) {
-          var width = map.border.getWidthTop();
-          var color = map.border.getColorTop();
-          var radii = [ 0, 0, 0, 0 ];
-          map.border = new rwt.html.Border( width, "rounded", color, radii );
-        }
-      },
-      "default" : function( map ) {
-        return map;
-      }
-    } ),
 
     _renderAppearance : function() {
       if (!this.__states) {
@@ -2981,18 +2943,15 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _applyStateStyleFocus : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function(vStates) {},
-      "default" : function(vStates) {
-        if (vStates.focused) {
-          if (!rwt.widgets.util.FocusHandler.mouseFocus && !this.getHideFocus()) {
-            this.setStyleProperty("outline", "1px dotted");
-          }
-        } else {
-          this.setStyleProperty("outline", "none");
+    _applyStateStyleFocus : function( vStates ) {
+      if (vStates.focused) {
+        if (!rwt.widgets.util.FocusHandler.mouseFocus && !this.getHideFocus()) {
+          this.setStyleProperty("outline", "1px dotted");
         }
+      } else {
+        this.setStyleProperty("outline", "none");
       }
-    } ),
+    },
 
     addToStateQueue : function() {
       rwt.widgets.base.Widget.addToGlobalStateQueue(this);
@@ -3202,16 +3161,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    _applyHideFocus : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function(value, old) {
-        this.setHtmlProperty("hideFocus", value);
-      },
-      // Need no implementation for others then mshtml, because
-      // all these browsers support css outlines and do not
-      // have an attribute "hideFocus" as IE.
-      "default" : rwt.util.Functions.returnTrue
-    } ),
-
     _visualizeBlur : function() {
       // Force blur, even if mouseFocus is not active because we
       // need to be sure that the previous focus rect gets removed.
@@ -3271,73 +3220,17 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     ////////////////////
     // TAB INDEX SUPPORT
 
-    _applyTabIndex : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function(value, old) {
-        /*
-        if (value < 0 || !this.getEnabled()) {
-          this.setHtmlProperty("unselectable", "on");
-        } else {
-          this.removeHtmlProperty("unselectable");
-        }
-        */
-        // Legacy tabIndex property
-        this.setHtmlProperty("tabIndex", value < 0 ? -1 : 1);
-      },
-      // [if] Fix for bug:
-      // 288348: The focus stays on the browser location bar after clicking some
-      // of the widgets.
-      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288348
-      //"gecko" : function(value, old)
-      //{
-      //  // CSS 3 draft userFocus property
-      //  this.setStyleProperty("MozUserFocus", (value < 0 ? "ignore" : "normal"));
-      //},
-      "default" : function(value, old) {
-        // CSS 3 draft userFocus property
-        this.setStyleProperty("userFocus", (value < 0 ? "ignore" : "normal"));
-        // Legacy tabIndex property
-        this.setHtmlProperty("tabIndex", value < 0 ? -1 : 1);
-      }
-    } ),
+    _applyTabIndex : function( value, old ) {
+      // CSS 3 draft userFocus property
+      this.setStyleProperty("userFocus", (value < 0 ? "ignore" : "normal"));
+      // Legacy tabIndex property
+      this.setHtmlProperty("tabIndex", value < 0 ? -1 : 1);
+    },
 
     /////////////////////
     // SELECTABLE SUPPORT
 
     _applySelectable : rwt.util.Variant.select("qx.client", {
-      // "unselectable" works locally and does not affect children
-      // "user-select" is not inherited, but it does affect children
-      // in the same way that display: none does, it limits it.
-      // Normally "unselectable" must be applied recursively because
-      // of this restriction. We use the "selectstart" event instead
-      // and apply a preventDefault() on this event in the EventHandler
-      // class. This event works at least in MSHTML and Webkit.
-      // Opera has no support for any of these options yet. No "selectstart"
-      // event no user-select property.
-      "mshtml" : function(value, old) {
-        // IMPORTANT
-        // to ensure that widgets using the execCommand method work
-        // properly it is necessary to keep these lines. Otherwise
-        // the widget e.g. the HtmlArea will loose its selection of text
-        // and the execCommand would target an empty selection at the
-        // beginning of the editable document.
-
-        // AGAIN: This makes more problems when enabled, because
-        // it interrupts the normal focus flow. We definitely need
-        // to find a solution which works without the unselectable
-        // property. The problem is that other clients than
-        // Firefox or Opera do not allow multiple selections.
-        // Interesting read is the WHATWG text selection suggestion.
-        // We are in an evaluating phase to find better solutions, but
-        // this needs some time - and maybe can only be made available
-        // when the browsers at least support a common subset here.
-        /*
-        if (value) {
-          return this.removeHtmlProperty("unselectable");
-        } else {
-          return this.setHtmlProperty("unselectable", "on");
-        }
-        */
-      },
       "gecko" : function(value, old) {
         if (value) {
           this.removeStyleProperty("MozUserSelect");
@@ -3381,33 +3274,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     // TODO: maybe we could use cursor:url() for not suppoted cursors.
     __cursorMap : rwt.util.Variant.select("qx.client", {
-      "mshtml" : {
-        "default" : "default",
-        "wait" : "wait",
-        "crosshair" : "crosshair",
-        "help" : "help",
-        "move" : "move",
-        "text" : "text",
-        "pointer" : "pointer",
-        "e-resize" : "e-resize",
-        "n-resize" : "n-resize",
-        "w-resize" : "w-resize",
-        "s-resize" : "s-resize",
-        "ne-resize" : "ne-resize",
-        "se-resize" : "se-resize",
-        "nw-resize" : "nw-resize",
-        "sw-resize" : "sw-resize",
-        "col-resize" : "col-resize",
-        "row-resize" : "row-resize",
-        "progress" : "progress",
-        "not-allowed" : "not-allowed",
-        "no-drop" : "no-drop",
-        "cursor" : "hand",
-        "ew-resize" : "e-resize",
-        "ns-resize" : "n-resize",
-        "nesw-resize" : "ne-resize",
-        "nwse-resize" : "nw-resize"
-      },
       "opera" : {
         "default" : "default",
         "wait" : "wait",
@@ -3536,8 +3402,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyOverflow : rwt.util.Variant.select("qx.client", {
       "default" : function(value, old) {
-        // Mshtml and WebKit conform to CSS3 Spec. Eventually there will be multiple
-        // browsers which support these new overflowX overflowY properties.
         var pv = value;
         var pn = "overflow";
         switch(value) {
@@ -3783,13 +3647,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this._targetNode = document.createElement( "div" );
         this._innerStyle = this._targetNode.style;
         this._targetNodeEnabled = true;
-        if( rwt.client.Client.isMshtml() ) {
-          this.addToQueue( "width" );
-          this.addToQueue( "height" );
-        } else {
-          this._innerStyle.width = "100%";
-          this._innerStyle.height = "100%";
-        }
+        this._innerStyle.width = "100%";
+        this._innerStyle.height = "100%";
         this._innerStyle.position = "absolute";
         if( !newElement ) {
           for( var i in this._styleProperties ) {
@@ -4029,48 +3888,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
   defer : function(statics, members) {
     statics.__initApplyMethods(members);
-    // In MSHTML we rewrite these runtime setters to improve the
-    // performance when using enhanced borders (2px complex borders)
-    // The problem are percentage width used by other browsers, too, to
-    // allow these complex borders to be rendered. IE performs worst
-    // when using percent. Because of this we add a lot overhead to
-    // calculate the inner size in IE. This is faster than the old
-    // much simpler solution with applying 100% width and height
-    // See also bug http://bugzilla.qooxdoo.org/show_bug.cgi?id=487
-    // See also: global cursor handling in ClientDocument
-    // Regarding innerStyle:
-    // Enhanced border are always 2px width, we need
-    // to substract the two border pixels assigned to
-    // the outer element from the outer width to get
-    // the inner width
-    if( rwt.client.Client.isMshtml() ) {
-      members._renderRuntimeWidth = function(v) {
-        this._style.pixelWidth = (v==null)?0:v;
-        if( this._targetNodeEnabled ) {
-          var innerValue = ( v != null ) ? Math.max( 0, v - this._outerFrame[ 0 ] ) : v;
-          this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
-        }
-      };
-      members._renderRuntimeHeight = function(v) {
-        this._style.pixelHeight = (v==null)?0:v;
-        if( this._targetNodeEnabled ) {
-          var innerValue = ( v != null ) ? Math.max( 0, v - this._outerFrame[ 1 ] ) : v;
-          this._innerStyle.pixelHeight = innerValue == null ? 0 : innerValue;
-        }
-      };
-      members._resetRuntimeWidth = function() {
-        this._style.width = "";
-        if( this._targetNodeEnabled ) {
-          this._innerStyle.width = "";
-        }
-      };
-      members._resetRuntimeHeight = function() {
-        this._style.height = "";
-        if( this._targetNodeEnabled ) {
-          this._innerStyle.height = "";
-        }
-      };
-    }
     statics.__initLayoutProperties(statics);
   },
 

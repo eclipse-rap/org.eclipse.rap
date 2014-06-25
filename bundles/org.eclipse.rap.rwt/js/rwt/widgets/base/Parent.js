@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -909,18 +909,6 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
         }
       });
     },
-
-    _ieFixLayoutOnAppear : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this.base( arguments );
-        this.forEachVisibleChild( function() {
-          if( this._isCreated ) {
-            this._ieFixLayoutOnAppear();
-          }
-        } );
-      },
-      "default" : rwt.util.Functions.returnTrue
-    } ),
 
     // overridden
     _beforeDisappear : function()

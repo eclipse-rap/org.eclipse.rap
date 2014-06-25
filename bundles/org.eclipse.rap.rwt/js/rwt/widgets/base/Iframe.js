@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -79,7 +79,6 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
         if( !obj ) {
           throw new Error("Could not find iframe which was loaded [A]!");
         }
-        // Non-MSHTML browsers will input an DOM event here
         if( obj.currentTarget ) {
           obj = obj.currentTarget;
         }
@@ -255,25 +254,12 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       }
     },
 
-
     /**
      * @signature function()
      */
-    isLoaded : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        var doc = this.getContentDocument();
-        return doc ? doc.readyState == "complete" : false;
-      },
-
-      "default" : function() {
-        return this._isLoaded;
-      }
-    }),
-
-
-
+    isLoaded : function() {
+      return this._isLoaded;
+    },
 
     /*
     ---------------------------------------------------------------------------
@@ -431,25 +417,14 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       return frameEl;
     },
 
-    _createIframeNode : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( frameName ) {
-        var nameStr = frameName ? 'name="' + frameName + '"' : '';
-        var frameEl = rwt.widgets.base.Iframe._element = document.createElement(
-          "<iframe " + nameStr + " ></iframe>");
-        frameEl.attachEvent("onload", function() {
-          rwt.widgets.base.Iframe.load(frameEl);
-        });
-        return frameEl;
-      },
-      "default" : function( frameName ) {
-        var frameEl = rwt.widgets.base.Iframe._element = document.createElement("iframe");
-        frameEl.onload = rwt.widgets.base.Iframe.load;
-        if (frameName) {
-          frameEl.name = frameName;
-        }
-        return frameEl;
+    _createIframeNode : function( frameName ) {
+      var frameEl = rwt.widgets.base.Iframe._element = document.createElement("iframe");
+      frameEl.onload = rwt.widgets.base.Iframe.load;
+      if (frameName) {
+        frameEl.name = frameName;
       }
-    } ),
+      return frameEl;
+    },
 
 
     /**
@@ -462,13 +437,6 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
     {
       var blockerEl = rwt.widgets.base.Iframe._blocker = document.createElement("div");
       var blockerStyle = blockerEl.style;
-
-      if( rwt.client.Client.isMshtml() ) {
-        // Setting the backgroundImage causes an "insecure elements" warning under SSL
-
-        blockerStyle.backgroundColor = "white";
-        blockerStyle.filter = "Alpha(Opacity=0)";
-      }
 
       blockerStyle.position = "absolute";
       blockerStyle.top = 0;
@@ -663,22 +631,6 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       {
         this._isLoaded = true;
         this.createDispatchEvent("load");
-      }
-    },
-
-    destroy : function() {
-      // best known method to remove iframe content from memory is to set this url:
-      /*jshint scripturl:true */
-      var src = "javascript:false;";
-      if( rwt.client.Client.isMshtml() && this._iframeNode && this.getSource() !== src ) {
-        this.setStyleProperty( "visibility", "hidden" );
-        this.addToDocument();
-        this.addEventListener( "load", function() {
-          this.destroy();
-        }, this );
-        this.setSource( src );
-      } else {
-        this.base( arguments );
       }
     },
 
