@@ -41,52 +41,11 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
   statics : {
 
-    /** Internal map of style property convertions */
-    __hints : {
-      // Style property name correction
-      names : {
-        "float" : Client.isMshtml() ? "styleFloat" : "cssFloat",
-        "boxSizing" : Client.isGecko() ? "mozBoxSizing" : "boxSizing"
-      },
-
-      // Mshtml has propertiery pixel* properties for locations and dimensions
-      // which return the pixel value. Used by getComputed() in mshtml variant.
-      mshtmlPixel : {
-        width : "pixelWidth",
-        height : "pixelHeight",
-        left : "pixelLeft",
-        right : "pixelRight",
-        top : "pixelTop",
-        bottom : "pixelBottom"
-      }
-
-    },
-
     BROWSER_PREFIX : rwt.util.Variant.select( "qx.client", {
       "gecko" : "-moz-",
       "webkit" : "-webkit-",
       "default" : ""
     } ),
-
-    /*
-    ---------------------------------------------------------------------------
-      STYLE ATTRIBUTE SUPPORT
-    ---------------------------------------------------------------------------
-    */
-
-    /** {Integer} Computed value of a style property. Compared to the cascaded style,
-     * this one also interprets the values e.g. translates <code>em</code> units to
-     * <code>px</code>.
-     */
-    COMPUTED_MODE : 1,
-
-
-    /** {Integer} Cascaded value of a style property. */
-    CASCADED_MODE : 2,
-
-
-    /** {Integer} Local value of a style property. Ignores inheritance cascade. Does not interpret values. */
-    LOCAL_MODE : 3,
 
     /**
      * Gets the value of a style property.
@@ -106,150 +65,46 @@ rwt.qx.Class.define( "rwt.html.Style", {
      * Ignores inheritance cascade. Does not interpret values.
      *
      * @type static
-     * @signature function(element, name, mode, smart)
+     * @signature function(element, name)
      * @param element {Element} The DOM element to modify
      * @param name {String} Name of the style attribute (js variant e.g. marginTop, wordSpacing)
-     * @param mode {Number} Choose one of the modes {@link #COMPUTED_MODE}, {@link #CASCADED_MODE},
-     *   {@link #LOCAL_MODE}. The computed mode is the default one.
-     * @param smart {Boolean?true} Whether the implementation should automatically use
-     *    special implementations for some properties
      * @return {var} The value of the property
      */
-    get : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(element, name, mode, smart)
-      {
-        var hints = this.__hints;
+    get : function( element, name, mode ) {
+      // Opera, Mozilla and Safari 3+ also have a global getComputedStyle which is identical
+      // to the one found under document.defaultView.
 
-        // normalize name
-        name = hints.names[name] || name;
+      // The problem with this is however that this does not work correctly
+      // when working with frames and access an element of another frame.
+      // Then we must use the <code>getComputedStyle</code> of the document
+      // where the element is defined.
+      var doc = rwt.html.Nodes.getDocument(element);
+      var computed = doc.defaultView.getComputedStyle(element, null);
 
-        // switch to right mode
-        switch(mode)
-        {
-          case this.LOCAL_MODE:
-            return element.style[name] || "";
-
-          case this.CASCADED_MODE:
-            return element.currentStyle[name];
-
-          default:
-            // Read cascaded style
-            var currentStyle = element.currentStyle[name];
-
-            // Pixel values are always OK
-            if (/^-?[\.\d]+(px)?$/i.test(currentStyle)) {
-              return currentStyle;
-            }
-
-            // Try to convert non-pixel values
-            var pixel = hints.mshtmlPixel[name];
-            if (pixel)
-            {
-              // Backup local and runtime style
-              var localStyle = element.style[name];
-
-              // Overwrite local value with cascaded value
-              // This is needed to have the pixel value setupped
-              element.style[name] = currentStyle || 0;
-
-              // Read pixel value and add "px"
-              var value = element.style[pixel] + "px";
-
-              // Recover old local value
-              element.style[name] = localStyle;
-
-              // Return value
-              return value;
-            }
-
-            // Non-Pixel values may be problematic
-            if (/^-?[\.\d]+(em|pt|%)?$/i.test(currentStyle)) {
-              throw new Error("Untranslated computed property value: " + name + ". Only pixel values work well across different clients.");
-            }
-
-            // Just the current style
-            return currentStyle;
-        }
-      },
-
-      "default" : function(element, name, mode, smart)
-      {
-        var hints = this.__hints;
-
-        // normalize name
-        name = hints.names[name] || name;
-
-        // switch to right mode
-        switch(mode)
-        {
-          case this.LOCAL_MODE:
-            return element.style[name];
-
-          case this.CASCADED_MODE:
-            // Currently only supported by Opera and Internet Explorer
-            if (element.currentStyle) {
-              return element.currentStyle[name];
-            }
-
-            throw new Error("Cascaded styles are not supported in this browser!");
-
-          // Support for the DOM2 getComputedStyle method
-          //
-          // Safari >= 3 & Gecko > 1.4 expose all properties to the returned
-          // CSSStyleDeclaration object. In older browsers the function
-          // "getPropertyValue" is needed to access the values.
-          //
-          // On a computed style object all properties are read-only which is
-          // identical to the behavior of MSHTML's "currentStyle".
-          default:
-            // Opera, Mozilla and Safari 3+ also have a global getComputedStyle which is identical
-            // to the one found under document.defaultView.
-
-            // The problem with this is however that this does not work correctly
-            // when working with frames and access an element of another frame.
-            // Then we must use the <code>getComputedStyle</code> of the document
-            // where the element is defined.
-            var doc = rwt.html.Nodes.getDocument(element);
-            var computed = doc.defaultView.getComputedStyle(element, null);
-
-            // All relevant browsers expose the configured style properties to
-            // the CSSStyleDeclaration objects
-            return computed ? computed[name] : null;
-        }
-      }
-    }),
-
+      // All relevant browsers expose the configured style properties to
+      // the CSSStyleDeclaration objects
+      return computed ? computed[name] : null;
+    },
 
     /**
      * Gets the computed (CSS) style property of a given DOM element.
      */
-    getStyleProperty : (document.defaultView && document.defaultView.getComputedStyle) ?
-      // has computedStyle
-      function( el, prop ) {
+    // TODO: check if all supported browser have document.defaultView.getComputedStyle
+    getStyleProperty : ( document.defaultView && document.defaultView.getComputedStyle )
+      ? function( el, prop ) {
         try {
           return el.ownerDocument.defaultView.getComputedStyle(el, "")[prop];
         } catch(ex) {
           throw new Error("Could not evaluate computed style: " + el + "[" + prop + "]: " + ex);
         }
-      } :
-      // no computedStyle
-      rwt.util.Variant.select( "qx.client", {
-        "mshtml" : function( el, prop ) {
-          try {
-            return el.currentStyle[prop];
-          } catch( ex ) {
-            throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]: " + ex );
-          }
-        },
-        "default" : function( el, prop ) {
-          try {
-            return el.style[prop];
-          } catch( ex ) {
-            throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]" );
-          }
+      }
+      : function( el, prop ) {
+        try {
+          return el.style[prop];
+        } catch( ex ) {
+          throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]" );
         }
-      }),
+      },
 
 
     /**
@@ -491,16 +346,9 @@ rwt.qx.Class.define( "rwt.html.Style", {
     },
 
     setOpacity  : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( target, value ) {
-        if( value == null || value >= 1 || value < 0 ) {
-          this.removeCssFilter( target );
-        } else {
-          var valueStr = "Alpha(opacity=" + Math.round( value * 100 ) + ")";
-          this.setStyleProperty( target, "filter", valueStr );
-        }
-      },
       "gecko" : function( target, value ) {
         if( value == null || value >= 1 ) {
+          // todo: check if all supported gecko have "opacity"
           this.removeStyleProperty( target, "MozOpacity" );
           this.removeStyleProperty( target, "opacity" );
         } else {
@@ -539,25 +387,23 @@ rwt.qx.Class.define( "rwt.html.Style", {
       }
     },
 
-    setTextShadow  : rwt.util.Variant.select( "qx.client", {
-      "default" : function( target, shadowObject ) {
-        var property = "textShadow";
-        if( shadowObject ) {
-          var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
-          var rgba = rwt.util.Colors.stringToRgb( shadowObject[ 5 ] );
-          rgba.push( shadowObject[ 6 ] );
-          string += " rgba(" + rgba.join() + ")";
-          this.setStyleProperty( target, property, string );
-        } else {
-          this.removeStyleProperty( target, property );
-        }
-      },
-      "mshtml" : function() {}
-    } ),
+    setTextShadow : function( target, shadowObject ) {
+      var property = "textShadow";
+      if( shadowObject ) {
+        var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
+        var rgba = rwt.util.Colors.stringToRgb( shadowObject[ 5 ] );
+        rgba.push( shadowObject[ 6 ] );
+        string += " rgba(" + rgba.join() + ")";
+        this.setStyleProperty( target, property, string );
+      } else {
+        this.removeStyleProperty( target, property );
+      }
+    },
 
     setPointerEvents : function( target, value ) {
       var version = Client.getVersion();
       var ffSupport = Client.getEngine() === "gecko" && version >= 1.9;
+      // TODO: check if all supported browser support pointerEvents now
       // NOTE: chrome does not support pointerEvents, but not on svg-nodes
       var webKitSupport = Client.getBrowser() === "safari" && version >= 530;
       if( ffSupport || webKitSupport ) {
@@ -607,13 +453,9 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     _updateBackground : function( target ) {
       var background = [];
-      if( Client.isMshtml() ) {
-        this._pushMshtmlBackground( target, background );
-      } else {
-        this._pushBackgroundImage( target, background );
-        this._pushBackgroundGradient( target, background );
-        this._pushBackgroundColor( target, background );
-      }
+      this._pushBackgroundImage( target, background );
+      this._pushBackgroundGradient( target, background );
+      this._pushBackgroundColor( target, background );
       if( background.length > 0 ) {
         this.setStyleProperty( target, "background", background.join( ", " ) );
         // Set background size as separate backgroundSize property for Firefox compatibility
@@ -651,19 +493,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
         }
         backgroundArray.push( value );
       }
-    },
-
-    _pushMshtmlBackground : function( target, backgroundArray ) {
-      var color = target.___rwtStyle__backgroundColor;
-      var image = target.___rwtStyle__backgroundImage;
-      var result = color ? color + " " : "";
-      if( image ) {
-        var repeat = target.___rwtStyle__backgroundRepeat;
-        var position = target.___rwtStyle__backgroundPosition;
-        var size = target.___rwtStyle__backgroundSize;
-        result += this._getImageString( image, repeat, position );
-      }
-      backgroundArray.push( result );
     },
 
     _getGradientString : rwt.util.Variant.select( "qx.client", {
@@ -772,36 +601,27 @@ rwt.qx.Class.define( "rwt.html.Style", {
       domTarget.style.display = "";
     },
 
-    _refireEvent : rwt.util.Variant.select("qx.client", {
-      "mshtml" : function( target, type, originalEvent ) {
-        var newEvent = document.createEventObject( originalEvent );
-        target.fireEvent( "on" + type , newEvent );
-      },
-      "default" : function( target, type, originalEvent ) {
-        var newEvent = document.createEvent( "MouseEvents" );
-        newEvent.initMouseEvent( type,
-                                 true, /* can bubble */
-                                 true, /* cancelable */
-                                 originalEvent.view,
-                                 originalEvent.detail,
-                                 originalEvent.screenX,
-                                 originalEvent.screenY,
-                                 originalEvent.clientX,
-                                 originalEvent.clientY,
-                                 originalEvent.ctrlKey,
-                                 originalEvent.altKey,
-                                 originalEvent.shiftKey,
-                                 originalEvent.metaKey,
-                                 originalEvent.button,
-                                 originalEvent.relatedTarget);
-        target.dispatchEvent( newEvent );
-      }
-    } ),
+    _refireEvent : function( target, type, originalEvent ) {
+      var newEvent = document.createEvent( "MouseEvents" );
+      newEvent.initMouseEvent( type,
+                               true, /* can bubble */
+                               true, /* cancelable */
+                               originalEvent.view,
+                               originalEvent.detail,
+                               originalEvent.screenX,
+                               originalEvent.screenY,
+                               originalEvent.clientX,
+                               originalEvent.clientY,
+                               originalEvent.ctrlKey,
+                               originalEvent.altKey,
+                               originalEvent.shiftKey,
+                               originalEvent.metaKey,
+                               originalEvent.button,
+                               originalEvent.relatedTarget);
+      target.dispatchEvent( newEvent );
+    },
 
     _resolveResource : function( url ) {
-      if( Client.isMshtml() && !this._isAbsolute( url ) ) {
-        return Client.getBasePath() + url;
-      }
       return url;
     },
 

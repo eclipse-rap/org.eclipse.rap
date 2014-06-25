@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ rwt.qx.Class.define("rwt.html.Window",
      */
     getInnerWidth  : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|webkit" : function(vWindow)
+      "webkit" : function(vWindow)
       {
         if (vWindow.document.documentElement && vWindow.document.documentElement.clientWidth) {
           return vWindow.document.documentElement.clientWidth;
@@ -58,7 +58,7 @@ rwt.qx.Class.define("rwt.html.Window",
      */
     getInnerHeight : rwt.util.Variant.select("qx.client",
     {
-      "mshtml|webkit" : function(vWindow)
+      "webkit" : function(vWindow)
       {
         if (vWindow.document.documentElement && vWindow.document.documentElement.clientHeight) {
           return vWindow.document.documentElement.clientHeight;
@@ -83,24 +83,9 @@ rwt.qx.Class.define("rwt.html.Window",
      * @return {Integer} the window's left scroll position
      * @signature function(vWindow)
      */
-    getScrollLeft  : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vWindow)
-      {
-        if (vWindow.document.documentElement && vWindow.document.documentElement.scrollLeft) {
-          return vWindow.document.documentElement.scrollLeft;
-        } else if (vWindow.document.body) {
-          return vWindow.document.body.scrollTop;
-        }
-
-        return 0;
-      },
-
-      "default" : function(vWindow) {
-        return vWindow.document.body.scrollLeft;
-      }
-    }),
-
+    getScrollLeft : function( vWindow ) {
+      return vWindow.document.body.scrollLeft;
+    },
 
     /**
      * Get the top scroll position of the given browser window
@@ -110,22 +95,9 @@ rwt.qx.Class.define("rwt.html.Window",
      * @return {Integer} the window's top scroll position
      * @signature function(vWindow)
      */
-    getScrollTop   : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vWindow)
-      {
-        if (vWindow.document.documentElement && vWindow.document.documentElement.scrollTop) {
-          return vWindow.document.documentElement.scrollTop;
-        } else if (vWindow.document.body) {
-          return vWindow.document.body.scrollTop;
-        }
+    getScrollTop : function( vWindow ) {
+      return vWindow.document.body.scrollTop;
+    }
 
-        return 0;
-      },
-
-      "default" : function(vWindow) {
-        return vWindow.document.body.scrollTop;
-      }
-    })
   }
 });

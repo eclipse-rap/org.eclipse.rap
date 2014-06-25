@@ -32,31 +32,14 @@ rwt.qx.Class.define("rwt.html.Iframes",
      * @return {DOMWindow} The DOM window object of the iframe.
      * @signature function(vIframe)
      */
-    getWindow : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vIframe)
-      {
-        try {
-          return vIframe.contentWindow;
-        } catch(ex) {
-          return null;
-        }
-      },
-
-      "default" : function(vIframe)
-      {
-        try
-        {
-          var vDoc = rwt.html.Iframes.getDocument(vIframe);
-          return vDoc ? vDoc.defaultView : null;
-        }
-        catch(ex)
-        {
-          return null;
-        }
+    getWindow : function( vIframe ) {
+      try {
+        var vDoc = rwt.html.Iframes.getDocument( vIframe );
+        return vDoc ? vDoc.defaultView : null;
+      } catch( ex ) {
+        return null;
       }
-    }),
-
+    },
 
     /**
      * Get the DOM document object of an iframe.
@@ -66,31 +49,13 @@ rwt.qx.Class.define("rwt.html.Iframes",
      * @return {DOMDocument} The DOM document object of the iframe.
      * @signature function(vIframe)
      */
-    getDocument : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(vIframe)
-      {
-        try
-        {
-          var vWin = rwt.html.Iframes.getWindow(vIframe);
-          return vWin ? vWin.document : null;
-        }
-        catch(ex)
-        {
-          return null;
-        }
-      },
-
-      "default" : function(vIframe)
-      {
-        try {
-          return vIframe.contentDocument;
-        } catch(ex) {
-          return null;
-        }
+    getDocument : function( vIframe ) {
+      try {
+        return vIframe.contentDocument;
+      } catch( ex ) {
+        return null;
       }
-    }),
-
+    },
 
     /**
      * Get the HTML body element of the iframe.

@@ -49,10 +49,9 @@ rwt.qx.Class.define("rwt.html.Location",
      * @param style {String} Style property
      * @return {String} Value of given style property
      */
-    __style : function(elem, style) {
-      return rwt.html.Style.get(elem, style, rwt.html.Style.COMPUTED_MODE, false);
+    __style : function( elem, style ) {
+      return rwt.html.Style.get( elem, style );
     },
-
 
     /**
      * Queries a style property for the given element and parses it to a integer value
@@ -63,11 +62,10 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Integer} Value of given style property
      */
     __num : function(elem, style) {
-      var value = rwt.html.Style.get( elem, style, rwt.html.Style.COMPUTED_MODE, false );
+      var value = rwt.html.Style.get( elem, style );
       var result = Math.round( parseFloat( value ,10 ) );
       return result || 0;
     },
-
 
     /**
      * Computes the scroll offset of the given element relative to the document
@@ -108,37 +106,8 @@ rwt.qx.Class.define("rwt.html.Location",
      * @param elem {Element} DOM element to query
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
-    __computeBody : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(elem)
-      {
-        // Find body element
-        var doc = rwt.html.Nodes.getDocument(elem);
-        var body = doc.body;
-
-        // Start with the offset
-        var left = body.offsetLeft;
-        var top = body.offsetTop;
-
-        // Substract the body border
-        left -= this.__num(body, "borderLeftWidth");
-        top -= this.__num(body, "borderTopWidth");
-
-        // Add the margin when running in standard mode
-        if (doc.compatMode === "CSS1Compat")
-        {
-          left += this.__num(body, "marginLeft");
-          top += this.__num(body, "marginTop");
-        }
-
-        return {
-          left : Math.ceil( left ),
-          top : Math.ceil( top )
-        };
-      },
-
-      "webkit" : function(elem)
-      {
+    __computeBody : rwt.util.Variant.select( "qx.client", {
+      "webkit" : function( elem ) {
         // Find body element
         var doc = rwt.html.Nodes.getDocument(elem);
         var body = doc.body;
@@ -163,9 +132,7 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       },
-
-      "gecko" : function(elem)
-      {
+      "gecko" : function( elem ) {
         // Find body element
         var body = rwt.html.Nodes.getDocument(elem).body;
 
@@ -212,11 +179,8 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       },
-
-
       // At the moment only correctly supported by Opera
-      "default" : function(elem)
-      {
+      "default" : function( elem ) {
         // Find body element
         var body = rwt.html.Nodes.getDocument(elem).body;
 
@@ -229,7 +193,7 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       }
-    }),
+    } ),
 
 
     /**
@@ -238,27 +202,16 @@ rwt.qx.Class.define("rwt.html.Location",
      * Traditionally this is a loop which goes up the whole parent tree
      * and sums up all found offsets.
      *
-     * But both <code>mshtml</code> and <code>gecko >= 1.9</code> support
-     * <code>getBoundingClientRect</code> which allows a
-     * much faster access to the offset position.
-     *
-     * Please note: When gecko 1.9 does not use the <code>getBoundingClientRect</code>
-     * implementation, and therefor use the tranditional offset calculation
-     * the gecko 1.9 fix in <code>__computeBody</code> must not be applied.
-     *
      * @type static
      * @signature function(elem)
      * @param elem {Element} DOM element to query
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
-    __computeOffset : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml|trident|webkit|opera" : function(elem)
-      {
+    __computeOffset : rwt.util.Variant.select( "qx.client", {
+      "trident|webkit|opera" : function( elem ) {
         var doc = rwt.html.Nodes.getDocument(elem);
 
-        // Use faster getBoundingClientRect() if available
-        // Note: This is not yet supported by Webkit.
+        // TODO: Check if all supported browser have getBoundingClientRect
         if (elem.getBoundingClientRect)
         {
           var rect = elem.getBoundingClientRect();
@@ -300,9 +253,7 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       },
-
-      "gecko" : function(elem)
-      {
+      "gecko" : function( elem ) {
         // Use faster getBoundingClientRect() if available (gecko >= 1.9)
         if (elem.getBoundingClientRect)
         {
@@ -310,8 +261,6 @@ rwt.qx.Class.define("rwt.html.Location",
 
           // Firefox 3.0 alpha 6 (gecko 1.9) returns floating point numbers
           // use Math.round() to round them to style compatible numbers
-          // MSHTML returns integer numbers, maybe gecko will fix this in
-          // the future, too
           var left = Math.round(rect.left);
           var top = Math.round(rect.top);
         }
@@ -360,10 +309,8 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       },
-
       // At the moment only correctly supported by Opera
-      "default" : function(elem)
-      {
+      "default" : function( elem ) {
         var left = 0;
         var top = 0;
 
@@ -387,7 +334,7 @@ rwt.qx.Class.define("rwt.html.Location",
           top : Math.ceil( top )
         };
       }
-    }),
+    } ),
 
 
     /**

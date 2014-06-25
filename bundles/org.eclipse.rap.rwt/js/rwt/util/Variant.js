@@ -87,14 +87,14 @@ rwt.util.Variant = {
    * <pre class='javascript'>
    * var f = rwt.util.Variant.select( "qx.client", {
    *   "gecko": function() { ... },
-   *   "mshtml|opera": function() { ... },
+   *   "trident|opera": function() { ... },
    *   "default": function() { ... }
    * });
    * </pre>
    *
    * Depending on the value of the <code>"qx.client"</code> variant this will select the
    * corresponding function. The first case is selected if the variant is "gecko", the second
-   * is selected if the variant is "mshtml" or "opera" and the third function is selected if
+   * is selected if the variant is "trident" or "opera" and the third function is selected if
    * none of the other names match the variant.
    *
    * @param name {String} name of the variant. To enable the generator to optimize
@@ -128,7 +128,7 @@ rwt.util.Variant = {
    * Example:
    *
    * <pre class='javascript'>
-   * if (rwt.util.Variant.isSet("qx.client", "mshtml")) {
+   * if (rwt.util.Variant.isSet("qx.client", "trident")) {
    *   // some Internet Explorer specific code
    * } else if(rwt.util.Variant.isSet("qx.client", "opera")){
    *   // Opera specific code
@@ -139,8 +139,8 @@ rwt.util.Variant = {
    *
    * @param name {String} name of the variant
    * @param variants {String} value to check for. Several values can be "or"-combined by
-   *   separating them with a "|" character. A value of "mshtml|opera" would for example
-   *   check if the variant is set to "mshtml" or "opera"
+   *   separating them with a "|" character. A value of "trident|opera" would for example
+   *   check if the variant is set to "trident" or "opera"
    * @return {Boolean} whether the variant is set to the given value
    */
   isSet : function( name, variants ) {

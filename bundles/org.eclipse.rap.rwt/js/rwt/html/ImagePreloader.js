@@ -68,8 +68,6 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
     this._source = imageUrl;
     this._element.src = imageUrl;
 
-    this._checkPng();
-
     rwt.html.ImagePreloaderManager.getInstance().add(this);
   },
 
@@ -144,28 +142,6 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
      */
     isErroneous : function() {
       return this._isErroneous;
-    },
-
-    _checkPng : rwt.util.Variant.select( "qx.client", {
-      "default": rwt.util.Functions.returnTrue,
-      "mshtml" : function() {
-        this._isPng = /\.png$/i.test(this._element.nameProp);
-      }
-    } ),
-
-    // only used in mshtml: true when the image format is in png
-    _isPng : false,
-
-
-    /**
-     * Check whether the image format if PNG
-     *
-     * @type member
-     * @return {Boolean} whether the image format if PNG
-     */
-    getIsPng : function() {
-      // TODO should be renamedto isPng to be consistent with the rest of the framework.
-      return this._isPng;
     },
 
 
@@ -270,6 +246,6 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
       this._element.onload = this._element.onerror = null;
     }
 
-    this._disposeFields("_element", "_isLoaded", "_isErroneous", "_isPng");
+    this._disposeFields("_element", "_isLoaded", "_isErroneous" );
   }
 });

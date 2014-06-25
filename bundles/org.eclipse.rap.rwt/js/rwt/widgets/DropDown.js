@@ -9,8 +9,6 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-//@ sourceURL=DropDown.js
-
 (function() {
 
   var TAB = String.fromCharCode( 9 );

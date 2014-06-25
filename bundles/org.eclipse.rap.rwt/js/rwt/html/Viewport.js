@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -124,72 +124,32 @@ rwt.qx.Class.define("rwt.html.Viewport",
     /**
      * Returns the scroll position of the viewport
      *
-     * All clients except MSHTML supports the non-standard property <code>pageXOffset</code>.
+     * All clients except old IE supports the non-standard property <code>pageXOffset</code>.
      * As this is easier to evaluate we prefer this property over <code>scrollLeft</code>.
-     *
-     * For MSHTML the access method differs between standard and quirks mode;
-     * as this can differ from document to document this test must be made on
-     * each query.
-     *
-     * Verified to correctly work with:
-     *
-     * * Mozilla Firefox 2.0.0.4
-     * * Opera 9.2.1
-     * * Safari 3.0 beta (3.0.2)
-     * * Internet Explorer 7.0
      *
      * @type static
      * @signature function(win)
      * @param win {Window?window} The window to query
      * @return {Integer} Scroll position from left edge, always a positive integer
      */
-    getScrollLeft : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(win)
-      {
-        var doc = (win||window).document;
-        return doc.documentElement.scrollLeft || doc.body.scrollLeft;
-      },
-
-      "default" : function(win) {
-        return (win||window).pageXOffset;
-      }
-    }),
-
+    getScrollLeft : function( win ) {
+      return (win||window).pageXOffset;
+    },
 
     /**
      * Returns the scroll position of the viewport
      *
-     * All clients except MSHTML supports the non-standard property <code>pageYOffset</code>.
+     * All clients except old IE supports the non-standard property <code>pageYOffset</code>.
      * As this is easier to evaluate we prefer this property over <code>scrollTop</code>.
-     *
-     * For MSHTML the access method differs between standard and quirks mode;
-     * as this can differ from document to document this test must be made on
-     * each query.
-     *
-     * Verified to correctly work with:
-     *
-     * * Mozilla Firefox 2.0.0.4
-     * * Opera 9.2.1
-     * * Safari 3.0 beta (3.0.2)
-     * * Internet Explorer 7.0
      *
      * @type static
      * @signature function(win)
      * @param win {Window?window} The window to query
      * @return {Integer} Scroll position from left edge, always a positive integer
      */
-    getScrollTop : rwt.util.Variant.select("qx.client",
-    {
-      "mshtml" : function(win)
-      {
-        var doc = (win||window).document;
-        return doc.documentElement.scrollTop || doc.body.scrollTop;
-      },
+    getScrollTop : function(win) {
+      return (win||window).pageYOffset;
+    }
 
-      "default" : function(win) {
-        return (win||window).pageYOffset;
-      }
-    })
   }
 });
