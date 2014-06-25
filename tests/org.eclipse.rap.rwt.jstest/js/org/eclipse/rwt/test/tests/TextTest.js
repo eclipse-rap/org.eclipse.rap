@@ -1514,11 +1514,11 @@ var typeCharacter = function( character ) {
   text._inValueProperty = false;
   if( Client.isWebkit() ) {
     text._setSelectionStart( newValue.length - character.length );
-    text._oninputDom( { "propertyName" : "value" } );
+    text._oninput( { "propertyName" : "value" } );
     text._setSelectionStart( newValue.length );
   } else {
     text._setSelectionStart( newValue.length );
-    text._oninputDom( { "propertyName" : "value" } );
+    text._oninput( { "propertyName" : "value" } );
   }
   TestUtil.keyUp( text, character );
   TestUtil.forceTimerOnce();

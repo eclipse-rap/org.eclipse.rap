@@ -1,5 +1,5 @@
  /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -344,7 +344,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       text._inValueProperty = true;
       text._inputElement.value = "foob";
       text._inValueProperty = false;
-      text._oninputDom( { "propertyName" : "value" } );
+      text._oninput( { "propertyName" : "value" } );
       TestUtil.keyUp( text, 46 );
 
       assertEquals( 0, eventProxy.keyCode );
@@ -366,7 +366,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       text._inValueProperty = true;
       text._inputElement.value = "foob";
       text._inValueProperty = false;
-      text._oninputDom( { "propertyName" : "value" } );
+      text._oninput( { "propertyName" : "value" } );
       TestUtil.keyUp( text, 8 );
 
       assertEquals( 0, eventProxy.keyCode );
@@ -708,7 +708,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       textWidget._inValueProperty = true;
       textWidget._inputElement.value = newValue;
       textWidget._inValueProperty = false;
-      textWidget._oninputDom( { "propertyName" : "value" } );
+      textWidget._oninput( { "propertyName" : "value" } );
       TestUtil.keyUp( textWidget, character );
     },
 
@@ -722,7 +722,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       textWidget._inValueProperty = true;
       textWidget._inputElement.value = value;
       textWidget._inValueProperty = false;
-      textWidget._oninputDom( { "propertyName" : "value" } );
+      textWidget._oninput( { "propertyName" : "value" } );
     }
 
   }

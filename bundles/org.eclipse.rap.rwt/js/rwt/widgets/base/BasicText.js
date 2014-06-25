@@ -26,7 +26,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     this.initTabIndex();
     this._selectionStart = 0;
     this._selectionLength = 0;
-    this.__oninput = rwt.util.Functions.bindEvent( this._oninputDom, this );
+    this.__oninput = rwt.util.Functions.bindEvent( this._oninput, this );
     this.addEventListener( "blur", this._onblur );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
@@ -42,11 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
   destruct : function() {
     if( this._inputElement != null ) {
-      if( rwt.client.Client.isMshtml() ) {
-        this._inputElement.onpropertychange = null;
-      } else {
-        this._inputElement.removeEventListener( "input", this.__oninput, false );
-      }
+      this._inputElement.removeEventListener( "input", this.__oninput, false );
     }
     this._inputElement = null;
     this.__font = null;
@@ -182,152 +178,56 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       this.dispatchSimpleEvent( "selectionChanged" );
     },
 
-    _setSelectionStart : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( vStart ) {
-        this._visualPropertyCheck();
-        var vText = this._inputElement.value;
-        // special handling for line-breaks
-        var i = 0;
-        while( i < vStart ) {
-          i = vText.indexOf( "\r\n", i );
-          if( i === -1 ) {
-            break;
-          }
-          vStart--;
-          i++;
-        }
-        var vRange = this._inputElement.createTextRange();
-        vRange.collapse();
-        vRange.move( "character", vStart );
-        vRange.select();
-      },
-      "gecko" : function( vStart ) {
-        this._visualPropertyCheck();
-        // the try catch block is neccesary because FireFox raises an exception
-        // if the property "selectionStart" is read while the element or one of
-        // its parent elements is invisible
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
-        try {
-          this._inputElement.selectionStart = vStart;
-        } catch(ex ) {
-          // do nothing
-        }
-      },
-      "default" : function( vStart) {
-        this._visualPropertyCheck();
+    _setSelectionStart : function( vStart ) {
+      this._visualPropertyCheck();
+      // the try catch blocks are neccesary because FireFox raises an exception
+      // if the property "selectionStart" is read while the element or one of
+      // its parent elements is invisible
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
+      try {
         if( this._inputElement.selectionStart !== vStart ) {
           this._inputElement.selectionStart = vStart;
         }
+      } catch(ex ) {
+        // do nothing
       }
-    } ),
+    },
 
-    _getSelectionStart : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this._visualPropertyCheck();
-        var vSelectionRange = window.document.selection.createRange();
-        // Check if the document.selection is the text range inside the input element
-        if( !this._inputElement.contains( vSelectionRange.parentElement() ) ) {
-          return -1;
-        }
-        var vRange = this._inputElement.createTextRange();
-        var vRange2 = vRange.duplicate();
-        // Weird Internet Explorer statement
-        vRange2.moveToBookmark( vSelectionRange.getBookmark() );
-        vRange.setEndPoint( 'EndToStart', vRange2 );
-        // for some reason IE doesn’t always count the \n and \r in the length
-        var textPart = vSelectionRange.text.replace( /[\r\n]/g, '.' );
-        var textWhole = this._inputElement.value.replace( /[\r\n]/g, '.' );
-        return textWhole.indexOf( textPart, vRange.text.length );
-      },
-      "gecko" : function() {
-        this._visualPropertyCheck();
-        var el = this._inputElement;
-        var result;
-        // the try catch block is neccesary because FireFox raises an exception
-        // if the property "selectionStart" is read while the element or one of
-        // its parent elements is invisible
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
-        try {
-          if( this.isValidString( el.value ) ) {
-            result = el.selectionStart;
-          } else {
-            result = 0;
-          }
-        } catch( ex ) {
-          result = 0;
-        }
-        return result;
-      },
-      "default" : function() {
-        this._visualPropertyCheck();
-        return this._inputElement.selectionStart;
-      }
-    } ),
-
-    _setSelectionLength : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( vLength ) {
-        this._visualPropertyCheck();
-        var vSelectionRange = window.document.selection.createRange();
-        if( !this._inputElement.contains(vSelectionRange.parentElement() ) ) {
-          return;
-        }
-        vSelectionRange.collapse();
-        vSelectionRange.moveEnd( "character", vLength );
-        vSelectionRange.select();
-      },
-      "gecko" : function( vLength ) {
-        this._visualPropertyCheck();
-        var el = this._inputElement;
-        // the try catch block is neccesary because FireFox raises an exception
-        // if the property "selectionStart" is read while the element or one of
-        // its parent elements is invisible
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
-        try {
-          if( this.isValidString( el.value ) ) {
-            el.selectionEnd = el.selectionStart + vLength;
-          }
-        } catch (ex) {}
-      },
-      "default" : function(vLength) {
-        this._visualPropertyCheck();
-        var el = this._inputElement;
-        if( this.isValidString( el.value ) ) {
-          var end = el.selectionStart + vLength;
-          if( el.selectionEnd != end ) {
-            el.selectionEnd = el.selectionStart + vLength;
-          }
-        }
-      }
-    } ),
-
-    _getSelectionLength : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this._visualPropertyCheck();
-        var vSelectionRange = window.document.selection.createRange();
-        if( !this._inputElement.contains( vSelectionRange.parentElement() ) ) {
+    _getSelectionStart : function() {
+      this._visualPropertyCheck();
+      try {
+        if( this.isValidString( this._inputElement.value ) ) {
+          return this._inputElement.selectionStart;
+        } else {
           return 0;
         }
-        return vSelectionRange.text.length;
-      },
-      "gecko" : function() {
-        this._visualPropertyCheck();
-        var el = this._inputElement;
-        // the try catch block is neccesary because FireFox raises an exception
-        // if the property "selectionStart" is read while the element or one of
-        // its parent elements is invisible
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=329354
-        try {
-          return el.selectionEnd - el.selectionStart;
-        } catch( ex ) {
-          // do nothing
-        }
-      },
-      "default" : function() {
-        this._visualPropertyCheck();
-        var el = this._inputElement;
-        return el.selectionEnd - el.selectionStart;
+      } catch( ex ) {
+        return 0;
       }
-    } ),
+    },
+
+    _setSelectionLength : function( length ) {
+      this._visualPropertyCheck();
+      try {
+        if( this.isValidString( this._inputElement.value ) ) {
+          var end = this._inputElement.selectionStart + length;
+          if( this._inputElement.selectionEnd != end ) {
+            this._inputElement.selectionEnd = end;
+          }
+        }
+      } catch( ex ) {
+        // do nothing
+      }
+    },
+
+    _getSelectionLength : function() {
+      this._visualPropertyCheck();
+      try {
+        return this._inputElement.selectionEnd - this._inputElement.selectionStart;
+      } catch( ex ) {
+        return 0;
+      }
+    },
 
     selectAll : function() {
       this._visualPropertyCheck();
@@ -358,16 +258,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         var inputElement = this.getInputElement();
         inputElement.disabled = this.getEnabled() === false;
         inputElement.readOnly = this.getReadOnly();
-        if( rwt.client.Client.isMshtml() ) {
-          if( this.getValue() != null && this.getValue() !== "" ) {
-            inputElement.value = this.getValue();
-          } else {
-           // See Bug 243557 - [Text] Pasting text from clipboard does not trigger ModifyListener
-            inputElement.value = " ";
-          }
-        } else {
-          inputElement.value = this.getValue() != null ? this.getValue().toString() : "";
-        }
+        inputElement.value = this.getValue() != null ? this.getValue().toString() : "";
         if( this.getMaxLength() != null ) {
           inputElement.maxLength = this.getMaxLength();
         }
@@ -395,23 +286,18 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _textInit : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {
-        // Emulate IE hard-coded margin
-        // Mozilla by default emulates this IE handling, but in a wrong
-        // way. IE adds the additional margin to the CSS margin where
-        // Mozilla replaces it. But this make it possible for the user
-        // to overwrite the margin, which is not possible in IE.
-        // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
-        // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin:
-        this._inputElement.style.margin = "1px 0 1px -1px";
-        this._inputElement.addEventListener( "input", this.__oninput, false );
-        this._applyBrowserFixesOnCreate();
-      },
-      "mshtml" : function() {
-        this._inputElement.onpropertychange = this.__oninput;
-      }
-    } ),
+    _textInit : function() {
+      // Emulate IE hard-coded margin
+      // Mozilla by default emulates this IE handling, but in a wrong
+      // way. IE adds the additional margin to the CSS margin where
+      // Mozilla replaces it. But this make it possible for the user
+      // to overwrite the margin, which is not possible in IE.
+      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
+      // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin:
+      this._inputElement.style.margin = "1px 0 1px -1px";
+      this._inputElement.addEventListener( "input", this.__oninput, false );
+      this._applyBrowserFixesOnCreate();
+    },
 
     _postApply : function() {
       this._syncFieldWidth();
@@ -433,7 +319,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _syncFieldHeight : function() {
       if( this._inputTag !== "input" ) {
-        // Reduce height by 2 pixels (the manual or mshtml margin)
+        // Reduce height by 2 pixels (the manual or IE margin)
         this._inputElement.style.height = Math.max( 0, this.getInnerHeight() - 2 ) + "px";
       }
     },
@@ -445,16 +331,11 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderCursor : function() {
-      var style = this._inputElement.style;
       var value = this.getCursor();
       if( value ) {
-        if( value === "pointer" && rwt.client.Client.isMshtml() ) {
-          style.cursor = "hand";
-        } else {
-          style.cursor = value;
-        }
+        this._inputElement.style.cursor = value;
       } else {
-        style.cursor = "";
+        this._inputElement.style.cursor = "";
       }
     },
 
@@ -582,7 +463,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _afterAppear : function() {
       this.base( arguments );
-      this._applyBrowserFixesOnAppear();
       this._centerFieldVertically();
       this._renderSelection();
     },
@@ -591,7 +471,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     _centerFieldVertically : function() {
       if( this._inputTag === "input" && this._inputElement ) {
         var innerHeight = this.getInnerHeight();
-        var inputElementHeight = this._getInputElementHeight();
+        var inputElementHeight = this._inputElement.offsetHeight;
         if( inputElementHeight !== 0 ) {
           var top = ( innerHeight - inputElementHeight ) / 2 - 1;
           if( top < 0 ) {
@@ -606,34 +486,8 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _getInputElementHeight : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        var result = this._inputElement.offsetHeight;
-        if( result !== 0 ) {
-          result -= 2;
-        }
-        return result;
-      },
-      "default" :function() {
-        return this._inputElement.offsetHeight;
-      }
-    } ),
-
     ////////////////
     // event handler
-
-    _oninputDom : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( event ) {
-        if( event.propertyName === "value" ) {
-          if( !this._inValueProperty && this._inputElement.value !== this.getValue() ) {
-            this._oninput();
-          }
-        }
-      },
-      "default" : function( event ) {
-        this._oninput();
-      }
-    } ),
 
     _oninput : function() {
       try {
@@ -645,7 +499,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         if( doit ) {
           // at least webkit does sometiems fire "input" before the selection is updated
           rwt.client.Timer.once( this._updateValueProperty, this, 0 );
-        } else if( rwt.client.Client.isWebkit() || rwt.client.Client.isMshtml() ){
+        } else if( rwt.client.Client.isWebkit() ) {
           // some browser set new selection after input event, ignoring all changes before that
           rwt.client.Timer.once( this._renderSelection, this, 0 );
           this._selectionNeedsUpdate = true;
@@ -742,15 +596,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         this._oninput();
       }
     },
-
-    _applyBrowserFixesOnAppear : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {},
-      "mshtml" : function() {
-        if( this._firstInputFixApplied !== true && this._inputElement ) {
-          rwt.client.Timer.once( this._ieFirstInputFix, this, 1 );
-        }
-      }
-    } ),
 
     _ieFirstInputFix : function() {
       if( !this.isDisposed() ) {

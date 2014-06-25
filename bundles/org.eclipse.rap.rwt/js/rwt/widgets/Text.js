@@ -67,11 +67,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       if( !this._isTextArea() && this._inputType != type ) {
         this._inputType = type;
         if( this._isCreated ) {
-          if( rwt.client.Client.getEngine() === "mshtml" ) {
-            this._reCreateInputField();
-          } else {
-            this._inputElement.type = this._inputType;
-          }
+          this._inputElement.type = this._inputType;
         }
       }
     },
@@ -165,9 +161,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
         this._styleWrap();
       }
       var client = rwt.client.Client;
-      if(    client.isMshtml()
-          || client.isTrident() && client.getVersion() === 9 && this._isTextArea() )
-      {
+      if( client.isTrident() && client.getVersion() === 9 && this._isTextArea() ) {
         // Bug 427828 - [Text] Loses focus on click in IE8
         // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
         var blank = rwt.remote.Connection.RESOURCE_PATH + "static/image/blank.gif";
@@ -192,11 +186,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _styleWrap : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        if( this._inputElement ) {
-          this._inputElement.wrap = this.getWrap() ? "soft" : "off";
-        }
-      },
       "gecko" : function() {
         if( this._inputElement ) {
           var wrapValue = this.getWrap() ? "soft" : "off";
@@ -247,7 +236,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           }
         }
         if( fireEvents ) {
-          this._oninputDom( event );
+          this._oninput( event );
         }
       } catch( ex ) {
         rwt.runtime.ErrorHandler.processJavaScriptError( ex );
@@ -286,10 +275,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
         element = document.createElement( "div" );
         element.style.position = "absolute";
         element.style.cursor = "pointer";
-        if( rwt.client.Client.isMshtml() ) {
-          element.style.fontSize = 0;
-          element.style.lineHeight = 0;
-        }
         this._getTargetNode().insertBefore( element, this._inputElement );
         this._setIconElement( iconId, element );
       }
@@ -420,14 +405,6 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _forceFocus : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        rwt.client.Timer.once( function() {
-          if( this._inputElement ) {
-            this._inputElement.select();
-            this._inputElement.focus();
-          }
-        }, this, 1 );
-      },
       "webkit" : function() {
         rwt.client.Timer.once( function() {
           if( this._inputElement ) {
