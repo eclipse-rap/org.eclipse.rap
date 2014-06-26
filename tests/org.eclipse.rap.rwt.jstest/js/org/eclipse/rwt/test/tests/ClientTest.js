@@ -56,14 +56,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testGraphicsSupport : function() {
-      // Canvas present in all browser except IE, no check implemented.
       var svg = Client.supportsSvg();
-      var vml = Client.supportsVml();
       var css3 = Client.supportsCss3();
       assertEquals( "boolean", typeof svg );
-      assertEquals( "boolean", typeof vml );
       assertEquals( "boolean", typeof css3 );
-      assertTrue( "Theming support", svg || vml || css3 );
+      assertTrue( "Theming support", svg || css3 );
     },
 
     testSupportsFileDrop : function() {

@@ -128,7 +128,6 @@ rwt/remote/EventUtil.js
 rwt/widgets/util/ToolTipConfig.js
 rwt/widgets/base/WidgetToolTip.js
 rwt/widgets/util/GraphicsMixin.js
-rwt/graphics/VML.js
 rwt/graphics/SVG.js
 rwt/widgets/util/WidgetUtil.js
 rwt/theme/ThemeStore.js
@@ -190,7 +189,6 @@ rwt/remote/handler/ComboHandler.js
 rwt/widgets/util/FocusIndicator.js
 rwt/remote/handler/GCHandler.js
 rwt/widgets/GC.js
-rwt/graphics/VMLCanvas.js
 rwt/remote/handler/CompositeHandler.js
 rwt/widgets/Composite.js
 rwt/widgets/Sash.js

@@ -152,10 +152,6 @@ rwt.client.Client = {
     return this.getPlatform() === "android" && this.getBrowser() === "firefox";
   },
 
-  supportsVml : function() {
-    return ( this.getEngine() === "mshtml" ) && ( this.getVersion() >= 5.5 );
-  },
-
   supportsFileDrop : function() {
     return !!window.FormData;
   },

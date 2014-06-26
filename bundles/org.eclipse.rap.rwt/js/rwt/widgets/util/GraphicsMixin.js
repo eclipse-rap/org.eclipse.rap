@@ -95,15 +95,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       }
    },
 
-    _checkAntiAlias : rwt.util.Variant.select( "qx.client", {
-      "default" : rwt.util.Functions.returnTrue,
-      "mshtml" : function( opacity ) {
-        if( this._gfxData && this._gfxData.backgroundInsert ) {
-          var antiAlias = opacity === 1 || opacity === null;
-          rwt.graphics.VML._setAntiAlias( this._gfxData.backgroundShape, antiAlias );
-        }
-      }
-    } ),
+    _checkAntiAlias : rwt.util.Functions.returnTrue,
 
     //overwritten
     _styleBackgroundColor : function( value ) {

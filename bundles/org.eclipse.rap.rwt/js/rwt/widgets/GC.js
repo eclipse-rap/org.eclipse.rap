@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     this.base( arguments );
     this._control = control;
     this._control.addEventListener( "create", this._onControlCreate, this );
-    this._vmlCanvas = null;
     this._canvas = null;
     this._context = null;
     this._createCanvas();
@@ -36,9 +35,6 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
   destruct : function() {
     this._control.removeEventListener( "create", this._onControlCreate, this );
-    if( rwt.client.Client.isMshtml() ) {
-      this._control.removeEventListener( "insertDom", this._onCanvasAppear, this );
-    }
     if( this._control.isCreated() && !this._control.isDisposed() ) {
       this._removeCanvasFromDOM();
     }
@@ -55,29 +51,16 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
   members : {
 
-    init : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( width, height, font, background, foreground ) {
-        // TODO [tb]: Should the control be detached from the DOM
-        // (e.g. by Widget.prepareEnhancedBorder), this might lead to glitches
-        // in IE/VML. The flush prevents this in some cases:
-        rwt.widgets.base.Widget.flushGlobalQueues();
-        this._initTextCanvas( width, height );
-        this._context.clearRect( 0, 0, width, height );
-        this._initFields( font, background, foreground );
-        this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
-      },
-      "default" : function( width, height, font, background, foreground  ) {
-        this._initTextCanvas( width, height );
-        this._canvas.width = width;
-        this._canvas.style.width = width + "px";
-        this._canvas.height = height;
-        this._canvas.style.height = height + "px";
-        this._context.clearRect( 0, 0, width, height );
-        this._initFields( font, background, foreground );
-        this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
-      }
-    } ),
-
+    init : function( width, height, font, background, foreground  ) {
+      this._initTextCanvas( width, height );
+      this._canvas.width = width;
+      this._canvas.style.width = width + "px";
+      this._canvas.height = height;
+      this._canvas.style.height = height + "px";
+      this._context.clearRect( 0, 0, width, height );
+      this._initFields( font, background, foreground );
+      this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
+    },
 
     /**
      * Executes drawing operations using the HTML5-Canvas 2D-Context syntax.
@@ -131,26 +114,13 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     ////////////
     // Internals
 
-    _createCanvas : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this._vmlCanvas = rwt.graphics.VML.createCanvas();
-        this._canvas = rwt.graphics.VML.getCanvasNode( this._vmlCanvas );
-        this._context = new rwt.graphics.VMLCanvas( this._vmlCanvas );
-        this._control.addEventListener( "insertDom", this._onCanvasAppear, this );
-      },
-      "default" : function() {
-        this._canvas = document.createElement( "canvas" );
-        this._context = this._canvas.getContext( "2d" );
-      }
-    } ),
+    _createCanvas : function() {
+      this._canvas = document.createElement( "canvas" );
+      this._context = this._canvas.getContext( "2d" );
+    },
 
     _onControlCreate : function() {
       this._addCanvasToDOM();
-    },
-
-    _onCanvasAppear : function() {
-      var graphicsUtil = rwt.graphics.GraphicsUtil;
-      graphicsUtil.handleAppear( this._vmlCanvas );
     },
 
     _addCanvasToDOM  : function() {
@@ -190,29 +160,24 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
-    _ellipse : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( operation ) {
-        this._context[ operation[ 0 ] ].apply( this._context, operation.slice( 1 ) );
-      },
-      "default" : function( operation ) {
-        var cx = operation[ 1 ];
-        var cy = operation[ 2 ];
-        var rx = operation[ 3 ];
-        var ry = operation[ 4 ];
-        //var rotation = operation[ 5 ]; // not supported
-        var startAngle = operation[ 6 ];
-        var endAngle = operation[ 7 ];
-        var dir = operation[ 8 ];
-        if( rx > 0 && ry > 0 ) {
-          this._context.save();
-          this._context.translate( cx, cy );
-          // TODO [tb] : using scale here changes the stroke-width also, looks wrong
-          this._context.scale( 1, ry / rx );
-          this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
-          this._context.restore();
-        }
+    _ellipse : function( operation ) {
+      var cx = operation[ 1 ];
+      var cy = operation[ 2 ];
+      var rx = operation[ 3 ];
+      var ry = operation[ 4 ];
+      //var rotation = operation[ 5 ]; // not supported
+      var startAngle = operation[ 6 ];
+      var endAngle = operation[ 7 ];
+      var dir = operation[ 8 ];
+      if( rx > 0 && ry > 0 ) {
+        this._context.save();
+        this._context.translate( cx, cy );
+        // TODO [tb] : using scale here changes the stroke-width also, looks wrong
+        this._context.scale( 1, ry / rx );
+        this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
+        this._context.restore();
       }
-    } ),
+    },
 
     _setProperty : function( operation ) {
       var property = operation[ 0 ];
@@ -269,7 +234,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       image.src = args[ 0 ];
       args[ 0 ] = image;
       // On (native) canvas, only loaded images can be drawn:
-      if( image.complete || rwt.client.Client.isMshtml() ) {
+      if( image.complete ) {
         this._context.drawImage.apply( this._context, args );
       } else {
         var alpha = this._context.globalAlpha;
