@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -454,29 +454,26 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitX : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : rwt.util.Functions.returnTrue,
-      "default" : function( vChild, vJobs ) {
-        if( vJobs.minWidth ) {
-          if( vChild._computedMinWidthTypeNull ) {
-            vChild._resetRuntimeMinWidth();
-          } else {
-            vChild._renderRuntimeMinWidth( vChild.getMinWidthValue() );
-          }
-        } else if( vJobs.initial && !vChild._computedMinWidthTypeNull ) {
+    layoutChild_sizeLimitX : function( vChild, vJobs ) {
+      if( vJobs.minWidth ) {
+        if( vChild._computedMinWidthTypeNull ) {
+          vChild._resetRuntimeMinWidth();
+        } else {
           vChild._renderRuntimeMinWidth( vChild.getMinWidthValue() );
         }
-        if( vJobs.maxWidth ) {
-          if( vChild._computedMaxWidthTypeNull ) {
-            vChild._resetRuntimeMaxWidth();
-          } else {
-            vChild._renderRuntimeMaxWidth( vChild.getMaxWidthValue() );
-          }
-        } else if( vJobs.initial && !vChild._computedMaxWidthTypeNull ) {
+      } else if( vJobs.initial && !vChild._computedMinWidthTypeNull ) {
+        vChild._renderRuntimeMinWidth( vChild.getMinWidthValue() );
+      }
+      if( vJobs.maxWidth ) {
+        if( vChild._computedMaxWidthTypeNull ) {
+          vChild._resetRuntimeMaxWidth();
+        } else {
           vChild._renderRuntimeMaxWidth( vChild.getMaxWidthValue() );
         }
+      } else if( vJobs.initial && !vChild._computedMaxWidthTypeNull ) {
+        vChild._renderRuntimeMaxWidth( vChild.getMaxWidthValue() );
       }
-    }),
+    },
 
 
     /**
@@ -490,31 +487,26 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @return {void}
      * @signature function(vChild, vJobs)
      */
-    layoutChild_sizeLimitY :  rwt.util.Variant.select( "qx.client", {
-      "mshtml" : rwt.util.Functions.returnTrue,
-
-      "default" : function( vChild, vJobs ) {
-        if( vJobs.minHeight ) {
-          if( vChild._computedMinHeightTypeNull ) {
-            vChild._resetRuntimeMinHeight();
-          } else {
-            vChild._renderRuntimeMinHeight( vChild.getMinHeightValue() );
-          }
-        } else if( vJobs.initial && !vChild._computedMinHeightTypeNull ) {
+    layoutChild_sizeLimitY : function( vChild, vJobs ) {
+      if( vJobs.minHeight ) {
+        if( vChild._computedMinHeightTypeNull ) {
+          vChild._resetRuntimeMinHeight();
+        } else {
           vChild._renderRuntimeMinHeight( vChild.getMinHeightValue() );
         }
-        if( vJobs.maxHeight ) {
-          if( vChild._computedMaxHeightTypeNull ) {
-            vChild._resetRuntimeMaxHeight();
-          } else {
-            vChild._renderRuntimeMaxHeight( vChild.getMaxHeightValue() );
-          }
-        } else if( vJobs.initial && !vChild._computedMaxHeightTypeNull ) {
+      } else if( vJobs.initial && !vChild._computedMinHeightTypeNull ) {
+        vChild._renderRuntimeMinHeight( vChild.getMinHeightValue() );
+      }
+      if( vJobs.maxHeight ) {
+        if( vChild._computedMaxHeightTypeNull ) {
+          vChild._resetRuntimeMaxHeight();
+        } else {
           vChild._renderRuntimeMaxHeight( vChild.getMaxHeightValue() );
         }
+      } else if( vJobs.initial && !vChild._computedMaxHeightTypeNull ) {
+        vChild._renderRuntimeMaxHeight( vChild.getMaxHeightValue() );
       }
-    } ),
-
+    },
 
     /**
      * Apply the X margin values as pure stylesheet equivalent.

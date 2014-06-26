@@ -24,21 +24,15 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
     this._slider = new rwt.widgets.base.Parent();
     this._slider.setAppearance( "sash-slider" );
     this._slider.setVisibility( false );
-    // Fix IE Styling issues
-    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._slider );
     this.add( this._slider );
     this._sliderHandle = new rwt.widgets.base.Parent();
     rwt.html.Style.setBackgroundPosition( this._sliderHandle, "center center" );
     this._sliderHandle.setAppearance( "sash-handle" );
     this._sliderHandle.setVisibility( false );
-    // Fix IE Styling issues
-    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._sliderHandle );
     this.add( this._sliderHandle );
     this._handle = new rwt.widgets.base.Parent();
     rwt.html.Style.setBackgroundPosition( this._handle, "center center" );
     this._handle.setAppearance( "sash-handle" );
-    // Fix IE Styling issues
-    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._handle );
     this.add( this._handle );
     this.initOrientation();
     this._bufferZIndex = null;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -250,9 +250,6 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
         this._maxButton.setWidth( "100%" );
         this._maxButton.setBottom( 0 );
       }
-      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._thumb );
-      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._minButton );
-      rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._maxButton );
       this._minButton.setTabIndex( null );
       this._maxButton.setTabIndex( null );
       this._thumb.setTabIndex( null );

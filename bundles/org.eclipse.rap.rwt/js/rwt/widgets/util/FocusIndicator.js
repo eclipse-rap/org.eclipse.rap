@@ -116,21 +116,13 @@ rwt.qx.Class.define( "rwt.widgets.util.FocusIndicator", {
       this._styleFocusIndiactorOpacity( theme[ "opacity" ] );
     },
 
-    _styleFocusIndiactorOpacity : rwt.util.Variant.select( "qx.client", {
-      "default" : function( value ) {
-        var style = this._frame.style;
-        var opacity = value == 1 ? "" : value;
-        style.opacity = opacity;
-        style.KhtmlOpacity = opacity;
-        style.MozOpacity = opacity;
-      },
-      "mshtml" : function( value ) {
-        var style = this._frame.style;
-        var opacity =
-          value == 1 ? "" : "Alpha(Opacity=" + ( value * 100 ) + ")";
-        style.filter = opacity;
-      }
-    } ),
+    _styleFocusIndiactorOpacity : function( value ) {
+      var style = this._frame.style;
+      var opacity = value == 1 ? "" : value;
+      style.opacity = opacity;
+      style.KhtmlOpacity = opacity;
+      style.MozOpacity = opacity;
+    },
 
     _layoutFocusIndicator : function( widget, theme, focusElement ) {
       // NOTE : It is assumed that a focusElement, if given, has

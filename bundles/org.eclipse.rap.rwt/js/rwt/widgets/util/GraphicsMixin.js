@@ -28,9 +28,6 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
           case "gecko":
             this._shadowSupport = version >= 4;
           break;
-          case "mshtml":
-            this._shadowSupport = version >= 7;
-          break;
           case "opera":
             this._shadowSupport = version >= 11.6;
           break;
@@ -69,13 +66,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       "default" : function( value, oldValue ) {
         if( rwt.widgets.util.GraphicsMixin.getSupportsShadows() ) {
           var isInset = value != null && value[ 0 ];
-          var hasOpacity = this.getOpacity() !== 1 && this.getOpacity() !== null;
-          var opacityBug = value != null && hasOpacity && rwt.client.Client.isMshtml();
-          if( isInset || opacityBug ) {
-            this.setGfxProperty( "shadow", null );
-          } else {
-            this.setGfxProperty( "shadow", value );
-          }
+          this.setGfxProperty( "shadow", isInset ? null : value );
           this.setGfxProperty( "shadowLayouted", null );
           this._handleGfxShadow();
         }
@@ -356,26 +347,14 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
       }
     },
 
-    _resetTargetNode : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        if( this._innerStyle ) {
-          this._innerStyle.left = "0px";
-          this._innerStyle.top = "0px";
-          this._innerStyle.width = "";
-          this._innerStyle.height = "";
-          this.addToQueue( "width" );
-          this.addToQueue( "height" );
-        }
-      },
-      "default" : function() {
-        if( this._innerStyle ) {
-          this._innerStyle.left = "0px";
-          this._innerStyle.top = "0px";
-          this._innerStyle.width = "100%";
-          this._innerStyle.height = "100%";
-        }
+    _resetTargetNode : function() {
+      if( this._innerStyle ) {
+        this._innerStyle.left = "0px";
+        this._innerStyle.top = "0px";
+        this._innerStyle.width = "100%";
+        this._innerStyle.height = "100%";
       }
-    } ),
+    },
 
     /////////////////////
     // internals - canvas
@@ -411,10 +390,6 @@ rwt.qx.Mixin.define( "rwt.widgets.util.GraphicsMixin", {
     },
 
     _prepareForCanvas : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        this.prepareEnhancedBorder();
-        this._applyOpacity( this.getOpacity() );
-      },
       "gecko" : function() {
         this.prepareEnhancedBorder();
         this._applyOpacity( this.getOpacity() );

@@ -17,18 +17,6 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
 
   statics : {
 
-    /**
-     * workaround for IE bug
-     * div's have the height of the font even if they are empty
-     */
-    fixIEBoxHeight : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( widget ) {
-        widget.setStyleProperty( "fontSize", "0" );
-        widget.setStyleProperty( "lineHeight", "0" );
-      },
-      "default" : rwt.util.Functions.returnTrue
-    } ),
-
     getControl : function( widget ) {
       var widgetManager = rwt.remote.WidgetManager.getInstance();
       var result = widget;

@@ -52,8 +52,6 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     this._thumb.addEventListener( "mousedown", this._onThumbMouseDown, this );
     this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
     this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
-    // Fix IE Styling issues
-    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._thumb );
     this.add( this._thumb );
     // Thumb offset
     this._thumbOffset = 0;

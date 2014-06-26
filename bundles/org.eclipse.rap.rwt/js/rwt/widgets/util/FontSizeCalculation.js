@@ -47,11 +47,6 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
       var textElement = this._getMeasureNode();
       var wrapElement = this._getWrapNode();
       var style = textElement.style;
-      // Resetting style.font causes errors in IE with any of these syntaxes:
-      // node.style.font = null | undefined | "inherit" | "";
-      if( !rwt.client.Client.isMshtml() ) {
-        style.font = "";
-      }
       style.fontFamily = fontProps.fontFamily || "";
       style.fontSize = fontProps.fontSize || "";
       style.fontWeight = fontProps.fontWeight || "";
@@ -115,9 +110,6 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         this._getWrapNode().appendChild( node );
         this._measureNode = node;
       }
-      if( !rwt.client.Client.isMshtml() ) {
-        node.style.font = "";
-      }
       return node;
     },
 
@@ -133,9 +125,6 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
         style.zIndex = "-1";
         document.body.appendChild( node );
         this._wrapNode = node;
-      }
-      if( !rwt.client.Client.isMshtml() ) {
-        node.style.font = "";
       }
       return node;
     },

@@ -62,11 +62,7 @@ rwt.widgets.util.CellRendererRegistry = function() {
       if( isValidCssClass( cellData.name ) ) {
         cssClass += " " + cellData.name;
       }
-      if( rwt.client.Client.isMshtml() ) {
-        result.className = cssClass;
-      } else {
-        result.setAttribute( "class", cssClass );
-      }
+      result.setAttribute( "class", cssClass );
       return result;
     };
   };
@@ -124,7 +120,7 @@ var defaultTextRenderer = {
     return result;
   },
   "renderContent" : Variant.select( "qx.client", {
-    "mshtml|trident" : function( element, content, cellData, options ) {
+    "trident" : function( element, content, cellData, options ) {
       var text = content || "";
       if( options.markupEnabled ) {
         if( element.rap_Markup !== text ) {
@@ -154,13 +150,6 @@ var defaultTextRenderer = {
   } )
 };
 
-var setImage = function( element, content, cellData, options ) {
-  var opacity = options.enabled ? 1 : 0.3;
-  var src = content ? content[ 0 ] : null;
-  rwt.html.Style.setBackgroundImage( element, src );
-  rwt.html.Style.setOpacity( element, opacity );
-};
-
 var imgHtml = function( path, left, top, width, height ) {
   return   "<img style=\"position:absolute;width:"
          + width
@@ -178,37 +167,12 @@ var imgHtml = function( path, left, top, width, height ) {
 var defaultImageRenderer = {
   "cellType" : "image",
   "contentType" : "image",
-  "renderContent" : rwt.util.Variant.select( "qx.client", {
-    "default" : setImage,
-    "mshtml" : function( element, content, cellData, options ) {
-      if( !cellData.scaleMode || cellData.scaleMode === "NONE" ) {
-        setImage( element, content, cellData, options );
-      } else {
-        if( content ) {
-          var fit = cellData.scaleMode === "FIT";
-          var fill = cellData.scaleMode === "FILL";
-          var path = rwt.html.Style._resolveResource( content[ 0 ] );
-          var width = options.width;
-          var height = options.height;
-          var left = 0;
-          var top = 0;
-          if( fit || fill ) {
-            var imageWiderThanCell = options.width / options.height > content[ 1 ] / content[ 2 ];
-            if( ( fit && imageWiderThanCell ) || ( fill && !imageWiderThanCell ) ) {
-              width = Math.round( content[ 1 ] * height / content[ 2 ] );
-              left = Math.round( ( options.width - width ) / 2 );
-            } else  {
-              height = Math.round( content[ 2 ] * width / content[ 1 ] );
-              top = Math.round( ( options.height - height ) / 2 );
-            }
-          }
-          element.innerHTML = imgHtml( path, left, top, width, height );
-        } else {
-          element.innerHTML = "";
-        }
-      }
-    }
-  } ),
+  "renderContent" : function( element, content, cellData, options ) {
+    var opacity = options.enabled ? 1 : 0.3;
+    var src = content ? content[ 0 ] : null;
+    rwt.html.Style.setBackgroundImage( element, src );
+    rwt.html.Style.setOpacity( element, opacity );
+  },
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
     rwt.html.Style.setBackgroundRepeat( result, "no-repeat" );

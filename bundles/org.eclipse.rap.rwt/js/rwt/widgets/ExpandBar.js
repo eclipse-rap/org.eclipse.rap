@@ -20,7 +20,6 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
     this.setScrollBarsVisible( false, false );
     // This object is needed for proper scrolling behaviour
     this._bottomSpacing = new rwt.widgets.base.Parent();
-    rwt.widgets.util.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
     this._clientArea.add( this._bottomSpacing );
   },
 

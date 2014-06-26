@@ -14,8 +14,6 @@ namespace( "rwt.widgets.util" );
 
 (function(){
 
-var INHERIT = rwt.client.Client.isMshtml() ? "" : "inherit";
-
 var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.widgets.util.Template = function( cells ) {
@@ -269,7 +267,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _renderForeground : function( element, color ) {
-    element.style.color = color || INHERIT;
+    element.style.color = color || "inherit";
   },
 
   _renderFont : function( element, font ) {
