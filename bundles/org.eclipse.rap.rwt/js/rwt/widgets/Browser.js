@@ -309,36 +309,20 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       this._eval( script.join( "" ) );
     },
 
-    destroyFunction : rwt.util.Variant.select( "qx.client", {
-      "default" : function( name ) {
-        delete this._browserFunctions[ name ];
-        var win = this.getContentWindow();
-        if( win != null ) {
-          try {
-            var script = [];
-            script.push( "delete window." +  name + ";" );
-            script.push( "delete window." +  name + "_impl;" );
-            this._eval( script.join( "" ) );
-          } catch( e ) {
-            throw new Error( "Unable to destroy function: " + name + " error: " + e );
-          }
-        }
-      },
-      "mshtml" : function( name ) {
-        delete this._browserFunctions[ name ];
-        var win = this.getContentWindow();
-        if( win != null ) {
-          try {
-            var script = [];
-            script.push( "window." + name + " = undefined;" );
-            script.push( "window." + name + "_impl = undefined;" );
-            this._eval( script.join( "" ) );
-          } catch( e ) {
-            throw new Error( "Unable to destroy function: " + name + " error: " + e );
-          }
+    destroyFunction :function( name ) {
+      delete this._browserFunctions[ name ];
+      var win = this.getContentWindow();
+      if( win != null ) {
+        try {
+          var script = [];
+          script.push( "delete window." +  name + ";" );
+          script.push( "delete window." +  name + "_impl;" );
+          this._eval( script.join( "" ) );
+        } catch( e ) {
+          throw new Error( "Unable to destroy function: " + name + " error: " + e );
         }
       }
-    } ),
+    },
 
     setFunctionResult : function( name, result, error ) {
       this.setExecutedFunctionResult( result );

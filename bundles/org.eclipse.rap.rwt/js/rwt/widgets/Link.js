@@ -164,8 +164,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     _onMouseDown : function( evt ) {
       try {
         if( this.isEnabled() && this._isLeftMouseButtonPressed( evt ) ) {
-          var target = this._getEventTarget( evt );
-          var index = this._getLinkIndex( target );
+          var index = this._getLinkIndex( event.target );
           this._setFocusedLink( index );
           if( this._readyToSendChanges ) {
             // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=252559
@@ -182,9 +181,8 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
 
     _onMouseOver : function( evt ) {
       try {
-        var target = this._getEventTarget( evt );
         var style = this._getHyperlinkStyle( true );
-        rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+        rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
       } catch( ex ) {
         rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
@@ -192,9 +190,8 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
 
     _onMouseOut : function( evt ) {
       try {
-        var target = this._getEventTarget( evt );
         var style = this._getHyperlinkStyle( false );
-        rwt.html.Style.setStyleProperty( target, "textDecoration", style.textDecoration );
+        rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
       } catch( ex ) {
         rwt.runtime.ErrorHandler.processJavaScriptError( ex );
       }
@@ -205,11 +202,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       if( evt.which ) {
         result = ( evt.which === 1 );
       } else if( evt.button ) {
-        if( rwt.client.Client.isMshtml() ) {
-          result = ( evt.button === 1 );
-        } else {
-          result = ( evt.button === 0 );
-        }
+        result = ( evt.button === 0 );
       }
       return result;
     },
@@ -217,8 +210,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
     _onKeyDown : function( evt ) {
       try {
         if( this.isEnabled() && evt.keyCode === 13 ) {
-          var target = this._getEventTarget( evt );
-          var index = this._getLinkIndex( target );
+          var index = this._getLinkIndex( event.target );
           this._sendChanges( index );
         }
       } catch( ex ) {
@@ -241,16 +233,6 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
       var manager = rwt.theme.AppearanceManager.getInstance();
       return manager.styleFrom( "link-hyperlink", states );
-    },
-
-    _getEventTarget : function( evt ) {
-      var target;
-      if( rwt.client.Client.isMshtml() ) {
-        target = window.event.srcElement;
-      } else {
-        target = evt.target;
-      }
-      return target;
     },
 
     // Override of the _ontabfocus method from rwt.widgets.base.Widget

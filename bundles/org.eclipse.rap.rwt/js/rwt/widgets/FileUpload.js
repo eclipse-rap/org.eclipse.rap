@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,11 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._formElement = document.createElement( "form" );
       this._formElement.setAttribute( "target", this._getFrameName() );
       this._formElement.setAttribute( "method", "POST" );
-      if( rwt.client.Client.isMshtml() ) {
-        this._formElement.setAttribute( "encoding", "multipart/form-data" );
-      } else {
-        this._formElement.setAttribute( "enctype", "multipart/form-data" );
-      }
+      this._formElement.setAttribute( "enctype", "multipart/form-data" );
       this._getTargetNode().appendChild( this._formElement );
     },
 

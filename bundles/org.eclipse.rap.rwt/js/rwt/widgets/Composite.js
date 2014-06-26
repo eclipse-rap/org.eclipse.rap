@@ -22,14 +22,6 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
     this.setHideFocus( true );
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
-    if( rwt.client.Client.isMshtml() ) {
-      // Alternate fix for 299629. This might not always work if the composite
-      // is changed back and forth between rounded and normal border.
-      this._fixBackgroundTransparency();
-      this.addEventListener( "changeBackgroundColor",
-                             this._fixBackgroundTransparency,
-                             this );
-    }
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
     this._clientArea = [ 0, 0, 0, 0 ];
@@ -58,25 +50,6 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
 
     _onMouseOut : function( evt ) {
       this.removeState( "over" );
-    },
-
-    _applyBackgroundImage : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function( newValue, oldValue ) {
-        this.base( arguments, newValue, oldValue );
-        if( newValue == null ) {
-          this._fixBackgroundTransparency();
-        }
-      },
-      "default" : function( newValue, oldValue ) {
-        this.base( arguments, newValue, oldValue );
-      }
-    } ),
-
-    _fixBackgroundTransparency : function() {
-      if( this.getBackgroundColor() == null && this.getBackgroundImage() == null ) {
-        var blank = rwt.remote.Connection.RESOURCE_PATH + "static/image/blank.gif";
-        this._applyBackgroundImage( blank, null );
-      }
     }
 
   }
