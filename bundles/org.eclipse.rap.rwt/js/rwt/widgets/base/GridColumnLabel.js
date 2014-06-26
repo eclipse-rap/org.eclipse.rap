@@ -29,6 +29,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     this.setHorizontalChildrenAlign( "left" );
     this.setOverflow( "hidden" );
     this.setFlexibleCell( 1 );
+    this.setWordWrap( false );
     this.addEventListener( "elementOver", this._onElementOver, this );
     this.addEventListener( "elementOut", this._onElementOut, this );
     this.addEventListener( "mouseover", this._onMouseOver, this );

@@ -121,6 +121,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       label.setCustomVariant( column.getCustomVariant() );
       label.setZIndex( column.isFixed() ? 1e7 : 1 );
       label.setHorizontalChildrenAlign( column.getAlignment() );
+      label.setWordWrap( column.getHeaderWordWrap() );
     },
 
     _renderLabelY : function( label, column ) {

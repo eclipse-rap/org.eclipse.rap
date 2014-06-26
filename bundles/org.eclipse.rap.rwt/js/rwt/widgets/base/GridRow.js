@@ -620,6 +620,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _styleLabel : function( element, item, cell, config ) {
       this._setForeground( element, this._getCellColor( item, cell, config ) );
       this._setFont( element, item.getCellFont( cell ) );
+      this._setWordWrap( element, config.wordWrap[ cell ] );
     },
 
     _renderItemForeground : function( item, config ) {
@@ -699,7 +700,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         result = config.textColor;
       }
       if( result === "undefined" ) {
-        result = "inherit"
+        result = "inherit";
       }
       return result;
     },
@@ -788,6 +789,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
+    _setWordWrap : function( element, wordWrap ) {
+      element.style.whiteSpace = wordWrap ? "" : "nowrap";
+    },
+
     _setBounds : function( element, x, y, width, height ) {
       try{
         element.style.left = x + "px";
@@ -813,7 +818,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = this._cellLabels[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.whiteSpace = "nowrap";
         result.style.textDecoration = "inherit";
         result.style.textOverflow = "inherit";
         Style.setBackgroundColor( result, null );

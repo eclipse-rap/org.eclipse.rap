@@ -339,6 +339,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleUpdate();
     },
 
+    setWordWrap : function( column, value ) {
+      this._config.wordWrap[ column ] = value;
+      this._scheduleUpdate();
+    },
+
     setCellCheck : function( column, value ) {
       this._config.itemCellCheck[ column ] = value;
       this._scheduleUpdate();

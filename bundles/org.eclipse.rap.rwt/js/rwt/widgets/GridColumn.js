@@ -23,6 +23,8 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     this._resizable = isGroup ? false : true;
     this._moveable = false;
     this._alignment = "left";
+    this._wordWrap = false;
+    this._headerWordWrap = false;
     this._group = null;
     this._left = 0;
     this._height = 0;
@@ -185,6 +187,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     setIndex : function( value ) {
       this._grid.setAlignment( value, this._alignment );
+      this._grid.setWordWrap( value, this._wordWrap );
       this._index = value;
       this._update();
     },
@@ -247,6 +250,25 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     getAlignment : function() {
       return this._alignment;
+    },
+
+    setWordWrap : function( value ) {
+      this._grid.setWordWrap( this._index, value );
+      this._wordWrap = value;
+      this._update();
+    },
+
+    getWordWrap : function() {
+      return this._wordWrap;
+    },
+
+    setHeaderWordWrap : function( value ) {
+      this._headerWordWrap = value;
+      this._update();
+    },
+
+    getHeaderWordWrap : function() {
+      return this._headerWordWrap;
     },
 
     setFixed : function( value ) {

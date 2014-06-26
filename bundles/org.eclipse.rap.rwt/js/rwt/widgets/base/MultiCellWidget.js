@@ -82,6 +82,12 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       apply : "_applyTextOverflow"
     },
 
+    wordWrap : {
+      check : "Boolean",
+      init: true,
+      apply : "_applyWordWrap"
+    },
+
     /////////////////////////////////
     // refined properties from Widget
 
@@ -237,7 +243,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var isFlexible = this._flexibleCell === cell && ignoreFlexible !== true;
       var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
       if( height == null || ( isFlexible && cellEntry[ 3 ] === null ) ) {
-        var wrapWidth = isFlexible ? this.getCellWidth( cell ) : null;
+        var wrapWidth = isFlexible && this.getWordWrap() ? this.getCellWidth( cell ) : null;
         var computed = this.__computeCellDimension( cellEntry, wrapWidth );
         height = computed[ 1 ];
       }
@@ -258,6 +264,9 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( value ) {
         this._createSubelements();
         this._catchSubelements();
+        if( !this.getWordWrap() ) {
+          this._applyWordWrap( false );
+        }
       }
     },
 
@@ -288,7 +297,9 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( !this.getEnabled() ) {
         this._applyEnabled( false );
       }
-      this._applyTextOverflow( this.getTextOverflow() );
+      if( this.getTextOverflow() !== "clip" ) {
+        this._applyTextOverflow( this.getTextOverflow() );
+      }
     },
 
     /*
@@ -345,8 +356,14 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
           var node = this.getCellNode( i );
           rwt.html.Style.setStyleProperty( node, "textOverflow", value === "clip" ? "" : value );
-          rwt.html.Style.setStyleProperty( node, "whiteSpace", value === "clip" ? "" : "nowrap" );
         }
+      }
+    },
+
+    _applyWordWrap : function( value, old ) {
+      var node = this._getTargetNode();
+      if( node ) {
+        rwt.html.Style.setStyleProperty( node, "whiteSpace", value ? "" : "nowrap" );
       }
     },
 

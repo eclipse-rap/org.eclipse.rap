@@ -53,6 +53,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       assertIdentical( tree._header, label.getParent() );
       assertEquals( "tree-column", label.getAppearance() );
       assertEquals( 1, label.getFlexibleCell() );
+      assertFalse( label.getWordWrap() );
       column.dispose();
       tree.destroy();
     },
@@ -88,6 +89,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       TestUtil.protocolSet( "w4", { "index" : 3 } );
 
       assertEquals( "right", tree.getRenderConfig().alignment[ 3 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetIndex_adjustsWordWrapInRenderConfig : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      column.setWordWrap( true );
+
+      TestUtil.protocolSet( "w4", { "index" : 3 } );
+
+      assertTrue( tree.getRenderConfig().wordWrap[ 3 ] );
       column.dispose();
       tree.destroy();
     },
@@ -436,6 +449,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       var label = this._getColumnLabel( tree, column );
       assertEquals( "right", label.getHorizontalChildrenAlign() );
       assertEquals( "right", tree.getRenderConfig().alignment[ 0 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetWordWrapByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "wordWrap" : true } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertTrue( column.getWordWrap() );
+      assertTrue( tree.getRenderConfig().wordWrap[ 0 ] );
+      column.dispose();
+      tree.destroy();
+    },
+
+    testSetHeaderWordWrapByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "headerWordWrap" : true } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, column );
+      assertTrue( column.getHeaderWordWrap() );
+      assertTrue( label.getWordWrap() );
       column.dispose();
       tree.destroy();
     },

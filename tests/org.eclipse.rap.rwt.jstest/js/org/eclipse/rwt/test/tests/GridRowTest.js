@@ -519,6 +519,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertFalse( row.getSelectable() );
     },
 
+    testLabelWordWrap : function() {
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+
+      tree.setWordWrap( 0, true );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row._getTargetNode().childNodes[ 1 ];
+      assertEquals( "", node.style.whiteSpace );
+    },
+
     testLabelDecoration : function() {
       TestUtil.fakeAppearance( "tree-row", {
         style : function( states ) {

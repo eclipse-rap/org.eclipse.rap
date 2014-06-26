@@ -251,7 +251,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
-    testFlexibleCellWrap : function() {
+    testFlexibleCellBounds_withWordWrap : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
       widget.setWidth( 400 );
@@ -262,16 +262,41 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setCellContent( 1, "some longer text that wraps" );
       TestUtil.flush();
       var originalTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+
       widget.setWidth( 80 );
       TestUtil.flush();
+
       var newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( originalTextBounds.width > newTextBounds.width );
       assertTrue( originalTextBounds.height < newTextBounds.height );
+
       widget.setWidth( 400 );
       TestUtil.flush();
+
       newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertEquals( originalTextBounds, newTextBounds );
       this.disposeWidget( widget );
+    },
+
+    testFlexibleCellBounds_withoutWordWarp : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setWidth( 400 );
+      widget.setHeight( 100 );
+      widget.setPadding( 5 );
+      widget.setSpacing( 6 );
+      widget.setFlexibleCell( 1 );
+      widget.setCellContent( 1, "some longer text that wraps" );
+      TestUtil.flush();
+      var originalTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+
+      widget.setWordWrap( false );
+      widget.setWidth( 80 );
+      TestUtil.flush();
+
+      var newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
+      assertTrue( originalTextBounds.width > newTextBounds.width );
+      assertEquals( originalTextBounds.height, newTextBounds.height );
     },
 
     testInvalidateSpacing : function() {
@@ -382,11 +407,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
       var style = widget._getTargetNode().lastChild.style;
       assertEquals( "ellipsis", style.textOverflow );
-      assertEquals( "nowrap", style.whiteSpace );
 
       widget.setTextOverflow( "clip" );
       assertEquals( "", style.textOverflow );
-      assertEquals( "", style.whiteSpace );
       widget.destroy();
     },
 
@@ -405,6 +428,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var style = widget._getTargetNode().lastChild.style;
       assertEquals( "ellipsis", style.textOverflow );
 
+      widget.destroy();
+    },
+
+    testWordWrap : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+
+      widget.setWordWrap( false );
+
+      var style = widget._getTargetNode().style;
+      assertEquals( "nowrap", style.whiteSpace );
+
+      widget.setWordWrap( true );
+      assertEquals( "", style.whiteSpace );
       widget.destroy();
     },
 
