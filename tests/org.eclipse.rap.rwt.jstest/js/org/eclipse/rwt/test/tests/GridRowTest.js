@@ -1962,37 +1962,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         row.renderItem( item, tree._config, false, null );
 
         var gradient = TestUtil.getCssGradient( row._overlayElement );
-        var expected1 = "gradient(-90deg, red 0%, yellow 100%)";
-        var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(red), to(yellow))";
-        var expected3 = "gradient(180deg, red 0%, yellow 100%)";
-        assertTrue( gradient === expected1 || gradient === expected2 || gradient === expected3 );
-      }
-    },
-
-    testOverlayWithGfxGradientCreatesCanvas : function() {
-      if( !rwt.client.Client.supportsCss3() ) {
-        this._setOverlayGradient( this._gradient );
-        row.setAppearance( "tree-row" );
-        var item = this._createItem( tree );
-        item.setTexts( [ "Test1" ] );
-
-        row.renderItem( item, tree._config, false, null );
-
-        assertIdentical( row._overlayElement, row._graphicsOverlay.canvas.node );
-      }
-    },
-
-    testOverlayWithGfxGradientCreatesShape : function() {
-      if( !rwt.client.Client.supportsCss3() ) {
-        this._setOverlayGradient( this._gradient );
-        row.setAppearance( "tree-row" );
-        var item = this._createItem( tree );
-        item.setTexts( [ "Test1" ] );
-
-        row.renderItem( item, tree._config, false, null );
-
-        var shape = row._graphicsOverlay.shape;
-        assertTrue( shape.type === "svgRoundRect" || shape.node.tagName === "shape" );
+        assertTrue( gradient.indexOf( "red" ) !== -1 );
+        assertTrue( gradient.indexOf( "yellow" ) !== -1 );
       }
     },
 

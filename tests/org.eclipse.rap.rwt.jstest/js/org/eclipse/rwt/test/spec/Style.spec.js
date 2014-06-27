@@ -15,15 +15,34 @@ describe( "Style", function() {
   var Client = rwt.client.Client;
   var css3 = Client.supportsCss3();
   var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-  var gradientObject = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
-  var gradientString = (function() {
+  var vGradientObject = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+  var hGradientObject = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+  hGradientObject.horizontal = true;
+  var vGradientString = (function() {
     var result;
     if( rwt.client.Client.isWebkit() ) {
       result = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
     } else if( rwt.client.Client.isGecko() ) {
       result = "gradient(-90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
+    } else if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
+      result =   "url(\"data:image/svg+xml;charset=utf-8,"
+               + encodeURIComponent( "<svg xmlns='http://www.w3.org/2000/svg'><linearGradient id='g' x2='0' y2='1'><stop offset='0%' stop-color='rgb(255, 0, 255)'/><stop offset='100%' stop-color='rgb(0, 255, 0)'/></linearGradient><rect fill='url(#g)' width='100%' height='100%'/></svg>" ) + "\")";
     } else {
       result = "gradient(180deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
+    }
+    return result;
+  }() );
+  var hGradientString = (function() {
+    var result;
+    if( rwt.client.Client.isWebkit() ) {
+      result = "gradient(linear, 0% 0%, 100% 0%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
+    } else if( rwt.client.Client.isGecko() ) {
+      result = "gradient(0deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
+    } else if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
+      result =   "url(\"data:image/svg+xml;charset=utf-8,"
+               + encodeURIComponent( "<svg xmlns='http://www.w3.org/2000/svg'><linearGradient id='g'><stop offset='0%' stop-color='rgb(255, 0, 255)'/><stop offset='100%' stop-color='rgb(0, 255, 0)'/></linearGradient><rect fill='url(#g)' width='100%' height='100%'/></svg>" ) + "\")";
+    } else {
+      result = "gradient(90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
     }
     return result;
   }() );
@@ -40,14 +59,19 @@ describe( "Style", function() {
 
     describe( "setBackgroundGradient", function() {
 
-      it( "sets background property", function() {
-        Style.setBackgroundGradient( element, gradientObject );
+      it( "sets background property for vertical gradient", function() {
+        Style.setBackgroundGradient( element, vGradientObject );
+        expect( TestUtil.getCssGradient( element ) ).toBe( vGradientString );
+      } );
 
-        expect( TestUtil.getCssGradient( element ) ).toBe( gradientString );
+      it( "sets background property for horizontal gradient", function() {
+        Style.setBackgroundGradient( element, hGradientObject );
+
+        expect( TestUtil.getCssGradient( element ) ).toBe( hGradientString );
       } );
 
       it( "clears background property", function() {
-        Style.setBackgroundGradient( element, gradientObject );
+        Style.setBackgroundGradient( element, vGradientObject );
 
         Style.setBackgroundGradient( element, null );
 
@@ -58,22 +82,22 @@ describe( "Style", function() {
       it( "overwrites background color", function() {
         Style.setBackgroundColor( element, "#FF0000" );
 
-        Style.setBackgroundGradient( element, gradientObject );
+        Style.setBackgroundGradient( element, vGradientObject );
 
-        expect( TestUtil.getCssGradient( element ) ).toBe( gradientString );
+        expect( TestUtil.getCssGradient( element ) ).toBe( vGradientString );
       } );
 
       it( "does not overwrite background image", function() {
         Style.setBackgroundImage( element, image );
 
-        Style.setBackgroundGradient( element, gradientObject );
+        Style.setBackgroundGradient( element, vGradientObject );
 
         expect( TestUtil.getCssBackgroundImage( element ) ).toContain( image );
       } );
 
       it( "restores background color when set to null", function() {
         Style.setBackgroundColor( element, "#FF0000" );
-        Style.setBackgroundGradient( element, gradientObject );
+        Style.setBackgroundGradient( element, vGradientObject );
 
         Style.setBackgroundGradient( element, null );
 
@@ -109,7 +133,7 @@ describe( "Style", function() {
     } );
 
     it( "overwrites background gradient", function() {
-      Style.setBackgroundGradient( element, gradientObject );
+      Style.setBackgroundGradient( element, vGradientObject );
 
       Style.setBackgroundImage( element, image );
 
@@ -261,7 +285,7 @@ describe( "Style", function() {
     } );
 
     it( "don't set two gradients in webkit", function() {
-      Style.setBackgroundGradient( element, gradientObject );
+      Style.setBackgroundGradient( element, vGradientObject );
 
       Style.setBackgroundColor( element, color );
 
@@ -281,11 +305,11 @@ describe( "Style", function() {
 
     if( css3 ) {
       it( "does nothing if gradient is already set", function() {
-        Style.setBackgroundGradient( element, gradientObject );
+        Style.setBackgroundGradient( element, vGradientObject );
 
         Style.setBackgroundColor( element, "#FF0000" );
 
-        expect( TestUtil.getCssGradient( element ) ).toBe( gradientString );
+        expect( TestUtil.getCssGradient( element ) ).toBe( vGradientString );
       } );
     }
 

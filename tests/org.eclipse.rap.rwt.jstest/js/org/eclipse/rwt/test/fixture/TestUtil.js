@@ -167,6 +167,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       } else {
         result = background.slice( start );
       }
+    } else if( background.indexOf( "url(\"data:" ) !== -1 ) {
+      start = background.indexOf( "url(\"data:" );
+      var end = background.indexOf( "\")", start );
+      if( end !== -1 ) {
+        result = background.slice( start, end + 2 );
+      }
     }
     return result;
   },

@@ -522,16 +522,36 @@ rwt.qx.Class.define( "rwt.html.Style", {
         }
         return this.BROWSER_PREFIX + "linear-gradient( " + args.join() + ")";
       },
-      "default" : function( gradientObject ) {
-        var args = [ gradientObject.horizontal === true ? "90deg" : "180deg" ];
-        for( var i = 0; i < gradientObject.length; i++ ) {
-          var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%";
-          var color = gradientObject[ i ][ 1 ];
-          args.push( color + " " + position );
+      "trident" : function( gradientObject ) {
+        if( rwt.client.Client.getMajor() === 9 ) {
+          return this._getSvgGradientString( gradientObject );
         }
-        return "linear-gradient( " + args.join() + ")";
+        return this._getDefaultGradientString( gradientObject );
+      },
+      "default" : function( gradientObject ) {
+        return this._getDefaultGradientString( gradientObject );
       }
     } ),
+
+    _getDefaultGradientString : function( gradientObject ) {
+      var args = [ gradientObject.horizontal === true ? "90deg" : "180deg" ];
+      for( var i = 0; i < gradientObject.length; i++ ) {
+        var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%";
+        var color = gradientObject[ i ][ 1 ];
+        args.push( color + " " + position );
+      }
+      return "linear-gradient( " + args.join() + ")";
+    },
+
+    _getSvgGradientString : function( gradientObject ) {
+      var result = [ svgStrings.start ];
+      result.push( gradientObject.horizontal ? svgStrings.horizontal : svgStrings.vertical );
+      for( var i = 0; i < gradientObject.length; i++ ) {
+        result.push( svgStrings.color( gradientObject[ i ] ) );
+      }
+      result.push( svgStrings.end );
+      return result.join( "" );
+    },
 
     _getImageString : function( value, repeat, position ) {
       return   "url(" + this._resolveResource( value ) + ")"
@@ -632,5 +652,22 @@ rwt.qx.Class.define( "rwt.html.Style", {
   }
 
 } );
+
+var svgStrings = {
+  "start" :   "url(\"data:image/svg+xml;charset=utf-8,"
+            + encodeURIComponent( "<svg xmlns='http://www.w3.org/2000/svg'>" ),
+  "vertical" : encodeURIComponent( "<linearGradient id='g' x2='0' y2='1'>" ),
+  "horizontal" : encodeURIComponent( "<linearGradient id='g'>" ),
+  "color" : function( stopColor ) {
+    return encodeURIComponent(   "<stop offset='"
+                               + ( stopColor[ 0 ] * 100 )
+                               +"%' stop-color='"
+                               + stopColor[ 1 ]
+                               + "'/>" );
+  },
+  "end" :   encodeURIComponent( "</linearGradient><rect fill='url(#g)' " )
+          + encodeURIComponent( "width='100%' height='100%'/></svg>" )
+          + "\")"
+};
 
 }() );
