@@ -87,6 +87,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     setWrap : function( value ) {
       if( value ) {
         this.setFlexibleCell( 2 );
+        this.setWordWrap( true );
       }
     },
 

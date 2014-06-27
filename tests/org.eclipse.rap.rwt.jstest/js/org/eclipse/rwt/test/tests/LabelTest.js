@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       assertEquals( "", this.getTextContent() );
       assertEquals( true, labelWidget.getHideFocus() );
       assertEquals( -1, labelWidget.getFlexibleCell() );
+      assertFalse( labelWidget.getWordWrap() );
       assertEquals( "label-wrapper", labelWidget.getAppearance() );
       assertFalse( labelWidget._markupEnabled );
     },
@@ -76,6 +77,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       this.createLabel( [ "WRAP" ] );
 
       assertEquals( 1, labelWidget.getFlexibleCell() );
+      assertTrue( labelWidget.getWordWrap() );
     },
 
     testSetText : function() {

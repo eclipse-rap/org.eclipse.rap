@@ -84,7 +84,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     wordWrap : {
       check : "Boolean",
-      init: true,
+      init: false,
       apply : "_applyWordWrap"
     },
 
@@ -264,9 +264,6 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       if( value ) {
         this._createSubelements();
         this._catchSubelements();
-        if( !this.getWordWrap() ) {
-          this._applyWordWrap( false );
-        }
       }
     },
 
@@ -299,6 +296,9 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
       if( this.getTextOverflow() !== "clip" ) {
         this._applyTextOverflow( this.getTextOverflow() );
+      }
+      if( this.getWordWrap() ) {
+        this._applyWordWrap( true );
       }
     },
 
@@ -361,9 +361,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     },
 
     _applyWordWrap : function( value, old ) {
-      var node = this._getTargetNode();
-      if( node ) {
-        rwt.html.Style.setStyleProperty( node, "whiteSpace", value ? "" : "nowrap" );
+      if( this._flexibleCell !== -1 ) {
+        var node = this.getCellNode( this._flexibleCell );
+        if( node ) {
+          rwt.html.Style.setStyleProperty( node, "whiteSpace", value ? "" : "nowrap" );
+        }
       }
     },
 
@@ -728,7 +730,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     */
 
     _getLabelHtml : function( cell ) {
-      return   "<div style='position:absolute;border:0 none;overflow:hidden;"
+      return   "<div style='position:absolute;border:0 none;overflow:hidden;white-space:nowrap;"
              + this._joinStyleProperties( this.__fontCache )
              + "'>"
              + this.getCellContent( cell )

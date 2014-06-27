@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
+
   extend : rwt.widgets.base.MultiCellWidget,
 
   construct : function( baseAppearance ) {
@@ -29,7 +30,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     this.setHorizontalChildrenAlign( "left" );
     this.setOverflow( "hidden" );
     this.setFlexibleCell( 1 );
-    this.setWordWrap( false );
     this.addEventListener( "elementOver", this._onElementOver, this );
     this.addEventListener( "elementOut", this._onElementOut, this );
     this.addEventListener( "mouseover", this._onMouseOver, this );
@@ -106,7 +106,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
 
     _updateChevronImage : function( hover ) {
       if( this._chevron ) {
-        this.setFlexibleCell( 1 );
         var manager = rwt.theme.AppearanceManager.getInstance();
         var states = {};
         states[ this._chevron ] = true;
