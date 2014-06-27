@@ -11,39 +11,29 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.Group", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function() {
     this.base( arguments );
-    // Sub widgets
-    this._createFrameObject();
-    this._createLegendObject();
-    // Processing parameters
-    this.setLegend( "" );
-    // Enable method remapping
-    this.remapChildrenHandlingTo( this._frameObject );
+    this._frame = new rwt.widgets.base.Parent();
+    this._frame.setAppearance( "group-box-frame" );
+    this.add( this._frame );
+    this._legend = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
+    this._legend.setAppearance( "group-box-legend" );
+    this.add( this._legend );
     this.setOverflow( "hidden" );
     var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
     themeValues.dispose();
-    // Make sure that the 'labelObject' is created
-    var labelObject = this.getLegendObject().getLabelObject();
-    if( labelObject == null ) {
-      this.setLegend( "(empty)" );
-      this.setLegend( "" );
-    }
-    labelObject = this.getLegendObject().getLabelObject();
-    labelObject.setMode( "html" );
-    this.getLegendObject().addEventListener( "mouseover", this._onMouseOver, this );
-    this.getLegendObject().addEventListener( "mouseout", this._onMouseOut, this );
+    this._legend.addEventListener( "mouseover", this._onMouseOver, this );
+    this._legend.addEventListener( "mouseout", this._onMouseOut, this );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
   },
 
   destruct : function() {
-    this.getLegendObject().removeEventListener( "mouseover", this._onMouseOver, this );
-    this.getLegendObject().removeEventListener( "mouseout", this._onMouseOut, this );
-    this._disposeObjects( "_legendObject", "_frameObject" );
+    this._disposeObjects( "_legend", "_frame" );
     this.setMnemonicIndex( null );
   },
 
@@ -107,41 +97,41 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
         if( this.hasState( "rwt_WRAP" ) ) {
           text = EncodingUtil.replaceNewLines( text, "<br/>" );
         }
-        this.setLegend( text );
+        this._setLegend( text );
       } else {
-        this.setLegend( null );
+        this._setLegend( null );
       }
     },
 
     _getSubWidgets : function() {
-      return [ this._legendObject, this._frameObject ];
+      return [ this._legend, this._frame ];
     },
 
     _applyBackgroundColor : function( value, old ) {
       this.base( arguments, value, old );
       if( this._themeBackgroundColor === "undefined" ) {
-        this.getLegendObject().setBackgroundColor( value );
+        this._legend.setBackgroundColor( value );
       }
     },
 
     _applyFont : function( value, old ) {
       this.base( arguments, value, old );
-      this.getLegendObject().setFont( value );
+      this._legend.setFont( value );
     },
 
     _onMouseOver : function( event ) {
-      this.getLegendObject().addState( "over" );
-      this.getFrameObject().addState( "over" );
+      this._legend.addState( "over" );
+      this._frame.addState( "over" );
     },
 
     _onMouseOut : function( event ) {
-      this.getLegendObject().removeState( "over" );
-      this.getFrameObject().removeState( "over" );
+      this._legend.removeState( "over" );
+      this._frame.removeState( "over" );
     },
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
-      this._frameObject._layoutPost( changes );
+      this._frame._layoutPost( changes );
     },
 
     //////////////////
@@ -149,99 +139,16 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
 
     applyObjectId : function( id ) {
       this.base( arguments, id );
-      this.getLegendObject().getLabelObject().applyObjectId( id + "-label" );
+      this._legend.applyObjectId( id + "-label" );
     },
 
-    /**
-     * Creates the legend sub widget
-     *
-     * @type member
-     * @return {void}
-     */
-    _createLegendObject : function() {
-      this._legendObject = new rwt.widgets.base.Atom();
-      this._legendObject.setAppearance( "group-box-legend" );
-      this.add( this._legendObject );
-    },
-
-    /**
-     * Creates the frame sub widget
-     *
-     * @type member
-     * @return {void}
-     */
-    _createFrameObject : function() {
-      this._frameObject = new rwt.widgets.base.Parent();
-      this._frameObject.setAppearance( "group-box-frame" );
-      this.add( this._frameObject );
-    },
-
-    /**
-     * Accessor method for the frame sub widget
-     *
-     * @type member
-     * @return {rwt.widgets.base.Parent} frame sub widget
-     */
-    getFrameObject : function() {
-      return this._frameObject;
-    },
-
-    /**
-     * Accessor method for the legend sub widget
-     *
-     * @type member
-     * @return {rwt.widgets.base.Atom} legend sub widget
-     */
-    getLegendObject : function() {
-      return this._legendObject;
-    },
-
-    /**
-     * Sets the label of the legend sub widget if the given string is
-     * valid. Otherwise the legend sub widget get not displayed.
-     *
-     * @type member
-     * @param vLegend {String} new label of the legend sub widget
-     * @return {void}
-     */
-    setLegend : function( vLegend ) {
-      if( vLegend !== "" && vLegend !== null ) {
-        this._legendObject.setLabel( vLegend );
-        this._legendObject.setDisplay( true );
+    _setLegend : function( text ) {
+      if( text !== "" && text !== null ) {
+        this._legend.setCellContent( 0, text );
+        this._legend.setDisplay( true );
       } else {
-        this._legendObject.setDisplay( false );
+        this._legend.setDisplay( false );
       }
-    },
-
-    /**
-     * Accessor method for the label of the legend sub widget
-     *
-     * @type member
-     * @return {String} Label of the legend sub widget
-     */
-    getLegend : function() {
-      return this._legendObject.getLabel();
-    },
-
-    /**
-     * Sets the icon of the legend sub widget.
-     *
-     * @type member
-     * @param vIcon {String} source of the new icon of the legend sub widget
-     * @return {void}
-     */
-    setIcon : function( vIcon ) {
-      this._legendObject.setIcon( vIcon );
-    },
-
-    /**
-     * Accessor method for the icon of the legend sub widget
-     *
-     * @type member
-     * @return {String} source of the new icon of the legend sub widget
-     */
-    getIcon : function() {
-      this._legendObject.getIcon();
     },
 
     _findFirstFocusableChild : function( parent ) {

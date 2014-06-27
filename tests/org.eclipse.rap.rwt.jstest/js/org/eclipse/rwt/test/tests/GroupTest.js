@@ -85,7 +85,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       } );
       var ObjectManager = rwt.remote.ObjectRegistry;
       var widget = ObjectManager.getObject( "w3" );
-      assertEquals( "foo &amp; &lt;&gt; &quot; bar", widget.getLegend() );
+      assertEquals( "foo &amp; &lt;&gt; &quot; bar", getLegend( widget ) );
       shell.destroy();
       widget.destroy();
     },
@@ -118,7 +118,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", group.getLegend() );
+      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", getLegend( group ) );
       shell.destroy();
     },
 
@@ -132,7 +132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
       TestUtil.flush();
 
-      assertEquals( "foo", group.getLegend() );
+      assertEquals( "foo", getLegend( group ) );
       shell.destroy();
     },
 
@@ -238,8 +238,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       group.setCustomVariant( "foo" );
 
       assertTrue( group.hasState( "foo" ) );
-      assertTrue( group._legendObject.hasState( "foo" ) );
-      assertTrue( group._frameObject.hasState( "foo" ) );
+      assertTrue( group._legend.hasState( "foo" ) );
+      assertTrue( group._frame.hasState( "foo" ) );
       group.dispose();
     },
 
@@ -249,7 +249,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       group.setFont( rwt.html.Font.fromString( "Arial 20px" ) );
 
       assertEquals( "20px Arial", group.getFont().toCss() );
-      assertEquals( "20px Arial", group.getLegendObject().getFont().toCss() );
+      assertEquals( "20px Arial", group._legend.getFont().toCss() );
       group.dispose();
     },
 
@@ -270,8 +270,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       } );
 
       var widget = rwt.remote.ObjectRegistry.getObject( "w3" );
-      var labelObject = widget.getLegendObject().getLabelObject();
-      assertEquals( "w3-label", labelObject.getHtmlAttribute( "id" ) );
+      assertEquals( "w3-label", widget._legend.getHtmlAttribute( "id" ) );
       shell.destroy();
       rwt.widgets.base.Widget._renderHtmlIds = false;
     }
@@ -293,6 +292,10 @@ var createMnemonicGroup = function() {
     }
   } );
   return rwt.remote.ObjectRegistry.getObject( "w3" );
+};
+
+var getLegend = function( group ) {
+  return group._legend.getCellContent( 0 );
 };
 
 }() );
