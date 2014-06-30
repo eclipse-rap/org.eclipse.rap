@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,13 +44,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ExpandItem", {
       var EncodingUtil = rwt.util.Encoding;
       var text = EncodingUtil.escapeText( value, false );
       widget.setText( text );
-    },
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        widget.setImage( null );
-      } else {
-        widget.setImage( value[ 0 ] );
-      }
     }
   }
 

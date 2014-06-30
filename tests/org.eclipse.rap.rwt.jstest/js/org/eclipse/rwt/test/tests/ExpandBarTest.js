@@ -74,6 +74,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     testCreateExpandItemByProtocol : function() {
       assertTrue( item instanceof rwt.widgets.ExpandItem );
       assertIdentical( bar._clientArea, item.getParent() );
+      assertEquals( 1, item._header.getFlexibleCell() );
+      assertEquals( "ellipsis", item._header.getTextOverflow() );
     },
 
     testDestroyExpandBarWithChildren : function() {
@@ -100,7 +102,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
 
       assertTrue( item.hasState( "variant_blue" ) );
       assertTrue( item._header.hasState( "variant_blue" ) );
-      assertTrue( item._chevron.hasState( "variant_blue" ) );
     },
 
     testSetItemBoundsByProtocol : function() {
@@ -115,25 +116,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     testSetItemTextByProtocol : function() {
       TestUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
 
-      assertEquals( "foo&lt;&gt;bar", item._text );
+      assertEquals( "foo&lt;&gt;bar", item._header.getCellContent( 1 ) );
     },
 
     testSetItemImageByProtocol : function() {
       TestUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } );
 
-      assertEquals( "image.gif", item._image );
+      assertEquals( "image.gif", item._header.getCellContent( 0 ) );
     },
 
     testSetItemExpandedByProtocol : function() {
       TestUtil.protocolSet( "w4", { "expanded" : true } );
 
-      assertTrue( item._expanded );
+      assertTrue( item.getExpanded() );
     },
 
     testSetItemHeaderHeightByProtocol : function() {
       TestUtil.protocolSet( "w4", { "headerHeight" : 12 } );
 
-      assertEquals( 12, item._headerHeight );
+      assertEquals( 12, item._header.getHeight() );
     },
 
     testSendExpandEvent : function() {
@@ -180,7 +181,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
     testTextColor : function() {
       bar.setTextColor( "#FF0000" );
 
-      var style = item._header.getLabelObject()._getTargetNode().style;
+      var style = item._header._getTargetNode().style;
       assertEquals( [ 255, 0, 0 ], rwt.util.Colors.stringToRgb( style.color ) );
 
       bar.setTextColor( "#00FF00" );
@@ -196,7 +197,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
         }
       } );
       bar.setAppearance( "foo" );
-      var style = item._header.getLabelObject()._getTargetNode().style;
+      var style = item._header._getTargetNode().style;
 
       bar.setEnabled( false );
       TestUtil.flush();
@@ -217,7 +218,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       } );
       bar.setAppearance( "foo" );
       bar.setTextColor( "#0000FF" );
-      var style = item._header.getLabelObject()._getTargetNode().style;
+      var style = item._header._getTargetNode().style;
 
       bar.setEnabled( false );
       TestUtil.flush();
@@ -226,6 +227,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
       bar.setEnabled( true );
       TestUtil.flush();
       assertEquals( [ 0, 0, 255 ], rwt.util.Colors.stringToRgb( style.color ) );
+    },
+
+    testChevronIcon : function() {
+      assertNotNull( item._header.getCellContent( 2 ) );
+      assertEquals( [ 16, 16 ], item._header.getCellDimension( 2 ) );
     },
 
     /////////

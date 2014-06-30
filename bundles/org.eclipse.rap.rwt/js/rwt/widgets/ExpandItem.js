@@ -16,54 +16,56 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
   construct : function( parent ) {
     this.base( arguments );
     this._expandBar = parent;
-    this.setAppearance( "expand-item" );
-    this._headerHeight = 24; // Chevron size with top/bottom insets
     this._expanded = false;
-    this._image = null;
-    this._text = "";
-    // Construct a header area
-    this._header = new rwt.widgets.base.Atom( "(empty)", this._image, 16, 16 );
-    this._header.getLabelObject().setPaddingBottom( 4 );
+    this._header = new rwt.widgets.base.MultiCellWidget( [ "image", "label", "image" ] );
     this._header.setAppearance( "expand-item-header" );
+    this._header.setFlexibleCell( 1 );
+    this._header.expandFlexCell( true );
+    this._header.setTextOverflow( "ellipsis" );
+    this._header.setHeight( 24 );
     this._header.addEventListener( "click", this._onClick, this );
-    this._header.addEventListener( "mouseover", this._onHandleMouseOver, this );
-    this._header.addEventListener( "mouseout", this._onHandleMouseOut, this );
-    this._header.setHeight( this._headerHeight );
-    this._header.setLabel( this._text );
+    this._header.addEventListener( "mouseover", this._onMouseOver, this );
+    this._header.addEventListener( "mouseout", this._onMouseOut, this );
     this.add( this._header );
-    // Chevron image
-    this._chevron = new rwt.widgets.base.Image();
-    this._chevron.setAppearance( "expand-item-chevron-button" );
-    this._chevron.setTop( ( this._headerHeight - this._chevron.getHeight() ) / 2 );
-    this._chevron.addEventListener( "click", this._onClick, this );
-    this._chevron.addEventListener( "mouseover", this._onHandleMouseOver, this );
-    this._chevron.addEventListener( "mouseout", this._onHandleMouseOut, this );
-    this.add( this._chevron );
+    // Set the appearance after _header is created
+    this.setAppearance( "expand-item" );
   },
 
   destruct : function() {
-    this._header.removeEventListener( "click", this._onClick, this );
-    this._header.removeEventListener( "mouseover", this._onHandleMouseOver, this );
-    this._header.removeEventListener( "mouseout", this._onHandleMouseOut, this );
-    this._chevron.removeEventListener( "click", this._onClick, this );
-    this._chevron.removeEventListener( "mouseover", this._onHandleMouseOver, this );
-    this._chevron.removeEventListener( "mouseout", this._onHandleMouseOut, this );
-    this._disposeObjects( "_header", "_chevron" );
+    this._disposeObjects( "_header" );
+  },
+
+  properties : {
+
+    chevronIcon : {
+      themeable : true,
+      apply : "_applyChevronIcon"
+    }
+
   },
 
   members : {
 
     _getSubWidgets : function() {
-      return [ this._header, this._chevron ];
+      return [ this._header ];
+    },
+
+    _applyChevronIcon : function( value, old ) {
+      if( value ) {
+        this._header.setCellContent( 2, value[ 0 ] );
+        this._header.setCellDimension( 2, value[ 1 ], value[ 2 ] );
+      } else {
+        this._header.setCellContent( 2, null );
+      }
     },
 
     setExpanded : function( expanded ) {
       this._expanded = expanded;
       if( expanded ) {
-        this._chevron.addState( "expanded" );
+        this.addState( "expanded" );
         this._header.addState( "expanded" );
       } else {
-        this._chevron.removeState( "expanded" );
+        this.removeState( "expanded" );
         this._header.removeState( "expanded" );
       }
     },
@@ -73,22 +75,23 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     },
 
     setImage : function( image ) {
-      this._image = image;
-      this._header.setIcon( image );
+      if( image ) {
+        this._header.setCellContent( 0, image[ 0 ] );
+        this._header.setCellDimension( 0, image[ 1 ], image[ 2 ] );
+      } else {
+        this._header.setCellContent( 0, null );
+      }
     },
 
     setText : function( text ) {
-      this._text = text;
-      this._header.setLabel( text );
+      this._header.setCellContent( 1, text );
     },
 
     setHeaderHeight : function( headerHeight ) {
-      this._headerHeight = headerHeight;
-      this._header.setHeight( this._headerHeight );
-      this._chevron.setTop( ( this._headerHeight - this._chevron.getHeight() ) / 2 );
+      this._header.setHeight( headerHeight );
     },
 
-    _onClick : function( evt ) {
+    _onClick : function( event ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this.setExpanded( !this._expanded );
         var connection = rwt.remote.Connection.getInstance();
@@ -99,12 +102,12 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       }
     },
 
-    _onHandleMouseOver : function( evt ) {
-      this._chevron.addState( "over" );
+    _onMouseOver : function( event ) {
+      this.addState( "over" );
     },
 
-    _onHandleMouseOut : function( evt ) {
-      this._chevron.removeState( "over" );
+    _onMouseOut : function( event ) {
+      this.removeState( "over" );
     }
 
   }

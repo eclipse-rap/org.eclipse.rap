@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,44 +28,26 @@ var appearances = {
       var tv = new rwt.theme.ThemeValues( states );
       return {
         overflow : "hidden",
-        border : tv.getCssBorder( "ExpandItem", "border" )
+        border : tv.getCssBorder( "ExpandItem", "border" ),
+        chevronIcon : tv.getCssSizedImage( "ExpandItem-Button", "background-image" )
       };
-    }
-  },
-
-  "expand-item-chevron-button" : {
-    style : function( states ) {
-      var tv = new rwt.theme.ThemeValues( states );
-      var result = {};
-      result.width = 16;
-      result.height = 16;
-      result.clipWidth = 16;
-      result.clipHeight = 16;
-      result.right = 4;
-      result.source = tv.getCssImage( "ExpandItem-Button", "background-image" );
-      result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
-      return result;
     }
   },
 
   "expand-item-header" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var result = {};
-      result.top = 0;
-      result.left = 0;
-      result.width = "100%";
-      result.horizontalChildrenAlign =  "left";
-      result.verticalChildrenAlign = "middle";
-      result.paddingLeft = 4;
-      result.paddingRight = 24;
-      result.border = tv.getCssBorder( "ExpandItem-Header", "border" );
-      result.backgroundColor = tv.getCssColor( "ExpandItem-Header", "background-color" );
-      result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
-      result.backgroundImage = tv.getCssImage( "ExpandItem-Header", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ExpandItem-Header", "background-image" );
-      result.textShadow = tv.getCssShadow( "ExpandItem-Header", "text-shadow" );
-      return result;
+      return {
+        width : "100%",
+        horizontalChildrenAlign : "left",
+        padding : [ 0, 4, 0, 4 ],
+        border : tv.getCssBorder( "ExpandItem-Header", "border" ),
+        backgroundColor : tv.getCssColor( "ExpandItem-Header", "background-color" ),
+        cursor : tv.getCssCursor( "ExpandItem-Header", "cursor" ),
+        backgroundImage : tv.getCssImage( "ExpandItem-Header", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "ExpandItem-Header", "background-image" ),
+        textShadow : tv.getCssShadow( "ExpandItem-Header", "text-shadow" )
+      };
     }
   }
 
