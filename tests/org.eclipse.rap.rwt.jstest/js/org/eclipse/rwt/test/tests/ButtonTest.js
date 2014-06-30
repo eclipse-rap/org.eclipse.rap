@@ -38,7 +38,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.hasState( "rwt_PUSH" ) );
       assertEquals( "push-button", widget.getAppearance() );
-      assertEquals( -1, widget._flexibleCell );
+      assertEquals( -1, widget.getFlexibleCell() );
       assertFalse( widget.getWordWrap() );
       shell.destroy();
     },
@@ -127,7 +127,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
         }
       } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertEquals( 2, widget._flexibleCell );
+      assertEquals( 2, widget.getFlexibleCell() );
       assertTrue( widget.getWordWrap() );
       shell.destroy();
       widget.destroy();
@@ -619,7 +619,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.addToDocument();
       button.setWrap( true );
       TestUtil.flush();
-      assertEquals( 2, button._flexibleCell );
+      assertEquals( 2, button.getFlexibleCell() );
       button.destroy();
     },
 

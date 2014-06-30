@@ -30,6 +30,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     this.setHorizontalChildrenAlign( "left" );
     this.setOverflow( "hidden" );
     this.setFlexibleCell( 1 );
+    this.expandFlexCell( true );
     this.addEventListener( "elementOver", this._onElementOver, this );
     this.addEventListener( "elementOut", this._onElementOut, this );
     this.addEventListener( "mouseover", this._onMouseOver, this );
@@ -120,14 +121,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         this.setCellContent( 2, null );
         this.setCellDimension( 2, 0, 0 );
       }
-    },
-
-     // TODO [tb] : right alignment should be done in MCW
-     _limitCellWidth : function( cell, preferredCellWidth ) {
-      var inner = this.getInnerWidth();
-      var contentWidth = this._getContentWidth( "skipFlexible" );
-      var maxCellWidth = Math.max( 0, inner - contentWidth );
-      return maxCellWidth;
     },
 
     cellIsDisplayable : function( cell ) {

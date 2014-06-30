@@ -221,7 +221,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
-    testFlexibleCellLimit : function() {
+    testFlexibleCellSize : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
       widget.setWidth( 100 );
@@ -248,6 +248,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 110, widget.getPreferredInnerHeight() );
       assertEquals( [ 110, 110 ], widget.getCellDimension( 0 ) );
       assertEquals( [ 0, 30 ], widget.getCellDimension( 1 ) );
+      this.disposeWidget( widget );
+    },
+
+    testFlexibleCellSize_withExpandFlexCell : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setWidth( 100 );
+      widget.setHeight( 100 );
+      widget.setPadding( 5 );
+      widget.setSpacing( 6 );
+      widget.setFlexibleCell( 1 );
+      widget.setCellDimension( 1, 30, 30 );
+      TestUtil.flush();
+
+      widget.expandFlexCell( true );
+      widget.setCellDimension( 0, 20, 20 );
+
+      assertEquals( 56, widget.getPreferredInnerWidth() );
+      assertEquals( 30, widget.getPreferredInnerHeight() );
+      assertEquals( [ 20, 20 ], widget.getCellDimension( 0 ) );
+      assertEquals( [ 64, 30 ], widget.getCellDimension( 1 ) );
       this.disposeWidget( widget );
     },
 

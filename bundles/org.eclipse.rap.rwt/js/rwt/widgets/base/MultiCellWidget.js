@@ -34,6 +34,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     this.__fontCache = {};
     this.__colorCache = "";
     this._flexibleCell = -1;
+    this._expandFlexCell = false;
     this.initWidth();
     this.initHeight();
     this.addToQueue( "createContent" );
@@ -211,6 +212,13 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return this._flexibleCell;
     },
 
+    expandFlexCell : function( expand ) {
+      if( typeof expand === "boolean" ) {
+        this._expandFlexCell = expand;
+      }
+      return this._expandFlexCell;
+    },
+
     // NOTE : Only needed by Tests
     getCellDimension : function( cell ) {
       var width = this.getCellWidth( cell );
@@ -230,7 +238,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         width = computed[ 0 ];
       }
       if( isFlexible ) {
-        width = this._limitCellWidth( cell, width );
+        width = this._adjustCellWidth( cell, width );
       }
       return width;
     },
@@ -248,7 +256,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         height = computed[ 1 ];
       }
       if( isFlexible ) {
-        height = this._limitCellHeight( cell, height );
+        height = this._adjustCellHeight( cell, height );
       }
       return height;
     },
@@ -481,13 +489,13 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return this._getContentWidth( "ignoreFlexible" );
     },
 
-    _limitCellWidth : function( cell, preferredCellWidth ) {
+    _adjustCellWidth : function( cell, preferredCellWidth ) {
       // NOTE: Will assume current width as valid, not to be used for widget size calculation
       var inner = this.getInnerWidth();
       var contentWidth = this._getContentWidth( "skipFlexible" );
       var maxCellWidth = Math.max( 0, inner - contentWidth );
       var result;
-      if( preferredCellWidth > maxCellWidth ) {
+      if( preferredCellWidth > maxCellWidth || this._expandFlexCell ) {
         result = maxCellWidth;
       }  else {
         result = preferredCellWidth;
@@ -539,7 +547,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return maxHeight;
     },
 
-    _limitCellHeight : function( cell, preferredCellHeight ) {
+    _adjustCellHeight : function( cell, preferredCellHeight ) {
       var inner = this.getInnerHeight();
       var result;
       if( preferredCellHeight > inner ) {
