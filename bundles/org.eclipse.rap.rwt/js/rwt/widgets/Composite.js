@@ -13,23 +13,19 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
 
   extend : rwt.widgets.base.Parent,
 
-  include : rwt.animation.VisibilityAnimationMixin,
+  include : [ rwt.animation.VisibilityAnimationMixin, rwt.widgets.util.OverStateMixin ],
 
   construct : function() {
     this.base( arguments );
     this.setAppearance( "composite" );
     this.setOverflow( "hidden" );
     this.setHideFocus( true );
-    this.addEventListener( "mouseover", this._onMouseOver, this );
-    this.addEventListener( "mouseout", this._onMouseOut, this );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
     this._clientArea = [ 0, 0, 0, 0 ];
   },
 
   destruct : function() {
-    this.removeEventListener( "mouseover", this._onMouseOver, this );
-    this.removeEventListener( "mouseout", this._onMouseOut, this );
     this._clientArea = null;
   },
 
@@ -42,14 +38,6 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
 
     getClientArea : function() {
       return this._clientArea.concat();
-    },
-
-    _onMouseOver : function( evt ) {
-      this.addState( "over" );
-    },
-
-    _onMouseOut : function( evt ) {
-      this.removeState( "over" );
     }
 
   }

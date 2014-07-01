@@ -11,7 +11,10 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.Sash", {
+
   extend : rwt.widgets.base.Parent,
+
+  include : rwt.widgets.util.OverStateMixin,
 
   construct : function() {
     this.base( arguments );
@@ -19,8 +22,6 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
     this.setHtmlProperty( "unselectable", "on" );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
-    this.addEventListener( "mouseover", this._onMouseOver, this );
-    this.addEventListener( "mouseout", this._onMouseOut, this );
     this._slider = new rwt.widgets.base.Parent();
     this._slider.setAppearance( "sash-slider" );
     this._slider.setVisibility( false );
@@ -41,8 +42,6 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
   destruct : function() {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
-    this.removeEventListener( "mouseover", this._onMouseOver, this );
-    this.removeEventListener( "mouseout", this._onMouseOut, this );
     this._removeStyle( this.getOrientation() );
     this._disposeObjects( "_slider", "_handle", "_sliderHandle" );
   },
@@ -229,14 +228,6 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
         this.getHeight(),
         this.getCapture() ? "drag" : null
        );
-    },
-
-    _onMouseOver : function( evt ) {
-      this.addState( "over" );
-    },
-
-    _onMouseOut : function( evt ) {
-      this.removeState( "over" );
     }
 
   }

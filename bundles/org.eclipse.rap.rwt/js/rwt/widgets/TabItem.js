@@ -22,14 +22,14 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
   extend : rwt.widgets.base.Atom,
 
+  include : rwt.widgets.util.OverStateMixin,
+
   construct : function( vText, vIcon, vIconWidth, vIconHeight ) {
     this.base( arguments, vText, vIcon, vIconWidth, vIconHeight );
     this.initChecked();
     this.initTabIndex();
     this._rawText = null;
     this._mnemonicIndex = null;
-    this.addEventListener( "mouseover", this._onmouseover );
-    this.addEventListener( "mouseout", this._onmouseout );
     this.addEventListener( "mousedown", this._onmousedown );
     this.addEventListener( "keydown", this._onkeydown );
     this.addEventListener( "keypress", this._onkeypress );
@@ -319,14 +319,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
     _onmousedown : function() {
       this.setChecked( true );
-    },
-
-    _onmouseover : function() {
-      this.addState( "over" );
-    },
-
-    _onmouseout : function() {
-      this.removeState( "over" );
     }
 
   },

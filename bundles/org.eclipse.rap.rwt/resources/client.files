@@ -32,6 +32,7 @@ rwt/util/Encoding.js
 rwt/widgets/Display.js
 rwt/remote/handler/DisplayHandler.js
 rwt/graphics/GraphicsUtil.js
+rwt/widgets/util/OverStateMixin.js
 rwt/widgets/util/HtmlAttributesMixin.js
 rwt/widgets/base/Widget.js
 rwt/widgets/util/WidgetRenderAdapter.js

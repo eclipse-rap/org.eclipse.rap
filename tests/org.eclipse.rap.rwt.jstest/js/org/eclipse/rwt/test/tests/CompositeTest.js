@@ -108,7 +108,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
 
     testCompositeBackgroundInitial : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( null );
@@ -124,7 +123,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
 
     testCompositeBackgroundFromColor : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( "green" );
         composite.setBackgroundImage( null );
@@ -143,7 +141,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
 
     testCompositeBackgroundFromImage : rwt.util.Variant.select( "qx.client", {
       "mshtml" : function() {
-        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new rwt.widgets.Composite();
         composite.setBackgroundColor( null );
         composite.setBackgroundImage( "bla.jpg" );
@@ -158,7 +155,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
         TestUtil.flush();
       },
       "default" : function(){}
-    } )
+    } ),
+
+    testMouseOver : function() {
+      var composite = new rwt.widgets.Composite();
+      composite.addToDocument();
+      TestUtil.flush();
+
+      TestUtil.mouseOver( composite );
+      assertTrue( composite.hasState( "over" ) );
+
+      TestUtil.mouseOut( composite );
+      assertFalse( composite.hasState( "over" ) );
+
+      composite.destroy();
+    }
 
   }
 

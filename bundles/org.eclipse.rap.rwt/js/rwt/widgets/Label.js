@@ -13,10 +13,10 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
 
   extend : rwt.widgets.base.MultiCellWidget,
 
+  include : rwt.widgets.util.OverStateMixin,
+
   construct : function( styles ) {
     this.base( arguments, this._CELLORDER );
-    this.addEventListener( "mouseover", this._onMouseOver );
-    this.addEventListener( "mouseout", this._onMouseOut );
     this.setVerticalChildrenAlign( "top" );
     this.setAlignment( "left" );
     this.setAppearance( "label-wrapper" );
@@ -124,19 +124,8 @@ rwt.qx.Class.define( "rwt.widgets.Label", {
 
     setBottomMargin : function( value ) {
       this.setPaddingBottom( value );
-    },
-
-    _onMouseOver : function( event ) {
-      if( event.getTarget() === this && !this.hasState( "over" ) ) {
-        this.addState( "over" );
-      }
-    },
-
-    _onMouseOut : function( event ) {
-      if( event.getTarget() === this ) {
-        this.removeState( "over" );
-      }
     }
 
   }
+
 } );

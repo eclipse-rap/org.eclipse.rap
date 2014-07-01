@@ -12,7 +12,7 @@
 (function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 var Processor = rwt.remote.MessageProcessor;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
@@ -32,7 +32,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertIdentical( shell, widget.getParent() );
       assertTrue( widget.getUserData( "isControl") );
@@ -53,7 +53,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget instanceof rwt.widgets.Sash );
       assertEquals( "horizontal", widget.getOrientation() );
       shell.destroy();
@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "parent" : "w2"
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
 
       TestUtil.protocolListen( "w3", { "Selection" : true } );
 
@@ -93,7 +93,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
           "bounds" : [ 10, 20 , 10, 100 ]
         }
       } );
-      var widget = ObjectManager.getObject( "w3" );
+      var widget = ObjectRegistry.getObject( "w3" );
       TestUtil.protocolListen( "w3", { "Selection" : true } );
 
       this.fakeDrag( widget, 5, 0 );
@@ -104,6 +104,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SashTest", {
       assertEquals( 10, message.findNotifyProperty( "w3", "Selection", "width" ) );
       assertEquals( 100, message.findNotifyProperty( "w3", "Selection", "height" ) );
       shell.destroy();
+    },
+
+    testMouseOver : function() {
+      var sash = new rwt.widgets.Sash();
+      sash.addToDocument();
+      TestUtil.flush();
+
+      TestUtil.mouseOver( sash );
+      assertTrue( sash.hasState( "over" ) );
+
+      TestUtil.mouseOut( sash );
+      assertFalse( sash.hasState( "over" ) );
+
+      sash.destroy();
     },
 
     fakeDrag : function( sash, leftOffset, topOffset ) {
