@@ -13,6 +13,9 @@ namespace( "rwt.util" );
 
 (function(){
 
+var WidgetUtil = rwt.widgets.util.WidgetUtil;
+var Style = rwt.html.Style;
+
 /**
  * @private
  * @class An JQuery-like object which allows manipulation of HTML elements.
@@ -22,15 +25,20 @@ namespace( "rwt.util" );
  * @since 2.3
  */
 rwt.util.RWTQuery = function( target ) {
-  var isWidget = ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0;
-  this.__access = function( args, callbackWidget, callbackElement ) {
-    var callback = isWidget ? callbackWidget : callbackElement;
-    return callback.apply( this, [ target, args ] );
-  };
+  return new rwt.util.RWTQuery.fn.init( target );
 };
 
-rwt.util.RWTQuery.prototype = {
+var $ = rwt.util.RWTQuery;
 
+$.prototype = {
+
+  init : function( target ) {
+    var isWidget = ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0;
+    this.__access = function( args, callbackWidget, callbackElement ) {
+      var callback = isWidget ? callbackWidget : callbackElement;
+      return callback.apply( this, [ target, args ] );
+    };
+  },
 
   /**
    * @description A method to either set or get the value of an HTML-attribute.
@@ -43,21 +51,61 @@ rwt.util.RWTQuery.prototype = {
    */
   attr : function() {
     return this.__access( arguments, attr_widget, attr_element );
+  },
+
+  append : function() {
+    return this.__access( arguments, append_widget, append_element );
+  },
+
+  css : function() {
+    return this.__access( arguments, css_widget, css_element );
   }
 
 };
 
-var unwrapArgsFor = function( setter ) {
+$.fn = $.prototype; // for extendability
+$.fn.init.prototype = $.prototype; // for creation without "new"
+
+// TODO: these hooks are for element only, widgets would need separate ones
+// TODO: have getter, allow for standard syntax on image & gradient
+$.cssHooks = {
+  "backgroundColor" : {
+    "set" : function( element, value ) {
+      rwt.html.Style.setBackgroundColor( element, value );
+    }
+  },
+  "backgroundImage" : { // standard syntax URL("...") not supported
+    "set" : function( element, value ) {
+      rwt.html.Style.setBackgroundImage( element, value );
+    }
+  },
+  "backgroundGradient" : { // standard syntax linear-gradient(...) not supported
+    "set" : function( element, value ) {
+      rwt.html.Style.setBackgroundGradient( element, value );
+    }
+  }
+};
+
+$.cssNumber = {
+  "columnCount" : true,
+  "fillOpacity" : true,
+  "fontWeight" : true,
+  "lineHeight" : true,
+  "opacity" : true,
+  "zIndex" : true,
+  "zoom" : true
+};
+
+var unwrapArgsFor = function( originalSetter ) {
   return function( target, args ) {
     if( args.length === 1 && ( typeof args[ 0 ] === "object" ) ) {
       var map = args[ 0 ];
       for( var key in map ) {
-        setter.apply( this, [ target, [ key, map[ key ] ] ] );
+        originalSetter.apply( this, [ target, [ key, map[ key ] ] ] );
       }
       return this;
-    } else {
-      return setter.apply( this, arguments );
     }
+    return originalSetter.apply( this, arguments );
   };
 };
 
@@ -79,10 +127,50 @@ var attr_element = unwrapArgsFor( function( element, args ) {
   return this;
 } );
 
+var css_widget = unwrapArgsFor( function( widget, args ) {
+  // TODO: some of properties such as bounds and backgrounds should be applied to the widget itself
+  if( args.length === 1 ) {
+    return widget.getStyleProperties()[ args[ 0 ] ];
+  }
+  widget.setStyleProperty( args[ 0 ], args[ 1 ] );
+  return this;
+} );
+
+var css_element = unwrapArgsFor( function( element, args ) {
+  var hooks = $.cssHooks[ args[ 0 ] ];
+  if( args.length === 1 ) {
+    return Style.get( element, args[ 0 ] );
+  }
+  if( hooks && hooks.set ) {
+    hooks.set( element, args[ 1 ] );
+  }
+  element.style[ args[ 0 ] ] = parseCssValue( args );
+  return this;
+} );
+
+var append_widget = function( widget, args ) {
+  WidgetUtil.callWithElement( widget, function( element ) {
+    element.appendChild( args[ 0 ] );
+  } );
+  return this;
+};
+
+var append_element = function( element, args ) {
+  element.appendChild( args[ 0 ] );
+  return this;
+};
+
 var restrictedAttributes = {
   "id" : true, // RAP renders IDs. While it does not rely on them, addons and future versions may.
   "class" : true, // May be used by RAP in the future, separate API could allow access
   "style" : true // Would destroy layout, separate API could allow (limited) access
+};
+
+var parseCssValue = function( args ) {
+  if( typeof args[ 1 ] === "number" && !$.cssNumber[ args[ 0 ] ] ) {
+    return args[ 1 ] + "px";
+  }
+  return args[ 1 ];
 };
 
 }());

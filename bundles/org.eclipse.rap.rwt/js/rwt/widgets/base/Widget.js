@@ -3046,6 +3046,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return this._styleProperties[propName] || "";
     },
 
+    getStyleProperties : function() {
+      return this._styleProperties || {};
+    },
+
     //Some properties should always be applied on the outer element node:
     __outerElementStyleProperties : {
       cursor : true,

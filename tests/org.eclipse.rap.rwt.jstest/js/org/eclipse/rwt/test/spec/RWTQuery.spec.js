@@ -11,17 +11,23 @@
 
 describe( "RWTQuery", function() {
 
-  var $ = function( target) {
-    return new rwt.util.RWTQuery( target );
-  };
+  var $ = rwt.util.RWTQuery;
+  var WidgetUtil = rwt.widgets.util.WidgetUtil;
+  var Style = rwt.html.Style;
 
   describe( "for widget:", function() {
 
     var widget;
 
     beforeEach( function() {
-      widget = jasmine.createSpyObj( "widget", [ "setHtmlAttribute", "getHtmlAttributes" ] );
+      widget = jasmine.createSpyObj( "widget", [
+        "setHtmlAttribute",
+        "getHtmlAttributes",
+        "setStyleProperty",
+        "getStyleProperties"
+      ] );
       widget.classname = "rwt.widgets.Foo";
+      spyOn( WidgetUtil, "callWithElement" );
     } );
 
     afterEach( function() {
@@ -74,6 +80,69 @@ describe( "RWTQuery", function() {
         $( widget ).attr( "class", "foobar" );
 
         expect( widget.setHtmlAttribute ).not.toHaveBeenCalled();
+      } );
+
+    } );
+
+    describe( "css", function() {
+
+      it( "returns existing property", function() {
+        widget.getStyleProperties.andReturn( { "foo" : "bar" } );
+        expect( $( widget ).css( "foo" ) ).toBe( "bar" );
+      } );
+
+      it( "returns undefined for non-existing property", function() {
+        widget.getStyleProperties.andReturn( {} );
+        expect( $( widget ).css( "foo" ) ).toBeUndefined();
+      } );
+
+      it( "sets single property", function() {
+        $( widget ).css( "foo", "bar" );
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo", "bar" );
+      } );
+
+      it( "sets multiple property", function() {
+        $( widget ).css( {
+          "foo" : "bar",
+          "foo2" : "bar2"
+        } );
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo", "bar" );
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo2", "bar2" );
+      } );
+
+      it( "is chainable as setter", function() {
+        $( widget ).css( "foo", "bar" ).css( "foo2", "bar2" );
+
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo", "bar" );
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo2", "bar2" );
+      } );
+
+      it( "is chainable as multiple setter", function() {
+        $( widget ).css( { "foo" : "bar" } ).css( { "foo2" : "bar2" } );
+
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo", "bar" );
+        expect( widget.setStyleProperty ).toHaveBeenCalledWith( "foo2", "bar2" );
+      } );
+
+    } );
+
+    describe( "append", function() {
+
+      it( "appends an element using WidgetUtil", function() {
+        var element = document.createElement( "div" );
+        var parentElement = document.createElement( "div" );
+
+        $( widget ).append( element );
+        WidgetUtil.callWithElement.calls[ 0 ].args[ 1 ]( parentElement );
+
+        expect( element.parentElement ).toBe( parentElement );
+      } );
+
+      it( "isChainable", function() {
+        var element = document.createElement( "div" );
+        var $widget = $( widget );
+
+        expect( $widget.append( element ) ).toBe( $widget );
       } );
 
     } );
@@ -149,6 +218,112 @@ describe( "RWTQuery", function() {
 
     } );
 
+    describe( "css", function() {
+
+      it( "returns existing property using rwt.html.Style", function() {
+        spyOn( Style, "get" ).andReturn( "bar" );
+
+        expect( $( element ).css( "foo" ) ).toBe( "bar" );
+        expect( Style.get ).toHaveBeenCalledWith( element, "foo" );
+      } );
+
+      it( "sets single property", function() {
+        $( element ).css( "left", "11px" );
+        expect( element.style.left ).toBe( "11px" );
+      } );
+
+      it( "sets multiple properties", function() {
+        $( element ).css( { "left" : "11px", "top" : "12px" } );
+
+        expect( element.style.left ).toBe( "11px" );
+        expect( element.style.top ).toBe( "12px" );
+      } );
+
+      it( "is chainable as setter", function() {
+        $( element ).css( "left", "11px" ).css( "top", "12px" );
+
+        expect( element.style.left ).toBe( "11px" );
+        expect( element.style.top ).toBe( "12px" );
+      } );
+
+      it( "is chainable as multiple setter", function() {
+        $( element ).css( { "left" : "11px" } ).css( { "top" : "12px" } );
+
+        expect( element.style.left ).toBe( "11px" );
+        expect( element.style.top ).toBe( "12px" );
+      } );
+
+      it( "converts numbers to pixel", function() {
+        $( element ).css( "left", 11 );
+        expect( element.style.left ).toBe( "11px" );
+      } );
+
+      it( "does not convert numbers to pixel if property is a cssNumber", function() {
+        $( element ).css( "opacity", 0.4 );
+        expect( element.style.opacity ).toBe( "0.4" );
+      } );
+
+      it( "uses cssHooks setter", function() {
+        var spy = jasmine.createSpy();
+        $.cssHooks[ "foo" ] = { "set" : spy };
+
+        $( element ).css( "foo", "bar" );
+
+        expect( spy ).toHaveBeenCalledWith( element, "bar" );
+        delete $.cssHooks.foo;
+      } );
+
+    } );
+
+    describe( "cssHooks", function() {
+
+      it( "delegate set backgroundColor", function() {
+        spyOn( rwt.html.Style, "setBackgroundColor" );
+
+        $( element ).css( "backgroundColor", "#ff00ee" );
+
+        expect( rwt.html.Style.setBackgroundColor ).toHaveBeenCalledWith( element, "#ff00ee" );
+      } );
+
+      it( "delegate set backgroundGradient", function() {
+        spyOn( rwt.html.Style, "setBackgroundGradient" );
+        var gradient = [];
+
+        $( element ).css( "backgroundGradient", gradient );
+
+        expect( rwt.html.Style.setBackgroundGradient ).toHaveBeenCalledWith( element, gradient );
+      } );
+
+      it( "delegate set backgroundImage", function() {
+        spyOn( rwt.html.Style, "setBackgroundImage" );
+
+        $( element ).css( "backgroundImage", "foo" );
+
+        expect( rwt.html.Style.setBackgroundImage ).toHaveBeenCalledWith( element, "foo" );
+      } );
+
+    } );
+
+    describe( "append", function() {
+
+      it( "appends an element", function() {
+        var childElement = document.createElement( "div" );
+
+        $( element ).append( childElement );
+
+        expect( childElement.parentElement ).toBe( element );
+      } );
+
+      it( "isChainable", function() {
+        var childElement = document.createElement( "div" );
+        var $element = $( element );
+
+        expect( $element.append( childElement ) ).toBe( $element );
+      } );
+
+    } );
+
   } );
+
 
 } );
