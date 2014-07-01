@@ -158,7 +158,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.width = "100%";
       style.height = "100%";
       style.backgroundColor = color === "undefined" ? "transparent" : color;
-      rwt.html.Style.setOpacity( element, alpha );
+      style.opacity = alpha;
       style.zIndex = 100000000;
       document.body.appendChild( element );
       rwt.event.EventHandler.setBlockKeyEvents( true );

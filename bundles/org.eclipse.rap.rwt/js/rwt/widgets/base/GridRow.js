@@ -422,7 +422,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._renderOverlayGradient( element, gradient );
       } else {
         Style.setBackgroundColor( element, styleMap.background );
-        Style.setOpacity( element, styleMap.backgroundAlpha );
+        element.style.opacity = styleMap.backgroundAlpha;
       }
     },
 
@@ -811,7 +811,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _setImage : function( element, src, enabled ) {
       var opacity = enabled ? 1 : 0.3;
       Style.setBackgroundImage( element, src );
-      Style.setOpacity( element, enabled != null ? opacity : null );
+      element.style.opacity = enabled != null ? opacity : "";
     },
 
     _getTextElement : function( cell ) {

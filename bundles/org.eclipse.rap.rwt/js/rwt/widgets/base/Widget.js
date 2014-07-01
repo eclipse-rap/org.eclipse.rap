@@ -3272,7 +3272,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * inclusive, where 1 means totally opaque and 0 invisible.
      */
     _applyOpacity : function( value, old ) {
-      rwt.html.Style.setOpacity( this, value );
+      this.setStyleProperty( "opacity", value );
     },
 
     /////////////////

@@ -70,7 +70,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
      * @param name {String} Name of the style attribute (js variant e.g. marginTop, wordSpacing)
      * @return {var} The value of the property
      */
-    get : function( element, name, mode ) {
+    get : function( element, name ) {
       // Opera, Mozilla and Safari 3+ also have a global getComputedStyle which is identical
       // to the one found under document.defaultView.
 
@@ -344,28 +344,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
     getBackgroundColor : function( target ) {
       return target.___rwtStyle__backgroundColor || "transparent";
     },
-
-    setOpacity  : rwt.util.Variant.select( "qx.client", {
-      "gecko" : function( target, value ) {
-        if( value == null || value >= 1 ) {
-          // todo: check if all supported gecko have "opacity"
-          this.removeStyleProperty( target, "MozOpacity" );
-          this.removeStyleProperty( target, "opacity" );
-        } else {
-          var targetValue = rwt.util.Numbers.limit( value, 0, 1 );
-          this.setStyleProperty( target, "MozOpacity", targetValue );
-          this.setStyleProperty( target, "opacity", targetValue );
-        }
-      },
-      "default" : function( target, value ) {
-        if( value == null || value >= 1 ) {
-          this.removeStyleProperty( target, "opacity" );
-        } else {
-          var targetValue = rwt.util.Numbers.limit( value, 0, 1 );
-          this.setStyleProperty( target, "opacity", targetValue );
-        }
-      }
-    } ),
 
     setBoxShadow: function( target, shadowObject ) {
       var property;

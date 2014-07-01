@@ -72,61 +72,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       widget.destroy();
     },
 
-    testSetOpacity : function() {
-      var element = document.createElement( "div" );
-      var widget = this._createWidget();
-      Style.setOpacity( element, 0.5 );
-      Style.setOpacity( widget, 0.5 );
-      assertTrue( TestUtil.hasElementOpacity( element ) );
-      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
-      Style.setOpacity( element, 1 );
-      Style.setOpacity( widget, 1 );
-      assertFalse( TestUtil.hasElementOpacity( element ) );
-      assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var css1 = element.style.cssText.toLowerCase();
-      var css2 = widget.getElement().style.cssText.toLowerCase();
-      // additional check for IE:
-      assertTrue( css1.indexOf( "filter" ) == -1 );
-      assertTrue( css2.indexOf( "filter" ) == -1 );
-      widget.destroy();
-    },
-
-    testSetOpacityBeforeWidgetCreation : function() {
-      var widgetNormal = this._createWidget( true );
-      var widgetTransp = this._createWidget( true );
-      widgetNormal.setOpacity( 0.5 );
-      widgetTransp.setOpacity( 0.5 );
-      widgetNormal.setOpacity( 1 );
-      TestUtil.flush();
-      assertFalse( TestUtil.hasElementOpacity( widgetNormal.getElement() ) );
-      assertTrue( TestUtil.hasElementOpacity( widgetTransp.getElement() ) );
-      // additional check for IE:
-      var css = widgetNormal.getElement().style.cssText.toLowerCase();
-      assertTrue( css.indexOf( "filter" ) == -1 );
-      widgetNormal.destroy();
-      widgetTransp.destroy();
-    },
-
-    testSetOpacityOnOuterElement : function() {
-      var element = document.createElement( "div" );
-      var widget = this._createWidget();
-      widget.prepareEnhancedBorder();
-      Style.setOpacity( element, 0.5 );
-      Style.setOpacity( widget, 0.5 );
-      assertTrue( TestUtil.hasElementOpacity( element ) );
-      assertTrue( TestUtil.hasElementOpacity( widget.getElement() ) );
-      Style.setOpacity( element, 1 );
-      Style.setOpacity( widget, 1 );
-      assertFalse( TestUtil.hasElementOpacity( element ) );
-      assertFalse( TestUtil.hasElementOpacity( widget.getElement() ) );
-      var css1 = element.style.cssText.toLowerCase();
-      var css2 = widget.getElement().style.cssText.toLowerCase();
-      // additional check for IE:
-      assertTrue( css1.indexOf( "filter" ) == -1 );
-      assertTrue( css2.indexOf( "filter" ) == -1 );
-      widget.destroy();
-    },
-
     testSetRemoveTextShadow : function() {
       var widget = this._createWidget( true );
       var shadow = [ false, 1, 1, 0, 0, "#ff0000", 0.5 ];

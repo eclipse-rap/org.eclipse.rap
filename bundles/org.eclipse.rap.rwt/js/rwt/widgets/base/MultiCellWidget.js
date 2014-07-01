@@ -712,7 +712,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var source = this.getCellContent( cell );
       var opacity = this.getEnabled() ? 1 : 0.3;
       rwt.html.Style.setBackgroundImage( node, source );
-      rwt.html.Style.setOpacity( node, opacity );
+      node.style.opacity = opacity;
     },
 
     _updateAllImages : function() {

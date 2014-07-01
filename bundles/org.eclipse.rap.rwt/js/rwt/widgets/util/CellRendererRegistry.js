@@ -171,7 +171,7 @@ var defaultImageRenderer = {
     var opacity = options.enabled ? 1 : 0.3;
     var src = content ? content[ 0 ] : null;
     rwt.html.Style.setBackgroundImage( element, src );
-    rwt.html.Style.setOpacity( element, opacity );
+    element.style.opacity = opacity;
   },
   "createElement" : function( cellData ) {
     var result = document.createElement( "div" );
