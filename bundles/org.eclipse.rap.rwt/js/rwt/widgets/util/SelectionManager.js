@@ -484,11 +484,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @return {void}
      */
     renderItemSelectionState : function( vItem, vIsSelected ) {
-      if( vIsSelected ) {
-        vItem.addState( "selected" );
-      } else {
-        vItem.removeState( "selected" );
-      }
+      vItem.toggleState( "selected", vIsSelected );
       if( vItem.handleStateChange ) {
         vItem.handleStateChange();
       }
@@ -504,11 +500,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @return {void}
      */
     renderItemAnchorState : function( vItem, vIsAnchor ) {
-      if( vIsAnchor ) {
-        vItem.addState( "anchor" );
-      } else {
-        vItem.removeState( "anchor" );
-      }
+      vItem.toggleState( "anchor", vIsAnchor );
       if( vItem.handleStateChange != null ) {
         vItem.handleStateChange();
       }
@@ -524,11 +516,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @return {void}
      */
     renderItemLeadState : function( vItem, vIsLead ) {
-      if( vIsLead ) {
-        vItem.addState( "lead" );
-      } else {
-        vItem.removeState( "lead" );
-      }
+      vItem.toggleState( "lead", vIsLead );
       if( vItem.handleStateChange != null ) {
         vItem.handleStateChange();
       }

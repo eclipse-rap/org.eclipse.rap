@@ -216,36 +216,12 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
     _renderAppearance : function() {
       if( this.getView() ) {
-        if( this.isFirstVisibleChild() ) {
-         this.addState( "firstChild" );
-        } else {
-          this.removeState( "lastChild" );
-        }
-        if( this.isLastVisibleChild() ) {
-          this.addState( "lastChild" );
-        } else {
-          this.removeState( "lastChild" );
-        }
-        if( this.getView().getAlignTabsToLeft() ) {
-          this.addState( "alignLeft" );
-        } else {
-          this.removeState( "alignLeft" );
-        }
-        if( !this.getView().getAlignTabsToLeft() ) {
-          this.addState( "alignRight" );
-        } else {
-          this.removeState( "alignRight" );
-        }
-        if( this.getView().getPlaceBarOnTop() ) {
-          this.addState( "barTop" );
-        } else {
-          this.removeState( "barTop" );
-        }
-        if( !this.getView().getPlaceBarOnTop() ) {
-          this.addState( "barBottom" );
-        } else {
-          this.removeState( "barBottom" );
-        }
+        this.toggleState( "firstChild", this.isFirstVisibleChild() );
+        this.toggleState( "lastChild", this.isLastVisibleChild() );
+        this.toggleState( "alignLeft", this.getView().getAlignTabsToLeft() );
+        this.toggleState( "alignRight", !this.getView().getAlignTabsToLeft() );
+        this.toggleState( "barTop", this.getView().getPlaceBarOnTop() );
+        this.toggleState( "barBottom", !this.getView().getPlaceBarOnTop() );
       }
       this.base( arguments );
     },
@@ -295,11 +271,7 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
           vManager.handleItemChecked( this, value );
         }
       }
-      if( value ) {
-        this.addState( "checked" );
-      } else {
-        this.removeState( "checked" );
-      }
+      this.toggleState( "checked", value );
       var vPage = this.getPage();
       if( vPage ) {
         if( this.getChecked() ) {

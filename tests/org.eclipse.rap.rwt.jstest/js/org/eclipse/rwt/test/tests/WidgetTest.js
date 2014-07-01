@@ -776,6 +776,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertTrue( widget.isInDom() );
     },
 
+    testToggleState_addState : function() {
+      var widget = this._createWidget();
+
+      widget.toggleState( "foo", true );
+
+      assertTrue( widget.hasState( "foo" ) );
+      widget.destroy();
+    },
+
+    testToggleState_removeState : function() {
+      var widget = this._createWidget();
+      widget.toggleState( "foo", true );
+
+      widget.toggleState( "foo", false );
+
+      assertFalse( widget.hasState( "foo" ) );
+      widget.destroy();
+    },
+
     /////////
     // Helper
 

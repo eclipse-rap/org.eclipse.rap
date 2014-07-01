@@ -53,12 +53,11 @@ rwt.qx.Class.define( "rwt.widgets.Separator", {
       if( value == "vertical" ) {
         this.setHorizontalChildrenAlign( "center" );
         this._line.setHeight( "100%" );
-        this._line.addState( "rwt_VERTICAL" );
       } else {
         this.setVerticalChildrenAlign( "middle" );
         this._line.setWidth( "100%" );
-        this._line.removeState( "rwt_VERTICAL" );
       }
+      this._line.toggleState( "rwt_VERTICAL", value == "vertical" );
     }
 
   }

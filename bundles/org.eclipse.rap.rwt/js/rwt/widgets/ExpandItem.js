@@ -61,13 +61,8 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
 
     setExpanded : function( expanded ) {
       this._expanded = expanded;
-      if( expanded ) {
-        this.addState( "expanded" );
-        this._header.addState( "expanded" );
-      } else {
-        this.removeState( "expanded" );
-        this._header.removeState( "expanded" );
-      }
+      this.toggleState( "expanded", expanded );
+      this._header.toggleState( "expanded", expanded );
     },
 
     getExpanded : function( expanded ) {

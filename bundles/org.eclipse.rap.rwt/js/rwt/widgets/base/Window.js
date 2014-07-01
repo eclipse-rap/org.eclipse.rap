@@ -721,21 +721,12 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
 
     _setActiveState : function( value ) {
       if( !this.getWindowManager().blockActiveState ) {
-        if( value ) {
-          this.addState("active");
-          this._captionBar.addState("active");
-          this._minimizeButton.addState("active");
-          this._restoreButton.addState("active");
-          this._maximizeButton.addState("active");
-          this._closeButton.addState("active");
-        } else {
-          this.removeState("active");
-          this._captionBar.removeState("active");
-          this._minimizeButton.removeState("active");
-          this._restoreButton.removeState("active");
-          this._maximizeButton.removeState("active");
-          this._closeButton.removeState("active");
-        }
+        this.toggleState( "active", value );
+        this._captionBar.toggleState( "active", value );
+        this._minimizeButton.toggleState( "active", value );
+        this._restoreButton.toggleState( "active", value );
+        this._maximizeButton.toggleState( "active", value );
+        this._closeButton.toggleState( "active", value );
       }
     },
 

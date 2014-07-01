@@ -351,11 +351,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setLinesVisible : function( value ) {
       this._config.linesVisible = value;
-      if( value ) {
-        this.addState( "linesvisible" );
-      } else {
-        this.removeState( "linesvisible" );
-      }
+      this.toggleState( "linesvisible", value );
       this._rowContainer.updateRowLines();
       this._scheduleUpdate();
     },

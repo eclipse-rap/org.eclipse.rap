@@ -59,11 +59,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
 
     _updateSelectedDayState : function() {
       for( var i = 0; i < 6 * 7; i++ ) {
-        if( this.getFocused() ) {
-          this._calendar._dayLabelArr[ i ].removeState( "parent_unfocused" );
-        } else {
-          this._calendar._dayLabelArr[ i ].addState( "parent_unfocused" );
-        }
+        this._calendar._dayLabelArr[ i ].toggleState( "parent_unfocused", !this.getFocused() );
       }
     },
 

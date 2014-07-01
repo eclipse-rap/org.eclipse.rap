@@ -598,11 +598,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
 
         dayLabel.setText( weekdayName );
 
-        if (this.__isWeekend(day)) {
-          dayLabel.addState("weekend");
-        } else {
-          dayLabel.removeState("weekend");
-        }
+        dayLabel.toggleState( "weekend", this.__isWeekend( day ) );
       }
 
       // Show the days
@@ -621,26 +617,11 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
           var dayOfMonth = helpDate.getDate();
 
           var isSelectedDate = (selYear == year && selMonth == month && selDayOfMonth == dayOfMonth);
-
-          if (isSelectedDate) {
-            dayLabel.addState("selected");
-          } else {
-            dayLabel.removeState("selected");
-          }
-
-          if (month != shownMonth) {
-            dayLabel.addState("otherMonth");
-          } else {
-            dayLabel.removeState("otherMonth");
-          }
-
           var isToday = (year == todayYear && month == todayMonth && dayOfMonth == todayDayOfMonth);
 
-          if (isToday) {
-            dayLabel.addState("today");
-          } else {
-            dayLabel.removeState("today");
-          }
+          dayLabel.toggleState( "selected", isSelectedDate );
+          dayLabel.toggleState( "otherMonth", month != shownMonth );
+          dayLabel.toggleState( "today", isToday );
 
           dayLabel.setText("" + dayOfMonth);
           dayLabel.dateTime = helpDate.getTime();

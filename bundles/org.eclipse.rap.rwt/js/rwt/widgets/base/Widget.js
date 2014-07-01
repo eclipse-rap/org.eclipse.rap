@@ -2851,27 +2851,35 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    hasState : function(vState) {
-      return this.__states && this.__states[vState] ? true : false;
+    hasState : function( state ) {
+      return this.__states && this.__states[ state ] ? true : false;
     },
 
-    addState : function(vState) {
-      if (!this.__states) {
+    toggleState : function( state, add ) {
+      if( add ) {
+        this.addState( state );
+      } else {
+        this.removeState( state );
+      }
+    },
+
+    addState : function( state ) {
+      if( !this.__states ) {
         this.__states = {};
       }
-      if (!this.__states[vState]) {
-        this.__states[vState] = true;
-        if (this._hasParent) {
-          rwt.widgets.base.Widget.addToGlobalStateQueue(this);
+      if( !this.__states[ state ] ) {
+        this.__states[ state ] = true;
+        if( this._hasParent ) {
+          rwt.widgets.base.Widget.addToGlobalStateQueue( this );
         }
       }
     },
 
-    removeState : function(vState) {
-      if (this.__states && this.__states[vState]) {
-        delete this.__states[vState];
-        if (this._hasParent) {
-          rwt.widgets.base.Widget.addToGlobalStateQueue(this);
+    removeState : function( state ) {
+      if( this.__states && this.__states[ state ] ) {
+        delete this.__states[ state ];
+        if( this._hasParent ) {
+          rwt.widgets.base.Widget.addToGlobalStateQueue( this );
         }
       }
     },
@@ -3097,20 +3105,18 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////////////
     // ENABLE/DISABLE SUPPORT
 
-    _applyEnabled : function(value, old) {
-      if (value===false) {
-        this.addState("disabled");
+    _applyEnabled : function( value, old ) {
+      this.toggleState( "disabled", value === false );
+      if( value === false) {
         // Also reset some states to be sure a pressed/hovered button gets reset
-        this.removeState("over");
-        if (rwt.qx.Class.isDefined("rwt.widgets.base.Button")) {
-          this.removeState("abandoned");
-          this.removeState("pressed");
+        this.removeState( "over" );
+        if( rwt.qx.Class.isDefined( "rwt.widgets.base.Button" ) ) {
+          this.removeState( "abandoned" );
+          this.removeState( "pressed" );
         }
         if( this.getFocused() ) {
           this.setFocused( false );
         }
-      } else {
-        this.removeState("disabled");
       }
     },
 

@@ -127,11 +127,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
     },
 
     setGrayed : function( value ) {
-      if( value ) {
-        this.addState( "grayed" );
-      } else {
-        this.removeState( "grayed" );
-      }
+      this.toggleState( "grayed", value );
     },
 
     setNoRadioGroup : function( value ) {
@@ -159,11 +155,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       var selectionChanged = this._selected != value;
       if( selectionChanged ) {
         this._selected = value;
-        if( this._selected ) {
-          this.addState( "selected" );
-        } else {
-          this.removeState( "selected" );
-        }
+        this.toggleState( "selected", value );
         if( !rwt.remote.EventUtil.getSuspended() ) {
           var server = rwt.remote.Connection.getInstance();
           server.getRemoteObject( this ).set( "selection", this._selected );

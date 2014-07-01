@@ -117,11 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       this._mapItems( function( item ) {
         item.setTabPosition( tabPosition );
       } );
-      if( tabPosition == "top" ) {
-        this._body.addState( "barTop" );
-      } else {
-        this._body.removeState( "barTop" );
-      }
+      this._body.toggleState( "barTop", tabPosition == "top" );
       this._updateLayout();
     },
 
@@ -207,11 +203,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     },
 
     setBorderVisible : function( visible ) {
-      if( visible ) {
-        this.addState( "rwt_BORDER" );
-      } else {
-        this.removeState( "rwt_BORDER" );
-      }
+      this.toggleState( "rwt_BORDER", visible );
       this._updateLayout();
     },
 

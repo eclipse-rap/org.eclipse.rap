@@ -126,11 +126,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     _updateSelectedItemState : function() {
       var selectedItems = this._manager.getSelectedItems();
       for( var i = 0; i < selectedItems.length; i++ ) {
-        if( this.getFocused() ) {
-          selectedItems[ i ].removeState( "parent_unfocused" );
-        } else {
-          selectedItems[ i ].addState( "parent_unfocused" );
-        }
+        selectedItems[ i ].toggleState( "parent_unfocused", !this.getFocused() );
       }
     },
 

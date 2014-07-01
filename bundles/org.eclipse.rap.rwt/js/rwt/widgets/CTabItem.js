@@ -75,11 +75,10 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
   },
 
   statics : {
-    STATE_OVER : "over",
-    STATE_SELECTED : "selected",
 
     IMG_CLOSE : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/close.gif",
     IMG_CLOSE_HOVER : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/close_hover.gif"
+
   },
 
   members : {
@@ -115,21 +114,13 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     setTabPosition : function( tabPosition ) {
-      if( tabPosition === "top" ) {
-        this.addState( "barTop" );
-      } else {
-        this.removeState( "barTop" );
-      }
+      this.toggleState( "barTop", tabPosition === "top" );
     },
 
     setSelected : function( selected ) {
       if( this._selected !== selected ) {
         this._selected = selected;
-        if( selected ) {
-          this.addState( rwt.widgets.CTabItem.STATE_SELECTED );
-        } else {
-          this.removeState( rwt.widgets.CTabItem.STATE_SELECTED );
-        }
+        this.toggleState( "selected", selected );
         this._updateNextSelected();
         this.updateForeground();
         this.updateBackground();
@@ -222,26 +213,24 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     updateCloseButton : function() {
       var visible = false;
       if( this._canClose || this._showClose ) {
-        visible
-          =  this.isSelected()
-          || (    this._parent.getUnselectedCloseVisible()
-               && this.hasState( rwt.widgets.CTabItem.STATE_OVER ) );
+        visible =  this.isSelected()
+                || ( this._parent.getUnselectedCloseVisible() && this.hasState( "over" ) );
       }
       this._closeButton.setVisibility( visible );
     },
 
     _onMouseOver : function( evt ) {
-      this.addState( rwt.widgets.CTabItem.STATE_OVER );
+      this.addState( "over" );
       if( evt.getTarget() == this._closeButton ) {
-        this._closeButton.addState( rwt.widgets.CTabItem.STATE_OVER );
+        this._closeButton.addState( "over" );
       }
       this.updateCloseButton();
     },
 
     _onMouseOut : function( evt ) {
-      this.removeState( rwt.widgets.CTabItem.STATE_OVER );
+      this.removeState( "over" );
       if( evt.getTarget() == this._closeButton ) {
-        this._closeButton.removeState( rwt.widgets.CTabItem.STATE_OVER );
+        this._closeButton.removeState( "over" );
       }
       this.updateCloseButton();
     },
@@ -277,11 +266,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onChangeLeft : function( evt ) {
-      if( this.getLeft() === 0 ) {
-        this.addState( "firstItem" );
-      } else {
-        this.removeState( "firstItem" );
-      }
+      this.toggleState( "firstItem", this.getLeft() === 0 );
     }
   }
 } );

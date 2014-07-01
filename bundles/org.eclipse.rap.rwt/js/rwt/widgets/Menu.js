@@ -274,10 +274,8 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         } else {
           this._hoverNextItem();
         }
-        this.removeState( "hoverFristItem" );
-      } else {
-        this.addState( "hoverFristItem" );
       }
+      this.toggleState( "hoverFristItem", !this._isDisplayable || this._itemsHiddenFlag );
     },
 
     _hoverNextItem : function() {

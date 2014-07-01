@@ -384,11 +384,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       if( this._inputElement ) {
         this._inputElement.readOnly = value;
       }
-      if( value ) {
-        this.addState( "readonly" );
-      } else {
-        this.removeState( "readonly" );
-      }
+      this.toggleState( "readonly", value );
     },
 
     _renderTextColor : function() {
