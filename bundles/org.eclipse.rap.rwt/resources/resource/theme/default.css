@@ -766,7 +766,6 @@ ProgressBar-Indicator {
     from( #5882b5 ),
     to( #416693 )
   );
-  border: none;
   opacity: 1;
 }
 

@@ -57,9 +57,6 @@
       <property name="background-image"
           description="Background image for progress indicator. Gradient supported." />
 
-      <property name="border"
-          description="The separator-line at the right/top of the indicator. Supports only solid borders" />
-
       <property name="opacity"
           description="The opacity of the indicator. A value between 0 and 1." />
 

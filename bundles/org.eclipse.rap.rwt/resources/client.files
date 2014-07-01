@@ -34,15 +34,17 @@ rwt/remote/handler/DisplayHandler.js
 rwt/graphics/GraphicsUtil.js
 rwt/widgets/util/OverStateMixin.js
 rwt/widgets/util/HtmlAttributesMixin.js
+rwt/widgets/util/WidgetUtil.js
+rwt/html/Style.js
+rwt/html/Scroll.js
+rwt/html/StyleSheet.js
+rwt/util/RWTQuery.js
 rwt/widgets/base/Widget.js
 rwt/widgets/util/WidgetRenderAdapter.js
 rwt/animation/AnimationRenderer.js
 rwt/animation/Animation.js
 rwt/animation/AnimationUtil.js
 rwt/animation/VisibilityAnimationMixin.js
-rwt/html/Style.js
-rwt/html/Scroll.js
-rwt/html/StyleSheet.js
 rwt/widgets/base/Parent.js
 rwt/event/FocusEvent.js
 rwt/event/EventHandler.js
@@ -129,7 +131,6 @@ rwt/widgets/util/ToolTipConfig.js
 rwt/widgets/base/WidgetToolTip.js
 rwt/widgets/util/GraphicsMixin.js
 rwt/graphics/SVG.js
-rwt/widgets/util/WidgetUtil.js
 rwt/theme/ThemeStore.js
 rwt/remote/handler/ThemeStoreHandler.js
 rwt/widgets/base/MultiCellWidget.js
@@ -260,7 +261,6 @@ rwt/scripting/EventProxy.js
 rwt/scripting/FunctionFactory.js
 rwt/scripting/CompositeProxy.js
 rwt/scripting/Synchronizer.js
-rwt/util/RWTQuery.js
 rwt/scripting/WidgetProxyFactory.js
 rwt/remote/handler/FunctionHandler.js
 rwt/widgets/util/Template.js

@@ -686,7 +686,6 @@ ProgressBar {
 ProgressBar-Indicator {
   background-color: #00589f;
   background-image: none;
-  border: none;
   opacity: 1;
 }
 

@@ -75,8 +75,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
           rwt.qx.Class.patch( rwt.widgets.base.BasicText, rwt.widgets.util.GraphicsMixin );
           rwt.qx.Class.patch( rwt.widgets.base.GridRow, rwt.widgets.util.GraphicsMixin );
           rwt.qx.Class.patch( rwt.widgets.base.MultiCellWidget, rwt.widgets.util.GraphicsMixin );
-        } else {
-          rwt.qx.Class.patch( rwt.widgets.ProgressBar, rwt.widgets.util.GraphicsMixin );
         }
       }
     },
