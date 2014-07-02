@@ -619,6 +619,36 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       folder.destroy();
     },
 
+    testShowCloseButton_onMouseOver : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item0 = this._createCTabItemByProtocol( "w4", "w3" );
+      var item1 = this._createCTabItemByProtocol( "w5", "w3" );
+      folder.setUnselectedCloseVisible( true );
+      item0.setSelected( true );
+      item1.setShowClose( true );
+      TestUtil.flush();
+
+      TestUtil.mouseOver( item1 );
+
+      assertNotNull( item1.getCellContent( 2 ) );
+      folder.destroy();
+    },
+
+    testHideCloseButton_onMouseOut : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item0 = this._createCTabItemByProtocol( "w4", "w3" );
+      var item1 = this._createCTabItemByProtocol( "w5", "w3" );
+      folder.setUnselectedCloseVisible( true );
+      item0.setSelected( true );
+      item1.setShowClose( true );
+      TestUtil.flush();
+
+      TestUtil.mouseOut( item1 );
+
+      assertNull( item1.getCellContent( 2 ) );
+      folder.destroy();
+    },
+
     /////////
     // Helper
 

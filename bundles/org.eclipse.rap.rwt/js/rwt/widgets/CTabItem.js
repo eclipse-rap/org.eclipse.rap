@@ -14,8 +14,6 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
 
   extend : rwt.widgets.base.MultiCellWidget,
 
-  include : rwt.widgets.util.OverStateMixin,
-
   construct : function( parent, canClose ) {
     this.base( arguments, [ "image", "label", "image" ] );
     this._parent = parent;
@@ -198,10 +196,14 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     },
 
     _onElementOver : function( event ) {
+      this.addState( "over" );
       this.updateCloseButton( this._isCloseButtonTarget( event ) );
     },
 
     _onElementOut : function( event ) {
+      if( event.getDomTarget() === this.getElement() ) {
+        this.removeState( "over" );
+      }
       this.updateCloseButton( false );
     },
 
