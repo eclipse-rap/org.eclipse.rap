@@ -618,10 +618,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row._getTargetNode().childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
 
-      if( rwt.client.Client.isMshtml() ) {
-        assertTrue( url.indexOf( "http" ) === 0 );
-      }
-      if( rwt.client.Client.isMshtml() || rwt.client.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() ) {
         assertTrue( url.indexOf( "single.gif" ) !== -1 );
       } else {
         assertEquals( "single.gif", url );
@@ -2489,7 +2486,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testSelectionBackgroundRendering_Bug373900 : rwt.util.Variant.select( "qx.client", {
-      "mshtml|trident" : function() {
+      "trident" : function() {
         TestUtil.fakeAppearance( "tree-row", {
           style : function( states ) {
             var result = {};

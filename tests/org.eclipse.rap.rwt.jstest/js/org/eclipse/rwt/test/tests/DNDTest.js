@@ -798,10 +798,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      if( rwt.client.Client.getEngine() != "mshtml" ) {
-        // TODO [tb] : does not succeed in IE unless the debugger is running
-        assertNull( indicator.parentNode );
-      }
+      assertNull( indicator.parentNode );
     },
 
     testTreeInsertBeforeIndicator : function() {
@@ -845,10 +842,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       TestUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      if( rwt.client.Client.getEngine() != "mshtml" ) {
-        // TODO [tb] : does not succeed in IE unless the debugger is running
-        assertNull( indicator.parentNode );
-      }
+      assertNull( indicator.parentNode );
     },
 
     testTreeFeedbackSelect : function() {

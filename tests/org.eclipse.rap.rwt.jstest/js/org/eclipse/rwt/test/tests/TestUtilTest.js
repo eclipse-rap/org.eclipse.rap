@@ -529,7 +529,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.press( widget, "Enter" );
       var expected = rwt.util.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
-        "mshtml|opera|trident" : [ 13, undefined ],
+        "opera|trident" : [ 13, undefined ],
         "default" : [ 13, 0 ]
       } );
       assertEquals( expected, log );
@@ -619,10 +619,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       }
     ],
 
-    // NOTE : This test randomly fails in old IE due to very bad timer accuaracy.
-    //        Possibly connected to test order. Test succeeds when choosing larger timespans,
-    //        but this would make it less meaningful on other browser.
-    testDelayTest : rwt.client.Client.isMshtml() ? null : [
+    testDelayTest : [
       // NOTE: accuarcy of timeout is about 16-32 ms
       function() {
         var store = {

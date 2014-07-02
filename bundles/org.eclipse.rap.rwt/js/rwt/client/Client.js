@@ -75,11 +75,6 @@ rwt.client.Client = {
     return this._engineVersionBuild;
   },
 
-  // TODO [tb] : To be removed before 3.0
-  isMshtml : function() {
-    return this._engineName === "mshtml";
-  },
-
   isTrident : function() {
     return this._engineName === "trident";
   },

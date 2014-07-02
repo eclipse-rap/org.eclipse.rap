@@ -512,7 +512,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testTextAreaMaxLength : rwt.util.Variant.select( "qx.client", {
-      "mshtml|webkit" : function() {
+      "webkit" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
         // prevents a textFields value from being overwritten and read in the
         // same call. In webkit it seems to fail randomly aswell.
@@ -596,17 +596,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.destroy();
     },
 
-    testFirstInputIE : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {},
-      "mshtml" : function() {
-        createText( true, true );
-        TestUtil.flush();
-        assertEquals( " ", text._inputElement.value );
-        TestUtil.forceTimerOnce();
-        assertEquals( "", text._inputElement.value );
-        }
-    } ),
-
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=434311
     // Note [if]: IE8 fires onpropertychange event for "value" property even it's not changed.
     // In some cases IE8 fires such event when setting readOnly property.
@@ -621,27 +610,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       assertEquals( 0, logger.getLog().length );
     },
-
-    testBoxShadowAndNonRoundedBorder : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {},
-      "mshtml" : function() {
-          TestUtil.fakeAppearance( "text-field", {
-          "style" : function( states ) {
-            return {
-              "shadow" : [ false, 0, 0, 0, 0, "red", 0 ],
-              "border" : new Border( 3, "solid", "green" )
-            };
-          }
-        } );
-        createText();
-        var border = text.getBorder();
-        assertEquals( 3, border.getWidthTop() );
-        assertEquals( "rounded", border.getStyle() );
-        assertEquals( "green", border.getColor() );
-        assertEquals( [ 0, 0, 0, 0 ], border.getRadii() );
-        TestUtil.restoreAppearance();
-      }
-    } ),
 
     testSetFontLineHeight : function() {
       createText();
@@ -911,7 +879,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var style = text._getTargetNode().firstChild.style;
       assertEquals( "absolute", style.position );
       assertEquals( "hidden", style.overflow );
-      if( !Client.isMshtml() && !Client.isTrident() ) {
+      if( !Client.isTrident() ) {
         assertTrue( style.outline.indexOf( "none" ) !== -1 );
       }
     },
@@ -1409,9 +1377,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       TestUtil.flush();
 
       var textHeight= text.getInputElement().offsetHeight;
-      if( Client.isMshtml() ) {
-        textHeight -= 2;
-      }
       var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
       assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
       if( Client.isTrident() ) {
@@ -1445,18 +1410,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       // Bug 427828 - [Text] Loses focus on click in IE8
       // Bug 422974 - [Text] Multi-Line Text with border-radius not focusable by mouse in IE9
-      var expected = Client.isMshtml() || Client.isTrident() && Client.getVersion() === 9;
-      assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
-    },
-
-    testSetInputBackgroundImage : function() {
-      createText( false, false );
-
-      var element = text._getTargetNode().firstChild;
-      var image = TestUtil.getCssBackgroundImage( element );
-
-      // Bug 427828 - [Text] Loses focus on click in IE8
-      var expected = Client.isMshtml();
+      var expected = Client.isTrident() && Client.getVersion() === 9;
       assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
     },
 

@@ -106,57 +106,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       shell.destroy();
     },
 
-    testCompositeBackgroundInitial : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        var composite = new rwt.widgets.Composite();
-        composite.setBackgroundColor( null );
-        composite.setBackgroundImage( null );
-        composite.addToDocument();
-        TestUtil.flush();
-        var image = composite._getTargetNode().style.backgroundImage;
-        assertTrue( image.indexOf( "blank.gif" ) != -1 );
-        composite.destroy();
-        TestUtil.flush();
-      },
-      "default" : function(){}
-    } ),
-
-    testCompositeBackgroundFromColor : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        var composite = new rwt.widgets.Composite();
-        composite.setBackgroundColor( "green" );
-        composite.setBackgroundImage( null );
-        composite.addToDocument();
-        TestUtil.flush();
-        var image = composite._getTargetNode().style.backgroundImage;
-        assertTrue( "" === image || "none" === image );
-        composite.setBackgroundColor( null );
-        image = composite._getTargetNode().style.backgroundImage;
-        assertTrue( image.indexOf( "blank.gif" ) != -1 );
-        composite.destroy();
-        TestUtil.flush();
-      },
-      "default" : function(){}
-    } ),
-
-    testCompositeBackgroundFromImage : rwt.util.Variant.select( "qx.client", {
-      "mshtml" : function() {
-        var composite = new rwt.widgets.Composite();
-        composite.setBackgroundColor( null );
-        composite.setBackgroundImage( "bla.jpg" );
-        composite.addToDocument();
-        TestUtil.flush();
-        var image = composite._getTargetNode().style.backgroundImage;
-        assertTrue( image.indexOf( "bla.jpg" ) != -1 );
-        composite.setBackgroundImage( null );
-        image = composite._getTargetNode().style.backgroundImage;
-        assertTrue( image.indexOf( "blank.gif" ) != -1 );
-        composite.destroy();
-        TestUtil.flush();
-      },
-      "default" : function(){}
-    } ),
-
     testMouseOver : function() {
       var composite = new rwt.widgets.Composite();
       composite.addToDocument();

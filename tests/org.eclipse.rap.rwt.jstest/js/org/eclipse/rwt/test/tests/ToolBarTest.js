@@ -400,26 +400,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
     },
 
-    testDropDownLayoutBug : function() {
-      if( rwt.client.Client.isMshtml() ) {
-        var item = new rwt.widgets.ToolItem( "dropDown" );
-        item.setLeft( 100 );
-        item.setTop( 100 );
-        item.setWidth( 100 );
-        item.setHeight( 100 );
-        item.setText( "hallo" );
-        item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
-        item.addToDocument();
-        rwt.widgets.base.Widget.flushGlobalQueues();
-        var down = item.getCellNode( 4 );
-        assertEquals( "0px", down.style.lineHeight );
-        TestUtil.hoverFromTo( document.body, item.getElement() );
-        rwt.widgets.base.Widget.flushGlobalQueues();
-        assertEquals( "0px", down.style.lineHeight );
-        item.destroy();
-      }
-    },
-
     testDropDownLineHeight : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
       item.setText( "hallo" );

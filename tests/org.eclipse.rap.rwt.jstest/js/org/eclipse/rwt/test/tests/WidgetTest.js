@@ -34,68 +34,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.destroy();
     },
 
-    testRenderNormalBorderAfterComplexBorder : function() {
-      if( rwt.client.Client.isMshtml() ) {
-        var widget = this._createWidget();
-        widget.setBorder( this._getComplexBorder() );
-        TestUtil.flush();
-        widget.setBorder( new rwt.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
-        TestUtil.flush();
-
-        var target = widget._getTargetNode();
-        var bounds = TestUtil.getElementBounds( target );
-
-        assertEquals( 0, bounds.left );
-        assertEquals( 0, bounds.top );
-        assertEquals( 0, bounds.right );
-        assertEquals( 0, bounds.bottom );
-
-        widget.destroy();
-      }
-    },
-
-    testRenderTooBigNormalBorderAfterComplexBorder : function() {
-      if( rwt.client.Client.isMshtml() ) {
-        var widget = this._createWidget();
-        widget.setWidth( 6 );
-        widget.setBorder( this._getComplexBorder() );
-        TestUtil.flush();
-        widget.setBorder( new rwt.html.Border( [ 5, 6, 7, 8 ], "solid", "black" ) );
-        TestUtil.flush();
-
-        var target = widget._getTargetNode();
-        var bounds = TestUtil.getElementBounds( target );
-
-        assertEquals( 0, bounds.left );
-        assertEquals( 0, bounds.top );
-        assertEquals( 0, bounds.width );
-        assertEquals( 0, bounds.bottom );
-
-        widget.destroy();
-      }
-    },
-
     testLayoutTargetNodeWithNoBorder : function() {
       var widget = this._createWidget();
       widget.prepareEnhancedBorder();
       TestUtil.flush();
       var targetNode = widget._getTargetNode();
-      var isMshtml = rwt.client.Client.isMshtml();
-      if( isMshtml ) {
-        var bounds = TestUtil.getElementBounds( targetNode );
-        var expected = {
-          "top" : 0,
-          "left" : 0,
-          "width" : 100,
-          "height" : 100,
-          "bottom" : 0,
-          "right" : 0
-        };
-        assertEquals( expected, bounds );
-      } else {
-        assertEquals( "100%", targetNode.style.width );
-        assertEquals( "100%", targetNode.style.height );
-      }
+      assertEquals( "100%", targetNode.style.width );
+      assertEquals( "100%", targetNode.style.height );
       widget.destroy();
     },
 
@@ -106,22 +51,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.prepareEnhancedBorder();
       TestUtil.flush();
       var targetNode = widget._getTargetNode();
-      var isMshtml = rwt.client.Client.isMshtml();
-      if( isMshtml ) {
-        var bounds = TestUtil.getElementBounds( targetNode );
-        var expected = {
-          "top" : 0,
-          "left" : 0,
-          "width" : 98,
-          "height" : 98,
-          "bottom" : 0,
-          "right" : 0
-        };
-        assertEquals( expected, bounds );
-      } else {
-        assertEquals( "100%", targetNode.style.width );
-        assertEquals( "100%", targetNode.style.height );
-      }
+      assertEquals( "100%", targetNode.style.width );
+      assertEquals( "100%", targetNode.style.height );
       widget.destroy();
     },
 
@@ -753,11 +684,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.setHtmlAttribute( "foo", null );
 
       assertEquals( "", widget.getHtmlAttribute( "foo" ) );
-      if( rwt.client.Client.isMshtml() ) {
-        assertTrue( widget.getElement()[ "foo" ] === undefined );
-      } else {
-        assertFalse( widget.getElement().hasAttribute( "foo" ) );
-      }
+      assertFalse( widget.getElement().hasAttribute( "foo" ) );
       widget.destroy();
     },
 

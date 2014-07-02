@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,19 +59,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.JavaScriptLoaderTest", {
     },
 
     testLoad_addsOnLoadToScriptTagThatContinuesExecution : function() {
-      // NOTE : old IE can not be tested because they rely on "readyState", which can
-      // note be overwritten
-      if( !rwt.client.Client.isMshtml() ) {
-        load( [ "rwt-resource/myJS" ] );
-        var head = document.getElementsByTagName( "head" )[ 0 ];
-        var scriptEl = head.lastChild;
+      load( [ "rwt-resource/myJS" ] );
+      var head = document.getElementsByTagName( "head" )[ 0 ];
+      var scriptEl = head.lastChild;
 
-        scriptEl.onload();
+      scriptEl.onload();
 
-        assertFalse( MessageProcessor.isPaused() );
-        assertNull( scriptEl.onload );
-        head.removeChild( scriptEl ); // cleaning up
-      }
+      assertFalse( MessageProcessor.isPaused() );
+      assertNull( scriptEl.onload );
+      head.removeChild( scriptEl ); // cleaning up
     }
 
   }

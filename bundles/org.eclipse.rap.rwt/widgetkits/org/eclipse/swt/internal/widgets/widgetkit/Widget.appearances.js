@@ -176,23 +176,19 @@ var appearances = {
       result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
       result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
       result.textAlign = tv.getCssIdentifier( "Widget-ToolTip", "text-align" );
-      if( !rwt.client.Client.isMshtml() ) {
-        // NOTE : IE can not support opacity and visible overflow at the same time.
-        //        Supporting the older feature to avoid regressions.
-        var getPointer = function( direction ) {
-          var store = rwt.theme.ThemeStore.getInstance();
-          var states = {};
-          states[ direction ] = true;
-          var result = store.getSizedImage( "Widget-ToolTip-Pointer", states, "background-image" );
-          return result[ 0 ] ? result : null;
-        }
-        result.pointers = [
-          getPointer( "up" ),
-          getPointer( "right" ),
-          getPointer( "down" ),
-          getPointer( "left" )
-        ];
+      var getPointer = function( direction ) {
+        var store = rwt.theme.ThemeStore.getInstance();
+        var states = {};
+        states[ direction ] = true;
+        var result = store.getSizedImage( "Widget-ToolTip-Pointer", states, "background-image" );
+        return result[ 0 ] ? result : null;
       }
+      result.pointers = [
+        getPointer( "up" ),
+        getPointer( "right" ),
+        getPointer( "down" ),
+        getPointer( "left" )
+      ];
       return result;
     }
   }

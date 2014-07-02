@@ -55,13 +55,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertTrue( widget.isDisposed() );
       assertNull( widget._formElement );
       assertNull( widget._inputElement );
-      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
-      if( isMshtml ) {
-        // IE disposes with delay
-        assertEquals( "javascript:false;", iframe.getSource() );
-      } else {
-        assertTrue( iframe.isDisposed() );
-      }
+      assertTrue( iframe.isDisposed() );
       shell.destroy();
     },
 
@@ -125,13 +119,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       assertTrue( upload.isDisposed() );
       assertNull( upload._formElement );
       assertNull( upload._inputElement );
-      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
-      if( isMshtml ) {
-        // IE disposes with delay
-        assertEquals( "javascript:false;", iframe.getSource() );
-      } else {
-        assertTrue( iframe.isDisposed() );
-      }
+      assertTrue( iframe.isDisposed() );
     },
 
     testText : function() {
@@ -186,10 +174,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       var form = upload._formElement;
       assertEquals( "POST", form.getAttribute( "method" ).toUpperCase() );
       assertEquals( "multipart/form-data", form.getAttribute( "enctype" ) );
-      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
-      if( isMshtml ) {
-        assertEquals( "multipart/form-data", form.getAttribute( "encoding" ) );
-      }
       var input = upload._inputElement;
       assertEquals( "file", input.getAttribute( "name" ) ); // Make custom?
       assertEquals( "file", input.getAttribute( "type" ) );

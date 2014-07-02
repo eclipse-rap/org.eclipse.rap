@@ -49,13 +49,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 100, vBounds.height );
       assertEquals( 10, vBounds.width );
       assertEquals( 10, hBounds.height );
-      var isMshtml = rwt.util.Variant.isSet( "qx.client", "mshtml" );
-      if( isMshtml ) {
-        var hTargetBounds = TestUtil.getElementBounds( hBar._getTargetNode() );
-        var vTargetBounds = TestUtil.getElementBounds( vBar._getTargetNode() );
-        assertEquals( 10, vTargetBounds.width );
-        assertEquals( 10, hTargetBounds.height );
-      }
       hBar.destroy();
       vBar.destroy();
     },

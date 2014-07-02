@@ -155,29 +155,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       "default" : null
     } ),
 
-    testDoubleClickWithRightMouseButton : rwt.util.Variant.select( "qx.client", {
-      "default" : function() {
-        var widget = this.createDefaultWidget();
-        var node = widget._getTargetNode();
-        var log = [];
-        var handler = function( event ) {
-          log.push( event.getType() );
-        };
-        widget.addEventListener( "dblclick", handler );
-        var right = rwt.event.MouseEvent.buttons.right;
-        TestUtil.fakeMouseEventDOM( node, "mousedown", right );
-        TestUtil.fakeMouseEventDOM( node, "mouseup", right );
-        TestUtil.fakeMouseEventDOM( node, "click", right );
-        TestUtil.fakeMouseEventDOM( node, "mousedown", right );
-        TestUtil.fakeMouseEventDOM( node, "mouseup", right );
-        TestUtil.fakeMouseEventDOM( node, "click", right );
-        TestUtil.fakeMouseEventDOM( node, "dblclick", right );
-        var expected = [];
-        assertEquals( expected, log );
-        widget.destroy();
-      },
-      "mshtml" : null
-    } ),
+    testDoubleClickWithRightMouseButton : function() {
+      var widget = this.createDefaultWidget();
+      var node = widget._getTargetNode();
+      var log = [];
+      var handler = function( event ) {
+        log.push( event.getType() );
+      };
+      widget.addEventListener( "dblclick", handler );
+      var right = rwt.event.MouseEvent.buttons.right;
+      TestUtil.fakeMouseEventDOM( node, "mousedown", right );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", right );
+      TestUtil.fakeMouseEventDOM( node, "click", right );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", right );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", right );
+      TestUtil.fakeMouseEventDOM( node, "click", right );
+      TestUtil.fakeMouseEventDOM( node, "dblclick", right );
+      var expected = [];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
 
 //    testMissingMouseUp : function() {
 //      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;

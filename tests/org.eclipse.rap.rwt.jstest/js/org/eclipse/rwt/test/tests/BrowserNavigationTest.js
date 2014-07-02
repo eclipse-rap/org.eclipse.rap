@@ -55,9 +55,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserNavigationTest", {
 
       this._addEntryByProtocol( "id1/foo", "text1" );
 
-      if( !rwt.client.Client.isMshtml() ) {
-        assertEquals( "#id1/foo", window.location.hash );
-      }
+      assertEquals( "#id1/foo", window.location.hash );
     },
 
     testSendNavigated : [

@@ -260,10 +260,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
     var clientX = left;
     var clientY = top;
-    if( rwt.client.Client.getEngine() == "mshtml" ) {
-      clientX -= rwt.html.Viewport.getScrollLeft( window );
-      clientY -= rwt.html.Viewport.getScrollTop( window );
-    }
     var which = null;
     switch( button ) {
       case rwt.event.MouseEvent.buttons.left:

@@ -533,11 +533,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
       var label = this._getColumnLabel( tree, column );
       assertEquals( "", label.getHtmlAttribute( "foo" ) );
-      if( rwt.client.Client.isMshtml() ) {
-        assertTrue( label.getElement()[ "foo" ] === undefined );
-      } else {
-        assertFalse( label.getElement().hasAttribute( "foo" ) );
-      }
+      assertFalse( label.getElement().hasAttribute( "foo" ) );
       tree.destroy();
     },
 

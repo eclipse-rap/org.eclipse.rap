@@ -852,10 +852,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
                   || position == "center 50%"
                   || position == "50% 50%" );
       assertEquals( "no-repeat", element.firstChild.style.backgroundRepeat );
-      if( !rwt.client.Client.isMshtml() ) {
-        var opacity = element.firstChild.style.opacity;
-        assertTrue( opacity === "1" || opacity === "" );
-      }
+      var opacity = element.firstChild.style.opacity;
+      assertTrue( opacity === "1" || opacity === "" );
     },
 
     testDefaultImageRenderer_RenderImageDisabled : function() {
@@ -866,10 +864,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
       var image = TestUtil.getCssBackgroundImage( element.firstChild );
       assertTrue( image.indexOf( "foo.jpg" ) != -1 );
-      if( !rwt.client.Client.isMshtml() ) {
-        var opacity = element.firstChild.style.opacity;
-        assertTrue( opacity === "0.3" );
-      }
+      assertEquals( "0.3", element.firstChild.style.opacity );
     },
 
     testDefaultImageRenderer_RenderNullItemClearsContent : function() {

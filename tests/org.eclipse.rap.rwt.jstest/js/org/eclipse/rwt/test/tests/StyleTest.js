@@ -79,8 +79,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       TestUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
-      var isMshtml = Client.isMshtml() || Client.isTrident();
-      if( isMshtml && Client.getMajor() < 10 ) {
+      if( Client.isTrident() && Client.getMajor() < 10 ) {
         assertFalse( css.indexOf( "text-shadow:" ) !== -1 );
       } else {
         assertTrue( css.indexOf( "text-shadow:" ) !== -1 );
@@ -98,10 +97,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       Style.setBackgroundImage( el, "foo.png" );
 
       var actual = TestUtil.getCssBackgroundImage( el );
-      if( Client.isMshtml() ) {
-        assertTrue( actual.indexOf( "http" ) === 0 );
-      }
-      if( Client.isMshtml() || Client.isWebkit() ) {
+      if( Client.isWebkit() ) {
         assertTrue( actual.indexOf( "foo.png" ) !== -1 );
       } else {
         assertEquals( "foo.png", actual );

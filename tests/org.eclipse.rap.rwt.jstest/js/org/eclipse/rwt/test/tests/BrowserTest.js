@@ -462,9 +462,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser );
       },
       function( browser ) {
-        if( !rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
-          assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
-        }
+        assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
         assertNull( TestUtil.getErrorPage() );
         browser.destroy();
       }
@@ -486,12 +484,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         TestUtil.store( browser );
       },
       function( browser ) {
-        // NOTE: Some IE dont fire a load event for this scenario,
-        //       therefore can not check that side is loaded,
-        //       could lead to false negative (red) test
-        if( !rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
-          assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
-        }
+        assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
         var error = null;
         try{
           browser.createFunction( "abc" );
@@ -663,12 +656,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( iframe.parentNode === el );
         wm.dispose( "w6" );
         TestUtil.flush();
-        if( rwt.util.Variant.isSet( "qx.client", "mshtml" ) ) {
-          assertEquals( "javascript:false;", browser.getSource() );
-          assertFalse( browser.isDisposed() );
-          assertIdentical( TestUtil.getDocument(), browser.getParent() );
-          assertTrue( browser.isSeeable() );
-        }
         assertTrue( wm.findWidgetById( "w6" ) == null ); /* may be undefined */
         TestUtil.delayTest( 2000 );
         TestUtil.store( browser, el, iframe );
