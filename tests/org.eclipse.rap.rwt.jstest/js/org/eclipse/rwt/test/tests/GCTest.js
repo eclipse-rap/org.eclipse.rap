@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,37 +92,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.destroy();
       shell.destroy();
     },
-
-//    TODO [tb] : a bug in theory, but apparently not reproduceable in actual RAP application
-//
-//    testHandleOnAppear : rwt.util.Variant.select( "qx.client", {
-//      "default" : function() {},
-//      "mshtml" : function() {
-//        var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//        var graphicsUtil = rwt.graphics.GraphicsUtil;
-//        var border = new rwt.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
-//        var parent = new rwt.widgets.Composite();
-//        parent.addToDocument();
-//        var canvas = new rwt.widgets.Composite();
-//        canvas.setDimension( 300, 300 );
-//        canvas.setParent( parent );
-//        var log = [];
-//        var orgAppear = graphicsUtil.handleAppear;
-//        graphicsUtil.handleAppear = function( canvas ) {
-//          log.push( canvas );
-//        };
-//        TestUtil.flush();
-//        assertEquals( 1, log.length );
-//        canvas.setBorder( border );
-//        TestUtil.flush();
-//        assertEquals( 2, log.length );
-//        parent.setBorder( border );
-//        TestUtil.flush();
-//        assertEquals( 3, log.length );
-//        graphicsUtil.handleAppear = orgAppear;
-//        canvas.destroy();
-//      }
-//    } ),
 
     testCreateGCBeforeControl : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;

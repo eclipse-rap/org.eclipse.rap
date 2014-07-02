@@ -163,35 +163,14 @@ rwt.client.Client = {
            || this.isMobileFirefox();
   },
 
-  supportsSvg : function() {
-    // NOTE: IE9 supports SVG, but not in quirksmode.
-    var engine = rwt.client.Client.getEngine();
-    var version = rwt.client.Client.getVersion();
-    var result =    engine === "gecko" && version >= 1.8
-                 || engine === "webkit" && version >= 523
-                 || engine === "opera" && version >= 9
-                 || engine === "trident";
-    if( this.isAndroidBrowser() ) {
-      result = version >= 534; // only Android 3+ supports SVG
-    }
-    if( !result ) {
-      try {
-        result = document.implementation.hasFeature( "http://www.w3.org/TR/SVG11/feature#Shape",
-                                                     "1.0" );
-      } catch( ex ) {
-      }
-    }
-    return result;
-  },
-
   // NOTE: This returns true if the browser sufficiently implements
-  // border-radius, drop-shadow and linear-gradient. IE9 and opera (currently) ignored.
+  // border-radius, drop-shadow and linear-gradient.
   supportsCss3 : function() {
     var engine = rwt.client.Client.getEngine();
     var version = rwt.client.Client.getVersion();
     var result =    engine === "webkit" && version >= 522
                  || engine === "gecko" && version >= 2 // firefox 4+
-                 || engine === "trident" && version >= 9; // IE10 +
+                 || engine === "trident" && version >= 9; // IE9+
     return result;
   },
 

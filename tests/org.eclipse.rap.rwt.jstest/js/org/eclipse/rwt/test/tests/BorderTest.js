@@ -294,7 +294,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRenderRoundedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
@@ -319,7 +318,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRemoveRoundedBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
@@ -339,7 +337,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRemoveRadiiWithSimpleBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
@@ -357,7 +354,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRemoveRadiiWithComplexBorder : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
         var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );

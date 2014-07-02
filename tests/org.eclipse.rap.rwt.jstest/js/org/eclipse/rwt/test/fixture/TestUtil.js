@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
@@ -82,7 +83,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   hasElementOpacity : function( node ) {
-    return node.style.cssText.search( /opacity/i  ) != -1;
+    return node.style.opacity !== "" && parseInt( node.style.opacity, 10 ) < 1;
   },
 
   getCssBackgroundImage : function( node ) {

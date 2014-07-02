@@ -3571,24 +3571,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyBorder : function( value, old ) {
       this._queueBorder( value );
-      if( value && value.getStyle() === "rounded" ) {
-        this._prepareGraphicsSupport();
-      }
     },
-
-    _prepareGraphicsSupport : ( function() {
-      var result;
-      if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
-        result = rwt.util.Functions.returnTrue;
-      } else {
-        result = function() {
-          if( !this._targetNodeEnabled && !this._isCreated ) {
-            this._targetNodeEnabled = true;
-          }
-        };
-      }
-      return result;
-    }() ),
 
     _queueBorder : function( value ) {
       this.addToQueue( "border" );

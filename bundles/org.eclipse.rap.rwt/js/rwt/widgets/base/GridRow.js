@@ -34,7 +34,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._overlayStyleMap = {};
     this._elementStyleCache = {};
     this._variant = null;
-    this._graphicsOverlay = null;
     this._expandElement = null;
     this._checkBoxElement = null;
     this._overlayElement = null;
@@ -51,7 +50,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
   destruct : function() {
     this._expandElement = null;
-    this._graphicsOverlay = null;
     this._checkBoxElement = null;
     this._treeColumnElements = null;
     this._cellLabels = null;
@@ -427,28 +425,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderOverlayGradient : function( element, gradient ) {
-      if( rwt.client.Client.supportsCss3() || !rwt.graphics.GraphicsUtil.isSupported() ) {
-        Style.setBackgroundGradient( element, gradient );
-      } else {
-        rwt.graphics.GraphicsUtil.setFillGradient( this._getOverlayShape(), gradient );
-      }
-    },
-
-    _getOverlayShape : function() {
-      if( !this._graphicsOverlay ) {
-        var GraphicsUtil = rwt.graphics.GraphicsUtil;
-        var canvas = GraphicsUtil.createCanvas();
-        var shape = GraphicsUtil.createShape( "roundrect" );
-        GraphicsUtil.addToCanvas( canvas, shape );
-        this._graphicsOverlay = {
-          "canvas" : canvas,
-          "shape" : shape
-        };
-        this._getTargetNode().replaceChild( canvas.node, this._overlayElement );
-        this._overlayElement = canvas.node;
-        this._overlayElement.style.zIndex = 2;
-      }
-      return this._graphicsOverlay.shape;
+      Style.setBackgroundGradient( element, gradient );
     },
 
     _layoutOverlay : function( item, config ) {
@@ -470,16 +447,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
       }
-      if( this._graphicsOverlay ) {
-        var GraphicsUtil = rwt.graphics.GraphicsUtil;
-        var shape = this._graphicsOverlay.shape;
-        element.style.left = left + "px";
-        element.style.top = "0px";
-        var radii = [ 0, 0, 0, 0 ];
-        GraphicsUtil.setRoundRectLayout( shape, 0, 0, width, height, radii );
-      } else {
-        this._setBounds( element, left, 0, width, height );
-      }
+      this._setBounds( element, left, 0, width, height );
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly ) {

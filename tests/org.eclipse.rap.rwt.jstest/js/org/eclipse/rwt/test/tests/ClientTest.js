@@ -55,14 +55,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
       assertTrue( platforms.indexOf( currentPlatform ) != -1 );
     },
 
-    testGraphicsSupport : function() {
-      var svg = Client.supportsSvg();
-      var css3 = Client.supportsCss3();
-      assertEquals( "boolean", typeof svg );
-      assertEquals( "boolean", typeof css3 );
-      assertTrue( "Theming support", svg || css3 );
-    },
-
     testSupportsFileDrop : function() {
       assertTrue( typeof rwt.client.Client.supportsFileDrop() === "boolean" );
     },

@@ -34,17 +34,9 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       window.addEventListener( "load", this._onloadWrapped, false );
       window.addEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
       window.addEventListener( "unload", this._onunloadWrapped, false );
-      rwt.graphics.GraphicsUtil.init();
-      this._applyPatches();
       rwt.event.EventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
       rwt.event.EventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
     }
-  },
-
-  events : {
-    "beforeunload" : "rwt.event.DomEvent",
-    "unload" : "rwt.event.Event",
-    "uiready" : "rwt.event.Event"
   },
 
   members : {
@@ -66,17 +58,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
 
     isSupported : function() {
       return this._isBrowserSupported() && this._isModeSupported() && this._isXHRSupported();
-    },
-
-    _applyPatches : function() {
-      if( rwt.graphics.GraphicsUtil.isSupported() ) {
-        if( !rwt.client.Client.supportsCss3() ) {
-          rwt.qx.Class.patch( rwt.widgets.base.Parent, rwt.widgets.util.GraphicsMixin );
-          rwt.qx.Class.patch( rwt.widgets.base.BasicText, rwt.widgets.util.GraphicsMixin );
-          rwt.qx.Class.patch( rwt.widgets.base.GridRow, rwt.widgets.util.GraphicsMixin );
-          rwt.qx.Class.patch( rwt.widgets.base.MultiCellWidget, rwt.widgets.util.GraphicsMixin );
-        }
-      }
     },
 
     getStartupTime : function() {

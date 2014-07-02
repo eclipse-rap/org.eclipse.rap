@@ -81,8 +81,6 @@ public class RWTTestsContribution implements TestContribution {
     "tests/ButtonTest.js",
     "tests/MenuTest.js",
     "tests/MenuBarTest.js",
-    "tests/GraphicsMixinTest.js",
-    "tests/SVGTest.js",
     "tests/TabFolderTest.js",
     "tests/CTabFolderTest.js",
     "tests/FileUploadTest.js",
