@@ -11,24 +11,23 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.CTabItem", {
-  extend : rwt.widgets.base.Atom,
+
+  extend : rwt.widgets.base.MultiCellWidget,
+
+  include : rwt.widgets.util.OverStateMixin,
 
   construct : function( parent, canClose ) {
-    this.base( arguments );
-    if( parent.classname != "rwt.widgets.CTabFolder" ) {
-      throw new Error( "illegal parent, must be a CTabFolder" );
-    }
+    this.base( arguments, [ "image", "label", "image" ] );
     this._parent = parent;
+    // TODO [rst] change when a proper state inheritance concept exists
+    if( parent.hasState( "rwt_BORDER" ) ) {
+      this.addState( "rwt_BORDER" );
+    }
     this.setAppearance( "ctab-item" );
     this.setVerticalChildrenAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( rwt.widgets.util.Layout.ALIGN_LEFT );
     this.setOverflow( "hidden" );
     this.setTabIndex( null );
-    // Set the label part to 'html mode'
-    this.setLabel( "(empty)" );
-    this.getLabelObject().setMode( "html" );
-    this.getLabelObject().setVerticalAlign( rwt.widgets.util.Layout.ALIGN_MIDDLE );
-    this.setLabel( "" );
     this._selected = false;
     this._showClose = false;
     this._rawText = null;
@@ -39,20 +38,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.updateBackgroundImage();
     this.updateBackgroundGradient();
     this.setTabPosition( parent.getTabPosition() );
-    // TODO [rst] change when a proper state inheritance concept exists
-    if( parent.hasState( "rwt_BORDER" ) ) {
-      this.addState( "rwt_BORDER" );
-    }
-    this._closeButton = new rwt.widgets.base.Image();
-    this._closeButton.setAppearance( "ctab-close-button" );
-    this._closeButton.setWidth( 20 );
-    this._closeButton.addEventListener( "click", this._onClose, this );
-    var wm = rwt.remote.WidgetManager.getInstance();
-    wm.setToolTip( this._closeButton, rwt.widgets.CTabFolder.CLOSE_TOOLTIP );
-    this.add( this._closeButton );
-    this.updateCloseButton();
-    this.addEventListener( "mouseover", this._onMouseOver, this );
-    this.addEventListener( "mouseout", this._onMouseOut, this );
+    this.updateCloseButton( false );
+    this.addEventListener( "elementOver", this._onElementOver, this );
+    this.addEventListener( "elementOut", this._onElementOut, this );
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "changeParent", this._onChangeParent, this );
@@ -60,17 +48,6 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
   },
 
   destruct : function() {
-    this.removeEventListener( "mouseover", this._onMouseOver, this );
-    this.removeEventListener( "mouseout", this._onMouseOut, this );
-    this.removeEventListener( "click", this._onClick, this );
-    this.removeEventListener( "dblclick", this._onDblClick, this );
-    this.removeEventListener( "changeParent", this._onChangeParent, this );
-    this.removeEventListener( "changeLeft", this._onChangeLeft, this );
-    this._closeButton.removeEventListener( "click", this._onClose, this );
-    var wm = rwt.remote.WidgetManager.getInstance();
-    wm.setToolTip( this._closeButton, null );
-    this._closeButton.dispose();
-    this._closeButton = null;
     this.setMnemonicIndex( null );
   },
 
@@ -83,10 +60,20 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
 
   members : {
 
-   setText : function( value ) {
+    setText : function( value ) {
       this._rawText = value;
       this._mnemonicIndex = null;
       this._applyText( false );
+    },
+
+    setImage : function( value ) {
+      if( value === null ) {
+        this.setCellContent( 0, null );
+        this.setCellDimension( 0, 0, 0 );
+      } else {
+        this.setCellContent( 0, value[ 0 ] );
+        this.setCellDimension( 0, value[ 1 ], value[ 2 ] );
+      }
     },
 
     setMnemonicIndex : function( value ) {
@@ -107,9 +94,9 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
       if( this._rawText ) {
         var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
         var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
-        this.setLabel( text );
+        this.setCellContent( 1, text );
       } else {
-        this.setLabel( null );
+        this.setCellContent( 1, null );
       }
     },
 
@@ -126,7 +113,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
         this.updateBackground();
         this.updateBackgroundImage();
         this.updateBackgroundGradient();
-        this.updateCloseButton();
+        this.updateCloseButton( false );
       }
     },
 
@@ -168,7 +155,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
 
     setShowClose : function( value ) {
       this._showClose = value;
-      this.updateCloseButton();
+      this.updateCloseButton( false );
     },
 
     updateForeground : function() {
@@ -210,62 +197,58 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
       }
     },
 
-    updateCloseButton : function() {
+    _onElementOver : function( event ) {
+      this.updateCloseButton( this._isCloseButtonTarget( event ) );
+    },
+
+    _onElementOut : function( event ) {
+      this.updateCloseButton( false );
+    },
+
+    updateCloseButton : function( over ) {
       var visible = false;
       if( this._canClose || this._showClose ) {
-        visible =  this.isSelected()
-                || ( this._parent.getUnselectedCloseVisible() && this.hasState( "over" ) );
+        var unselectedVisible = this._parent.getUnselectedCloseVisible() && this.hasState( "over" );
+        visible = this.isSelected() || unselectedVisible;
       }
-      this._closeButton.setVisibility( visible );
-    },
-
-    _onMouseOver : function( evt ) {
-      this.addState( "over" );
-      if( evt.getTarget() == this._closeButton ) {
-        this._closeButton.addState( "over" );
-      }
-      this.updateCloseButton();
-    },
-
-    _onMouseOut : function( evt ) {
-      this.removeState( "over" );
-      if( evt.getTarget() == this._closeButton ) {
-        this._closeButton.removeState( "over" );
-      }
-      this.updateCloseButton();
-    },
-
-    _onClick : function( evt ) {
-      var target = evt.getTarget();
-      if( target != this._closeButton ) {
-        target.getParent()._notifySelection( target );
+      if( visible ) {
+        var image = over ? rwt.widgets.CTabItem.IMG_CLOSE_HOVER : rwt.widgets.CTabItem.IMG_CLOSE;
+        this.setCellContent( 2, image );
+        this.setCellDimension( 2, 16, 16 );
+      } else {
+        this.setCellContent( 2, null );
+        this.setCellDimension( 2, 0, 0 );
       }
     },
 
-    _onDblClick : function( evt ) {
-      var target = evt.getTarget();
-      if( target != this._closeButton ) {
-        target.getParent()._notifyDefaultSelection( target );
-      }
-    },
-
-    _onClose : function( evt ) {
-      if( !rwt.remote.EventUtil.getSuspended() ) {
-        var server = rwt.remote.Connection.getInstance();
-        server.getRemoteObject( this.getParent() ).notify( "Folder", {
+    _onClick : function( event ) {
+      if( this._isCloseButtonTarget( event ) ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this._parent ).notify( "Folder", {
           "detail" : "close",
           "item" : rwt.remote.ObjectRegistry.getId( this )
         } );
+      } else {
+        this._parent._notifySelection( this );
       }
     },
 
-    _onChangeParent : function( evt ) {
+    _onDblClick : function( event ) {
+      if( !this._isCloseButtonTarget( event ) ) {
+        this._parent._notifyDefaultSelection( this );
+      }
+    },
+
+    _isCloseButtonTarget : function( event ) {
+      return event.getDomTarget() === this.getCellNode( 2 );
+    },
+
+    _onChangeParent : function( event ) {
       if( !this._parent._isInGlobalDisposeQueue ) {
         this._updateNextSelected();
       }
     },
 
-    _onChangeLeft : function( evt ) {
+    _onChangeLeft : function( event ) {
       this.toggleState( "firstItem", this.getLeft() === 0 );
     }
   }

@@ -338,9 +338,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     hideMaxButton : function() {
       if( this._maxButton != null ) {
-        this._maxButton.removeEventListener( "mousedown",
-                                             this._onMinMaxExecute,
-                                             this );
+        this._maxButton.removeEventListener( "mousedown", this._onMinMaxExecute, this );
         var wm = rwt.remote.WidgetManager.getInstance();
         wm.setToolTip( this._maxButton, null );
         this.remove( this._maxButton );
@@ -374,9 +372,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     hideMinButton : function( left ) {
       if( this._minButton != null ) {
-        this._minButton.removeEventListener( "mousedown",
-                                             this._onMinMaxExecute,
-                                             this );
+        this._minButton.removeEventListener( "mousedown", this._onMinMaxExecute, this );
         var wm = rwt.remote.WidgetManager.getInstance();
         wm.setToolTip( this._minButton, null );
         this.remove( this._minButton );
@@ -462,11 +458,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     _onKeyPress : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         case "Left":
-          // TODO [rh] implementatin missing: select tab item to the left
+          // TODO [rh] implementation missing: select tab item to the left
           evt.stopPropagation();
           break;
         case "Right":
-          // TODO [rh] implementatin missing: select tab item to the right
+          // TODO [rh] implementation missing: select tab item to the right
           evt.stopPropagation();
           break;
       }
@@ -487,9 +483,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         if( !item.isSelected() ) {
           this.deselectAll();
           item.setSelected( true );
-          var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
-          var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
-          remoteObject.set( "selection", itemId );
+          var itemId = rwt.remote.ObjectRegistry.getId( item );
+          rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", itemId );
           rwt.remote.EventUtil.notifySelected( this, { "item" : itemId } );
         }
       }
@@ -497,7 +492,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     _notifyDefaultSelection : function( item ) {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        var itemId = rwt.remote.WidgetManager.getInstance().findIdByWidget( item );
+        var itemId = rwt.remote.ObjectRegistry.getId( item );
         rwt.remote.EventUtil.notifyDefaultSelected( this, { "item" : itemId } );
       }
     }

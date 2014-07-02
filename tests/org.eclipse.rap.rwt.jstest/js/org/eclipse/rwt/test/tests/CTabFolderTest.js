@@ -295,7 +295,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       var widget = this._createCTabItemByProtocol( "w4", "w3" );
       TestUtil.protocolSet( "w4", { "text" : "foo<>bar" } );
-      assertEquals( "foo&lt;&gt;bar", widget.getLabel() );
+      assertEquals( "foo&lt;&gt;bar", widget.getCellContent( 1 ) );
       folder.destroy();
       widget.destroy();
     },
@@ -326,7 +326,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       var folder = this._createCTabFolderByProtocol( "w3", "w2" );
       var widget = this._createCTabItemByProtocol( "w4", "w3" );
       TestUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } );
-      assertEquals( "image.gif", widget.getIcon() );
+      assertEquals( "image.gif", widget.getCellContent( 0 ) );
+      assertEquals( [ 10, 20 ], widget.getCellDimension( 0 ) );
       folder.destroy();
       widget.destroy();
     },
@@ -543,7 +544,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.protocolListen( "w3", { "Folder" : true } );
       TestUtil.flush();
 
-      TestUtil.click( item._closeButton );
+      TestUtil.clickDOM( item.getCellNode( 2 ) );
 
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
@@ -563,7 +564,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getLabel() );
+      var expected = "f<span style=\"text-decoration:underline\">o</span>o";
+      assertEquals( expected, item.getCellContent( 1 ) );
       folder.destroy();
     },
 
@@ -579,7 +581,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
       TestUtil.flush();
 
-      assertEquals( "foo", item.getLabel() );
+      assertEquals( "foo", item.getCellContent( 1 ) );
       folder.destroy();
     },
 
