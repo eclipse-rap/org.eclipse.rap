@@ -1751,13 +1751,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     _beforeDisappear : function() {
       // Remove any hover/pressed styles
       this.removeState("over");
-
-      if (rwt.qx.Class.isDefined("rwt.widgets.base.Button"))
-      {
-        this.removeState("pressed");
-        this.removeState("abandoned");
-      }
-
+      this.removeState("pressed");
+      this.removeState("abandoned");
       this.dispatchSimpleEvent( "beforeDisappear" );
     },
 
@@ -3114,10 +3109,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       if( value === false) {
         // Also reset some states to be sure a pressed/hovered button gets reset
         this.removeState( "over" );
-        if( rwt.qx.Class.isDefined( "rwt.widgets.base.Button" ) ) {
-          this.removeState( "abandoned" );
-          this.removeState( "pressed" );
-        }
+        this.removeState( "abandoned" );
+        this.removeState( "pressed" );
         if( this.getFocused() ) {
           this.setFocused( false );
         }

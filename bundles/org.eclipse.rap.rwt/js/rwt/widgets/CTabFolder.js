@@ -250,9 +250,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     showChevron : function() {
       if( this._chevron == null ) {
         // Create chevron button
-        this._chevron = new rwt.widgets.base.Button();
+        this._chevron = new rwt.widgets.base.BasicButton( "push", true );
         this._chevron.setAppearance( "ctabfolder-drop-down-button" );
-        this._chevron.setShow( "icon" );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
         var wm = rwt.remote.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
@@ -277,27 +276,27 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     setMinMaxState : function( state ) {
       this._minMaxState = state;
-      var minIcon = "";
-      var maxIcon = "";
+      var minIcon = [ null, 10, 10 ];
+      var maxIcon = [ null, 10, 10 ];
       var minToolTip = "";
       var maxToolTip = "";
       var path = rwt.remote.Connection.RESOURCE_PATH + "widget/rap/ctabfolder/";
       switch( state ) {
         case "min":
-          minIcon = path + "restore.gif";
-          maxIcon = path + "maximize.gif";
+          minIcon[ 0 ] = path + "restore.gif";
+          maxIcon[ 0 ] = path + "maximize.gif";
           minToolTip = rwt.widgets.CTabFolder.RESTORE_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.MAX_TOOLTIP;
           break;
         case "max":
-          minIcon = path + "minimize.gif";
-          maxIcon = path + "restore.gif";
+          minIcon[ 0 ] = path + "minimize.gif";
+          maxIcon[ 0 ] = path + "restore.gif";
           minToolTip = rwt.widgets.CTabFolder.MIN_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.RESTORE_TOOLTIP;
           break;
         case "normal":
-          minIcon = path + "minimize.gif";
-          maxIcon = path + "maximize.gif";
+          minIcon[ 0 ] = path + "minimize.gif";
+          maxIcon[ 0 ] = path + "maximize.gif";
           minToolTip = rwt.widgets.CTabFolder.MIN_TOOLTIP;
           maxToolTip = rwt.widgets.CTabFolder.MAX_TOOLTIP;
           break;
@@ -322,9 +321,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     showMaxButton : function() {
       if( this._maxButton == null ) {
-        this._maxButton = new rwt.widgets.base.Button();
+        this._maxButton = new rwt.widgets.base.BasicButton( "push", true );
         this._maxButton.setAppearance( "ctabfolder-button" );
-        this._maxButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         // [if] "mousedown" is used instead of "execute" because of the bug 247672
         this._maxButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
@@ -356,9 +354,8 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
 
     showMinButton : function() {
       if( this._minButton == null ) {
-        this._minButton = new rwt.widgets.base.Button();
+        this._minButton = new rwt.widgets.base.BasicButton( "push", true );
         this._minButton.setAppearance( "ctabfolder-button" );
-        this._minButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         // [if] "mousedown" is used instead of "execute" because of the bug 247672
         this._minButton.addEventListener( "mousedown", this._onMinMaxExecute, this );

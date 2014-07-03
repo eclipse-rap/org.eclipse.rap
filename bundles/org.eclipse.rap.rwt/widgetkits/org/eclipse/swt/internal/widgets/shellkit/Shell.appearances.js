@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.icon = tv.getCssImage( "Shell-MinButton", "background-image" );
+      result.icon = tv.getCssSizedImage( "Shell-MinButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MinButton", "margin" );
       return result;
     }
@@ -97,7 +97,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.icon = tv.getCssImage( "Shell-MaxButton", "background-image" );
+      result.icon = tv.getCssSizedImage( "Shell-MaxButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-MaxButton", "margin" );
       return result;
     }
@@ -111,7 +111,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.icon = tv.getCssImage( "Shell-CloseButton", "background-image" );
+      result.icon = tv.getCssSizedImage( "Shell-CloseButton", "background-image" );
       result.margin = tv.getCssBoxDimensions( "Shell-CloseButton", "margin" );
       return result;
     }

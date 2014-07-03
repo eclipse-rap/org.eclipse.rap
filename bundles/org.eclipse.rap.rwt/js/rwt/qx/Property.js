@@ -33,7 +33,7 @@
  *   - a custom check function. The function takes the incoming value as a parameter and must
  *     return a boolean value to indicate whether the values is valid.
  *   - inline check code as a string e.g. <code>"value &gt; 0 && value &lt; 100"</code>
- *   - a class name e.g. <code>rwt.widgets.base.Button</code>
+ *   - a class name e.g. <code>rwt.widgets.Button</code>
  *   - a name of an interface the value must implement, e.g. <code>qx.application.IAplpication</code>
  *   - an array of all valid values</li>
  *   - one of the predefined checks: Boolean, String, Number, Integer, Float, Double,

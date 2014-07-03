@@ -56,11 +56,11 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       spacing : 1
     } );
 
-    var lastYearBt = new rwt.widgets.base.Button();
-    var lastMonthBt = new rwt.widgets.base.Button();
+    var lastYearBt = new rwt.widgets.base.BasicButton( "push", true );
+    var lastMonthBt = new rwt.widgets.base.BasicButton( "push", true );
     var monthYearLabel = new rwt.widgets.base.Label();
-    var nextMonthBt = new rwt.widgets.base.Button();
-    var nextYearBt = new rwt.widgets.base.Button();
+    var nextMonthBt = new rwt.widgets.base.BasicButton( "push", true );
+    var nextYearBt = new rwt.widgets.base.BasicButton( "push", true );
 
     var wm = rwt.remote.WidgetManager.getInstance();
     wm.setToolTip( lastYearBt, "Previous year" );
@@ -68,29 +68,16 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
     wm.setToolTip( nextMonthBt, "Next month" );
     wm.setToolTip( nextYearBt, "Next year" );
 
-    lastYearBt.set( {
-      show    : 'icon',
-      spacing : 0,
-      tabIndex: null
-    } );
+    lastYearBt.setTabIndex( null );
     lastYearBt.setUserData( "calendar-button", true );
 
-    lastMonthBt.set( {
-      show    : 'icon',
-      tabIndex: null
-    } );
+    lastMonthBt.setTabIndex( null );
     lastMonthBt.setUserData( "calendar-button", true );
 
-    nextMonthBt.set( {
-      show    : 'icon',
-      tabIndex: null
-    } );
+    nextMonthBt.setTabIndex( null );
     nextMonthBt.setUserData( "calendar-button", true );
 
-    nextYearBt.set( {
-      show    : 'icon',
-      tabIndex: null
-    } );
+    nextYearBt.setTabIndex( null );
     nextYearBt.setUserData( "calendar-button", true );
 
     lastYearBt.setAppearance("calendar-toolbar-previous-year-button");

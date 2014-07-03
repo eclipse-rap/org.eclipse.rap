@@ -109,7 +109,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this.addEventListener( "click", this._onMouseClick, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
-      this._dropDownButton = new rwt.widgets.base.Button();
+      this._dropDownButton = new rwt.widgets.base.BasicButton( "push", true );
       this._dropDownButton.setAppearance( "datetime-drop-down-button" );
       this._dropDownButton.setTabIndex( null );
       this._dropDownButton.setAllowStretchY( true );

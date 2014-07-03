@@ -19,10 +19,10 @@
  * @appearance window-resize-frame {rwt.widgets.base.Terminator}
  * @appearance window-captionbar-icon {rwt.widgets.base.Image}
  * @appearance window-captionbar-title {rwt.widgets.base.Label} The label of the caption bar
- * @appearance window-captionbar-minimize-button {rwt.widgets.base.Button}
- * @appearance window-captionbar-restore-button {rwt.widgets.base.Button}
- * @appearance window-captionbar-maximize-button {rwt.widgets.base.Button}
- * @appearance window-captionbar-close-button {rwt.widgets.base.Button}
+ * @appearance window-captionbar-minimize-button {rwt.widgets.base.BasicButton}
+ * @appearance window-captionbar-restore-button {rwt.widgets.base.BasicButton}
+ * @appearance window-captionbar-maximize-button {rwt.widgets.base.BasicButton}
+ * @appearance window-captionbar-close-button {rwt.widgets.base.BasicButton}
  * @appearance window-statusbar {rwt.widgets.base.HorizontalBoxLayout}
  * @appearance window-statusbar-text {rwt.widgets.base.Label}
  *
@@ -91,7 +91,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: MINIMIZE
     // ************************************************************************
-    var bm = this._minimizeButton = new rwt.widgets.base.Button();
+    var bm = this._minimizeButton = new rwt.widgets.base.BasicButton( "push", true );
 
     bm.setAppearance("window-captionbar-minimize-button");
     bm.setTabIndex(null);
@@ -104,7 +104,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: RESTORE
     // ************************************************************************
-    var br = this._restoreButton = new rwt.widgets.base.Button();
+    var br = this._restoreButton = new rwt.widgets.base.BasicButton( "push", true );
 
     br.setAppearance("window-captionbar-restore-button");
     br.setTabIndex(null);
@@ -117,7 +117,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: MAXIMIZE
     // ************************************************************************
-    var bx = this._maximizeButton = new rwt.widgets.base.Button();
+    var bx = this._maximizeButton = new rwt.widgets.base.BasicButton( "push", true );
 
     bx.setAppearance("window-captionbar-maximize-button");
     bx.setTabIndex(null);
@@ -130,7 +130,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
     // ************************************************************************
     //   CAPTIONBUTTONS: CLOSE
     // ************************************************************************
-    var bc = this._closeButton = new rwt.widgets.base.Button();
+    var bc = this._closeButton = new rwt.widgets.base.BasicButton( "push", true );
 
     bc.setAppearance("window-captionbar-close-button");
     bc.setTabIndex(null);

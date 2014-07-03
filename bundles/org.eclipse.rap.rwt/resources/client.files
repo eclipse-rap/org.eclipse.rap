@@ -84,7 +84,6 @@ rwt/widgets/base/HorizontalBoxLayout.js
 rwt/widgets/base/Spinner.js
 rwt/widgets/base/BasicText.js
 rwt/widgets/base/VerticalBoxLayout.js
-rwt/widgets/base/Button.js
 rwt/util/Range.js
 rwt/widgets/TabFolder.js
 rwt/widgets/util/RadioManager.js

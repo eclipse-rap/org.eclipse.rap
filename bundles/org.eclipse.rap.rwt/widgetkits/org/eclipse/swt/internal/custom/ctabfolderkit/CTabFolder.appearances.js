@@ -134,7 +134,6 @@ var appearances = {
   },
 
   "ctabfolder-button" : {
-    include : "image",
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
@@ -155,7 +154,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon", "background-image" );
+      result.icon = tv.getCssSizedImage( "CTabFolder-DropDownButton-Icon", "background-image" );
       return result;
     }
   }

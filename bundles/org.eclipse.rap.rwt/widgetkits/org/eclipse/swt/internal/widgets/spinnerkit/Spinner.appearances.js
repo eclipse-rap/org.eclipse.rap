@@ -52,9 +52,9 @@ var appearances = {
       var borderLeft = tv.getCssBorder( "Spinner-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
-      result.icon = tv.getCssImage( "Spinner-UpButton-Icon", "background-image" );
+      result.icon = tv.getCssSizedImage( "Spinner-UpButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
+        result.icon = tv.getCssSizedImage( "Spinner-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-UpButton", "background-image" );
       }
@@ -73,9 +73,9 @@ var appearances = {
       var borderLeft = tv.getCssBorder( "Spinner-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
-      result.icon = tv.getCssImage( "Spinner-DownButton-Icon", "background-image" );
+      result.icon = tv.getCssSizedImage( "Spinner-DownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
+        result.icon = tv.getCssSizedImage( "Spinner-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Spinner-DownButton", "background-image" );
       }

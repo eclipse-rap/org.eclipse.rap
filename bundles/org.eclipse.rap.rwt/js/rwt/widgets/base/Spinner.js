@@ -96,7 +96,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     // ************************************************************************
     //   UP-BUTTON
     // ************************************************************************
-    this._upbutton = new rwt.widgets.base.Button();
+    this._upbutton = new rwt.widgets.base.BasicButton( "push", true );
     this._upbutton.setAppearance("spinner-button-up");
     this._upbutton.setTabIndex(null);
     this._upbutton.setHeight("1*");
@@ -105,7 +105,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     // ************************************************************************
     //   DOWN-BUTTON
     // ************************************************************************
-    this._downbutton = new rwt.widgets.base.Button();
+    this._downbutton = new rwt.widgets.base.BasicButton( "push", true );
     this._downbutton.setAppearance("spinner-button-down");
     this._downbutton.setTabIndex(null);
     this._downbutton.setHeight("1*");

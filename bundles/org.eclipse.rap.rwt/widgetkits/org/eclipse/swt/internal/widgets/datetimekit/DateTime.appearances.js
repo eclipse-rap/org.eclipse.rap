@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,10 +92,9 @@ var appearances = {
       var borderLeft = tv.getCssBorder( "DateTime-UpButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
-      result.icon = tv.getCssImage( "DateTime-UpButton-Icon",
-                                    "background-image" );
+      result.icon = tv.getCssSizedImage( "DateTime-UpButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
+        result.icon = tv.getCssSizedImage( "DateTime-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
       }
@@ -114,9 +113,9 @@ var appearances = {
       var borderLeft = tv.getCssBorder( "DateTime-DownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
-      result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
+      result.icon = tv.getCssSizedImage( "DateTime-DownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
+        result.icon = tv.getCssSizedImage( "DateTime-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
       }
@@ -134,9 +133,9 @@ var appearances = {
       var border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
       var borderLeft = tv.getCssBorder( "DateTime-DropDownButton", "border-left" );
       result.border = tv.mergeBorders( border, null, null, null, borderLeft );
-      result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
+      result.icon = tv.getCssSizedImage( "DateTime-DropDownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
+        result.icon = tv.getCssSizedImage( "DateTime-DropDownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
       }
@@ -198,7 +197,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
+        icon : tv.getCssSizedImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton", "cursor" )
       };
     }
@@ -210,7 +209,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
+        icon : tv.getCssSizedImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton", "cursor" )
       };
     }
@@ -222,7 +221,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
+        icon : tv.getCssSizedImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton", "cursor" )
       };
     }
@@ -234,7 +233,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-NextYearButton", "background-image" ),
+        icon : tv.getCssSizedImage( "DateTime-Calendar-NextYearButton", "background-image" ),
         cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton", "cursor" )
       };
     }
