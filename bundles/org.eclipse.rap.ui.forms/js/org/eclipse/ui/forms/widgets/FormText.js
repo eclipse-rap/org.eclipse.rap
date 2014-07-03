@@ -35,18 +35,15 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.FormText", {
   members : {
 
     createBullet : function( style, image, text, bounds ) {
-      var bullet = new rwt.widgets.base.Atom();
-      bullet.setAppearance( "formtext-bullet" );
-      switch( style ) {
-        case 2:
-          bullet.setLabel( text );
-          break;
-        case 3:
-          bullet.setIcon( image );
-          break;
-        default:
-          bullet.setIcon( image );
+      var bullet;
+      if( style === 2 ) {
+        bullet = new rwt.widgets.base.Label();
+        bullet.setText( text );
+      } else {
+        bullet = new rwt.widgets.base.Image();
+        bullet.setSource( image );
       }
+      bullet.setAppearance( "formtext-bullet" );
       bullet.set( {
         left   : bounds[ 0 ],
         top    : bounds[ 1 ],

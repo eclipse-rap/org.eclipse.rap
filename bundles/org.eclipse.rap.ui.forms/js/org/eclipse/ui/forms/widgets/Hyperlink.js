@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,21 +11,16 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
-  extend : rwt.widgets.base.Atom,
+
+  extend : rwt.widgets.base.MultiCellWidget,
 
   construct : function( style ) {
-    this.base( arguments );
+    this.base( arguments, [ "image", "label" ] );
     this.setAppearance( "hyperlink" );
-    // TODO [rh] workaround for weird getLabelObject behavior
-    this.setLabel( "(empty)" );
-    // End of workaround
-    var labelObject = this.getLabelObject();
-    labelObject.setAppearance( "hyperlink-label" );
-    labelObject.setMode( "html" );
-    labelObject.setWrap( rwt.util.Strings.contains( style, "wrap" ) );
-    // TODO [rh] workaround for weird getLabelObject behavior
-    this.setLabel( "" );
-    // End of workaround
+    if( rwt.util.Strings.contains( style, "wrap" ) ) {
+      this.setFlexibleCell( 1 );
+      this.setWordWrap( true );
+    }
     this._text = "";
     this._underlined = false;
     this._savedBackgroundColor = null;
@@ -38,11 +33,6 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     this.addEventListener( "mouseout", this._onMouseOut, this );
   },
 
-  destruct : function() {
-    this.removeEventListener( "mousemove", this._onMouseMove, this );
-    this.removeEventListener( "mouseout", this._onMouseOut, this );
-  },
-
   statics : {
     UNDERLINE_NEVER : 1,
     UNDERLINE_HOVER : 2,
@@ -52,8 +42,18 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   members : {
 
     setText : function( value ) {
-      this._text = value;
+      this._text = rwt.util.Encoding.escapeText( value, false );
       this._updateText();
+    },
+
+    setImage : function( value ) {
+      if( value === null ) {
+        this.setCellContent( 0, null );
+        this.setCellDimension( 0, 0, 0 );
+      } else {
+        this.setCellContent( 0, value[ 0 ] );
+        this.setCellDimension( 0, value[ 1 ], value[ 2 ] );
+      }
     },
 
     setUnderlined : function( value ) {
@@ -63,7 +63,7 @@ rwt.qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
 
     _updateText : function() {
       var text = this._underlined ? "<u>" + this._text + "</u>" : this._text;
-      this.setLabel( text );
+      this.setCellContent( 1, text );
     },
 
     setActiveBackgroundColor : function( value ) {
