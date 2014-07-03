@@ -204,7 +204,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "text" : "foo<>\" bar"
         }
       } );
-      assertEquals( "foo&lt;&gt;&quot; bar", item.getLabel().toString() );
+      assertEquals( "foo&lt;&gt;&quot; bar", item.getCellContent( 1 ) );
       folder.destroy();
     },
 
@@ -240,7 +240,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
           "image" : [ "image.png", 10, 20 ]
         }
       } );
-      assertEquals( "image.png", item.getIcon() );
+      assertEquals( "image.png", item.getCellContent( 0 ) );
+      assertEquals( [ 10, 20 ], item.getCellDimension( 0 ) );
       folder.destroy();
     },
 
@@ -356,7 +357,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().activate();
       TestUtil.flush();
 
-      assertEquals( "f<span style=\"text-decoration:underline\">o</span>o", item.getLabel() );
+      var expected = "f<span style=\"text-decoration:underline\">o</span>o";
+      assertEquals( expected, item.getCellContent( 1 ) );
     },
 
     testRenderMnemonic_OnDeactivate : function() {
@@ -371,7 +373,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
       TestUtil.flush();
 
-      assertEquals( "foo", item.getLabel() );
+      assertEquals( "foo", item.getCellContent( 1 ) );
     },
 
     testRenderMnemonic_Trigger : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,52 +14,39 @@
 /**
  * @appearance tab-view-page
  */
-rwt.qx.Class.define("rwt.widgets.base.TabFolderPage",
-{
+rwt.qx.Class.define( "rwt.widgets.base.TabFolderPage", {
+
   extend : rwt.widgets.base.Parent,
 
-  construct : function(vButton)
-  {
-    this.base(arguments);
-
-    if (vButton !== undefined) {
-      this.setButton(vButton);
+  construct : function( vButton ) {
+    this.base( arguments );
+    if( vButton !== undefined ) {
+      this.setButton( vButton );
     }
-
     this.initTop();
     this.initRight();
     this.initBottom();
     this.initLeft();
   },
 
-  properties :
-  {
-    appearance :
-    {
-      refine : true,
-      init : "tab-view-page"
-    },
+  properties : {
 
-    top :
-    {
+    top : {
       refine : true,
       init : 0
     },
 
-    right :
-    {
+    right : {
       refine : true,
       init : 0
     },
 
-    bottom :
-    {
+    bottom : {
       refine : true,
       init : 0
     },
 
-    left :
-    {
+    left : {
       refine : true,
       init : 0
     },
@@ -68,34 +55,30 @@ rwt.qx.Class.define("rwt.widgets.base.TabFolderPage",
      * Make element displayed (if switched to true the widget will be created, if needed, too).
      *  Instead of rwt.widgets.base.Widget, the default is false here.
      */
-    display :
-    {
+    display : {
       refine: true,
       init : false
     },
 
-
     /** The attached tab of this page. */
-    button :
-    {
+    button : {
       check : "rwt.widgets.TabItem",
       apply : "_applyButton"
     }
 
   },
 
-  members :
-  {
-    _applyButton : function(value, old)
-    {
-      if (old) {
-        old.setPage(null);
-      }
+  members : {
 
-      if (value) {
-        value.setPage(this);
+    _applyButton : function( value, old ) {
+      if( old ) {
+        old.setPage( null );
+      }
+      if( value ) {
+        value.setPage( this );
       }
     }
+
   }
 
-});
+} );

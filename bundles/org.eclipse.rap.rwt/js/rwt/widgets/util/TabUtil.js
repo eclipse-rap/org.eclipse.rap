@@ -18,9 +18,6 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       var tabFolder = widgetManager.findWidgetById( parentId );
       var tabItem = new rwt.widgets.TabItem();
       tabItem.setTabIndex( null );
-      tabItem.setLabel( "(empty)" );
-      tabItem.getLabelObject().setMode( "html" );
-      tabItem.setLabel( "" );
       tabItem.setEnableElementFocus( false );
       tabItem.addEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
       tabItem.addEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );

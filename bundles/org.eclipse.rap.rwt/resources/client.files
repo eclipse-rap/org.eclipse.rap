@@ -115,7 +115,6 @@ rwt/widgets/base/HorizontalSpacer.js
 rwt/widgets/util/WindowManager.js
 rwt/widgets/MenuItemSeparator.js
 rwt/widgets/base/TabFolderPage.js
-rwt/widgets/TabItem.js
 rwt/runtime/ErrorHandler.js
 rwt/widgets/util/CellRendererRegistry.js
 rwt/widgets/base/GridRowContainer.js
@@ -134,6 +133,7 @@ rwt/widgets/util/WidgetUtil.js
 rwt/theme/ThemeStore.js
 rwt/remote/handler/ThemeStoreHandler.js
 rwt/widgets/base/MultiCellWidget.js
+rwt/widgets/TabItem.js
 rwt/widgets/ListItem.js
 rwt/widgets/util/MenuManager.js
 rwt/widgets/MenuItem.js

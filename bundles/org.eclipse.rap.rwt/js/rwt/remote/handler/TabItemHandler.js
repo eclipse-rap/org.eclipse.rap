@@ -49,13 +49,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
   ],
 
   propertyHandler : {
-    "image" : function( widget, value ) {
-      if( value === null ) {
-        widget.setIcon( null );
-      } else {
-        widget.setIcon( value[ 0 ] );
-      }
-    },
     "control" : function( widget, value ) {
       if( value !== null ) {
         rwt.remote.HandlerUtil.callWithTarget( value, function( control ) {

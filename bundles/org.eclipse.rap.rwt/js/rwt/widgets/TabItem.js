@@ -20,12 +20,12 @@
  */
 rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
-  extend : rwt.widgets.base.Atom,
+  extend : rwt.widgets.base.MultiCellWidget,
 
   include : rwt.widgets.util.OverStateMixin,
 
-  construct : function( vText, vIcon, vIconWidth, vIconHeight ) {
-    this.base( arguments, vText, vIcon, vIconWidth, vIconHeight );
+  construct : function() {
+    this.base( arguments, [ "image", "label" ] );
     this.initChecked();
     this.initTabIndex();
     this._rawText = null;
@@ -35,30 +35,11 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
     this.addEventListener( "keypress", this._onkeypress );
   },
 
-  events: {
-    "closetab" : "rwt.event.Event"
-  },
-
   properties : {
 
     appearance : {
       refine : true,
       init : "tab-view-button"
-    },
-
-    /** default Close Tab Button */
-    showCloseButton : {
-      check : "Boolean",
-      init : false,
-      apply : "_applyShowCloseButton",
-      event : "changeShowCloseButton"
-    },
-
-    /** Close Tab Icon */
-    closeButtonImage : {
-      check : "String",
-      init : "icon/16/actions/dialog-cancel.png",
-      apply : "_applyCloseButtonImage"
     },
 
     tabIndex : {
@@ -110,6 +91,16 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       this._applyText( false );
     },
 
+    setImage : function( value ) {
+      if( value === null ) {
+        this.setCellContent( 0, null );
+        this.setCellDimension( 0, 0, 0 );
+      } else {
+        this.setCellContent( 0, value[ 0 ] );
+        this.setCellDimension( 0, value[ 1 ], value[ 2 ] );
+      }
+    },
+
     setMnemonicIndex : function( value ) {
       this._mnemonicIndex = value;
       var mnemonicHandler = rwt.widgets.util.MnemonicHandler.getInstance();
@@ -128,9 +119,9 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       if( this._rawText ) {
         var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
         var text = rwt.util.Encoding.escapeText( this._rawText, mnemonicIndex );
-        this.setLabel( text );
+        this.setCellContent( 1, text );
       } else {
-        this.setLabel( null );
+        this.setCellContent( 1, null );
       }
     },
 
@@ -186,31 +177,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
             vNext.setChecked( true );
           }
         break;
-      }
-    },
-
-    _ontabclose : function( event ) {
-      this.createDispatchDataEvent( "closetab", this );
-      event.stopPropagation();
-    },
-
-    _applyShowCloseButton : function( value ) {
-      // if no image exists, then create one
-      if( !this._closeButtonImage ) {
-        this._closeButtonImage = new rwt.widgets.base.Image( this.getCloseButtonImage() );
-      }
-      if( value ) {
-        this._closeButtonImage.addEventListener( "click", this._ontabclose, this );
-        this.add( this._closeButtonImage );
-      } else {
-        this.remove( this._closeButtonImage );
-        this._closeButtonImage.removeEventListener( "click", this._ontabclose, this );
-      }
-    },
-
-    _applyCloseButtonImage : function( value ) {
-      if( this._closeButtonImage ) {
-        this._closeButtonImage.setSource( value );
       }
     },
 
@@ -296,7 +262,6 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
   },
 
   destruct : function() {
-    this._disposeObjects( "_closeButtonImage" );
     this.setMnemonicIndex( null );
   }
 
