@@ -73,7 +73,6 @@ rwt/html/ScrollIntoView.js
 rwt/widgets/base/BoxLayout.js
 rwt/widgets/util/VerticalBoxLayoutImpl.js
 rwt/widgets/util/HorizontalBoxLayoutImpl.js
-rwt/widgets/base/Atom.js
 rwt/remote/handler/LabelHandler.js
 rwt/widgets/base/Label.js
 rwt/widgets/base/Image.js

@@ -112,7 +112,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.PerformanceTest", {
       var widgetManager = rwt.remote.WidgetManager.getInstance();
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
-      var dummy = new rwt.widgets.base.Atom();
+      var dummy = new rwt.widgets.base.Terminator();
       dummy.setLocation( 30, 10 );
       dummy.setDimension( 10, 10 );
       dummy.addToDocument();

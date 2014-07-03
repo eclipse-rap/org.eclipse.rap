@@ -499,7 +499,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuBarTest", {
 
     testGetMenuBar : function() {
       createMenuBar( "push" );
-      var widget = new rwt.widgets.base.Atom( "bla" );
+      var widget = new rwt.widgets.base.Terminator();
       widget.addToDocument();
       var manager = rwt.widgets.util.MenuManager.getInstance();
       TestUtil.flush();

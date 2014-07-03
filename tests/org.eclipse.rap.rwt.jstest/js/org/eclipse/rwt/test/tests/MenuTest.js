@@ -599,7 +599,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     testContextMenuOpenOnControl : function() {
       var parent = createControl();
       parent.addToDocument();
-      var widget = new rwt.widgets.base.Atom( "foo" );
+      var widget = new rwt.widgets.base.Terminator();
       widget.setParent( parent );
       var menu = new rwt.widgets.Menu();
       rwt.remote.ObjectRegistry.add( "w3", menu, menuHandler );
@@ -1559,7 +1559,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem = new MenuItem( "push" );
       menuItem.setText( "bla" );
       menu.addMenuItemAt( menuItem, 0 );
-      var widget = new rwt.widgets.base.Atom( "bla" );
+      var widget = new rwt.widgets.base.Terminator();
       var parent = createControl();
       parent.add( widget );
       parent.addToDocument();

@@ -1496,7 +1496,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     createDragSource : function( control ) {
       var dragControl = control;
       if( !control ) {
-        var dragControl = new rwt.widgets.base.Atom();
+        var dragControl = new rwt.widgets.base.Terminator();
         dragControl.setLocation( 10, 10 );
         dragControl.setDimension( 10, 10 );
         dragControl.addToDocument();
@@ -1516,7 +1516,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     createDropTarget : function( control ) {
       var dropControl = control;
       if( !control ) {
-        var dropControl = new rwt.widgets.base.Atom();
+        var dropControl = new rwt.widgets.base.Terminator();
         dropControl.setLocation( 30, 10 );
         dropControl.setDimension( 10, 10 );
         dropControl.addToDocument();

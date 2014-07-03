@@ -106,8 +106,8 @@ var appearances = {
     }
   },
 
-  // Note: This appearance applies to qooxdoo labels (as embedded in Atom,
-  //       Button, etc.). For SWT Label, see apperance "label-wrapper".
+  // Note: This appearance applies to qooxdoo labels.
+  //       For SWT Label, see apperance "label-wrapper".
   //       Any styles set for this appearance cannot be overridden by themeing
   //       of controls that include a label! This is because the "inheritance"
   //       feature does not overwrite theme property values from themes.
@@ -119,9 +119,6 @@ var appearances = {
     style : function( states ) {
     }
   },
-
-  // this applies to a qooxdoo rwt.widgets.base.Atom that represents an RWT Label
-
 
   "htmlcontainer" : {
     include : "label"
