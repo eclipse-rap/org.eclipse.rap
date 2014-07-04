@@ -119,12 +119,12 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       this._separator4.setFont( value );
     },
 
-    _onFocusIn : function( evt ) {
+    _onFocusIn : function() {
       this._focusedTextField.addState( "selected" );
       this._initialEditing = true;
     },
 
-    _onFocusOut : function( evt ) {
+    _onFocusOut : function() {
       this._focusedTextField.removeState( "selected" );
     },
 
@@ -159,7 +159,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       }
     },
 
-    _onSpinnerChange : function( event ) {
+    _onSpinnerChange : function() {
       if( this._focusedTextField != null ) {
         var oldValue = this._focusedTextField.getText();
         var newValue = this._addLeadingZero( this._spinner.getValue() );
@@ -215,7 +215,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       }
     },
 
-    _handleKeyEnter : function( event ) {
+    _handleKeyEnter : function() {
       rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 

@@ -50,7 +50,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       return [ this._header ];
     },
 
-    _applyChevronIcon : function( value, old ) {
+    _applyChevronIcon : function( value ) {
       if( value ) {
         this._header.setCellContent( 2, value[ 0 ] );
         this._header.setCellDimension( 2, value[ 1 ], value[ 2 ] );
@@ -65,7 +65,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       this._header.toggleState( "expanded", expanded );
     },
 
-    getExpanded : function( expanded ) {
+    getExpanded : function() {
       return this._expanded;
     },
 
@@ -86,7 +86,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       this._header.setHeight( headerHeight );
     },
 
-    _onClick : function( event ) {
+    _onClick : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this.setExpanded( !this._expanded );
         var connection = rwt.remote.Connection.getInstance();
@@ -97,11 +97,11 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       }
     },
 
-    _onMouseOver : function( event ) {
+    _onMouseOver : function() {
       this.addState( "over" );
     },
 
-    _onMouseOut : function( event ) {
+    _onMouseOut : function() {
       this.removeState( "over" );
     }
 

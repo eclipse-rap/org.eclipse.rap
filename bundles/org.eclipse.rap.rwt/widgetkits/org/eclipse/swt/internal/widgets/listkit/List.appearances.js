@@ -10,6 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 

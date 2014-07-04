@@ -335,12 +335,12 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
   members :
   {
 
-    _applyIncrementAmount : function(value, old) {
+    _applyIncrementAmount : function(value) {
       this._computedIncrementAmount = value;
     },
 
 
-    _applyEditable : function(value, old)
+    _applyEditable : function(value)
     {
       if (this._textfield) {
         this._textfield.setReadOnly(! value);
@@ -348,7 +348,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     },
 
 
-    _applyWrap : function(value, old)
+    _applyWrap : function(value)
     {
       this.getManager().setWrap(value);
       this._onchange();
@@ -372,7 +372,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
     },
 
 
-    _applyCheckValueFunction : function(value, old) {
+    _applyCheckValueFunction : function(value) {
       this._checkValue = value;
     },
 
@@ -696,7 +696,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
      * @param e {rwt.event.DataEvent} input event
      * @return {void}
      */
-    _oninput : function(e) {
+    _oninput : function() {
       this._checkValue(true, true);
     },
 
@@ -712,7 +712,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
      * @param e {rwt.event.ChangeEvent} change event
      * @return {void}
      */
-    _onchange : function(e)
+    _onchange : function()
     {
       var vValue = this.getManager().getValue();
       this._textfield.setValue(String(vValue));
@@ -751,7 +751,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
      * @param e {rwt.event.FocusEvent} blur event
      * @return {void}
      */
-    _onblur : function(e) {
+    _onblur : function() {
       this._checkValue(false);
     },
 
@@ -866,7 +866,7 @@ rwt.qx.Class.define("rwt.widgets.base.Spinner",
      * @param e {rwt.event.Event} interval event
      * @return {void}
      */
-    _oninterval : function(e)
+    _oninterval : function()
     {
       this._timer.stop();
       this.setInterval(Math.max(this.getMinTimer(), this.getInterval() - this.getTimerDecrease()));

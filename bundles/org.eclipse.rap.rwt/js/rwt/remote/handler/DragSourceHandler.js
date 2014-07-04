@@ -30,7 +30,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.DragSource", {
   methods : [ "cancel" ],
 
   methodHandler : {
-    "cancel" : function( source, properties ) {
+    "cancel" : function() {
       rwt.remote.DNDSupport.getInstance().cancel();
     }
   }

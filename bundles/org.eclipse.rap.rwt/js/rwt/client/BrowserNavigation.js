@@ -154,7 +154,7 @@ rwt.qx.Class.define( "rwt.client.BrowserNavigation", {
     __startTimer : function() {
       this._timer = new rwt.client.Timer(this.getTimeoutInterval());
 
-      this._timer.addEventListener( "interval", function( e ) {
+      this._timer.addEventListener( "interval", function() {
         var newHash = this.__getState();
         if( newHash != this._state ) {
           this.__onHistoryLoad(newHash);

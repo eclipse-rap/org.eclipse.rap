@@ -243,7 +243,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MnemonicHandler", {
              && this._activator.shiftKey === domEvent.shiftKey;
     },
 
-    _isTrigger : function( eventType, keyCode, charCode, domEvent ) {
+    _isTrigger : function( eventType, keyCode ) {
       var isChar = !isNaN( keyCode ) && rwt.event.EventHandlerUtil.isAlphaNumericKeyCode( keyCode );
       return this._active != null && eventType === "keydown" && isChar;
      },

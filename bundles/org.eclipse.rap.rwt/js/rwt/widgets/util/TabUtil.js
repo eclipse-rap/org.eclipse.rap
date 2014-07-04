@@ -30,7 +30,6 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
     },
 
     releaseTabItem : function( tabItem ) {
-      var tabFolder = tabItem.getParent().getParent();
       tabItem.removeEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
       tabItem.removeEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
       tabItem.removeEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );

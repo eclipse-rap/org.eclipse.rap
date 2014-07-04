@@ -51,7 +51,7 @@ rwt.client.ServerPush.prototype = {
     return request;
   },
 
-  _handleSuccess : function( event ) {
+  _handleSuccess : function() {
     this._running = false;
     this._retryCount = 0;
     this._sendUIRequest();

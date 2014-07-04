@@ -193,11 +193,11 @@ rwt.qx.Class.define( "rwt.html.Font", {
     __italic : null,
     __decoration : null,
 
-    _applySize : function(value, old) {
+    _applySize : function(value) {
       this.__size = value === null ? null : value + "px";
     },
 
-    _applyFamily : function( value, old ) {
+    _applyFamily : function( value ) {
       var family = "";
       for( var i = 0, l = value.length; i < l; i++ ) {
         if( value[ i ].indexOf( " " ) > 0 ) {
@@ -214,15 +214,15 @@ rwt.qx.Class.define( "rwt.html.Font", {
       this.__family = family;
     },
 
-    _applyBold : function( value, old ) {
+    _applyBold : function( value ) {
       this.__bold = value === null ? null : value ? "bold" : "normal";
     },
 
-    _applyItalic : function( value, old ) {
+    _applyItalic : function( value ) {
       this.__italic = value === null ? null : value ? "italic" : "normal";
     },
 
-    _applyDecoration : function( value, old ) {
+    _applyDecoration : function( value ) {
       this.__decoration = value === null ? null : value;
     },
 
@@ -266,20 +266,6 @@ rwt.qx.Class.define( "rwt.html.Font", {
       style.fontWeight = this.__bold || "";
       style.fontStyle =  this.__italic || "";
       style.textDecoration = this.__decoration || "";
-    },
-
-    /**
-     * Generate a style string with the current font attributes.
-     *
-     * @type member
-     * @return {String} The generated style string for this font
-     */
-    generateStyle : function() {
-      return ( this.__family ? "font-family:" + this.__family.replace(/\"/g, "'") + ";" : "" ) +
-             ( this.__size ? "font-size:" + this.__size + ";" : "" ) +
-             ( this.__weight ? "font-weight:" + this.__weight + ";" : "" ) +
-             ( this.__style ? "font-style:" + this.__style + ";" : "" ) +
-             ( this.__decoration ? "text-decoration:" + this.__decoration + ";" : "" );
     },
 
     toCss : function() {

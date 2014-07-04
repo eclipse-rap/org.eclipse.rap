@@ -17,7 +17,6 @@
 (function() {
 
 var Style = rwt.html.Style;
-var Variant = rwt.util.Variant;
 
 var cellRenderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
@@ -70,7 +69,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var heightChanged = this._renderHeight( item, config );
-        var contentOnly = scrolling && !heightChanged;
         this._renderStates( item, config, renderSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
         // TODO [tb] : item foreground and font could be inherited
@@ -80,8 +78,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this._renderIndention( item, config, hoverTarget );
         }
         if( config.rowTemplate ) {
-          this._renderTemplate( item, config, hoverTarget, renderSelected, contentOnly );
+          this._renderTemplate( item, config );
         } else {
+          var contentOnly = scrolling && !heightChanged;
           this._renderColumnModel( item, config, hoverTarget, renderSelected, contentOnly );
         }
         this._renderOverlay( item, config );
@@ -92,7 +91,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this.setBackgroundImage( null );
         this.setBackgroundGradient( null );
         if( config.rowTemplate ) {
-          this._renderTemplate( null, config, hoverTarget, false, contentOnly );
+          this._renderTemplate( null, config );
           this._hideRemainingElements();
         } else {
           this._clearContent( config );
@@ -150,7 +149,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._renderCells( item, config, renderSelected, hoverTarget, contentOnly );
     },
 
-    _renderTemplate : function( item, config, hoverTarget, renderSelected, contentOnly ) {
+    _renderTemplate : function( item, config ) {
       var hasIndention =    item
                          && typeof config.treeColumn === "number"
                          && config.treeColumn > -1;
@@ -174,7 +173,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return this._templateRenderer;
     },
 
-    _renderHeight : function( item, config ) {
+    _renderHeight : function( item ) {
       var result = false;
       var itemHeight = item.getOwnHeight();
       if( itemHeight !== this.getHeight() ) {
@@ -258,7 +257,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       //             This would need changes to Widget.js
     },
 
-    _renderBackground : function( item, config, selected ) {
+    _renderBackground : function( item, config ) {
       var color = this._styleMap.background;
       var image = this._styleMap.backgroundImage;
       var gradient = this._styleMap.backgroundGradient;
@@ -412,7 +411,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    _styleOverlay : function( item, config ) {
+    _styleOverlay : function() {
       var element = this._getOverlayElement();
       var styleMap = this._overlayStyleMap;
       var gradient = styleMap.backgroundGradient;
@@ -699,10 +698,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderAsSelected : function( config, selected ) {
-      var result =    ( selected || this.hasState( "dnd_selected" ) )
-                   && ( !config.hideSelection || config.focused )
-                   && !config.alwaysHideSelection;
-      return result;
+      return    ( selected || this.hasState( "dnd_selected" ) )
+             && ( !config.hideSelection || config.focused )
+             && !config.alwaysHideSelection;
     },
 
     _getFontProps : function( font ) {
@@ -842,7 +840,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getMiscElement : function( zIndex ) {
       var result;
-      var node = this._getTargetNode();
       if( this._usedMiscNodes < this._miscNodes.length ) {
         result = this._miscNodes[ this._usedMiscNodes ];
         result.style.display = "";
@@ -907,7 +904,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _hideRemainingElements : function() {
-      var node = this._getTargetNode();
       for( var i = this._usedMiscNodes; i < this._miscNodes.length; i++ ) {
         this._miscNodes[ i ].style.display = "none";
       }

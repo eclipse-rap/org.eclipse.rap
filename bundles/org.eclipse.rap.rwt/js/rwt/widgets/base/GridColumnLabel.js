@@ -128,7 +128,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
       return result || cell == 2;
     },
 
-    _onMouseOver : function( evt ) {
+    _onMouseOver : function() {
       if( this._hoverEffect && !this._inMove && !this._inResize ) {
         this.addState( "mouseover" );
       }

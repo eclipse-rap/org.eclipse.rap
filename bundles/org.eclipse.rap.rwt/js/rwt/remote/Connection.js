@@ -261,13 +261,13 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
       "trident" : function( statusCode ) {
         // for a description of the IE status codes, see
         // http://support.microsoft.com/kb/193625
-        var result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
-                       || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
-                       || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
-                       || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
-                       || statusCode === 12152    // ERROR_HTTP_INVALID_SERVER_RESPONSE
-                       || statusCode === 0 );     // Some modern IEs use standard, but not all
-        return result;
+        // Some modern IEs use standard, but not all
+        return (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
+                 || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
+                 || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
+                 || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
+                 || statusCode === 12152    // ERROR_HTTP_INVALID_SERVER_RESPONSE
+                 || statusCode === 0 );
       },
       "gecko" : function( statusCode ) {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)

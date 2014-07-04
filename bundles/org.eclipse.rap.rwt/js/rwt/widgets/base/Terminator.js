@@ -24,7 +24,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Terminator", {
 
   members : {
 
-    _applyTextColor : function( value, old ) {
+    _applyTextColor : function() {
       this._renderTextColor();
     },
 

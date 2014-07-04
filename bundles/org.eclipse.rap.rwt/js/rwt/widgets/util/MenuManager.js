@@ -95,7 +95,7 @@ rwt.qx.Class.define( "rwt.widgets.util.MenuManager", {
         } else {
           var hasOpener =
             menu.getOpener() instanceof rwt.widgets.MenuItem;
-          var menu = hasOpener ? menu.getOpener().getParentMenu() : null;
+            menu = hasOpener ? menu.getOpener().getParentMenu() : null;
         }
       }
       return menuBar;

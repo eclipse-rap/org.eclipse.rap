@@ -108,13 +108,13 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     },
 
     // [if] Override original qooxdoo Spinner method. Fix for bug 209476
-    _oninput : function( evt ) {
+    _oninput : function() {
       this._suspendTextFieldUpdate = true;
       this._checkValue( true, false );
       this._suspendTextFieldUpdate = false;
     },
 
-    _onChangeValue : function( evt ) {
+    _onChangeValue : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var connection = rwt.remote.Connection.getInstance();
         var remoteObject = connection.getRemoteObject( this );
@@ -158,7 +158,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     /////////////////
     // Digits support
 
-    _applyDigits : function( value, old ) {
+    _applyDigits : function() {
       var spinnerValue = this.getManager().getValue();
       if( this.getDigits() > 0 ) {
         this._textfield.setValue( this._format( spinnerValue ) );
@@ -167,7 +167,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    _applyDecimalSeparator : function( value, old ) {
+    _applyDecimalSeparator : function() {
       var spinnerValue = this.getManager().getValue();
       if( this.getDigits() > 0 ) {
         this._textfield.setValue( this._format( spinnerValue ) );
@@ -202,7 +202,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       return result;
     },
 
-    _onFocusOut : function( evt ) {
+    _onFocusOut : function() {
       this._checkValue( true, false );
     },
 
@@ -214,7 +214,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    _onchange : function( evt ) {
+    _onchange : function() {
       var value = this.getManager().getValue();
       if( !this._suspendTextFieldUpdate ) {
         if( this.getDigits() > 0 ) {

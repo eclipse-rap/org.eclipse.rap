@@ -229,7 +229,6 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _drawImage : function( operation ) {
       var args = operation.slice( 1 );
-      var simple = args.length === 3;
       var image = new Image();
       image.src = args[ 0 ];
       args[ 0 ] = image;

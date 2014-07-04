@@ -64,7 +64,7 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
 
   members : {
 
-    _onChangeSize : function( evt ) {
+    _onChangeSize : function() {
       this._handle.setWidth( this.getWidth() );
       this._handle.setHeight( this.getHeight() );
     },
@@ -115,13 +115,13 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
       this._sendWidgetSelected();
     },
 
-    _onMouseUpX : function( evt ) {
+    _onMouseUpX : function() {
       if( this.getCapture() ) {
         this._commonMouseUp();
       }
     },
 
-    _onMouseUpY : function( evt ) {
+    _onMouseUpY : function() {
       if( this.getCapture() ) {
         this._commonMouseUp();
       }

@@ -125,7 +125,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
     },
 
-    _onChangeSize : function( event ) {
+    _onChangeSize : function() {
       this._updateThumbSize();
     },
 
@@ -143,8 +143,8 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
         if( sel < this._minimum ) {
           sel = this._minimum;
         }
-        if( sel > ( this._maximum - this._thumbWidth ) ) {
-          sel = this._maximum - this._thumbWidth;
+        if( sel > ( this._maximum - this._thumbLength ) ) {
+          sel = this._maximum - this._thumbLength;
         }
         this._setSelection( sel );
       }
@@ -157,7 +157,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
     },
 
-    _onMouseUp : function( event ) {
+    _onMouseUp : function() {
       this.setCapture( false );
       this._autoRepeat = "";
       this._delayTimer.stop();
@@ -291,7 +291,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
     },
 
-    _onRepeatTimerInterval : function( event ) {
+    _onRepeatTimerInterval : function() {
       switch( this._autoRepeat ) {
         case "minButton":
           this._setSelection( this._selection - this._increment );
@@ -320,7 +320,6 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
       if( this._autoRepeat === "" || this._autoRepeat === mode ) {
         this._autoRepeat = mode;
-        var thumbMove = this._pageIncrement * this._pxStep + thumbHalf;
         this._setSelection( newSelection );
       }
     },
@@ -413,10 +412,9 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
     _getLineSize : function() {
       var buttonSize = this._getMinButtonWidth() + this._getMaxButtonWidth();
-      var result =   this._getSliderSize()
-                   - this.getFrameWidth()
-                   - buttonSize;
-      return result;
+      return   this._getSliderSize()
+             - this.getFrameWidth()
+             - buttonSize;
     },
 
     _getSliderSize : function() {

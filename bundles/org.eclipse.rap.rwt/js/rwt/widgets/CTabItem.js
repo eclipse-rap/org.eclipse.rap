@@ -244,13 +244,13 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
       return event.getDomTarget() === this.getCellNode( 2 );
     },
 
-    _onChangeParent : function( event ) {
+    _onChangeParent : function() {
       if( !this._parent._isInGlobalDisposeQueue ) {
         this._updateNextSelected();
       }
     },
 
-    _onChangeLeft : function( event ) {
+    _onChangeLeft : function() {
       this.toggleState( "firstItem", this.getLeft() === 0 );
     }
   }

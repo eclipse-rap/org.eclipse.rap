@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -47,7 +47,7 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
       this.setCellContent( 0, value );
     },
 
-    getLabel : function( value ) {
+    getLabel : function() {
       return this.getCellContent( 0 );
     },
 
@@ -65,12 +65,12 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
     },
 
     // overwritten:
-    getCellHeight : function( cell ) {
+    getCellHeight : function() {
       return this.getHeight() - this.getPaddingTop();
     },
 
     // overwritten:
-    getCellWidth : function( cell ) {
+    getCellWidth : function() {
       return this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
     }
 

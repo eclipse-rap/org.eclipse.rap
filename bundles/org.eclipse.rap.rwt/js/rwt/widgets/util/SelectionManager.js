@@ -1053,7 +1053,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _ondragup : function(e)
+    _ondragup : function()
     {
       this.getBoundedWidget().removeEventListener("mouseup", this._ondragup, this);
       this.getBoundedWidget().setCapture(false);
@@ -1113,7 +1113,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @param e {Event} TODOC
      * @return {void}
      */
-    handleClick : function(vItem, e) {},
+    handleClick : function() {},
 
     // currently unused placeholder
     /**
@@ -1124,7 +1124,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @param e {Event} TODOC
      * @return {void}
      */
-    handleDblClick : function(vItem, e) {},
+    handleDblClick : function() {},
 
 
     /**
@@ -1622,36 +1622,6 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
     },
 
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @abstract
-     * @param vItem {var} TODOC
-     * @return {var}
-     * @throws the abstract function warning.
-     */
-    getAbove : function(vItem) {
-      throw new Error("getAbove(): Not implemented yet");
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @abstract
-     * @param vItem {var} TODOC
-     * @return {var}
-     * @throws the abstract function warning.
-     */
-    getUnder : function(vItem) {
-      throw new Error("getUnder(): Not implemented yet");
-    },
-
-
-
-
     /*
     ---------------------------------------------------------------------------
       PAGE HANDLING
@@ -1667,7 +1637,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @param vItem {var} TODOC
      * @return {var} TODOC
      */
-    getPageUp : function(vItem)
+    getPageUp : function()
     {
       // Find next item
       var nextItem = this.getLeadItem();
@@ -1729,7 +1699,7 @@ rwt.qx.Class.define("rwt.widgets.util.SelectionManager",
      * @param vItem {var} TODOC
      * @return {var} TODOC
      */
-    getPageDown : function(vItem)
+    getPageDown : function()
     {
       // Find next item
       var nextItem = this.getLeadItem();

@@ -148,11 +148,11 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       } );
     },
 
-    _applyBackgroundColor : function( value, old ) {
+    _applyBackgroundColor : function( value ) {
       this._body.setBackgroundColor( value );
     },
 
-    _applyBackgroundImage : function( value, old ) {
+    _applyBackgroundImage : function( value ) {
       this._body.setUserData( "backgroundImageSize", this.getUserData( "backgroundImageSize" ) );
       this._body.setBackgroundImage( value );
     },
@@ -367,7 +367,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       this._minButton.setHeight( this._minButtonBounds[ 3 ] );
     },
 
-    hideMinButton : function( left ) {
+    hideMinButton : function() {
       if( this._minButton != null ) {
         this._minButton.removeEventListener( "mousedown", this._onMinMaxExecute, this );
         var wm = rwt.remote.WidgetManager.getInstance();
@@ -387,7 +387,6 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
     _updateLayout : function() {
       // TODO [rst] take actual border width into account
       var borderWidth = this.hasState( "rwt_BORDER" ) ? 1 : 0;
-      var frameWidth = this.hasState( "rwt_FLAT" ) ? 0 : 2;
       var sepBorderWidth = 1;
       var width = this.getWidth() - borderWidth * 2;
       var tabHeight = this._tabHeight + 1;
@@ -414,7 +413,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       }
     },
 
-    _onChevronExecute : function( evt ) {
+    _onChevronExecute : function() {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
         if( !rwt.remote.EventUtil.getSuspended() ) {
           var server = rwt.remote.Connection.getInstance();

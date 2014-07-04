@@ -61,7 +61,7 @@ rwt.widgets.util.GridSynchronizer.prototype = {
     }
   },
 
-  _onFocusItemChanged : function( event ) {
+  _onFocusItemChanged : function() {
     if( !rwt.remote.EventUtil.getSuspended() ) {
       var connection = rwt.remote.Connection.getInstance();
       var itemId = this._getItemId( this._grid.getFocusItem() );
@@ -69,7 +69,7 @@ rwt.widgets.util.GridSynchronizer.prototype = {
     }
   },
 
-  _onTopItemChanged : function( event ) {
+  _onTopItemChanged : function() {
     if( !rwt.remote.EventUtil.getSuspended() ) {
       var vScroll = this._grid.getVerticalBar();
       var connection = rwt.remote.Connection.getInstance();
@@ -91,7 +91,7 @@ rwt.widgets.util.GridSynchronizer.prototype = {
     }
   },
 
-  _onScrollLeftChanged : function( event ) {
+  _onScrollLeftChanged : function() {
     // TODO [tb] : There should be a check for suspended,
     // but currently this is needed to sync the value with the
     // server when the scrollbars are hidden by the server.

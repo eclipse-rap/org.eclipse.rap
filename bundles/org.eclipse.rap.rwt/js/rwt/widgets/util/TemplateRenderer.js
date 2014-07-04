@@ -19,7 +19,7 @@ rwt.widgets.util.TemplateRenderer = function( template, parentElement, zIndexOff
   this._template = template;
   this._container = template._createContainer( {
     "element" : parentElement,
-    "zIndexOffset" : 100
+    "zIndexOffset" : zIndexOffset
   } );
 };
 

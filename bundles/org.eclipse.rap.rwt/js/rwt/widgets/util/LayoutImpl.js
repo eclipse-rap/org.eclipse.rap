@@ -255,7 +255,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vChild {rwt.widgets.base.Widget} changed child widget
      * @return {void}
      */
-    updateSelfOnChildOuterWidthChange : function(vChild) {},
+    updateSelfOnChildOuterWidthChange : function() {},
 
 
     /**
@@ -268,7 +268,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vChild {rwt.widgets.base.Widget} changed child widget
      * @return {void}
      */
-    updateSelfOnChildOuterHeightChange : function(vChild) {},
+    updateSelfOnChildOuterHeightChange : function() {},
 
 
 
@@ -289,7 +289,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vChild {rwt.widgets.base.Widget} changed child widget
      * @return {boolean}
      */
-    updateChildOnInnerWidthChange : function(vChild) {},
+    updateChildOnInnerWidthChange : function() {},
 
 
     /**
@@ -302,7 +302,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vChild {rwt.widgets.base.Widget} changed child widget
      * @return {void}
      */
-    updateChildOnInnerHeightChange : function(vChild) {},
+    updateChildOnInnerHeightChange : function() {},
 
 
 
@@ -323,7 +323,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vJobQueue {Object} TODOC
      * @return {void}
      */
-    updateSelfOnJobQueueFlush : function(vJobQueue) {},
+    updateSelfOnJobQueueFlush : function() {},
 
 
 
@@ -344,7 +344,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vJobQueue {Object} TODOC
      * @return {boolean}
      */
-    updateChildrenOnJobQueueFlush : function(vJobQueue) {},
+    updateChildrenOnJobQueueFlush : function() {},
 
 
 
@@ -365,7 +365,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vIndex {Integer} index of the child
      * @return {void}
      */
-    updateChildrenOnAddChild : function(vChild, vIndex) {},
+    updateChildrenOnAddChild : function() {},
 
 
     /**
@@ -379,7 +379,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vIndex {Integer} index of the child
      * @return {void}
      */
-    updateChildrenOnRemoveChild : function(vChild, vIndex) {},
+    updateChildrenOnRemoveChild : function() {},
 
 
     /**
@@ -394,7 +394,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vOldIndex {Integer} old index of the child
      * @return {void}
      */
-    updateChildrenOnMoveChild : function(vChild, vIndex, vOldIndex) {},
+    updateChildrenOnMoveChild : function() {},
 
 
 
@@ -440,7 +440,7 @@ rwt.qx.Class.define("rwt.widgets.util.LayoutImpl",
      * @param vJobs {Set} layout changes to perform
      * @return {void}
      */
-    layoutChild : function(vChild, vJobs) {},
+    layoutChild : function() {},
 
 
     /**

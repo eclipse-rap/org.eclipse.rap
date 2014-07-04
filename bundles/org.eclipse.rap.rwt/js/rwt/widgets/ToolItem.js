@@ -152,7 +152,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       this.dispatchSimpleEvent( "dropDownClicked" );
     },
 
-    _applyDropDownArrow : function( value, oldValue ) {
+    _applyDropDownArrow : function( value ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
       var height = value ? value[ 2 ] : 0;
@@ -160,7 +160,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       this.setCellDimension( 4, width, height );
     },
 
-    _applySeparatorBorder : function( value, oldValue ) {
+    _applySeparatorBorder : function( value ) {
       this._queueSeparatorBorder( value );
     },
 

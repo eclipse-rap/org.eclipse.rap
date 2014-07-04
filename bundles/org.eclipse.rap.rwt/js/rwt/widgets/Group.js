@@ -119,12 +119,12 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       this._legend.setFont( value );
     },
 
-    _onMouseOver : function( event ) {
+    _onMouseOver : function() {
       this._legend.addState( "over" );
       this._frame.addState( "over" );
     },
 
-    _onMouseOut : function( event ) {
+    _onMouseOut : function() {
       this._legend.removeState( "over" );
       this._frame.removeState( "over" );
     },

@@ -61,6 +61,7 @@ rwt.util.Objects = {
    * Checks if the given object contains any keys.
    */
   isEmpty : function( object ) {
+    /*jshint unused:false */
     for( var key in object ) {
       return false;
     }

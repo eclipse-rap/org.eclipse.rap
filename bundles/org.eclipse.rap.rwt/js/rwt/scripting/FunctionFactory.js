@@ -13,11 +13,10 @@ rwt.define( "rwt.scripting", {} );
 
 (function(){
 
-/*global handleEvent:false */
 // TODO [rst] Define directly using rwt.define, remove surrounding function scope
 rwt.scripting.FunctionFactory = {
 
-  createFunction : function( functionScript, name, scope ) {
+  createFunction : function( functionScript, name ) {
     var result;
     var code = [
       functionScript,

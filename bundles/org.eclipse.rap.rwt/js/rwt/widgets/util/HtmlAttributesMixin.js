@@ -23,7 +23,7 @@ rwt.qx.Mixin.define( "rwt.widgets.util.HtmlAttributesMixin", {
       }
     },
 
-    clearHtmlAttributes : function( map ) {
+    clearHtmlAttributes : function() {
       if( !this._htmlAttributes ) {
         return;
       }

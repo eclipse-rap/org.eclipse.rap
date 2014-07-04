@@ -361,7 +361,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
      * @param vChild {var} TODOC
      * @return {void}
      */
-    updateSelfOnChildOuterWidthChange : function(vChild)
+    updateSelfOnChildOuterWidthChange : function()
     {
       // if a childrens outer width changes we need to update our accumulated
       // width of all childrens (used for center or right alignments)
@@ -808,7 +808,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationX : function(vChild, vJobs)
+    layoutChild_locationX : function(vChild)
     {
       var vWidget = this.getWidget();
 
@@ -883,7 +883,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationY : function(vChild, vJobs)
+    layoutChild_locationY : function(vChild)
     {
       var vWidget = this.getWidget();
 

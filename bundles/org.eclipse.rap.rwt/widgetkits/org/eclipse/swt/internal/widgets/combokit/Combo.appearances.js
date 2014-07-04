@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -27,7 +28,7 @@ var appearances = {
   },
 
   "combo-list" : {
-    style : function( states ) {
+    style : function() {
       return {};
     }
   },
@@ -57,7 +58,7 @@ var appearances = {
   },
 
   "combo-list-row-overlay" : {
-    style : function( states ) {
+    style : function() {
       return {
         foreground : "undefined",
         background : "undefined",

@@ -144,7 +144,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     },
 
     //overwritten:
-    _afterRenderLayout : function( changes ) {
+    _afterRenderLayout : function() {
       if( this.hasState( "focused" ) ) {
          this._showFocusIndicator();
       }
@@ -156,11 +156,11 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
       focusIndicator.show( this, "Button-FocusIndicator", node );
     },
 
-    _onFocus : function( event ) {
+    _onFocus : function() {
       this._showFocusIndicator();
     },
 
-    _onBlur : function( event ) {
+    _onBlur : function() {
       var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
       focusIndicator.hide( this );
     },

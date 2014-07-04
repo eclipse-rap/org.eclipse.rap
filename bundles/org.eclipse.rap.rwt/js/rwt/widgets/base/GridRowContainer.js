@@ -52,7 +52,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
   statics : {
 
     createRenderConfig : function() {
-      var result = {
+      return {
         "textColor" : null,
         "font" : null,
         "enabled" : true,
@@ -81,7 +81,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
         "itemCellCheckLeft" : [],
         "itemCellCheckWidth" : []
       };
-      return result;
     }
 
   },
@@ -146,7 +145,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       }
     },
 
-    getCellToolTipsEnabled : function( value ) {
+    getCellToolTipsEnabled : function() {
       return this._cellToolTipsEnabled;
     },
 
@@ -336,7 +335,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     },
 
     _updateRowCount : function() {
-      var height = this.getHeight();
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new rwt.widgets.base.GridRow( this.getParent() );

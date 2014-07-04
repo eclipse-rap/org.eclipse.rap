@@ -119,12 +119,11 @@ rwt.remote.DNDSupport.prototype = {
     var event = {};
     event[ "widget" ] = this._getDragSource( widget );
     event[ "eventName" ] = type;
-    var param = {
+    event[ "param" ] = {
       "x" : x,
       "y" : y,
       "time" : rwt.remote.EventUtil.eventTimestamp()
     };
-    event[ "param" ] = param;
     this._eventQueue[ type ] = event;
     var connection = rwt.remote.Connection.getInstance();
     if( !this._requestScheduled ) {
@@ -230,7 +229,7 @@ rwt.remote.DNDSupport.prototype = {
     var event = {};
     event[ "widget" ] = this._getDropTarget( widget );
     event[ "eventName" ] = type;
-    var param = {
+    event[ "param" ] = {
       "x" : x,
       "y" : y,
       "item" : itemId,
@@ -240,7 +239,6 @@ rwt.remote.DNDSupport.prototype = {
       "source" : source,
       "time" : time
     };
-    event[ "param" ] = param;
     this._eventQueue[ type ] = event;
     if( !this._requestScheduled ) {
       var connection = rwt.remote.Connection.getInstance();
@@ -477,7 +475,7 @@ rwt.remote.DNDSupport.prototype = {
   ///////////////
   // eventhandler
 
-  _onSend : function( event ) {
+  _onSend : function() {
     this._attachEvents();
     this._requestScheduled = false;
     this._blockDrag = false;

@@ -68,7 +68,7 @@ rwt.qx.Class.define( "rwt.widgets.util.IframeManager", {
      * @param evt {Event} TODOC
      * @return {void}
      */
-    handleMouseDown : function(evt)
+    handleMouseDown : function()
     {
       var iframeMap = this._blockData = rwt.util.Objects.copy(this.getAll());
       for (var key in iframeMap) {
@@ -84,7 +84,7 @@ rwt.qx.Class.define( "rwt.widgets.util.IframeManager", {
      * @param evt {Event} TODOC
      * @return {void}
      */
-    handleMouseUp : function(evt)
+    handleMouseUp : function()
     {
       var iframeMap = this._blockData;
       for (var key in iframeMap) {

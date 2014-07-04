@@ -53,7 +53,7 @@ rwt.qx.Class = {
 
   _normalizeConfig : function( config ) {
     if( !config ) {
-      var config = {};
+      config = {};
     }
     if( config.include && !( config.include instanceof Array ) ) {
       config.include = [ config.include ];
@@ -238,27 +238,6 @@ rwt.qx.Class = {
   },
 
   /**
-   * Whether a class is a direct or indirect sub class of another class,
-   * or both classes coincide.
-   *
-   * @param clazz {Class} the class to check.
-   * @param superClass {Class} the potential super class
-   * @return {Boolean} whether clazz is a sub class of superClass.
-   */
-  isSubClassOf : function( clazz, superClass ) {
-    if( !clazz ) {
-      return false;
-    }
-    if( clazz == superClass ) {
-      return true;
-    }
-    if( clazz.prototype instanceof superClass ) {
-      return true;
-    }
-    return false;
-  },
-
-  /**
    * This method will be attached to all classes to return
    * a nice identifier for them.
    *
@@ -279,7 +258,7 @@ rwt.qx.Class = {
    * @param events {Map} map of event names the class fires.
    * @param patch {Boolean ? false} Enable redefinition of event type?
    */
-  __addEvents : function( clazz, events, patch ) {
+  __addEvents : function( clazz, events ) {
     if( clazz.$$events ) {
       for( var key in events ) {
         clazz.$$events[ key ] = events[ key ];
@@ -490,7 +469,7 @@ rwt.qx.Class = {
    * @param construct {Function} the original constructor
    * @param name {String} name of the class
    */
-  __wrapConstructor : function( construct, name ) {
+  __wrapConstructor : function( construct ) {
     var init = this.__initializeClass;
     var wrapper = function() {
       // We can access the class/statics using arguments.callee

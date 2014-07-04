@@ -8,11 +8,12 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
   "dropdown" : {
-    style : function( states ) {
+    style : function() {
       return {};
     }
   },
@@ -42,7 +43,7 @@ var appearances = {
   },
 
   "dropdown-row-overlay" : {
-    style : function( states ) {
+    style : function() {
       return {
         foreground : "undefined",
         background : "undefined",

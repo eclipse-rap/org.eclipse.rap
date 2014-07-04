@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
  "file-upload" : {
     include : "atom",
- 
+
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
@@ -34,6 +35,6 @@ var appearances = {
       return result;
     }
   }
-  
+
 // END TEMPLATE //
 };

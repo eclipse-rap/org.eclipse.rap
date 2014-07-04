@@ -126,7 +126,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       this._update();
     },
 
-    getCustomVariant : function( value ) {
+    getCustomVariant : function() {
       return this._customVariant;
     },
 
@@ -135,7 +135,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       this._update();
     },
 
-    getText : function( value ) {
+    getText : function() {
       return this._text;
     },
 
@@ -162,7 +162,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       this._update();
     },
 
-    getFooterText : function( value ) {
+    getFooterText : function() {
       return this._footerText;
     },
 
@@ -176,7 +176,6 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     },
 
     setFooterFont : function( value ) {
-      var wm = rwt.remote.WidgetManager.getInstance();
       this._footerFont = value ? rwt.html.Font.fromArray( value ) : null;
       this._update();
     },
@@ -201,7 +200,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
       this._update();
     },
 
-    getSortDirection : function( value ) {
+    getSortDirection : function() {
       return this._sortDirection;
     },
 

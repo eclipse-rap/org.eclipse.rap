@@ -88,7 +88,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
   members : {
     _CELLORDER : [ "image", "image", "label" ],
 
-    _applyIcon : function( newValue, oldValue ) {
+    _applyIcon : function( newValue ) {
       this.setImage.apply( this, newValue );
     },
 
@@ -118,7 +118,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       this.setCellContent( 2, value );
     },
 
-    _applySelectionIndicator : function( value, old ) {
+    _applySelectionIndicator : function( value ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
       var height = value ? value[ 2 ] : 0;
@@ -203,7 +203,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       }
     },
 
-    _onMouseUp : function( event ) {
+    _onMouseUp : function() {
       this.setCapture( false );
       var hasPressed = this.hasState( "pressed" );
       var hasAbandoned = this.hasState( "abandoned" );
@@ -266,7 +266,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
     ////////////
     // Animation
 
-    _applyAnimation : function( newValue, oldValue ) {
+    _applyAnimation : function( newValue ) {
       if( newValue[ "hoverIn" ] || newValue[ "hoverOut" ] ) {
         if( this._animation == null ) {
           this._animation = new rwt.animation.Animation();
@@ -303,7 +303,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       }
     },
 
-    _initAnimation : function( event ) {
+    _initAnimation : function() {
       if( this.hasState( "pressed" ) ) {
         this._animation.cancel();
       } else {

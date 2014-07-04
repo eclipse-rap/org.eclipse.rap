@@ -43,7 +43,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
 
   members : {
 
-    _onCreate : function( evt ) {
+    _onCreate : function() {
       this._renderText();
     },
 
@@ -52,7 +52,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       this._applyHyperlinksStyleProperties();
     },
 
-    _onChangeEnabled : function( evt ) {
+    _onChangeEnabled : function() {
       this._applyHyperlinksStyleProperties();
       this._changeHyperlinksTabIndexProperty();
     },
@@ -103,7 +103,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _applyFont : function( value, old ) {
+    _applyFont : function( value ) {
       if( value ) {
         value.render( this );
       } else {
@@ -179,7 +179,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onMouseOver : function( evt ) {
+    _onMouseOver : function() {
       try {
         var style = this._getHyperlinkStyle( true );
         rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
@@ -188,7 +188,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onMouseOut : function( evt ) {
+    _onMouseOut : function() {
       try {
         var style = this._getHyperlinkStyle( false );
         rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
@@ -261,7 +261,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onFocusOut : function( evt ) {
+    _onFocusOut : function() {
       this._setFocusedLink( -1 );
     },
 

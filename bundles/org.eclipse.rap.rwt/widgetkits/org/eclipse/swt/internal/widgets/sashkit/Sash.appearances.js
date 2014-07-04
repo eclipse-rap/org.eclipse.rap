@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -25,7 +26,7 @@ var appearances = {
   },
 
   "sash-slider" : {
-    style : function( states ) {
+    style : function() {
       return {
         zIndex : 1e7,
         opacity : 0.3,

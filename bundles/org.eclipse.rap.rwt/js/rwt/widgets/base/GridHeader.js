@@ -147,7 +147,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       this.setScrollLeft( this._scrollLeft );
     },
 
-    _fireUpdateEvent : function( event ) {
+    _fireUpdateEvent : function() {
       this.createDispatchEvent( "columnLayoutChanged" );
     },
 

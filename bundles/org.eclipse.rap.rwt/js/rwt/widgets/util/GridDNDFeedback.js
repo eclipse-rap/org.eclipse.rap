@@ -188,7 +188,7 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
       }
     },
 
-    _onExpandTimer : function( event ) {
+    _onExpandTimer : function() {
       this._stopExpandTimer();
       var item = this._tree._rowContainer.findItemByRow( this._currentRow );
       item.setExpanded( true );
@@ -219,13 +219,12 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
       return result;
     },
 
-    _onScrollTimer : function( event ) {
+    _onScrollTimer : function() {
       this._stopScrollTimer();
       var offset = this._getScrollDirection( this._currentRow );
       if( offset !== 0 ) {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
         if( item != null ) {
-          var index = item.getFlatIndex();
           var newItem = offset > 0 ? item.getNextItem() : item.getPreviousItem();
           if( newItem != null ) {
             var newTopIndex = this._tree._topItemIndex + offset;

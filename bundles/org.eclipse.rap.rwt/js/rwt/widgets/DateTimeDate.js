@@ -215,12 +215,12 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this._separator2.setFont( value );
     },
 
-    _onFocusIn : function( event ) {
+    _onFocusIn : function() {
       this._focusedTextField.addState( "selected" );
       this._initialEditing = true;
     },
 
-    _onFocusOut : function( event ) {
+    _onFocusOut : function() {
       if( this._focusedTextField === this._yearTextField ) {
         this._checkAndApplyYearValue();
       }
@@ -259,7 +259,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       }
     },
 
-    _onSpinnerChange : function( event ) {
+    _onSpinnerChange : function() {
       if( this._focusedTextField != null ) {
         var oldValue = this._focusedTextField.getText();
         // Set the value
@@ -352,7 +352,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       }
     },
 
-    _handleKeyEnter : function( event ) {
+    _handleKeyEnter : function() {
       rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 
@@ -675,14 +675,14 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     //////////////////////////////////////
     // Drop-down calendar handling methods
 
-    _onAppear : function( event ) {
+    _onAppear : function() {
       if( this._drop_down ) {
         this.getTopLevelWidget().add( this._calendar );
         this._setCalendarLocation();
       }
     },
 
-    _onWindowBlur : function( event ) {
+    _onWindowBlur : function() {
       this._hideCalendar();
     },
 
@@ -693,7 +693,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       }
     },
 
-    _onCalendarDateChange : function( event ) {
+    _onCalendarDateChange : function() {
       if( !this._internalDateChanged ) {
         this._setDate( this._calendar.getDate() );
         this._sendChanges();

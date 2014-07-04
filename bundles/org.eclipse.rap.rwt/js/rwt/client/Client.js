@@ -163,10 +163,9 @@ rwt.client.Client = {
   supportsCss3 : function() {
     var engine = rwt.client.Client.getEngine();
     var version = rwt.client.Client.getVersion();
-    var result =    engine === "webkit" && version >= 522
-                 || engine === "gecko" && version >= 2 // firefox 4+
-                 || engine === "trident" && version >= 9; // IE9+
-    return result;
+    return    engine === "webkit" && version >= 522
+           || engine === "gecko" && version >= 2 // firefox 4+
+           || engine === "trident" && version >= 9;
   },
 
   // NOTE [tb] : only works in IE right now.

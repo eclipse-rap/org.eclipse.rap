@@ -154,21 +154,6 @@ rwt.qx.Class.define( "rwt.event.DomEvent", {
     },
 
     /**
-     * Returns whether the ctrl key or (on the Mac) the command key is pressed.
-     *
-     * @type member
-     * @return {Boolean} <code>true</code> if the command key is pressed on the Mac
-     *           or the ctrl key is pressed on another system.
-     */
-    isCtrlOrCommandPressed : function() {
-      if( rwt.client.Client.getPlatform() === "mac" ) {
-        return this.getDomEvent().metaKey;
-      } else {
-        return this.getDomEvent().ctrlKey;
-      }
-    },
-
-    /**
      * TODOC
      *
      * @type member

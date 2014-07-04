@@ -738,7 +738,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyModal : function( value, old ) {
+    _applyModal : function( value ) {
       // Inform blocker
       if( this._initialLayoutDone && this.getVisibility() && this.getDisplay() ) {
         var vTop = this.getTopLevelWidget();
@@ -759,7 +759,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {var} TODOC
      */
-    _applyAllowClose : function(value, old) {
+    _applyAllowClose : function() {
       this._closeButtonManager();
     },
 
@@ -772,7 +772,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {var} TODOC
      */
-    _applyAllowMaximize : function(value, old) {
+    _applyAllowMaximize : function() {
       this._maximizeButtonManager();
     },
 
@@ -785,7 +785,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {var} TODOC
      */
-    _applyAllowMinimize : function(value, old) {
+    _applyAllowMinimize : function() {
       this._minimizeButtonManager();
     },
 
@@ -834,7 +834,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowCaption : function(value, old)
+    _applyShowCaption : function(value)
     {
       if (value) {
         this._captionBar.addAt(this._captionTitle, this.getShowIcon() ? 1 : 0);
@@ -851,7 +851,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowIcon : function(value, old)
+    _applyShowIcon : function(value)
     {
       if (value) {
         this._captionBar.addAtBegin(this._captionIcon);
@@ -868,7 +868,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowStatusbar : function(value, old)
+    _applyShowStatusbar : function(value)
     {
       if (value) {
         this._layout.addAtEnd(this._statusBar);
@@ -885,7 +885,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowClose : function(value, old)
+    _applyShowClose : function(value)
     {
       if (value) {
         this._captionBar.addAtEnd(this._closeButton);
@@ -902,7 +902,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowMaximize : function(value, old)
+    _applyShowMaximize : function(value)
     {
       if (value)
       {
@@ -929,7 +929,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyShowMinimize : function(value, old)
+    _applyShowMinimize : function(value)
     {
       if (value) {
         this._captionBar.addAfter(this._minimizeButton, this._captionFlex);
@@ -999,7 +999,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyStatus : function(value, old) {
+    _applyStatus : function(value) {
       this._statusText.setText(value);
     },
 
@@ -1012,7 +1012,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {void} TODOC
      */
-    _applyMaxWidth : function(value, old)
+    _applyMaxWidth : function(value)
     {
       this.base(arguments, value);
       this._maximizeButtonManager();
@@ -1027,7 +1027,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {void} TODOC
      */
-    _applyMaxHeight : function(value, old)
+    _applyMaxHeight : function(value)
     {
       this.base(arguments, value);
       this._maximizeButtonManager();
@@ -1042,7 +1042,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param old {var} Previous value
      * @return {var} TODOC
      */
-    _applyResizable : function(value, old) {
+    _applyResizable : function() {
       this._maximizeButtonManager();
     },
 
@@ -1054,7 +1054,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyCaption : function(value, old) {
+    _applyCaption : function(value) {
       this._captionTitle.setText(value);
     },
 
@@ -1065,7 +1065,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyIcon : function(value, old) {
+    _applyIcon : function(value) {
       this._captionIcon.setSource(value);
     },
 
@@ -1227,7 +1227,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param e {rwt.event.MouseEvent} mouse down event
      * @return {void}
      */
-    _onwindowmousedown : function(e) {
+    _onwindowmousedown : function() {
       try {
         this.focus();
       } catch( ex ) {
@@ -1431,7 +1431,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param e {rwt.event.MouseEvent} mouse up event
      * @return {void}
      */
-    _oncaptionmouseup : function(e)
+    _oncaptionmouseup : function()
     {
       var s = this._dragSession;
 
@@ -1506,7 +1506,7 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
      * @param e {rwt.event.MouseEvent} double click event
      * @return {void}
      */
-    _oncaptiondblblick : function(e)
+    _oncaptiondblblick : function()
     {
       if (!this._maximizeButton.getEnabled()) {
         return;

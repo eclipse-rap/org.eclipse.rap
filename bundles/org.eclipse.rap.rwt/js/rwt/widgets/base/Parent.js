@@ -169,7 +169,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyFocusHandler : function(value, old)
+    _applyFocusHandler : function(value)
     {
       if (value)
       {
@@ -525,7 +525,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @return {Parent} This widget.
      * @throws TODOC
      */
-    add : function(varargs)
+    add : function()
     {
       var vWidget;
 
@@ -672,7 +672,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @type member
      * @param varargs {rwt.widgets.base.Widget} variable number of widgets to remove
      */
-    remove : function(varargs)
+    remove : function( /*children*/ )
     {
       var vWidget;
 
@@ -981,7 +981,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param vHint {var} TODOC
      * @return {void}
      */
-    _handleDisplayableCustom : function(vDisplayable, vParent, vHint)
+    _handleDisplayableCustom : function()
     {
       this.forEachChild(function() {
         this._handleDisplayable();
@@ -1216,7 +1216,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param vOld {var} TODOC
      * @return {void}
      */
-    _changeInnerWidth : function(vNew, vOld)
+    _changeInnerWidth : function()
     {
       var vLayout = this.getLayoutImpl();
 
@@ -1243,7 +1243,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param vOld {var} TODOC
      * @return {void}
      */
-    _changeInnerHeight : function(vNew, vOld)
+    _changeInnerHeight : function()
     {
       var vLayout = this.getLayoutImpl();
 
@@ -1269,7 +1269,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param vChild {var} TODOC
      * @return {var} TODOC
      */
-    getInnerWidthForChild : function(vChild) {
+    getInnerWidthForChild : function() {
       return this.getInnerWidth();
     },
 
@@ -1281,7 +1281,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
      * @param vChild {var} TODOC
      * @return {var} TODOC
      */
-    getInnerHeightForChild : function(vChild) {
+    getInnerHeightForChild : function() {
       return this.getInnerHeight();
     },
 
@@ -1332,7 +1332,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
   *****************************************************************************
   */
 
-  defer : function(statics, members, properties)
+  defer : function(statics, members)
   {
     // TODO There must be a better way than to define this in defer
 

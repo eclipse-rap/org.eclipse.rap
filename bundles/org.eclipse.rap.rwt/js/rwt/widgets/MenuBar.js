@@ -242,7 +242,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       }
     },
 
-    _handleKeyRight : function( event ) {
+    _handleKeyRight : function() {
       if( this._hoverItem ) {
         var next = this._hoverItem.getNextSibling();
         if( next ) {
@@ -251,7 +251,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
       }
     },
 
-    _handleKeyLeft : function( event ) {
+    _handleKeyLeft : function() {
       if( this._hoverItem ) {
         var next = this._hoverItem.getPreviousSibling();
         if( next ) {

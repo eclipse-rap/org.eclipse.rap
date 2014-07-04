@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 namespace( "rwt.widgets" );
 
-rwt.widgets.Display = function( properties ) {
+rwt.widgets.Display = function() {
   this._document = rwt.widgets.base.ClientDocument.getInstance();
   this._server = rwt.remote.Connection.getInstance();
   this._exitConfirmation = null;
@@ -29,7 +29,7 @@ rwt.widgets.Display.getCurrent = function() {
 };
 
 
-rwt.widgets.Display._onAppearFocus = function( evt ) {
+rwt.widgets.Display._onAppearFocus = function() {
   var widget = this;
   widget.focus();
   widget.removeEventListener( "appear", rwt.widgets.Display._onAppearFocus, widget );
@@ -129,7 +129,7 @@ rwt.widgets.Display.prototype = {
     rwt.runtime.System.getInstance().addEventListener( "unload", this._onUnload, this );
   },
 
-  _onResize : function( evt ) {
+  _onResize : function() {
     this._appendWindowSize();
     if( this._hasResizeListener ) {
       rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Resize", null, 500 );
@@ -142,7 +142,7 @@ rwt.widgets.Display.prototype = {
     }
   },
 
-  _onSend : function( evt ) {
+  _onSend : function() {
     // TODO [tb] : This will attach the cursorLocation as the last operation, but should be first
     var pageX = rwt.event.MouseEvent.getPageX();
     var pageY = rwt.event.MouseEvent.getPageY();

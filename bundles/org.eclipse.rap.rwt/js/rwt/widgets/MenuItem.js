@@ -201,7 +201,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       return this._subMenu;
     },
 
-    _applySelectionIndicator : function( value, old ) {
+    _applySelectionIndicator : function( value ) {
       //never remove cell-node
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
@@ -251,7 +251,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
       this._setPreferredCellWidth( 2, this.getCellWidth( 2 ) );
     },
 
-    _applyArrow : function( value, old ) {
+    _applyArrow : function( value ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 13;
       var height = value ? value[ 2 ] : 0;

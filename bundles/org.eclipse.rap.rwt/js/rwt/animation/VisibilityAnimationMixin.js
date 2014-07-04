@@ -54,7 +54,7 @@ rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
     _disappearAnimation : null,
     _animateDestroy : false,
 
-    _applyAnimation : function( newValue, oldValue ) {
+    _applyAnimation : function( newValue ) {
       this._configureAppearAnimation( newValue );
       this._configureDisappearAnimation( newValue );
     },
@@ -238,11 +238,11 @@ rwt.qx.Mixin.define( "rwt.animation.VisibilityAnimationMixin", {
     /////////
     // helper
 
-    _initSlideAnimation : function( event ) {
+    _initSlideAnimation : function() {
       this.setContainerOverflow( false );
     },
 
-    _finishSlideAnimation : function( event ) {
+    _finishSlideAnimation : function() {
       // TODO : could container overflow just be generally false, or use _applyHeight instead?
       this.setContainerOverflow( true );
     },

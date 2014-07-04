@@ -107,13 +107,13 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
   members : {
 
-    _onChangeWidth : function( evt ) {
+    _onChangeWidth : function() {
       this._line.setWidth( this.getWidth() - 2 * rwt.widgets.Scale.PADDING );
       this._updateStep();
       this._updateThumbPosition();
     },
 
-    _onChangeHeight : function( evt ) {
+    _onChangeHeight : function() {
       this._line.setHeight( this.getHeight() - 2 * rwt.widgets.Scale.PADDING );
       this._updateStep();
       this._updateThumbPosition();
@@ -260,7 +260,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
       }
     },
 
-    _onThumbMouseUp : function( evt ) {
+    _onThumbMouseUp : function() {
       this._thumb.setCapture( false );
     },
 

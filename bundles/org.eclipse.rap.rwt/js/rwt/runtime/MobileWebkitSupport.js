@@ -477,7 +477,7 @@ rwt.runtime.MobileWebkitSupport = {
     }
   },
 
-  _onOrientationEvent : function( domEvent ) {
+  _onOrientationEvent : function() {
     // Nothing to do yet
   },
 

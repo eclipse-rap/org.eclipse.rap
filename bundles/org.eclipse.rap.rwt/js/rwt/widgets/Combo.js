@@ -107,7 +107,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this._field.addEventListener( "selectionChanged", this._onTextSelectionChange, this );
     },
 
-    _onChangeParent : function( event ) {
+    _onChangeParent : function() {
       // DropDown requires valid parent focus root when creating
       if( !this._list ) {
         var appearance = this.getAppearance() + "-list";
@@ -325,7 +325,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onTextInput : function( event ) {
+    _onTextInput : function() {
       if( this._editable ) {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "text", this._field.getComputedValue() );
@@ -336,7 +336,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onListVisibleChanged : function( event ) {
+    _onListVisibleChanged : function() {
       var listVisible = this._list.getVisible();
       if( this._editable ) {
         this._field.setReadOnly( listVisible );
@@ -368,7 +368,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onTextSelectionChange : function( event ) {
+    _onTextSelectionChange : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
         remoteObject.set( "selection", this._field.getSelection() );
@@ -399,7 +399,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    _onSend : function( event ) {
+    _onSend : function() {
       rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
     },
 

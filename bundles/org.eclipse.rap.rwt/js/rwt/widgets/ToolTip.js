@@ -171,7 +171,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolTip", {
       };
     },
 
-    _onClick : function( evt ) {
+    _onClick : function() {
       this._hide();
       rwt.remote.EventUtil.notifySelected( this );
     },

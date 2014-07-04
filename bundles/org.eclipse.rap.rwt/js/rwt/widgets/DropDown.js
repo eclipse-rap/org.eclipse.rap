@@ -549,12 +549,12 @@
     }
   };
 
-  var onAppear = function( event ) {
+  var onAppear = function() {
     // NOTE: widget absolute position can change without changing it's relative postion, therefore:
     renderPosition.call( this );
   };
 
-  var onFocusChange = function( event ) {
+  var onFocusChange = function() {
     // NOTE : There is no secure way to get the newly focused widget at this point because
     //        it may have another focus root. Therefore we use this timeout and check afterwards:
     this._.hideTimer.start();
@@ -655,12 +655,6 @@
       result[ key ] = [];
     }
     return result;
-  };
-
-  var bind = function( context, method ) {
-    return function() {
-      return method.apply( context, arguments );
-    };
   };
 
   var hasFocus = function( control ) {

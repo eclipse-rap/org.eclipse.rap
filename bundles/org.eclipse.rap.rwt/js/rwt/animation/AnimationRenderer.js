@@ -112,11 +112,11 @@ rwt.qx.Class.define( "rwt.animation.AnimationRenderer", {
       return this._context;
     },
 
-    getStartValue : function( value ) {
+    getStartValue : function() {
       return this._startValue;
     },
 
-    getEndValue : function( value ) {
+    getEndValue : function() {
       return this._endValue;
     },
 

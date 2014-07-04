@@ -137,7 +137,7 @@ rwt.qx.Class.define( "rwt.event.DragAndDropHandler", {
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyDestinationWidget : function(value, old)
+    _applyDestinationWidget : function(value)
     {
       if (value)
       {

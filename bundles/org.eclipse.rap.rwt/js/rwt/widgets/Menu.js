@@ -125,7 +125,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       this._opener = value;
     },
 
-    getOpener : function( value ) {
+    getOpener : function() {
       return this._opener;
     },
 
@@ -376,14 +376,14 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       return item && item.getMenu && item.getMenu();
     },
 
-   _onOpenTimer : function( event ) {
+   _onOpenTimer : function() {
       this._openTimer.stop();
       this.setOpenItem( this._hoverItem );
       // fix for bug 299350
       this._closeTimer.stop();
     },
 
-    _onCloseTimer : function( event ) {
+    _onCloseTimer : function() {
       this._closeTimer.stop();
       this.setOpenItem( null );
     },

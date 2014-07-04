@@ -187,7 +187,7 @@ rwt.qx.Class.define( "rwt.qx.Object", {
      * @param varags {...*} variable number of arguments passed to the overwritten function
      * @return {var} the return value of the method of the base class.
      */
-    base : function( args, varags ) {
+    base : function( args ) {
       if( arguments.length === 1 ) {
         return args.callee.base.call( this );
       } else {
@@ -326,7 +326,7 @@ rwt.qx.Class.define( "rwt.qx.Object", {
           console.log( msg );
         }
       },
-      "default" : function( msg ) {
+      "default" : function() {
       }
     } ),
 
@@ -362,10 +362,10 @@ rwt.qx.Class.define( "rwt.qx.Object", {
      *
      * @param varargs {arguments} fields to dispose
      */
-    _disposeFields : function( varargs ) {
+    _disposeFields : function() {
       var name;
       for( var i = 0, l = arguments.length; i < l; i++ ) {
-        var name = arguments[ i ];
+        name = arguments[ i ];
         if( this[ name ] == null ) {
           continue;
         }
@@ -382,10 +382,10 @@ rwt.qx.Class.define( "rwt.qx.Object", {
      *
      * @param varargs {arguments} fields to dispose
      */
-    _disposeObjects : function( varargs ) {
+    _disposeObjects : function() {
       var name;
       for( var i = 0, l = arguments.length; i < l; i++ ) {
-        var name = arguments[ i ];
+        name = arguments[ i ];
         if( this[ name ] == null ) {
           continue;
         }

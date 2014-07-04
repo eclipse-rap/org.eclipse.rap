@@ -451,7 +451,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
       if( value ) {
         var repeat = target.___rwtStyle__backgroundRepeat;
         var position = target.___rwtStyle__backgroundPosition;
-        var size = target.___rwtStyle__backgroundSize;
         backgroundArray.push( this._getImageString( value, repeat, position ) );
       }
     },
@@ -621,10 +620,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     _resolveResource : function( url ) {
       return url;
-    },
-
-    _isAbsolute : function( url ) {
-      return url.slice( 0, 7 ) === "http://" || url.slice( 0, 8 ) === "https://";
     }
 
   }

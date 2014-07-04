@@ -62,7 +62,7 @@ rwt.qx.Class.define( "rwt.animation.Animation", {
       this._duration = value;
     },
 
-    getDuration : function( value ) {
+    getDuration : function() {
       return this._duration;
     },
 

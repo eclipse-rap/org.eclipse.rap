@@ -303,11 +303,11 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       this._syncFieldHeight();
     },
 
-    _changeInnerWidth : function( value, old ) {
+    _changeInnerWidth : function() {
       this._syncFieldWidth();
     },
 
-    _changeInnerHeight : function(value, old) {
+    _changeInnerHeight : function() {
       this._syncFieldHeight();
       this._centerFieldVertically();
     },
@@ -323,7 +323,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyCursor : function( value, old ) {
+    _applyCursor : function() {
       if( this.isCreated() ) {
         this._renderCursor();
       }
@@ -338,7 +338,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyTextAlign : function( value, old ) {
+    _applyTextAlign : function() {
       if( this._inputElement ) {
         this._renderTextAlign();
       }
@@ -355,7 +355,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       return this.base( arguments, value, old );
     },
 
-    _applyValue : function( value, old ) {
+    _applyValue : function() {
       this._renderValue();
       this._detectSelectionChange();
     },
@@ -374,13 +374,13 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       delete this._inValueProperty;
     },
 
-    _applyMaxLength : function( value, old ) {
+    _applyMaxLength : function( value ) {
       if( this._inputElement ) {
         this._inputElement.maxLength = value == null ? "" : value;
       }
     },
 
-    _applyReadOnly : function( value, old ) {
+    _applyReadOnly : function( value ) {
       if( this._inputElement ) {
         this._inputElement.readOnly = value;
       }
@@ -397,7 +397,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyFont : function( value, old ) {
+    _applyFont : function( value ) {
       this._styleFont( value );
       this._updateLineHeight();
     },
@@ -425,7 +425,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       }
     },
 
-    _applyTextShadow : function( value, oldValue ) {
+    _applyTextShadow : function( value ) {
       this.__textShadow = value;
       if( this._inputElement ) {
         this._renderTextShadow();
@@ -486,7 +486,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _oninput : function() {
       try {
-        var newValue = this.getComputedValue().toString();
         var doit = true;
         if( this.hasEventListeners( "input" ) ) {
           doit = this.dispatchEvent( new rwt.event.DataEvent( "input", this._typed ), true );
@@ -550,7 +549,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       this._typed = String.fromCharCode( e.getCharCode() );
     },
 
-    _onkeyup : function( event ) {
+    _onkeyup : function() {
       if( this._selectionNeedsUpdate ) {
         this._renderSelection();
       }
@@ -558,7 +557,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       this._typed = null;
     },
 
-    _onMouseDownUp : function( event ) {
+    _onMouseDownUp : function() {
       this._detectSelectionChange();
       this._typed = null;
     },
@@ -589,16 +588,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
       var oldValue = this.getValue();
       if( newValue !== oldValue ) {
         this._oninput();
-      }
-    },
-
-    _ieFirstInputFix : function() {
-      if( !this.isDisposed() ) {
-        this._inValueProperty = true;
-        this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
-        this._renderSelection();
-        this._firstInputFixApplied = true;
-        delete this._inValueProperty;
       }
     },
 

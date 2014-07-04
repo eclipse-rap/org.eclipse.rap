@@ -81,7 +81,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     },
 
     // overwritten
-    _applySource : function( value, oldValue ) {
+    _applySource : function() {
       // server syncs manually
     },
 
@@ -113,7 +113,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       }
     },
 
-    _onCreate : function( evt ) {
+    _onCreate : function() {
       if( !this.getEnabled() ) {
         this.block();
       }
@@ -177,7 +177,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       return accessible;
     },
 
-    _checkIframeAccess : function( functionName ) {
+    _checkIframeAccess : function() {
       if( !this._isContentAccessible() ) {
         var isSameDomain = this._srcInLocalDomain();
         if( !isSameDomain ) {

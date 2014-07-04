@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
       }
     },
 
-    _onChangeParent : function( evt ) {
+    _onChangeParent : function() {
       if( this._focusRoot != null ) {
         this._focusRoot.removeEventListener( "changeFocusedChild",
                                              this._onChangeFocusedChild,
@@ -89,11 +89,11 @@ rwt.qx.Class.define( "rwt.widgets.ScrolledComposite", {
       }
     },
 
-    _onMouseWheel : function( evt ) {
+    _onMouseWheel : function() {
       this.setBlockScrolling( false );
     },
 
-    _onTouch : function( evt ) {
+    _onTouch : function() {
       this.setBlockScrolling( false );
     },
 

@@ -469,7 +469,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
     _applyElement : function(value, old)
     {
       var iframeNode = this.setIframeNode(this._generateIframeElement());
-      var blockerNode = this.setBlockerNode(this._generateBlockerElement());
+      this.setBlockerNode(this._generateBlockerElement());
 
       this._syncSource();
       this._syncScrolling();
@@ -517,7 +517,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applySource : function(value, old)
+    _applySource : function()
     {
       if (this.isCreated()) {
         this._syncSource();
@@ -575,7 +575,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
 
 
     // property apply
-    _applyScrolling : function(value, old)
+    _applyScrolling : function()
     {
       if (this.isCreated()) {
         this._syncScrolling();
@@ -593,17 +593,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
     },
 
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     * @param propName {var} TODOC
-     * @param uniqModIds {var} TODOC
-     * @throws TODOC
-     */
-    _applyFrameName : function(value, old, propName, uniqModIds)
+    _applyFrameName : function()
     {
       if (this.isCreated()) {
         throw new Error("Not allowed to set frame name after it has been created");
@@ -656,7 +646,6 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
         this._iframeNode.style.minWidth = value + "px";
         this._iframeNode.style.maxWidth = value + "px";
       };
-      var org = members._renderRuntimeHeight;
       members._renderRuntimeHeight = function( value ) {
         originalRenderHeight.call( this, value );
         this._iframeNode.style.minHeight = value + "px";

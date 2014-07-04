@@ -73,7 +73,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       "bottomRight"
     ],
 
-    _onParentClose : function( evt ) {
+    _onParentClose : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this.doClose();
       }
@@ -182,7 +182,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       this.base( arguments );
     },
 
-    _onCreate : function( evt ) {
+    _onCreate : function() {
       this.getElement().addEventListener( "mousedown", this.__onwindowmousedown, false );
       this.removeEventListener( "create", this._onCreate, this );
     },
@@ -286,12 +286,11 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     _isRelevantState : function( state ) {
-      var result =    state == "active"
-                   || state == "maximized"
-                   || state == "minimized"
-                   || state.substr( 0, 8 ) == "variant_"
-                   || state.substr( 0, 4 ) == "rwt_";
-      return result;
+      return    state == "active"
+             || state == "maximized"
+             || state == "minimized"
+             || state.substr( 0, 8 ) == "variant_"
+             || state.substr( 0, 4 ) == "rwt_";
     },
 
     /**
@@ -378,7 +377,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       return widget.getUserData( "activateListener" ) === true;
     },
 
-    _onChangeFocusedChild : function( evt ) {
+    _onChangeFocusedChild : function() {
       if( rwt.remote.EventUtil.getSuspended() ) {
         this._focusControl = this.getFocusedChild();
       }
@@ -419,20 +418,20 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       this.base( arguments, value, oldValue );
     },
 
-    _onWindowResize : function( evt ) {
+    _onWindowResize : function() {
       this._sendResizeDelayed = true;
       this._sendResizeFlag = true;
       this._sendBounds();
     },
 
-    _onChangeSize : function( evt ) {
+    _onChangeSize : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendResizeFlag = true;
         this._sendBoundsTimer.start();
       }
     },
 
-    _onChangeLocation : function( evt ) {
+    _onChangeLocation : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendMoveFlag = true;
         this._sendBoundsTimer.start();
@@ -481,7 +480,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       }
     },
 
-    _onSend : function( evt ) {
+    _onSend : function() {
       if( this.getActive() ) {
         var focusedChild = this.getFocusedChild();
         if( focusedChild != null && focusedChild != this._focusControl ) {
@@ -574,21 +573,6 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       if( value ) {
         this._applyZIndex( this.getZIndex() );
       }
-    },
-
-    /*
-     * Overwrites Popup#sendToBack
-     */
-    sendToBack : function() {
-      var targetShell = this;
-      while( targetShell._parentShell != null ) {
-        targetShell = targetShell._parentShell;
-      }
-      this._setRenderZIndex( false );
-      this.setZIndex( rwt.widgets.Shell.MIN_ZINDEX - 1 );
-      targetShell.setZIndex( rwt.widgets.Shell.MIN_ZINDEX - 1 );
-      rwt.widgets.Shell.reorderShells( this.getWindowManager() );
-      this._setRenderZIndex( true );
     },
 
     /*

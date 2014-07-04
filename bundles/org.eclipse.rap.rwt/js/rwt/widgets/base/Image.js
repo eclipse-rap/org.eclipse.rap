@@ -374,7 +374,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyLoaded : function(value, old)
+    _applyLoaded : function(value)
     {
       if (value && this.isCreated())
       {
@@ -494,9 +494,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      */
     _updateContent : function() {
       var pl = this.getPreloader();
-      var source = pl && pl.isLoaded() ? pl.getSource() : this._blank;
-
-      this._image.src = source;
+      this._image.src = pl && pl.isLoaded() ? pl.getSource() : this._blank;
     },
 
 
@@ -615,7 +613,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerWidth : function(vNew, vOld) {
+    _changeInnerWidth : function(vNew) {
       if (this.getResizeToInner()) {
         this._image.width = vNew;
       }
@@ -631,7 +629,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
      * @return {void}
      * @signature function(vNew, vOld)
      */
-    _changeInnerHeight : function(vNew, vOld) {
+    _changeInnerHeight : function(vNew) {
       if (this.getResizeToInner()) {
         this._image.height = vNew;
       }

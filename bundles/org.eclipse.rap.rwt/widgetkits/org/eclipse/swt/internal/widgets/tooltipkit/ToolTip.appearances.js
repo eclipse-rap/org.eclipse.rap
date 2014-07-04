@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -50,24 +51,22 @@ var appearances = {
   "tool-tip-text" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var result = {
+      return {
         font : tv.getCssFont( "ToolTip-Text", "font" ),
         textColor : tv.getCssColor( "ToolTip-Text", "color" ),
         textShadow : tv.getCssShadow( "ToolTip-Text", "text-shadow" )
       };
-      return result;
     }
   },
 
   "tool-tip-message" : {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
-      var result = {
+      return {
         font : tv.getCssFont( "ToolTip-Message", "font" ),
         textColor : tv.getCssColor( "ToolTip-Message", "color" ),
         textShadow : tv.getCssShadow( "ToolTip-Message", "text-shadow" )
       };
-      return result;
     }
   }
 

@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -76,11 +77,10 @@ var appearances = {
   },
 
   "datetime-separator" : {
-    style : function( states ) {
-      var result = {
+    style : function() {
+      return {
         cursor : "default"
       };
-      return result;
     }
   },
 

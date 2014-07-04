@@ -9,8 +9,6 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-/*global ActiveXObject: false */
-
 namespace( "rwt.remote" );
 
 (function(){

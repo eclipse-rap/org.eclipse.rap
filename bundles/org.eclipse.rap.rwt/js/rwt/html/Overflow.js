@@ -87,7 +87,7 @@ rwt.qx.Class.define("rwt.html.Overflow",
       },
 
       // use native overflowX property
-      "default" : function( element, mode ) {
+      "default" : function( element ) {
         return rwt.html.Style.get( element, "overflowX" );
       }
     }),

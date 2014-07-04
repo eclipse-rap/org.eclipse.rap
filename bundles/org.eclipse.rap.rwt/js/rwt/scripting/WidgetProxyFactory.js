@@ -129,12 +129,11 @@ rwt.scripting.WidgetProxyFactory = {
 
   _createSetter : function( id, property, widget ) {
     var setProperty = this._setProperty;
-    var result = function( value ) {
+    return function( value ) {
       Synchronizer.enable( widget );
       setProperty( id, property, value );
       Synchronizer.disable( widget );
     };
-    return result;
   },
 
   _setProperty : function( id, property, value ) {

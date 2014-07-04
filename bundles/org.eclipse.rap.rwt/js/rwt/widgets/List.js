@@ -61,7 +61,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       return this._manager.getSelectedItems();
     },
 
-    _onAppear : function( evt ) {
+    _onAppear : function() {
       // [ad] Fix for Bug 277678
       // when #showSelection() is called for invisible widget
       this._applyTopIndex( this._topIndex );
@@ -94,14 +94,14 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       return topIndex;
     },
 
-    _onChangeLeadItem : function( evt ) {
+    _onChangeLeadItem : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var focusIndex = this._clientArea.indexOf( this._manager.getLeadItem() );
         rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "focusIndex", focusIndex );
       }
     },
 
-    _onSelectionChange : function( evt ) {
+    _onSelectionChange : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         this._sendSelectionChange();
         rwt.remote.EventUtil.notifySelected( this );
@@ -119,7 +119,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", selection );
     },
 
-    _onFocusChange : function( event ) {
+    _onFocusChange : function() {
       this._updateSelectedItemState();
     },
 
@@ -130,12 +130,12 @@ rwt.qx.Class.define( "rwt.widgets.List", {
       }
     },
 
-    _onUserScroll : function( horizontal ) {
+    _onUserScroll : function() {
       this._topIndex = this._isCreated ? this._getTopIndex() : 0;
       rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "topIndex", this._topIndex );
     },
 
-    _onDblClick : function( evt ) {
+    _onDblClick : function() {
       rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 

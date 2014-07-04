@@ -401,7 +401,7 @@ rwt.qx.Class.define( "rwt.qx.Property", {
       };
 
       method.set[name] = prefix + "set" + postfix;
-      members[method.set[name]] = function( value ) {
+      members[method.set[name]] = function() {
         return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "set", arguments );
       };
 
@@ -412,21 +412,21 @@ rwt.qx.Class.define( "rwt.qx.Property", {
 
       if( config.inheritable || config.apply || config.event || config.deferredInit ) {
         method.init[name] = prefix + "init" + postfix;
-        members[method.init[name]] = function(value) {
+        members[method.init[name]] = function() {
           return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "init", arguments );
         };
       }
 
       if( config.inheritable ) {
         method.refresh[name] = prefix + "refresh" + postfix;
-        members[method.refresh[name]] = function( value ) {
+        members[method.refresh[name]] = function() {
           return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "refresh", arguments );
         };
       }
 
       if( config.themeable ) {
         method.style[name] = prefix + "style" + postfix;
-        members[method.style[name]] = function( value ) {
+        members[method.style[name]] = function() {
           return rwt.qx.Property.executeOptimizedSetter( this, clazz, name, "style", arguments );
         };
 

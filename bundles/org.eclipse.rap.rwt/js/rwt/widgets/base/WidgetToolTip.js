@@ -39,12 +39,11 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     setToolTipText : function( widget, value ) {
-      var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
       if( value != null && value !== "" ) {
         var text = value;
         if( widget.getUserData( "toolTipMarkupEnabled" ) !== true ) {
           var EncodingUtil = rwt.util.Encoding;
-          var text = EncodingUtil.escapeText( text, false );
+          text = EncodingUtil.escapeText( text, false );
           text = EncodingUtil.replaceNewLines( text, "<br/>" );
         }
         widget.setToolTipText( text );
@@ -118,7 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       this.base( arguments, value, old );
     },
 
-    _applyTextAlign : function( value, old ) {
+    _applyTextAlign : function( value ) {
       this._label.setHorizontalChildrenAlign( value );
     },
 
@@ -134,13 +133,12 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _applyBoundToWidget : function( value, old ) {
-      var manager = rwt.widgets.util.ToolTipManager.getInstance();
       if( value ) {
         this.setParent( rwt.widgets.base.ClientDocument.getInstance() );
         this._config = rwt.widgets.util.ToolTipConfig.getConfig( this.getBoundToWidget() );
         this._showTimer.setInterval( this._config.appearDelay || 1000 );
         this._hideTimer.setInterval( this._config.disappearDelay || 200 );
-        this.setAutoHide( this._config.autoHide === false ? false : true );
+        this.setAutoHide( this._config.autoHide !== false );
       } else if( old ) {
         this._config = {};
       }
@@ -239,7 +237,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onshowtimer : function( e ) {
+    _onshowtimer : function() {
       this._lastWidget = this.getBoundToWidget();
       this._stopShowTimer();
       this._stopHideTimer();
@@ -264,7 +262,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _onhidetimer : function(e) {
+    _onhidetimer : function() {
       if( this._config.appearOn === "rest" ) {
         this._showTimer.start();
       }
@@ -446,7 +444,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return result;
     },
 
-    _positionMouseRelative : function( target, doc, self ) {
+    _positionMouseRelative : function() {
       return [
         rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX(),
         rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY()
@@ -471,7 +469,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return [ left, top ];
     },
 
-    _getVerticalOffsetAutoByAbsolutePosition : function( target, self, doc ) {
+    _getVerticalOffsetAutoByAbsolutePosition : function( target, self ) {
       var top = this._getVerticalOffsetTop( target, self );
       if( top < 30 ) {
         top = this._getVerticalOffsetBottom( target, self );
@@ -483,15 +481,15 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return target.top - self.height - this._getTargetDistance( "down" );
     },
 
-    _getVerticalOffsetBottom : function( target, self ) {
+    _getVerticalOffsetBottom : function( target ) {
       return target.top + target.height + this._getTargetDistance( "up" );
     },
 
-    _getHorizontalOffsetCentered : function( target, self, doc ) {
+    _getHorizontalOffsetCentered : function( target, self ) {
       return Math.round( target.left + ( target.width / 2 ) - self.width / 2 );
     },
 
-    _getHorizontalOffsetAlignLeft : function( target, self, doc ) {
+    _getHorizontalOffsetAlignLeft : function( target ) {
       return target.left + this._targetDistance;
     },
 
@@ -505,7 +503,7 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       }
     },
 
-    _getVerticalOffsetCentered : function( target, self, doc ) {
+    _getVerticalOffsetCentered : function( target, self ) {
       return Math.round( target.top + ( target.height / 2 ) - self.height / 2 );
     },
 

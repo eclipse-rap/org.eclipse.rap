@@ -334,7 +334,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     },
 
-    removeFromGlobalDisplayQueue : function(vWidget) {},
+    removeFromGlobalDisplayQueue : function() {},
 
     flushGlobalDisplayQueue : function() {
       rwt.widgets.base.Widget._flushGlobalQueuesPhase = rwt.widgets.base.Widget._FLUSH_PHASE_DISPLAY;
@@ -511,7 +511,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
       var applyPadding = applyRuntime + "Padding";
       var resetPadding = resetRuntime + "Padding";
-      var stylePadding = style + "padding";
       // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
       for (var i=0; i<4; i++) {
         members[applyPadding + propertiesUpper[i]]
@@ -1501,52 +1500,52 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     ///////////////
     // apply layout
 
-    _applyLeft : function(value, old) {
+    _applyLeft : function(value) {
       this._unitDetectionPixelPercent("left", value);
       this.addToQueue("left");
     },
 
-    _applyRight : function(value, old) {
+    _applyRight : function(value) {
       this._unitDetectionPixelPercent("right", value);
       this.addToQueue("right");
     },
 
-    _applyTop : function(value, old) {
+    _applyTop : function(value) {
       this._unitDetectionPixelPercent("top", value);
       this.addToQueue("top");
     },
 
-    _applyBottom : function(value, old) {
+    _applyBottom : function(value) {
       this._unitDetectionPixelPercent("bottom", value);
       this.addToQueue("bottom");
     },
 
-    _applyWidth : function(value, old) {
+    _applyWidth : function(value) {
       this._unitDetectionPixelPercentAutoFlex("width", value);
       this.addToQueue("width");
     },
 
-    _applyMinWidth : function(value, old) {
+    _applyMinWidth : function(value) {
       this._unitDetectionPixelPercentAuto("minWidth", value);
       this.addToQueue("minWidth");
     },
 
-    _applyMaxWidth : function(value, old) {
+    _applyMaxWidth : function(value) {
       this._unitDetectionPixelPercentAuto("maxWidth", value);
       this.addToQueue("maxWidth");
     },
 
-    _applyHeight : function(value, old) {
+    _applyHeight : function(value) {
       this._unitDetectionPixelPercentAutoFlex("height", value);
       this.addToQueue("height");
     },
 
-    _applyMinHeight : function(value, old) {
+    _applyMinHeight : function(value) {
       this._unitDetectionPixelPercentAuto("minHeight", value);
       this.addToQueue("minHeight");
     },
 
-    _applyMaxHeight : function(value, old) {
+    _applyMaxHeight : function(value) {
       this._unitDetectionPixelPercentAuto("maxHeight", value);
       this.addToQueue("maxHeight");
     },
@@ -1576,7 +1575,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return this._isDisplayable;
     },
 
-    _checkParent : function(value, old) {
+    _checkParent : function(value) {
       if (this.contains(value)) {
         throw new Error("Could not insert myself into a child " + value + "!");
       }
@@ -1634,7 +1633,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return this._handleDisplayable("parent");
     },
 
-    _applyDisplay : function(value, old) {
+    _applyDisplay : function() {
       return this._handleDisplayable("display");
     },
 
@@ -1798,7 +1797,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     //////////////////////
     // VISIBILITY HANDLING
 
-    _applyVisibility : function(value, old) {
+    _applyVisibility : function(value) {
       if (value) {
         if ( this._isDisplayable && ( this._isCreated || this._isInGlobalElementQueue ) ) {
           this._beforeAppear();
@@ -1913,7 +1912,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return true;
     },
 
-    _flushJobQueue : function(q) {
+    _flushJobQueue : function() {
       // 1. Pre checks
       var vQueue = this._jobQueue;
       var vParent = this.getParent();
@@ -2411,13 +2410,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _computeFrameWidth : function() {
-      var fw = this._cachedBorderLeft + this.getPaddingLeft() + this.getPaddingRight() + this._cachedBorderRight;
-      return fw;
+      return this._cachedBorderLeft + this.getPaddingLeft() + this.getPaddingRight() + this._cachedBorderRight;
     },
 
     _computeFrameHeight : function() {
-      var fh = this._cachedBorderTop + this.getPaddingTop() + this.getPaddingBottom() + this._cachedBorderBottom;
-      return fh;
+      return this._cachedBorderTop + this.getPaddingTop() + this.getPaddingBottom() + this._cachedBorderBottom;
     },
 
     _invalidateFrameDimensions : function() {
@@ -2795,32 +2792,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return vChildren[vChildren.indexOf(this) - 1];
     },
 
-    getNextVisibleSibling : function() {
-      if (!this._hasParent) {
-        return null;
-      }
-      var vChildren = this.getParent().getVisibleChildren();
-      return vChildren[vChildren.indexOf(this) + 1];
-    },
-
-    getPreviousActiveSibling : function(vIgnoreClasses) {
-      var vPrev = rwt.widgets.base.Widget.getActiveSiblingHelper(this, this.getParent(), -1, vIgnoreClasses, null);
-      return vPrev ? vPrev : this.getParent().getLastActiveChild();
-    },
-
-    getNextActiveSibling : function(vIgnoreClasses) {
-      var vNext = rwt.widgets.base.Widget.getActiveSiblingHelper(this, this.getParent(), 1, vIgnoreClasses, null);
-      return vNext ? vNext : this.getParent().getFirstActiveChild();
-    },
-
-    isFirstChild : function() {
-      return this._hasParent && this.getParent().getFirstChild() == this;
-    },
-
-    isLastChild : function() {
-      return this._hasParent && this.getParent().getLastChild() == this;
-    },
-
     isFirstVisibleChild : function() {
       return this._hasParent && this.getParent().getFirstVisibleChild() == this;
     },
@@ -2996,7 +2967,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     ///////////////
     // ELEMENT DATA
 
-    _applyElementData : function(elem) {},
+    _applyElementData : function() {},
 
     //////////////////
     // HTML PROPERTIES
@@ -3104,7 +3075,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////////////
     // ENABLE/DISABLE SUPPORT
 
-    _applyEnabled : function( value, old ) {
+    _applyEnabled : function( value ) {
       this.toggleState( "disabled", value === false );
       if( value === false) {
         // Also reset some states to be sure a pressed/hovered button gets reset
@@ -3145,7 +3116,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _ontabfocus : rwt.util.Functions.returnTrue,
 
-    _applyFocused : function(value, old) {
+    _applyFocused : function(value) {
       if (!this.isCreated()) {
         return;
       }
@@ -3212,7 +3183,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////
     // ZINDEX SUPPORT
 
-    _applyZIndex : function(value, old) {
+    _applyZIndex : function(value) {
       if (value == null) {
         this.removeStyleProperty("zIndex");
       } else {
@@ -3223,7 +3194,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     ////////////////////
     // TAB INDEX SUPPORT
 
-    _applyTabIndex : function( value, old ) {
+    _applyTabIndex : function( value ) {
       // CSS 3 draft userFocus property
       this.setStyleProperty("userFocus", (value < 0 ? "ignore" : "normal"));
       // Legacy tabIndex property
@@ -3234,14 +3205,14 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // SELECTABLE SUPPORT
 
     _applySelectable : rwt.util.Variant.select("qx.client", {
-      "gecko" : function(value, old) {
+      "gecko" : function(value) {
         if (value) {
           this.removeStyleProperty("MozUserSelect");
         } else {
           this.setStyleProperty("MozUserSelect", "none");
         }
       },
-      "webkit" : function(value, old) {
+      "webkit" : function(value) {
         if (value) {
           this.removeStyleProperty("WebkitUserSelect");
           this.removeStyleProperty("KhtmlUserSelect");
@@ -3251,7 +3222,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         }
       },
       // Opera currently has no support to prohibit user selection
-      "default" : function(value, old) {
+      "default" : function(value) {
         if (value) {
           return this.removeStyleProperty("userSelect");
         } else {
@@ -3268,7 +3239,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * become (semi-)transparent. The value should be a number between 0 and 1
      * inclusive, where 1 means totally opaque and 0 invisible.
      */
-    _applyOpacity : function( value, old ) {
+    _applyOpacity : function( value ) {
       this.setStyleProperty( "opacity", value );
     },
 
@@ -3327,7 +3298,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     } ),
 
-    _applyCursor : function(value, old) {
+    _applyCursor : function(value) {
       if (value) {
         var url = "url( " + value + " ), default";
         this.setStyleProperty("cursor", this.__cursorMap[value] || url);
@@ -3340,7 +3311,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // COMMAND SUPPORT
 
     // TODO [tb] : used only in listitem - remove
-    _applyCommand : function(value, old) {
+    _applyCommand : function() {
       // place holder
     },
 
@@ -3362,18 +3333,18 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       rwt.html.Style.setBackgroundImage( this, value );
     },
 
-    _applyBackgroundRepeat : function( value, old ) {
+    _applyBackgroundRepeat : function( value ) {
       rwt.html.Style.setBackgroundRepeat( this, value );
     },
 
-    _applyBackgroundPosition : function( value, old ) {
+    _applyBackgroundPosition : function( value ) {
       rwt.html.Style.setBackgroundPosition( this, value );
     },
 
     ///////////////////
     // CLIPPING SUPPORT
 
-    _applyClip : function(value, old) {
+    _applyClip : function() {
       return this._compileClipString();
     },
 
@@ -3498,7 +3469,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       }
     } ),
 
-    _renderOverflow : function(pn, pv, value, old) {
+    _renderOverflow : function(pn, pv) {
       // Apply Style
       this.setStyleProperty(pn, pv || "");
       // Invalidate Frame
@@ -3516,7 +3487,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return vOverflow == "scrollX" ? "hidden" : vOverflow;
     },
 
-    _applyContainerOverflow : function( value, oldValue ) {
+    _applyContainerOverflow : function( value ) {
       if( this._innerStyle ) {
         this._style.overflow = value ? "" : "hidden";
       }
@@ -3525,19 +3496,19 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////////////
     // FONT AND COLOR SUPPORT
 
-    _applyBackgroundColor : function( value, old ) {
+    _applyBackgroundColor : function( value ) {
       this._styleBackgroundColor( value );
     },
 
-    _applyBackgroundGradient : function( value, oldValue ) {
+    _applyBackgroundGradient : function( value ) {
       rwt.html.Style.setBackgroundGradient( this, value );
     },
 
-    _applyShadow : function( value, oldValue ) {
+    _applyShadow : function( value ) {
       rwt.html.Style.setBoxShadow( this, value );
     },
 
-    _applyTextShadow : function( value, oldValue ) {
+    _applyTextShadow : function( value ) {
       rwt.html.Style.setTextShadow( this, value );
     },
 
@@ -3545,11 +3516,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       rwt.html.Style.setBackgroundColor( this, value );
     },
 
-    _applyTextColor : function(value, old) {
+    _applyTextColor : function() {
       // place holder
     },
 
-    _applyFont : function(value, old) {
+    _applyFont : function() {
       // place holder
     },
 
@@ -3562,7 +3533,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     _cachedBorderLeft : 0,
     _targetNodeEnabled : false,
 
-    _applyBorder : function( value, old ) {
+    _applyBorder : function( value ) {
       this._queueBorder( value );
     },
 
@@ -3603,7 +3574,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * Renders border object to widget.
      * Callback from layout queue
      */
-    renderBorder : function( changes ) {
+    renderBorder : function() {
       var value = this.__borderObject;
       if( value ) {
         value.renderWidget( this );
@@ -3678,22 +3649,22 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     //////////////////
     // PADDING SUPPORT
 
-    _applyPaddingTop : function(value, old) {
+    _applyPaddingTop : function() {
       this.addToQueue("paddingTop");
       this._invalidateFrameHeight();
     },
 
-    _applyPaddingRight : function(value, old) {
+    _applyPaddingRight : function() {
       this.addToQueue("paddingRight");
       this._invalidateFrameWidth();
     },
 
-    _applyPaddingBottom : function(value, old) {
+    _applyPaddingBottom : function() {
       this.addToQueue("paddingBottom");
       this._invalidateFrameHeight();
     },
 
-    _applyPaddingLeft : function(value, old) {
+    _applyPaddingLeft : function() {
       this.addToQueue("paddingLeft");
       this._invalidateFrameWidth();
     },
@@ -3702,26 +3673,26 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
      * Renders padding to widget
      * Callback from layout queue
      */
-    renderPadding : function(changes) {
+    renderPadding : function() {
       // empty
     },
 
     /////////////////
     // MARGIN SUPPORT
 
-    _applyMarginLeft : function(value, old) {
+    _applyMarginLeft : function() {
       this.addToQueue("marginLeft");
     },
 
-    _applyMarginRight : function(value, old) {
+    _applyMarginRight : function() {
       this.addToQueue("marginRight");
     },
 
-    _applyMarginTop : function(value, old) {
+    _applyMarginTop : function() {
       this.addToQueue("marginTop");
     },
 
-    _applyMarginBottom : function(value, old) {
+    _applyMarginBottom : function() {
       this.addToQueue("marginBottom");
     },
 

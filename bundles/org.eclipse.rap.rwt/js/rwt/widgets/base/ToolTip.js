@@ -71,11 +71,11 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
   members : {
     _minZIndex : 1e7,
 
-    _applyHideInterval : function(value, old) {
+    _applyHideInterval : function(value) {
       this._hideTimer.setInterval(value);
     },
 
-    _applyShowInterval : function(value, old) {
+    _applyShowInterval : function(value) {
       this._showTimer.setInterval(value);
     },
 
@@ -203,19 +203,19 @@ rwt.qx.Class.define("rwt.widgets.base.ToolTip", {
       }
     },
 
-    _onmouseover : function(e) {
+    _onmouseover : function() {
       if (this.getHideOnHover()) {
         this.hide();
       }
     },
 
-    _onshowtimer : function(e) {
+    _onshowtimer : function() {
       this.setLeft(rwt.event.MouseEvent.getPageX() + this.getMousePointerOffsetX());
       this.setTop(rwt.event.MouseEvent.getPageY() + this.getMousePointerOffsetY());
       this.show();
     },
 
-    _onhidetimer : function(e) {
+    _onhidetimer : function() {
       return this.hide();
     }
 

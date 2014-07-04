@@ -530,7 +530,7 @@ rwt.remote.HandlerUtil = {
     return this._controlDestructor;
   },
 
-  getDestroyableChildrenFinder : function( widget ) {
+  getDestroyableChildrenFinder : function() {
     return this._childrenFinder;
   },
 

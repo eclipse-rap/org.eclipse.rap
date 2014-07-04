@@ -68,7 +68,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       this._setSelection( value * this._selectionFactor );
     },
 
-    getValue : function( value ) {
+    getValue : function() {
       return Math.round( this._selection / this._selectionFactor );
     },
 

@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -67,7 +68,7 @@ var appearances = {
   },
 
   "table-column-resizer" : {
-    style : function( states ) {
+    style : function() {
       return {
         width : 3,
         opacity : 0.3,
@@ -123,7 +124,7 @@ var appearances = {
   },
 
   "table-gridline-vertical" : {
-    style : function( states ) {
+    style : function() {
       var verticalState = { "vertical" : true };
       var tv = new rwt.theme.ThemeValues( verticalState );
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );

@@ -126,7 +126,7 @@ rwt.event.EventHandler = {
     this._blockKeyEvents = value;
   },
 
-  getBlockKeyEvents : function( value ) {
+  getBlockKeyEvents : function() {
     return this._blockKeyEvents;
   },
 
@@ -134,7 +134,7 @@ rwt.event.EventHandler = {
     this._menuManager = manager;
   },
 
-  getMenuManager : function( manager ) {
+  getMenuManager : function() {
     return this._menuManager;
   },
 
@@ -420,8 +420,7 @@ rwt.event.EventHandler = {
                                          vTarget,
                                          vOriginalTarget,
                                          vDispatchTarget,
-                                         vEventObject,
-                                         vDomEvent )
+                                         vEventObject )
   {
     switch( vType ) {
       case "mousedown":
@@ -508,7 +507,7 @@ rwt.event.EventHandler = {
     }
   },
 
-  _onwindowfocus : function( e ) {
+  _onwindowfocus : function() {
     try {
       if( this._focused ) {
         return;
@@ -520,7 +519,7 @@ rwt.event.EventHandler = {
     }
   },
 
-  _onwindowresize : function( e ) {
+  _onwindowresize : function() {
     try {
       var clientDocument = rwt.widgets.base.ClientDocument.getInstance();
       // Catch redundant resize events, fired for example by iPad:

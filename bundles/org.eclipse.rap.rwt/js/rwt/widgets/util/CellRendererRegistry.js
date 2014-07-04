@@ -34,7 +34,7 @@ rwt.widgets.util.CellRendererRegistry = function() {
     delete rendererMap[ type ];
   };
 
-  this.getAll = function( type ) {
+  this.getAll = function() {
     Wrapper.prototype = rendererMap;
     return new Wrapper();
   };
@@ -148,20 +148,6 @@ var defaultTextRenderer = {
       }
     }
   } )
-};
-
-var imgHtml = function( path, left, top, width, height ) {
-  return   "<img style=\"position:absolute;width:"
-         + width
-         + "px;height:"
-         + height
-         + "px;left:"
-         + left
-         + "px;top:"
-         + top
-         + "px;\" src=\""
-         + path
-         + "\">";
 };
 
 var defaultImageRenderer = {

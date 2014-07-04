@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -307,35 +307,35 @@ rwt.qx.Class.define("rwt.widgets.base.BoxLayout",
       this.addToQueueRuntime("orientation");
     },
 
-    _applySpacing : function(value, old)
+    _applySpacing : function()
     {
       this._doLayout();
       this.addToQueueRuntime("spacing");
     },
 
-    _applyHorizontalChildrenAlign : function(value, old)
+    _applyHorizontalChildrenAlign : function()
     {
       this._doLayoutOrder();
       this.addToQueueRuntime("horizontalChildrenAlign");
     },
 
-    _applyVerticalChildrenAlign : function(value, old)
+    _applyVerticalChildrenAlign : function()
     {
       this._doLayoutOrder();
       this.addToQueueRuntime("verticalChildrenAlign");
     },
 
-    _applyReverseChildrenOrder : function(value, old)
+    _applyReverseChildrenOrder : function()
     {
       this._doLayoutOrder();
       this.addToQueueRuntime("reverseChildrenOrder");
     },
 
-    _applyStretchChildrenOrthogonalAxis : function(value, old) {
+    _applyStretchChildrenOrthogonalAxis : function() {
       this.addToQueueRuntime("stretchChildrenOrthogonalAxis");
     },
 
-    _applyUseAdvancedFlexAllocation : function(value, old) {
+    _applyUseAdvancedFlexAllocation : function() {
       this.addToQueueRuntime("useAdvancedFlexAllocation");
     },
 

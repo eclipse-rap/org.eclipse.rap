@@ -127,7 +127,6 @@ rwt.qx.Class.define( "rwt.widgets.util.FocusIndicator", {
     _layoutFocusIndicator : function( widget, theme, focusElement ) {
       // NOTE : It is assumed that a focusElement, if given, has
       //        valid css-bounds (top,left,width,height) set in "px".
-      var border = theme[ "border" ];
       var bounds = [];
       if( theme[ "padding" ] != null ) {
         var padding = theme[ "padding" ];

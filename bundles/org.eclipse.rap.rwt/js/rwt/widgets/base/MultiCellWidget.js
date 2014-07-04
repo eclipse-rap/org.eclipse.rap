@@ -316,39 +316,39 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     ---------------------------------------------------------------------------
     */
 
-    _applySpacing : function( value, old ) {
+    _applySpacing : function() {
       this._invalidateTotalSpacing();
       this._scheduleLayoutX();
     },
 
-    _applyHorizontalChildrenAlign : function( value, old ) {
+    _applyHorizontalChildrenAlign : function( value ) {
       this._scheduleLayoutX();
       this.setStyleProperty( "textAlign", value );
     },
 
-    _applyVerticalChildrenAlign : function( value, old ) {
+    _applyVerticalChildrenAlign : function() {
       this._scheduleLayoutY();
     },
 
-    _applyPaddingTop : function( value, old ) {
+    _applyPaddingTop : function( value ) {
       this.addToLayoutChanges( "paddingTop" );
       this.__paddingCache[ 0 ] = value;
       this._invalidateFrameHeight();
     },
 
-    _applyPaddingRight : function( value, old ) {
+    _applyPaddingRight : function( value ) {
       this.addToLayoutChanges( "paddingRight" );
       this.__paddingCache[ 1 ] = value;
       this._invalidateFrameWidth();
     },
 
-    _applyPaddingBottom : function( value, old ) {
+    _applyPaddingBottom : function( value ) {
       this.addToLayoutChanges( "paddingBottom" );
       this.__paddingCache[ 2 ] = value;
       this._invalidateFrameHeight();
     },
 
-    _applyPaddingLeft : function( value, old ) {
+    _applyPaddingLeft : function( value ) {
       this.addToLayoutChanges( "paddingLeft" );
       this.__paddingCache[ 3 ] = value;
       this._invalidateFrameWidth();
@@ -359,7 +359,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       this._styleAllImagesEnabled();
     },
 
-    _applyTextOverflow : function( value, old ) {
+    _applyTextOverflow : function( value ) {
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
           var node = this.getCellNode( i );
@@ -368,7 +368,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
     },
 
-    _applyWordWrap : function( value, old ) {
+    _applyWordWrap : function( value  ) {
       if( this._flexibleCell !== -1 ) {
         var node = this.getCellNode( this._flexibleCell );
         if( node ) {
@@ -589,7 +589,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       this._invalidatePreferredInnerWidth();
     },
 
-    renderPadding : function( changes ) { },
+    renderPadding : function() { },
 
     _layoutPost : function( changes ) {
       if( changes.createContent ){
@@ -758,7 +758,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return joinedCss.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
     },
 
-    _applyFont : function( value, old ) {
+    _applyFont : function( value ) {
       this._styleFont( value );
     },
 

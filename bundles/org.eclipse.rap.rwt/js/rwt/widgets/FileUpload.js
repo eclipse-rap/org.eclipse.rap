@@ -110,7 +110,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       this._iframe.addToDocument();
     },
 
-    _onValueChange : function( event ) {
+    _onValueChange : function() {
       try {
         var fileNames = this._formatFileNames( this._getFileNames() );
         rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "fileNames", fileNames );

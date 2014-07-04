@@ -144,7 +144,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       return result;
     },
 
-    _onRequestReceived : function( evt ) {
+    _onRequestReceived : function() {
       if( this._keyEventRequestRunning ) {
         this._keyEventRequestRunning = false;
         this._checkBufferedEvents();

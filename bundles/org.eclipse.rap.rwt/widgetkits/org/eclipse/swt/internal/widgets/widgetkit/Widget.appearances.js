@@ -11,6 +11,7 @@
  *    Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -30,7 +31,7 @@ var appearances = {
   */
 
   "cursor-dnd-move" : {
-    style : function( states ) {
+    style : function() {
       return {
         source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/move.gif"
       };
@@ -38,7 +39,7 @@ var appearances = {
   },
 
   "cursor-dnd-copy" : {
-    style : function( states ) {
+    style : function() {
       return {
         source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/copy.gif"
       };
@@ -46,7 +47,7 @@ var appearances = {
   },
 
   "cursor-dnd-alias" : {
-    style : function( states ) {
+    style : function() {
       return {
         source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/alias.gif"
       };
@@ -54,7 +55,7 @@ var appearances = {
   },
 
   "cursor-dnd-nodrop" : {
-    style : function( states ) {
+    style : function() {
       return {
         source : rwt.remote.Connection.RESOURCE_PATH + "widget/rap/cursors/nodrop.gif"
       };
@@ -94,7 +95,7 @@ var appearances = {
   },
 
   "atom" : {
-    style : function( states ) {
+    style : function() {
       return {
         cursor : "default",
         spacing : 4,
@@ -128,7 +129,7 @@ var appearances = {
   },
 
   "iframe" : {
-    style : function( states ) {
+    style : function() {
       return { };
     }
   },
@@ -142,7 +143,7 @@ var appearances = {
   // TODO [rst] necessary?
 
   "resizer" : {
-    style : function( states ) {
+    style : function() {
       return {};
     }
   },
@@ -179,7 +180,7 @@ var appearances = {
         states[ direction ] = true;
         var result = store.getSizedImage( "Widget-ToolTip-Pointer", states, "background-image" );
         return result[ 0 ] ? result : null;
-      }
+      };
       result.pointers = [
         getPointer( "up" ),
         getPointer( "right" ),

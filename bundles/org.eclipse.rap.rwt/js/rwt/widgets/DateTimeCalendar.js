@@ -53,7 +53,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       event.stopPropagation();
     },
 
-    _onFocusChange : function( event ) {
+    _onFocusChange : function() {
       this._updateSelectedDayState();
     },
 
@@ -63,7 +63,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       }
     },
 
-    _onChangeDate : function( event ) {
+    _onChangeDate : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
         var connection = rwt.remote.Connection.getInstance();
         var remoteObject = connection.getRemoteObject( this );
@@ -82,7 +82,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeCalendar", {
       rwt.remote.EventUtil.notifySelected( this );
     },
 
-    _onSelect : function( event ) {
+    _onSelect : function() {
       rwt.remote.EventUtil.notifyDefaultSelected( this );
     },
 

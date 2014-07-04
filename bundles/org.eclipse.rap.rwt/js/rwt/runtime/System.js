@@ -64,7 +64,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       return this._startupTime;
     },
 
-    _onload : function( event ) {
+    _onload : function() {
       try {
         if( !this._onloadDone ) {
           this._onloadDone = true;
@@ -116,7 +116,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       }
     },
 
-    _onunload : function( event ) {
+    _onunload : function() {
       try {
         this.createDispatchEvent( "unload" );
         rwt.event.EventHandler.detachEvents();
@@ -158,7 +158,7 @@ rwt.qx.Class.define( "rwt.runtime.System", {
     window.removeEventListener( "unload", this._onunloadWrapped, false );
   },
 
-  defer : function( statics, proto, properties )  {
+  defer : function( statics )  {
     // Force direct creation
     statics.getInstance();
   }

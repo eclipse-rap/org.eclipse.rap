@@ -604,7 +604,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       return this._delayedSelection;
     },
 
-    _onMouseOut : function( event ) {
+    _onMouseOut : function() {
       this._delayedSelection = false;
     },
 
@@ -696,7 +696,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
 
-    _handleKeyEnter : function( event ) {
+    _handleKeyEnter : function() {
       this._fireSelectionChanged( this._focusItem, "defaultSelection" );
     },
 
@@ -795,7 +795,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scrollIntoView( itemIndex, item );
     },
 
-    _onFocusIn : function( event ) {
+    _onFocusIn : function() {
       if( this._focusItem === null ) {
         var firstItem = this._rootItem.getChild( 0 );
         if( firstItem ) {
@@ -1253,8 +1253,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getRowWidth : function() {
       var width = this._rowContainer.getWidth();
-      var result = Math.max( this._getItemWidth(), width );
-      return result;
+      return Math.max( this._getItemWidth(), width );
     },
 
     /////////

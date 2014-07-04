@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -65,7 +66,7 @@ var appearances = {
   },
 
   "window-captionbar-icon" : {
-    style : function( states ) {
+    style : function() {
       return {
         marginRight : 2
       };
@@ -118,13 +119,13 @@ var appearances = {
   },
 
   "window-statusbar" : {
-    style : function( states ) {
+    style : function() {
       return {};
     }
   },
 
   "window-statusbar-text" : {
-    style : function( states ) {
+    style : function() {
       return {};
     }
   }

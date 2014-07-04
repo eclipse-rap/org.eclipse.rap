@@ -224,7 +224,7 @@ rwt.event.EventHandlerUtil = {
   },
 
   getEventPseudoTypes : rwt.util.Variant.select( "qx.client", {
-    "default" : function( event, keyCode, charCode ) {
+    "default" : function( event, keyCode ) {
       var result;
       if( event.type === "keydown" ) {
         var printable = !this.isNonPrintableKeyCode( keyCode );
@@ -240,7 +240,7 @@ rwt.event.EventHandlerUtil = {
       }
       return result;
     },
-    "gecko" : function( event, keyCode, charCode ) {
+    "gecko" : function( event, keyCode ) {
       var result;
       if( event.type === "keydown" && this.isModifier( keyCode ) ) {
         if( this.isFirstKeyDown( keyCode ) ) {
@@ -282,12 +282,12 @@ rwt.event.EventHandlerUtil = {
       }
       return result;
     },
-    "gecko" : function( event, pseudoTypes ) {
+    "gecko" : function() {
       return false;
     }
   } ),
 
-  saveData : function( event, keyCode, charCode ) {
+  saveData : function( event, keyCode ) {
     if( event.type !== "keypress" ) {
       this._lastUpDownType[ keyCode ] = event.type;
       this._lastKeyCode = keyCode;

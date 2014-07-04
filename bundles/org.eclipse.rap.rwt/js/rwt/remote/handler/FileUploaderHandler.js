@@ -11,7 +11,7 @@
 
 rwt.remote.HandlerRegistry.add( "rwt.client.FileUploader", {
 
-  factory : function( properties ) {
+  factory : function() {
     return rwt.client.FileUploader.getInstance();
   },
 

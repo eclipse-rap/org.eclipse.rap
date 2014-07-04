@@ -308,7 +308,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
      * @param value {var} Current value
      * @param old {var} Previous value
      */
-    _applyDate : function(value, old) {
+    _applyDate : function(value) {
       if ((value != null) && (this.getShownMonth() != value.getMonth() || this.getShownYear() != value.getFullYear())) {
         // The new date is in another month -> Show that month
         this.showMonth(value.getMonth(), value.getFullYear());

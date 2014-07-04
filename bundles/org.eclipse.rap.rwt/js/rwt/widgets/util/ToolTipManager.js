@@ -117,7 +117,7 @@ rwt.qx.Class.define( "rwt.widgets.util.ToolTipManager", {
       }
     },
 
-    handleFocus : function( e ) {
+    handleFocus : function() {
       // nothing to do
     },
 

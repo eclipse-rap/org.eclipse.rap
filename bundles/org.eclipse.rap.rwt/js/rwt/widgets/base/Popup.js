@@ -373,21 +373,6 @@ rwt.qx.Class.define("rwt.widgets.base.Popup",
       this._sendTo();
     },
 
-
-    /**
-     * Sets the {@link #zIndex} to -Infinity and calls the
-     * method {@link #_sendTo}
-     *
-     * @type member
-     * @return {void}
-     */
-    sendToBack : function()
-    {
-      this.setZIndex(this._minZIndex+1);
-      this._sendTo();
-    },
-
-
     /**
      * Resets the zIndex of all registered popups and menus
      * (getting the instances via the {@link rwt.widgets.util.PopupManager} and

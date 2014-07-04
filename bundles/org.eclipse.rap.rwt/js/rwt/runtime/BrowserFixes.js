@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -108,7 +108,7 @@ if( /iPad|iPhone|iPod/.test( navigator.userAgent ) && /Version\/6/.test( navigat
         }
 
 
-        function resetTimer(set, clear, map, virtualId, correctInterval) {
+        function resetTimer(set, clear, map, virtualId ) {
                 var timer = map[virtualId];
 
                 if (!timer) {

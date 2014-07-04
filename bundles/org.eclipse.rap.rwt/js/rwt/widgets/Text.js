@@ -179,7 +179,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       }
     },
 
-    _applyWrap : function( value, oldValue ) {
+    _applyWrap : function() {
       if( this._isTextArea() ) {
         this._styleWrap();
       }

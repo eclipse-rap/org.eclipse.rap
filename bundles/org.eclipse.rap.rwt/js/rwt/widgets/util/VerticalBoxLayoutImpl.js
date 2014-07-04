@@ -361,7 +361,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
      * @param vChild {var} TODOC
      * @return {void}
      */
-    updateSelfOnChildOuterHeightChange : function(vChild)
+    updateSelfOnChildOuterHeightChange : function()
     {
       // if a childrens outer height changes we need to update our accumulated
       // height of all childrens (used for middle or bottom alignments)
@@ -810,7 +810,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationY : function(vChild, vJobs)
+    layoutChild_locationY : function(vChild)
     {
       var vWidget = this.getWidget();
 
@@ -885,7 +885,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
      * @param vJobs {var} TODOC
      * @return {void}
      */
-    layoutChild_locationX : function(vChild, vJobs)
+    layoutChild_locationX : function(vChild)
     {
       var vWidget = this.getWidget();
 

@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -134,7 +135,7 @@ var appearances = {
   "tree-column-chevron" : {
     style : function( states ) {
       var result = {};
-      var path = rwt.remote.Connection.RESOURCE_PATH + "widget/rap/"
+      var path = rwt.remote.Connection.RESOURCE_PATH + "widget/rap/";
       if( states.loading ) {
         result.backgroundImage = [ path + "tree/loading.gif", 16, 16 ];
       } else {

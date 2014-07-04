@@ -9,6 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
+/*jshint unused:false */
 var appearances = {
 // BEGIN TEMPLATE //
 
@@ -29,7 +30,7 @@ var appearances = {
   },
 
   "scrollbar-blocker" : {
-    style : function( states ) {
+    style : function() {
       return {
         backgroundColor : "black",
         opacity : 0.2

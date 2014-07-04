@@ -130,7 +130,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Label", {
 
     _content : "",
 
-    _applyTextAlign : function( value, old ) {
+    _applyTextAlign : function( value ) {
       if( value === null ) {
         this.removeStyleProperty( "textAlign" );
       } else {
@@ -138,7 +138,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Label", {
       }
     },
 
-    _applyFont : function( value, old ) {
+    _applyFont : function( value ) {
       this._styleFont( value );
     },
 
@@ -151,7 +151,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Label", {
       }
     },
 
-    _applyWrap : function( value, old ) {
+    _applyWrap : function( value ) {
       if( value == null ) {
         this.removeStyleProperty( "whiteSpace" );
       } else {
@@ -159,7 +159,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Label", {
       }
     },
 
-    _applyText : function( value, old ) {
+    _applyText : function() {
       this._syncText( this.getText() );
     },
 

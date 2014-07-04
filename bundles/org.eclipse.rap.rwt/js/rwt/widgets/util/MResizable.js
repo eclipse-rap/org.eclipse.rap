@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,7 @@ rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
   *****************************************************************************
   */
 
-  construct : function(child)
+  construct : function()
   {
     this._frame = new rwt.widgets.base.Terminator();
     this._frame.setAppearance("resizer-frame");
@@ -133,7 +133,7 @@ rwt.qx.Mixin.define("rwt.widgets.util.MResizable",
 
 
 
-    _applyResizable : function(value, old) {
+    _applyResizable : function() {
       // placeholder
     },
 

@@ -9,6 +9,7 @@
   "nonew" : true, // prohibit the use of constructor functions for side-effects
   "trailing" : true, // prohibit trailing whitespace
   "undef": true, // prohibit the use of explicitly undeclared variables
+  "unused" : true, // prohibit unused local variables
 
   // Relaxing Options
 

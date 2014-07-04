@@ -176,7 +176,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._horzScrollBar.setTop( clientHeight );
     },
 
-    _onClientCreate : function( evt ) {
+    _onClientCreate : function() {
       this._clientArea.prepareEnhancedBorder();
       this._clientArea.setContainerOverflow( false );
       var el = this._clientArea._getTargetNode();
