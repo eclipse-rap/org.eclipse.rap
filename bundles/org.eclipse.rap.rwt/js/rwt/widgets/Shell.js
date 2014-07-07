@@ -169,11 +169,6 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     }
   },
 
-  events : {
-    "close" : "rwt.event.DataEvent",
-    "parentShellChanged" : "rwt.event.Event"
-  },
-
   members : {
 
     destroy : function() {

@@ -58,10 +58,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._miscNodes = null;
   },
 
-  events : {
-    "itemRendered" : "rwt.event.Event"
-  },
-
   members : {
 
     renderItem : function( item, config, selected, hoverTarget, scrolling ) {

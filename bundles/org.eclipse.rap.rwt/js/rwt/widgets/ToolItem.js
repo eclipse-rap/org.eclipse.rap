@@ -56,10 +56,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
 
   },
 
-  events : {
-    "dropDownClicked" : "rwt.event.Event"
-  },
-
   members : {
     // overwritten:
     _CELLORDER : [ "image", "image", "label", "label", "image" ],

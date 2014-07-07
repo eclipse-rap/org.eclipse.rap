@@ -307,7 +307,7 @@ rwt.qx.Class.define( "rwt.qx.Object", {
         }
         // Destructor support for mixins
         if( clazz.$$includes ) {
-          mixins = clazz.$$flatIncludes;
+          mixins = clazz.$$includes;
           for( var i = 0, l = mixins.length; i < l; i++ ) {
             if( mixins[ i ].$$destructor ) {
               mixins[ i ].$$destructor.call( this );

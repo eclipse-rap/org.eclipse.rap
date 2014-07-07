@@ -25,17 +25,6 @@ rwt.qx.Class.define("rwt.html.ImagePreloader",
 {
   extend : rwt.qx.Target,
 
-  events :
-  {
-    /** Dispatched after the images has successfully been loaded */
-    "load" : "rwt.event.Event",
-
-    /** Dispatched if the image could not be loaded */
-    "error" : "rwt.event.Event"
-  },
-
-
-
 
   /*
   *****************************************************************************

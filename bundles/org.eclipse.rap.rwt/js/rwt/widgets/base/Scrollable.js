@@ -41,10 +41,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     this._vertScrollBar = null;
   },
 
-  events : {
-    "userScroll" : "rwt.event.Event"
-  },
-
   statics : {
     _nativeWidth : null,
 

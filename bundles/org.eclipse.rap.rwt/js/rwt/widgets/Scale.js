@@ -84,12 +84,6 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     this._thumb = null;
   },
 
-  events : {
-    "selectionChanged" : "rwt.event.Event",
-    "minimumChanged" : "rwt.event.Event",
-    "maximumChanged" : "rwt.event.Event"
-  },
-
   statics : {
     STATE_HORIZONTAL : "horizontal",
     PADDING : 8,

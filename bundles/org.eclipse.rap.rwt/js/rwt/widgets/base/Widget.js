@@ -35,47 +35,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     this._outerFrame = [ 0, 0 ];
   },
 
-  events: {
-    "beforeAppear"    : "rwt.event.Event",
-    "appear"          : "rwt.event.Event",
-    "beforeDisappear" : "rwt.event.Event",
-    "disappear"       : "rwt.event.Event",
-    "insertDom"       : "rwt.event.Event",
-    "create"          : "rwt.event.Event",
-    "execute"         : "rwt.event.Event",
-    "flush"           : "rwt.event.DataEvent",
-
-    /** (Fired by {@link rwt.event.EventHandler}) */
-    "mouseover"       : "rwt.event.MouseEvent",
-    "mousemove"       : "rwt.event.MouseEvent",
-    "mouseout"        : "rwt.event.MouseEvent",
-    "mousedown"       : "rwt.event.MouseEvent",
-    "mouseup"         : "rwt.event.MouseEvent",
-    "mousewheel"      : "rwt.event.MouseEvent",
-    "click"           : "rwt.event.MouseEvent",
-    "dblclick"        : "rwt.event.MouseEvent",
-    "contextmenu"     : "rwt.event.MouseEvent",
-    "elementOver"     : "rwt.event.MouseEvent",
-    "elementOut"      : "rwt.event.MouseEvent",
-    "keydown"         : "rwt.event.KeyEvent",
-    "keypress"        : "rwt.event.KeyEvent",
-    "keyup"           : "rwt.event.KeyEvent",
-
-    /** (Fired by {@link rwt.widgets.base.Parent}) */
-    "focusout"        : "rwt.event.FocusEvent",
-    "focusin"         : "rwt.event.FocusEvent",
-    "blur"            : "rwt.event.FocusEvent",
-    "focus"           : "rwt.event.FocusEvent",
-
-    /** (Fired by {@link rwt.event.DragAndDropHandler}) */
-    "dragdrop"        : "rwt.event.DragEvent",
-    "dragout"         : "rwt.event.DragEvent",
-    "dragover"        : "rwt.event.DragEvent",
-    "dragmove"        : "rwt.event.DragEvent",
-    "dragstart"       : "rwt.event.DragEvent",
-    "dragend"         : "rwt.event.DragEvent"
-  },
-
   statics : {
 
     //////////////////////

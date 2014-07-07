@@ -592,39 +592,14 @@ rwt.qx.Class.define( "rwt.qx.Property", {
 
       // [2] PRE CONDITIONS
 
-      if( rwt.util.Variant.isSet( "qx.debug", "on" ) ) {
+      if( !config.nullable || config.check || config.inheritable ) {
         code.push( 'var prop=rwt.qx.Property;' );
-        if( variant === "init" ) {
-          code.push( 'if(this.$$initialized)prop.error(this,0,"' + name + '","' + variant + '",value);' );
-        }
-
-        if( variant === "refresh" ) {
-          // do nothing
-          // refresh() is internal => no arguments test
-          // also note that refresh() supports "undefined" values
-        }
-        else if( incomingValue ) {
-          // Check argument length
-          code.push( 'if(arguments.length!==1)prop.error(this,1,"' + name + '","' + variant + '",value);' );
-
-          // Undefined check
-          code.push( 'if(value===undefined)prop.error(this,2,"' + name + '","' + variant + '",value);' );
-        }
-        else {
-          // Check argument length
-          code.push( 'if(arguments.length!==0)prop.error(this,3,"' + name + '","' + variant + '",value);' );
-        }
       }
-      else {
-        if( !config.nullable || config.check || config.inheritable ) {
-          code.push( 'var prop=rwt.qx.Property;' );
-        }
 
-        // Undefined check
-        // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
-        if( rwt.util.Variant.isSet( "qx.debug", "on" ) && variant === "set" ) {
-          code.push( 'if(value===undefined)prop.error(this,2,"' + name + '","' + variant + '",value);' );
-        }
+      // Undefined check
+      // TODO [rh] unused: changed as in patch to http://bugzilla.qooxdoo.org/show_bug.cgi?id=599
+      if( rwt.util.Variant.isSet( "qx.debug", "on" ) && variant === "set" ) {
+        code.push( 'if(value===undefined)prop.error(this,2,"' + name + '","' + variant + '",value);' );
       }
 
       // [3] PREPROCESSING INCOMING VALUE

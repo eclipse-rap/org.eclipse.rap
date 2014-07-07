@@ -85,10 +85,6 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
   },
 
-  events : {
-    "subMenuChanged" : "rwt.event.Event"
-  },
-
   members : {
 
    setText : function( value ) {

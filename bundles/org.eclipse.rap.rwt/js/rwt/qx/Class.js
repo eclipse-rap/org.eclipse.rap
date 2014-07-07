@@ -147,21 +147,19 @@ rwt.qx.Class = {
       }
 
       if( config.extend ) {
-        var superproto = config.extend.prototype;
-        var Helper = this.__createEmptyFunction();
-        Helper.prototype = superproto;
+        var Helper = function() {};
+        Helper.prototype = config.extend.prototype;
         var proto = new Helper();
         clazz.prototype = proto;
         proto.name = proto.classname = name;
         proto.basename = basename;
         config.construct.base = clazz.superclass = config.extend;
-        config.construct.self = clazz.constructor = proto.constructor = clazz;
+        config.construct.self = proto.constructor = clazz;
         if( config.destruct ) {
           clazz.$$destructor = config.destruct;
         }
         var that = this;
         clazz.$$initializer = function() {
-          //console.log( "init " + name );
           if( config.properties ) {
             that.__addProperties( clazz, config.properties, true );
           }
@@ -396,31 +394,16 @@ rwt.qx.Class = {
    * @param patch {Boolean} Overwrite existing fields, functions and properties
    */
   __addMixin : function( clazz, mixin, patch ) {
-    // Attach content
-    var list = rwt.qx.Mixin.flatten( [ mixin ] );
-    var entry;
-    for( var i = 0, l = list.length; i < l; i++ ) {
-      entry = list[ i ];
-      // Attach events
-      if( entry.$$events ) {
-        this.__addEvents( clazz, entry.$$events, patch );
-      }
-      // Attach properties (Properties are already readonly themselve, no patch handling needed)
-      if( entry.$$properties ) {
-        this.__addProperties( clazz, entry.$$properties, patch );
-      }
-      // Attach members (Respect patch setting, but dont apply base variables)
-      if( entry.$$members ) {
-        this.__addMembers( clazz, entry.$$members, patch, patch, patch );
-      }
+    if( mixin.$$properties ) {
+      this.__addProperties( clazz, mixin.$$properties, patch );
     }
-    // Store mixin reference
+    if( mixin.$$members ) {
+      this.__addMembers( clazz, mixin.$$members, patch, patch, patch );
+    }
     if( clazz.$$includes ) {
       clazz.$$includes.push( mixin );
-      clazz.$$flatIncludes.push.apply( clazz.$$flatIncludes, list );
     } else {
       clazz.$$includes = [ mixin ];
-      clazz.$$flatIncludes = list;
     }
   },
 
@@ -435,15 +418,6 @@ rwt.qx.Class = {
       arguments.callee.base.apply( this, arguments );
     }
     return defaultConstructor;
-  },
-
-  /**
-   * Returns an empty function. This is needed to get an empty function with an empty closure.
-   *
-   * @return {Function} empty function
-   */
-  __createEmptyFunction : function() {
-    return function() {};
   },
 
   __initializeClass : function( clazz ) {
@@ -466,43 +440,25 @@ rwt.qx.Class = {
    * Generate a wrapper of the original class constructor in order to enable
    * some of the advanced OO features (e.g. abstract class, singleton, mixins)
    *
-   * @param construct {Function} the original constructor
+   * @param original {Function} the original constructor
    * @param name {String} name of the class
    */
-  __wrapConstructor : function( construct ) {
-    var init = this.__initializeClass;
-    var wrapper = function() {
-      // We can access the class/statics using arguments.callee
-      var clazz = arguments.callee.constructor;
-      init( clazz );
-      // Attach local properties
+  __wrapConstructor : function( original ) {
+    return function() {
+      var clazz = arguments.callee; // i.e. "wrapper"
+      rwt.qx.Class.__initializeClass( clazz );
       if( !clazz.$$propertiesAttached ) {
         rwt.qx.Property.attach( clazz );
       }
-      // Execute default constructor
-      var retval=clazz.$$original.apply( this, arguments );
-      // Initialize local mixins
+      original.apply( this, arguments );
       if( clazz.$$includes ) {
-        var mixins = clazz.$$flatIncludes;
-        for( var i = 0, l = mixins.length; i < l; i++ ) {
-          if( mixins[ i ].$$constructor ) {
-            mixins[ i ].$$constructor.apply( this,arguments );
+        for( var i = 0, l = clazz.$$includes.length; i < l; i++ ) {
+          if( clazz.$$includes[ i ].$$constructor ) {
+            clazz.$$includes[ i ].$$constructor.apply( this, arguments );
           }
         }
       }
-      // Mark instance as initialized
-      if( this.classname === ', name, ' . classname ) {
-        this.$$initialized = true;
-      }
-      // Return optional return value
-      return retval;
     };
-    // Store original constructor
-    wrapper.$$original = construct;
-    // Store wrapper into constructor (needed for base calls etc.)
-    construct.wrapper = wrapper;
-    // Return generated wrapper
-    return wrapper;
   }
 
 };
