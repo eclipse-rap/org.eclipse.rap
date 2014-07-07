@@ -109,12 +109,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.setZIndex( 1e8 );
       this._horzScrollBar.setVisibility( false );
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setMergeEvents( false );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
       this._vertScrollBar.setIncrement( 16 );
-      this._vertScrollBar.setMergeEvents( false );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
     },
 
@@ -130,8 +128,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
-      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge,
-                                                this._vertScrollBar );
     },
 
     _parseArgsMap : function( map ) {

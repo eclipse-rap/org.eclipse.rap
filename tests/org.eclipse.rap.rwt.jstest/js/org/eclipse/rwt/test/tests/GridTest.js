@@ -1172,8 +1172,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       assertFalse( tree._horzScrollBar.getVisibility() );
       assertFalse( tree._vertScrollBar.getVisibility() );
-      assertFalse( tree._horzScrollBar._mergeEvents );
-      assertFalse( tree._vertScrollBar._mergeEvents );
       tree.destroy();
     },
 

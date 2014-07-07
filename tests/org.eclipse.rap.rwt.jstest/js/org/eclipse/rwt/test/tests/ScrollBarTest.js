@@ -14,8 +14,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
   extend : rwt.qx.Object,
 
   construct : function() {
-    var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-    TestUtil.prepareTimerUse();
     rwt.qx.Class.__initializeClass( rwt.widgets.base.ScrollBar );
     rwt.widgets.base.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
   },
@@ -25,15 +23,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     testCreateDispose : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
-      bar.setMergeEvents( true );
       assertTrue( bar.isSeeable() );
-      var timer = bar._eventTimer;
-      assertNotNull( timer );
       bar.destroy();
       TestUtil.flush();
       assertTrue( bar.isDisposed() );
-      assertTrue( timer.isDisposed() );
-      assertNull( bar._eventTimer );
     },
 
     testDimension : function() {
@@ -288,69 +281,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       vBar.destroy();
     },
 
-    testMergeEventsFastScroll : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      var events = this._getChangeLogger( bar );
-      bar.setMergeEvents( true );
-      bar.setValue( 100 );
-      bar.setValue( 200 );
-      bar.setValue( 199 );
-      assertEquals( 0, events.length );
-      assertTrue( bar._eventTimer.isEnabled() );
-      TestUtil.forceInterval( bar._eventTimer );
-      assertFalse( bar._eventTimer.isEnabled() );
-      assertEquals( 1, events.length );
-      bar.destroy();
-    },
-
-    testTurnMergeEventsOff : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      assertFalse( bar._mergeEvents );
-      bar.setMergeEvents( true );
-      assertTrue( bar._mergeEvents );
-      var error = null;
-      try {
-        bar.setMergeEvents( false );
-      } catch( ex ) {
-        error = ex;
-      }
-      assertNotNull( error );
-      assertTrue( bar._mergeEvents );
-      bar.destroy();
-    },
-
-    testMergeEventsSlowScroll : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      var events = this._getChangeLogger( bar );
-      bar.setMergeEvents( true );
-      bar.setValue( 10 );
-      bar.setValue( 20 );
-      bar.setValue( 30 );
-      bar.setValue( 130 );
-      bar.setValue( 230 );
-      assertEquals( 3, events.length );
-      TestUtil.forceInterval( bar._eventTimer );
-      assertEquals( 4, events.length );
-      bar.destroy();
-    },
-
-    testMergeEventsBackAndForth : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      var events = this._getChangeLogger( bar );
-      bar.setMergeEvents( true );
-      bar.setValue( 130 );
-      assertEquals( 0, events.length );
-      assertTrue( bar._eventTimer.getEnabled() );
-      bar.setValue( 20 );
-      assertEquals( 1, events.length );
-      assertFalse( bar._eventTimer.getEnabled() );
-      bar.destroy();
-    },
-
     testIncrement : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -366,44 +296,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 70, bar._pageIncrement );
       bar.setHeight( 200 );
       assertEquals( 170, bar._pageIncrement );
-      bar.destroy();
-    },
-
-    testAutoEnableMergeEvents : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 650 );
-      bar.autoEnableMerge( 650 );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 650 );
-      assertTrue( bar.getMergeEvents() );
-      bar.destroy();
-    },
-
-    testAutoEnableMergeEventsEarly : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 600 );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 1510 );
-      assertTrue( bar.getMergeEvents() );
-      bar.destroy();
-    },
-
-    testAutoEnableMergeEventsIgnoreZero : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var bar = this._createScrollBar( false, false );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 0 );
-      bar.autoEnableMerge( 0 );
-      bar.autoEnableMerge( 0 );
-      bar.autoEnableMerge( 0 );
-      bar.autoEnableMerge( 0 );
-      assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 1510 );
-      assertTrue( bar.getMergeEvents() );
       bar.destroy();
     },
 

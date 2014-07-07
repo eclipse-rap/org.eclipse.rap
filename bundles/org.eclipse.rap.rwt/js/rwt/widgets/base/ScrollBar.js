@@ -19,10 +19,8 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
     this._idealValue = 0;
     this._selectionFactor = 1;
     this._lastDispatchedValue = 0;
-    this._mergeEvents = false;
     this._renderSum = 0;
     this._renderSamples = 0;
-    this._eventTimerId = null;
     this._setMinimum( 0 );
     this._hasSelectionListener = false;
     this._minThumbSize = this._getMinThumbSize();
@@ -31,24 +29,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
     this.addEventListener( "mouseup", this._stopEvent, this );
     this.addEventListener( "click", this._stopEvent, this );
     this.addEventListener( "dblclick", this._stopEvent, this );
-    this._eventTimer = null;
-  },
-
-  destruct : function() {
-    if( this._eventTimer != null ) {
-      this._eventTimer.dispose();
-      this._eventTimer = null;
-    }
-  },
-
-  statics : {
-
-    MERGE_THRESHOLD : 4
-
-  },
-
-  events: {
-    "changeValue" : "rwt.event.Event"
   },
 
   members : {
@@ -94,38 +74,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       return this._hasSelectionListener;
     },
 
-    setMergeEvents : function( value ) {
-      if( !value && this._mergeEvents ) {
-        throw new Error( "mergeEvents can not be set to false" );
-      } else if( value ) {
-        this._mergeEvents = true;
-        this._eventTimer = new rwt.client.Timer( 125 );
-        this._eventTimer.addEventListener( "interval", this._dispatchValueChanged, this );
-      }
-    },
-
-    getMergeEvents : function() {
-      return this._mergeEvents;
-    },
-
-    autoEnableMerge : function( renderTime ) {
-      // TODO [tb] : also automatically disable again
-      if( !this._mergeEvents && renderTime > 0 ) {
-        this._renderSamples++;
-        this._renderSum += renderTime;
-        var avg = this._renderSum / this._renderSamples;
-        var result = false;
-        if( this._renderSamples > 2 ) {
-          result = avg > 600;
-        } else {
-          result = renderTime > 1500;
-       }
-        if( result ) {
-          this.setMergeEvents( true );
-        }
-      }
-    },
-
     isHorizontal : function() {
       return this._horizontal;
     },
@@ -165,7 +113,6 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       }
     },
 
-
     _renderMinThumbSize : function() {
       if( this._maximum > 0 && this._getLineSize() > 0 ) {
         var size = this._getThumbSize();
@@ -176,8 +123,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
           if( this._maximum === idealLength ) {
             this._selectionFactor = 1;
           } else {
-            this._selectionFactor
-              = ( this._maximum - newLength ) / ( this._maximum - idealLength );
+            this._selectionFactor = ( this._maximum - newLength ) / ( this._maximum - idealLength );
           }
         }
       }
@@ -193,13 +139,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
 
     _selectionChanged : function() {
       this.base( arguments );
-      if( this._getMergeCurrentEvent() ) {
-        // TODO [tb] : firing an event here could enable a widget to show at least some feedback
-        this._eventTimer.stop();
-        this._eventTimer.start();
-      } else {
-        this._dispatchValueChanged();
-      }
+      this._dispatchValueChanged();
     },
 
     ////////////
@@ -223,23 +163,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       event.preventDefault();
     },
 
-    _getMergeCurrentEvent : function() {
-      // TODO [tb] : dont use last dispatched target as reference, use last selection instead
-      var result = false;
-      if( this._mergeEvents ) {
-        var mergeThreshold = rwt.widgets.base.ScrollBar.MERGE_THRESHOLD;
-        var diff = Math.abs( this._lastDispatchedValue - this._selection );
-        if( diff >= this._increment * mergeThreshold ) {
-          result = true;
-        }
-      }
-      return result;
-    },
-
     _dispatchValueChanged : function() {
-      if( this._mergeEvents ) {
-        this._eventTimer.stop();
-      }
       this._lastDispatchedValue = this._selection;
       this.createDispatchEvent( "changeValue" );
     },
