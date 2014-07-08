@@ -21,6 +21,39 @@
   </style>
 
   <!-- include source and files -->
+  <script type="text/javascript">
+    (function(){
+      var href = window.location.href;
+      var param = "spec=";
+      var filterStr;
+      if( href.indexOf( param ) !== -1 ) {
+        filterStr = href.slice( href.indexOf( param ) + param.length ).split( "&" )[ 0 ];
+      }
+      // This filter works as long as the name of the suite contains the filename, which
+      // should always be the case, e.g. "Arrays.spec.js" => "util.Arrays fromArguments"
+      // Note that jasmine may filter further, this is only to optimize the loading time.
+      function filter( path ) {
+        var ext = [ ".spec.js", "_Test.js", "Test.js" ];
+        var foundExt;
+        for( var i = 0; i < ext.length; i++ ) {
+          if( path.indexOf( ext[ i ] ) !== -1 ) {
+            foundExt = ext[ i ];
+            break;
+          }
+        }
+        if( !foundExt || !filterStr ) {
+          return true;
+        }
+        var fileName = path.slice( 0, path.indexOf( foundExt ) ).split( "/" ).reverse()[ 0 ];
+        return filterStr.indexOf( fileName ) !== -1;
+      }
+      window.includeTestResource = function( path ) {
+        if( filter( path ) ) {
+          document.write( "<script src=\"" + path + "\"type=\"text\/javascript\"><\/script>" );
+        }
+      }
+    }());
+  </script>
   <script src="test?servicehandler=clientResources&amp;contribution=rwt" type="text/javascript"></script>
   <script src="test?servicehandler=clientResources&amp;contribution=test-fixture" type="text/javascript"></script>
   <script src="test?servicehandler=clientResources&amp;jasmine=true" type="text/javascript"></script>

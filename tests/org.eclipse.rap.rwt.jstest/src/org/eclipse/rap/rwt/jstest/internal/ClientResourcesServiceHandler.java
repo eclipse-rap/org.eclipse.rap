@@ -148,9 +148,9 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   }
 
   private static void writeIncludeResource( PrintWriter writer, String resource ) {
-    writer.write( "document.write( '<script src=\"" );
+    writer.write( "includeTestResource( \"" );
     writer.write( resource );
-    writer.write( "\" type=\"text/javascript\"></script>' );\n" );
+    writer.write( "\" );\n" );
   }
 
   private static String getResourceLocation( TestContribution contribution, String resource )
