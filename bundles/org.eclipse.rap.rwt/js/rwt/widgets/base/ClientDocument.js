@@ -61,20 +61,8 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
       this.getElement().style.position = "absolute";
       this.setSelectable( true );
     }
-  },
-
-  events: {
-    /** (Fired by {@link rwt.event.EventHandler}) */
-    "focus" : "rwt.event.Event",
-
-    /** Fired when the window looses the focus (Fired by {@link rwt.event.EventHandler}) */
-    "windowblur" : "rwt.event.Event",
-
-    /** Fired when the window gets the focus (Fired by {@link rwt.event.EventHandler}) */
-    "windowfocus" : "rwt.event.Event",
-
-    /** Fired when the window has been resized (Fired by {@link rwt.event.EventHandler}) */
-    "windowresize" : "rwt.event.Event"
+    this._document.documentElement.onscroll = this._resetScrollPosition;
+    this.getElement().onscroll = this._resetScrollPosition;
   },
 
   properties : {
@@ -215,6 +203,13 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
         this._getBlocker().setZIndex( old );
         oldActiveChild.setZIndex( old + 1 );
       }
+    },
+
+    _resetScrollPosition : function() {
+      document.documentElement.scrollTop = 0;
+      document.documentElement.scrollLeft = 0;
+      document.body.scrollTop = 0;
+      document.body.scrollLeft = 0;
     },
 
     // CSS API
