@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,14 @@
 
 (function(){
 
-var ObjectManager = rwt.remote.ObjectRegistry;
+var ObjectRegistry = rwt.remote.ObjectRegistry;
 
 rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Connection.js? (not a factory)
 
   _db : {},
 
   getRemoteObject : function( target ) {
-    var id = ObjectManager.getId( target );
+    var id = ObjectRegistry.getId( target );
     if( id == null ){
       throw new Error( "Invalid target for ServerObject, or target not in ObjectManager" );
     }
@@ -39,7 +39,7 @@ rwt.remote.RemoteObjectFactory = { // TODO [tb] : merge with Connection.js? (not
 
   _initRemoteObject : function( id ) {
     var remoteObject = this._db[ id ];
-    var handler = ObjectManager.getEntry( id ).handler;
+    var handler = ObjectRegistry.getEntry( id ).handler;
     if( handler && handler.listeners ) {
       for( var i = 0; i < handler.listeners.length; i++ ) {
         var type = handler.listeners[ i ];

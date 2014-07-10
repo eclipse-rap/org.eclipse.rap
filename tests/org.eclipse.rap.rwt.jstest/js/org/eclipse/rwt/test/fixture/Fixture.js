@@ -10,6 +10,7 @@
  ******************************************************************************/
 
 namespace( "org.eclipse.rwt.test.fixture" );
+
 org.eclipse.rwt.test.fixture.Fixture = {
 
   setup : function() {
@@ -38,25 +39,25 @@ org.eclipse.rwt.test.fixture.Fixture = {
     rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode
       = rwt.util.Functions.returnFalse;
     // undo the changed done by MobileWebkitSupport to allow normal tooltip tests:
-    delete  rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent;
+    delete rwt.widgets.util.ToolTipManager.getInstance().handleMouseEvent;
     rwt.remote.Request.prototype._shouldUseStateListener = rwt.util.Functions.returnTrue;
-    var server = rwt.remote.Connection.getInstance();
+    var connection = rwt.remote.Connection.getInstance();
     rwt.remote.KeyEventSupport.getInstance()._sendRequestAsync = function() {
-      server._requestPending = false;
-      server.sendImmediate( true );
+      connection._requestPending = false;
+      connection.sendImmediate( true );
     };
-    server.send = function() {
+    connection.send = function() {
       if( !this._ignoreSend && !this._sendTimer.isEnabled() ) {
         this._sendTimer.start();
         this._requestPending = false;
         this.sendImmediate( true ); // omit timer
       }
     };
-    server._delayTimer = new rwt.client.Timer();
-    server._delayTimer.addEventListener( "interval", function() {
+    connection._delayTimer = new rwt.client.Timer();
+    connection._delayTimer.addEventListener( "interval", function() {
       this._delayTimer.stop();
       this.send();
-    }, server );
+    }, connection );
     org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
     rwt.remote.MessageProcessor.processMessage( {
       "head": {},
@@ -66,7 +67,7 @@ org.eclipse.rwt.test.fixture.Fixture = {
     } );
     rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
       = function( script, error, currentRequest ) { throw error; };
-    server.setRequestCounter( 0 );
+    connection.setRequestCounter( 0 );
     org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
     org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
     // prevent flush by timer
@@ -79,20 +80,19 @@ org.eclipse.rwt.test.fixture.Fixture = {
   },
 
   reset : function() {
-    org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
-    org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog();
-    org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance();
-    org.eclipse.rwt.test.fixture.TestUtil.emptyDragCache();
-    org.eclipse.rwt.test.fixture.TestUtil.resetEventHandler();
-    org.eclipse.rwt.test.fixture.TestUtil.cleanUpKeyUtil();
-    org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-    org.eclipse.rwt.test.fixture.TestUtil.resetObjectRegistry();
-    org.eclipse.rwt.test.fixture.TestUtil.resetSendListener();
-    org.eclipse.rwt.test.fixture.TestUtil.resetWindowManager();
-    org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
-    rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode
+    org.eclipse.rwt.test.fixture.TestUtil.initRequestLog(); // needed because of ThemeStoreTest?
+    org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog(); // could use Jasmine mock clock?
+    org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance(); // AppearanceManager can be singleton with some prototype manipulation?
+    org.eclipse.rwt.test.fixture.TestUtil.resetEventHandler(); // TODO: make a singleton
+    org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage(); // ErrorHandler can be a singleton
+    org.eclipse.rwt.test.fixture.TestUtil.resetObjectRegistry(); // TODO: make a singleton
+    org.eclipse.rwt.test.fixture.TestUtil.resetSendListener(); // not needed if Connection is disposed after each test
+    org.eclipse.rwt.test.fixture.TestUtil.resetWindowManager();  // TODO: make a singleton
+    org.eclipse.rwt.test.fixture.TestUtil.cleanUpKeyUtil(); // TODO : can be a singletonwith some prototype maninulation
+    org.eclipse.rwt.test.fixture.TestUtil.resetSingletons();
+    org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests(); // NativeRequestMock can be Singleton
+    rwt.widgets.base.WidgetToolTip.getInstance()._computeFallbackMode // allows to reset tooltip singleton?
       = rwt.util.Functions.returnFalse;
-    rwt.widgets.util.MnemonicHandler.getInstance().deactivate();
     rwt.event.EventHandler.setFocusRoot( rwt.widgets.base.ClientDocument.getInstance() );
     rwt.widgets.base.WidgetToolTip.getInstance().hide();
     rwt.widgets.base.WidgetToolTip.getInstance()._hideTimeStamp = ( new Date( 0 ) ).valueOf();

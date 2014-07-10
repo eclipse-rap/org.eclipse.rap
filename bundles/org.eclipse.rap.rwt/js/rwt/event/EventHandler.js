@@ -21,7 +21,6 @@ rwt.event.EventHandler = {
   _allowContextMenu : rwt.util.Functions.returnFalse,
   _captureWidget : null,
   _focusRoot : null,
-  _menuManager : null,
   // state storage:
   _focused : false,
   _blockKeyEvents : false,
@@ -130,12 +129,8 @@ rwt.event.EventHandler = {
     return this._blockKeyEvents;
   },
 
-  setMenuManager : function( manager ) {
-    this._menuManager = manager;
-  },
-
   getMenuManager : function() {
-    return this._menuManager;
+    return rwt.widgets.util.MenuManager.getInstance();
   },
 
   setMouseEventFilter : function( filter, context ) {
@@ -236,9 +231,7 @@ rwt.event.EventHandler = {
       switch( keyIdentifier ) {
         case "Escape":
         case "Tab":
-          if( this._menuManager != null ) {
-            this._menuManager.update(vTarget, vType);
-          }
+          this.getMenuManager().update(vTarget, vType);
         break;
       }
       if( vDomEvent.ctrlKey && keyIdentifier == "A" ) {
@@ -425,17 +418,13 @@ rwt.event.EventHandler = {
     switch( vType ) {
       case "mousedown":
         rwt.widgets.util.PopupManager.getInstance().update( vTarget );
-        if( this._menuManager != null ) {
-          this._menuManager.update( vTarget, vType );
-        }
+        this.getMenuManager().update( vTarget, vType );
         rwt.widgets.util.IframeManager.getInstance().handleMouseDown( vEventObject );
       break;
       case "mouseup":
         // Mouseup event should always hide, independed of target,
         //  so don't send a target
-        if( this._menuManager != null ) {
-          this._menuManager.update( vTarget, vType );
-        }
+        this.getMenuManager().update( vTarget, vType );
         if( rwt.qx.Class.isDefined("rwt.widgets.util.IframeManager" ) ) {
           rwt.widgets.util.IframeManager.getInstance().handleMouseUp( vEventObject );
         }
@@ -495,9 +484,7 @@ rwt.event.EventHandler = {
       if( rwt.qx.Class.isDefined( "rwt.widgets.util.PopupManager" ) ) {
         rwt.widgets.util.PopupManager.getInstance().update();
       }
-      if( this._menuManager ) {
-        this._menuManager.update();
-      }
+      this.getMenuManager().update();
       if( rwt.qx.Class.isDefined( "rwt.event.DragAndDropHandler" ) ) {
         rwt.event.DragAndDropHandler.getInstance().globalCancelDrag();
       }

@@ -14,8 +14,6 @@ namespace( "rwt.widgets.util" );
 
 (function(){
 
-var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
-
 rwt.widgets.util.Template = function( cells ) {
   this._cells = cells;
   this._cellRenderer = [];
@@ -206,6 +204,7 @@ rwt.widgets.util.Template.prototype = {
     for( var i = 0; i < this._cells.length; i++ ) {
       var element = container.cellElements[ i ];
       if( element ) {
+        var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
         var cellRenderer = renderer[ this._cells[ i ].type ];
         cellRenderOptions.width = container.cellCache[ i ].width;
         cellRenderOptions.height = container.cellCache[ i ].height;
@@ -380,6 +379,7 @@ rwt.widgets.util.Template.prototype = {
   },
 
   _parseCells : function() {
+    var renderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
     for( var i = 0; i < this._cells.length; i++ ) {
       this._cellRenderer[ i ] = renderer[ this._cells[ i ].type ];
       if( this._cells[ i ].font ) {

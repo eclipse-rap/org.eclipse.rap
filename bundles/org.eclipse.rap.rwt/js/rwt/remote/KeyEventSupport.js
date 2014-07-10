@@ -38,6 +38,8 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
   destruct : function() {
     var req = rwt.remote.Connection.getInstance();
     req.removeEventListener( "received", this._onRequestReceived, this );
+    rwt.event.EventHandler.setKeyDomEventFilter( function(){}, null );
+    rwt.event.EventHandler.setKeyEventFilter( function(){}, null );
   },
 
   members : {

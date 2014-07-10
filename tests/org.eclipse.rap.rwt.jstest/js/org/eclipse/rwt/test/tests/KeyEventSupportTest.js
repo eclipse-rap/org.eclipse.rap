@@ -14,16 +14,11 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = rwt.remote.MessageProcessor;
 
-var keyUtil = rwt.remote.KeyEventSupport.getInstance();
+var keyUtil;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
 
   extend : rwt.qx.Object,
-
-  construct : function() {
-    this.base( arguments );
-    TestUtil.prepareTimerUse();
-  },
 
   members : {
 
@@ -662,6 +657,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var display = rwt.widgets.Display.getCurrent();
       var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
       rwt.remote.ObjectRegistry.add( "w1", display, adapter );
+      keyUtil = rwt.remote.KeyEventSupport.getInstance();
     },
 
     _createWidget : function() {

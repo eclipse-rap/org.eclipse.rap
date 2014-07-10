@@ -14,7 +14,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Template = rwt.widgets.util.Template;
 
-var renderer = rwt.widgets.util.CellRendererRegistry.getInstance();
+var renderer;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
@@ -22,8 +22,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
   members : {
 
-    tearDown : function() {
-      renderer.removeRendererFor( "fooType" );
+    setUp : function() {
+      renderer = rwt.widgets.util.CellRendererRegistry.getInstance();
     },
 
     testCreateWithEmptyTemplate : function() {

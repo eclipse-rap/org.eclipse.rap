@@ -18,10 +18,7 @@ rwt.runtime.Singletons = {
   _sequence : 0,
 
   get : function( type ) {
-    if( typeof type.__singleton === "undefined" ) {
-      type.__singleton = "s" + this._sequence++;
-    }
-    var id = type.__singleton;
+    var id = this._getId( type );
     if( !this._holder[ id ] ) {
       this._holder[ id ] = new type();
     }
@@ -30,12 +27,55 @@ rwt.runtime.Singletons = {
 
   clear : function( type ) {
     if( type ) {
-      if( typeof type.__singleton !== "undefined" ) {
-        delete this._holder[ type.__singleton ];
-      }
+      this._clearId( this._getId( type ) );
     } else {
+      for( var id in this._holder ) {
+        this._dispose( this._holder[ id ] );
+      }
       this._holder = {};
+    }
+  },
+
+  // NOTE: Marked "private" since it's supposed to be a temporary solution that should not be used
+  //       anywhere but TestUtil.js. Remove once tests don't need it anymore.
+  _clearExcept : function( types ) {
+    for( var id in this._holder ) {
+      if( !this._isException( this._holder[ id ], types ) ) {
+        this._clearId( id );
+      }
+    }
+  },
+
+  _isException : function( instance, exceptions ) {
+    for( var i = 0; i < exceptions.length; i++ ) {
+      if( instance instanceof exceptions[ i ] ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  _clearId : function( id ) {
+    if( this._holder[ id ] ) {
+      this._dispose( this._holder[ id ] );
+    }
+    delete this._holder[ id ];
+  },
+
+  _getId : function( type ) {
+    if( typeof type.__singleton === "undefined" ) {
+      type.__singleton = "s" + this._sequence++;
+    }
+    return type.__singleton;
+  },
+
+  _dispose : function( instance ) {
+    if( typeof instance.destroy === "function" ) {
+      instance.destroy();
+    } else if( typeof instance.dispose === "function" ) {
+      instance.dispose();
     }
   }
 
 };
+

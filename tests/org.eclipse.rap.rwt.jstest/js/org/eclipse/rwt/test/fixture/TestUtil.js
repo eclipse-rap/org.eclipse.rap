@@ -1061,6 +1061,22 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     manager._objects = {};
   },
 
+  resetSingletons : function() {
+    var exceptions = [
+      rwt.widgets.base.WidgetToolTip,
+      rwt.widgets.util.ToolTipManager,
+      rwt.remote.Connection,
+      rwt.remote.KeyEventSupport,
+      rwt.theme.ThemeStore,
+      rwt.theme.AppearanceManager,
+      rwt.runtime.System,
+      rwt.widgets.base.ClientDocument,
+      org.eclipse.rwt.test.fixture.FakeServer,
+      org.eclipse.rwt.test.TestRunner
+    ];
+    rwt.runtime.Singletons._clearExcept( exceptions );
+  },
+
   getXMLHttpRequests : function() {
     return org.eclipse.rwt.test.fixture.NativeRequestMock.history;
   },

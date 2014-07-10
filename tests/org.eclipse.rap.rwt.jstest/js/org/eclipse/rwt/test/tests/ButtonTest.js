@@ -735,7 +735,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
       assertTrue( success );
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w11", "Selection" ) );
-      button.destroy();
+      shell.destroy();
     },
 
     testPushButton_getToolTipTargetBounds : function() {

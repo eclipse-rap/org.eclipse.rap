@@ -387,16 +387,9 @@ rwt.qx.Class.define("rwt.widgets.base.Popup",
       var zIndexCompare = function(a, b) {
         return a.getZIndex() - b.getZIndex();
       };
-      if (rwt.event.EventHandler.getMenuManager() != null)
-      {
-        var manager = rwt.event.EventHandler.getMenuManager();
-        var vMenus = rwt.util.Objects.getValues(manager.getAll());
-        var vAll = vPopups.concat(vMenus).sort(zIndexCompare);
-      }
-      else
-      {
-        var vAll = vPopups.sort(zIndexCompare);
-      }
+      var manager = rwt.event.EventHandler.getMenuManager();
+      var vMenus = rwt.util.Objects.getValues(manager.getAll());
+      var vAll = vPopups.concat(vMenus).sort(zIndexCompare);
 
       var vLength = vAll.length;
       var vIndex = this._minZIndex;

@@ -35,7 +35,6 @@ rwt.qx.Class.define( "rwt.runtime.System", {
       window.addEventListener( "beforeunload", this._onbeforeunloadWrapped, false );
       window.addEventListener( "unload", this._onunloadWrapped, false );
       rwt.event.EventHandler.setAllowContextMenu( rwt.widgets.Menu.getAllowContextMenu );
-      rwt.event.EventHandler.setMenuManager( rwt.widgets.util.MenuManager.getInstance() );
     }
   },
 

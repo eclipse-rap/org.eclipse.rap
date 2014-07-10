@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 (function(){
 
-var server = rwt.remote.Connection.getInstance();
+var Connection = rwt.remote.Connection;
 
 /**
  * @private
@@ -43,7 +43,7 @@ rwt.remote.RemoteObject.prototype = {
    * @param {var} value The value of the property.
    */
   set : function( key, value ) {
-    server.getMessageWriter().appendSet( this._.id, key, value );
+    Connection.getInstance().getMessageWriter().appendSet( this._.id, key, value );
   },
 
   /**
@@ -62,12 +62,13 @@ rwt.remote.RemoteObject.prototype = {
    // TODO [tb]: suppressSend (or something similar) should be public API
     var actualProps = properties ? properties : {};
     if( this.isListening( event ) ) {
-      server.getMessageWriter().appendNotify( this._.id, event, actualProps );
+      var connection = Connection.getInstance();
+      connection.getMessageWriter().appendNotify( this._.id, event, actualProps );
       if( suppressSend !== true ) {
         if( typeof suppressSend === "number" ) {
-          server.sendDelayed( suppressSend );
+          connection.sendDelayed( suppressSend );
         } else {
-          server.send();
+          connection.send();
         }
       }
     }
@@ -84,8 +85,8 @@ rwt.remote.RemoteObject.prototype = {
    */
   call : function( method, properties ) {
     var actualProps = properties ? properties : {};
-    server.getMessageWriter().appendCall( this._.id, method, actualProps );
-    server.send();
+    Connection.getInstance().getMessageWriter().appendCall( this._.id, method, actualProps );
+    Connection.getInstance().send();
   },
 
   isListening : function( type ) {

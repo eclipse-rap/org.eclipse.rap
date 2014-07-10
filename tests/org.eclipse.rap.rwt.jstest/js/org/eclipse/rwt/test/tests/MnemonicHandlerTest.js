@@ -15,7 +15,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.remote.MessageProcessor;
 var DomEvent = rwt.event.DomEvent;
 
-var handler = rwt.widgets.util.MnemonicHandler.getInstance();
+var handler;
 var shell;
 var widget;
 var typeLog;
@@ -31,6 +31,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
   members : {
 
     setUp : function() {
+      handler = rwt.widgets.util.MnemonicHandler.getInstance();
       shell = TestUtil.createShellByProtocol( "w2" );
       widget = TestUtil.createWidgetByProtocol( "w3", "w2" );
       success = false;
