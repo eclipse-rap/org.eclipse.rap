@@ -2063,7 +2063,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var element = this._getOverlayElement( row );
       assertTrue( TestUtil.hasElementOpacity( element ) );
       if( rwt.client.Client.isWebkit() ) {
-        assertEquals( 0.4, element.style.opacity );
+        assertEquals( "0.4", element.style.opacity );
       }
     },
 

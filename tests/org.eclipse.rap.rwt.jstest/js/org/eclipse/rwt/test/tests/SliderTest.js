@@ -19,10 +19,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
   extend : rwt.qx.Object,
 
-  construct : function() {
-    org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
-  },
-
   members : {
 
     testCreateSliderByProtocol : function() {

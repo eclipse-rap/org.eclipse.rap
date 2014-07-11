@@ -1217,7 +1217,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       rwt.remote.Connection.getInstance().send();
-      assertEquals( "0", TestUtil.getMessageObject().findSetProperty( "wtest", "scrollLeft" ) );
+      assertEquals( 0, TestUtil.getMessageObject().findSetProperty( "wtest", "scrollLeft" ) );
       tree.destroy();
     },
 
@@ -3436,7 +3436,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setLinesVisible( true );
       TestUtil.flush();
       var line = tree._rowContainer._getTargetNode().childNodes[ offset ];
-      assertEquals( 1, line.style.zIndex );
+      assertEquals( "1", line.style.zIndex );
       assertEquals( "0px", line.style.width );
       assertTrue( line.style.border !== "" || line.style.borderRight !== "" );
       tree.destroy();

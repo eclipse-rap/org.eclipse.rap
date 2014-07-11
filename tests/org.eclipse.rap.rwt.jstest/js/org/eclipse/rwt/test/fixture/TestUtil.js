@@ -927,7 +927,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
    * order.
    */
   delayTest : function( time ) {
-    org.eclipse.rwt.test.TestRunner.getInstance().pause( time );
+    this._waitUntil = ( new Date() ).getTime() + time;
+  },
+
+  shouldContinueTest : function() {
+    var until = org.eclipse.rwt.test.fixture.TestUtil._waitUntil || 0;
+    return until < ( new Date() ).getTime();
   },
 
   /**
@@ -936,8 +941,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
    * or the test-instance is disposed.
    */
   store : function() {
-    var runner = org.eclipse.rwt.test.TestRunner.getInstance();
-    runner.setArguments( arguments );
+    this._stored = arguments;
+  },
+
+  getStored : function() {
+    return this._stored;
   },
 
   /**

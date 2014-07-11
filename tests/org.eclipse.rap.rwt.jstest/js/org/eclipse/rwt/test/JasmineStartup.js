@@ -53,11 +53,8 @@ org.eclipse.rwt.test.JasmineStartup = {
 
     rwt.runtime.System.getInstance().addEventListener( "uiready", function() {
       org.eclipse.rwt.test.fixture.Fixture.setup();
-      document.body.style.overflow = "scroll"; // qooxdoo disables scrolling, re-enable
       org.eclipse.rwt.test.LegacyAsserts.createShortcuts();
-      if( window.location.search.match( /legacy=true/ ) ) {
-        convertOldTests( findOldTests() );
-      }
+      convertOldTests( findOldTests() );
       window.setTimeout( function() {
         jasmineEnv.execute();
       }, 0 );
@@ -193,7 +190,11 @@ org.eclipse.rwt.test.JasmineStartup = {
         } );
         for( var i = 0; i < testNames.length; i++ ) {
           if( testNames[ i ] instanceof Array ) {
-            // handle those
+            // the old test runner listed each part of the test as separate test
+            // like this [ "name of test", part-no ]. Therefore we only need the first part:
+            if( testNames[ i ][ 1 ] === 0 ) {
+              convertMultiPartTest( testInstance, testNames[ i ][ 0 ] );
+            }
           } else {
             convertTestFunction( testInstance, testNames[ i ] );
           }
@@ -205,6 +206,29 @@ org.eclipse.rwt.test.JasmineStartup = {
       it( testName, function() {
         testInstance[ testName ]();
       } );
+    }
+
+    function convertMultiPartTest( testInstance, testName ) {
+      var parts = testInstance[ testName ];
+      it( testName, function() {
+        for( var i = 0; i < parts.length; i++ ) {
+          runs( wrapTestPart( testInstance, parts[ i ] ) );
+          if( i < parts.length - 1 ) {
+            waitsFor( org.eclipse.rwt.test.fixture.TestUtil.shouldContinueTest,
+                      "does not support to wait that long",
+                      10000000 );
+          }
+        }
+      } );
+    }
+
+    function wrapTestPart( instance, f ) {
+      return function() {
+        var args = org.eclipse.rwt.test.fixture.TestUtil.getStored();
+        org.eclipse.rwt.test.fixture.TestUtil.store( null );
+        f.apply( instance, args ? args : [] );
+        org.eclipse.rwt.test.fixture.TestUtil.flush();
+      };
     }
 
     function abort() {

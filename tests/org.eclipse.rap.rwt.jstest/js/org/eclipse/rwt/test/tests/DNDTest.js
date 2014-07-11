@@ -519,7 +519,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       message = TestUtil.getMessageObject( 0 );
       assertEquals( "copy", message.findNotifyProperty( "dt#c1", "DragOver", "operation" ) );
-      assertEquals( 76135, message.findNotifyProperty( "dt#c1", "DragOver", "dataType" ) );
+      assertEquals( "76135", message.findNotifyProperty( "dt#c1", "DragOver", "dataType" ) );
     },
 
     // for Bug 299034
