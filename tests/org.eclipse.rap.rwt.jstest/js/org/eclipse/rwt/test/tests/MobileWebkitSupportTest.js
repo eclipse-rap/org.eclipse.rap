@@ -49,7 +49,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
 
   members : {
 
-    TARGETENGINE : [ "webkit" ],
     TARGETPLATFORM : [ "ios", "android" ],
 
     tearDown : function() {

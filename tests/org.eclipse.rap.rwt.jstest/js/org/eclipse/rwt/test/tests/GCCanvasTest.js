@@ -14,8 +14,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
   members : {
 
-    TARGETENGINE : [ "gecko", "webkit", "trident" ],
-
     // NOTE: drawImage can not be tested
 
     testInit : function() {

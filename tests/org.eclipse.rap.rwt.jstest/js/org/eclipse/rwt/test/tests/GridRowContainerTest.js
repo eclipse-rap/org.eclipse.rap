@@ -206,7 +206,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       TestUtil.flush();
       var row = tree._rowContainer._children[ 0 ];
       assertEquals( 0, row.getZIndex() );
-      assertEquals( "1", tree._rowContainer._vertGridLines[ 0 ].style.zIndex );
+      assertEquals( 1, parseInt( tree._rowContainer._vertGridLines[ 0 ].style.zIndex, 10 ) );
       tree.destroy();
     },
 

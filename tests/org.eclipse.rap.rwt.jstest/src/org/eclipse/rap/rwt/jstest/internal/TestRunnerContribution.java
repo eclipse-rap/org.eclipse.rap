@@ -21,11 +21,7 @@ public class TestRunnerContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rwt/test/";
 
   private static final String[] FILES = new String[] {
-    "Presenter.js",
-    "Asserts.js",
-    "Startup.js",
     "JasmineStartup.js",
-    "TestRunner.js",
     "LegacyAsserts.js"
   };
 

@@ -1079,8 +1079,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       rwt.theme.AppearanceManager,
       rwt.runtime.System,
       rwt.widgets.base.ClientDocument,
-      org.eclipse.rwt.test.fixture.FakeServer,
-      org.eclipse.rwt.test.TestRunner
+      org.eclipse.rwt.test.fixture.FakeServer
     ];
     rwt.runtime.Singletons._clearExcept( exceptions );
   },

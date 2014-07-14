@@ -38,6 +38,8 @@
     "afterEach": false,
     "describe": false,
     "it": false,
+    "runs": false,
+    "waitsFor": false,
     "expect": false,
     "spyOn": false,
     "any" : false,

@@ -28,7 +28,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ErrorHandlerTest", {
       assertEquals( "100%", element.style.height );
       assertEquals( "100%", element.style.height );
       assertEquals( "absolute", element.style.position );
-      assertEquals( "100000000", element.style.zIndex);
+      assertEquals( 100000000, parseInt( element.style.zIndex, 10 ) );
       ErrorHandler.hideErrorBox();
     },
 

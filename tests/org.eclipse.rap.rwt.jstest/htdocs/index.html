@@ -32,13 +32,25 @@
   <!-- include source and files -->
   <script type="text/javascript">
     (function(){
+      window.loaderrors = [];
+      window.loaderrorHandler = function( e ) {
+        window.loaderrors.push( e );
+      };
+      window.addEventListener( "error", window.loaderrorHandler, false );
       var href = window.location.href;
-      var param = "spec=";
+      var sParam = "spec=";
+      var fParam = "filter="; // old-style filter still supported
+      var specStr;
       var filterStr;
-      if( href.indexOf( param ) !== -1 ) {
-        filterStr = href.slice( href.indexOf( param ) + param.length ).split( "&" )[ 0 ];
+      if( href.indexOf( fParam ) !== -1 ) {
+        filterStr = href.slice( href.indexOf( fParam ) + fParam.length ).split( "&" )[ 0 ];
+        filterStr = filterStr ? filterStr.split( "#" )[ 0 ] : filterStr;
       }
-      // This filter works as long as the name of the suite contains the filename, which
+      if( href.indexOf( sParam ) !== -1 ) {
+        specStr = href.slice( href.indexOf( sParam ) + sParam.length ).split( "&" )[ 0 ];
+        specStr = specStr ? specStr.split( "#" )[ 0 ] : specStr;
+      }
+      // The "?spec=" filter works as long as the name of the suite contains the filename, which
       // should always be the case, e.g. "Arrays.spec.js" => "util.Arrays fromArguments"
       // Note that jasmine may filter further, this is only to optimize the loading time.
       function filter( path ) {
@@ -50,11 +62,17 @@
             break;
           }
         }
-        if( !foundExt || !filterStr ) {
+        if( !foundExt ) {
           return true;
         }
         var fileName = path.slice( 0, path.indexOf( foundExt ) ).split( "/" ).reverse()[ 0 ];
-        return filterStr.indexOf( fileName ) !== -1;
+        if( specStr ) {
+          return specStr.indexOf( fileName ) !== -1;
+        }
+        if( filterStr ) {
+          return fileName.indexOf( filterStr ) !== -1;
+        }
+        return true;
       }
       window.includeTestResource = function( path ) {
         if( filter( path ) ) {

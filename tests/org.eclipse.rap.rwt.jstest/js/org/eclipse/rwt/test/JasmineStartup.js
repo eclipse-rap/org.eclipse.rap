@@ -18,35 +18,66 @@ org.eclipse.rwt.test.JasmineStartup = {
     // Setup
 
     var jasmineEnv = jasmine.getEnv();
-    var trashId = 0;//counting up the DOM elements that were not cleaned up
-    var allowedCreations = {
-      "rwt.widgets.base.ClientDocumentBlocker" : true,
-      "rwt.widgets.base.WidgetToolTip" : true,
-      "rwt.widgets.base.Image" : true // very likely a cursor created by DragAndDropHandler.js
-    };
-    var htmlReporter = new jasmine.HtmlReporter();
-    var currentChildren;
 
-    jasmineEnv.updateInterval = 200;
-    jasmineEnv.addReporter( htmlReporter );
-    jasmineEnv.specFilter = function( spec ) {
-      return htmlReporter.specFilter( spec );
-    };
-
-    // Some minor enehancements to HtmlReporter:
-    jasmineEnv.addReporter( {
-      reportRunnerStarting : function() {
-        currentChildren = document.body.childNodes.length;
-      },
-      reportSpecResults : function( spec ) {
-        if( !spec.results().passed() ) {
-          // abort to allow inspection
-          abort();
+    if( window.location.href.indexOf( "fast=true" ) !== -1 ) {
+      console.info( "Setting up Jasmine..." );
+      jasmineEnv.updateInterval = 3000;
+      jasmineEnv.addReporter( {
+        reportRunnerStarting : function() {
+          console.info( "Start Tests..." );
+        },
+        reportRunnerResults : function( runner ) {
+          var msg = "Tests Finished!";
+          console.info( msg );
+          window.alert( msg );
+        },
+        reportSuiteResults : function( suite ) {
+          if( suite.parentSuite === null ) {
+            console.info( "DONE: " + suite.description );
+          }
+        },
+        reportSpecResults : function( spec ) {
+          if( !spec.results().passed() ) {
+            var description = [ spec.description ];
+            var suite = spec.suite;
+            while( suite ) {
+              description.push( suite.description );
+              suite = suite.parentSuite;
+            }
+            console.warn( "FAILED: " + description.reverse().join( " " ) );
+            window.alert( "Tests Failed!" );
+            abort();
+          }
         }
-        updateScrollPositions();
-        checkForDirtyDOM();
-      }
-    } );
+      } );
+    } else {
+      var trashId = 0; //counting up the DOM elements that were not cleaned up
+      var allowedCreations = {
+        "rwt.widgets.base.ClientDocumentBlocker" : true,
+        "rwt.widgets.base.WidgetToolTip" : true,
+        "rwt.widgets.base.Image" : true // very likely a cursor created by DragAndDropHandler.js
+      };
+      var htmlReporter = new jasmine.HtmlReporter();
+      jasmineEnv.addReporter( htmlReporter );
+      jasmineEnv.specFilter = function( spec ) {
+        return htmlReporter.specFilter( spec );
+      };
+      // Some minor enhancements to HtmlReporter:
+      var currentChildren;
+      jasmineEnv.addReporter( {
+        reportRunnerStarting : function() {
+          currentChildren = document.body.childNodes.length;
+        },
+        reportSpecResults : function( spec ) {
+          if( !spec.results().passed() ) {
+            // abort to allow inspection, following tests would not have a "blank slate" anyway
+            abort();
+          }
+          updateScrollPositions();
+          checkForDirtyDOM();
+        }
+      } );
+    }
 
     ////////
     // Start
@@ -55,9 +86,15 @@ org.eclipse.rwt.test.JasmineStartup = {
       org.eclipse.rwt.test.fixture.Fixture.setup();
       org.eclipse.rwt.test.LegacyAsserts.createShortcuts();
       convertOldTests( findOldTests() );
-      window.setTimeout( function() {
-        jasmineEnv.execute();
-      }, 0 );
+      window.removeEventListener( "error", window.loaderrorHandler, false );
+      // Avoid running tests if not there were errors during loading (possibly tests are missing)
+      if( window.loaderrors.length > 0 ) {
+        window.alert( window.loaderrors.length + " Error(s) during test loading" );
+      } else {
+        window.setTimeout( function() {
+          jasmineEnv.execute();
+        }, 0 );
+      }
     } );
 
     /////////////////
@@ -123,7 +160,7 @@ org.eclipse.rwt.test.JasmineStartup = {
           var id = "trash_" + trashId;
           if( window.console ) {
             console.warn(   currentTest
-                          + " did not clean up the DOM propperly - "
+                          + " did not clean up the DOM properly - "
                           + id
                           + " "
                           + className );
@@ -136,32 +173,17 @@ org.eclipse.rwt.test.JasmineStartup = {
     }
 
     function findOldTests() {
-      rwt.qx.Class.__initializeClass( org.eclipse.rwt.test.TestRunner );
-      var runnerProto = org.eclipse.rwt.test.TestRunner.prototype;
-      var testScripts = runnerProto._getTestScripts();
       var classes = rwt.qx.Class.__registry;
-      // old filter style still supported, jasmine filter is way too slow
-      var filter = runnerProto._createTestClassFilter();
+      var filter = createTestClassFilter();
       var shortName;
       var testClasses = [];
       for( var clazz in classes ) {
         if( clazz.substr( clazz.length - 4 ) == "Test" ) {
           rwt.qx.Class.__initializeClass( classes[ clazz ] );
-          shortName = runnerProto._getShortClassName( clazz );
-          if( testScripts[ shortName ] ) {
-            delete testScripts[ shortName ];
-          } else {
-            var msg = "TestClass " + clazz + " does not match filename.";
-            throw new Error( msg );
-          }
           if( filter( clazz ) ) {
             testClasses.push( classes[ clazz ] );
           }
         }
-      }
-      for( var script in testScripts ) {
-        throw new Error( "File " + script + ".js could not be parsed. " +
-                         "Probably the file contains corrupted JavaScript." );
       }
       return testClasses;
     }
@@ -173,9 +195,8 @@ org.eclipse.rwt.test.JasmineStartup = {
     }
 
     function convertOldTestClass( TestClass ) {
-      var runnerProto = org.eclipse.rwt.test.TestRunner.prototype;
       var testInstance = new TestClass();
-      var testNames = runnerProto._getTestFunctions( testInstance );
+      var testNames = getTestFunctions( testInstance );
       describe( testInstance.classname, function() {
         beforeEach( function() {
           if( testInstance.setUp ) {
@@ -189,14 +210,10 @@ org.eclipse.rwt.test.JasmineStartup = {
           org.eclipse.rwt.test.fixture.Fixture.reset();
         } );
         for( var i = 0; i < testNames.length; i++ ) {
-          if( testNames[ i ] instanceof Array ) {
-            // the old test runner listed each part of the test as separate test
-            // like this [ "name of test", part-no ]. Therefore we only need the first part:
-            if( testNames[ i ][ 1 ] === 0 ) {
-              convertMultiPartTest( testInstance, testNames[ i ][ 0 ] );
-            }
-          } else {
+          if( testInstance[ testNames[ i ] ] instanceof Function ) {
             convertTestFunction( testInstance, testNames[ i ] );
+          } else if( testInstance[ testNames[ i ] ] instanceof Array ) {
+            convertMultiPartTest( testInstance, testNames[ i ] );
           }
         }
       } );
@@ -232,15 +249,55 @@ org.eclipse.rwt.test.JasmineStartup = {
     }
 
     function abort() {
-      rwt.qx.Class.__initializeClass( org.eclipse.rwt.test.TestRunner );
-      var runnerProto = org.eclipse.rwt.test.TestRunner.prototype;
-      runnerProto._freezeQooxdoo();
+      freezeQooxdoo();
       window.setTimeout( function() {
         if( document.getElementsByClassName ) {
-          document.getElementsByClassName( "detailsMenuItem" )[ 0 ].click();
+          var menuItem = document.getElementsByClassName( "detailsMenuItem" )[ 0 ];
+          if( menuItem ) {
+            menuItem.click();
+          }
         }
       }, 0 );
       throw new Error( "Abort Jasmine Runner" ); // Is there a better method to stop jasmine?
+    }
+
+    function freezeQooxdoo() {
+      rwt.widgets.base.Widget.__allowFlushs = false;
+      rwt.event.EventHandler.detachEvents();
+      rwt.qx.Target.prototype.dispatchEvent = function(){};
+      rwt.animation.Animation._stopLoop();
+      if( rwt.client.Client.supportsTouch() ) {
+        rwt.runtime.MobileWebkitSupport._removeListeners();
+      }
+    }
+
+    function getTestFunctions( obj ){
+      var testFunctions = [];
+      for( var key in obj ) {
+        if( key.substr( 0, 4 ) === "test" ) {
+          testFunctions.push( key );
+        }
+      }
+      return testFunctions;
+    }
+
+    function getShortClassName( src ) {
+      var result = src.replace( /^.*?(\w+)\.js.*$/, "$1" );
+      result = result.split( "." ).pop();
+      return result;
+    }
+
+    function createTestClassFilter() {
+      var classes = rwt.qx.Class.__registry;
+      var platform = rwt.client.Client.getPlatform();
+      return function( clazz ) {
+        var result = true;
+        if( classes[ clazz ].prototype.TARGETPLATFORM instanceof Array ) {
+          var targetPlatform = classes[ clazz ].prototype.TARGETPLATFORM;
+          result = targetPlatform.indexOf( platform ) != -1;
+        }
+        return result;
+      };
     }
 
   }

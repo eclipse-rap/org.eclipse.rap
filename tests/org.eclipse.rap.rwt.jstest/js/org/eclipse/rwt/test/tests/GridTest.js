@@ -3436,7 +3436,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setLinesVisible( true );
       TestUtil.flush();
       var line = tree._rowContainer._getTargetNode().childNodes[ offset ];
-      assertEquals( "1", line.style.zIndex );
+      assertEquals( 1, parseInt( line.style.zIndex, 10 ) );
       assertEquals( "0px", line.style.width );
       assertTrue( line.style.border !== "" || line.style.borderRight !== "" );
       tree.destroy();
