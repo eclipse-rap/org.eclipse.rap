@@ -277,21 +277,22 @@ public final class ActiveKeysUtil {
     if( keySequence.trim().length() == 0 ) {
       throw new IllegalArgumentException( "Empty key sequence definition found" );
     }
-    int lastPlusIndex = keySequence.lastIndexOf( "+" );
     String modifierPart = "";
     String keyPart = "";
+    int lastPlusIndex = keySequence.lastIndexOf( "+", keySequence.length() - 2  );
     if( lastPlusIndex != -1 ) {
       modifierPart = keySequence.substring( 0, lastPlusIndex + 1 );
       keyPart = keySequence.substring( lastPlusIndex + 1 );
     } else {
       keyPart = keySequence;
     }
-    int keyCode = getKeyCode( keyPart );
-    if( keyCode != -1 ) {
-      // TODO [tb] : use identifier instead of keycode
-      keyPart = "#" + keyCode;
-    }
-    return getModifierKeys( modifierPart ) + keyPart;
+    return getModifierKeys( modifierPart ) + formatKey( keyPart );
+  }
+
+  private static String formatKey( String key ) {
+    int keyCode = getKeyCode( key );
+    // TODO [tb] : use identifier instead of keycode
+    return keyCode == -1 ? key : "#" + keyCode;
   }
 
   private static String getModifierKeys( String modifier ) {
