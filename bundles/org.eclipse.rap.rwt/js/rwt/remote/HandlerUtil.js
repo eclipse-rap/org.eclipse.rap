@@ -636,6 +636,25 @@ rwt.remote.HandlerUtil = {
     }
   },
 
+  callWithTargets : function( ids, func ) {
+    var result = [];
+    result.resolved = 0;
+    for( var i = 0; i < ids.length; i++ ) {
+      this.callWithTarget( ids[ i ], this._createPartCallback( result, ids, i, func ) );
+    }
+  },
+
+  _createPartCallback : function( result, ids, index, func ) {
+    return function( target ) {
+      result[ index ] = target;
+      result.resolved++;
+      if( result.resolved === ids.length ) {
+        delete result.resolved;
+        func( result );
+      }
+    };
+  },
+
   filterUnregisteredObjects : function( list ) {
     var ObjectRegistry = rwt.remote.ObjectRegistry;
     var result = [];

@@ -290,6 +290,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testSetColumnOrderByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var grid = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var columns = [ {}, {} ];
+      ObjectRegistry.add( "w4", columns[ 0 ] );
+      ObjectRegistry.add( "w5", columns[ 1 ] );
+
+      TestUtil.protocolSet( "w3", { "columnOrder" : [ "w4", "w5" ] } );
+
+      expect( grid.getColumnOrder()[ 0 ] ).toBe( columns[ 0 ] );
+      expect( grid.getColumnOrder()[ 1 ] ).toBe( columns[ 1 ] );
+      shell.destroy();
+      grid.destroy();
+    },
+
     testSetTreeColumnByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );

@@ -39,6 +39,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     this._footerText = "";
     this._footerFont = null;
     this._footerImage = null;
+    this._footerSpan = 1;
     this._sortDirection = null;
     this._check = false;
     this._grid.addColumn( this );
@@ -182,6 +183,29 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     getFooterFont : function() {
       return this._footerFont;
+    },
+
+    setFooterSpan : function( span ) {
+      this._footerSpan = span;
+      this._update();
+    },
+
+    getFooterSpan : function() {
+      return this._footerSpan;
+    },
+
+    getFooterWidth : function() {
+      var result = this._width;
+      if( this._footerSpan > 1 ) {
+        var columnOrder = this._grid.getColumnOrder();
+        var start = columnOrder.indexOf( this );
+        for( var i = start + 1; i < start + this._footerSpan; i++ ) {
+          if( columnOrder[ i ] ) {
+            result += columnOrder[ i ].getWidth();
+          }
+        }
+      }
+      return result;
     },
 
     setIndex : function( value ) {

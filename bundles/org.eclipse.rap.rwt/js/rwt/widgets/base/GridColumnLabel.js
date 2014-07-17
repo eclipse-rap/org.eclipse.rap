@@ -43,7 +43,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
 
   members : {
 
-    setLeft : function( value ) {
+    setLeft : function( value ) { // TODO : overwriting generated setter can cause stack overflows
       this.base( arguments, value );
       this._hideDragFeedback( true );
     },

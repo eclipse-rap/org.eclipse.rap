@@ -75,7 +75,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     "sortColumn",
     "alwaysHideSelection",
     "enableCellToolTip",
-    "cellToolTipText"
+    "cellToolTipText",
+    "columnOrder"
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
@@ -100,6 +101,11 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
       for( var i = 0; i < value.length; i++ ) {
         rwt.remote.HandlerUtil.callWithTarget( value[ i ], applySelection );
       }
+    },
+    "columnOrder" : function( widget, value ) {
+      rwt.remote.HandlerUtil.callWithTargets( value, function( order ) {
+        widget.setColumnOrder( order );
+      } );
     },
     "sortColumn" : function( widget, value ) {
       rwt.remote.HandlerUtil.callWithTarget( value, function( column ) {

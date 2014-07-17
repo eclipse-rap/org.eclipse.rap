@@ -47,7 +47,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridColumn", {
     "visibility",
     "check",
     "wordWrap",
-    "headerWordWrap"
+    "headerWordWrap",
+    "footerSpan"
   ],
 
   propertyHandler : {

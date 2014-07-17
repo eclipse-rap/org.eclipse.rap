@@ -12,6 +12,7 @@
 describe( "HandlerUtil", function() {
 
   var HandlerUtil = rwt.remote.HandlerUtil;
+  var ObjectRegistry = rwt.remote.ObjectRegistry;
 
   describe( "createStyleMap", function() {
 
@@ -46,6 +47,44 @@ describe( "HandlerUtil", function() {
       HandlerUtil.addStatesForStyles( widget );
 
       expect( widget.addState ).not.toHaveBeenCalled();
+    });
+
+  });
+
+  describe( "callWithTargets", function() {
+
+    afterEach( function(){
+      org.eclipse.rwt.test.fixture.TestUtil.resetObjectRegistry();
+    } );
+
+    it( "calls callback with resolved array", function() {
+      var objects = [ {}, {}, {} ];
+      ObjectRegistry.add( "w10", objects[ 0 ] );
+      ObjectRegistry.add( "w11", objects[ 1 ] );
+      ObjectRegistry.add( "w12", objects[ 2 ] );
+      var callback = jasmine.createSpy();
+
+      HandlerUtil.callWithTargets( [ "w10", "w11", "w12" ], callback );
+
+      var result = callback.calls[ 0 ].args[ 0 ];
+      expect( result[ 0 ] ).toBe( objects[ 0 ] );
+      expect( result[ 1 ] ).toBe( objects[ 1 ] );
+      expect( result[ 2 ] ).toBe( objects[ 2 ] );
+    });
+
+    it( "calls callback after all objects are registered", function() {
+      var objects = [ {}, {}, {} ];
+      var callback = jasmine.createSpy();
+      ObjectRegistry.add( "w10", objects[ 0 ] );
+
+      HandlerUtil.callWithTargets( [ "w10", "w11", "w12" ], callback );
+      ObjectRegistry.add( "w11", objects[ 1 ] );
+      ObjectRegistry.add( "w12", objects[ 2 ] );
+
+      var result = callback.calls[ 0 ].args[ 0 ];
+      expect( result[ 0 ] ).toBe( objects[ 0 ] );
+      expect( result[ 1 ] ).toBe( objects[ 1 ] );
+      expect( result[ 2 ] ).toBe( objects[ 2 ] );
     });
 
   });

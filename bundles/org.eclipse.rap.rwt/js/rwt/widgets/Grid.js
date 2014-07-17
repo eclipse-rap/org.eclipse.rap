@@ -420,6 +420,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleColumnUpdate();
     },
 
+    setColumnOrder : function( columnOrder ) {
+      this._columnOrder = columnOrder;
+    },
+
+    getColumnOrder : function() {
+      return this._columnOrder;
+    },
+
     removeColumn : function( column ) {
       //this.getTableHeader().removeColumn( column );
       delete this._columns[ column.toHashCode() ];

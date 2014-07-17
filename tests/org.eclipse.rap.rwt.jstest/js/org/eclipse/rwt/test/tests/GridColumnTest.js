@@ -1775,10 +1775,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
           source += states.expanded ? "left" : "right";
           source += states.mouseover ? "-hover" : "";
           source += ".gif";
-          var result = {
+          return {
             "backgroundImage" : [ source, 10, 7 ]
           };
-          return result;
         }
       } );
     }
@@ -1787,4 +1786,143 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
 
 } );
 
-}() );
+describe( "GridColumn", function() {
+
+  var GridColumn = rwt.widgets.GridColumn;
+  var Grid = rwt.widgets.Grid;
+  var column;
+
+  beforeEach( function(){
+    column = new GridColumn( mock( Grid ) );
+  } );
+
+
+  afterEach( function(){
+    column.dispose();
+  } );
+
+  it( "setFooterSpan fires update", function() {
+    var listener = jasmine.createSpy();
+    column.addEventListener( "update", listener );
+
+    column.setFooterSpan( 2 );
+
+    expect( listener ).toHaveBeenCalled();
+  } );
+
+  it( "getFooterSpan returns 1 as initial value", function() {
+    expect( column.getFooterSpan() ).toBe( 1 );
+  } );
+
+  it( "getFooterSpan returns user footerSpan", function() {
+    column.setFooterSpan( 2 );
+
+    expect( column.getFooterSpan() ).toBe( 2 );
+  } );
+
+} );
+
+describe( "GridHeader", function() {
+
+  (function(){
+    // NOTE: This prevents a stackoverflow when this is the first suite to run. That is caused
+    //       by a property (GridColumnLabel.setLeft) being initialized by an overwritten setter
+    var widget = new rwt.widgets.base.Terminator();
+    widget.setLeft( null );
+    widget.destroy();
+  }());
+
+  var Grid = rwt.widgets.Grid;
+  var GridColumn = rwt.widgets.GridColumn;
+  var GridHeader = rwt.widgets.base.GridHeader;
+  var columns;
+  var header;
+
+  beforeEach( function() {
+    rwt.remote.EventUtil.setSuspended( true );
+    var grid = mock( Grid );
+    columns = {};
+    var columnOrder = [];
+    for( var i = 0; i < 3; i++ ) {
+      var column = new GridColumn( grid );
+      column.setWidth( 30 );
+      columns[ i ] = column;
+      columnOrder[ i ] = column;
+    }
+    grid.getColumnOrder.andReturn( columnOrder );
+  } );
+
+  afterEach( function(){
+    rwt.remote.EventUtil.setSuspended( false );
+  } );
+
+  describe( "as header", function() {
+
+    var header;
+    var label;
+
+    beforeEach( function(){
+      header = new GridHeader( {
+        "appearance" : "table"
+      } );
+      label = header._getLabelByColumn( columns[ 0 ] );
+    } );
+
+    it( "renders width", function() {
+      header.renderColumns( columns );
+
+      expect( label.getWidth() ).toBe( 30 );
+    } );
+
+    it( "renders width unaffected by footerSpan", function() {
+      columns[ 0 ].setFooterSpan( 2 );
+
+      header.renderColumns( columns );
+
+      expect( label.getWidth() ).toBe( 30 );
+    } );
+
+  } );
+
+  describe( "as footer", function() {
+
+    var footer;
+    var label;
+
+    beforeEach( function(){
+      footer = new GridHeader( {
+        "appearance" : "table",
+        "footer" : true
+      } );
+      label = footer._getLabelByColumn( columns[ 0 ] );
+    } );
+
+    it( "renders width with footerSpan", function() {
+      columns[ 0 ].setFooterSpan( 2 );
+
+      footer.renderColumns( columns );
+
+      expect( label.getWidth() ).toBe( 60 );
+    } );
+
+    it( "renders width with span over last column ", function() {
+      columns[ 0 ].setFooterSpan( 4 );
+
+      footer.renderColumns( columns );
+
+      expect( label.getWidth() ).toBe( 90 );
+    } );
+
+    it( "renders spanning labels with higher z-index", function() {
+      columns[ 0 ].setFooterSpan( 2 );
+
+      footer.renderColumns( columns );
+
+      expect( label.getZIndex() ).toBeGreaterThan( 1000 );
+    } );
+
+  } );
+
+} );
+
+}());

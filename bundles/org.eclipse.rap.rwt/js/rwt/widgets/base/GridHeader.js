@@ -90,38 +90,49 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
 
     _renderLabel : function( label, column ) {
       this._renderLabelLeft( label, column );
-      label.setWidth( column.getWidth() );
-      label.setHoverEffect( column.getMoveable() );
       label.setVisibility( column.getVisibility() && column.getWidth() > 0 );
       if( this._footer ) {
-        label.setText( column.getFooterText() );
-        label.setImage( column.getFooterImage() );
-        if( column.getFooterFont() !== null ) {
-          label.setFont( column.getFooterFont() );
-        } else {
-          label.resetFont();
-        }
+        this._renderFooterLabel( label, column );
       } else {
-        label.clearHtmlAttributes();
-        label.setHtmlAttributes( column.getHtmlAttributes() );
-        if( column.getFont() !== null ) {
-          label.setFont( column.getFont() );
-        } else {
-          label.resetFont();
-        }
-        label.setText( column.getText() );
-        label.setImage( column.getImage() );
-        label.setToolTipText( column.getToolTipText() );
-        label.setSortIndicator( column.getSortDirection() );
-        if( column.isGroup() ) {
-          label.setChevron( column.isExpanded() ? "expanded" : "collapsed" );
-        }
-        this._renderLabelY( label, column );
+        this._renderHeaderLabel( label, column );
       }
       label.setCustomVariant( column.getCustomVariant() );
-      label.setZIndex( column.isFixed() ? 1e7 : 1 );
       label.setHorizontalChildrenAlign( column.getAlignment() );
       label.setWordWrap( column.getHeaderWordWrap() );
+    },
+
+    _renderFooterLabel : function( label, column ) {
+      label.setWidth( column.getFooterWidth() );
+      label.setText( column.getFooterText() );
+      label.setImage( column.getFooterImage() );
+      if( column.getFooterFont() !== null ) {
+        label.setFont( column.getFooterFont() );
+      } else {
+        label.resetFont();
+      }
+      var onTop = column.isFixed() || column.getFooterSpan() > 1;
+      label.setZIndex( onTop ? 1e7 : 1 );
+    },
+
+    _renderHeaderLabel : function( label, column ) {
+      label.setWidth( column.getWidth() );
+      label.setHoverEffect( column.getMoveable() );
+      label.clearHtmlAttributes();
+      label.setHtmlAttributes( column.getHtmlAttributes() );
+      if( column.getFont() !== null ) {
+        label.setFont( column.getFont() );
+      } else {
+        label.resetFont();
+      }
+      label.setText( column.getText() );
+      label.setImage( column.getImage() );
+      label.setToolTipText( column.getToolTipText() );
+      label.setSortIndicator( column.getSortDirection() );
+      if( column.isGroup() ) {
+        label.setChevron( column.isExpanded() ? "expanded" : "collapsed" );
+      }
+      this._renderLabelY( label, column );
+      label.setZIndex( column.isFixed() ? 1e7 : 1 );
     },
 
     _renderLabelY : function( label, column ) {
