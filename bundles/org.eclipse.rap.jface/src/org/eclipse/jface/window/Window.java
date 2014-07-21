@@ -96,6 +96,10 @@ public abstract class Window implements IShellProvider, Serializable {
     private static final String EXCEPTION_HANDLER
       = Window.class.getName() + "#exceptionHandler"; //$NON-NLS-1$
 
+// RAP [if] Session scoped defaultImages
+    private static final String DEFAULT_IMAGES
+      = Window.class.getName() + "#defaultImages"; //$NON-NLS-1$
+
 	/**
 	 * Standard return code constant (value 0) indicating that the window was
 	 * opened.
@@ -116,7 +120,8 @@ public abstract class Window implements IShellProvider, Serializable {
 	 * An array of images to be used for the window. It is expected that the
 	 * array will contain the same icon rendered at different resolutions.
 	 */
-	private static Image[] defaultImages;
+// RAP [if] Session scoped defaultImages
+//	private static Image[] defaultImages;
 
 	/**
 	 * This interface defines a Exception Handler which can be set as a global
@@ -370,6 +375,8 @@ public abstract class Window implements IShellProvider, Serializable {
 		// disposed.
 		// The equivalent in the multi-image version seems to be to remove the
 		// disposed images from the array passed to the shell.
+// RAP [if] Session scoped defaultImages
+        Image[] defaultImages = getDefaultImages();
 		if (defaultImages != null && defaultImages.length > 0) {
 			ArrayList nonDisposedImages = new ArrayList(defaultImages.length);
 			for (int i = 0; i < defaultImages.length; ++i) {
@@ -559,8 +566,10 @@ public abstract class Window implements IShellProvider, Serializable {
 	 * @see #setDefaultImage
 	 */
 	public static Image getDefaultImage() {
-		return (defaultImages == null || defaultImages.length < 1) ? null
-				: defaultImages[0];
+// RAP [if] Session scoped defaultImages
+        UISession session = ContextProvider.getUISession();
+        Image[] defaultImages = ( Image[] )session.getAttribute( DEFAULT_IMAGES );
+        return defaultImages == null || defaultImages.length < 1 ? null : defaultImages[ 0 ];
 	}
 
 	/**
@@ -575,7 +584,10 @@ public abstract class Window implements IShellProvider, Serializable {
 	 * @since 1.0
 	 */
 	public static Image[] getDefaultImages() {
-		return (defaultImages == null ? new Image[0] : defaultImages);
+// RAP [if] Session scoped defaultImages
+        UISession session = ContextProvider.getUISession();
+        Image[] defaultImages = ( Image[] )session.getAttribute( DEFAULT_IMAGES );
+        return defaultImages == null ? new Image[0] : defaultImages;
 	}
 
 	/**
@@ -888,7 +900,10 @@ public abstract class Window implements IShellProvider, Serializable {
 	 *            the default image, or <code>null</code> if none
 	 */
 	public static void setDefaultImage(Image image) {
-		defaultImages = image == null ? null : new Image[] { image };
+// RAP [if] Session scoped defaultImages
+//	    defaultImages = image == null ? null : new Image[] { image };
+        Image[] defaultImages = image == null ? null : new Image[] { image };
+        ContextProvider.getUISession().setAttribute( DEFAULT_IMAGES, defaultImages );
 	}
 
 	/**
@@ -905,7 +920,9 @@ public abstract class Window implements IShellProvider, Serializable {
 	public static void setDefaultImages(Image[] images) {
 		Image[] newArray = new Image[images.length];
 		System.arraycopy(images, 0, newArray, 0, newArray.length);
-		defaultImages = newArray;
+// RAP [if] Session scoped defaultImages
+//		defaultImages = newArray;
+        ContextProvider.getUISession().setAttribute( DEFAULT_IMAGES, newArray );
 	}
 	
 	/**
