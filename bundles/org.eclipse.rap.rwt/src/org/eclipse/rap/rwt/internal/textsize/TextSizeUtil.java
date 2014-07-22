@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 
-import java.math.BigDecimal;
-
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.EncodingUtil;
@@ -52,12 +50,7 @@ public class TextSizeUtil {
   }
 
   public static Point textExtent( Font font, String text, int wrapWidth ) {
-    Point result = determineTextSize( font, text, wrapWidth, TEXT_EXTENT );
-    // TODO [fappel]: replace with decent implementation
-    if( wrapWidth > 0 && result.x > wrapWidth ) {
-      result = adjustWrapDetermination( font, text, wrapWidth );
-    }
-    return result;
+    return determineTextSize( font, text, wrapWidth, TEXT_EXTENT );
   }
 
   public static int getCharHeight( Font font ) {
@@ -160,15 +153,6 @@ public class TextSizeUtil {
 
   private static String createMeasurementString( String string, int mode ) {
     return mode == STRING_EXTENT ? EncodingUtil.replaceNewLines( string, " " ) : string;
-  }
-
-  private static Point adjustWrapDetermination( Font font, String text, int wrapWidth ) {
-    Point result = TextSizeEstimation.textExtent( font, text, wrapWidth );
-    BigDecimal height = new BigDecimal( result.y );
-    BigDecimal charHeight = new BigDecimal( TextSizeEstimation.getCharHeight( font ) );
-    int rows = height.divide( charHeight, 0, BigDecimal.ROUND_HALF_UP ).intValue();
-    result.y = getCharHeight( font ) * rows; // use the real char height if available...
-    return result;
   }
 
   private static Point adjustHeightForWhitespaceTexts( Font font, Point result ) {

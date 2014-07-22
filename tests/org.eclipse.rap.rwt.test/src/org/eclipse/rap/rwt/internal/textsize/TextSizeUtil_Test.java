@@ -129,6 +129,16 @@ public class TextSizeUtil_Test {
   }
 
   @Test
+  public void testTextExtent_returnsStoredDimensions() {
+    String textToMeasure = "Foo bar";
+    fakeMeasurement( textToMeasure, 10, TextSizeUtil.TEXT_EXTENT, new Point( 15, 30 ) );
+
+    Point size = TextSizeUtil.textExtent( getFont(), textToMeasure, 10 );
+
+    assertEquals( new Point( 15, 30 ), size );
+  }
+
+  @Test
   public void testTextExtent_withMarkup() {
     Point textExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b>", 0, false );
     Point markupExtend = TextSizeUtil.textExtent( getFont(), "<b>foo</b>", 0, true );
@@ -205,16 +215,6 @@ public class TextSizeUtil_Test {
     Point size = TextSizeUtil.textExtent( getFont(), " ", 0 );
 
     assertEquals( 10, size.y );
-  }
-
-  @Test
-  public void testHeightAdjustmentInCaseOfMultiLineLengthGreaterThanWrapWidth() {
-    String textToMeasure = "multi\nline\ntext";
-    fakeMeasurement( textToMeasure, 2, TextSizeUtil.TEXT_EXTENT, new Point( 6, 10 ) );
-
-    Point size = TextSizeUtil.textExtent( new Font( display, FONT_DATA ), textToMeasure, 2 );
-
-    assertEquals( 40, size.y );
   }
 
   private void fakeMeasurement( String text, int wrapWidth, int mode, Point size ) {
