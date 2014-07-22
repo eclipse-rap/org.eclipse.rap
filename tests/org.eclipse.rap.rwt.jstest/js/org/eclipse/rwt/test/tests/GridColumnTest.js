@@ -481,6 +481,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridColumnTest", {
       tree.destroy();
     },
 
+    testSetGroupHeaderWordWrapByProtocol : function() {
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var group = this._createColumnGroupByProtocol( "w4", "w3", [] );
+
+      TestUtil.protocolSet( "w4", { "headerWordWrap" : true } );
+      TestUtil.flush();
+
+      var label = this._getColumnLabel( tree, group );
+      assertTrue( group.getHeaderWordWrap() );
+      assertTrue( label.getWordWrap() );
+      group.dispose();
+      tree.destroy();
+    },
+
     testSetFixedByProtocol : function() {
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
       var column = this._createColumnByProtocol( "w4", "w3", [] );

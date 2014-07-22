@@ -34,7 +34,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridColumnGroup", {
     "font",
     "expanded",
     "visibility",
-    "customVariant"
+    "customVariant",
+    "headerWordWrap"
   ],
 
   events : [ "Expand", "Collapse" ]
