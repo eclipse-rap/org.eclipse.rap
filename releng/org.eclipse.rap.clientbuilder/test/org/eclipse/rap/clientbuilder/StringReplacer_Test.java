@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientbuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class StringReplacer_Test {
     replacer.discoverStrings( tokens );
     replacer.replaceStrings( tokens );
 
-    String expected = "var  foo = $ [ 0 ] + $ [ 0 ];\n" + "var  bar = $ [ 1 ];";
+    String expected = "var  foo = _ [ 0 ] + _ [ 0 ];\n" + "var  bar = _ [ 1 ];";
     assertEquals( expected, JavaScriptPrinter.printTokens( tokens ) );
   }
 

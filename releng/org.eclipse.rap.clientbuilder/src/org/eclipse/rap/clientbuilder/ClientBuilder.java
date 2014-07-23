@@ -103,7 +103,7 @@ public class ClientBuilder {
     }
     stringReplacer.optimize();
     StringBuilder buffer = new StringBuilder();
-    buffer.append( "(function($){" );
+    buffer.append( "(function(_){" );
     for( JSFile inputFile : inputFiles ) {
       if( compress ) {
         stringReplacer.replaceStrings( inputFile.getTokens() );
