@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -82,7 +83,8 @@ public class TreeEditor extends ControlEditor {
   ControlListener columnListener;
   TreeListener treeListener;
   Runnable timer;
-  static final int TIMEOUT = 1500;
+  // [if] Reduce TIMEOUT in order to execute the layout timer in the same request (see bug 364802)
+  static final int TIMEOUT = 0; // 1500;
 
   /**
    * Creates a TreeEditor for the specified Tree.
@@ -243,11 +245,11 @@ public class TreeEditor extends ControlEditor {
      * visible at the bottom of the table is selected. Ensure that the correct
      * row is edited by laying out one more time in a timerExec().
      */
-    // if (tree != null) {
-    // Display display = tree.getDisplay();
-    // display.timerExec(-1, timer);
-    // display.timerExec(TIMEOUT, timer);
-    // }
+    if (tree != null) {
+      Display display = tree.getDisplay();
+      display.timerExec(-1, timer);
+      display.timerExec(TIMEOUT, timer);
+    }
   }
 
   /**
@@ -262,9 +264,7 @@ public class TreeEditor extends ControlEditor {
     // Separately handle the case where the tree has no TreeColumns.
     // In this situation, there is a single default column.
     if( columnCount == 0 ) {
-      this.column = ( column == 0 )
-                                   ? 0
-                                   : -1;
+      this.column = ( column == 0 ) ? 0 : -1;
       resize();
       return;
     }

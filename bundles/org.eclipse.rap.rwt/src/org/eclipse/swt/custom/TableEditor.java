@@ -11,12 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -83,14 +77,14 @@ import org.eclipse.swt.widgets.TableItem;
 *
 * @since 1.2
 */
-@SuppressWarnings( "deprecation" )
 public class TableEditor extends ControlEditor {
 	Table table;
 	TableItem item;
 	int column = -1;
 	ControlListener columnListener;
-//	Runnable timer;
-	static final int TIMEOUT = 1500;
+	Runnable timer;
+	// [if] Reduce TIMEOUT in order to execute the layout timer in the same request (see bug 364802)
+	static final int TIMEOUT = 0; // 1500;
 /**
 * Creates a TableEditor for the specified Table.
 *
@@ -109,11 +103,11 @@ public TableEditor (Table table) {
 			layout ();
 		}
 	};
-//	timer = new Runnable () {
-//		public void run() {
-//			layout ();
-//		}
-//	};
+	timer = new SerializableRunnable () {
+		public void run() {
+			layout ();
+		}
+	};
 
 	// To be consistent with older versions of SWT, grabVertical defaults to true
 	grabVertical = true;
@@ -177,7 +171,7 @@ public void dispose () {
 	table = null;
 	item = null;
 	column = -1;
-//	timer = null;
+	timer = null;
 	super.dispose();
 }
 /**
@@ -204,30 +198,11 @@ void resize () {
 	 * selected.  Ensure that the correct row is edited by
 	 * laying out one more time in a timerExec().
 	 */
-//	if (table != null) {
-//		Display display = table.getDisplay();
-//		display.timerExec(-1, timer);
-//		display.timerExec(TIMEOUT, timer);
-//	}
-  // [rh] Adaption of the above code for RWT (see bug 364802)
-  final LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
-  lifeCycle.addPhaseListener( new PhaseListener() {
-    public void beforePhase( PhaseEvent event ) {
-    }
-
-    public void afterPhase( PhaseEvent event ) {
-      if( table == null || table.isDisposed() ) {
-        lifeCycle.removePhaseListener( this );
-      } else if( table.getDisplay() == Display.getCurrent()) {
-        layout();
-        lifeCycle.removePhaseListener( this );
-      }
-    }
-
-    public PhaseId getPhaseId() {
-      return PhaseId.PROCESS_ACTION;
-    }
-  } );
+	if (table != null) {
+		Display display = table.getDisplay();
+		display.timerExec(-1, timer);
+		display.timerExec(TIMEOUT, timer);
+	}
 }
 /**
 * Sets the zero based index of the column of the cell being tracked by this editor.
