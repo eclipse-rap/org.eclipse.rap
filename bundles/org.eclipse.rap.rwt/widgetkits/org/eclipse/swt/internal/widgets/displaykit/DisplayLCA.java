@@ -13,7 +13,9 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
@@ -23,13 +25,11 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -40,13 +40,10 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -77,13 +74,11 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     ActiveKeysUtil.preserveCancelKeys( display );
     ActiveKeysUtil.preserveMnemonicActivator( display );
     if( adapter.isInitialized() ) {
-      Shell[] shells = getShells( display );
-      for( int i = 0; i < shells.length; i++ ) {
-        WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+      for( Shell shell : getShells( display ) ) {
+        WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
           @Override
           public boolean doVisit( Widget widget ) {
-            AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
-            widgetLCA.preserveValues( widget );
+            getLCA( widget ).preserveValues( widget );
             return true;
           }
         } );
@@ -109,15 +104,12 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   public void clearPreserved( Display display ) {
-    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( display );
-    widgetAdapter.clearPreserved();
-    Composite[] shells = getShells( display );
-    for( int i = 0; i < shells.length; i++ ) {
-      WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+    ( ( WidgetAdapterImpl )getAdapter( display ) ).clearPreserved();
+    for( Shell shell : getShells( display ) ) {
+      WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
         @Override
         public boolean doVisit( Widget widget ) {
-          WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
-          widgetAdapter.clearPreserved();
+          ( ( WidgetAdapterImpl )getAdapter( widget ) ).clearPreserved();
           return true;
         }
       } );
@@ -139,7 +131,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       @Override
       public boolean doVisit( Widget widget ) {
-        WidgetUtil.getLCA( widget ).readData( widget );
+        getLCA( widget ).readData( widget );
         return true;
       }
     };
@@ -180,28 +172,8 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void disposeWidgets() throws IOException {
-    Widget[] disposedWidgets = DisposedWidgets.getAll();
-    // TODO [rh] get rid of dependency on DragSource/DropTarget
-    // Must dispose of DragSources and DropTargets first
-    for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
-      Widget toDispose = disposedWidgets[ i ];
-      if( toDispose instanceof DragSource || toDispose instanceof DropTarget ) {
-        AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
-        lca.renderDispose( toDispose );
-      }
-    }
-    // TODO [rst] since widget pooling is removed, the loop should be reverted
-    //            again
-    // [fappel]: client side disposal order is crucial for the widget
-    //           caching mechanism - we need to dispose of children first. This
-    //           is reverse to the server side mechanism (which is analog to
-    //           SWT).
-    for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
-      Widget toDispose = disposedWidgets[ i ];
-      if( !( toDispose instanceof DragSource ) && !( toDispose instanceof DropTarget ) ) {
-        AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
-        lca.renderDispose( toDispose );
-      }
+    for( Widget widget : DisposedWidgets.getAll() ) {
+      getLCA( widget ).renderDispose( widget );
     }
   }
 
@@ -296,11 +268,11 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
 
     private static void render( Widget widget ) throws IOException {
-      WidgetUtil.getLCA( widget ).render( widget );
+      getLCA( widget ).render( widget );
     }
 
     private static void runRenderRunnable( Widget widget ) throws IOException {
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
+      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( widget );
       if( adapter.getRenderRunnable() != null ) {
         adapter.getRenderRunnable().afterRender();
         adapter.clearRenderRunnable();
