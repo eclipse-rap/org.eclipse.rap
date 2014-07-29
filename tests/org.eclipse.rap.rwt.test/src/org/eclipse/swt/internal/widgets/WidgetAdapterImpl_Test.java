@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -77,25 +76,37 @@ public class WidgetAdapterImpl_Test {
   }
 
   @Test
-  public void testSetRenderRunnable() {
+  public void testGetRenderRunnables_initial() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-    IRenderRunnable runnable = mock( IRenderRunnable.class );
 
-    adapter.setRenderRunnable( runnable );
-
-    assertSame( runnable, adapter.getRenderRunnable() );
+    assertEquals( 0, adapter.getRenderRunnables().length );
   }
 
   @Test
-  public void testSetRenderRunnable_cannotBeCalledTwice() {
+  public void testAddRenderRunnable_single() {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-    adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
-    IRenderRunnable otherRenderRunnable = mock( IRenderRunnable.class );
+    Runnable runnable = mock( Runnable.class );
 
-    try {
-      adapter.setRenderRunnable( otherRenderRunnable );
-    } catch( IllegalStateException expected ) {
-    }
+    adapter.addRenderRunnable( runnable );
+
+    Runnable[] renderRunnables = adapter.getRenderRunnables();
+    assertEquals( 1, renderRunnables.length );
+    assertSame( runnable, renderRunnables[ 0 ] );
+  }
+
+  @Test
+  public void testAddRenderRunnable_multiple() {
+    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
+    Runnable runnable1 = mock( Runnable.class );
+    Runnable runnable2 = mock( Runnable.class );
+
+    adapter.addRenderRunnable( runnable1 );
+    adapter.addRenderRunnable( runnable2 );
+
+    Runnable[] renderRunnables = adapter.getRenderRunnables();
+    assertEquals( 2, renderRunnables.length );
+    assertSame( runnable1, renderRunnables[ 0 ] );
+    assertSame( runnable2, renderRunnables[ 1 ] );
   }
 
   @Test
@@ -145,13 +156,13 @@ public class WidgetAdapterImpl_Test {
     String property = "foo";
     WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     adapter.setCachedVariant( "cachedVariant" );
-    adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
+    adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
 
     WidgetAdapterImpl deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
 
     assertNull( deserializedAdapter.getCachedVariant() );
-    assertNull( deserializedAdapter.getRenderRunnable() );
+    assertEquals( 0, deserializedAdapter.getRenderRunnables().length );
     assertNull( deserializedAdapter.getPreserved( property ) );
   }
 

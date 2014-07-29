@@ -12,7 +12,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
@@ -40,9 +42,7 @@ import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
@@ -116,7 +116,7 @@ public class DisplayLCA_Test {
 
     Fixture.preserveWidgets();
 
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    WidgetAdapter adapter = getAdapter( display );
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
     Object exitConfirmation = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
     assertNull( exitConfirmation );
@@ -243,10 +243,10 @@ public class DisplayLCA_Test {
     Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Shell( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    WidgetAdapterImpl controlAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( control );
-    controlAdapter.setRenderRunnable( new IRenderRunnable() {
-      public void afterRender() throws IOException {
-        boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
+    WidgetAdapterImpl controlAdapter = ( WidgetAdapterImpl )getAdapter( control );
+    controlAdapter.addRenderRunnable( new Runnable() {
+      public void run() {
+        boolean initState = getAdapter( composite ).isInitialized();
         compositeInitState[ 0 ] = Boolean.valueOf( initState );
       }
     } );
@@ -254,7 +254,7 @@ public class DisplayLCA_Test {
     // was rendered; as opposed to being set to true after the whole widget
     // tree was rendered
     // check precondition
-    assertFalse( WidgetUtil.getAdapter( composite ).isInitialized() );
+    assertFalse( getAdapter( composite ).isInitialized() );
 
     displayLCA.render( display );
 
@@ -313,17 +313,28 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testRenderRunnableIsExecutedAndCleared() throws IOException {
+  public void testRenderRunnablesAreExecutedAndCleared_onWidget() throws IOException {
     Widget widget = new Shell( display );
-    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
-    IRenderRunnable renderRunnable = mock( IRenderRunnable.class );
-    widgetAdapter.setRenderRunnable( renderRunnable );
-    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( widget );
+    Runnable renderRunnable = mock( Runnable.class );
+    widgetAdapter.addRenderRunnable( renderRunnable );
 
     displayLCA.render( display );
 
-    verify( renderRunnable ).afterRender();
-    assertEquals( null, widgetAdapter.getRenderRunnable() );
+    verify( renderRunnable ).run();
+    assertEquals( 0, widgetAdapter.getRenderRunnables().length );
+  }
+
+  @Test
+  public void testRenderRunnablesAreExecutedAndCleared_onDisplay() throws IOException {
+    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( display );
+    Runnable renderRunnable = mock( Runnable.class );
+    widgetAdapter.addRenderRunnable( renderRunnable );
+
+    displayLCA.render( display );
+
+    verify( renderRunnable ).run();
+    assertEquals( 0, widgetAdapter.getRenderRunnables().length );
   }
 
   @Test

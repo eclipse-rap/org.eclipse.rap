@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
@@ -18,7 +19,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.ByteArrayInputStream;
@@ -31,11 +31,6 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
@@ -46,10 +41,11 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "deprecation" )
 public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Browser";
@@ -95,13 +91,17 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
-    Browser browser = ( Browser )widget;
+    final Browser browser = ( Browser )widget;
     ControlLCAUtil.renderChanges( browser );
     WidgetLCAUtil.renderCustomVariant( browser );
     destroyBrowserFunctions( browser );
     renderUrl( browser );
     createBrowserFunctions( browser );
-    renderEvaluate( browser );
+    renderAfterAll( browser.getDisplay(), new Runnable() {
+      public void run() {
+        renderEvaluate( browser );
+      }
+    } );
     renderFunctionResult( browser );
     renderListener( browser, PARAM_PROGRESS_LISTENER, hasProgressListener( browser ), false );
   }
@@ -132,32 +132,20 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void renderEvaluate( final Browser browser ) {
+  private static void renderAfterAll( Display display, Runnable runnable ) {
+    // [if] Put the execution to the end of the rendered message. This is very
+    // important when Browser#execute is called from within a BrowserFunction,
+    // because then we have a synchronous requests.
+    ( ( WidgetAdapterImpl )getAdapter( display ) ).addRenderRunnable( runnable );
+  }
+
+  private static void renderEvaluate( Browser browser ) {
     IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
     final String executeScript = adapter.getExecuteScript();
     boolean executePending = adapter.getExecutePending();
     if( executeScript != null && !executePending ) {
-      // [if] Put the execution to the end of the rendered script. This is very
-      // important when Browser#execute is called from within a BrowserFunction,
-      // because then we have a synchronous requests.
-      final LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
-      lifeCycle.addPhaseListener( new PhaseListener() {
-        public void beforePhase( PhaseEvent event ) {
-        }
-        public void afterPhase( PhaseEvent event ) {
-          if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
-            try {
-              JsonObject parameters = new JsonObject().add( PARAM_SCRIPT, executeScript );
-              getRemoteObject( browser ).call( METHOD_EVALUATE, parameters );
-            } finally {
-              lifeCycle.removePhaseListener( this );
-            }
-          }
-        }
-        public PhaseId getPhaseId() {
-          return PhaseId.RENDER;
-        }
-      } );
+      JsonObject parameters = new JsonObject().add( PARAM_SCRIPT, executeScript );
+      getRemoteObject( browser ).call( METHOD_EVALUATE, parameters );
       adapter.setExecutePending( true );
     }
   }

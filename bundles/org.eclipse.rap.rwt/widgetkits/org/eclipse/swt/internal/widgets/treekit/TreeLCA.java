@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
@@ -22,17 +19,19 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListene
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -175,8 +174,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
-    renderAfterItems( tree, new IRenderRunnable() {
-      public void afterRender() throws IOException {
+    renderAfterItems( tree, new Runnable() {
+      public void run() {
         renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
         renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
         if( tree.getSelectionCount() > 0 ) {
@@ -277,14 +276,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return tree.getAdapter( ITreeAdapter.class );
   }
 
-  private static void renderAfterItems( Tree tree, IRenderRunnable runnable ) throws IOException {
+  private static void renderAfterItems( Tree tree, Runnable runnable ) {
     Item[] items = ItemHolder.<Item>getItemHolder( tree ).getItems();
     if( items.length > 0 ) {
       Item lastItem = items[ items.length - 1 ];
       WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
-      adapter.setRenderRunnable( runnable );
+      adapter.addRenderRunnable( runnable );
     } else {
-      runnable.afterRender();
+      runnable.run();
     }
   }
 

@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
@@ -23,10 +22,12 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompatibility {
 
+  private final static Runnable[] EMPTY = new Runnable[ 0 ];
+
   private final String id;
   private boolean initialized;
   private transient Map<String,Object> preservedValues;
-  private transient IRenderRunnable renderRunnable;
+  private transient Runnable[] renderRunnables;
   private transient String cachedVariant;
   private Widget parent;
 
@@ -71,19 +72,23 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
     preservedValues.clear();
   }
 
-  public void setRenderRunnable( IRenderRunnable renderRunnable ) {
-    if( this.renderRunnable != null ) {
-      throw new IllegalStateException( "A renderRunnable was already set." );
+  public void addRenderRunnable( Runnable renderRunnable ) {
+    if( renderRunnables == null ) {
+      renderRunnables = new Runnable[] { renderRunnable };
+    } else {
+      Runnable[] newRunnables = new Runnable[ renderRunnables.length + 1 ];
+      System.arraycopy( renderRunnables, 0, newRunnables, 0, renderRunnables.length );
+      newRunnables[ newRunnables.length - 1 ] = renderRunnable;
+      renderRunnables = newRunnables;
     }
-    this.renderRunnable = renderRunnable;
   }
 
-  public IRenderRunnable getRenderRunnable() {
-    return renderRunnable;
+  public Runnable[] getRenderRunnables() {
+    return renderRunnables == null ? EMPTY : renderRunnables;
   }
 
-  public void clearRenderRunnable() {
-    renderRunnable = null;
+  public void clearRenderRunnables() {
+    renderRunnables = null;
   }
 
   public String getCachedVariant() {

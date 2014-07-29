@@ -96,11 +96,12 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     renderBeep( display );
     renderResizeListener( display );
     renderUICallBack( display );
-    markInitialized( display );
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
     ActiveKeysUtil.renderMnemonicActivator( display );
     RemoteObjectLifeCycleAdapter.render();
+    runRenderRunnables( display );
+    markInitialized( display );
   }
 
   public void clearPreserved( Display display ) {
@@ -227,6 +228,14 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
   }
 
+  private static void runRenderRunnables( Display display ) {
+    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( display );
+    for( Runnable runnable : adapter.getRenderRunnables() ) {
+      runnable.run();
+    }
+    adapter.clearRenderRunnables();
+  }
+
   private static void markInitialized( Display display ) {
     ( ( WidgetAdapterImpl )getAdapter( display ) ).setInitialized( true );
   }
@@ -253,7 +262,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
       boolean result = true;
       try {
         render( widget );
-        runRenderRunnable( widget );
+        runRenderRunnables( widget );
       } catch( IOException ioe ) {
         ioProblem = ioe;
         result = false;
@@ -271,12 +280,12 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
       getLCA( widget ).render( widget );
     }
 
-    private static void runRenderRunnable( Widget widget ) throws IOException {
+    private static void runRenderRunnables( Widget widget ) {
       WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( widget );
-      if( adapter.getRenderRunnable() != null ) {
-        adapter.getRenderRunnable().afterRender();
-        adapter.clearRenderRunnable();
+      for( Runnable runnable : adapter.getRenderRunnables() ) {
+        runnable.run();
       }
+      adapter.clearRenderRunnables();
     }
   }
 

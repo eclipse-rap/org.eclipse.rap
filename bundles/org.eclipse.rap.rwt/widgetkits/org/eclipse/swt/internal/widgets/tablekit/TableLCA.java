@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
@@ -22,17 +19,19 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListene
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -167,8 +166,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
-    renderAfterItems( table, new IRenderRunnable() {
-      public void afterRender() throws IOException {
+    renderAfterItems( table, new Runnable() {
+      public void run() {
         renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
         renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
         renderProperty( table, PROP_FOCUS_ITEM, getFocusItem( table ), null );
@@ -251,14 +250,14 @@ public final class TableLCA extends AbstractWidgetLCA {
     return table.getAdapter( ITableAdapter.class );
   }
 
-  private static void renderAfterItems( Table table, IRenderRunnable runnable ) throws IOException {
+  private static void renderAfterItems( Table table, Runnable runnable ) {
     Item[] items = ItemHolder.<Item>getItemHolder( table ).getItems();
     if( items.length > 0 ) {
       Item lastItem = items[ items.length - 1 ];
       WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
-      adapter.setRenderRunnable( runnable );
+      adapter.addRenderRunnable( runnable );
     } else {
-      runnable.afterRender();
+      runnable.run();
     }
   }
 
