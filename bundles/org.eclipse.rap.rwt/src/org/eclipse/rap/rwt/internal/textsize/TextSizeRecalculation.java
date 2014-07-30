@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,19 +24,19 @@ import org.eclipse.swt.widgets.Shell;
 
 
 class TextSizeRecalculation {
+
   static final String TEMPORARY_RESIZE = TextSizeRecalculation.class.getName() + "#temporaryResize";
   static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
   static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
   static final int RESIZE_OFFSET = 1000;
 
-  void execute() {
-    Shell[] shells = getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      forceShellRecalculations( shells[ i ] );
+  static void execute() {
+    for( Shell shell : getShells() ) {
+      forceShellRecalculations( shell );
     }
   }
 
-  private void forceShellRecalculations( Shell shell ) {
+  private static void forceShellRecalculations( Shell shell ) {
     boolean isPacked = ControlUtil.getControlAdapter( shell ).isPacked();
     Rectangle boundsBuffer = shell.getBounds();
     bufferScrolledCompositeOrigins( shell );
@@ -52,31 +52,31 @@ class TextSizeRecalculation {
     restoreShellSize( shell, boundsBuffer, isPacked );
   }
 
-  private void rePack( Shell shell ) {
+  private static void rePack( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new RePackVisitor() );
   }
 
-  private void clearLayoutBuffers( Shell shell ) {
+  private static void clearLayoutBuffers( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new ClearLayoutBuffersVisitor() );
   }
 
-  private void markLayoutNeeded( Shell shell ) {
+  private static void markLayoutNeeded( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new MarkLayoutNeededVisitor() );
   }
 
-  private void bufferScrolledCompositeOrigins( Shell shell ) {
+  private static void bufferScrolledCompositeOrigins( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new BufferScrolledCompositeOriginsVisitor() );
   }
 
-  private void enlargeScrolledCompositeContent( Shell shell ) {
+  private static void enlargeScrolledCompositeContent( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new EnlargeScrolledCompositeContentVisitor() );
   }
 
-  private void restoreScrolledCompositeOrigins( Shell shell ) {
+  private static void restoreScrolledCompositeOrigins( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new RestoreScrolledCompositeOriginsVisitor() );
   }
 
-  private void restoreShellSize( Shell shell, Rectangle bufferedBounds, boolean isPacked ) {
+  private static void restoreShellSize( Shell shell, Rectangle bufferedBounds, boolean isPacked ) {
     if( isPacked ) {
       shell.pack();
     } else {
@@ -84,7 +84,7 @@ class TextSizeRecalculation {
     }
   }
 
-  private void enlargeShell( Shell shell ) {
+  private static void enlargeShell( Shell shell ) {
     Rectangle bounds = shell.getBounds();
     int xPos = bounds.x;
     int yPos = bounds.y;
@@ -93,31 +93,29 @@ class TextSizeRecalculation {
     setShellSize( shell, new Rectangle( xPos, yPos, width, height ) );
   }
 
-  private Shell[] getShells() {
-    return getShells( getDisplay() );
+  private static Shell[] getShells() {
+    return getShells( LifeCycleUtil.getSessionDisplay() );
   }
 
-  private Display getDisplay() {
-    return LifeCycleUtil.getSessionDisplay();
+  private static Shell[] getShells( Display display ) {
+    return display.getAdapter( IDisplayAdapter.class ).getShells();
   }
 
-  private Shell[] getShells( Display display ) {
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    return displayAdapter.getShells();
-  }
-
-  private void setShellSize( Shell shell, Rectangle bounds ) {
+  private static void setShellSize( Shell shell, Rectangle bounds ) {
     shell.getAdapter( IShellAdapter.class ).setBounds( bounds );
   }
 
-  private void setTemporaryResize( boolean value ) {
+  private static void setTemporaryResize( boolean value ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( value ) {
       serviceStore.setAttribute( TEMPORARY_RESIZE, Boolean.TRUE );
     } else {
       serviceStore.removeAttribute( TEMPORARY_RESIZE );
     }
+  }
+
+  private TextSizeRecalculation() {
+    // prevent instantiation
   }
 
 }

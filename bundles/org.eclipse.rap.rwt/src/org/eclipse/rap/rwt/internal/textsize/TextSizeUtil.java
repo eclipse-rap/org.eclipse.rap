@@ -160,7 +160,7 @@ public class TextSizeUtil {
   }
 
   private static void addProbeToMeasure( Font font ) {
-    MeasurementOperator.getInstance().addProbeToMeasure( FontUtil.getData( font ) );
+    MeasurementUtil.getMeasurementOperator().addProbeToMeasure( FontUtil.getData( font ) );
   }
 
   private static int estimateCharHeight( Font font ) {

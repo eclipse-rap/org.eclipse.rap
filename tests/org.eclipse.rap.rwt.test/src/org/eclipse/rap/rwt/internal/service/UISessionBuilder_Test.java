@@ -36,6 +36,7 @@ import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.UISession;
@@ -176,6 +177,16 @@ public class UISessionBuilder_Test {
 
     ClientSelector clientSelector = applicationContext.getClientSelector();
     assertNotNull( clientSelector.getSelectedClient( uiSession ) );
+  }
+
+  @Test
+  public void testMeasurementOperatorIsCreated() {
+    registerEntryPoint( null );
+
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
+    builder.buildUISession();
+
+    assertNotNull( RemoteObjectRegistry.getInstance().get( "rwt.client.TextSizeMeasurement" ) );
   }
 
   private void registerEntryPoint( HashMap<String, String> properties ) {

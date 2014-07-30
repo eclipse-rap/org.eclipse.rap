@@ -224,11 +224,11 @@ public class TextSizeUtil_Test {
   }
 
   private MeasurementItem[] getMeasurementItems() {
-    return MeasurementOperator.getInstance().getItems();
+    return MeasurementUtil.getMeasurementOperator().getItems();
   }
 
   private Probe[] getProbes() {
-    return MeasurementOperator.getInstance().getProbes();
+    return MeasurementUtil.getMeasurementOperator().getProbes();
   }
 
   private Font getFont() {

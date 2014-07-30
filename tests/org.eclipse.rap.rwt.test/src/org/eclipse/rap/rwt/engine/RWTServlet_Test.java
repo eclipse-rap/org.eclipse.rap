@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.engine;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,6 +39,8 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
@@ -216,9 +220,14 @@ public class RWTServlet_Test {
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
     when( applicationContext.getEntryPointManager() ).thenReturn( mock( EntryPointManager.class ) );
     when( applicationContext.getClientSelector() ).thenReturn( mock( ClientSelector.class ) );
+    when( applicationContext.getProbeStore() ).thenReturn( createProbeStore() );
     when( Boolean.valueOf( applicationContext.isActive() ) ).thenReturn( Boolean.TRUE );
     when( Boolean.valueOf( applicationContext.allowsRequests() ) ).thenReturn( Boolean.TRUE );
     return applicationContext;
+  }
+
+  private static ProbeStore createProbeStore() {
+    return new ProbeStore( new TextSizeStorage() );
   }
 
   private static void fakeServiceHandler( ApplicationContext applicationContext,

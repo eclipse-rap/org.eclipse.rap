@@ -56,6 +56,7 @@ import org.eclipse.rap.rwt.internal.remote.DeferredRemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
@@ -411,6 +412,16 @@ public class DisplayLCA_Test {
     displayLCA.render( display );
 
     verify( remoteObject ).render( any( ProtocolMessageWriter.class ) );
+  }
+
+  @Test
+  public void testRenderMeasurementItems() throws IOException {
+    TextSizeUtil.stringExtent( display.getSystemFont(), "foo" );
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( "rwt.client.TextSizeMeasurement", "measureItems" ) );
   }
 
   @Test

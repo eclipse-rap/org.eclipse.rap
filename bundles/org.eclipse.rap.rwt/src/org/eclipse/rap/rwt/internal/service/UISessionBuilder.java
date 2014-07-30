@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
+import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 
 
@@ -43,6 +44,7 @@ public class UISessionBuilder {
     uiSession.attachToHttpSession();
     serviceContext.setUISession( uiSession );
     SingletonManager.install( uiSession );
+    MeasurementUtil.installMeasurementOperator( uiSession );
     setCurrentTheme();
     selectClient();
     return uiSession;

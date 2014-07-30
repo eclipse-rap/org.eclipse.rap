@@ -908,12 +908,15 @@ public class TableLCA_Test {
     getLCA( display ).render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( table.getItem( 2 ) ) );
-    assertNotNull( message.findCreateOperation( column ) );
+    CreateOperation operation1 = message.findCreateOperation( table.getItem( 2 ) );
+    CreateOperation operation2 = message.findCreateOperation( column );
+    SetOperation operation3 = message.findSetOperation( table, "topItemIndex" );
+    assertNotNull( operation1 );
+    assertNotNull( operation2 );
+    assertNotNull( operation3 );
     List<Operation> operations = message.getOperations();
-    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
-    assertEquals( getId( table ), lastOperation.getTarget() );
-    assertEquals( 2, lastOperation.getProperties().get( "topItemIndex" ).asInt() );
+    assertTrue( operations.indexOf( operation1 ) < operations.indexOf( operation3 ) );
+    assertTrue( operations.indexOf( operation2 ) < operations.indexOf( operation3 ) );
   }
 
   @Test
@@ -993,12 +996,15 @@ public class TableLCA_Test {
     getLCA( display ).render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( table.getItem( 2 ) ) );
-    assertNotNull( message.findCreateOperation( column ) );
+    CreateOperation operation1 = message.findCreateOperation( table.getItem( 2 ) );
+    CreateOperation operation2 = message.findCreateOperation( column );
+    SetOperation operation3 = message.findSetOperation( table, "scrollLeft" );
+    assertNotNull( operation1 );
+    assertNotNull( operation2 );
+    assertNotNull( operation3 );
     List<Operation> operations = message.getOperations();
-    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
-    assertEquals( getId( table ), lastOperation.getTarget() );
-    assertEquals( 10, lastOperation.getProperties().get( "scrollLeft" ).asInt() );
+    assertTrue( operations.indexOf( operation1 ) < operations.indexOf( operation3 ) );
+    assertTrue( operations.indexOf( operation2 ) < operations.indexOf( operation3 ) );
   }
 
   @Test
@@ -1491,7 +1497,7 @@ public class TableLCA_Test {
     return table.getAdapter( ITableAdapter.class ).isItemVirtual( index );
   }
 
-  private void fakeSetTopItemIndex( Table table, int index ) {
+  private static void fakeSetTopItemIndex( Table table, int index ) {
     Fixture.fakeSetProperty( getId( table ), "topItemIndex", index );
   }
 

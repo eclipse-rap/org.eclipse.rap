@@ -12,25 +12,39 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_STORE_MEASUREMENTS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PARAM_ITEMS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PARAM_RESULTS;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementUtil.getId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +68,7 @@ public class MeasurementOperator_Test {
   public void setUp() {
     Fixture.setUp();
     display = new Display();
-    operator = MeasurementOperator.getInstance();
+    operator = MeasurementUtil.getMeasurementOperator();
     Fixture.fakeNewRequest();
   }
 
@@ -64,60 +78,9 @@ public class MeasurementOperator_Test {
   }
 
   @Test
-  public void testHandleMeasurementRequest() {
-    requestProbingOfFont1();
-    requestMeasurementOfItem1();
-
-    operator.handleMeasurementRequests();
-
-    assertEquals( 1, operator.getProbeCount() );
-    assertEquals( 1, operator.getItemCount() );
-  }
-
-  @Test
-  public void testSubsequentCallsToHandleMeasurementRequest() {
-    requestProbingOfFont1();
-    requestMeasurementOfItem1();
-    operator.handleMeasurementRequests();
-    requestProbingOfFont2();
-    requestMeasurementOfItem2();
-
-    operator.handleMeasurementRequests();
-
-    assertEquals( 2, operator.getProbeCount() );
-    assertEquals( 2, operator.getItemCount() );
-  }
-
-  @Test
-  public void testSubsequentCallsToHandleMeasurementRequestAreIdempotent() {
-    requestProbingOfFont1();
-    requestMeasurementOfItem1();
-    operator.handleMeasurementRequests();
-    requestProbingOfFont1();
-    requestMeasurementOfItem1();
-
-    operator.handleMeasurementRequests();
-
-    assertEquals( 1, operator.getProbeCount() );
-    assertEquals( 1, operator.getItemCount() );
-  }
-
-  @Test
-  public void testHandleMeasurementResults() {
-    requestProbingOfFont1();
-    requestMeasurementOfItem1();
-    operator.handleMeasurementRequests();
-    fakeMessageWithMeasurementResult( FONT_DATA_1, MEASUREMENT_ITEM_1 );
-
-    operator.handleMeasurementResults();
-
-    assertEquals( 0, operator.getProbeCount() );
-    assertEquals( 0, operator.getItemCount() );
-  }
-
-  @Test
   public void testInitStartupProbes() {
-    createProbeOfFont1();
+    removeRemoteObject( TYPE );
+    createProbe( FONT_DATA_1 );
 
     MeasurementOperator measurementOperator = new MeasurementOperator();
 
@@ -125,27 +88,44 @@ public class MeasurementOperator_Test {
   }
 
   @Test
-  public void testHandleStartupProbeMeasurementResults() {
-    createProbeOfFont1();
-    fakeMessageWithMeasurementResult( FONT_DATA_1, null );
+  public void testOperationHandler_handleCall_onStartup() {
+    removeRemoteObject( TYPE );
+    LifeCycleUtil.setSessionDisplay( null );
+    createProbe( FONT_DATA_1 );
     MeasurementOperator measurementOperator = new MeasurementOperator();
 
-    measurementOperator.handleStartupProbeMeasurementResults();
+    JsonObject parameters = createMeasurementResult( FONT_DATA_1, null );
+    getOperationHandler( TYPE ).handleCall( METHOD_STORE_MEASUREMENTS, parameters );
 
     assertEquals( 0, measurementOperator.getProbeCount() );
   }
 
   @Test
-  public void testHandleStartupProbeMeasurementResultsExecutedOnce() {
-    requestProbing( FONT_DATA_1 );
-    fakeMessageWithMeasurementResult( FONT_DATA_1, null );
-    operator.handleStartupProbeMeasurementResults();
-    requestProbing( FONT_DATA_2 );
-    fakeMessageWithMeasurementResult( FONT_DATA_2, null );
+  public void testOperationHandler_handleCall() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    operator.addProbeToMeasure( FONT_DATA_1 );
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
 
-    operator.handleStartupProbeMeasurementResults();
+    JsonObject parameters = createMeasurementResult( FONT_DATA_1, MEASUREMENT_ITEM_1 );
+    getOperationHandler( TYPE ).handleCall( METHOD_STORE_MEASUREMENTS, parameters );
 
-    assertEquals( 1, operator.getProbeCount() );
+    assertEquals( 0, operator.getProbeCount() );
+    assertEquals( 0, operator.getItemCount() );
+  }
+
+  @Test
+  public void testOperationHandler_handleCall_triggersTextSizeRecalculation() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    operator.addProbeToMeasure( FONT_DATA_1 );
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
+    Shell shell = new Shell( display );
+    Listener listener = mock( Listener.class );
+    shell.addListener( SWT.Resize, listener );
+
+    JsonObject parameters = createMeasurementResult( FONT_DATA_1, MEASUREMENT_ITEM_1 );
+    getOperationHandler( TYPE ).handleCall( METHOD_STORE_MEASUREMENTS, parameters );
+
+    verify( listener, times( 2 ) ).handleEvent( any( Event.class ) );
   }
 
   @Test
@@ -156,7 +136,7 @@ public class MeasurementOperator_Test {
   }
 
   @Test
-  public void testAddItemToMeasureIsIdempotent() {
+  public void testAddItemToMeasure_isIdempotent() {
     operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
     operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
 
@@ -164,8 +144,45 @@ public class MeasurementOperator_Test {
   }
 
   @Test
+  public void testAddItemToMeasure_subsequent() {
+    operator.addItemToMeasure( MEASUREMENT_ITEM_1 );
+    operator.addItemToMeasure( MEASUREMENT_ITEM_2 );
+
+    assertEquals( 2, operator.getItemCount() );
+    assertSame( MEASUREMENT_ITEM_1, operator.getItems()[ 0 ] );
+    assertSame( MEASUREMENT_ITEM_2, operator.getItems()[ 1 ] );
+  }
+
+  @Test
+  public void testAddProbeToMeasure() {
+    operator.addProbeToMeasure( FONT_DATA_1 );
+
+    assertEquals( 1, operator.getProbeCount() );
+    assertSame( FONT_DATA_1, operator.getProbes()[ 0 ].getFontData() );
+  }
+
+  @Test
+  public void testAddProbeToMeasure_isIdempotent() {
+    operator.addProbeToMeasure( FONT_DATA_1 );
+    operator.addProbeToMeasure( FONT_DATA_1 );
+
+    assertEquals( 1, operator.getProbeCount() );
+    assertSame( FONT_DATA_1, operator.getProbes()[ 0 ].getFontData() );
+  }
+
+  @Test
+  public void testAddProbeToMeasure_subsequent() {
+    operator.addProbeToMeasure( FONT_DATA_1 );
+    operator.addProbeToMeasure( FONT_DATA_2 );
+
+    assertEquals( 2, operator.getProbeCount() );
+    assertSame( FONT_DATA_1, operator.getProbes()[ 0 ].getFontData() );
+    assertSame( FONT_DATA_2, operator.getProbes()[ 1 ].getFontData() );
+  }
+
+  @Test
   public void testGetItemsToMeasureWithEmptyResult() {
-    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
+    MeasurementItem[] items = operator.getItems();
 
     assertEquals( 0, items.length );
   }
@@ -174,7 +191,7 @@ public class MeasurementOperator_Test {
   public void testRenderFontProbing() {
     prepareTextProbing();
 
-    operator.handleMeasurementRequests();
+    operator.renderMeasurementItems();
 
     checkResponseContainsProbeCall();
   }
@@ -183,84 +200,51 @@ public class MeasurementOperator_Test {
   public void testRenderStringMeasurements() {
     prepareTextProbing();
 
-    operator.handleMeasurementRequests();
+    operator.renderMeasurementItems();
 
     checkResponseContainsMeasurementCall();
   }
 
-  @Test
-  public void testRenderStringMeasurementsWithDisposedDisplay() {
-    prepareTextProbing();
-    display.dispose();
-
-    // Ensures that no exception is thrown.
-    operator.handleMeasurementRequests();
+  private void removeRemoteObject( String type ) {
+    RemoteObjectRegistry.getInstance().remove( ( RemoteObjectImpl )getRemoteObject( type ) );
   }
 
-  private void createProbeOfFont1() {
-    createProbe( FONT_DATA_1 );
+  private OperationHandler getOperationHandler( String type ) {
+    return ( ( RemoteObjectImpl )getRemoteObject( type ) ).getHandler();
   }
 
   private void createProbe( FontData fontData ) {
-    ProbeStore textSizeProbeStore = getApplicationContext().getProbeStore();
-    textSizeProbeStore.createProbe( fontData );
+    getApplicationContext().getProbeStore().createProbe( fontData );
   }
 
-  private void fakeMessageWithMeasurementResult( FontData fontData,
-                                                 MeasurementItem measurementItem )
-  {
-    Fixture.fakeNewRequest();
+  private JsonObject createMeasurementResult( FontData fontData, MeasurementItem measurementItem ) {
     JsonObject results = new JsonObject();
     if( fontData != null ) {
-      results.add( MeasurementUtil.getId( fontData ), createJsonArray( 3, 4 ) );
+      results.add( getId( fontData ), createJsonArray( 3, 4 ) );
     }
     if( measurementItem != null ) {
-      results.add( MeasurementUtil.getId( measurementItem ), createJsonArray( 12, 4 ) );
+      results.add( getId( measurementItem ), createJsonArray( 12, 4 ) );
     }
-    JsonObject parameters = new JsonObject().add( PARAM_RESULTS, results );
-    Fixture.fakeCallOperation( TYPE, METHOD_STORE_MEASUREMENTS, parameters  );
-  }
-
-  private void requestMeasurementOfItem1() {
-    MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_1 );
-  }
-
-  private void requestMeasurementOfItem2() {
-    MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_2 );
-  }
-
-  private void requestProbingOfFont1() {
-    requestProbing( FONT_DATA_1 );
-  }
-
-  private void requestProbingOfFont2() {
-    requestProbing( FONT_DATA_2 );
-  }
-
-  private void requestProbing( FontData fontData1 ) {
-    Fixture.fakeNewRequest();
-    operator.addProbeToMeasure( fontData1 );
+    return new JsonObject().add( PARAM_RESULTS, results );
   }
 
   private void checkMeasurementItemBuffering( MeasurementItem item ) {
-    assertEquals( 1, MeasurementOperator.getInstance().getItems().length );
-    assertSame( item, MeasurementOperator.getInstance().getItems() [ 0 ] );
+    assertEquals( 1, operator.getItemCount() );
+    assertSame( item, operator.getItems()[ 0 ] );
   }
 
   private void checkResponseContainsMeasurementCall() {
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
     JsonValue itemsProperty = operation.getParameters().get( PARAM_ITEMS );
-    String[] expected = getMeasurementCall();
-    checkResponseContainsContent( expected, itemsProperty.toString() );
+    checkResponseContainsContent( getMeasurementCall(), itemsProperty.toString() );
   }
 
   private void checkResponseContainsProbeCall() {
     TestMessage message = Fixture.getProtocolMessage();
     CallOperation operation = message.findCallOperation( TYPE, METHOD_MEASURE_ITEMS );
     JsonValue itemsProperty = operation.getParameters().get( PARAM_ITEMS );
-    String[] expected = getProbeCall();
-    checkResponseContainsContent( expected, itemsProperty.toString() );
+    checkResponseContainsContent( getProbeCall(), itemsProperty.toString() );
   }
 
   private void checkResponseContainsContent( String[] expected, String markup ) {

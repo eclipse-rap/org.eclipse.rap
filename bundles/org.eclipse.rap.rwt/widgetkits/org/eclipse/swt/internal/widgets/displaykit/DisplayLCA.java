@@ -37,6 +37,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
@@ -100,6 +101,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     ActiveKeysUtil.renderCancelKeys( display );
     ActiveKeysUtil.renderMnemonicActivator( display );
     RemoteObjectLifeCycleAdapter.render();
+    MeasurementUtil.renderMeasurementItems();
     runRenderRunnables( display );
     markInitialized( display );
   }

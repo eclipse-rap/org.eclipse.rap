@@ -1039,12 +1039,15 @@ public class TreeLCA_Test {
     getLCA( display ).render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( item ) );
-    assertNotNull( message.findCreateOperation( column ) );
+    CreateOperation operation1 = message.findCreateOperation( item );
+    CreateOperation operation2 = message.findCreateOperation( column );
+    SetOperation operation3 = message.findSetOperation( tree, "topItemIndex" );
+    assertNotNull( operation1 );
+    assertNotNull( operation2 );
+    assertNotNull( operation3 );
     List<Operation> operations = message.getOperations();
-    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
-    assertEquals( getId( tree ), lastOperation.getTarget() );
-    assertEquals( 1, lastOperation.getProperties().get( "topItemIndex" ).asInt() );
+    assertTrue( operations.indexOf( operation1 ) < operations.indexOf( operation3 ) );
+    assertTrue( operations.indexOf( operation2 ) < operations.indexOf( operation3 ) );
   }
 
   @Test
@@ -1091,12 +1094,15 @@ public class TreeLCA_Test {
     getLCA( display ).render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( item ) );
-    assertNotNull( message.findCreateOperation( column ) );
+    CreateOperation operation1 = message.findCreateOperation( item );
+    CreateOperation operation2 = message.findCreateOperation( column );
+    SetOperation operation3 = message.findSetOperation( tree, "scrollLeft" );
+    assertNotNull( operation1 );
+    assertNotNull( operation2 );
+    assertNotNull( operation3 );
     List<Operation> operations = message.getOperations();
-    SetOperation lastOperation = ( SetOperation )operations.get( operations.size() - 1 );
-    assertEquals( getId( tree ), lastOperation.getTarget() );
-    assertEquals( 10, lastOperation.getProperties().get( "scrollLeft" ).asInt() );
+    assertTrue( operations.indexOf( operation1 ) < operations.indexOf( operation3 ) );
+    assertTrue( operations.indexOf( operation2 ) < operations.indexOf( operation3 ) );
   }
 
   @Test

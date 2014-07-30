@@ -45,6 +45,7 @@ import org.junit.Test;
 
 
 public class TextSizeRecalculation_Test {
+
   private static final FontData FONT_DATA = new FontData( "arial", 23, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
 
@@ -75,9 +76,8 @@ public class TextSizeRecalculation_Test {
     registerResizeListeners();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
-    TextSizeRecalculation recalculation = new TextSizeRecalculation();
 
-    recalculation.execute();
+    TextSizeRecalculation.execute();
 
     checkResizeTookPlace();
     checkRePackTookPlace();
@@ -91,7 +91,6 @@ public class TextSizeRecalculation_Test {
     createWidgetTree();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
-    TextSizeRecalculation recalculation = new TextSizeRecalculation();
     final Rectangle scrolledCompositeContentBounds = new Rectangle( 0, 0, 0, 0 );
     shell.addListener( SWT.Resize, new Listener() {
       public void handleEvent( Event event ) {
@@ -103,7 +102,7 @@ public class TextSizeRecalculation_Test {
       }
     } );
 
-    recalculation.execute();
+    TextSizeRecalculation.execute();
 
     assertEquals( getInitialContentBounds(), scrolledCompositeContentBounds );
   }
@@ -125,9 +124,8 @@ public class TextSizeRecalculation_Test {
     shell.pack();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
-    TextSizeRecalculation recalculation = new TextSizeRecalculation();
 
-    recalculation.execute();
+    TextSizeRecalculation.execute();
 
     assertTrue( ControlUtil.getControlAdapter( shell ).isPacked() );
   }
@@ -144,9 +142,8 @@ public class TextSizeRecalculation_Test {
     ResizeListener resizeListener = new ResizeListener();
     label.addControlListener( resizeListener );
     fakeMeasurementResults();
-    TextSizeRecalculation recalculation = new TextSizeRecalculation();
 
-    recalculation.execute();
+    TextSizeRecalculation.execute();
 
     assertEquals( 1, resizeListener.resizeCount() );
     assertEquals( "false|", resizeListener.getResizeLog() );

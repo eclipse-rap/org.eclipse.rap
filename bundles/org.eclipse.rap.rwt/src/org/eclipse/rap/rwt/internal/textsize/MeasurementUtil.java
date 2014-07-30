@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -24,8 +26,29 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 
 public class MeasurementUtil {
 
+  private static final String ATTR_OPERATOR = MeasurementUtil.class.getName() + "#operator";
+
+  public static void installMeasurementOperator( UISession uiSession ) {
+    uiSession.setAttribute( ATTR_OPERATOR, new MeasurementOperator() );
+  }
+
   public static void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
-    MeasurementOperator.getInstance().appendStartupTextSizeProbe( writer );
+    getMeasurementOperator().appendStartupTextSizeProbe( writer );
+  }
+
+  public static void renderMeasurementItems() {
+    getMeasurementOperator().renderMeasurementItems();
+  }
+
+  static void addItemToMeasure( String toMeasure, Font font, int wrapWidth, int mode ) {
+    FontData fontData = FontUtil.getData( font );
+    MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth, mode );
+    getMeasurementOperator().addItemToMeasure( newItem );
+  }
+
+  public static MeasurementOperator getMeasurementOperator() {
+    UISession uiSession = ContextProvider.getUISession();
+    return ( MeasurementOperator )uiSession.getAttribute( ATTR_OPERATOR );
   }
 
   static JsonArray createItemParamObject( MeasurementItem item ) {
@@ -54,12 +77,6 @@ public class MeasurementUtil {
       .add( -1 )
       .add( true );
     return result;
-  }
-
-  static void addItemToMeasure( String toMeasure, Font font, int wrapWidth, int mode ) {
-    FontData fontData = FontUtil.getData( font );
-    MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth, mode );
-    MeasurementOperator.getInstance().addItemToMeasure( newItem );
   }
 
   static String getId( Probe probe ) {

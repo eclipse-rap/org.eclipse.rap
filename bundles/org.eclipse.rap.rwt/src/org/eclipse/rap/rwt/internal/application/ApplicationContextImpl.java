@@ -42,7 +42,6 @@ import org.eclipse.rap.rwt.internal.service.RWTMessageHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
-import org.eclipse.rap.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -349,7 +348,6 @@ public class ApplicationContextImpl implements ApplicationContext {
     themeManager.initialize();
     applicationConfiguration.configure( new ApplicationImpl( this, applicationConfiguration ) );
     resourceDirectory.configure( getContextDirectory() );
-    addInternalPhaseListeners();
     addInternalServiceHandlers();
     setInternalSettingStoreFactory();
     startupPage.activate();
@@ -391,10 +389,6 @@ public class ApplicationContextImpl implements ApplicationContext {
       location = servletContext.getRealPath( "/" );
     }
     return location;
-  }
-
-  private void addInternalPhaseListeners() {
-    phaseListenerManager.addPhaseListener( new MeasurementListener() );
   }
 
   private void addInternalServiceHandlers() {
