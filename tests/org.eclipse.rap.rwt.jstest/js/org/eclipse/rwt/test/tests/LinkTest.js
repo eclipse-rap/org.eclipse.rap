@@ -189,6 +189,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
 
       assertTrue( lastChild === link._getTargetNode().lastChild );
       link.destroy();
+    },
+
+    testTextDecorationOnHover : function() {
+      TestUtil.fakeAppearance( "link-hyperlink", {
+        "style" : function( states ) {
+          return {
+            textDecoration : states.over ? "underline" : "none"
+          };
+        }
+      } );
+      var link = new rwt.widgets.Link();
+      link.addToDocument();
+      link.addLink( "foo", 0 );
+      link.applyText();
+      TestUtil.flush();
+      var hyperlink = link._getHyperlinkElements()[ 0 ];
+
+      // TestUtil#fakeMouseEventDOM does not work in this case.
+      // Call _onMouseOver/Out directly by faking the event target
+      link._onMouseOver( { target : hyperlink } );
+
+      assertEquals( "underline", hyperlink.style.textDecoration );
+
+      link._onMouseOut( { target : hyperlink } );
+
+      assertEquals( "none", hyperlink.style.textDecoration );
+      link.destroy();
     }
 
   }

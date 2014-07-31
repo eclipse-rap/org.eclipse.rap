@@ -161,9 +161,9 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onMouseDown : function( evt ) {
+    _onMouseDown : function( event ) {
       try {
-        if( this.isEnabled() && this._isLeftMouseButtonPressed( evt ) ) {
+        if( this.isEnabled() && this._isLeftMouseButtonPressed( event ) ) {
           var index = this._getLinkIndex( event.target );
           this._setFocusedLink( index );
           if( this._readyToSendChanges ) {
@@ -179,7 +179,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onMouseOver : function() {
+    _onMouseOver : function( event ) {
       try {
         var style = this._getHyperlinkStyle( true );
         rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
@@ -188,7 +188,7 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onMouseOut : function() {
+    _onMouseOut : function( event ) {
       try {
         var style = this._getHyperlinkStyle( false );
         rwt.html.Style.setStyleProperty( event.target, "textDecoration", style.textDecoration );
@@ -197,19 +197,19 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _isLeftMouseButtonPressed : function( evt ) {
+    _isLeftMouseButtonPressed : function( event ) {
       var result = false;
-      if( evt.which ) {
-        result = ( evt.which === 1 );
-      } else if( evt.button ) {
-        result = ( evt.button === 0 );
+      if( event.which ) {
+        result = ( event.which === 1 );
+      } else if( event.button ) {
+        result = ( event.button === 0 );
       }
       return result;
     },
 
-    _onKeyDown : function( evt ) {
+    _onKeyDown : function( event ) {
       try {
-        if( this.isEnabled() && evt.keyCode === 13 ) {
+        if( this.isEnabled() && event.keyCode === 13 ) {
           var index = this._getLinkIndex( event.target );
           this._sendChanges( index );
         }
@@ -242,20 +242,20 @@ rwt.qx.Class.define( "rwt.widgets.Link", {
       }
     },
 
-    _onKeyPress : function( evt ) {
-      if( this.isFocused() && evt.getKeyIdentifier() === "Tab" && this._linksCount > 0 ) {
+    _onKeyPress : function( event ) {
+      if( this.isFocused() && event.getKeyIdentifier() === "Tab" && this._linksCount > 0 ) {
         var index = this._focusedLinkIndex;
-        if( !evt.isShiftPressed() && index >= 0 && index < this._linksCount - 1 ) {
-          evt.stopPropagation();
-          evt.preventDefault();
+        if( !event.isShiftPressed() && index >= 0 && index < this._linksCount - 1 ) {
+          event.stopPropagation();
+          event.preventDefault();
           this._setFocusedLink( index + 1 );
-        } else if( !evt.isShiftPressed() && index === -1 ) {
-          evt.stopPropagation();
-          evt.preventDefault();
+        } else if( !event.isShiftPressed() && index === -1 ) {
+          event.stopPropagation();
+          event.preventDefault();
           this._setFocusedLink( 0 );
-        } else if( evt.isShiftPressed() && index > 0 && index <= this._linksCount - 1 ) {
-          evt.stopPropagation();
-          evt.preventDefault();
+        } else if( event.isShiftPressed() && index > 0 && index <= this._linksCount - 1 ) {
+          event.stopPropagation();
+          event.preventDefault();
           this._setFocusedLink( index - 1 );
         }
       }
