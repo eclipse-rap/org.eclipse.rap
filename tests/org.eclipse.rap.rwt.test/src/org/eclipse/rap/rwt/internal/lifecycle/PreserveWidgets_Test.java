@@ -25,12 +25,10 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
@@ -49,39 +47,6 @@ public class PreserveWidgets_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testInitialization() {
-    // ensures that the default preserve mechanism is registered and executes at the designated
-    // phases
-    Display display = new Display();
-    Composite shell = new Shell( display );
-    final Text text = new Text( shell, SWT.NONE );
-    text.setText( "hello" );
-    Fixture.markInitialized( display );
-    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
-    final StringBuilder log = new StringBuilder();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
-        if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
-          WidgetAdapter adapter = WidgetUtil.getAdapter( text );
-          if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
-            log.append( "copy created" );
-          }
-        }
-      }
-      public void afterPhase( PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.ANY;
-      }
-    } );
-
-    Fixture.executeLifeCycleFromServerThread( );
-
-    assertEquals( "copy created", log.toString() );
   }
 
   @Test

@@ -45,13 +45,35 @@ public class ReadData_Test {
   }
 
   @Test
-  public void testExecute() {
+  public void testExecute_returnsProcessActionPhase() {
+    Display display = new Display();
+
+    PhaseId phaseId = readData.execute( display );
+
+    assertEquals( PhaseId.PROCESS_ACTION, phaseId );
+  }
+
+  @Test
+  public void testExecute_triggersLCAsReadData() {
     StringBuilder log = new StringBuilder();
     Display display = new Display();
     new TestWidget( display, log );
-    PhaseId phaseId = readData.execute( display );
+
+    readData.execute( display );
+
     assertEquals( LoggingWidgetLCA.READ_DATA, log.toString() );
-    assertEquals( PhaseId.PROCESS_ACTION, phaseId );
+  }
+
+  @Test
+  public void testExecute_triggersLCAsPreservesValues() {
+    StringBuilder log = new StringBuilder();
+    Display display = new Display();
+    new TestWidget( display, log );
+    Fixture.markInitialized( display );
+
+    readData.execute( display );
+
+    assertEquals( LoggingWidgetLCA.READ_DATA + LoggingWidgetLCA.PRESERVE_VALUES, log.toString() );
   }
 
   private final class TestWidget extends Shell {

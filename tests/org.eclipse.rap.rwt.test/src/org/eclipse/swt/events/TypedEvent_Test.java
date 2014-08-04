@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_FOCUS_IN;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -23,12 +22,11 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
+import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -44,16 +42,6 @@ import org.junit.Test;
 
 
 public class TypedEvent_Test {
-
-  private static final String EVENT_FIRED = "eventFired|";
-  private static final String AFTER_RENDER = "after" + PhaseId.RENDER + "|";
-  private static final String BEFORE_RENDER = "before" + PhaseId.RENDER + "|";
-  private static final String AFTER_PROCESS_ACTION = "after" + PhaseId.PROCESS_ACTION + "|";
-  private static final String BEFORE_PROCESS_ACTION = "before" + PhaseId.PROCESS_ACTION + "|";
-  private static final String AFTER_READ_DATA = "after" + PhaseId.READ_DATA + "|";
-  private static final String BEFORE_READ_DATA = "before" + PhaseId.READ_DATA + "|";
-  private static final String AFTER_PREPARE_UI_ROOT = "after" + PhaseId.PREPARE_UI_ROOT + "|";
-  private static final String BEFORE_PREPARE_UI_ROOT = "before" + PhaseId.PREPARE_UI_ROOT + "|";
 
   private Display display;
   private Shell shell;
@@ -93,46 +81,23 @@ public class TypedEvent_Test {
   }
 
   @Test
-  public void testPhase() {
-    final StringBuilder log = new StringBuilder();
+  public void testEventIsFiredInProcessActionPhase() {
     Button button = new Button( shell, SWT.PUSH );
     getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     Fixture.markInitialized( button );
+    final AtomicReference<PhaseId> log = new AtomicReference<PhaseId>();
     button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
-        log.append( EVENT_FIRED );
+        log.set( CurrentPhase.get() );
       }
     } );
+
     Fixture.fakeNewRequest();
     Fixture.fakeNotifyOperation( getId( button ), ClientMessageConst.EVENT_SELECTION, null );
-    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
-        log.append( "before" + event.getPhaseId() + "|" );
-      }
-      public void afterPhase( PhaseEvent event ) {
-        log.append( "after" + event.getPhaseId() + "|" );
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.ANY;
-      }
-    } );
+    Fixture.readDataAndProcessAction( button );
 
-    Fixture.executeLifeCycleFromServerThread( );
-
-    String expected
-      = BEFORE_PREPARE_UI_ROOT
-      + AFTER_PREPARE_UI_ROOT
-      + BEFORE_READ_DATA
-      + AFTER_READ_DATA
-      + BEFORE_PROCESS_ACTION
-      + EVENT_FIRED
-      + AFTER_PROCESS_ACTION
-      + BEFORE_RENDER
-      + AFTER_RENDER;
-    assertEquals( expected, log.toString() );
+    assertEquals( PhaseId.PROCESS_ACTION, log.get() );
   }
 
   @Test

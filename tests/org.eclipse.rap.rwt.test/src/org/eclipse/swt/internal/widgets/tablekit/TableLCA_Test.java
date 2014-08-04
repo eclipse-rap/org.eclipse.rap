@@ -12,9 +12,8 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -37,21 +36,18 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
-import org.eclipse.rap.rwt.internal.protocol.Operation;
-import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -229,46 +225,6 @@ public class TableLCA_Test {
     assertTrue( isItemVirtual( table, 499 ) );
     assertTrue( isItemVirtual( table, 800 ) );
     assertTrue( isItemVirtual( table, 999 ) );
-  }
-
-  @Test
-  public void testClearVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    shell.setSize( 100, 100 );
-    shell.setLayout( new FillLayout() );
-    table = new Table( shell, SWT.VIRTUAL );
-    table.setItemCount( 100 );
-    shell.layout();
-    shell.open();
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    // precondition: all items are resolved (TableItem#cached == true)
-    // resolve all items and ensure
-    for( int i = 0; i < table.getItemCount(); i++ ) {
-      table.getItem( i ).getText();
-    }
-    assertFalse( adapter.isItemVirtual( table.getItemCount() - 1 ) );
-    //
-    final int lastItemIndex = table.getItemCount() - 1;
-    // fake one request that would initialize the UI
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread();
-    // run actual request
-    Fixture.fakeNewRequest();
-    LifeCycle lifeCycle = getApplicationContext().getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
-        table.clear( lastItemIndex );
-      }
-      public void afterPhase( PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.PROCESS_ACTION;
-      }
-    } );
-    Fixture.executeLifeCycleFromServerThread();
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCallOperation( table.getItem( lastItemIndex ), "clear" ) );
   }
 
   @Test
