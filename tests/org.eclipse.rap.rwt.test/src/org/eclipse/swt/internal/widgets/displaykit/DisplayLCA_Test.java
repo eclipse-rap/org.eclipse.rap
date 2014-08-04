@@ -44,14 +44,10 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseEvent;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseListener;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
@@ -279,37 +275,29 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testRenderDisposed() throws Exception {
-    ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
-                                                        TestRenderDisposedEntryPoint.class,
-                                                        null );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )applicationContext.getLifeCycleFactory().getLifeCycle();
-    LifeCycleUtil.setSessionDisplay( null );
-    lifeCycle.execute();
-    Fixture.fakeNewRequest();
-    lifeCycle.execute();
-    Fixture.fakeNewRequest();
-    final Shell[] shell = new Shell[ 1 ];
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public PhaseId getPhaseId() {
-        return PhaseId.PROCESS_ACTION;
-      }
-      public void beforePhase( PhaseEvent event ) {
-        shell[ 0 ] = Display.getCurrent().getShells()[ 0 ];
-        shell[ 0 ].dispose();
-      }
-      public void afterPhase( PhaseEvent event ) {
-      }
-    } );
+  public void testRenderDisposedWidget() throws IOException {
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
 
-    lifeCycle.execute();
+    shell.dispose();
+    displayLCA.render( display );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
-    String shellId = WidgetUtil.getId( shell[ 0 ] );
-    assertEquals( shellId, message.getOperation( 0 ).getTarget() );
+    assertEquals( getId( shell ), message.getOperation( 0 ).getTarget() );
+  }
+
+  @Test
+  public void testRenderDisposedWidget_notYetInitialized() throws IOException {
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+
+    shell.dispose();
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   @Test
@@ -570,20 +558,6 @@ public class DisplayLCA_Test {
   public static final class TestRenderInitiallyDisposedEntryPoint implements EntryPoint {
     public int createUI() {
       Display display = new Display();
-      display.dispose();
-      return 0;
-    }
-  }
-
-  public static final class TestRenderDisposedEntryPoint implements EntryPoint {
-    public int createUI() {
-      Display display = new Display();
-      Shell shell = new Shell( display );
-      while( !shell.isDisposed() ) {
-        if( !display.readAndDispatch() ) {
-          display.sleep();
-        }
-      }
       display.dispose();
       return 0;
     }
