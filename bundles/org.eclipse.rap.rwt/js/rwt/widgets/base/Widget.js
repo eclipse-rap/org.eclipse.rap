@@ -2751,6 +2751,16 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return vChildren[vChildren.indexOf(this) - 1];
     },
 
+    getPreviousActiveSibling : function(vIgnoreClasses) {
+      var vPrev = rwt.widgets.base.Widget.getActiveSiblingHelper(this, this.getParent(), -1, vIgnoreClasses, null);
+      return vPrev ? vPrev : this.getParent().getLastActiveChild();
+    },
+
+    getNextActiveSibling : function(vIgnoreClasses) {
+      var vNext = rwt.widgets.base.Widget.getActiveSiblingHelper(this, this.getParent(), 1, vIgnoreClasses, null);
+      return vNext ? vNext : this.getParent().getFirstActiveChild();
+    },
+
     isFirstVisibleChild : function() {
       return this._hasParent && this.getParent().getFirstVisibleChild() == this;
     },

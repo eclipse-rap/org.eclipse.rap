@@ -412,6 +412,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertFalse( success );
     },
 
+    testKeyNavigation_rigthKey : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item1 = this._createTabItemByProtocol( "w4", "w3" );
+      var item2 = this._createTabItemByProtocol( "w5", "w3" );
+      item1.setChecked( true );
+      TestUtil.flush();
+
+      TestUtil.press( item1, "Right" );
+
+      assertFalse( item1.getChecked() );
+      assertTrue( item2.getChecked() );
+    },
+
+    testKeyNavigation_leftKey : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item1 = this._createTabItemByProtocol( "w4", "w3" );
+      var item2 = this._createTabItemByProtocol( "w5", "w3" );
+      item2.setChecked( true );
+      TestUtil.flush();
+
+      TestUtil.press( item1, "Left" );
+
+      assertTrue( item1.getChecked() );
+      assertFalse( item2.getChecked() );
+    },
+
     //////////////////
     // Helping methods
 
