@@ -406,6 +406,9 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "mode", mode );
       var document = rwt.widgets.base.ClientDocument.getInstance();
       if( value == "maximized" ) {
+        // User may change browser window size during long running request (before windowresize
+        // listener is attached). Sync current shell bounds back to server - see bug 440948.
+        this._sendBoundsTimer.start();
         document.addEventListener( "windowresize", this._onWindowResize, this );
       } else {
         document.removeEventListener( "windowresize", this._onWindowResize, this );

@@ -813,6 +813,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
       this._disposeShell();
     },
 
+    testSetMode_inResponse_sendsBoundsBack : function() {
+      var shell = this._protocolCreateShell();
+      TestUtil.setIgnoreSendRequests( true );
+
+      rwt.remote.EventUtil.setSuspended( true );
+      this._protocolSet( { "mode" : "maximized" } );
+      rwt.remote.EventUtil.setSuspended( false );
+      TestUtil.forceInterval( shell._sendBoundsTimer );
+
+      TestUtil.setIgnoreSendRequests( false );
+      rwt.remote.Connection.getInstance().send();
+      var message = TestUtil.getMessageObject();
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      assertNotNull( message.findSetOperation( "w3", "bounds" ) );
+      this._disposeShell();
+    },
+
     testSetMode_sendsMoveOperationOnce : function() {
       var shell = this._protocolCreateShell();
       this._protocolSet( { "bounds" : [ 1, 2, 3, 4 ] } );
