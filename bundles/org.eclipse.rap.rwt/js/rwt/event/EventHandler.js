@@ -310,23 +310,8 @@ rwt.event.EventHandler = {
         EventHandlerUtil.stopDomEvent( vDomEvent );
       }
     }
-    if(    vDispatchTarget.getEnabled()
-        && !( vDispatchTarget instanceof rwt.widgets.base.ClientDocument )
-        && vType == "mousedown" ) {
-      rwt.widgets.util.FocusHandler.mouseFocus = true;
-      var vRoot = vDispatchTarget.getFocusRoot();
-      if( vRoot ) {
-        this.setFocusRoot( vRoot );
-        var vFocusTarget = vDispatchTarget;
-        while( !vFocusTarget.isFocusable() && vFocusTarget != vRoot ) {
-          vFocusTarget = vFocusTarget.getParent();
-        }
-        // We need to focus first and active afterwards.
-        // Otherwise the focus will activate another widget if the
-        // active one is not tabable.
-        vRoot.setFocusedChild( vFocusTarget );
-        vRoot.setActiveChild( vDispatchTarget );
-      }
+    if( vType == "mousedown" ) {
+      EventHandlerUtil.handleFocusedChild( vDispatchTarget );
     }
     // handle related target object
     if( vType == "mouseover" || vType == "mouseout" ) {

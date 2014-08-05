@@ -1128,6 +1128,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Selection" ) );
     },
 
+    testFocusedChild_withOpenMenu : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addToDocument();
+      openSimpleMenu();
+      TestUtil.flush();
+
+      TestUtil.fakeMouseEventDOM( button._getTargetNode(), "mousedown" );
+
+      var root = rwt.event.EventHandler.getFocusRoot();
+      assertTrue( button === root.getFocusedChild() );
+      assertTrue( button === root.getActiveChild() );
+      button.destroy();
+    },
+
     testKeyboardControl_KeyDownHoversFirstItemAfterItemsUnhide : function() {
       openSimpleMenu();
       menu.addMenuItemAt( new MenuItem( "push" ), 1 );
