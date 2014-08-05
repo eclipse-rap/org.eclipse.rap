@@ -462,6 +462,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       var target = event.getOriginalTarget();
       if( !this.contains( target ) ) {
         // This is a capture widget, re-dispatch on original
+        rwt.event.EventHandlerUtil.handleFocusedChild( target );
         target._dispatchEvent( event );
         event.stopPropagation();
       }

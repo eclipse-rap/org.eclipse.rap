@@ -210,6 +210,28 @@ rwt.event.EventHandlerUtil = {
     return vObject;
   },
 
+  /////////////////
+  // MOUSE HANDLING
+
+  handleFocusedChild : function( target ) {
+    if( target.getEnabled() && !( target instanceof rwt.widgets.base.ClientDocument ) ) {
+      rwt.widgets.util.FocusHandler.mouseFocus = true;
+      var root = target.getFocusRoot();
+      if( root ) {
+        rwt.event.EventHandler.setFocusRoot( root );
+        var focusTarget = target;
+        while( !focusTarget.isFocusable() && focusTarget != root ) {
+          focusTarget = focusTarget.getParent();
+        }
+        // We need to focus first and active afterwards.
+        // Otherwise the focus will activate another widget if the
+        // active one is not tabable.
+        root.setFocusedChild( focusTarget );
+        root.setActiveChild( target );
+      }
+    }
+  },
+
   ///////////////
   // KEY HANDLING
 
@@ -275,7 +297,6 @@ rwt.event.EventHandlerUtil = {
       return result;
     }
   } ),
-
 
   mustRestoreKeyup  : function( keyCode, pseudoTypes  ) {
     // For these keys it is assumed to be more likely that a keyup event was missed
