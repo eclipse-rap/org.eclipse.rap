@@ -1510,9 +1510,14 @@ DateTime[BORDER]:focused {
 }
 
 DateTime-Calendar-Day {
+  border: none;
   color: inherit;
   background-color: transparent;
   text-shadow: none;
+}
+
+DateTime-Calendar-Day:today {
+  border: 1px solid #ff0000;
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected {

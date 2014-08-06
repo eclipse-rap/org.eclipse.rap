@@ -1667,9 +1667,14 @@ DateTime[BORDER]:disabled {
 }
 
 DateTime-Calendar-Day {
+  border: none;
   color: inherit;
   background-color: transparent;
   text-shadow: none;
+}
+
+DateTime-Calendar-Day:today {
+  border: 1px solid #ff0000;
 }
 
 DateTime-Field:selected,

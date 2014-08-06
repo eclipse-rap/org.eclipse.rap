@@ -300,17 +300,15 @@ var appearances = {
         textAlign : "center",
         verticalAlign : "middle"
       };
-      if( !states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
-      } else {
+      if( states.disabled ) {
         result.textColor = tv.getCssColor( "*", "color" );
         result.backgroundColor = "undefined";
+      } else {
+        result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
       }
+      result.border = tv.getCssBorder( "DateTime-Calendar-Day", "border" );
       result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
-      var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
-      var border = new rwt.html.Border( 1, "solid", borderColor );
-      result.border = states.today ? border : "undefined";
       return result;
     }
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,29 +51,44 @@ DateTime-Calendar-Day:selected {
   text-shadow: none;
 }
 
+DateTime-Calendar-Day:today {
+  border: 1px solid #ff0000;
+}
+
+DateTime-Calendar-Day:today:selected {
+  border: 1px solid #ff0000;
+  background-color: #5882b5;
+  color: #ffffff;
+}
+
 DateTime-Calendar-Day:selected:hover {
+  border: none;
   background-color: #5882b5;
   color: #ffffff;
   text-shadow: none;
 }
 
 DateTime-Calendar-Day:selected:unfocused {
+  border: none;
   background-color: #c0c0c0;
   text-shadow: none;
 }
 
 DateTime-Calendar-Day:otherMonth {
+  border: none;
   background-color: transparent;
   color: #808080;
   text-shadow: none;
 }
 
 DateTime-Calendar-Day:hover {
+  border: none;
   background-color: #b5b5b5;
   text-shadow: none;
 }
 
 DateTime-Calendar-Day {
+  border: none;
   color: inherit;
   background-color: transparent;
   text-shadow: none;
