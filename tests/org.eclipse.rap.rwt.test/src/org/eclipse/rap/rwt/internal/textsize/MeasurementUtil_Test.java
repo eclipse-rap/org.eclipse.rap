@@ -11,18 +11,24 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -34,6 +40,7 @@ import org.junit.Test;
 
 public class MeasurementUtil_Test {
 
+  private static final FontData FONT_DATA = new FontData( "fontName", 1, SWT.NORMAL );
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
 
   @Before
@@ -105,14 +112,29 @@ public class MeasurementUtil_Test {
     assertEquals( expected, itemObject );
   }
 
+  @Test
+  public void testAppendStartupTextSizeProbe_withoutUISession() {
+    ( ( UISessionImpl )ContextProvider.getUISession() ).shutdown();
+    createStartupProbe();
+    ProtocolMessageWriter writer = mock( ProtocolMessageWriter.class );
+
+    MeasurementUtil.appendStartupTextSizeProbe( writer );
+
+    verify( writer ).appendCall( eq( "rwt.client.TextSizeMeasurement" ),
+                                 eq( "measureItems" ),
+                                 any( JsonObject.class ) );
+  }
+
+  private void createStartupProbe() {
+    getApplicationContext().getProbeStore().createProbe( FONT_DATA );
+  }
+
   private Probe createProbe() {
-    FontData fontData = new FontData( "fontName", 1, SWT.NORMAL );
-    return new Probe( TEXT_TO_MEASURE, fontData );
+    return new Probe( TEXT_TO_MEASURE, FONT_DATA );
   }
 
   private MeasurementItem createMeasurementItem() {
-    FontData fontData = new FontData( "fontName", 1, SWT.NORMAL );
-    return new MeasurementItem( TEXT_TO_MEASURE, fontData, 17, TextSizeUtil.STRING_EXTENT );
+    return new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA, 17, TextSizeUtil.STRING_EXTENT );
   }
 
   private void removeRemoteObject( String type ) {

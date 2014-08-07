@@ -29,7 +29,6 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -90,26 +89,6 @@ class MeasurementOperator implements SerializableCompatibility {
 
   void addItemToMeasure( MeasurementItem newItem ) {
     items.add( newItem );
-  }
-
-  void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
-    JsonValue startupProbeObject = getStartupProbeObject();
-    if( startupProbeObject != null ) {
-      JsonObject parameters = new JsonObject().add( PARAM_ITEMS, startupProbeObject );
-      writer.appendCall( TYPE, METHOD_MEASURE_ITEMS, parameters );
-    }
-  }
-
-  private static JsonArray getStartupProbeObject() {
-    JsonArray result = null;
-    Probe[] probeList = getApplicationContext().getProbeStore().getProbes();
-    if( probeList.length > 0 ) {
-      result = new JsonArray();
-      for( int i = 0; i < probeList.length; i++ ) {
-        result.add( createProbeParamObject( probeList[ i ] ) );
-      }
-    }
-    return result;
   }
 
   void renderMeasurementItems() {

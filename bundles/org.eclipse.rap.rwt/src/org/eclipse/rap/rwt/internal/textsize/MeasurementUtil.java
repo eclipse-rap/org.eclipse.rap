@@ -12,8 +12,13 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.METHOD_MEASURE_ITEMS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.PARAM_ITEMS;
+import static org.eclipse.rap.rwt.internal.textsize.MeasurementOperator.TYPE;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -33,7 +38,20 @@ public class MeasurementUtil {
   }
 
   public static void appendStartupTextSizeProbe( ProtocolMessageWriter writer ) {
-    getMeasurementOperator().appendStartupTextSizeProbe( writer );
+    JsonArray startupProbes = getStartupProbes();
+    if( !startupProbes.isEmpty() ) {
+      JsonObject parameters = new JsonObject().add( PARAM_ITEMS, startupProbes );
+      writer.appendCall( TYPE, METHOD_MEASURE_ITEMS, parameters );
+    }
+  }
+
+  private static JsonArray getStartupProbes() {
+    Probe[] probes = getApplicationContext().getProbeStore().getProbes();
+    JsonArray result = new JsonArray();
+    for( Probe probe : probes ) {
+      result.add( createProbeParamObject( probe ) );
+    }
+    return result;
   }
 
   public static void renderMeasurementItems() {
