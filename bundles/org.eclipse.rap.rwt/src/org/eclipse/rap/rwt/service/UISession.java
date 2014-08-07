@@ -181,12 +181,16 @@ public interface UISession {
   public void setLocale( Locale locale );
 
   /**
-   * Executes the given runnable in the context of this UI session. This method allows background
-   * threads to access values that are stored in the UI session, including session singletons.
+   * Executes the given runnable in the context of this UI session. The runnable will be executed in
+   * the calling thread but with a simulated context so that calls to <code>RWT.getUISession</code>
+   * will return this UISession even in a background thread.
+   * <p>
+   * <strong>Note:</strong> this method is <strong>discouraged</strong>. It is only kept for
+   * compatibility. New code should access the UISession directly.
+   * </p>
    *
    * @param runnable the runnable to execute in the context of this UI session
    * @see org.eclipse.rap.rwt.SingletonUtil
    */
   void exec( Runnable runnable );
-
 }
