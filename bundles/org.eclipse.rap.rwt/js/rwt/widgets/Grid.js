@@ -42,6 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._columns = {};
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
     this._vertScrollBar = new rwt.widgets.base.ScrollBar( false );
+    this._vertScrollBar.setAutoThumbSize( false );
     this._header = null;
     this._footer = null;
     this.add( this._rowContainer );
@@ -112,7 +113,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
-      this._vertScrollBar.setIncrement( 16 );
+      this._vertScrollBar.setIncrement( 1 );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
     },
 
@@ -211,9 +212,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setItemHeight : function( height ) {
       this._itemHeight = height;
-      this._vertScrollBar.setIncrement( height );
       this._rowContainer.setRowHeight( height );
       this._rootItem.setDefaultHeight( height );
+      this._updateScrollThumbHeight();
       this._scheduleUpdate( "scrollHeight" );
     },
 
@@ -476,15 +477,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _updateTopItemIndex : function() {
-      var scrollTop = this._vertScrollBar.getValue();
-      var beforeTopitem = this._rootItem.findItemByOffset( scrollTop - 1 );
-      if( beforeTopitem ) {
-        this._topItemIndex = beforeTopitem.getFlatIndex() + 1;
-        this._topItem = beforeTopitem.getNextItem();
-      } else {
-        this._topItemIndex = 0;
-        this._topItem = null;
-      }
+      this._topItemIndex = this._vertScrollBar.getValue();
+      this._topItem = null;
       if( this._allowRender() ) {
         this._updateTopItem( true );
       } else {
@@ -613,7 +607,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onClientAreaMouseWheel : function( event ) {
-      var change = event.getWheelDelta() * this._itemHeight * 2;
+      var change = event.getWheelDelta() * 2;
       var orgValue = this._vertScrollBar.getValue();
       this._vertScrollBar.setValue( orgValue - change );
       var newValue = this._vertScrollBar.getValue();
@@ -901,15 +895,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // scrolling
 
     _updateScrollHeight : function() {
-      var itemsOffsetHeight = this.getRootItem().getOffsetHeight();
-      var height = itemsOffsetHeight + ( this._footer ? this._footerHeight : 0 );
-      // recalculating topItem can be expensive, therefore this simple check:
-      if( this._vertScrollBar.getMaximum() != height ) {
-        // Without the check, it may cause an error in FF when unloading doc
-        if( !this._vertScrollBar.getDisposed() ) {
-          this._vertScrollBar.setMaximum( height );
-        }
+      var max = this.getRootItem().getVisibleChildrenCount();
+      if( !this._vertScrollBar.getDisposed() && ( this._vertScrollBar.getMaximum() !== max ) ) {
+        this._vertScrollBar.setMaximum( max );
       }
+    },
+
+    _updateScrollThumbHeight : function() {
+      var value = Math.max( 1, this._rowContainer.getChildrenLength() - 1 );
+      this._vertScrollBar.setThumb( value );
     },
 
     /**
@@ -957,12 +951,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _setTopItemIndex : function( index ) {
       this._updateScrollHeight();
-      var offset = 0;
-      var item = this._rootItem.findItemByFlatIndex( index );
-      if( item != null ) {
-        offset = item.getOffset();
-      }
-      this._vertScrollBar.setValue( offset );
+      this._vertScrollBar.setValue( index );
     },
 
     //////////////
@@ -1239,6 +1228,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._vertScrollBar.setTop( top );
       this._rowContainer.setTop( top );
       this._rowContainer.setHeight( height );
+      this._updateScrollThumbHeight();
       this._scheduleUpdate();
     },
 

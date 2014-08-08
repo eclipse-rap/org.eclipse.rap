@@ -398,13 +398,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.setItemHeight( 20 );
       TestUtil.flush();
       TestUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
-      assertEquals( 60, widget._vertScrollBar.getValue() );
+      TestUtil.flush();
+
+      assertEquals( 3, widget._vertScrollBar.getValue() );
       assertEquals( 3, widget.getTopItemIndex() );
       shell.destroy();
       widget.destroy();
     },
 
-    testSetTopItemIndexToZeroOnEmptyGrid  : function() {
+    testSetTopItemIndexToZeroOnEmptyGrid : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
       widget.setItemCount( 10 );
@@ -467,8 +469,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
       widget.setItemCount( 3 );
       var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
-      var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
-      var item3 = this._createTreeItemByProtocol( "w6", "w3", 2 );
+      this._createTreeItemByProtocol( "w5", "w3", 1 );
+      this._createTreeItemByProtocol( "w6", "w3", 2 );
 
       TestUtil.protocolSet( "w3", { "selection" : [ "w4", "w5" ] } );
       MessageProcessor.processOperation( {
@@ -704,11 +706,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testItemHeight : function() {
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       assertEquals( 16, tree._rowContainer._rowHeight );
-      assertEquals( 16, tree._vertScrollBar._increment );
+      assertEquals( 1, tree._vertScrollBar._increment );
       assertEquals( 16, tree.getRootItem().getDefaultHeight() );
       tree.setItemHeight( 23 );
       assertEquals( 23, tree._rowContainer._rowHeight );
-      assertEquals( 23, tree._vertScrollBar._increment );
+      assertEquals( 1, tree._vertScrollBar._increment );
       assertEquals( 23, tree.getRootItem().getDefaultHeight() );
       tree.destroy();
     },
@@ -1066,7 +1068,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       var area = tree._rowContainer._getTargetNode();
       assertEquals( 55, tree.getTopItemIndex() );
-      assertEquals( 1100, tree._vertScrollBar.getValue() );
+      assertEquals( 55, tree._vertScrollBar.getValue() );
       assertEquals( "Test55", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       assertEquals( "Test64", area.childNodes[ 9 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
@@ -1083,7 +1085,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       var area = tree._rowContainer._getTargetNode();
-      assertEquals( 1120, tree._vertScrollBar.getValue() );
+      assertEquals( 55, tree._vertScrollBar.getValue() );
       assertEquals( 55, tree.getTopItemIndex() );
       assertEquals( "Test55", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       assertEquals( "Test64", area.childNodes[ 9 ].childNodes[ 0 ].innerHTML );
@@ -1112,12 +1114,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.flush();
-
       tree.scrollIntoView( tree.getRootItem().findItemByFlatIndex( 55 ) );
       TestUtil.flush();
 
       var area = tree._rowContainer._getTargetNode();
-      assertEquals( 620, tree._vertScrollBar.getValue() );
+      assertEquals( 31, tree._vertScrollBar.getValue() );
       assertEquals( 159, parseInt( tree._vertScrollBar._thumb.getElement().style.top, 10 ) );
       assertEquals( "Test31", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
@@ -1131,7 +1132,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.scrollIntoView( tree.getRootItem().findItemByFlatIndex( 55 ) );
 
       var area = tree._rowContainer._getTargetNode();
-      assertEquals( 620, tree._vertScrollBar.getValue() );
+      assertEquals( 31, tree._vertScrollBar.getValue() );
       assertEquals( "Test0", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       TestUtil.flush();
       tree.destroy();
@@ -1145,7 +1146,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree._scrollIntoView( 55, tree.getRootItem().findItemByFlatIndex( 55 ) ); // NOTE: NO Flush!
 
       var area = tree._rowContainer._getTargetNode();
-      assertEquals( 620, tree._vertScrollBar.getValue() );
+      assertEquals( 31, tree._vertScrollBar.getValue() );
       assertEquals( 159, parseInt( tree._vertScrollBar._thumb.getElement().style.top, 10 ) );
       assertEquals( "Test31", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
@@ -1218,13 +1219,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testSetScrollBarsVisibileResetValue : function() {
+    testSetScrollBarsVisibleResetValue : function() {
       var tree = this._createDefaultTree();
       rwt.remote.ObjectRegistry.add( "wtest", tree, gridHandler );
       tree.setScrollBarsVisible( true, true );
       TestUtil.flush();
       tree._horzScrollBar.setValue( 10 );
-      tree._vertScrollBar.setValue( 10 );
+      tree._vertScrollBar.setValue( 1 );
       TestUtil.initRequestLog();
       rwt.remote.EventUtil.setSuspended( true );
       tree.setScrollBarsVisible( false, false );
@@ -1288,7 +1289,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollThumbHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+
+      TestUtil.flush();
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
 
@@ -1298,7 +1308,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setFooterVisible( true );
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      assertEquals( 2050, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
 
@@ -1309,10 +1319,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       lastItem.setItemCount( 1 );
       this._createItem( lastItem, 0 );
       TestUtil.flush();
-      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       lastItem.setExpanded( true );
       TestUtil.flush();
-      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
+      assertEquals( 101, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
 
@@ -1320,27 +1330,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       tree.setItemHeight( 40 );
       TestUtil.flush();
-      assertEquals( 4000, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
 
-    testUpdateScrollHeightOnCustomItemHeight : function() {
-      var tree = this._createDefaultTree();
-      this._fillTree( tree, 100 );
-      TestUtil.flush();
-      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
-
-      for( var i = 0; i < 100; i++ ) {
-        tree.getRootItem().getChild( i ).setHeight( 40 );
-      }
-
-      TestUtil.flush();
-      assertEquals( 4000, tree._vertScrollBar.getMaximum() );
-      tree.destroy();
-    },
+//    testUpdateScrollHeightOnCustomItemHeight : function() {
+//      var tree = this._createDefaultTree();
+//      this._fillTree( tree, 100 );
+//      TestUtil.flush();
+//      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+//
+//      for( var i = 0; i < 100; i++ ) {
+//        tree.getRootItem().getChild( i ).setHeight( 40 );
+//      }
+//
+//      TestUtil.flush();
+//      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+//      tree.destroy();
+//    },
 
     testScrollVertically_dragScrollThumb_releaseOnOtherWidget : function() {
       var tree = this._createDefaultTree();
@@ -1367,7 +1377,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 1000 );
+      tree._vertScrollBar.setValue( 50 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
@@ -1382,7 +1392,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeight( 490 );
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      var maxScroll = tree._vertScrollBar.getMaximum() - tree._vertScrollBar.getHeight();
+      var maxScroll = tree._vertScrollBar.getMaximum() - tree._vertScrollBar.getThumb();
 
       rwt.remote.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( maxScroll );
@@ -1400,7 +1410,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 1020 ); // 1020 / 20 = 51
+      tree._vertScrollBar.setValue( 51 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
@@ -1413,8 +1423,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 1400 );
-      tree._vertScrollBar.setValue( 1020 );
+      tree._vertScrollBar.setValue( 70 );
+      tree._vertScrollBar.setValue( 51 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
@@ -1427,8 +1437,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 1040 );
-      tree._vertScrollBar.setValue( 1020 );
+      tree._vertScrollBar.setValue( 52 );
+      tree._vertScrollBar.setValue( 51 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._getTargetNode().firstChild;
@@ -1441,7 +1451,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 100 );
+      tree._vertScrollBar.setValue( 5 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._children[ 0 ]._getTargetNode();
@@ -1454,7 +1464,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 100 );
+      tree._vertScrollBar.setValue( 5 );
       rwt.remote.EventUtil.setSuspended( false );
       TestUtil.flush();
       var itemNode = tree._rowContainer._children[ 0 ]._getTargetNode();
@@ -1829,12 +1839,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
       TestUtil.flush();
-      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
+      assertEquals( 100, tree._vertScrollBar.getMaximum() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       TestUtil.fakeWheel( tree._rowContainer , -3 );
-      assertEquals( 120, tree._vertScrollBar.getValue() );
+      assertEquals( 6, tree._vertScrollBar.getValue() );
       TestUtil.fakeWheel( tree._rowContainer, 2 );
-      assertEquals( 40, tree._vertScrollBar.getValue() );
+      assertEquals( 2, tree._vertScrollBar.getValue() );
       tree.destroy();
     },
 
@@ -2674,7 +2684,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       TestUtil.flush();
 
-      tree._vertScrollBar.setValue( 160 );
+      tree._vertScrollBar.setValue( 8 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       rwt.remote.Connection.getInstance().send();
 
@@ -2690,7 +2700,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
 
       rwt.remote.EventUtil.setSuspended( true );
-      tree._vertScrollBar.setValue( 160 );
+      tree._vertScrollBar.setValue( 8 );
       rwt.remote.EventUtil.setSuspended( false );
 
       assertEquals( 1, logger.getLog().length );
@@ -3573,8 +3583,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       TestUtil.flush();
 
-      tree._vertScrollBar.setValue( 50 );
-      tree._vertScrollBar.setValue( 160 );
+      tree._vertScrollBar.setValue( 2 );
+      tree._vertScrollBar.setValue( 8 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
@@ -3590,8 +3600,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.initRequestLog();
       TestUtil.flush();
 
-      tree._vertScrollBar.setValue( 50 );
-      tree._vertScrollBar.setValue( 160 );
+      tree._vertScrollBar.setValue( 2 );
+      tree._vertScrollBar.setValue( 8 );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
 
@@ -3624,7 +3634,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.addEventListener( "keypress", function( event ) {
         log.push( event.getDefaultPrevented() );
       }, this );
-      TestUtil.getDocument().addEventListener( "keypress", function( event ) {
+      TestUtil.getDocument().addEventListener( "keypress", function() {
         stopped = false;
       }, this );
       TestUtil.press( tree, "Up" );
@@ -3864,25 +3874,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testKeyboardNavigationPageDownWithCustomItemHeight : function() {
-      var tree = this._createDefaultTree();
-      this._fillTree( tree, 100 );
-      var root = tree.getRootItem();
-      for( var i = 0; i < 100; i++ ) {
-        root.getChild( i ).setHeight( 50 );
-      }
-      tree.setTopItemIndex( 50 );
-      TestUtil.flush();
-      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
-      TestUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
-      assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
-
-      TestUtil.press( tree, "PageDown" );
-
-      assertTrue( tree.isFocusItem( root.getChild( 64 ) ) );
-      assertIdentical( root.getChild( 55 ), tree._rowContainer._topItem );
-      tree.destroy();
-    },
+//    testKeyboardNavigationPageDownWithCustomItemHeight : function() {
+//      var tree = this._createDefaultTree();
+//      this._fillTree( tree, 100 );
+//      var root = tree.getRootItem();
+//      for( var i = 0; i < 100; i++ ) {
+//        root.getChild( i ).setHeight( 50 );
+//      }
+//      tree.setTopItemIndex( 50 );
+//      TestUtil.flush();
+//      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
+//      TestUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
+//      assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
+//
+//      TestUtil.press( tree, "PageDown" );
+//
+//      assertTrue( tree.isFocusItem( root.getChild( 64 ) ) );
+//      assertIdentical( root.getChild( 55 ), tree._rowContainer._topItem );
+//      tree.destroy();
+//    },
 
     testPageUpOutOfBounds : function() {
       var tree = this._createDefaultTree();
@@ -4100,7 +4110,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       TestUtil.press( tree, "End" );
-      assertIdentical( root.getChild( 75 ), tree._rowContainer._topItem );
+      assertEquals( 75, tree.getTopItemIndex() );
       assertTrue( tree.isItemSelected( root.getChild( 99 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 99 ) ) );
       tree.destroy();
@@ -4111,7 +4121,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeight( 416 );
       tree.setItemHeight( 28 );
       this._fillTree( tree, 2 );
-      var root = tree.getRootItem();
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
       tree.setItemCount( 21 );
@@ -4130,7 +4139,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setHeight( 416 );
       tree.setItemHeight( 28 );
       this._fillTree( tree, 2 );
-      var root = tree.getRootItem();
       TestUtil.flush();
       TestUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
       tree.setItemCount( 21 );
@@ -4150,7 +4158,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testDeselectionOnCollapseByMouse : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       TestUtil.fakeAppearance( "tree-row-indent",  {
-        style : function( states ) {
+        style : function() {
           return { "backgroundImage" : "bla.gif" };
         }
       } );
@@ -4175,7 +4183,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testNoDeselectionOnNonMouseCollapse : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       TestUtil.fakeAppearance( "tree-row-indent",  {
-        style : function( states ) {
+        style : function() {
           return { "backgroundImage" : "bla.gif" };
         }
       } );
@@ -4244,8 +4252,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       TestUtil.fakeListener( tree, "Selection", true );
       tree.setItemCount( 2 );
-      var child0 = this._createItem( tree.getRootItem(), 0 );
-      var child1 = this._createItem( tree.getRootItem(), 1 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       TestUtil.initRequestLog();
 
@@ -4264,8 +4272,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       TestUtil.fakeListener( tree, "Selection", true );
       tree.setItemCount( 2 );
-      var child0 = this._createItem( tree.getRootItem(), 0 );
-      var child1 = this._createItem( tree.getRootItem(), 1 );
+      this._createItem( tree.getRootItem(), 0 );
+      this._createItem( tree.getRootItem(), 1 );
       TestUtil.flush();
       TestUtil.initRequestLog();
 
@@ -4341,7 +4349,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testRemoveInderectlyDisposedItemFromState : function() {
+    testRemoveIndirectlyDisposedItemFromState : function() {
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHeight( 15 );
       tree.setItemHeight( 20 );
@@ -4354,12 +4362,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setTopItemIndex( 1 );
       tree.setFocusItem( child1 );
       TestUtil.flush();
-      assertEquals( child1, tree._rowContainer._topItem );
+      assertIdentical( child1, tree._rowContainer._topItem );
       TestUtil.mouseOver( tree._rowContainer._children[ 0 ] );
       TestUtil.shiftClick( tree._rowContainer._children[ 0 ] );
-      assertEquals( child1, tree._focusItem );
+      assertIdentical( child1, tree._focusItem );
       assertEquals( [ child1 ], tree._selection );
-      assertEquals( child1, tree._leadItem );
+      assertIdentical( child1, tree._leadItem );
       child0.dispose(); // Order is important for this test
       child1.dispose();
       var child0new = this._createItem( tree.getRootItem(), 0 );
@@ -4368,7 +4376,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       child1new.setTexts( [ "C1new" ] );
       child0new.setExpanded( true );
       TestUtil.flush();
-      assertEquals( child1new, tree._rowContainer._topItem );
+      assertIdentical( child1new, tree._rowContainer._topItem );
       assertNull( tree._leadItem );
       assertNull( tree._focusItem );
       assertEquals( [], tree._selection );
@@ -4544,7 +4552,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "s1", { "visibility" : true } );
       TestUtil.protocolSet( "s2", { "visibility" : true } );
 
-      assertEquals( 60, widget._vertScrollBar.getValue() );
+      assertEquals( 3, widget._vertScrollBar.getValue() );
       assertEquals( 3, widget.getTopItemIndex() );
       shell.destroy();
       widget.destroy();
@@ -4668,7 +4676,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     _fakeAppearance : function() {
       var empty = {
-        style : function( states ) {
+        style : function() {
           return {
             "background" : "undefined",
             "backgroundGradient" : null,
@@ -4684,11 +4692,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
     _fakeCheckBoxAppearance : function() {
       TestUtil.fakeAppearance( "tree-row-check-box", {
-        style : function( states ) {
-          var result = {
+        style : function() {
+          return {
             "backgroundImage" : "check.png"
           };
-          return result;
         }
       } );
     },
