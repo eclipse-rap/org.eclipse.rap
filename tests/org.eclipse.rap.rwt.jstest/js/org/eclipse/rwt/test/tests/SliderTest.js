@@ -335,10 +335,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = this._createSlider( false );
       var thumb = slider._thumb;
       slider.setHeight( 100 + 2 * 16 );
-      slider.setSelection( 25 + 0 );
+      slider.setSelection( 25 );
       slider.setMinimum( 25 );
       slider.setMaximum( 75 );
-      assertEquals( 16 + 0, thumb.getTop() );
+      assertEquals( 16, thumb.getTop() );
       slider.setSelection( 35 );
       assertEquals( 16 + 20, thumb.getTop() );
       slider.destroy();
@@ -349,7 +349,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var thumb = slider._thumb;
       slider.setHeight( 100 + 2 * 16 ); // to exclude the buttons
       assertEquals( 10 , thumb.getHeight() );
-      slider.setSelection( 25 + 0 );
+      slider.setSelection( 25 );
       slider.setMinimum( 25 );
       slider.setMaximum( 75 );
       assertEquals( 20 , thumb.getHeight() );

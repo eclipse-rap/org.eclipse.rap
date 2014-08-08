@@ -26,7 +26,8 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     this._pageIncrement = 10;
     this._thumbLength = 10;
     // state:
-    this._pxStep = 1.38; // ratio of virtual units to real (pixel) length
+    this._minThumbSize = 0;
+    this._thumbLengthPx = 0;
     this._thumbDragOffset = 0;
     this._autoRepeat = ""; // string indicating to auto-repeat an action
     this._mouseOffset = 0; // horizontal or vertical offset to slider start
@@ -59,6 +60,43 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
   members : {
 
+    setThumb : function( value ) {
+      if( value <= 0 ) {
+        throw new Error( "Scrollbar thumb must be positive" );
+      }
+      this._thumbLength = value;
+      this._renderThumb();
+    },
+
+    getThumb : function() {
+      return this._thumbLength;
+    },
+
+    setMaximum : function( value ) {
+      if( value < 0 ) {
+        throw new Error( "Scrollbar maximum must be positive" );
+      }
+      this._maximum = value;
+      this._renderThumb();
+    },
+
+    getMaximum : function() {
+      return this._maximum;
+    },
+
+    setMinimum : function( value ) {
+      this._minimum = value;
+      this._renderThumb();
+    },
+
+    getMinimum : function() {
+      return this._maximum;
+    },
+
+    setMinThumbSize : function( value ) {
+      this._minThumbSize =  value;
+    },
+
     ////////////
     // protected
 
@@ -70,27 +108,12 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
     },
 
-    _setMinimum : function( value ) {
-      this._minimum = value;
-      this._updateThumbSize();
-    },
-
-    _setMaximum : function( value ) {
-      this._maximum = value;
-      this._updateThumbSize();
-    },
-
     _setIncrement : function( value ) {
       this._increment = value;
     },
 
     _setPageIncrement : function( value ) {
       this._pageIncrement = value;
-    },
-
-    _setThumb : function( value ) {
-      this._thumbLength = value;
-      this._updateThumbSize();
     },
 
     ////////////////
@@ -119,14 +142,14 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     },
 
     _selectionChanged : function() {
-      this._updateThumbPosition();
+      this._renderThumb();
       if( this._autoRepeat !== "" && !this._repeatTimer.isEnabled() ) {
         this._delayTimer.start();
       }
     },
 
     _onChangeSize : function() {
-      this._updateThumbSize();
+      this._renderThumb();
     },
 
     _onChangeEnabled : function( event ) {
@@ -221,7 +244,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       if( this._thumb.getCapture() ) {
         var mousePos = this._getMouseOffset( event );
         var newSelection
-          = this._getSelectionFromPosition( mousePos - this._thumbDragOffset );
+          = this._pxToVirtual( mousePos - this._thumbDragOffset );
         this._setSelection( newSelection );
       }
     },
@@ -308,7 +331,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
     _handleLineMouseDown : function() {
       var mode;
-      var thumbHalf = this._getThumbSize() / 2;
+      var thumbHalf = this._thumbLengthPx / 2;
       var pxSel = this._getThumbPosition() + thumbHalf;
       var newSelection;
       if( this._mouseOffset > pxSel ) {
@@ -324,49 +347,64 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
     },
 
-    _updateThumbPosition : function() {
-      var pos = this._getMinButtonWidth();
-      pos += this._pxStep * ( this._selection - this._minimum );
-      if( this._horizontal ) {
-        this._thumb.setLeft( pos );
-      } else {
-        this._thumb.setTop( pos );
-      }
+    _renderThumb : function() {
+      this._renderThumbSize(); // Size first since it's evaluated by _virtualToPx
+      this._renderThumbPosition();
+    },
+
+    _renderThumbPosition : function() {
+      this._setThumbPositionPx( this._virtualToPx( this._selection ) );
       this.dispatchSimpleEvent( "updateToolTip", this );
     },
 
-    _updateThumbSize : function() {
-      var newSize =   this._thumbLength * this._getLineSize()
-                    / ( this._maximum - this._minimum );
-      newSize = Math.round( newSize );
-      if( this._horizontal ) {
-        this._thumb.setWidth( newSize );
-      } else {
-        this._thumb.setHeight( newSize );
+    _renderThumbSize : function() {
+      var success = false;
+      var lineSize = this._getLineSize();
+      var diff = this._maximum - this._minimum;
+      if( lineSize > 0 && diff > 0 ) {
+        var newSize = this._thumbLength * lineSize / diff;
+        this._setThumbLengthPx( Math.max( this._minThumbSize, Math.round( newSize ) ) );
+        success = true;
       }
-      this._updateStepsize();
+      return success;
     },
 
-    _updateStepsize : function() {
-      var numSteps = this._maximum - this._minimum - this._thumbLength;
-      if( numSteps !== 0 ) {
-        var numPixels = this._getLineSize() - this._getThumbSize();
-        this._pxStep = numPixels / numSteps;
+    _setThumbLengthPx : function( value ) {
+      this._thumbLengthPx = value;
+      if( this._horizontal ) {
+        this._thumb.setWidth( this._thumbLengthPx );
       } else {
-        this._pxStep = 0;
+        this._thumb.setHeight( this._thumbLengthPx );
       }
-      this._selection = this._limitSelection( this._selection );
-      this._updateThumbPosition();
+    },
+
+    _setThumbPositionPx : function( value ) {
+      if( this._horizontal ) {
+        this._thumb.setLeft( value );
+      } else {
+        this._thumb.setTop( value );
+      }
+    },
+
+    _pxToVirtual : function( px ) {
+      var buttonSize = this._getMinButtonWidth();
+      var result = ( px - buttonSize ) / this._getVirtualToPxRatio() + this._minimum;
+      return this._limitSelection( Math.round( result ) );
+    },
+
+    _virtualToPx : function( virtual ) {
+      return   this._getMinButtonWidth()
+             + this._getVirtualToPxRatio() * ( virtual - this._minimum );
+    },
+
+    _getVirtualToPxRatio : function() {
+      var numPixels = Math.max( 0, this._getLineSize() - this._thumbLengthPx );
+      var numVirtual = this._maximum - this._minimum - this._thumbLength;
+      return numVirtual === 0 ? 0 : numPixels / numVirtual;
     },
 
     //////////
     // Helpers
-
-    _getSelectionFromPosition : function( position ) {
-      var buttonSize = this._getMinButtonWidth();
-      var sel = ( position - buttonSize ) / this._pxStep + this._minimum;
-      return this._limitSelection( Math.round( sel ) );
-    },
 
     _limitSelection : function( value ) {
       var result = value;
@@ -396,16 +434,6 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
         result = this._thumb.getLeft();
       } else {
         result = this._thumb.getTop();
-      }
-      return result;
-    },
-
-    _getThumbSize : function() {
-      var result;
-      if( this._horizontal ) {
-        result = this._thumb.getWidth();
-      } else {
-        result = this._thumb.getHeight();
       }
       return result;
     },

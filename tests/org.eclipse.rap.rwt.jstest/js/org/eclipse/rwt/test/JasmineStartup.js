@@ -17,6 +17,8 @@ org.eclipse.rwt.test.JasmineStartup = {
     ////////
     // Setup
 
+    rwt.qx.Object.prototype.jasmineToString = rwt.qx.Object.prototype.toString;
+
     var jasmineEnv = jasmine.getEnv();
 
     if( window.location.href.indexOf( "fast=true" ) !== -1 ) {

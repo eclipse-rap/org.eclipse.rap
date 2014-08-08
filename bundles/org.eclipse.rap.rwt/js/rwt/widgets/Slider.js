@@ -50,24 +50,12 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
       this._setSelection( value );
     },
 
-    setMinimum : function( value ) {
-      this._setMinimum( value );
-    },
-
-    setMaximum : function( value ) {
-      this._setMaximum( value );
-    },
-
     setIncrement : function( value ) {
       this._setIncrement( value );
     },
 
     setPageIncrement : function( value ) {
       this._setPageIncrement( value );
-    },
-
-    setThumb : function( value ) {
-      this._setThumb( value );
     },
 
     getToolTipTargetBounds : function() {

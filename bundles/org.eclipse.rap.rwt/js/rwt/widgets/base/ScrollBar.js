@@ -17,13 +17,15 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
   construct : function( horizontal ) {
     this.base( arguments, horizontal );
     this._idealValue = 0;
-    this._selectionFactor = 1;
+    this._idealThumb = 10;
     this._lastDispatchedValue = 0;
     this._renderSum = 0;
     this._renderSamples = 0;
-    this._setMinimum( 0 );
+    this.setMinimum( 0 );
     this._hasSelectionListener = false;
-    this._minThumbSize = this._getMinThumbSize();
+    var themeValues = new rwt.theme.ThemeValues( this.__states );
+    this.setMinThumbSize( themeValues.getCssDimension( "ScrollBar-Thumb", "min-height" ) );
+    this._autoThumbSize = true;
     this.setIncrement( 20 );
     this.addEventListener( "mousedown", this._stopEvent, this );
     this.addEventListener( "mouseup", this._stopEvent, this );
@@ -45,20 +47,21 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
 
     setValue : function( value ) {
       this._idealValue = value;
-      this._setSelection( value * this._selectionFactor );
+      this._setSelection( value );
     },
 
     getValue : function() {
-      return Math.round( this._selection / this._selectionFactor );
+      return this._selection;
     },
 
     setMaximum : function( value ) {
-      this._setMaximum( value );
-      this._updateThumbLength();
+      this.base( arguments, value );
+      this._checkValue();
     },
 
-    getMaximum : function() {
-      return this._maximum;
+    setThumb : function( value ) {
+      this.base( arguments, value );
+      this._checkValue();
     },
 
     setIncrement : function( value ) {
@@ -78,80 +81,20 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       return this._horizontal;
     },
 
-    //////////////
-    // Overwritten
-
-    _onChangeSize : function() {
-      this.base( arguments );
-      this._updateThumbLength();
-      this._updatePageIncrement();
-    },
-
-    _updateThumbSize : function() {
-      this.base( arguments );
-      var size = this._getThumbSize();
-      if( size < this._minThumbSize ) {
-        this._renderMinThumbSize();
-      } else {
-        this._selectionFactor = 1;
-        this._checkIdealValue();
-      }
-      if( this._horizontal ) {
-        var iconWidth = this._thumb.getCellWidth( 1 );
-        var iconVisible = size >= ( iconWidth + 6 );
-        this._thumb.setCellVisible( 1, iconVisible );
-      } else {
-        var iconHeight = this._thumb.getCellHeight( 1 );
-        var iconVisible = size >= ( iconHeight + 6 );
-        this._thumb.setCellVisible( 1, iconVisible );
-      }
-    },
-
-    _checkIdealValue : function() {
-      if( this._idealValue !== null && this._idealValue) {
-        this._setSelection( this._idealValue * this._selectionFactor );
-      }
-    },
-
-    _renderMinThumbSize : function() {
-      if( this._maximum > 0 && this._getLineSize() > 0 ) {
-        var size = this._getThumbSize();
-        if( size < this._minThumbSize ) {
-          var idealLength = this._getSliderSize();
-          var newLength = this._minThumbSize * this._maximum / this._getLineSize();
-          this._setThumb( newLength );
-          if( this._maximum === idealLength ) {
-            this._selectionFactor = 1;
-          } else {
-            this._selectionFactor = ( this._maximum - newLength ) / ( this._maximum - idealLength );
-          }
-        }
-      }
-      this._checkIdealValue();
-    },
-
-    _setSelection : function( value ) {
-      if( value !== ( this._idealValue * this._selectionFactor ) ) {
-        this._idealValue = null;
-      }
-      this.base( arguments, value );
-    },
-
-    _selectionChanged : function() {
-      this.base( arguments );
-      this._dispatchValueChanged();
+    setAutoThumbSize : function( autoThumbSize ) {
+      this._autoThumbSize = autoThumbSize;
     },
 
     ////////////
     // Internals
 
-    _getMinThumbSize : function() {
-      var themeValues = new rwt.theme.ThemeValues( this.__states );
-      return themeValues.getCssDimension( "ScrollBar-Thumb", "min-height" );
-    },
-
     _updateThumbLength : function() {
-      this._setThumb( this._getSliderSize() );
+      if( this._autoThumbSize ) {
+        var size = this._getSliderSize();
+        if( size > 0) {
+          this.setThumb( size );
+        }
+      }
     },
 
     _updatePageIncrement : function() {
@@ -174,6 +117,53 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       if( oldValue !== this._selection ) {
         this._dispatchValueChanged();
       }
+    },
+
+    //////////////
+    // Overwritten
+
+    _onChangeSize : function() {
+      this._updateThumbLength();
+      this._updatePageIncrement();
+      this.base( arguments );
+    },
+
+    _renderThumbSize : function() {
+      if( this.base( arguments ) ) {
+        this._renderThumbIcon();
+      }
+    },
+
+    _renderThumbIcon : function() {
+      if( this._horizontal ) {
+        var iconWidth = this._thumb.getCellWidth( 1 );
+        var iconVisible = this._thumbLengthPx >= ( iconWidth + 6 );
+        this._thumb.setCellVisible( 1, iconVisible );
+      } else {
+        var iconHeight = this._thumb.getCellHeight( 1 );
+        var iconVisible = this._thumbLengthPx >= ( iconHeight + 6 );
+        this._thumb.setCellVisible( 1, iconVisible );
+      }
+    },
+
+    _checkValue : function() {
+      if( this._idealValue !== null && this._idealValue ) {
+        this._setSelection( this._idealValue );
+      } else {
+        this._setSelection( this._selection );
+      }
+    },
+
+    _setSelection : function( value ) {
+      if( value !== this._idealValue ) {
+        this._idealValue = null;
+      }
+      this.base( arguments, value );
+    },
+
+    _selectionChanged : function() {
+      this.base( arguments );
+      this._dispatchValueChanged();
     }
 
   }

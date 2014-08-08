@@ -9,19 +9,19 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function(){
+
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var MessageProcessor = rwt.remote.MessageProcessor;
+
+
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
   extend : rwt.qx.Object,
 
-  construct : function() {
-    rwt.qx.Class.__initializeClass( rwt.widgets.base.ScrollBar );
-    rwt.widgets.base.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
-  },
-
   members : {
 
     testCreateDispose : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
       assertTrue( bar.isSeeable() );
       bar.destroy();
@@ -30,7 +30,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testDimension : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( true, false );
       var hBar = this._createScrollBar( true, true );
       assertFalse( hBar.isSeeable() );
@@ -47,7 +46,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testProppagateKeys : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
       TestUtil.click( bar._thumb );
       var log = [];
@@ -67,7 +65,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testSetValidValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
       var events = this._getChangeLogger( bar );
       bar.setValue( 50 );
@@ -81,7 +78,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testFireEventOnSetMaximum : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
       var events = this._getChangeLogger( bar );
       bar.setValue( 250 );
@@ -91,9 +87,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testSetInvalidValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
-      var events = [];
       bar.setValue( 50 );
       assertEquals( 50, bar.getValue() );
       bar.setValue( -1 );
@@ -103,79 +97,85 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
-    testRelativeKnobPosition : function() {
+    testRelativeThumbPosition : function() {
       // TODO [tb] : with new ScrollBar change to test absolute values
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       var hBar = this._createScrollBar( false, true );
       vBar.setValue( 0 );
       hBar.setValue( 0 );
-      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 0 ], this._getRelativeThumbPosition( vBar ) );
+      assertEquals( [ 0, 0 ], this._getRelativeThumbPosition( hBar ) );
       vBar.setValue( 100 );
       hBar.setValue( 100 );
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 33, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 33 ], this._getRelativeThumbPosition( vBar ) );
+      assertEquals( [ 33, 0 ], this._getRelativeThumbPosition( hBar ) );
       hBar.setMaximum( 400 );
       vBar.setMaximum( 400 );
-      assertEquals( [ 0, 25 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 25, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 25 ], this._getRelativeThumbPosition( vBar ) );
+      assertEquals( [ 25, 0 ], this._getRelativeThumbPosition( hBar ) );
       vBar.setHeight( 200 );
       hBar.setWidth( 200 );
-      assertEquals( [ 0, 25 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 25, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 25 ], this._getRelativeThumbPosition( vBar ) );
+      assertEquals( [ 25, 0 ], this._getRelativeThumbPosition( hBar ) );
       hBar.destroy();
       vBar.destroy();
     },
 
-    testResizeReducesValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var vBar = this._createScrollBar( false, false );
-      vBar.setValue( 150 );
-      assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
-      vBar.setHeight( 200 );
-      TestUtil.flush();
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
-      vBar.destroy();
-    },
+//    testResizeReducesRelativeThumbPosition : function() {
+//      var vBar = this._createScrollBar( false, false );
+//      vBar.setValue( 150 );
+//      assertEquals( [ 0, 50 ], this._getRelativeThumbPosition( vBar ) );
+//      vBar.setHeight( 200 );
+//      TestUtil.flush();
+//      assertEquals( [ 0, 33 ], this._getRelativeThumbPosition( vBar ) );
+//      vBar.destroy();
+//    },
 
     testResizeLargerThanMaximum : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setValue( 150 );
-      assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 50 ], this._getRelativeThumbPosition( vBar ) );
       vBar.setHeight( 301 );
       TestUtil.flush();
-      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 0 ], this._getRelativeThumbPosition( vBar ) );
       vBar.destroy();
     },
 
     testChangeValueWhileInvisible : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setValue( 0 );
-      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 0 ], this._getRelativeThumbPosition( vBar ) );
       vBar.setVisibility( false );
       vBar.setValue( 100 );
       vBar.setVisibility( true );
       assertEquals( 100, vBar.getValue() );
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 33 ], this._getRelativeThumbPosition( vBar ) );
       vBar.destroy();
     },
 
-    testKnobSize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testThumbSize : function() {
       var vBar = this._createScrollBar( false, false );
-      assertEquals( [ 0, 40 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 34 ], this._getRelativeThumbLength( vBar ) );
       vBar.setMaximum( 200 );
-      assertEquals( [ 0, 59 ], this._getRelativeThumbLength( vBar ) );
-      vBar.setHeight( 50 );
-      assertEquals( [ 0, 44 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 50 ], this._getRelativeThumbLength( vBar ) );
+      vBar.setHeight( 500 );
+      assertEquals( [ 0, 250 ], this._getRelativeThumbLength( vBar ) );
       vBar.destroy();
     },
 
-    testKnobVisibility : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testCustomThumbSize : function() {
+      var vBar = this._createScrollBar( false, false );
+      vBar.setAutoThumbSize( false );
+      vBar.setHeight( 500 );
+
+      vBar.setThumb( 50 );
+      TestUtil.flush();
+
+      assertEquals( [ 0, 17 ], this._getRelativeThumbLength( vBar ) );
+      vBar.destroy();
+    },
+
+    testThumbImageVisibility : function() {
       var vBar = this._createScrollBar( false, false );
       vBar._thumb.setImage( "bla.jpg", 10, 20 );
       assertEquals( 27, vBar._thumb.getHeight() );
@@ -187,25 +187,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testIdealValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setValue( 500 );
       TestUtil.flush();
       assertEquals( 300 - 100, vBar.getValue() );
       vBar.setMaximum( 700 );
       TestUtil.flush();
-      assertEquals( 500, vBar.getValue() );  // uses ideal vaue from before
+      assertEquals( 500, vBar.getValue() );  // uses ideal value from before
       vBar.setValue( 650 );
       TestUtil.flush();
       assertEquals( 600, vBar.getValue() );  // limited to max ( 700 ) - height
       vBar.setHeight( 50 );
       TestUtil.flush();
-      assertEquals( 650, vBar.getValue() ); //
+      assertEquals( 650, vBar.getValue() );
       vBar.destroy();
     },
 
     testGoNearIdealValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setMaximum( 500 );
       vBar.setValue( 800 );
@@ -220,7 +218,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     testKeepIdealValueWhileThumbHasMinLength : function() {
       // NOTE : The flushes are important since the thumb length is updated during flush
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setMaximum( 5000 );
       vBar.setValue( 6000 );
@@ -238,8 +235,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       vBar.destroy();
     },
 
+    testKeepIdealValueWithSmallCustomThumb : function() {
+      // NOTE : The flushes are important since the thumb length is updated during flush
+      var vBar = this._createScrollBar( false, false );
+      vBar.setMaximum( 10 );
+      vBar.setThumb( 5 );
+
+      vBar.setValue( 3 );
+
+      assertEquals( 3, vBar.getValue() );
+      vBar.destroy();
+    },
+
+    testBug : function() {
+      // NOTE : The flushes are important since the thumb length is updated during flush
+      var vBar = this._createScrollBar( false, false );
+      vBar.setThumb( 2 );
+      vBar.setMaximum( 100 ); // setting max later is problematic
+
+      vBar.setValue( 98 );
+
+      assertEquals( 98, vBar.getValue() );
+      vBar.destroy();
+    },
+
     testGoNearIdealValueWhileThumbHasMinLength : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setMaximum( 5000 );
       vBar.setValue( 8000 );
@@ -253,7 +273,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testClearIdealValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       vBar.setValue( 500 );
       assertEquals( 200, vBar.getValue() );
@@ -266,7 +285,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testStopPropagation : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
       var ok = true;
       var fail = function() {
@@ -282,7 +300,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testIncrement : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setIncrement( 30 );
       assertEquals( 30, bar._increment );
@@ -290,7 +307,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testPageIncrement : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setIncrement( 30 );
       assertEquals( 70, bar._pageIncrement );
@@ -300,11 +316,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMinThumbSizeByMaxValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 5000 );
       TestUtil.flush();
-      var minSize = 8;
+      var minSize = 20;
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setValue( 4900 );
       assertEquals( 4900, bar.getValue() );
@@ -314,13 +329,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMaxValueEqualsSize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 21 );
       bar.setHeight( 21 );
       TestUtil.flush();
       bar.setValue( 0 ); // Order is relevant (flush first)
-      var minSize = 8;
+      var minSize = 20;
       assertEquals( 0, bar.getValue() );
       assertEquals( minSize, bar._thumb.getHeight() );
 
@@ -328,11 +342,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMinThumbSizeBySliderSize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 1000 );
       TestUtil.flush();
-      var minSize = 8;
+      var minSize = 20;
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setValue( 1000 );
       assertEquals( 900, bar.getValue() );
@@ -342,11 +355,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMinThumbSizeUndoBySetMaximum : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 5000 );
       TestUtil.flush();
-      var minSize = 8;
+      var minSize = 20;
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setMaximum( 400 );
       assertEquals( 100, bar._thumbLength );
@@ -357,11 +369,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMinThumbSizeUndoBySetSize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 1000 );
       TestUtil.flush();
-      var minSize = 8;
+      var minSize = 20;
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setHeight( 500 );
       assertEquals( 500, bar._thumbLength );
@@ -372,7 +383,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testNegativeLineSize : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setHeight( 10 );
       bar.setMaximum( 400 );
@@ -385,7 +395,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testSizeZero : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setHeight( 0 );
       bar.setMaximum( 400 );
@@ -398,7 +407,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testMaximumZero : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setMaximum( 0 );
       bar.setValue( 40 );
@@ -423,7 +431,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testGetValue_NoFractionalValue : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
       bar.setValue( 5 );
       bar.setHeight( 60 );
@@ -433,12 +440,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testCreateScrollBarForControlInProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
       var scrollable = this._createScrollable();
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -454,12 +459,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testCreateHorizontalScrollBarForControlInProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
       var scrollable = this._createScrollable();
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -475,12 +478,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testSetScrollBarVisibilityInProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
       var scrollable = this._createScrollable();
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -491,18 +492,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
         }
       } );
 
-      var scrollbar = rwt.remote.ObjectRegistry.getObject( "w5" );
       assertFalse( scrollable.isVerticalBarVisible() );
       shell.destroy();
     },
 
     testSetScrollBarVisibilityInProtocolHorizontal : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
       var scrollable = this._createScrollable();
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -513,17 +511,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
         }
       } );
 
-      var scrollbar = rwt.remote.ObjectRegistry.getObject( "w5" );
       assertFalse( scrollable.isVerticalBarVisible() );
       shell.destroy();
     },
 
     testDestroyScrollBarWithControlInProtocol : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      var scrollable = this._createScrollable();
-      processor.processOperation( {
+      this._createScrollable();
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -533,7 +528,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
         }
       } );
 
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "destroy"
       } );
@@ -543,11 +538,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     testScrollBarListenSelection : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var processor = rwt.remote.MessageProcessor;
-      var scrollable = this._createScrollable();
-      processor.processOperation( {
+      this._createScrollable();
+      MessageProcessor.processOperation( {
         "target" : "w5",
         "action" : "create",
         "type" : "rwt.widgets.ScrollBar",
@@ -566,7 +559,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     // TODO [tb] : test with ScrolledComposite
 //    testSendScrollBarSelectionNotify : function() {
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var shell = TestUtil.createShellByProtocol( "w2" );
 //      var processor = rwt.remote.MessageProcessor;
 //      var scrollable = this._createScrollable();
@@ -592,7 +584,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     // Helper
 
     _createScrollBar : function( noFlush, horizontal) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = new rwt.widgets.base.ScrollBar( horizontal );
       bar.setLeft( 10 );
       bar.setTop( 10 );
@@ -609,8 +600,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       return bar;
     },
 
-    _getRelativeKnobPosition : function( bar ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    _getRelativeThumbPosition : function( bar ) {
       var button = 10;
       var result = [ 0, 0 ];
       if( bar._horizontal ) {
@@ -624,15 +614,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     _getRelativeThumbLength : function( bar ) {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = 16;
+      var button = 10;
       var result = [ 0, 0 ];
       if( bar._horizontal ) {
         var length = bar.getWidth() - button * 2;
-        result[ 0 ] = Math.round( 100 * ( bar._thumb.getWidth() ) / length );
+        result[ 0 ] = Math.round( 100 * bar._thumb.getWidth() / length );
       } else {
         var length = bar.getHeight() - button * 2;
-        result[ 1 ] = Math.round( 100 * ( bar._thumb.getHeight() ) / length );
+        result[ 1 ] = Math.round( 100 * bar._thumb.getHeight() / length );
       }
       return result;
     },
@@ -646,8 +635,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     },
 
     _createScrollable : function() {
-       var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Grid",
@@ -666,3 +654,5 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
   }
 
 } );
+
+}());
