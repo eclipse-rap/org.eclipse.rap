@@ -66,6 +66,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
   private static final String PROP_ITEM_METRICS = "itemMetrics";
   private static final String PROP_COLUMN_COUNT = "columnCount";
+  private static final String PROP_COLUMN_ORDER = "columnOrder";
   private static final String PROP_FIXED_COLUMNS = "fixedColumns";
   private static final String PROP_TREE_COLUMN = "treeColumn";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -88,6 +89,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
+  private static final String[] DEFAULT_COLUMN_ORDER = new String[ 0 ];
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
@@ -99,6 +101,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight() );
     preserveProperty( tree, PROP_ITEM_METRICS, getItemMetrics( tree ) );
     preserveProperty( tree, PROP_COLUMN_COUNT, tree.getColumnCount() );
+    preserveProperty( tree, PROP_COLUMN_ORDER, getColumnOrder( tree ) );
     preserveProperty( tree, PROP_FIXED_COLUMNS, getFixedColumns( tree ) );
     preserveProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ) );
     preserveProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight() );
@@ -168,6 +171,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight(), ZERO );
     renderItemMetrics( tree );
     renderProperty( tree, PROP_COLUMN_COUNT, tree.getColumnCount(), ZERO );
+    renderProperty( tree, PROP_COLUMN_ORDER, getColumnOrder( tree ), DEFAULT_COLUMN_ORDER );
     renderProperty( tree, PROP_FIXED_COLUMNS, getFixedColumns( tree ), -1 );
     renderProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ), ZERO );
     renderProperty( tree, PROP_HEADER_HEIGHT, tree.getHeaderHeight(), ZERO );
@@ -220,6 +224,15 @@ public final class TreeLCA extends AbstractWidgetLCA {
     String[] result = new String[ selection.length ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ] = getId( selection[ i ] );
+    }
+    return result;
+  }
+
+  private static String[] getColumnOrder( Tree tree ) {
+    int[] order = tree.getColumnOrder();
+    String[] result = new String[ order.length ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = getId( tree.getColumn( order[ i ] ) );
     }
     return result;
   }

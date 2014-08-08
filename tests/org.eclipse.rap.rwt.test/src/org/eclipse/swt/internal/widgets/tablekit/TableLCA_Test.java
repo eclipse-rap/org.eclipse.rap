@@ -655,6 +655,44 @@ public class TableLCA_Test {
   }
 
   @Test
+  public void testRenderInitialColumnOrder() throws IOException {
+    lca.render( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( table );
+    assertTrue( operation.getProperties().names().indexOf( "columnOrder" ) == -1 );
+  }
+
+  @Test
+  public void testRenderColumnOrder() throws IOException {
+    TableColumn[] columns = createTableColumns( table, 3, SWT.NONE );
+    table.setColumnOrder( new int[] { 2, 0, 1 } );
+
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray()
+      .add( getId( columns[ 2 ] ) )
+      .add( getId( columns[ 0 ] ) )
+      .add( getId( columns[ 1 ] ) );
+    assertEquals( expected, message.findSetProperty( table, "columnOrder" ) );
+  }
+
+  @Test
+  public void testRenderColumnOrderUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( table );
+    createTableColumns( table, 3, SWT.NONE );
+    table.setColumnOrder( new int[] { 2, 0, 1 } );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( table );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( table, "columnOrder" ) );
+  }
+
+  @Test
   public void testRenderInitialItemHeight() throws IOException {
     lca.render( table );
 
@@ -1477,6 +1515,15 @@ public class TableLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCreateProperty( table, "rowTemplate" ) );
+  }
+
+  private static TableColumn[] createTableColumns( Table table, int columns, int style ) {
+    TableColumn[] result = new TableColumn[ columns ];
+    for( int i = 0; i < columns; i++ ) {
+      result[ i ] = new TableColumn( table, style );
+      result[ i ].setText( "col_" + i );
+    }
+    return result;
   }
 
   private static void createTableItems( Table table, int count ) {

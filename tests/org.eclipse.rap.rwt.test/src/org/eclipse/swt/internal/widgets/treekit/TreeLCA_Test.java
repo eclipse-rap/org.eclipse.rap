@@ -549,60 +549,6 @@ public class TreeLCA_Test {
     assertEquals( 0, selectedItems.length );
   }
 
-  private static int countCreateOperations( String type, TestMessage message ) {
-    int result = 0;
-    int operations = message.getOperationCount();
-    for( int i = 0; i < operations; i++ ) {
-      Operation operation = message.getOperation( i );
-      if( operation instanceof CreateOperation ) {
-        if( type.equals( ( ( CreateOperation )operation ).getType() ) ) {
-          result++;
-        }
-      }
-    }
-    return result;
-  }
-
-  private static void createTreeColumns( Tree tree, int count ) {
-    for( int i = 0; i < count; i++ ) {
-      new TreeColumn( tree, SWT.NONE );
-    }
-  }
-
-  private static void createTreeItems( Tree tree, int count ) {
-    for( int i = 0; i < count; i++ ) {
-      TreeItem item = new TreeItem( tree, SWT.NONE );
-      for( int j = 0; j < count; j++ ) {
-        new TreeItem( item, SWT.NONE );
-      }
-      item.setExpanded( true );
-    }
-  }
-
-  private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
-    Fixture.fakeNewRequest();
-    JsonObject parameters = new JsonObject()
-      .add( "item", itemId )
-      .add( "column", column );
-    Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
-    Fixture.readDataAndProcessAction( tree );
-  }
-
-  private static class LoggingSelectionListener extends SelectionAdapter {
-    private final List<SelectionEvent> events;
-    private LoggingSelectionListener( List<SelectionEvent> events ) {
-      this.events = events;
-    }
-    @Override
-    public void widgetSelected( SelectionEvent event ) {
-      events.add( event );
-    }
-    @Override
-    public void widgetDefaultSelected( SelectionEvent event ) {
-      events.add( event );
-    }
-  }
-
   @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( tree );
@@ -840,6 +786,44 @@ public class TreeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "columnCount" ) );
+  }
+
+  @Test
+  public void testRenderInitialColumnOrder() throws IOException {
+    lca.render( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getProperties().names().indexOf( "columnOrder" ) == -1 );
+  }
+
+  @Test
+  public void testRenderColumnOrder() throws IOException {
+    TreeColumn[] columns = createTreeColumns( tree, 3 );
+    tree.setColumnOrder( new int[] { 2, 0, 1 } );
+
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = new JsonArray()
+      .add( getId( columns[ 2 ] ) )
+      .add( getId( columns[ 0 ] ) )
+      .add( getId( columns[ 1 ] ) );
+    assertEquals( expected, message.findSetProperty( tree, "columnOrder" ) );
+  }
+
+  @Test
+  public void testRenderColumnOrderUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    createTreeColumns( tree, 3 );
+    tree.setColumnOrder( new int[] { 2, 0, 1 } );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "columnOrder" ) );
   }
 
   @Test
@@ -1637,6 +1621,62 @@ public class TreeLCA_Test {
   private static ITreeAdapter getTreeAdapter( Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
+  }
+
+  private static TreeColumn[] createTreeColumns( Tree tree, int columns ) {
+    TreeColumn[] result = new TreeColumn[ columns ];
+    for( int i = 0; i < columns; i++ ) {
+      result[ i ] = new TreeColumn( tree, SWT.NONE );
+    }
+    return result;
+  }
+
+  private static void createTreeItems( Tree tree, int count ) {
+    for( int i = 0; i < count; i++ ) {
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      for( int j = 0; j < count; j++ ) {
+        new TreeItem( item, SWT.NONE );
+      }
+      item.setExpanded( true );
+    }
+  }
+
+  private static int countCreateOperations( String type, TestMessage message ) {
+    int result = 0;
+    int operations = message.getOperationCount();
+    for( int i = 0; i < operations; i++ ) {
+      Operation operation = message.getOperation( i );
+      if( operation instanceof CreateOperation ) {
+        if( type.equals( ( ( CreateOperation )operation ).getType() ) ) {
+          result++;
+        }
+      }
+    }
+    return result;
+  }
+
+  private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
+    Fixture.fakeNewRequest();
+    JsonObject parameters = new JsonObject()
+      .add( "item", itemId )
+      .add( "column", column );
+    Fixture.fakeCallOperation( getId( tree ), "renderToolTipText", parameters );
+    Fixture.readDataAndProcessAction( tree );
+  }
+
+  private static class LoggingSelectionListener extends SelectionAdapter {
+    private final List<SelectionEvent> events;
+    private LoggingSelectionListener( List<SelectionEvent> events ) {
+      this.events = events;
+    }
+    @Override
+    public void widgetSelected( SelectionEvent event ) {
+      events.add( event );
+    }
+    @Override
+    public void widgetDefaultSelected( SelectionEvent event ) {
+      events.add( event );
+    }
   }
 
 }

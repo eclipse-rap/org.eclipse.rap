@@ -68,6 +68,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
   private static final String PROP_ITEM_METRICS = "itemMetrics";
   private static final String PROP_COLUMN_COUNT = "columnCount";
+  private static final String PROP_COLUMN_ORDER = "columnOrder";
   private static final String PROP_TREE_COLUMN = "treeColumn";
   private static final String PROP_FIXED_COLUMNS = "fixedColumns";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -89,6 +90,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static final int ZERO = 0 ;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
+  private static final String[] DEFAULT_COLUMN_ORDER = new String[ 0 ];
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
@@ -100,6 +102,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_ITEM_HEIGHT, table.getItemHeight() );
     preserveProperty( table, PROP_ITEM_METRICS, getItemMetrics( table ) );
     preserveProperty( table, PROP_COLUMN_COUNT, table.getColumnCount() );
+    preserveProperty( table, PROP_COLUMN_ORDER, getColumnOrder( table ) );
     preserveProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ) );
     preserveProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight() );
     preserveProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible() );
@@ -161,6 +164,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_ITEM_HEIGHT, table.getItemHeight(), ZERO );
     renderItemMetrics( table );
     renderProperty( table, PROP_COLUMN_COUNT, table.getColumnCount(), ZERO );
+    renderProperty( table, PROP_COLUMN_ORDER, getColumnOrder( table ), DEFAULT_COLUMN_ORDER );
     renderProperty( table, PROP_FIXED_COLUMNS, getFixedColumns( table ), -1 );
     renderProperty( table, PROP_HEADER_HEIGHT, table.getHeaderHeight(), ZERO );
     renderProperty( table, PROP_HEADER_VISIBLE, table.getHeaderVisible(), false );
@@ -209,6 +213,15 @@ public final class TableLCA extends AbstractWidgetLCA {
     String[] result = new String[ selection.length ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ] = getId( selection[ i ] );
+    }
+    return result;
+  }
+
+  private static String[] getColumnOrder( Table table ) {
+    int[] order = table.getColumnOrder();
+    String[] result = new String[ order.length ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = getId( table.getColumn( order[ i ] ) );
     }
     return result;
   }
