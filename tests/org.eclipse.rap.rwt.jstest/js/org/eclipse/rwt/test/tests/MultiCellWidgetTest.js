@@ -480,6 +480,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
+    testTextColor_inheritValue : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      TestUtil.fakeAppearance( "foo", {
+        "style" : function( states ) {
+          return {
+            textColor : states.disabled ? "inherit" : "#00FF00"
+          };
+        }
+      } );
+      widget.setAppearance( "foo" );
+      var style = widget._getTargetNode().style;
+
+      widget.setEnabled( false );
+      TestUtil.flush();
+      assertTrue( style.color === "inherit" || style.color === "" );
+      this.disposeWidget( widget );
+    },
+
     testContentNotSelectable : rwt.util.Variant.select("qx.client", {
       "mshtml|newmshtml|opera" : function(){},
       "default": function() {

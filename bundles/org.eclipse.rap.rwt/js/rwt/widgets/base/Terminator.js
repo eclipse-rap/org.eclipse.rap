@@ -35,6 +35,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Terminator", {
 
     _renderTextColor : function() {
       var color = this.getEnabled() ? this.getTextColor() : this._getDisabledColor();
+      if( rwt.client.Client.isMshtml() && color === "inherit" ) {
+        color = "";
+      }
       if( this.getStyleProperty( "color" ) !== color ) {
         if( color ) {
           this.setStyleProperty( "color", color );
