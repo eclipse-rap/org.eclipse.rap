@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -36,6 +37,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_CONTROL = "control";
+  private static final String PROP_BADGE = "badge";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -46,6 +48,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
     preserveProperty( item, PROP_CONTROL, item.getControl() );
+    preserveProperty( item, PROP_BADGE, getBadge( item ) );
   }
 
   @Override
@@ -73,10 +76,8 @@ public class TabItemLCA extends AbstractWidgetLCA {
     renderMnemonicIndex( item );
     renderProperty( item, PROP_IMAGE, item.getImage(), null );
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
+    renderProperty( item, PROP_BADGE, getBadge( item ), null );
   }
-
-  //////////////////
-  // Helping methods
 
   private static void renderText( TabItem item ) {
     String newValue = item.getText();
@@ -94,6 +95,10 @@ public class TabItemLCA extends AbstractWidgetLCA {
         getRemoteObject( item ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
+  }
+
+  private String getBadge( TabItem item ) {
+    return ( String )item.getData( RWT.BADGE );
   }
 
 }

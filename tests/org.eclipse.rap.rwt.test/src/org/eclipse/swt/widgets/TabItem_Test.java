@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -190,6 +191,27 @@ public class TabItem_Test {
     item.setData( "foo", "bar" );
 
     assertEquals( "bar", item.getData( "foo" ) );
+  }
+
+  @Test
+  public void testBadge() {
+    item.setData( RWT.BADGE, "123" );
+
+    assertEquals( "123", item.getData( RWT.BADGE ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testBadge_nonStringArgument() {
+    item.setData( RWT.BADGE, Integer.valueOf( 3 ) );
+  }
+
+  @Test
+  public void testBadge_resetWithNull() {
+    item.setData( RWT.BADGE, "123" );
+
+    item.setData( RWT.BADGE, null );
+
+    assertNull( item.getData( RWT.BADGE ) );
   }
 
 }

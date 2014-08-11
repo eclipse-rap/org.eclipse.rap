@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -125,6 +125,32 @@
         The default system font. Returned by Display#getSystemFont().
       </description>
     </property>
+
+  </element>
+
+  <element name="Widget-Badge">
+    <description>
+      Badges on SWT widgets, as set using setData( RWT.BADGE, ... ).
+    </description>
+
+    <property name="color"
+        description="Text color for badges." />
+
+    <property name="background-color"
+        description="Background color for badges." />
+
+    <property name="border"
+        description="Outer border for badges." />
+
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
+    </property>
+
+    <property name="font"
+        description="Text font for badges." />
 
   </element>
 

@@ -22,6 +22,14 @@
   color: #CFCFCF;
 }
 
+Widget-Badge {
+  background-color: #ff0000;
+  border: none;
+  border-radius: 10px;
+  font: 10px Arial, sans-serif;
+  color: #ffffff;
+}
+
 Widget-ToolTip {
   padding: 10px;
   background-color: rgb(32, 31, 27);
@@ -1043,7 +1051,8 @@ TabItem {
   border-top-color: #5882b5;
   border-bottom-color: #5882b5;
   text-shadow: 0 1px 0 #ffffff;
-  padding : 6px;
+  padding: 6px;
+  margin: 6px 1px 1px 0px;
 }
 
 TabItem:selected {
@@ -1052,7 +1061,11 @@ TabItem:selected {
     from( #d5d5d5 ),
     to( #eaeaea )
   );
-  padding : 6px 6px 7px 6px;
+  margin: 3px -1px 0px -2px;
+}
+
+TabItem:selected:first {
+  margin: 3px -1px 0px 0px;
 }
 
 /* Table default theme */

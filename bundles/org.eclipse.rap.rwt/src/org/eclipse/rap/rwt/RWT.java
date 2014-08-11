@@ -425,6 +425,27 @@ public final class RWT {
   public static final String FIXED_COLUMNS = "org.eclipse.rap.rwt.fixedColumns";
 
   /**
+   * Controls the text shown as a badge. This constant must be passed to <code>setData()</code>
+   * together with an <code>String</code> object.
+   * <p>
+   * For example:
+   * <code><pre>
+   *   TabItem item = new TabItem( folder, SWT.NONE );
+   *   item.setData( RWT.BADGE, "23" );
+   * </pre></code>
+   * </p>
+   * <b>Used By:</b>
+   * <ul>
+   * <li><code>TabItem</code></li>
+   * </ul>
+   * </p>
+   *
+   * @see Control#setData(String,Object)
+   * @since 3.0
+   */
+  public static final String BADGE = "org.eclipse.rap.rwt.badge";
+
+  /**
    * The ID of the default theme. The default theme is the active theme if no
    * custom theme has been specified. This ID can be used to register theme
    * contributions to the default theme.

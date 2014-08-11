@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,8 +324,15 @@ public class TabItem extends Item {
 
   @Override
   public void setData( String key, Object value ) {
+    handleBadge( key, value );
     if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
       super.setData( key, value );
+    }
+  }
+
+  private void handleBadge( String key, Object value ) {
+    if( RWT.BADGE.equals( key ) && value != null && !( value instanceof String ) ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
     }
   }
 

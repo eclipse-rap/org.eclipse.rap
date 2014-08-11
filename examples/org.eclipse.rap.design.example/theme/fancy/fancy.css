@@ -23,6 +23,14 @@
   color: #CFCFCF;
 }
 
+Widget-Badge {
+  background-color: #ff0000;
+  border: none;
+  border-radius: 10px;
+  font: 10px Arial, sans-serif;
+  color: #ffffff;
+}
+
 Widget-ToolTip {
   padding: 1px 3px 2px 3px;
   background-color: #e9f3d2;
@@ -937,7 +945,8 @@ TabItem {
   border-bottom-color: white;
   background-image: none;
   text-shadow: none;
-  padding : 2px 6px 2px 5px;
+  padding: 4px 6px 2px 5px;
+  margin: 7px 1px 1px 0px;
 }
 
 TabItem:selected {
@@ -945,7 +954,12 @@ TabItem:selected {
   border-top-color: #00589f;
   border-bottom-color: #00589f;
   background-image: none;
-  padding : 2px 8px 3px 7px;
+  padding: 4px 8px 2px 7px;
+  margin: 4px -1px 0px -2px;
+}
+
+TabItem:selected:first {
+  margin: 4px -1px 0px 0px;
 }
 
 TabItem:hover {

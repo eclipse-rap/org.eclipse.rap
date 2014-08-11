@@ -53,37 +53,32 @@ var appearances = {
       var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
       var checkedColorTop = [ top_color, borderColor, borderColor, borderColor ];
       var checkedColorBottom = [ borderColor, borderColor, bottom_color, borderColor ];
+      var containerBorder = tv.getCssBorder( "TabFolder-ContentContainer", "border" );
+      result.padding = tv.getCssBoxDimensions( "TabItem", "padding" );
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         if( states.barTop ) {
           result.border = new rwt.html.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
+          // Hack to hide the content containder border below the selected tab
+          result.paddingBottom = result.padding[ 2 ] + containerBorder.getWidthTop() + 1;
         } else {
           result.border = new rwt.html.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
-        }
-        result.margin = [ 0, -1, 0, -2 ];
-        if( states.firstChild ) {
-          result.marginLeft = 0;
+          // Hack to hide the content containder border below the selected tab
+          result.paddingTop = result.padding[ 0 ] + containerBorder.getWidthTop() + 1;
         }
       } else {
         result.zIndex = 0; // TODO [rst] Doesn't this interfere with our z-order?
-        result.marginRight = 1;
-        result.marginLeft = 0;
         if( states.barTop ) {
           result.border = new rwt.html.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
-          result.marginTop = 3;
-          result.marginBottom = 1;
         } else {
           result.border = new rwt.html.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
-          result.marginTop = 1;
-          result.marginBottom = 3;
         }
       }
-      result.padding = tv.getCssBoxDimensions( "TabItem", "padding" );
-      if( states.checked ) {
-        // Hack to hide the content containder border below the selected tab
-        var containerBorder = tv.getCssBorder( "TabFolder-ContentContainer", "border" );
-        result.paddingBottom = result.padding[ 2 ]  + containerBorder.getWidthTop();
+      var margin = tv.getCssBoxDimensions( "TabItem", "margin" );
+      if( states.barBottom ) {
+        margin = [ margin[ 2 ], margin[ 1 ], margin[ 0 ], margin[ 3 ] ];
       }
+      result.margin = margin;
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );
