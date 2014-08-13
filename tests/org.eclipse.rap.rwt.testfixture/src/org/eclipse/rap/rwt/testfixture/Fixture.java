@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -46,7 +45,7 @@ import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.engine.RWTServletContextListener;
+import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
@@ -115,7 +114,6 @@ public final class Fixture {
   }
 
   private static ServletContext servletContext;
-  private static RWTServletContextListener rwtServletContextListener;
   private static ApplicationContextImpl applicationContext;
 
   ////////////////////////////////////////////
@@ -140,41 +138,28 @@ public final class Fixture {
     servletContext.setInitParameter( name, value );
   }
 
-  public static void triggerServletContextInitialized() {
-    ensureServletContext();
-    registerConfigurer();
-    rwtServletContextListener = new RWTServletContextListener();
-    ServletContextEvent event = new ServletContextEvent( servletContext );
-    ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
-    try {
-      Thread.currentThread().setContextClassLoader( Fixture.class.getClassLoader() );
-      rwtServletContextListener.contextInitialized( event );
-    } finally {
-      Thread.currentThread().setContextClassLoader( oldContextClassLoader );
-    }
-  }
-
-  public static void triggerServletContextDestroyed() {
-    ServletContextEvent event = new ServletContextEvent( servletContext );
-    if( rwtServletContextListener != null ) {
-      rwtServletContextListener.contextDestroyed( event );
-    }
-    rwtServletContextListener = null;
-  }
-
-
   ////////////////////////////////////////
   // Methods to control ApplicationContext
 
   public static void createApplicationContext() {
     ensureServletContext();
     createWebContextDirectory();
-    triggerServletContextInitialized();
-    applicationContext = ApplicationContextImpl.getFrom( servletContext );
+    ApplicationConfiguration config = new FixtureApplicationConfiguration();
+    ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader( Fixture.class.getClassLoader() );
+      applicationContext = new ApplicationContextImpl( config, servletContext );
+      applicationContext.attachToServletContext();
+      SingletonManager.install( applicationContext );
+      applicationContext.activate();
+    } finally {
+      Thread.currentThread().setContextClassLoader( oldContextClassLoader );
+    }
   }
 
   public static void disposeOfApplicationContext() {
-    triggerServletContextDestroyed();
+    applicationContext.deactivate();
+    applicationContext.removeFromServletContext();
     disposeOfServletContext();
     // TODO [ApplicationContext]: At the time being this improves RWTAllTestSuite performance by
     //      50% on my machine without causing any test to fail. However this has a bad smell
@@ -649,11 +634,6 @@ public final class Fixture {
     }
   }
 
-  private static void registerConfigurer() {
-    setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM,
-                      FixtureApplicationConfigurator.class.getName() );
-  }
-
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
     RWTLifeCycle lifeCycle
       = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
@@ -746,7 +726,7 @@ public final class Fixture {
     // prevent instantiation
   }
 
-  public static class FixtureApplicationConfigurator implements ApplicationConfiguration {
+  private static class FixtureApplicationConfiguration implements ApplicationConfiguration {
     public void configure( Application application ) {
       application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     }
