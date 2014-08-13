@@ -368,7 +368,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     serviceManager.clear();
     themeManager.deactivate();
     if( !skipResoureDeletion ) {
-      getResourceDirectory().deleteDirectory();
+      resourceDirectory.deleteDirectory();
     }
     entryPointManager.deregisterAll();
     phaseListenerManager.clear();

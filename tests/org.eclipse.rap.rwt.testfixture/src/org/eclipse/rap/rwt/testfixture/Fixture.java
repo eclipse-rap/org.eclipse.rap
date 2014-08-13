@@ -229,7 +229,7 @@ public final class Fixture {
     ApplicationContextHelper.fakeResourceManager( null );
   }
 
-  public static void useTestResourceManager() {
+  private static void useTestResourceManager() {
     ApplicationContextHelper.fakeResourceManager( new TestResourceManager() );
   }
 

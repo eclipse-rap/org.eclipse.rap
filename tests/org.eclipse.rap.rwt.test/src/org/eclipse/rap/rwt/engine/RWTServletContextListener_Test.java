@@ -46,7 +46,6 @@ public class RWTServletContextListener_Test {
 
   @Before
   public void setUp() {
-    Fixture.useTestResourceManager();
     rwtServletContextListener = new RWTServletContextListener();
     servletContext = new TestServletContext();
     contextInitializedEvent = new ServletContextEvent( servletContext );
