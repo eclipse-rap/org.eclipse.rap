@@ -1815,6 +1815,13 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       rwt.widgets.base.ClientDocument.getInstance().add(this);
     },
 
+    enableEnhancedBorder : function() {
+      this._targetNodeEnabled = true;
+      if( this._element ) {
+        this.prepareEnhancedBorder();
+      }
+    },
+
     /**
      * Check if the element is already available.
      */
@@ -1823,7 +1830,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     },
 
     _createElementImpl : function() {
-      this.setElement(this.getTopLevelWidget().getDocumentElement().createElement("div"));
+      this.setElement( document.createElement( "div" ) );
     },
 
     _applyElement : function(value, old) {

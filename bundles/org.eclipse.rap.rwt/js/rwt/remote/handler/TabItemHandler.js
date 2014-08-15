@@ -45,7 +45,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
     "control",
     "toolTipMarkupEnabled",
     "toolTip",
-    "customVariant"
+    "customVariant",
+    "badge"
   ],
 
   propertyHandler : {
@@ -62,7 +63,10 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.TabItem", {
       }
     },
     "toolTipMarkupEnabled" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTipMarkupEnabled" ),
-    "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" )
+    "toolTip" : rwt.remote.HandlerUtil.getControlPropertyHandler( "toolTip" ),
+    "badge" : function( widget, value ) {
+      rwt.widgets.util.Badges.setBadge( widget, value );
+    }
   }
 
 } );

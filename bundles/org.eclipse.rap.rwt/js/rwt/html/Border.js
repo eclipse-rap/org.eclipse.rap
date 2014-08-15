@@ -272,10 +272,13 @@ rwt.qx.Class.define( "rwt.html.Border", {
     },
 
     renderElement : function( element ) {
-      if( this.getStyle() === "complex" || this.getStyle() === "rounded" ) {
+      if( this.getStyle() === "complex" ) {
         throw new Error( "Rendering complex or rounded border on elements currently unsupported" );
       }
       this._renderSimpleBorderStyle( element.style );
+      if( this.getStyle() === "rounded" ) {
+        this._renderRadii( element.style );
+      }
     },
 
     _renderSimpleBorder : function( widget ) {
@@ -342,9 +345,12 @@ rwt.qx.Class.define( "rwt.html.Border", {
     } ),
 
     _renderRoundedBorder : function( widget ) {
-      var statics = rwt.html.Border;
       this._renderSimpleBorder( widget );
-      var style = widget._style;
+      this._renderRadii( widget._style );
+    },
+
+    _renderRadii : function( style ) {
+      var statics = rwt.html.Border;
       for( var i = 0; i < 4; i++ ) {
         style[ statics._BORDERRADII[ i ] ] = this._radii[ i ] + "px";
       }

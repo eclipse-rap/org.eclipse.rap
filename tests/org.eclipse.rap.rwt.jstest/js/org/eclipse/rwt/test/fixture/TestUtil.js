@@ -994,7 +994,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       }
     } );
     rwt.remote.EventUtil.setSuspended( false );
-    return rwt.remote.ObjectRegistry.getObject( id );
+    return rwt.remote.ObjectRegistry.getObject( id ? id : "w2" );
   },
 
   createWidgetByProtocol : function( id, parentId, type ) {

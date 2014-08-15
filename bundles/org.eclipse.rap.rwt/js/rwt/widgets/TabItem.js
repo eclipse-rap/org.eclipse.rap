@@ -115,6 +115,15 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
       return this._mnemonicIndex;
     },
 
+    computeBadgePosition : function( size ) {
+      return [
+        ( size[ 1 ] * -1 ) + this.getPaddingTop() + 1,
+        Math.round( this.getPaddingRight() / 2 ),
+        "auto",
+        "auto"
+      ];
+    },
+
     _applyText : function( mnemonic ) {
       if( this._rawText ) {
         var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
@@ -247,6 +256,7 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
         }
       }
       this.setZIndex( value ? 1 : 0 );
+      this.addToQueue( "updateBadgePosition" );
     },
 
     _applyName : function( value ) {

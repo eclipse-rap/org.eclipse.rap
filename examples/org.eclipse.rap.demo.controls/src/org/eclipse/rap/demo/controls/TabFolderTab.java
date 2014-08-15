@@ -11,13 +11,17 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -66,6 +70,7 @@ public class TabFolderTab extends ExampleTab {
     createInsertItemButton( parent );
     createDisposeSelectedItemButton( parent );
     createDisposeFirstItemButton( parent );
+    createSetFirstItemBadge( parent );
   }
 
   @Override
@@ -177,6 +182,24 @@ public class TabFolderTab extends ExampleTab {
         }
       }
     } );
+  }
+
+  private void createSetFirstItemBadge( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    new Label( composite, SWT.NONE ).setText( "Badge:" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Listener setBadgeListener = new Listener() {
+      public void handleEvent( Event event ) {
+        if( folder.getItemCount() > 0 ) {
+          folder.getItem( 0 ).setData( RWT.BADGE, text.getText() );
+        }
+      }
+    };
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Set" );
+    button.addListener( SWT.Selection, setBadgeListener );
+    text.addListener( SWT.DefaultSelection, setBadgeListener );
   }
 
   private void createItemContent( TabItem item ) {

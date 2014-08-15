@@ -59,6 +59,14 @@ $.prototype = {
 
   css : function() {
     return this.__access( arguments, css_widget, css_element );
+  },
+
+  text : function() {
+    return this.__access( arguments, null, text_element );
+  },
+
+  detach : function() {
+    return this.__access( arguments, null, detach_element );
   }
 
 };
@@ -82,6 +90,24 @@ $.cssHooks = {
   "backgroundGradient" : { // standard syntax linear-gradient(...) not supported
     "set" : function( element, value ) {
       rwt.html.Style.setBackgroundGradient( element, value );
+    }
+  },
+  "border" : {
+    "set" : function( element, value ) {
+      if( typeof value === "object" && value.renderElement ) {
+        value.renderElement( element );
+      } else {
+        element.style.border = value;
+      }
+    }
+  },
+  "font" : {
+    "set" : function( element, value ) {
+      if( typeof value === "object" && value.renderElement ) {
+        value.renderElement( element );
+      } else {
+        element.style.font = value;
+      }
     }
   }
 };
@@ -149,14 +175,29 @@ var css_element = unwrapArgsFor( function( element, args ) {
 } );
 
 var append_widget = function( widget, args ) {
-  WidgetUtil.callWithElement( widget, function( element ) {
-    element.appendChild( args[ 0 ] );
-  } );
+  if( !widget.getElement() ) {
+    rwt.widgets.base.Widget.removeFromGlobalElementQueue( widget );
+    widget._createElementImpl();
+  }
+  widget.getElement().appendChild( args[ 0 ] );
   return this;
 };
 
 var append_element = function( element, args ) {
   element.appendChild( args[ 0 ] );
+  return this;
+};
+
+var detach_element = function( element ) {
+  element.parentNode.removeChild( element );
+  return this;
+};
+
+var text_element = function( element, args ) {
+  if( args.length === 0 )  {
+    return element.textContent;
+  }
+  element.textContent = args[ 0 ];
   return this;
 };
 

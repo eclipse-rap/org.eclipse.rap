@@ -46,7 +46,8 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/rwt.spec.js",
     "spec/Functions.spec.js",
     "spec/ProgressBarHandler.spec.js",
-    "spec/ProgressBar.spec.js"
+    "spec/ProgressBar.spec.js",
+    "spec/Badges.spec.js"
   };
 
   public String getName() {

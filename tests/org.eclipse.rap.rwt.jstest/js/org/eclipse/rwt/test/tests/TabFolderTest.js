@@ -438,6 +438,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertFalse( item2.getChecked() );
     },
 
+    testComputeBadgePosition : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+
+      assertEquals( [ -3, 3, "auto", "auto" ], item.computeBadgePosition( [ 100, 10 ] ) );
+      folder.destroy();
+    },
+
+    testAddUpdateBadgeJobOnSelect : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+      var changes;
+      item.addEventListener( "flush", function( event ) {
+        changes = event.getData();
+      } );
+
+      item.setChecked( true );
+      TestUtil.flush();
+
+      assertTrue( changes.updateBadgePosition );
+      folder.destroy();
+    },
+
     //////////////////
     // Helping methods
 

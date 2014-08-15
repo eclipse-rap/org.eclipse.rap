@@ -128,21 +128,44 @@ describe( "RWTQuery", function() {
 
     describe( "append", function() {
 
-      it( "appends an element using WidgetUtil", function() {
-        var element = document.createElement( "div" );
-        var parentElement = document.createElement( "div" );
+      var element;
+      var childElement;
 
-        $( widget ).append( element );
-        WidgetUtil.callWithElement.calls[ 0 ].args[ 1 ]( parentElement );
 
-        expect( element.parentElement ).toBe( parentElement );
+      beforeEach( function() {
+        spyOn( rwt.widgets.base.Widget, "removeFromGlobalElementQueue" );
+        element = null;
+        childElement = document.createElement( "div" );
+        widget.getElement = function() {
+          return element;
+        };
+      } );
+
+      it( "appends an element to created widget", function() {
+        element = document.createElement( "div" );
+
+        $( widget ).append( childElement );
+
+        expect( childElement.parentElement ).toBe( element );
+        expect( rwt.widgets.base.Widget.removeFromGlobalElementQueue).not.toHaveBeenCalled();
+      } );
+
+      it( "appends an element by forced widget creation", function() {
+        widget._createElementImpl = function() {
+          element = document.createElement( "div" );
+        };
+
+        $( widget ).append( childElement );
+
+        expect( childElement.parentElement ).toBe( element );
+        expect( rwt.widgets.base.Widget.removeFromGlobalElementQueue).toHaveBeenCalledWith( widget );
       } );
 
       it( "isChainable", function() {
-        var element = document.createElement( "div" );
+        element = document.createElement( "div" );
         var $widget = $( widget );
 
-        expect( $widget.append( element ) ).toBe( $widget );
+        expect( $widget.append( childElement ) ).toBe( $widget );
       } );
 
     } );
@@ -297,6 +320,42 @@ describe( "RWTQuery", function() {
         expect( rwt.html.Style.setBackgroundImage ).toHaveBeenCalledWith( element, "foo" );
       } );
 
+      it( "sets border directly for strings", function() {
+        $( element ).css( "border", "2px solid rgb( 255, 0, 255)" );
+
+        var result = element.style.border;
+        expect( result ).toContain( "2px" );
+        expect( result ).toContain( "solid" );
+        expect( result ).toContain( "rgb(255, 0, 255)" );
+      } );
+
+      it( "sets border for Border object", function() {
+        $( element ).css( "border", new rwt.html.Border( 2, "solid", "rgb(255, 0, 255)" ) );
+
+        var result = element.style.border;
+        expect( result ).toContain( "2px" );
+        expect( result ).toContain( "solid" );
+        expect( result ).toContain( "rgb(255, 0, 255)" );
+      } );
+
+      it( "sets font directly for strings", function() {
+        $( element ).css( "font", "12px bold fantasy" );
+
+        var result = element.style.font;
+        expect( result ).toContain( "12px" );
+        expect( result ).toContain( "bold" );
+        expect( result ).toContain( "fantasy" );
+      } );
+
+      it( "sets font for Font object", function() {
+        $( element ).css( "border", rwt.html.Font.fromString( "12px bold fantasy" ) );
+
+        var result = element.style.font;
+        expect( result ).toContain( "12px" );
+        expect( result ).toContain( "bold" );
+        expect( result ).toContain( "fantasy" );
+      } );
+
     } );
 
     describe( "append", function() {
@@ -314,6 +373,50 @@ describe( "RWTQuery", function() {
         var $element = $( element );
 
         expect( $element.append( childElement ) ).toBe( $element );
+      } );
+
+    } );
+
+    describe( "detach", function() {
+
+      it( "removed an element", function() {
+        var childElement = document.createElement( "div" );
+        $( element ).append( childElement );
+
+        $( childElement ).detach();
+
+        expect( childElement.parentElement ).toBe( null );
+      } );
+
+      it( "isChainable", function() {
+        var childElement = document.createElement( "div" );
+        $( element ).append( childElement );
+        var $childElement = $( childElement );
+
+        expect( $childElement.detach() ).toBe( $childElement );
+      } );
+
+    } );
+
+    describe( "text", function() {
+
+      it( "sets textContent", function() {
+        $( element ).text( "foo  bar" );
+
+        expect( element.textContent ).toBe( "foo  bar" );
+      } );
+
+
+      it( "gets textContent", function() {
+        element.textContent = "foo  bar";
+
+        expect( $( element).text() ).toBe( "foo  bar" );
+      } );
+
+      it( "isChainable", function() {
+        var $element = $( element );
+
+        expect( $element.text( "foo" ) ).toBe( $element );
       } );
 
     } );

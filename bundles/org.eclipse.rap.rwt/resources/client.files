@@ -40,6 +40,7 @@ rwt/html/StyleSheet.js
 rwt/util/RWTQuery.js
 rwt/widgets/base/Widget.js
 rwt/widgets/util/WidgetRenderAdapter.js
+rwt/widgets/util/Badges.js
 rwt/animation/AnimationRenderer.js
 rwt/animation/Animation.js
 rwt/animation/AnimationUtil.js
