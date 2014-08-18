@@ -607,7 +607,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onClientAreaMouseWheel : function( event ) {
-      var change = event.getWheelDelta() * 2;
+      var delta = event.getWheelDelta();
+      var direction = Math.abs( delta ) / delta; 
+      var change = Math.ceil( Math.abs( delta ) * 2 ) * direction;
       var orgValue = this._vertScrollBar.getValue();
       this._vertScrollBar.setValue( orgValue - change );
       var newValue = this._vertScrollBar.getValue();

@@ -1848,6 +1848,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testWheelScroll_byTouchPad : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      TestUtil.flush();
+      TestUtil.fakeWheel( tree._rowContainer, -0.3 );
+      assertEquals( 1, tree._vertScrollBar.getValue() );
+      TestUtil.fakeWheel( tree._rowContainer, 0.2 );
+      assertEquals( 0, tree._vertScrollBar.getValue() );
+      tree.destroy();
+    },
+
     testWheelScrollStopProppagation : function() {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 100 );
