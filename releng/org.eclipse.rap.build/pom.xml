@@ -28,6 +28,8 @@
     <junit-version>4.11</junit-version>
     <base-platform-luna>4.4milestones/S-4.4RC4-201406061215/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
+    <base-platform-mars>4.5milestones/S-4.5M1-201408062000/</base-platform-mars>
+    <base-platform-mars-repository>http://download.eclipse.org/eclipse/updates/${base-platform-mars}</base-platform-mars-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
     <baseline-repository>http://download.eclipse.org/rt/rap/nightly/runtime/</baseline-repository>

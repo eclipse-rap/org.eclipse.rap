@@ -56,6 +56,8 @@
     <module>features/org.eclipse.rap.examples.feature</module>
     <module>features/org.eclipse.rap.equinox.target.feature</module>
     <module>releng/org.eclipse.rap.build/repository.luna</module>
+    <module>features/org.eclipse.rap.equinox.mars.target.feature</module>
+    <module>releng/org.eclipse.rap.build/repository.mars</module>
     <!-- Builder projects -->
     <module>releng/org.eclipse.rap.clientbuilder</module>
   </modules>
