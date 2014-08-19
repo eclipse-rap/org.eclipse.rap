@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.test.all
-Bundle-Version: 2.3.0.qualifier
-Export-Package: org.eclipse.rap.test;version="2.3.0"
+Bundle-Version: 2.3.1.qualifier
+Export-Package: org.eclipse.rap.test;version="2.3.1"
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.rap.rwt.testfixture;version="[2.3.0,3.0.0)",

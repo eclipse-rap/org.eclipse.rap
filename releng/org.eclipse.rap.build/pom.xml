@@ -16,7 +16,7 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-  <version>2.3.0-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -26,7 +26,7 @@
     <surefire-version>2.15</surefire-version>
     <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
     <junit-version>4.11</junit-version>
-    <base-platform-luna>4.4milestones/S-4.4RC4-201406061215/</base-platform-luna>
+    <base-platform-luna>4.4milestones/M-4.4.1RC1-201408130800/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
@@ -47,7 +47,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/RC4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/2.3/SR1-RC1/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
