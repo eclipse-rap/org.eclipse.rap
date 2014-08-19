@@ -90,6 +90,18 @@ public class RWTServletContextListener_Test {
   }
 
   @Test
+  public void testEntryPointInitializationWithEmptyServletMapping() {
+    String className = TestEntryPoint.class.getName();
+    servletContext.setInitParameter( ENTRY_POINTS_PARAM, className );
+    setServletMapping( "" );
+
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
+
+    assertEntryPointIsRegistered();
+    assertEntryPointPath( "/" );
+  }
+
+  @Test
   public void testEntryPointInitializationWithNonExistingClassName() {
     String className = "does.not.Exist";
     servletContext.setInitParameter( ENTRY_POINTS_PARAM, className );

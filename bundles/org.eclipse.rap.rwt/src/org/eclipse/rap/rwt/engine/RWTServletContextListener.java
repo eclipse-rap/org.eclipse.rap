@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class RWTServletContextListener implements ServletContextListener {
     if( servletRegistration != null ) {
       String[] mappings = servletRegistration.getMappings().toArray( new String[ 0 ] );
       if( mappings.length > 0 ) {
-        servletPath = mappings[ 0 ];
+        servletPath = mappings[ 0 ].equals( "" ) ? "/" : mappings[ 0 ];
       }
     }
     String className = context.getInitParameter( ENTRY_POINTS_PARAM );
