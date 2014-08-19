@@ -54,5 +54,7 @@ test -n "$TIMESTAMP" || exit 1
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
+zipFileNameMars=rap-mars-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
 mv "$basedirectory"/releng/org.eclipse.rap.build/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
+mv "$basedirectory"/releng/org.eclipse.rap.build/repository.mars/target/*.zip "$WORKSPACE/$zipFileNameMars" || exit 1
