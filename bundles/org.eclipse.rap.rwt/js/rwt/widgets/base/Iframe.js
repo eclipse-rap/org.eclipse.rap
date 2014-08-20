@@ -188,6 +188,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
      * @param vIframeNode {Element} The new DOM element of the iframe.
      */
     setIframeNode : function(vIframeNode) {
+      /*jshint boss: true */
       return this._iframeNode = vIframeNode;
     },
 
@@ -211,6 +212,7 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
      * @return {var} TODOC
      */
     setBlockerNode : function(vBlockerNode) {
+      /*jshint boss: true */
       return this._blockerNode = vBlockerNode;
     },
 

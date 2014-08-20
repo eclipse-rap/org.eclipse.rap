@@ -21,6 +21,7 @@
  *
  * @deprecated This class is supposed to be removed in qooxdoo 0.7
  */
+/*jshint boss: true */
 rwt.qx.Class.define( "rwt.qx.LegacyProperty", {
 
   statics : {

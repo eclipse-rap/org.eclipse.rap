@@ -24,6 +24,8 @@
  * @state disabled Set by {@link rwt.qx.Object#enabled}
  * @state focused Set by {@link #focused}
  */
+
+/*jshint boss: true */
 rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
   extend : rwt.qx.Target,

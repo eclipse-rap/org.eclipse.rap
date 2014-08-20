@@ -64,6 +64,7 @@ rwt.qx.Class.define( "rwt.qx.Object", {
      * @return {Integer} unique identifier for the given object
      */
     toHashCode : function( obj ) {
+      /*jshint boss: true */
       if( obj._hashCode != null ) {
         return obj._hashCode;
       }

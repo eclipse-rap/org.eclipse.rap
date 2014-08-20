@@ -13,7 +13,6 @@ namespace( "rwt.util" );
 
 (function(){
 
-var WidgetUtil = rwt.widgets.util.WidgetUtil;
 var Style = rwt.html.Style;
 
 /**
