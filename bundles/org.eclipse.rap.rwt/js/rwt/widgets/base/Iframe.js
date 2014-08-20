@@ -446,6 +446,13 @@ rwt.qx.Class.define("rwt.widgets.base.Iframe",
       blockerStyle.width = "100%";
       blockerStyle.height = "100%";
       blockerStyle.zIndex = 1;
+      // IE 9/10 needs a background image in order to capture mouse events
+      // 441842: [Browser] Disabled state does not work in IE10
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=441842
+      if( rwt.client.Client.isTrident() && rwt.client.Client.getVersion() < 11 ) {
+        var blank = rwt.remote.Connection.RESOURCE_PATH + "static/image/blank.gif";
+        blockerStyle.backgroundImage = "url(" + blank + ")";
+      }
 
       return blockerEl;
     },

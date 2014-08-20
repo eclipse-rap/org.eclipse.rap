@@ -694,6 +694,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
+    testBlokerElementBackgroundImage : function() {
+      var browser = this._createBrowser();
+
+      browser.setEnabled( false );
+
+      var image = TestUtil.getCssBackgroundImage( browser.getBlockerNode() );
+      var expected = rwt.client.Client.isTrident() && rwt.client.Client.getVersion() < 11;
+      assertEquals( expected, image.indexOf( "blank.gif" ) !== -1 );
+    },
+
     testToJSON_NoChanges : function() {
       var browser = this._createBrowser();
       var object = [];
