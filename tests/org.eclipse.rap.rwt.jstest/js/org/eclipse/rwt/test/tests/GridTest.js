@@ -513,6 +513,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
     },
 
+    testSetCellToolTipText_isNotEscaped_withToolTipMarkupEnabled : function() {
+      var tree = this._createDefaultTree( false, false );
+      tree.setCellToolTipsEnabled( true );
+      tree.setUserData( "toolTipMarkupEnabled", true );
+      this._fillTree( tree, 10 );
+      TestUtil.flush();
+      var row = tree.getRowContainer().getFirstChild();
+
+      TestUtil.fakeMouseEvent( row, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( row, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+      tree.setCellToolTipText( "<i>foo</i>" );
+
+      var labelObject = rwt.widgets.base.WidgetToolTip.getInstance()._label;
+      assertEquals( "<i>foo</i>", labelObject.getCellContent( 0 ) );
+      tree.destroy();
+    },
+
     testSetCellToolTipTextByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLocation( 0, 0 );

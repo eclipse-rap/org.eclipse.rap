@@ -46,6 +46,7 @@ import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -1790,6 +1791,36 @@ public class Tree_Test {
   }
 
   @Test
+  public void testSetCellToolTipText() {
+    ICellToolTipAdapter adapter = tree.getAdapter( ICellToolTipAdapter.class );
+
+    adapter.setCellToolTipText( "foo" );
+
+    assertEquals( "foo", adapter.getCellToolTipText() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetCellToolTipText_withToolTipMarkupEnabled_invalid() {
+    tree.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    ICellToolTipAdapter adapter = tree.getAdapter( ICellToolTipAdapter.class );
+
+    adapter.setCellToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testSetCellToolTipText_withToolTipMarkupEnabled_invalidWithDisabledValidation() {
+    tree.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    tree.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+    ICellToolTipAdapter adapter = tree.getAdapter( ICellToolTipAdapter.class );
+
+    try {
+      adapter.setCellToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     tree.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1801,16 +1832,12 @@ public class Tree_Test {
     }
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testMarkupTextWithMarkupEnabled() {
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
-    try {
-      item.setText( "invalid xhtml: <<&>>" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    item.setText( "invalid xhtml: <<&>>" );
   }
 
   @Test

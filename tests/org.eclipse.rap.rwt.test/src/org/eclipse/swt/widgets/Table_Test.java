@@ -2681,6 +2681,36 @@ public class Table_Test {
   }
 
   @Test
+  public void testSetCellToolTipText() {
+    ICellToolTipAdapter adapter = table.getAdapter( ICellToolTipAdapter.class );
+
+    adapter.setCellToolTipText( "foo" );
+
+    assertEquals( "foo", adapter.getCellToolTipText() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetCellToolTipText_withToolTipMarkupEnabled_invalid() {
+    table.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    ICellToolTipAdapter adapter = table.getAdapter( ICellToolTipAdapter.class );
+
+    adapter.setCellToolTipText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testSetCellToolTipText_withToolTipMarkupEnabled_invalidWithDisabledValidation() {
+    table.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    table.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+    ICellToolTipAdapter adapter = table.getAdapter( ICellToolTipAdapter.class );
+
+    try {
+      adapter.setCellToolTipText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
   public void testMarkupTextWithoutMarkupEnabled() {
     table.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2692,16 +2722,12 @@ public class Table_Test {
     }
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testMarkupTextWithMarkupEnabled() {
     table.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     TableItem item = new TableItem( table, SWT.NONE );
 
-    try {
-      item.setText( "invalid xhtml: <<&>>" );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    item.setText( "invalid xhtml: <<&>>" );
   }
 
   @Test

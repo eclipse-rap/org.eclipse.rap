@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -169,11 +170,13 @@ public class TableViewerTab extends ExampleTab {
         lblSelection.getParent().layout( new Control[] { lblSelection } );
       }
     } );
-    viewer.getTable().setHeaderVisible( true );
     ColumnViewerToolTipSupport.enableFor( viewer );
+    Table table = viewer.getTable();
+    table.setHeaderVisible( true );
+    table.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
     GridData tableData = new GridData( SWT.FILL, SWT.FILL, true, true );
     tableData.horizontalSpan = 2;
-    viewer.getTable().setLayoutData( tableData );
+    table.setLayoutData( tableData );
   }
 
   private IContentProvider createContentProvider() {
@@ -500,7 +503,7 @@ public class TableViewerTab extends ExampleTab {
       String text = null;
       switch( columnIndex ) {
         case COL_FIRST_NAME:
-          text = person.firstName;
+          text = "<i>" + person.firstName + "</i>";
           break;
         case COL_LAST_NAME:
           text = person.lastName;

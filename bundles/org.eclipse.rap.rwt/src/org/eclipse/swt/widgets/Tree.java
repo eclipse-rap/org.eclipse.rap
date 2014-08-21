@@ -13,6 +13,8 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
@@ -2498,6 +2501,12 @@ public class Tree extends Composite {
     }
 
     public void setCellToolTipText( String toolTipText ) {
+      if(    toolTipText != null
+          && isToolTipMarkupEnabledFor( Tree.this )
+          && !isValidationDisabledFor( Tree.this ) )
+      {
+        MarkupValidator.getInstance().validate( toolTipText );
+      }
       this.toolTipText = toolTipText;
     }
 

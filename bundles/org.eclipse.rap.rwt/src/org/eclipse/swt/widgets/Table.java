@@ -13,6 +13,8 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
@@ -34,6 +36,7 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -236,6 +239,12 @@ public class Table extends Composite {
     }
 
     public void setCellToolTipText( String toolTipText ) {
+      if(    toolTipText != null
+          && isToolTipMarkupEnabledFor( Table.this )
+          && !isValidationDisabledFor( Table.this ) )
+      {
+        MarkupValidator.getInstance().validate( toolTipText );
+      }
       this.toolTipText = toolTipText;
     }
 

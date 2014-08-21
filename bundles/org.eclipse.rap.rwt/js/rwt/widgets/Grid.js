@@ -1286,7 +1286,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       return this._rowContainer.getCellToolTipsEnabled();
     },
 
-    setCellToolTipText : function( text ) {
+    setCellToolTipText : function( value ) {
+      var text = value;
+      if( this.getUserData( "toolTipMarkupEnabled" ) !== true ) {
+        var EncodingUtil = rwt.util.Encoding;
+        text = EncodingUtil.escapeText( text, false );
+        text = EncodingUtil.replaceNewLines( text, "<br/>" );
+      }
       rwt.widgets.util.GridCellToolTipSupport.showToolTip( text );
     }
 

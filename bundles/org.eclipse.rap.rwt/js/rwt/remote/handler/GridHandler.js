@@ -114,12 +114,6 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     },
     "scrollBarsVisible" : function( widget, value ) {
       widget.setScrollBarsVisible( value[ 0 ], value[ 1 ] );
-    },
-    "cellToolTipText" : function( widget, value ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, false );
-      text = EncodingUtil.replaceNewLines( text, "<br/>" );
-      widget.setCellToolTipText( text );
     }
   } ),
 
