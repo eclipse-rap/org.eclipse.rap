@@ -17,6 +17,8 @@ import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTIO
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
@@ -54,7 +56,8 @@ public class ServiceManagerImpl implements ServiceManager {
 
   public String getServiceHandlerUrl( String id ) {
     ParamCheck.notNull( id, "id" );
-    StringBuilder url = new StringBuilder()
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuilder url = new StringBuilder( request.getRequestURI() )
       .append( '?' )
       .append( REQUEST_PARAM )
       .append( '=' )
