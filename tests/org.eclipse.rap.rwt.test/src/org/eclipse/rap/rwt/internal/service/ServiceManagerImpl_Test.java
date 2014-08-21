@@ -184,10 +184,10 @@ public class ServiceManagerImpl_Test {
   }
 
   @Test
-  public void testGetServiceHandlerUrl_returnsRelativeUrlWithIdParam() {
+  public void testGetServiceHandlerUrl_returnsAbsoluteUrlWithIdParam() {
     String url = serviceManager.getServiceHandlerUrl( "foo" );
 
-    assertEquals( "?servicehandler=foo", url );
+    assertEquals( "/fooapp/rap?servicehandler=foo", url );
   }
 
   @Test
@@ -196,14 +196,14 @@ public class ServiceManagerImpl_Test {
 
     String url = serviceManager.getServiceHandlerUrl( "foo" );
 
-    assertEquals( "?servicehandler=foo&cid=bar", url );
+    assertEquals( "/fooapp/rap?servicehandler=foo&cid=bar", url );
   }
 
   @Test
   public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
     String url = serviceManager.getServiceHandlerUrl( "Smørre brød" );
 
-    assertEquals( "?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
+    assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
   }
 
   @Test
