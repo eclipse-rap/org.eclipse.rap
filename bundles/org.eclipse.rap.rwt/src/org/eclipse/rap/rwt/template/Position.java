@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.template;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
 
 
 class Position {
@@ -23,7 +24,12 @@ class Position {
     this.offset = offset;
   }
 
-  JsonArray toJson() {
+  JsonValue toJson() {
+    // [if] For backward compatibility with Tabris clients, a number is returned
+    // instead of array if percentage is zero
+    if( percentage == 0 ) {
+      return JsonValue.valueOf( offset );
+    }
     return new JsonArray().add( percentage ).add( offset );
   }
 

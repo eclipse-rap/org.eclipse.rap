@@ -11,21 +11,35 @@
 package org.eclipse.rap.rwt.template;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
 import org.junit.Test;
 
 
 public class Position_Test {
 
   @Test
-  public void testToJson() {
+  public void testToJson_withPercentage() {
     Position position = new Position( 3.14f, 42 );
 
-    JsonArray json = position.toJson();
+    JsonValue json = position.toJson();
 
     assertEquals( new JsonArray().add( 3.14f ).add( 42 ), json );
+  }
+
+  @Test
+  public void testToJson_withoutPercentage() {
+    Position position = new Position( 0, 42 );
+
+    JsonValue json = position.toJson();
+
+    assertEquals( JsonValue.valueOf( 42 ), json );
   }
 
   @Test

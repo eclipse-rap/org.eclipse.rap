@@ -396,7 +396,16 @@ rwt.widgets.util.Template.prototype = {
         var background = this._cells[ i ].background;
         this._cells[ i ].background = rwt.util.Colors.rgbToRgbString( background );
       }
+      this._cells[ i ].left = this._normalizePosition( this._cells[ i ].left );
+      this._cells[ i ].top = this._normalizePosition( this._cells[ i ].top );
+      this._cells[ i ].right = this._normalizePosition( this._cells[ i ].right );
+      this._cells[ i ].bottom = this._normalizePosition( this._cells[ i ].bottom );
     }
+  },
+
+  // Note: For backward compatibility with Tabris clients, position could be number or array
+  _normalizePosition : function( value ) {
+    return ( value && typeof value === "number" ) ? [ 0, value ] : value;
   }
 
 };

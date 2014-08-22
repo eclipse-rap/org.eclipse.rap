@@ -174,6 +174,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 15, getLeft( element.firstChild ) );
     },
 
+    testRenderCellLeft_LeftIsOffset_RenderedAsNumber : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : 15 } );
+
+      var element = render( template, createGridItem( [ "foo" ] ) );
+
+      assertEquals( 15, getLeft( element.firstChild ) );
+    },
+
     testRenderCellLeft_LeftIsOffsetWithRenderOffset : function() {
       var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "left" : [ 0, 15 ] } );
 
@@ -216,6 +224,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 75, getLeft( element.firstChild ) );
     },
 
+    testGetCellLeft_LeftIsUndefined_RightRenderedAsNumber : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "width" : 10,
+        "right" : 15,
+        "left" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 75, getLeft( element.firstChild ) );
+    },
+
     testGetCellLeft_LeftIsUndefinedWithRenderOffset : function() {
       var template = createTemplate( {
         "bindingIndex" : 0,
@@ -233,6 +256,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
 
     testGetCellTop_TopIsOffset : function() {
       var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : [ 0, 12 ] } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 12, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsOffset_RenderedAsNumber : function() {
+      var template = createTemplate( { "bindingIndex" : 0, "type" : "text", "top" : 12 } );
       var element = render( template,
                             createGridItem( [ "foo" ] ),
                             { "bounds" : [ 0, 0, 100, 30 ] } );
@@ -273,6 +305,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
         "type" : "text",
         "height" : 10,
         "bottom" : [ 0, 15 ],
+        "top" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 5, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsUndefined_BottomRenderedAsNumber : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "height" : 10,
+        "bottom" : 15,
         "top" : undefined
       } );
       var element = render( template,
