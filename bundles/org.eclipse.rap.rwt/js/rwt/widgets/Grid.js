@@ -1191,7 +1191,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _layoutX : function() {
-      var width = this.getWidth() - this.getFrameWidth();
+      var width = Math.max( 0, this.getWidth() - this.getFrameWidth() );
       if( this._header && this._header.getDisplay() ) {
         this._header.setWidth( width );
       }

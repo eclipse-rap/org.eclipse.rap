@@ -134,6 +134,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    // 442344: [Grid][RowTemplate] Crashes on load with JS error
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=442344
+    testCreateWithRowTemplateAndBorderByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var template = [];
+
+      MessageProcessor.processOperationArray( [
+        "create",
+         "w3",
+        "rwt.widgets.Grid",
+        {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "appearance": "table",
+          "selectionPadding" : [ 2, 4 ],
+          "rowTemplate" : template
+        }
+      ] );
+
+      var grid = rwt.remote.ObjectRegistry.getObject( "w3" );
+      var config = grid.getRenderConfig();
+      assertTrue( config.rowTemplate instanceof rwt.widgets.util.Template );
+      assertTrue( grid.hasState( "rowtemplate" ) );
+      shell.destroy();
+    },
+
     testSendSelectionEventForClickableRowTemplateCell : function() {
       var cellData = {
         "type" : "text",
