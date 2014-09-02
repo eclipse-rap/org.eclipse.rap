@@ -11,11 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.findMnemonicCharacterIndex;
-import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
@@ -24,7 +19,13 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientL
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.findMnemonicCharacterIndex;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
@@ -50,6 +51,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_GRAYED = "grayed";
   private static final String PROP_ALIGNMENT = "alignment";
+  private static final String PROP_MARKUP_ENABLED = "markupEnabled";
   private static final String PROP_SELECTION_LISTENERS = "Selection";
 
   private static final String DEFAULT_ALIGNMENT = "center";
@@ -74,6 +76,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new ButtonOperationHandler( button ) );
     remoteObject.set( "parent", getId( button.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
+    renderProperty( button, PROP_MARKUP_ENABLED, isMarkupEnabledFor( button ), false );
   }
 
   @Override

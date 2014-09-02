@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class ButtonTab extends ExampleTab {
 
   private boolean showImage;
   private boolean setGrayed;
+  private boolean markupEnabled;
 
   private Button pushButton;
   private Button toggleButton;
@@ -72,6 +73,7 @@ public class ButtonTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createImageButton( parent );
+    createMarkupButton( parent );
     createGrayedButton( parent );
     createFgColorButton();
     createBgColorButton();
@@ -94,7 +96,8 @@ public class ButtonTab extends ExampleTab {
     parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
     pushButton = new Button( parent, style | SWT.PUSH );
-    pushButton.setText( "Push\n Button" );
+    pushButton.setText( markupEnabled ? "<b>Push</b> <i>Button</i>" : "Push\n Button" );
+    pushButton.setData( RWT.MARKUP_ENABLED, markupEnabled ? Boolean.TRUE : null );
     updateButtonImage( pushButton );
     toggleButton = new Button( parent, style | SWT.TOGGLE );
     toggleButton.setText( "Toggle" );
@@ -181,9 +184,23 @@ public class ButtonTab extends ExampleTab {
     }
   }
 
+  private Button createMarkupButton( Composite parent ) {
+    final Button button = new Button( parent, SWT.CHECK );
+    button.setText( "Push Button with markup" );
+    button.setSelection( markupEnabled );
+    button.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( final SelectionEvent event ) {
+        markupEnabled = button.getSelection();
+        createNew();
+      }
+    } );
+    return button;
+  }
+
   private void createImageButton( Composite parent ) {
     final Button imageButton = new Button( parent, SWT.CHECK );
-    imageButton.setText( "Push Button with Image" );
+    imageButton.setText( "Push Button with image" );
     imageButton.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {

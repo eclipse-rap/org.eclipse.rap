@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.getCharHeight;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
+import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.textExtent;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
+import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -21,6 +27,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
 
 
@@ -141,6 +148,9 @@ public class Button extends Control {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( ( style & SWT.ARROW ) == 0 ) {
+      if( isMarkupEnabledFor( this ) && !isValidationDisabledFor( this ) ) {
+        MarkupValidator.getInstance().validate( text );
+      }
       this.text = text;
     }
   }
@@ -405,17 +415,18 @@ public class Button extends Control {
       }
       if( hasText ) {
         Point extent;
+        boolean markupEnabled = isMarkupEnabledFor( this );
         if( ( style & SWT.WRAP ) != 0 ) {
           int wrapWidth = wHint == SWT.DEFAULT ? wHint : wHint - width - padding.width;
-          extent = TextSizeUtil.textExtent( font, text, wrapWidth );
+          extent = textExtent( font, text, wrapWidth, markupEnabled );
         } else {
-          extent = TextSizeUtil.stringExtent( font, text );
+          extent = stringExtent( font, text, markupEnabled );
         }
         width += extent.x;
         height = Math.max( height, extent.y );
       }
       if( height == 0 ) {
-        height = TextSizeUtil.getCharHeight( font );
+        height = getCharHeight( font );
       }
     }
     width += padding.width;
@@ -493,6 +504,13 @@ public class Button extends Control {
     }
     removeListener( SWT.Selection, listener );
     removeListener( SWT.DefaultSelection, listener );
+  }
+
+  @Override
+  public void setData( String key, Object value ) {
+    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
+      super.setData( key, value );
+    }
   }
 
   //////////////////////////

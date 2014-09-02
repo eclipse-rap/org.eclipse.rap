@@ -34,6 +34,7 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
@@ -349,6 +350,17 @@ public class ButtonLCA_Test {
     CreateOperation operation = message.findCreateOperation( pushButton );
     assertEquals( "rwt.widgets.Button", operation.getType() );
     assertTrue( getStyles( operation ).contains( "ARROW" ) );
+  }
+
+  @Test
+  public void testRenderCreateWithMarkupEnabled() throws IOException {
+    button.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    lca.renderInitialization( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( button );
+    assertEquals( JsonValue.TRUE, operation.getProperties().get( "markupEnabled" ) );
   }
 
   @Test

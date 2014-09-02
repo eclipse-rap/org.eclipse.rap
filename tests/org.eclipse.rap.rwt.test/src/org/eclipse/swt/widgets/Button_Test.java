@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -29,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,12 +40,14 @@ public class Button_Test {
 
   private Display display;
   private Composite shell;
+  private Button button;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
+    button = new Button( shell, SWT.PUSH );
   }
 
   @After
@@ -53,7 +57,6 @@ public class Button_Test {
 
   @Test
   public void testImage() throws IOException {
-    Button button = new Button( shell, SWT.NONE );
     Image image = createImage( display, Fixture.IMAGE1 );
     button.setImage( image );
     assertSame( image, button.getImage() );
@@ -72,26 +75,21 @@ public class Button_Test {
 
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetImageWithDisposedImage() throws IOException {
-    Button button = new Button( shell, SWT.NONE );
-
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
     stream.close();
     image.dispose();
-    try {
-      button.setImage( image );
-      fail( "Must not allow disposed image" );
-    } catch( IllegalArgumentException expected ) {
-    }
+
+    button.setImage( image );
   }
 
   @Test
   public void testSetText() {
-    Button button = new Button( shell, SWT.NONE );
     button.setText( "Click me!" );
+
     assertSame( "Click me!", button.getText() );
   }
 
@@ -104,7 +102,6 @@ public class Button_Test {
 
   @Test
   public void testAlignment() {
-    Button button = new Button( shell, SWT.NONE );
     button.setAlignment( SWT.LEFT );
     assertEquals( SWT.LEFT, button.getAlignment() );
     button.setAlignment( SWT.RIGHT );
@@ -147,7 +144,6 @@ public class Button_Test {
 
   @Test
   public void testSelection() {
-    Button button = new Button( shell, SWT.NONE );
     assertFalse( button.getSelection() );
     button.setSelection( true );
     assertFalse( button.getSelection() );
@@ -201,7 +197,6 @@ public class Button_Test {
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     // PUSH button
-    Button button = new Button( shell, SWT.PUSH );
     Point expected = new Point( 32, 28 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
@@ -303,7 +298,6 @@ public class Button_Test {
     Image image = createImage( display, Fixture.IMAGE_100x50 );
 
     // PUSH button
-    Button button = new Button( shell, SWT.PUSH );
     button.setText( text );
     button.setImage( image );
     Point expected = new Point( 202, 64 );
@@ -360,17 +354,24 @@ public class Button_Test {
   }
 
   @Test
+  public void testComputeSize_withMarkupEnabled() {
+    button.setText( "foo bar" );
+    Point textExtent = button.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    button.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    button.setText( "<span>foo</span>" );
+    Point markupExtent = button.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+
+    assertTrue( markupExtent.x < textExtent.x );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    Button button = new Button( shell, SWT.NONE );
-    try {
-      button.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    button.addSelectionListener( null );
   }
 
   @Test
   public void testAddSelectionListener() {
-    Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( button.isListening( SWT.Selection ) );
@@ -379,7 +380,6 @@ public class Button_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Button button = new Button( shell, SWT.PUSH );
     SelectionListener listener = mock( SelectionListener.class );
     button.addSelectionListener( listener );
 
@@ -387,6 +387,45 @@ public class Button_Test {
 
     assertFalse( button.isListening( SWT.Selection ) );
     assertFalse( button.isListening( SWT.DefaultSelection ) );
+  }
+
+  @Test
+  public void testMarkupTextWithoutMarkupEnabled() {
+    button.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    try {
+      button.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMarkupTextWithMarkupEnabled() {
+    button.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    button.setText( "invalid xhtml: <<&>>" );
+  }
+
+  @Test
+  public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
+    button.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    button.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+
+    try {
+      button.setText( "invalid xhtml: <<&>>" );
+    } catch( IllegalArgumentException notExpected ) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testDisableMarkupIsIgnored() {
+    button.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+
+    button.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
+
+    assertEquals( Boolean.TRUE, button.getData( RWT.MARKUP_ENABLED ) );
   }
 
 }

@@ -40,6 +40,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( "push-button", widget.getAppearance() );
       assertEquals( -1, widget.getFlexibleCell() );
       assertFalse( widget.getWordWrap() );
+      assertFalse( widget._markupEnabled );
       shell.destroy();
     },
 
@@ -129,6 +130,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertEquals( 2, widget.getFlexibleCell() );
       assertTrue( widget.getWordWrap() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetMarkupEnabledByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "markupEnabled" : true
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+      assertTrue( widget._markupEnabled );
       shell.destroy();
       widget.destroy();
     },
@@ -379,13 +398,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
 
     testText : function() {
       var button = new rwt.widgets.Button( "push" );
-      button.setText( "Hello World!" );
       button.addToDocument();
+
+      button.setText( "Hello World!" );
       TestUtil.flush();
+
       assertEquals( "Hello World!", button.getCellNode( 2 ).innerHTML );
-      button.setParent( null );
       button.destroy();
+    },
+
+    testText_isEscaped : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.setMarkupEnabled( false );
+      button.addToDocument();
+
+      button.setText( "<b>foo</b> bar" );
       TestUtil.flush();
+
+      assertEquals( "&lt;b&gt;foo&lt;/b&gt; bar", button.getCellNode( 2 ).innerHTML );
+      button.destroy();
+    },
+
+    testText_withMarkupEnabled_isNotEscaped : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.setMarkupEnabled( true );
+      button.addToDocument();
+
+      button.setText( "<b>foo</b> bar" );
+      TestUtil.flush();
+
+      assertEquals( "<b>foo</b> bar", button.getCellNode( 2 ).innerHTML );
+      button.destroy();
     },
 
     testImage : function() {

@@ -36,6 +36,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     this.addEventListener( "blur", this._onBlur );
     this._rawText = null;
     this._mnemonicIndex = null;
+    this._markupEnabled = false;
   },
 
   destruct : function() {
@@ -52,6 +53,10 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
   },
 
   members : {
+
+    setMarkupEnabled : function( value ) {
+      this._markupEnabled = value;
+    },
 
     setText : function( value ) {
       this._rawText = value;
@@ -132,10 +137,13 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     _applyText : function( mnemonic ) {
       var EncodingUtil = rwt.util.Encoding;
       if( this._rawText ) {
-        var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
-        var text = EncodingUtil.escapeText( this._rawText, mnemonicIndex );
-        if( this.hasState( "rwt_WRAP" ) ) {
-          text = EncodingUtil.replaceNewLines( text, "<br/>" );
+        var text = this._rawText;
+        if( !this._markupEnabled ) {
+          var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
+          text = EncodingUtil.escapeText( this._rawText, mnemonicIndex );
+          if( this.hasState( "rwt_WRAP" ) ) {
+            text = EncodingUtil.replaceNewLines( text, "<br/>" );
+          }
         }
         this.setCellContent( 2, text );
       } else {

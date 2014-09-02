@@ -24,6 +24,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
       buttonType = "arrow";
     }
     var result = new rwt.widgets.Button( buttonType );
+    result.setMarkupEnabled( properties.markupEnabled === true );
     result.setWrap( styleMap.WRAP );
     rwt.remote.HandlerUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
