@@ -332,10 +332,9 @@ describe( "RWTQuery", function() {
       it( "sets border for Border object", function() {
         $( element ).css( "border", new rwt.html.Border( 2, "solid", "rgb(255, 0, 255)" ) );
 
-        var result = element.style.border;
-        expect( result ).toContain( "2px" );
-        expect( result ).toContain( "solid" );
-        expect( result ).toContain( "rgb(255, 0, 255)" );
+        expect( element.style.borderWidth ).toContain( "2px" );
+        expect( element.style.borderStyle ).toBe( "solid" );
+        expect( element.style.borderColor ).toContain( "rgb(255, 0, 255)" );
       } );
 
       it( "sets font directly for strings", function() {
@@ -350,10 +349,9 @@ describe( "RWTQuery", function() {
       it( "sets font for Font object", function() {
         $( element ).css( "border", rwt.html.Font.fromString( "12px bold fantasy" ) );
 
-        var result = element.style.font;
-        expect( result ).toContain( "12px" );
-        expect( result ).toContain( "bold" );
-        expect( result ).toContain( "fantasy" );
+        expect( element.style.fontSize ).toBe( "12px" );
+        expect( element.style.fontWeight ).toBe( "bold" );
+        expect( element.style.fontFamily ).toContain( "fantasy" );
       } );
 
     } );
