@@ -37,6 +37,12 @@
       <property name="background-image"
           description="Background image or gradient for tab folder headers." />
 
+      <property name="background-position"
+          description="Background image position for tab folder headers." />
+
+      <property name="background-repeat"
+          description="Background image repetition for tab folder headers." />
+
       <property name="border-top-color">
         <description>
           The top border color.

@@ -32,6 +32,8 @@ TabItem {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
+  background-repeat: repeat;
+  background-position: left top;
   border-top-color: #5882b5;
   border-bottom-color: #5882b5;
   text-shadow: 0 1px 0 #ffffff;
@@ -46,10 +48,14 @@ TabItem:selected, TabItem:selected:last {
     from( #d5d5d5 ),
     to( #eaeaea )
   );
+  background-repeat: repeat;
+  background-position: left top;
   margin: 3px -1px 0px -2px;
 }
 
 TabItem:selected:first {
   color: #4a4a4a;
+  background-repeat: repeat;
+  background-position: left top;
   margin: 3px -1px 0px 0px;
 }

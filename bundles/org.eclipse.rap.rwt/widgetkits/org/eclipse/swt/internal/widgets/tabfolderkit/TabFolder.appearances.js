@@ -82,6 +82,8 @@ var appearances = {
       result.textColor = tv.getCssColor( "TabItem", "color" );
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "TabItem", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "TabItem", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );
       result.textShadow = tv.getCssShadow( "TabItem", "text-shadow" );
       return result;

@@ -1049,6 +1049,8 @@ TabItem {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
+  background-repeat: repeat;
+  background-position: left top;
   border-top-color: #5882b5;
   border-bottom-color: #5882b5;
   text-shadow: 0 1px 0 #ffffff;

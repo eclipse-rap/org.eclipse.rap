@@ -19,6 +19,8 @@ TabItem {
   border-top-color: white;
   border-bottom-color: white;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   padding: 4px 6px 2px 5px;
   margin: 7px 1px 1px 0px;
 }
