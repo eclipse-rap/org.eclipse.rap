@@ -36,9 +36,9 @@ public interface MessageFilter {
    * to the filter chain, but they can perform actions before and after this call. Example:
    * <pre>
    * &#064;Override
-   * public Message handleMessage( Message request, MessageFilterChain chain ) {
+   * public ResponseMessage handleMessage( RequestMessage request, MessageFilterChain chain ) {
    *   // code to run before message processing
-   *   Message response = chain.handleMessage( request );
+   *   ResponseMessage response = chain.handleMessage( request );
    *   // code to run after message processing
    *   return response;
    * }
