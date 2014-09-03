@@ -14,6 +14,7 @@ TabFolder-ContentContainer {
 }
 
 TabItem {
+  color: #4a4a4a;
   background-color: white;
   border-top-color: white;
   border-bottom-color: white;
@@ -23,6 +24,7 @@ TabItem {
 }
 
 TabItem:selected, TabItem:selected:last {
+  color: #4a4a4a;
   background-color: white;
   border-top-color: #00589f;
   border-bottom-color: #00589f;
@@ -32,10 +34,12 @@ TabItem:selected, TabItem:selected:last {
 }
 
 TabItem:selected:first {
+  color: #4a4a4a;
   margin: 4px -1px 0px 0px;
 }
 
 TabItem:hover {
+  color: #4a4a4a;
   background-color: #dae9f7;
   background-image: none;
 }

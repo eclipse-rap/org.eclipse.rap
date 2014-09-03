@@ -14,7 +14,7 @@
 
 
 /**
- * @appearance tab-view-button
+ * @appearance tab-item
  * @state checked Set by {@link #checked}
  * @state over
  */
@@ -39,7 +39,7 @@ rwt.qx.Class.define( "rwt.widgets.TabItem", {
 
     appearance : {
       refine : true,
-      init : "tab-view-button"
+      init : "tab-item"
     },
 
     tabIndex : {

@@ -25,6 +25,7 @@ TabFolder-ContentContainer {
 }
 
 TabItem {
+  color: #4a4a4a;
   background-color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
@@ -39,6 +40,7 @@ TabItem {
 }
 
 TabItem:selected, TabItem:selected:last {
+  color: #4a4a4a;
   background-image: gradient(
     linear, left top, left bottom,
     from( #d5d5d5 ),
@@ -48,5 +50,6 @@ TabItem:selected, TabItem:selected:last {
 }
 
 TabItem:selected:first {
+  color: #4a4a4a;
   margin: 3px -1px 0px 0px;
 }

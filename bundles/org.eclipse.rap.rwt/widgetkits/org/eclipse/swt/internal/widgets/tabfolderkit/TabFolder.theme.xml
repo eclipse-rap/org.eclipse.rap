@@ -28,6 +28,9 @@
     <element name="TabItem"
         description="Items of TabFolder controls.">
 
+      <property name="color"
+          description="Tab item text color" />
+
       <property name="background-color"
           description="Background color for tab folder headers." />
 

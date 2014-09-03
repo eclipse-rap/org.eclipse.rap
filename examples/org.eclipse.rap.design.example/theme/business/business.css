@@ -961,6 +961,7 @@ TabFolder-ContentContainer {
 }
 
 TabItem {
+  color: #4a4a4a;
   background-color: white;
   border-top-color: white;
   border-bottom-color: white;

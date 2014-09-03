@@ -26,6 +26,7 @@ TabFolder-ContentContainer {
 }
 
 TabItem {
+  color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
   border-top-color: #aaaaaa;
@@ -36,7 +37,6 @@ TabItem {
 }
 
 TabItem:selected {
-  color: #4a4a4a;
   background-color: #d6d6d6;
   padding: 6px 6px 7px 6px;
   margin: 0px -1px 0px -2px;

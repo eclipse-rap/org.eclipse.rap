@@ -44,7 +44,7 @@ var appearances = {
     }
   },
 
-  "tab-view-button" : {
+  "tab-item" : {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
@@ -79,6 +79,7 @@ var appearances = {
         margin = [ margin[ 2 ], margin[ 1 ], margin[ 0 ], margin[ 3 ] ];
       }
       result.margin = margin;
+      result.textColor = tv.getCssColor( "TabItem", "color" );
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );
