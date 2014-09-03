@@ -554,6 +554,8 @@ List-Item {
   background-color: transparent;
   color: inherit;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   text-shadow: none;
   padding: 3px 5px;
 }

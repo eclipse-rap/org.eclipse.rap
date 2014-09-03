@@ -622,6 +622,8 @@ List-Item {
   background-color: #ffffff;
   color: inherit;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   text-shadow: none;
 }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,8 @@ var appearances = {
       result.textColor = textColor === "undefined" ? "inherit" : textColor;
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       result.backgroundImage = tv.getCssImage( "List-Item", "background-image" );
+      result.backgroundRepeat = tv.getCssIdentifier( "List-Item", "background-repeat" );
+      result.backgroundPosition = tv.getCssIdentifier( "List-Item", "background-position" );
       result.backgroundGradient = tv.getCssGradient( "List-Item", "background-image" );
       result.textShadow = tv.getCssShadow( "List-Item", "text-shadow" );
       result.padding = tv.getCssBoxDimensions( "List-Item", "padding" );

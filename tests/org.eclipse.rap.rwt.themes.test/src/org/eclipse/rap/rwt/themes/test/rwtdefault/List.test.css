@@ -28,6 +28,8 @@ List-Item {
   background-color: #ffffff;
   color: inherit;
   background-image: none;
+  background-repeat: repeat;
+  background-position: left top;
   text-shadow: none;
 }
 
@@ -38,6 +40,8 @@ List-Item:hover {
     from( #ebebeb ),
     to( #d5d5d5 )
   );
+  background-repeat: repeat;
+  background-position: left top;
 }
 
 List-Item:selected {
@@ -48,6 +52,8 @@ List-Item:selected {
     from( #5882b5 ),
     to( #416693 )
   );
+  background-repeat: repeat;
+  background-position: left top;
 }
 
 List-Item:selected:unfocused {
@@ -61,6 +67,8 @@ List-Item:selected:unfocused {
 
 List-Item:even {
   background-color: #f0f0f0;
+  background-repeat: repeat;
+  background-position: left top;
 }
 
 List-Item:even:hover {
