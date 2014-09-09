@@ -791,7 +791,7 @@ public class Display extends Device implements Adaptable {
       result = ( T )displayAdapter;
     } else if( adapter == WidgetAdapter.class ) {
       if( widgetAdapter == null ) {
-        String id = IdGenerator.getInstance().createId( this );
+        String id = IdGenerator.getInstance( uiSession ).createId( this );
         widgetAdapter = new WidgetAdapterImpl( id );
       }
       result = ( T )widgetAdapter;

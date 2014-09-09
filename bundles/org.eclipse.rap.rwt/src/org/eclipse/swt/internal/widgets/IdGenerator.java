@@ -12,8 +12,8 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -28,8 +28,8 @@ public final class IdGenerator implements SerializableCompatibility {
     // prevent instantiation from outside
   }
 
-  public static IdGenerator getInstance() {
-    return SingletonUtil.getUniqueInstance( IdGenerator.class, RWT.getUISession() );
+  public static IdGenerator getInstance( UISession uiSession ) {
+    return SingletonUtil.getUniqueInstance( IdGenerator.class, uiSession );
   }
 
   public String createId( Object object ) {

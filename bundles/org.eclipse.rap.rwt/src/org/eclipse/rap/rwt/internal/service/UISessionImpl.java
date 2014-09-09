@@ -81,7 +81,7 @@ public class UISessionImpl
     listeners = new HashSet<UISessionListener>();
     id = Integer.toHexString( hashCode() );
     bound = true;
-    connection = new ConnectionImpl();
+    connection = new ConnectionImpl( this );
   }
 
   public static UISessionImpl getInstanceFromSession( HttpSession httpSession, String connectionId )

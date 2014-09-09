@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientLi
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.clientListenerRemoved;
 
 import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -198,7 +199,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
   private WidgetAdapter createWidgetAdapter( Widget parent ) {
-    String id = IdGenerator.getInstance().createId( this );
+    String id = IdGenerator.getInstance( RWT.getUISession( display ) ).createId( this );
     WidgetAdapterImpl widgetAdapter = new WidgetAdapterImpl( id );
     widgetAdapter.setParent( parent );
     return widgetAdapter;

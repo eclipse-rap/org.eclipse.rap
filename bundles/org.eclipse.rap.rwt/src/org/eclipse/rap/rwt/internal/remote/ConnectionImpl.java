@@ -15,16 +15,23 @@ import java.io.Serializable;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.widgets.IdGenerator;
 
 
 public class ConnectionImpl implements Connection, Serializable {
 
+  private final UISession uiSession;
+
+  public ConnectionImpl( UISession uiSession ) {
+    this.uiSession = uiSession;
+  }
+
   public RemoteObject createRemoteObject( String remoteType ) {
     ParamCheck.notNullOrEmpty( remoteType, "type" );
-    String id = IdGenerator.getInstance().createId( "r" );
+    String id = IdGenerator.getInstance( uiSession ).createId( "r" );
     RemoteObjectImpl remoteObject = new DeferredRemoteObject( id, remoteType );
-    RemoteObjectRegistry.getInstance().register( remoteObject );
+    RemoteObjectRegistry.getInstance( uiSession ).register( remoteObject );
     return remoteObject;
   }
 
@@ -41,7 +48,7 @@ public class ConnectionImpl implements Connection, Serializable {
   public RemoteObject createServiceObject( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     RemoteObjectImpl remoteObject = new DeferredRemoteObject( id, null );
-    RemoteObjectRegistry.getInstance().register( remoteObject );
+    RemoteObjectRegistry.getInstance( uiSession ).register( remoteObject );
     return remoteObject;
   }
 
