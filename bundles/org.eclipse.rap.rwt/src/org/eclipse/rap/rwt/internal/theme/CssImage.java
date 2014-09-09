@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,13 +27,13 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
 
-public class QxImage implements QxType, ThemeResource {
+public class CssImage implements CssType, ThemeResource {
 
   private static final String IMAGE_DEST_PATH = "themes/images";
 
   private static final String NONE_INPUT = "none";
 
-  public static final QxImage NONE = new QxImage( true, null, null, null, null, true );
+  public static final CssImage NONE = new CssImage( true, null, null, null, null, true );
 
   public final boolean none;
   public final String path;
@@ -56,7 +56,7 @@ public class QxImage implements QxType, ThemeResource {
    * @param vertical if true sweeps from top to bottom, else
    *        sweeps from left to right
    */
-  private QxImage( boolean none,
+  private CssImage( boolean none,
                    String path,
                    ResourceLoader loader,
                    String[] gradientColors,
@@ -86,8 +86,8 @@ public class QxImage implements QxType, ThemeResource {
     }
   }
 
-  public static QxImage valueOf( String input, ResourceLoader loader ) {
-    QxImage result;
+  public static CssImage valueOf( String input, ResourceLoader loader ) {
+    CssImage result;
     if( NONE_INPUT.equals( input ) ) {
       result = NONE;
     } else {
@@ -96,20 +96,20 @@ public class QxImage implements QxType, ThemeResource {
       if( input.length() == 0 ) {
         throw new IllegalArgumentException( "Empty image path" );
       }
-      result = new QxImage( false, input, loader, null, null, true );
+      result = new CssImage( false, input, loader, null, null, true );
     }
     return result;
   }
 
-  public static QxImage createGradient( String[] gradientColors,
+  public static CssImage createGradient( String[] gradientColors,
                                         float[] gradientPercents,
                                         boolean vertical )
   {
-    QxImage result;
+    CssImage result;
     if( gradientColors == null || gradientPercents == null ) {
       throw new NullPointerException( "null argument" );
     }
-    result = new QxImage( true, null, null, gradientColors, gradientPercents, vertical );
+    result = new CssImage( true, null, null, gradientColors, gradientPercents, vertical );
     return result;
   }
 
@@ -122,7 +122,7 @@ public class QxImage implements QxType, ThemeResource {
     if( !none && path != null ) {
       ThemePropertyAdapterRegistry registry
         = ThemePropertyAdapterRegistry.getInstance( applicationContext );
-      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
+      ThemePropertyAdapter adapter = registry.getPropertyAdapter( CssImage.class );
       String cssKey = adapter.getKey( this );
       result = IMAGE_DEST_PATH + "/" + cssKey;
     }
@@ -145,26 +145,22 @@ public class QxImage implements QxType, ThemeResource {
 
   @Override
   public boolean equals( Object object ) {
-    boolean result = false;
     if( object == this ) {
-      result = true;
-    } else if( object.getClass() == QxImage.class ) {
-      QxImage other = ( QxImage )object;
-      result =    (   path == null
-                    ? other.path == null
-                    : path.equals( other.path ) )
-               && (   loader == null
-                    ? other.loader == null
-                    : loader.equals( other.loader ) )
-               && (   gradientColors == null
-                    ? other.gradientColors == null
-                    : Arrays.equals( gradientColors, other.gradientColors ) )
-               && (   gradientPercents == null
-                    ? other.gradientPercents == null
-                    : Arrays.equals( gradientPercents, other.gradientPercents ) )
-               && other.vertical == vertical;
+      return true;
     }
-    return result;
+    if( object.getClass() == CssImage.class ) {
+      CssImage other = ( CssImage )object;
+      return    ( path == null ? other.path == null : path.equals( other.path ) )
+             && ( loader == null ? other.loader == null : loader.equals( other.loader ) )
+             && (   gradientColors == null
+                  ? other.gradientColors == null
+                  : Arrays.equals( gradientColors, other.gradientColors ) )
+             && (   gradientPercents == null
+                  ? other.gradientPercents == null
+                  : Arrays.equals( gradientPercents, other.gradientPercents ) )
+             && other.vertical == vertical;
+    }
+    return false;
   }
 
   @Override
@@ -193,7 +189,7 @@ public class QxImage implements QxType, ThemeResource {
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
-    result.append( "QxImage{ " );
+    result.append( "CssImage{ " );
     if( gradientColors != null && gradientPercents != null ) {
       result.append( "gradient: " );
       result.append( vertical ? "vertical " : "horizontal " );
@@ -212,7 +208,7 @@ public class QxImage implements QxType, ThemeResource {
     return result.toString();
   }
 
-  public static Image createSwtImage( QxImage image ) throws IOException {
+  public static Image createSwtImage( CssImage image ) throws IOException {
     Image result;
     if( image.loader == null ) {
       String message = "Cannot create image without resource loader";
@@ -240,4 +236,5 @@ public class QxImage implements QxType, ThemeResource {
     }
     return result;
   }
+
 }

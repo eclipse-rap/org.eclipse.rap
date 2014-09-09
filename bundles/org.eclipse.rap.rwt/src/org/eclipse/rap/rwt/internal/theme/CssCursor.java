@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 
 
-public class QxCursor implements QxType, ThemeResource {
+public class CssCursor implements CssType, ThemeResource {
 
   private static final String CURSOR_DEST_PATH = "themes/cursors";
 
@@ -48,7 +48,7 @@ public class QxCursor implements QxType, ThemeResource {
   public final String value;
   public final ResourceLoader loader;
 
-  private QxCursor( String value, ResourceLoader loader ) {
+  private CssCursor( String value, ResourceLoader loader ) {
     this.value = value;
     this.loader = loader;
     if( isCustomCursor() ) {
@@ -68,21 +68,21 @@ public class QxCursor implements QxType, ThemeResource {
     }
   }
 
-  public static QxCursor valueOf( String input, ResourceLoader loader ) {
+  public static CssCursor valueOf( String input, ResourceLoader loader ) {
     if( input == null || loader == null ) {
       throw new NullPointerException( "null argument" );
     }
     if( input.length() == 0 ) {
       throw new IllegalArgumentException( "Empty cursor path" );
     }
-    return new QxCursor( input, loader );
+    return new CssCursor( input, loader );
   }
 
-  public static QxCursor valueOf( String input ) {
+  public static CssCursor valueOf( String input ) {
     if( !isPredefinedCursor( input ) ) {
       throw new IllegalArgumentException( "Invalid value for cursor: " + input );
     }
-    return new QxCursor( input, null );
+    return new CssCursor( input, null );
   }
 
   public static boolean isPredefinedCursor( String value ) {
@@ -104,7 +104,7 @@ public class QxCursor implements QxType, ThemeResource {
     if( isCustomCursor() ) {
       ThemePropertyAdapterRegistry registry
         = ThemePropertyAdapterRegistry.getInstance( applicationContext );
-      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxCursor.class );
+      ThemePropertyAdapter adapter = registry.getPropertyAdapter( CssCursor.class );
       String cssKey = adapter.getKey( this );
       result = CURSOR_DEST_PATH + "/" + cssKey;
     }
@@ -121,19 +121,15 @@ public class QxCursor implements QxType, ThemeResource {
 
   @Override
   public boolean equals( Object object ) {
-    boolean result = false;
     if( object == this ) {
-      result = true;
-    } else if( object instanceof QxCursor ) {
-      QxCursor other = ( QxCursor )object;
-      result =    ( value == null
-                    ? other.value == null
-                    : value.equals( other.value ) )
-               && ( loader == null
-                    ? other.loader == null
-                    : loader.equals( other.loader ) );
+      return true;
     }
-    return result;
+    if( object instanceof CssCursor ) {
+      CssCursor other = ( CssCursor )object;
+      return    ( value == null ? other.value == null : value.equals( other.value ) )
+             && ( loader == null ? other.loader == null : loader.equals( other.loader ) );
+    }
+    return false;
   }
 
   @Override
@@ -149,6 +145,7 @@ public class QxCursor implements QxType, ThemeResource {
 
   @Override
   public String toString() {
-    return "QxCursor{ " + value + " }";
+    return "CssCursor{ " + value + " }";
   }
+
 }

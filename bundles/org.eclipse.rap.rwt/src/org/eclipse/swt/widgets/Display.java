@@ -44,9 +44,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
-import org.eclipse.rap.rwt.internal.theme.QxColor;
-import org.eclipse.rap.rwt.internal.theme.QxImage;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssColor;
+import org.eclipse.rap.rwt.internal.theme.CssImage;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ServerPushSession;
@@ -1404,7 +1404,7 @@ public class Display extends Device implements Adaptable {
   public Color getSystemColor( int id ) {
     checkDevice();
     Color result = null;
-    QxType value = null;
+    CssType value = null;
     switch( id ) {
       case SWT.COLOR_WIDGET_DARK_SHADOW:
         value = ThemeUtil.getCssValue( "Display",
@@ -1503,7 +1503,7 @@ public class Display extends Device implements Adaptable {
         result = super.getSystemColor( id );
     }
     if( value != null ) {
-      result = QxColor.createColor( ( QxColor )value );
+      result = CssColor.createColor( ( CssColor )value );
       if( result == null ) {
         // TODO [rst] Revise: theming must prevent transparency for system colors
         throw new IllegalArgumentException( "Transparent system color" );
@@ -1561,12 +1561,10 @@ public class Display extends Device implements Adaptable {
 
   private static Image createSystemImage( String cssProperty ) {
     Image result = null;
-    QxType cssValue = ThemeUtil.getCssValue( "Display",
-                                             cssProperty,
-                                             SimpleSelector.DEFAULT );
+    CssType cssValue = ThemeUtil.getCssValue( "Display", cssProperty, SimpleSelector.DEFAULT );
     if( cssValue != null ) {
       try {
-        result = QxImage.createSwtImage( ( QxImage )cssValue );
+        result = CssImage.createSwtImage( ( CssImage )cssValue );
       } catch( IOException ioe ) {
         throw new RuntimeException( "Could not read system image", ioe );
       }

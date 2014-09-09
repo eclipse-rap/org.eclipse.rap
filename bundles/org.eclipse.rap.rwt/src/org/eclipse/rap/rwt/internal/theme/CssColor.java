@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
-public class QxColor implements QxType {
+public class CssColor implements CssType {
 
   private static final String TRANSPARENT_STR = "transparent";
   private static final Map<String,int[]> NAMED_COLORS = new HashMap<String,int[]>();
-  public static final QxColor BLACK = new QxColor( 0, 0, 0, 1f );
-  public static final QxColor WHITE = new QxColor( 255, 255, 255, 1f );
-  public static final QxColor TRANSPARENT = new QxColor();
+  public static final CssColor BLACK = new CssColor( 0, 0, 0, 1f );
+  public static final CssColor WHITE = new CssColor( 255, 255, 255, 1f );
+  public static final CssColor TRANSPARENT = new CssColor();
 
   public final int red;
   public final int green;
@@ -55,41 +55,36 @@ public class QxColor implements QxType {
     NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
   }
 
-  private QxColor() {
+  private CssColor() {
     red = 0;
     green = 0;
     blue = 0;
     alpha = 0f;
   }
 
-  private QxColor( int red, int green, int blue, float alpha ) {
+  private CssColor( int red, int green, int blue, float alpha ) {
     this.red = red;
     this.green = green;
     this.blue = blue;
     this.alpha = alpha;
   }
 
-  public static QxColor create( int red, int green, int blue ) {
-    QxColor result;
+  public static CssColor create( int red, int green, int blue ) {
     if( red == 0 && green == 0 && blue == 0 ) {
-      result = BLACK;
-    } else if( red == 255 && green == 255 && blue == 255 ) {
-      result = WHITE;
-    } else {
-      result = new QxColor( red, green, blue, 1f );
+      return BLACK;
     }
-    return result;
+    if( red == 255 && green == 255 && blue == 255 ) {
+      return WHITE;
+    }
+    return new CssColor( red, green, blue, 1f );
   }
 
-  public static QxColor create( int red, int green, int blue, float alpha ) {
+  public static CssColor create( int red, int green, int blue, float alpha ) {
     checkAlpha( alpha );
-    QxColor result;
     if( alpha == 1f ) {
-      result = create( red, green, blue );
-    } else {
-      result = new QxColor( red, green, blue, alpha );
+      return create( red, green, blue );
     }
-    return result;
+    return new CssColor( red, green, blue, alpha );
   }
 
   private static void checkAlpha( float alpha ) {
@@ -99,8 +94,8 @@ public class QxColor implements QxType {
     }
   }
 
-  public static QxColor valueOf( String input ) {
-    QxColor result;
+  public static CssColor valueOf( String input ) {
+    CssColor result;
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -170,30 +165,22 @@ public class QxColor implements QxType {
   }
 
   public String toDefaultString() {
-    String result;
     if( isTransparent() ) {
-      result = TRANSPARENT_STR;
-    } else if( alpha == 1f ) {
-      result = toHtmlString( red, green, blue );
-    } else {
-      result = toRgbaString( red, green, blue, alpha );
+      return TRANSPARENT_STR;
     }
-    return result;
+    return alpha == 1f ? toHtmlString( red, green, blue ) : toRgbaString( red, green, blue, alpha );
   }
 
   @Override
-  public boolean equals( Object obj ) {
-    boolean result = false;
-    if( obj == this ) {
-      result = true;
-    } else if( obj instanceof QxColor ) {
-      QxColor other = ( QxColor )obj;
-      result =    other.red == red
-               && other.green == green
-               && other.blue == blue
-               && other.alpha == alpha;
+  public boolean equals( Object object ) {
+    if( object == this ) {
+      return true;
     }
-    return result;
+    if( object instanceof CssColor ) {
+      CssColor other = ( CssColor )object;
+      return other.red == red && other.green == green && other.blue == blue && other.alpha == alpha;
+    }
+    return false;
   }
 
   @Override
@@ -212,7 +199,7 @@ public class QxColor implements QxType {
   @Override
   public String toString() {
     String colors = red + ", " + green + ", " + blue + ", " + alpha;
-    return "QxColor{ " + ( isTransparent() ? TRANSPARENT_STR : colors ) + " }";
+    return "CssColor{ " + ( isTransparent() ? TRANSPARENT_STR : colors ) + " }";
   }
 
   public static String toHtmlString( int red, int green, int blue ) {
@@ -224,7 +211,7 @@ public class QxColor implements QxType {
     return sb.toString();
   }
 
-  public static Color createColor( QxColor color ) {
+  public static Color createColor( CssColor color ) {
     Color result = null;
     if( color.alpha != 0f ) {
       ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
@@ -251,4 +238,5 @@ public class QxColor implements QxType {
     sb.append( ")" );
     return sb.toString();
   }
+
 }

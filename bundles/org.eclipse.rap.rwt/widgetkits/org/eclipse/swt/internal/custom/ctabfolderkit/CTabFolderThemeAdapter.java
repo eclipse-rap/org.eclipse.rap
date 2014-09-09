@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
-import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.QxColor;
-import org.eclipse.rap.rwt.internal.theme.QxDimension;
-import org.eclipse.rap.rwt.internal.theme.QxFont;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.CssColor;
+import org.eclipse.rap.rwt.internal.theme.CssDimension;
+import org.eclipse.rap.rwt.internal.theme.CssFont;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.custom.CTabFolder;
@@ -36,40 +36,40 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
   }
 
   public Color getSelectedBackground( CTabFolder folder ) {
-    QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
-                                             "background-color",
-                                             SimpleSelector.SELECTED );
-    return QxColor.createColor( ( QxColor )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem",
+                                              "background-color",
+                                              SimpleSelector.SELECTED );
+    return CssColor.createColor( ( CssColor )cssValue );
   }
 
   public Color getSelectedForeground( CTabFolder folder ) {
-    QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
-                                             "color",
-                                             SimpleSelector.SELECTED );
-    return QxColor.createColor( ( QxColor )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem",
+                                              "color",
+                                              SimpleSelector.SELECTED );
+    return CssColor.createColor( ( CssColor )cssValue );
   }
 
   public Rectangle getItemPadding( boolean selected ) {
     SimpleSelector selector = selected
                               ? SimpleSelector.SELECTED
                               : SimpleSelector.DEFAULT;
-    QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
-    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
+    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
   public int getItemSpacing( boolean selected ) {
     SimpleSelector selector = selected
                               ? SimpleSelector.SELECTED
                               : SimpleSelector.DEFAULT;
-    QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "spacing", selector );
-    return ( ( QxDimension )cssValue ).value;
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "spacing", selector );
+    return ( ( CssDimension )cssValue ).value;
   }
 
   public Font getItemFont( boolean selected ) {
     SimpleSelector selector = selected
                               ? SimpleSelector.SELECTED
                               : SimpleSelector.DEFAULT;
-    QxType cssValue = ThemeUtil.getCssValue( "CTabItem", "font", selector );
-    return QxFont.createFont( ( QxFont )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "font", selector );
+    return CssFont.createFont( ( CssFont )cssValue );
   }
 }

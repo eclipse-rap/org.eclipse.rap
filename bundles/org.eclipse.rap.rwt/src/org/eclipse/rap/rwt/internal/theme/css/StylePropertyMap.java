@@ -15,19 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 public class StylePropertyMap {
 
-  private final Map<String,QxType> properties;
+  private final Map<String,CssType> properties;
 
   public StylePropertyMap() {
-    properties = new HashMap<String,QxType>();
+    properties = new HashMap<String,CssType>();
   }
 
-  public void setProperty( String key, QxType value ) {
+  public void setProperty( String key, CssType value ) {
     ParamCheck.notNull( key, "key" );
     ParamCheck.notNull( value, "value" );
     properties.put( key, value );
@@ -38,7 +38,7 @@ public class StylePropertyMap {
     return keySet.toArray( new String[ keySet.size() ] );
   }
 
-  public QxType getValue( String propertyName ) {
+  public CssType getValue( String propertyName ) {
     return properties.get( propertyName );
   }
 
@@ -49,7 +49,7 @@ public class StylePropertyMap {
     String[] properties = getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
-      QxType value = getValue( property );
+      CssType value = getValue( property );
       result.append( "  " );
       result.append( property );
       result.append( ": " );

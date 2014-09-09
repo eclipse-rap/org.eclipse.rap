@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,89 +26,73 @@ import java.io.InputStream;
 
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-public class QxImage_Test {
+public class CssImage_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private ApplicationContext applicationContext;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     applicationContext = getApplicationContext();
   }
 
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+  @Test( expected = NullPointerException.class )
+  public void testValueOf_nullArgument() {
+    CssImage.valueOf( null, RESOURCE_LOADER );
   }
 
-  @Test
-  public void testIllegalArguments() {
-    try {
-      QxImage.valueOf( null, null );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      QxImage.valueOf( "", null );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      QxImage.valueOf( "", RESOURCE_LOADER );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      QxImage.createGradient( null, new float[] {}, true );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      QxImage.createGradient( new String[] {}, null, true );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
+  @Test( expected = NullPointerException.class )
+  public void testValueOf_nullLoader() {
+    CssImage.valueOf( "", null );
   }
 
-  @Test
-  public void testNotExisting() {
-    try {
-      QxImage.valueOf( "not-existing.png", RESOURCE_LOADER );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_emptyString() {
+    CssImage.valueOf( "", RESOURCE_LOADER );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_notExistingCursorFile() {
+    CssImage.valueOf( "not-existing.png", RESOURCE_LOADER );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testCreateGradient_nullColors() {
+    CssImage.createGradient( null, new float[] {}, true );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testCreateGradient_nullPercents() {
+    CssImage.createGradient( new String[] {}, null, true );
   }
 
   @Test
   public void testNone() {
-    assertSame( QxImage.NONE, QxImage.valueOf( "none", null ) );
-    assertSame( QxImage.NONE, QxImage.valueOf( "none", RESOURCE_LOADER ) );
-    assertTrue( QxImage.NONE.none );
-    assertNull( QxImage.NONE.path );
-    assertNull( QxImage.NONE.loader );
-    assertNull( QxImage.NONE.gradientColors );
-    assertNull( QxImage.NONE.gradientPercents );
-    assertTrue( QxImage.NONE.vertical );
-    assertEquals( 0, QxImage.NONE.width );
-    assertEquals( 0, QxImage.NONE.height );
+    assertSame( CssImage.NONE, CssImage.valueOf( "none", null ) );
+    assertSame( CssImage.NONE, CssImage.valueOf( "none", RESOURCE_LOADER ) );
+    assertTrue( CssImage.NONE.none );
+    assertNull( CssImage.NONE.path );
+    assertNull( CssImage.NONE.loader );
+    assertNull( CssImage.NONE.gradientColors );
+    assertNull( CssImage.NONE.gradientPercents );
+    assertTrue( CssImage.NONE.vertical );
+    assertEquals( 0, CssImage.NONE.width );
+    assertEquals( 0, CssImage.NONE.height );
   }
 
   @Test
   public void testCreateImage() {
-    QxImage qxImage = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssImage qxImage = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertFalse( qxImage.none );
     assertEquals( Fixture.IMAGE_50x100, qxImage.path );
     assertSame( RESOURCE_LOADER, qxImage.loader );
@@ -124,7 +108,7 @@ public class QxImage_Test {
   public void testCreateVerticalGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
-    QxImage qxImage = QxImage.createGradient( gradientColors, gradientPercents, true );
+    CssImage qxImage = CssImage.createGradient( gradientColors, gradientPercents, true );
     assertSame( gradientColors, qxImage.gradientColors );
     assertSame( gradientPercents, qxImage.gradientPercents );
     assertTrue( qxImage.vertical );
@@ -140,7 +124,7 @@ public class QxImage_Test {
   public void testCreateHorizontalGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
-    QxImage qxImage = QxImage.createGradient( gradientColors, gradientPercents, false );
+    CssImage qxImage = CssImage.createGradient( gradientColors, gradientPercents, false );
     assertSame( gradientColors, qxImage.gradientColors );
     assertSame( gradientPercents, qxImage.gradientPercents );
     assertFalse( qxImage.vertical );
@@ -154,21 +138,21 @@ public class QxImage_Test {
 
   @Test
   public void testDefaultString() {
-    assertEquals( "none", QxImage.NONE.toDefaultString() );
-    assertEquals( "", QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER ).toDefaultString() );
+    assertEquals( "none", CssImage.NONE.toDefaultString() );
+    assertEquals( "", CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER ).toDefaultString() );
   }
 
   @Test
   public void testHashCode() {
-    assertEquals( -1526341861, QxImage.NONE.hashCode() );
-    QxImage qxImage1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    QxImage qxImage2 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    assertEquals( -1526341861, CssImage.NONE.hashCode() );
+    CssImage qxImage1 = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssImage qxImage2 = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( qxImage1, qxImage2 );
     assertEquals( qxImage1.hashCode(), qxImage2.hashCode() );
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
-    QxImage gradient1 = QxImage.createGradient( gradientColors, gradientPercents, true );
-    QxImage gradient2 = QxImage.createGradient( gradientColors, gradientPercents, true );
+    CssImage gradient1 = CssImage.createGradient( gradientColors, gradientPercents, true );
+    CssImage gradient2 = CssImage.createGradient( gradientColors, gradientPercents, true );
     assertEquals( gradient1, gradient2 );
     assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
@@ -181,30 +165,30 @@ public class QxImage_Test {
     String[] gradientColors2
       = new String[] { "#FFFFFF", "#AA0000", "#AA0000", "#AA0000", "#FFFFFF" };
     float[] gradientPercents2 = new float[] { 0f, 48f, 52f, 56f, 100f };
-    QxImage gradient1 = QxImage.createGradient( gradientColors1, gradientPercents1, true );
-    QxImage gradient2 = QxImage.createGradient( gradientColors2, gradientPercents2, true );
+    CssImage gradient1 = CssImage.createGradient( gradientColors1, gradientPercents1, true );
+    CssImage gradient2 = CssImage.createGradient( gradientColors2, gradientPercents2, true );
     assertFalse( gradient1.hashCode() == gradient2.hashCode() );
   }
 
   @Test
   public void testIsGradientFalseForNone() {
-    QxImage nonImage = QxImage.NONE;
+    CssImage nonImage = CssImage.NONE;
     assertFalse( nonImage.isGradient() );
   }
 
   @Test
   public void testGetResourceName() {
-    QxImage image = QxImage.NONE;
+    CssImage image = CssImage.NONE;
     assertNull( image.getResourcePath( applicationContext ) );
-    image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    image = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( "themes/images/ba873d77.png", image.getResourcePath( applicationContext ) );
   }
 
   @Test
   public void testCreateSWTImageFromNone() throws IOException {
-    QxImage image = QxImage.NONE;
+    CssImage image = CssImage.NONE;
     try {
-      QxImage.createSwtImage( image );
+      CssImage.createSwtImage( image );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
@@ -215,9 +199,9 @@ public class QxImage_Test {
   public void testCreateSWTImageFromGradient() throws IOException {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
-    QxImage gradient = QxImage.createGradient( gradientColors, gradientPercents, true );
+    CssImage gradient = CssImage.createGradient( gradientColors, gradientPercents, true );
     try {
-      QxImage.createSwtImage( gradient );
+      CssImage.createSwtImage( gradient );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
@@ -227,23 +211,23 @@ public class QxImage_Test {
   @Test
   public void testCreateSWTImage() throws IOException {
     Display display = new Display();
-    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    Image swtImage = QxImage.createSwtImage( image );
+    CssImage image = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    Image swtImage = CssImage.createSwtImage( image );
     assertNotNull( swtImage );
     assertSame( display, swtImage.getDevice() );
   }
 
   @Test
   public void testGetResourcePath() {
-    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssImage image = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
     assertTrue( image.getResourcePath( applicationContext ).startsWith( "themes/images/" ) );
   }
 
   @Test
   public void testResourcePathsDiffer() {
-    QxImage image1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    QxImage image2 = QxImage.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
+    CssImage image1 = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssImage image2 = CssImage.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
 
     String path1 = image1.getResourcePath( applicationContext );
     String path2 = image2.getResourcePath( applicationContext );
@@ -252,7 +236,7 @@ public class QxImage_Test {
 
   @Test
   public void testGetResourcePathWithNone() {
-    assertNull( QxImage.NONE.getResourcePath( applicationContext ) );
+    assertNull( CssImage.NONE.getResourcePath( applicationContext ) );
   }
 
   @Test
@@ -262,7 +246,7 @@ public class QxImage_Test {
 
   @Test
   public void testGetResourceAsStream() throws IOException {
-    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssImage image = CssImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     InputStream inputStream = image.getResourceAsStream();
 
     assertTrue( inputStream.available() > 0 );
@@ -271,7 +255,7 @@ public class QxImage_Test {
 
   @Test
   public void testGetResourceAsStreamWithNone() throws IOException {
-    assertNull( QxImage.NONE.getResourceAsStream() );
+    assertNull( CssImage.NONE.getResourceAsStream() );
   }
 
   @Test
@@ -279,10 +263,10 @@ public class QxImage_Test {
     assertNull( createGradient().getResourceAsStream() );
   }
 
-  private static QxImage createGradient() {
+  private static CssImage createGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 100f };
-    return QxImage.createGradient( gradientColors, gradientPercents, false );
+    return CssImage.createGradient( gradientColors, gradientPercents, false );
   }
 
 }

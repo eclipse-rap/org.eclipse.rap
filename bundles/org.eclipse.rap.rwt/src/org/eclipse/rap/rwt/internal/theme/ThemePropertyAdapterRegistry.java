@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
-import org.eclipse.rap.rwt.internal.theme.QxAnimation.Animation;
+import org.eclipse.rap.rwt.internal.theme.CssAnimation.Animation;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 
 
@@ -31,63 +31,63 @@ public final class ThemePropertyAdapterRegistry {
      * The slot in the client's theme store to write the value into or <code>null</code> if no value
      * needs to be written.
      */
-    String getSlot( QxType value );
+    String getSlot( CssType value );
 
     /**
      * The id that references the property in the client's theme store of the value itself if no
      * translation is needed.
      */
-    String getKey( QxType value );
+    String getKey( CssType value );
 
     /**
      * The value to write into the client's theme store or <code>null</code> if no value needs to be
      * written.
      */
-    JsonValue getValue( QxType value );
+    JsonValue getValue( CssType value );
   }
 
   public static class DirectPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return value.toDefaultString();
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return null;
     }
 
-    public JsonValue getValue( QxType value ) {
+    public JsonValue getValue( CssType value ) {
       return null;
     }
   }
 
   public static class DimensionPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "dimensions";
     }
 
-    public JsonValue getValue( QxType value ) {
-      return JsonValue.valueOf( ( ( QxDimension )value ).value );
+    public JsonValue getValue( CssType value ) {
+      return JsonValue.valueOf( ( ( CssDimension )value ).value );
     }
   }
 
   public static class BoxDimensionsPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "boxdims";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxBoxDimensions boxdim = ( QxBoxDimensions )value;
+    public JsonValue getValue( CssType value ) {
+      CssBoxDimensions boxdim = ( CssBoxDimensions )value;
       JsonArray result = new JsonArray();
       result.add( boxdim.top );
       result.add( boxdim.right );
@@ -99,16 +99,16 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class FontPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "fonts";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxFont font = ( QxFont )value;
+    public JsonValue getValue( CssType value ) {
+      CssFont font = ( CssFont )value;
       JsonObject result = new JsonObject();
       result.add( "family", JsonUtil.createJsonArray( font.family ) );
       result.add( "size", font.size );
@@ -120,13 +120,13 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ImagePropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return createKey( value );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       String result;
-      QxImage image = ( QxImage )value;
+      CssImage image = ( CssImage )value;
       if( image.isGradient() ) {
         result = "gradients";
       } else {
@@ -135,8 +135,8 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxImage image = ( QxImage )value;
+    public JsonValue getValue( CssType value ) {
+      CssImage image = ( CssImage )value;
       JsonValue result = null;
       if( image.isGradient() ) {
         JsonObject gradientObject = null;
@@ -156,9 +156,9 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String createKey( QxType value ) {
+    private String createKey( CssType value ) {
       String result = Integer.toHexString( value.hashCode() );
-      QxImage image = ( QxImage )value;
+      CssImage image = ( CssImage )value;
       if( image.path != null ) {
         int index = image.path.lastIndexOf( '.' );
         if( index >= 0 ) {
@@ -171,16 +171,16 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ColorPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "colors";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxColor color = ( QxColor )value;
+    public JsonValue getValue( CssType value ) {
+      CssColor color = ( CssColor )value;
       JsonValue result;
       if( color.isTransparent() ) {
         result = JsonValue.valueOf( "undefined" );
@@ -198,36 +198,36 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class BorderPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "borders";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxBorder border = ( QxBorder )value;
+    public JsonValue getValue( CssType value ) {
+      CssBorder border = ( CssBorder )value;
       JsonObject result = new JsonObject();
       result.add( "width", border.width );
       result.add( "style", border.style );
-      result.add( "color", border.color );
+      result.add( "color", border.color == null ? null : border.color.toDefaultString() );
       return result;
     }
   }
 
   public static class CursorPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return createKey( value );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "cursors";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxCursor cursor = ( QxCursor )value;
+    public JsonValue getValue( CssType value ) {
+      CssCursor cursor = ( CssCursor )value;
       JsonValue result;
       if( cursor.isCustomCursor() ) {
         result = JsonValue.NULL;
@@ -237,9 +237,9 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String createKey( QxType value ) {
+    private String createKey( CssType value ) {
       String result = Integer.toHexString( value.hashCode() );
-      QxCursor cursor = ( QxCursor )value;
+      CssCursor cursor = ( CssCursor )value;
       if( cursor.isCustomCursor() ) {
         int index = cursor.value.lastIndexOf( '.' );
         if( index >= 0 ) {
@@ -252,22 +252,22 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class AnimationPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "animations";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxAnimation animation = ( QxAnimation )value;
+    public JsonValue getValue( CssType value ) {
+      CssAnimation animation = ( CssAnimation )value;
       JsonObject result = new JsonObject();
       for( int j = 0; j < animation.animations.length; j++ ) {
         Animation currentAnimation = animation.animations[ j ];
         JsonArray currentAnimationArray = new JsonArray();
         currentAnimationArray.add( currentAnimation.duration );
-        String timingFunction = QxAnimation.toCamelCaseString( currentAnimation.timingFunction );
+        String timingFunction = CssAnimation.toCamelCaseString( currentAnimation.timingFunction );
         currentAnimationArray.add( timingFunction );
         result.add( currentAnimation.name, currentAnimationArray );
       }
@@ -277,18 +277,18 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ShadowPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( QxType value ) {
+    public String getKey( CssType value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( QxType value ) {
+    public String getSlot( CssType value ) {
       return "shadows";
     }
 
-    public JsonValue getValue( QxType value ) {
-      QxShadow shadow = ( QxShadow )value;
+    public JsonValue getValue( CssType value ) {
+      CssShadow shadow = ( CssShadow )value;
       JsonValue result;
-      if( shadow.equals( QxShadow.NONE ) ) {
+      if( shadow.equals( CssShadow.NONE ) ) {
         result = JsonValue.NULL;
       } else {
         JsonArray array = new JsonArray();
@@ -322,22 +322,22 @@ public final class ThemePropertyAdapterRegistry {
     return result;
   }
 
-  private final Map<Class<? extends QxType>,ThemePropertyAdapter> map;
+  private final Map<Class<? extends CssType>,ThemePropertyAdapter> map;
 
   private ThemePropertyAdapterRegistry() {
-    map = new HashMap<Class<? extends QxType>,ThemePropertyAdapter>();
-    map.put( QxAnimation.class, new AnimationPropertyAdapter() );
-    map.put( QxBoolean.class, new DirectPropertyAdapter() );
-    map.put( QxBorder.class, new BorderPropertyAdapter() );
-    map.put( QxBoxDimensions.class, new BoxDimensionsPropertyAdapter() );
-    map.put( QxColor.class, new ColorPropertyAdapter() );
-    map.put( QxCursor.class, new CursorPropertyAdapter() );
-    map.put( QxDimension.class, new DimensionPropertyAdapter() );
-    map.put( QxFloat.class, new DirectPropertyAdapter() );
-    map.put( QxFont.class, new FontPropertyAdapter() );
-    map.put( QxIdentifier.class, new DirectPropertyAdapter() );
-    map.put( QxImage.class, new ImagePropertyAdapter() );
-    map.put( QxShadow.class, new ShadowPropertyAdapter() );
+    map = new HashMap<Class<? extends CssType>,ThemePropertyAdapter>();
+    map.put( CssAnimation.class, new AnimationPropertyAdapter() );
+    map.put( CssBoolean.class, new DirectPropertyAdapter() );
+    map.put( CssBorder.class, new BorderPropertyAdapter() );
+    map.put( CssBoxDimensions.class, new BoxDimensionsPropertyAdapter() );
+    map.put( CssColor.class, new ColorPropertyAdapter() );
+    map.put( CssCursor.class, new CursorPropertyAdapter() );
+    map.put( CssDimension.class, new DimensionPropertyAdapter() );
+    map.put( CssFloat.class, new DirectPropertyAdapter() );
+    map.put( CssFont.class, new FontPropertyAdapter() );
+    map.put( CssIdentifier.class, new DirectPropertyAdapter() );
+    map.put( CssImage.class, new ImagePropertyAdapter() );
+    map.put( CssShadow.class, new ShadowPropertyAdapter() );
   }
 
   public ThemePropertyAdapter getPropertyAdapter( Class key ) {

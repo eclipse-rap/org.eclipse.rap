@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ package org.eclipse.swt.graphics;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
-import org.eclipse.rap.rwt.internal.theme.QxFont;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssFont;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
@@ -145,8 +145,8 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxType font = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
-    return QxFont.createFont( ( QxFont )font );
+    CssType font = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
+    return CssFont.createFont( ( CssFont )font );
   }
 
   /**
@@ -168,8 +168,8 @@ public abstract class Device implements Drawable, SerializableCompatibility {
     checkDevice();
     FontData[] result = new FontData[ 0 ];
     if( scalable ) {
-      QxFont fontList
-        = ( QxFont )ThemeUtil.getCssValue( "Display", "rwt-fontlist", SimpleSelector.DEFAULT );
+      CssFont fontList
+        = ( CssFont )ThemeUtil.getCssValue( "Display", "rwt-fontlist", SimpleSelector.DEFAULT );
       if( faceName == null ) {
         result = new FontData[ fontList.family.length ];
         for( int i = 0; i < result.length; i++ ) {

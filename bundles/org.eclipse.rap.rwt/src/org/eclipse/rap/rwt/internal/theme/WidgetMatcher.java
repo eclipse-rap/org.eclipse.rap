@@ -40,8 +40,8 @@ public final class WidgetMatcher implements ValueSelector {
     constraintMap.put( ":" + string, constraint );
   }
 
-  public QxType select( ConditionalValue[] values, Widget widget ) {
-    QxType result = null;
+  public CssType select( ConditionalValue[] values, Widget widget ) {
+    CssType result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];
       String[] constraints = condValue.constraints;

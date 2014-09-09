@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,74 +16,58 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.junit.After;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-public class QxCursor_Test {
+public class CssCursor_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private ApplicationContext applicationContext;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     applicationContext = getApplicationContext();
   }
 
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+  @Test( expected = NullPointerException.class )
+  public void testValueOf_nullArgument() {
+    CssCursor.valueOf( null, RESOURCE_LOADER );
   }
 
-  @Test
-  public void testIllegalArguments() {
-    try {
-      QxCursor.valueOf( null, null );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      QxCursor.valueOf( "", null );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      QxCursor.valueOf( "", RESOURCE_LOADER );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      QxCursor.valueOf( "alabala" );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = NullPointerException.class )
+  public void testValueOf_nullLoader() {
+    CssCursor.valueOf( "", null );
   }
 
-  @Test
-  public void testNotExisting() {
-    try {
-      QxCursor.valueOf( "not-existing.cur", RESOURCE_LOADER );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_emptyString() {
+    CssCursor.valueOf( "", RESOURCE_LOADER );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_invalidCursorType() {
+    CssCursor.valueOf( "alabala" );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_notExistingCursorFile() {
+    CssCursor.valueOf( "not-existing.cur", RESOURCE_LOADER );
   }
 
   @Test
   public void testPredefinedCursor() {
-    QxCursor cursor = QxCursor.valueOf( "crosshair" );
+    CssCursor cursor = CssCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.value );
     assertNull( cursor.loader );
     assertFalse( cursor.isCustomCursor() );
@@ -91,7 +75,7 @@ public class QxCursor_Test {
 
   @Test
   public void testCustomCursor() {
-    QxCursor cursor = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssCursor cursor = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( Fixture.IMAGE_50x100, cursor.value );
     assertEquals( RESOURCE_LOADER, cursor.loader );
     assertTrue( cursor.isCustomCursor() );
@@ -99,36 +83,36 @@ public class QxCursor_Test {
 
   @Test
   public void testDefaultString() {
-    QxCursor cursor = QxCursor.valueOf( "crosshair" );
+    CssCursor cursor = CssCursor.valueOf( "crosshair" );
     assertEquals( "crosshair", cursor.toDefaultString() );
-    cursor = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    cursor = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( "", cursor.toDefaultString() );
   }
 
   @Test
   public void testHashCode() {
-    QxCursor cursor1 = QxCursor.valueOf( "crosshair" );
-    QxCursor cursor2 = QxCursor.valueOf( "crosshair" );
+    CssCursor cursor1 = CssCursor.valueOf( "crosshair" );
+    CssCursor cursor2 = CssCursor.valueOf( "crosshair" );
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
 
-    cursor1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    cursor2 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    cursor1 = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    cursor2 = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
   }
 
   @Test
   public void testGetResourcePath() {
-    QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssCursor image = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
 
     assertTrue( image.getResourcePath( applicationContext ).startsWith( "themes/cursors/" ) );
   }
 
   @Test
   public void testResourcePathsDiffer() {
-    QxCursor image1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    QxCursor image2 = QxCursor.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
+    CssCursor image1 = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssCursor image2 = CssCursor.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
 
     String path1 = image1.getResourcePath( applicationContext );
     String path2 = image2.getResourcePath( applicationContext );
@@ -137,12 +121,12 @@ public class QxCursor_Test {
 
   @Test
   public void testGetResourcePathWithPredefined() {
-    assertNull( QxCursor.valueOf( "crosshair" ).getResourcePath( applicationContext ) );
+    assertNull( CssCursor.valueOf( "crosshair" ).getResourcePath( applicationContext ) );
   }
 
   @Test
   public void testGetResourceAsStream() throws IOException {
-    QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    CssCursor image = CssCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     InputStream inputStream = image.getResourceAsStream();
 
     assertTrue( inputStream.available() > 0 );
@@ -151,7 +135,7 @@ public class QxCursor_Test {
 
   @Test
   public void testGetResourceAsStreamWithPredefined() throws IOException {
-    assertNull( QxCursor.valueOf( "crosshair" ).getResourceAsStream() );
+    assertNull( CssCursor.valueOf( "crosshair" ).getResourceAsStream() );
   }
 
 }

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
@@ -68,9 +68,9 @@ public abstract class ThemeTestBase {
     String[] properties = expectedValues.getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
-      QxType expected = expectedValues.getValue( property );
+      CssType expected = expectedValues.getValue( property );
       SimpleSelector config = new SimpleSelector( selector.getConstraints() );
-      QxType actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
+      CssType actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
       if( !actual.equals( expected ) ) {
         String message =   "Css test failed for "
                          + createSelectorString( selector )

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,8 @@ public class ThemeCssValuesMap_Test {
     // [ [TOGGLE ] -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
     // [ [PUSH ]   -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
     // []          -> bold 12px Arial, Helvetica, sans-serif
-    QxFont font1 = QxFont.valueOf( "11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'" );
-    QxFont font2 = QxFont.valueOf( "bold 12px Arial, Helvetica, sans-serif" );
+    CssFont font1 = CssFont.valueOf( "11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'" );
+    CssFont font2 = CssFont.valueOf( "bold 12px Arial, Helvetica, sans-serif" );
     assertEquals( 3, fontValues.length );
     // 1
     assertEquals( 1, fontValues[ 0 ].constraints.length );
@@ -80,10 +80,10 @@ public class ThemeCssValuesMap_Test {
     // first
     assertEquals( 1, colorValues[ 0 ].constraints.length );
     assertEquals( ".special", colorValues[ 0 ].constraints[ 0 ] );
-    assertEquals( QxColor.valueOf( "red" ), colorValues[ 0 ].value );
+    assertEquals( CssColor.valueOf( "red" ), colorValues[ 0 ].value );
     // last
     assertEquals( 0, colorValues[ 2 ].constraints.length );
-    assertEquals( QxColor.valueOf( "#705e42" ), colorValues[ 2 ].value );
+    assertEquals( CssColor.valueOf( "#705e42" ), colorValues[ 2 ].value );
   }
 
   @Test
@@ -102,17 +102,17 @@ public class ThemeCssValuesMap_Test {
     assertEquals( 2, backgroundValues[ 0 ].constraints.length );
     assertEquals( ":pressed", backgroundValues[ 0 ].constraints[ 0 ] );
     assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 1 ] );
-    assertEquals( QxColor.valueOf( "227, 221, 158" ), backgroundValues[ 0 ].value );
+    assertEquals( CssColor.valueOf( "227, 221, 158" ), backgroundValues[ 0 ].value );
   }
 
   @Test
   public void testGetAllValues() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
-    QxType[] values = map.getAllValues();
+    CssType[] values = map.getAllValues();
     assertNotNull( values );
-    QxColor expected = QxColor.valueOf( "227, 221, 158" );
+    CssColor expected = CssColor.valueOf( "227, 221, 158" );
     assertTrue( Arrays.asList( values ).contains( expected ) );
-    QxColor notExpected = QxColor.valueOf( "#123456" );
+    CssColor notExpected = CssColor.valueOf( "#123456" );
     assertFalse( Arrays.asList( values ).contains( notExpected ) );
   }
 

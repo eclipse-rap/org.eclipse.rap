@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
@@ -76,8 +76,8 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
 
   private static Rectangle getMenuBarItemPadding() {
     SimpleSelector selector = new SimpleSelector( new String[] { ":onMenuBar" } );
-    QxType cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
-    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
+    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
 }

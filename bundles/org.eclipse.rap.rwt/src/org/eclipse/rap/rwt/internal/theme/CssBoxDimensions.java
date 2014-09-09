@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,36 +16,30 @@ import java.util.zip.CRC32;
 import org.eclipse.swt.graphics.Rectangle;
 
 
-public class QxBoxDimensions implements QxType {
+public class CssBoxDimensions implements CssType {
 
-  public static final QxBoxDimensions ZERO = new QxBoxDimensions( 0, 0, 0, 0 );
+  public static final CssBoxDimensions ZERO = new CssBoxDimensions( 0, 0, 0, 0 );
 
   public final int top;
-
   public final int right;
-
   public final int bottom;
-
   public final int left;
 
-  private QxBoxDimensions( int top, int right, int bottom, int left ) {
+  private CssBoxDimensions( int top, int right, int bottom, int left ) {
     this.top = top;
     this.right = right;
     this.bottom = bottom;
     this.left = left;
   }
 
-  public static QxBoxDimensions create( int top, int right, int bottom, int left ) {
-    QxBoxDimensions result;
+  public static CssBoxDimensions create( int top, int right, int bottom, int left ) {
     if( top == 0 && right == 0 && bottom == 0 && left == 0 ) {
-      result = ZERO;
-    } else {
-      result = new QxBoxDimensions( top, right, bottom, left );
+      return ZERO;
     }
-    return result;
+    return new CssBoxDimensions( top, right, bottom, left );
   }
 
-  public static QxBoxDimensions valueOf( String input ) {
+  public static CssBoxDimensions valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -82,10 +76,6 @@ public class QxBoxDimensions implements QxType {
     return top + bottom;
   }
 
-  public String toJsArray() {
-    return "[ " + top + ", " + right + ", " + bottom + ", " + left + " ]";
-  }
-
   public String toDefaultString() {
     StringBuilder buffer = new StringBuilder();
     buffer.append( top + "px" );
@@ -101,20 +91,22 @@ public class QxBoxDimensions implements QxType {
     return buffer.toString();
   }
 
+  @Override
   public boolean equals( Object object ) {
-    boolean result = false;
     if( object == this ) {
-      result = true;
-    } else if( object instanceof QxBoxDimensions ) {
-      QxBoxDimensions other = (QxBoxDimensions)object;
-      result = ( other.top == this.top )
-               && ( other.right == this.right )
-               && ( other.bottom == this.bottom )
-               && ( other.left == this.left );
+      return true;
     }
-    return result;
-}
+    if( object instanceof CssBoxDimensions ) {
+      CssBoxDimensions other = ( CssBoxDimensions )object;
+      return    ( other.top == this.top )
+             && ( other.right == this.right )
+             && ( other.bottom == this.bottom )
+             && ( other.left == this.left );
+    }
+    return false;
+  }
 
+  @Override
   public int hashCode() {
     CRC32 result = new CRC32();
     result.update( top );
@@ -124,30 +116,24 @@ public class QxBoxDimensions implements QxType {
     return ( int )result.getValue();
   }
 
-  public String toString () {
-    return "QxBoxDimensions{ "
-           + top
-           + ", "
-           + right
-           + ", "
-           + bottom
-           + ", "
-           + left
-           + " }";
+  @Override
+  public String toString() {
+    return "CssBoxDimensions{ " + top + ", " + right + ", " + bottom + ", " + left + " }";
   }
 
   private static int parsePxValue( String part ) {
-    Integer result = QxDimension.parseLength( part );
+    Integer result = CssDimension.parseLength( part );
     if( result == null ) {
       throw new IllegalArgumentException( "Illegal parameter: " + part );
     }
     return result.intValue();
   }
 
-  public static Rectangle createRectangle( QxBoxDimensions boxdim ) {
+  public static Rectangle createRectangle( CssBoxDimensions boxdim ) {
     return new Rectangle( boxdim.left,
                           boxdim.top,
                           boxdim.left + boxdim.right,
                           boxdim.top + boxdim.bottom );
   }
+
 }

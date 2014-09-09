@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 
-public class QxBorder implements QxType {
+public class CssBorder implements CssType {
 
-  public static final QxBorder NONE = new QxBorder( 0, null, null );
+  public static final CssBorder NONE = new CssBorder( 0, "none", null );
 
   private static final String[] VALID_STYLES = new String[] {
     "none",
@@ -29,33 +29,24 @@ public class QxBorder implements QxType {
     "outset"
   };
 
-  // TODO [rst] Implement properties for left, right, etc.
-
   public final int width;
-
   public final String style;
+  public final CssColor color;
 
-  // TODO [rst] Color is either a valid color string or a named color from the
-  //            color theme. Check for valid colors.
-  public final String color;
-
-  private QxBorder( int width, String style, String color ) {
+  private CssBorder( int width, String style, CssColor color ) {
     this.width = width;
     this.style = style;
     this.color = color;
   }
 
-  public static QxBorder create( int width, String style, String color ) {
-    QxBorder result;
-    if( width == 0 || "none".equals( style ) || "hidden".equals( style ) ) {
-      result = NONE;
-    } else {
-      result = new QxBorder( width, style == null ? "solid" : style, color );
+  public static CssBorder create( int width, String style, CssColor color ) {
+    if( width <= 0 || style == null || "none".equals( style ) || "hidden".equals( style ) ) {
+      return NONE;
     }
-    return result;
+    return new CssBorder( width, style, color );
   }
 
-  public static QxBorder valueOf( String input ) {
+  public static CssBorder valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -68,13 +59,13 @@ public class QxBorder implements QxType {
     }
     int width = -1;
     String style = null;
-    String color = null;
+    CssColor color = null;
     for( int i = 0; i < parts.length; i++ ) {
       String part = parts[ i ];
       boolean consumed = "".equals( part );
       // parse width
       if( !consumed && width == -1 ) {
-        Integer parsedWidth = QxDimension.parseLength( part );
+        Integer parsedWidth = CssDimension.parseLength( part );
         if( parsedWidth != null ) {
           if( parsedWidth.intValue() < 0 ) {
             throw new IllegalArgumentException( "Negative width: " + part );
@@ -93,59 +84,50 @@ public class QxBorder implements QxType {
       }
       // parse color
       if( !consumed && color == null ) {
-        color = part;
+        color = CssColor.valueOf( part );
         consumed = true;
       }
       if( !consumed ) {
-        throw new IllegalArgumentException( "Illegal parameter for color: "
-                                            + part );
+        throw new IllegalArgumentException( "Illegal parameter for color: " + part );
       }
     }
     if( width == -1 ) {
       width = 1;
     }
-    return QxBorder.create( width, style, color );
+    return CssBorder.create( width, style, color );
   }
 
   public String toDefaultString() {
-    String result;
     if( width == 0 ) {
-      result = "none";
-    } else {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append( width );
-      buffer.append( "px " );
-      buffer.append( style );
-      if( color != null ) {
-        buffer.append( " " );
-        buffer.append( color );
-      }
-      result = buffer.toString();
+      return "none";
     }
-    return result;
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( width );
+    buffer.append( "px " );
+    buffer.append( style );
+    if( color != null ) {
+      buffer.append( " " );
+      buffer.append( color.toDefaultString() );
+    }
+    return buffer.toString();
   }
 
+  @Override
   public boolean equals( Object object ) {
-    // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
-    boolean result = false;
     if( object == this ) {
-      result = true;
-    } else if( object instanceof QxBorder ) {
-      QxBorder other = ( QxBorder )object;
-      result = other.width == this.width
-               && ( style == null
-                    ? other.style == null
-                    : style.equals( other.style ) )
-               && ( color == null
-                    ? other.color == null
-                    : color.equals( other.color ) );
+      return true;
     }
-    return result;
+    if( object instanceof CssBorder ) {
+      CssBorder other = ( CssBorder )object;
+      return    other.width == width
+             && style.equals( other.style )
+             && ( color == null ? other.color == null : color.equals( other.color ) );
+    }
+    return false;
   }
 
+  @Override
   public int hashCode() {
-    // TODO [rst] Adapt this method as soon as properties for left, right, etc.
-    //            exist
     int result = 23;
     result += 37 * result + width;
     if( style != null ) {
@@ -157,10 +139,9 @@ public class QxBorder implements QxType {
     return result;
   }
 
+  @Override
   public String toString() {
-    // TODO [rst] Adapt this method as soon as properties for left, right, etc.
-    //            exist
-    return "QxBorder{ " + width + ", " + style + ", " + color + " }";
+    return "CssBorder{ " + width + ", " + style + ", " + color + " }";
   }
 
   private static String parseStyle( String part ) {
@@ -172,4 +153,5 @@ public class QxBorder implements QxType {
     }
     return result;
   }
+
 }

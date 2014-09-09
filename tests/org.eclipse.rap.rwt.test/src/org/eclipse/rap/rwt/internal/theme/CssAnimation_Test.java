@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,45 +11,42 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
-public class QxAnimation_Test {
+public class CssAnimation_Test {
 
-  @Test
-  public void testIllegalArguments() {
-    QxAnimation animation = new QxAnimation();
-    try {
-      animation.addAnimation( null, 2, "ease" );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      animation.addAnimation( "hoverIn", 2, null );
-      fail( "Must throw NPE" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    try {
-      animation.addAnimation( "abc", 2, "ease" );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      animation.addAnimation( "hoverIn", 2, "abc" );
-      fail( "Must throw IAE" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  private CssAnimation animation;
+
+  @Before
+  public void setUp() {
+    animation = new CssAnimation();
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testAddAnumation_nullName() {
+    animation.addAnimation( null, 2, "ease" );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testAddAnumation_nullTimingFunction() {
+    animation.addAnimation( "hoverIn", 2, null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddAnumation_invalidName() {
+    animation.addAnimation( "abc", 2, null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddAnumation_invalidTimingFunction() {
+    animation.addAnimation( "hoverIn", 2, "abc" );
   }
 
   @Test
   public void testCreate() {
-    QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
     assertEquals( 1, animation.animations.length );
     assertEquals( "fadeIn", animation.animations[ 0 ].name );
@@ -67,7 +64,6 @@ public class QxAnimation_Test {
 
   @Test
   public void testDefaultString() {
-    QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
     String expected = "fadeIn 2000ms linear";
     assertEquals( expected, animation.toDefaultString() );
@@ -78,25 +74,23 @@ public class QxAnimation_Test {
 
   @Test
   public void testToString() {
-    QxAnimation animation = new QxAnimation();
     animation.addAnimation( "fadeIn", 2000, "linear" );
-    String expected = "QxAnimation{ fadeIn 2000ms linear }";
+    String expected = "CssAnimation{ fadeIn 2000ms linear }";
     assertEquals( expected, animation.toString() );
   }
 
   @Test
   public void testToCamelCaseString() {
-    assertEquals( "easeInOut", QxAnimation.toCamelCaseString( "ease-in-out" ) );
+    assertEquals( "easeInOut", CssAnimation.toCamelCaseString( "ease-in-out" ) );
   }
 
   @Test
   public void testEquals() {
-    QxAnimation animation1 = new QxAnimation();
-    animation1.addAnimation( "fadeIn", 2000, "linear" );
-    QxAnimation animation2 = new QxAnimation();
+    animation.addAnimation( "fadeIn", 2000, "linear" );
+    CssAnimation animation2 = new CssAnimation();
     animation2.addAnimation( "fadeIn", 2000, "linear" );
-    assertEquals( animation1, animation2 );
-    assertEquals( animation1.hashCode(), animation2.hashCode() );
+    assertEquals( animation, animation2 );
+    assertEquals( animation.hashCode(), animation2.hashCode() );
   }
 
 }

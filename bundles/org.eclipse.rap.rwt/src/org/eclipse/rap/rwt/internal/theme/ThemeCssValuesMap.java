@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,15 +52,15 @@ public final class ThemeCssValuesMap {
     return result;
   }
 
-  public QxType[] getAllValues() {
-    Set<QxType> resultSet = new LinkedHashSet<QxType>();
+  public CssType[] getAllValues() {
+    Set<CssType> resultSet = new LinkedHashSet<CssType>();
     Collection<ConditionalValue[]> values = valuesMap.values();
     for( ConditionalValue[] condValues : values ) {
       for( ConditionalValue condValue : condValues ) {
         resultSet.add( condValue.value );
       }
     }
-    return resultSet.toArray( new QxType[ resultSet.size() ] );
+    return resultSet.toArray( new CssType[ resultSet.size() ] );
   }
 
   private void extractValues( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
@@ -156,6 +156,7 @@ public final class ThemeCssValuesMap {
       hashCode = element.hashCode() ^ property.hashCode();
     }
 
+    @Override
     public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
@@ -169,6 +170,7 @@ public final class ThemeCssValuesMap {
       return result;
     }
 
+    @Override
     public int hashCode() {
       return hashCode;
     }

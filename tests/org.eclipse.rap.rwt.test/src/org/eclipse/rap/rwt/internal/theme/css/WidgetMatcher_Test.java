@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.QxBorder;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssBorder;
+import org.eclipse.rap.rwt.internal.theme.CssColor;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -61,15 +62,15 @@ public class WidgetMatcher_Test {
     // rule 1
     ConditionalValue value1 = new ConditionalValue(
       new String[] { "[BORDER", "[TOGGLE", ":selected" },
-      QxBorder.create( 2, "solid", "red" ) );
+      CssBorder.create( 2, "solid", CssColor.valueOf( "red" ) ) );
     // rule 2
     ConditionalValue value2 = new ConditionalValue(
       new String[] { "[BORDER", "[TOGGLE" },
-      QxBorder.create( 2, "dotted", "blue" ) );
+      CssBorder.create( 2, "dotted", CssColor.valueOf( "blue" ) ) );
     // rule 3
     ConditionalValue value3 = new ConditionalValue(
       new String[] { ".special" },
-      QxBorder.create( 1, "solid", "green" ) );
+      CssBorder.create( 1, "solid", CssColor.valueOf( "green" ) ) );
     ConditionalValue[] values = new ConditionalValue[] { value1, value2, value3 };
 
     // Test matcher with example widgets
@@ -78,7 +79,7 @@ public class WidgetMatcher_Test {
 
     // A button that matches none of the rules
     Widget button1 = new Button( shell, SWT.TOGGLE );
-    QxType result = matcher.select( values, button1 );
+    CssType result = matcher.select( values, button1 );
     assertNull( result );
 
     // A button that matches rule 2

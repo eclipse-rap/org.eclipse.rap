@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 
 
 /**
@@ -19,13 +19,14 @@ import org.eclipse.rap.rwt.internal.theme.QxType;
  */
 public class ConditionalValue {
   public final String[] constraints;
-  public final QxType value;
+  public final CssType value;
 
-  public ConditionalValue( String[] constraints, QxType value ) {
+  public ConditionalValue( String[] constraints, CssType value ) {
     this.constraints = constraints;
     this.value = value;
   }
 
+  @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
     buffer.append( "ConditionalValue{ constraints=(" );

@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
-import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.CssImage;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.junit.After;
@@ -250,7 +250,7 @@ public class StartupPage_Test {
 
   @Test
   public void testGetBackgroundImageLocationWithNoneBackgroundImage() {
-    doReturn( QxImage.NONE ).when( startupPage ).getBrackgroundImage();
+    doReturn( CssImage.NONE ).when( startupPage ).getBrackgroundImage();
 
     String backgroundImage = startupPage.getBackgroundImageLocation();
 
@@ -259,7 +259,7 @@ public class StartupPage_Test {
 
   @Test
   public void testGetBackgroundImageLocationWithExistingBackgroundImage() {
-    QxImage qxImage = mock( QxImage.class );
+    CssImage qxImage = mock( CssImage.class );
     doReturn( "image-location" ).when( qxImage ).getResourcePath( applicationContext );
     doReturn( qxImage ).when( startupPage ).getBrackgroundImage();
 
@@ -270,7 +270,7 @@ public class StartupPage_Test {
 
   @Test
   public void testGetBackgroundImageLocationWithNonExistingBackgroundImage() {
-    doReturn( mock( QxImage.class ) ).when( startupPage ).getBrackgroundImage();
+    doReturn( mock( CssImage.class ) ).when( startupPage ).getBrackgroundImage();
 
     String backgroundImage = startupPage.getBackgroundImageLocation();
 

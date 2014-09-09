@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,33 +12,31 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 
-public class QxBoolean implements QxType {
+public class CssBoolean implements CssType {
 
-  public static final QxBoolean TRUE = new QxBoolean( true );
-  public static final QxBoolean FALSE = new QxBoolean( false );
+  public static final CssBoolean TRUE = new CssBoolean( true );
+  public static final CssBoolean FALSE = new CssBoolean( false );
 
   private static final String[] VALID_TRUE_STRINGS = new String[] { "true", "yes", "on" };
-
   private static final String[] VALID_FALSE_STRINGS = new String[] { "false", "no", "off" };
-
-  public static QxBoolean valueOf( String input ) {
-    return evalInput( input ) ? TRUE : FALSE;
-  }
 
   public final boolean value;
 
-  private QxBoolean( boolean value ) {
+  private CssBoolean( boolean value ) {
     this.value = value;
+  }
+
+  public static CssBoolean valueOf( String input ) {
+    return evalInput( input ) ? TRUE : FALSE;
   }
 
   public String toDefaultString() {
     return value ? VALID_TRUE_STRINGS[ 0 ] : VALID_FALSE_STRINGS[ 0 ];
   }
 
-  public String toString () {
-    return   "QxBoolean{ "
-           + String.valueOf( value )
-           + " }";
+  @Override
+  public String toString() {
+    return "CssBoolean{ " + String.valueOf( value ) + " }";
   }
 
   private static boolean evalInput( String input ) {
@@ -64,4 +62,5 @@ public class QxBoolean implements QxType {
     }
     return result;
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 
-public class QxShadow implements QxType {
+public class CssShadow implements CssType {
 
-  public static final QxShadow NONE = new QxShadow( false, 0 , 0, 0, 0, null, 0 );
+  public static final CssShadow NONE = new CssShadow( false, 0 , 0, 0, 0, null, 0 );
 
   public final boolean inset;
   public final int offsetX;
@@ -23,7 +23,7 @@ public class QxShadow implements QxType {
   public final String color;
   public final float opacity;
 
-  private QxShadow( boolean inset,
+  private CssShadow( boolean inset,
                     int offsetX,
                     int offsetY,
                     int blur,
@@ -40,12 +40,12 @@ public class QxShadow implements QxType {
     this.opacity = opacity;
   }
 
-  public static QxShadow create( boolean inset,
+  public static CssShadow create( boolean inset,
                                  int offsetX,
                                  int offsetY,
                                  int blur,
                                  int spread,
-                                 QxColor color )
+                                 CssColor color )
   {
     String msg;
     if( blur < 0 ) {
@@ -59,17 +59,18 @@ public class QxShadow implements QxType {
     if( color == null ) {
       throw new NullPointerException( "null argument" );
     }
-    String htmlColor = QxColor.toHtmlString( color.red, color.green, color.blue );
-    return new QxShadow( inset, offsetX, offsetY, blur, spread, htmlColor, color.alpha );
+    String htmlColor = CssColor.toHtmlString( color.red, color.green, color.blue );
+    return new CssShadow( inset, offsetX, offsetY, blur, spread, htmlColor, color.alpha );
   }
 
-  public boolean equals( Object obj ) {
-    boolean result = false;
-    if( obj == this ) {
-      result = true;
-    } else if( obj instanceof QxShadow ) {
-      QxShadow other = ( QxShadow )obj;
-      result =     other.inset == inset
+  @Override
+  public boolean equals( Object object ) {
+    if( object == this ) {
+      return true;
+    }
+    if( object instanceof CssShadow ) {
+      CssShadow other = ( CssShadow )object;
+      return       other.inset == inset
                 && other.offsetX == offsetX
                 && other.offsetY == offsetY
                 && other.blur == blur
@@ -77,9 +78,10 @@ public class QxShadow implements QxType {
                 && ( color == null ? other.color == null : color.equals( other.color ) )
                 && other.opacity == opacity;
     }
-    return result;
+    return false;
   }
 
+  @Override
   public int hashCode() {
     int result = 17;
     result += 11 * result + offsetX;
@@ -111,7 +113,7 @@ public class QxShadow implements QxType {
       buffer.append( spread );
       buffer.append( "px " );
       buffer.append( "rgba( " );
-      QxColor qxColor = QxColor.valueOf( color );
+      CssColor qxColor = CssColor.valueOf( color );
       buffer.append( qxColor.red );
       buffer.append( ", " );
       buffer.append( qxColor.green );
@@ -124,6 +126,7 @@ public class QxShadow implements QxType {
     return buffer.toString();
   }
 
+  @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
     buffer.append( inset );
@@ -139,6 +142,7 @@ public class QxShadow implements QxType {
     buffer.append( color );
     buffer.append( ", " );
     buffer.append( opacity );
-    return "QxShadow{ " + buffer.toString() + " }";
+    return "CssShadow{ " + buffer.toString() + " }";
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,10 +48,10 @@ public class ThemePropertyAdapterRegistry_Test {
 
   @Test
   public void testGetPropertyAdapter() {
-    ThemePropertyAdapter booleanAdapter = registry.getPropertyAdapter( QxBoolean.class );
-    ThemePropertyAdapter dimensionAdapter = registry.getPropertyAdapter( QxDimension.class );
-    ThemePropertyAdapter boxDimAdapter = registry.getPropertyAdapter( QxBoxDimensions.class );
-    ThemePropertyAdapter imageAdapter = registry.getPropertyAdapter( QxImage.class );
+    ThemePropertyAdapter booleanAdapter = registry.getPropertyAdapter( CssBoolean.class );
+    ThemePropertyAdapter dimensionAdapter = registry.getPropertyAdapter( CssDimension.class );
+    ThemePropertyAdapter boxDimAdapter = registry.getPropertyAdapter( CssBoxDimensions.class );
+    ThemePropertyAdapter imageAdapter = registry.getPropertyAdapter( CssImage.class );
     assertEquals( DirectPropertyAdapter.class, booleanAdapter.getClass() );
     assertEquals( DimensionPropertyAdapter.class, dimensionAdapter.getClass() );
     assertEquals( BoxDimensionsPropertyAdapter.class, boxDimAdapter.getClass() );
@@ -61,32 +61,32 @@ public class ThemePropertyAdapterRegistry_Test {
   @Test
   public void testDimensionPropertyAdapter() {
     ThemePropertyAdapter adapter = new DimensionPropertyAdapter();
-    assertEquals( "0", adapter.getKey( QxDimension.ZERO ) );
-    assertEquals( "439", adapter.getKey( QxDimension.create( 23 ) ) );
-    assertEquals( "ffffffd1", adapter.getKey( QxDimension.create( -1 ) ) );
-    assertEquals( "dimensions", adapter.getSlot( QxDimension.ZERO ) );
-    assertEquals( "0", adapter.getValue( QxDimension.ZERO ).toString() );
-    assertEquals( "23", adapter.getValue( QxDimension.create( 23 ) ).toString() );
+    assertEquals( "0", adapter.getKey( CssDimension.ZERO ) );
+    assertEquals( "439", adapter.getKey( CssDimension.create( 23 ) ) );
+    assertEquals( "ffffffd1", adapter.getKey( CssDimension.create( -1 ) ) );
+    assertEquals( "dimensions", adapter.getSlot( CssDimension.ZERO ) );
+    assertEquals( "0", adapter.getValue( CssDimension.ZERO ).toString() );
+    assertEquals( "23", adapter.getValue( CssDimension.create( 23 ) ).toString() );
   }
 
   @Test
   public void testBoxDimensionsPropertyAdapter() {
     ThemePropertyAdapter adapter = new BoxDimensionsPropertyAdapter();
-    QxBoxDimensions testBoxDimensions = QxBoxDimensions.create( 0, 1, 2, 3 );
-    assertEquals( "2144df1c", adapter.getKey( QxBoxDimensions.ZERO ) );
+    CssBoxDimensions testBoxDimensions = CssBoxDimensions.create( 0, 1, 2, 3 );
+    assertEquals( "2144df1c", adapter.getKey( CssBoxDimensions.ZERO ) );
     assertEquals( "8bb98613", adapter.getKey( testBoxDimensions ) );
-    assertEquals( "boxdims", adapter.getSlot( QxBoxDimensions.ZERO ) );
-    assertEquals( "[0,0,0,0]", adapter.getValue( QxBoxDimensions.ZERO ).toString() );
+    assertEquals( "boxdims", adapter.getSlot( CssBoxDimensions.ZERO ) );
+    assertEquals( "[0,0,0,0]", adapter.getValue( CssBoxDimensions.ZERO ).toString() );
     assertEquals( "[0,1,2,3]", adapter.getValue( testBoxDimensions ).toString() );
   }
 
   @Test
   public void testDefaultPropertyAdapter() {
     ThemePropertyAdapter adapter = new DirectPropertyAdapter();
-    assertEquals( "true", adapter.getKey( QxBoolean.TRUE ) );
-    assertEquals( "false", adapter.getKey( QxBoolean.FALSE ) );
-    assertNull( adapter.getSlot( QxBoolean.TRUE ) );
-    assertNull( adapter.getValue( QxBoolean.TRUE ) );
+    assertEquals( "true", adapter.getKey( CssBoolean.TRUE ) );
+    assertEquals( "false", adapter.getKey( CssBoolean.FALSE ) );
+    assertNull( adapter.getSlot( CssBoolean.TRUE ) );
+    assertNull( adapter.getValue( CssBoolean.TRUE ) );
   }
 
   @Test

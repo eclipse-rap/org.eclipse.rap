@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,30 +14,24 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class QxDimension implements QxType {
+public class CssDimension implements CssType {
 
-  public static final QxDimension ZERO = new QxDimension( 0 );
+  public static final CssDimension ZERO = new CssDimension( 0 );
 
   private static final Pattern LENGTH_PATTERN
     = Pattern.compile( "((\\+|-)?\\d+)(em|ex|px|pt|pc|in|cm|mm|%)?" );
 
   public final int value;
 
-  private QxDimension( int value ) {
+  private CssDimension( int value ) {
     this.value = value;
   }
 
-  public static QxDimension create( int value ) {
-    QxDimension result;
-    if( value == 0 ) {
-      result = ZERO;
-    } else {
-      result = new QxDimension( value );
-    }
-    return result;
+  public static CssDimension create( int value ) {
+    return value == 0 ? ZERO : new CssDimension( value );
   }
 
-  public static QxDimension valueOf( String input ) {
+  public static CssDimension valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -52,25 +46,26 @@ public class QxDimension implements QxType {
     return value + "px";
   }
 
+  @Override
   public boolean equals( Object object ) {
-    boolean result = false;
     if( object == this ) {
-      result = true;
-    } else if( object instanceof QxDimension ) {
-      QxDimension other = (QxDimension)object;
-      result = ( other.value == this.value );
+      return true;
     }
-    return result;
+    if( object instanceof CssDimension ) {
+      CssDimension other = ( CssDimension )object;
+      return ( other.value == this.value );
+    }
+    return false;
   }
 
+  @Override
   public int hashCode () {
     return value * 47;
   }
 
-  public String toString () {
-    return "QxDimension{ "
-           + value
-           + " }";
+  @Override
+  public String toString() {
+    return "CssDimension{ " + value + " }";
   }
 
   /**
@@ -98,4 +93,5 @@ public class QxDimension implements QxType {
     }
     return result;
   }
+
 }

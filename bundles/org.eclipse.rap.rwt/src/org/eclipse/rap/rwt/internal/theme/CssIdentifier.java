@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 
-public class QxIdentifier implements QxType {
+public class CssIdentifier implements CssType {
 
   public final String value;
 
-  public QxIdentifier( String value ) {
+  public CssIdentifier( String value ) {
     this.value = value;
   }
 
@@ -23,22 +23,26 @@ public class QxIdentifier implements QxType {
     return value;
   }
 
+  @Override
   public String toString() {
-    return "QxIdentifier{ " + value + " }";
+    return "CssIdentifier{ " + value + " }";
   }
 
-  public boolean equals( Object obj ) {
-    boolean result = false;
-    if( obj == this ) {
-      result = true;
-    } else if( obj instanceof QxIdentifier ) {
-      QxIdentifier other = ( QxIdentifier )obj;
-      result = value.equals( other.value );
+  @Override
+  public boolean equals( Object object ) {
+    if( object == this ) {
+      return true;
     }
-    return result;
+    if( object instanceof CssIdentifier ) {
+      CssIdentifier other = ( CssIdentifier )object;
+      return value.equals( other.value );
+    }
+    return false;
   }
 
+  @Override
   public int hashCode() {
     return value.hashCode();
   }
+
 }

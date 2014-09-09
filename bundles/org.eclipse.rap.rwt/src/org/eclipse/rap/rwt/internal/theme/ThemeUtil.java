@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,12 +88,12 @@ public final class ThemeUtil {
   //////////////////////////////////////
   // Methods for accessing themed values
 
-  public static QxType getCssValue( String cssElement, String cssProperty, SimpleSelector selector )
+  public static CssType getCssValue( String cssElement, String cssProperty, SimpleSelector selector )
   {
     return getCssValue( cssElement, cssProperty, selector, null );
   }
 
-  public static QxType getCssValue( String cssElement,
+  public static CssType getCssValue( String cssElement,
                                     String cssProperty,
                                     ValueSelector selector,
                                     Widget widget )
@@ -101,7 +101,7 @@ public final class ThemeUtil {
     Theme theme = getCurrentTheme();
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
-    QxType result = selector.select( values, widget );
+    CssType result = selector.select( values, widget );
     if( result == null ) {
       // resort to fallback theme
       theme = getFallbackTheme();

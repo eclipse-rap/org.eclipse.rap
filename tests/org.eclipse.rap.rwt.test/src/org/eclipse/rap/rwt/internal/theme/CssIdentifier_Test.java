@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,31 +15,31 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 
-public class QxIdentifier_Test {
+public class CssIdentifier_Test {
 
   @Test
   public void testCreate() {
-    QxIdentifier identifier = new QxIdentifier( "line-through" );
+    CssIdentifier identifier = new CssIdentifier( "line-through" );
     assertEquals( "line-through", identifier.value  );
   }
 
   @Test
   public void testDefaultString() {
-    QxIdentifier identifier = new QxIdentifier( "line-through" );
+    CssIdentifier identifier = new CssIdentifier( "line-through" );
     assertEquals( "line-through", identifier.toDefaultString() );
   }
 
   @Test
   public void testEquals() {
-    QxIdentifier identifier1 = new QxIdentifier( "line-through" );
-    QxIdentifier identifier2 = new QxIdentifier( "line-through" );
+    CssIdentifier identifier1 = new CssIdentifier( "line-through" );
+    CssIdentifier identifier2 = new CssIdentifier( "line-through" );
     assertEquals( identifier1, identifier2 );
   }
 
   @Test
   public void testHashCode() {
-    QxIdentifier identifier1 = new QxIdentifier( "line-through" );
-    QxIdentifier identifier2 = new QxIdentifier( "line-through" );
+    CssIdentifier identifier1 = new CssIdentifier( "line-through" );
+    CssIdentifier identifier2 = new CssIdentifier( "line-through" );
     assertEquals( identifier1.hashCode(), identifier2.hashCode() );
   }
 

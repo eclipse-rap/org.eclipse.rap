@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -47,7 +47,7 @@ public final class StyleSheet {
     for( SelectorWrapper selectorWrapper : selectorWrappers ) {
       String selectorElement = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
-        QxType value = selectorWrapper.propertyMap.getValue( propertyName );
+        CssType value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
           String[] constraints = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
           Arrays.sort( constraints );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.StartupPageTemplate.VariableWriter;
-import org.eclipse.rap.rwt.internal.theme.QxImage;
+import org.eclipse.rap.rwt.internal.theme.CssImage;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -134,7 +134,7 @@ public class StartupPage {
 
   protected String getBackgroundImageLocation() {
     String result = "";
-    QxImage image = getBrackgroundImage();
+    CssImage image = getBrackgroundImage();
     String resourceName = image.getResourcePath( applicationContext );
     if( resourceName != null ) {
       result = getResourceLocation( resourceName );
@@ -142,9 +142,9 @@ public class StartupPage {
     return result;
   }
 
-  protected QxImage getBrackgroundImage() {
+  protected CssImage getBrackgroundImage() {
     SimpleSelector defaultSelector = SimpleSelector.DEFAULT;
-    return ( QxImage )ThemeUtil.getCssValue( "Display", "background-image", defaultSelector );
+    return ( CssImage )ThemeUtil.getCssValue( "Display", "background-image", defaultSelector );
   }
 
   private Map<String, String> getCurrentEntryPointProperties() {

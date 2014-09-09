@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,11 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.Arrays;
 
 
-public class QxAnimation implements QxType {
+public class CssAnimation implements CssType {
 
   public Animation[] animations;
 
-  public QxAnimation() {
+  public CssAnimation() {
     animations = new Animation[ 0 ];
   }
 
@@ -46,33 +46,24 @@ public class QxAnimation implements QxType {
 
   @Override
   public String toString() {
-    return "QxAnimation{ " + toDefaultString() + " }";
+    return "CssAnimation{ " + toDefaultString() + " }";
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + Arrays.hashCode( animations );
-    return result;
+    return Arrays.hashCode( animations );
   }
 
   @Override
-  public boolean equals( Object obj ) {
-    if( this == obj ) {
+  public boolean equals( Object object ) {
+    if( object == this ) {
       return true;
     }
-    if( obj == null ) {
-      return false;
+    if( object instanceof CssAnimation ) {
+      CssAnimation other = ( CssAnimation )object;
+      return Arrays.equals( animations, other.animations );
     }
-    if( getClass() != obj.getClass() ) {
-      return false;
-    }
-    QxAnimation other = ( QxAnimation )obj;
-    if( !Arrays.equals( animations, other.animations ) ) {
-      return false;
-    }
-    return true;
+    return false;
   }
 
   public static String toCamelCaseString( String string ) {
@@ -158,8 +149,7 @@ public class QxAnimation implements QxType {
         }
       }
       if( !result ) {
-        String msg = "Invalid value for animation timing function: "
-                     + timingFunction;
+        String msg = "Invalid value for animation timing function: " + timingFunction;
         throw new IllegalArgumentException( msg );
       }
     }
@@ -167,7 +157,7 @@ public class QxAnimation implements QxType {
     @Override
     public int hashCode() {
       final int prime = 31;
-      int result = 1;
+      int result = 3;
       result = prime * result + duration;
       result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
       result = prime * result + ( ( timingFunction == null ) ? 0 : timingFunction.hashCode() );
@@ -175,35 +165,19 @@ public class QxAnimation implements QxType {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-      if( this == obj ) {
+    public boolean equals( Object object ) {
+      if( object == this ) {
         return true;
       }
-      if( obj == null ) {
-        return false;
+      if( object instanceof Animation ) {
+        Animation other = ( Animation )object;
+        return    duration == other.duration
+               && ( name == null ? other.name == null : name.equals( other.name ) )
+               && (   timingFunction == null
+                    ? other.timingFunction == null
+                    : timingFunction.equals( other.timingFunction ) );
       }
-      if( getClass() != obj.getClass() ) {
-        return false;
-      }
-      Animation other = ( Animation )obj;
-      if( duration != other.duration ) {
-        return false;
-      }
-      if( name == null ) {
-        if( other.name != null ) {
-          return false;
-        }
-      } else if( !name.equals( other.name ) ) {
-        return false;
-      }
-      if( timingFunction == null ) {
-        if( other.timingFunction != null ) {
-          return false;
-        }
-      } else if( !timingFunction.equals( other.timingFunction ) ) {
-        return false;
-      }
-      return true;
+      return false;
     }
 
   }

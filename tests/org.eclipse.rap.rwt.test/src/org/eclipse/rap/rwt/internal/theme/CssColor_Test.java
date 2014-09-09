@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,79 +16,53 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.graphics.Color;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-public class QxColor_Test {
+public class CssColor_Test {
 
-  @Before
-  public void setUp() {
-    Fixture.setUp();
+  @Rule
+  public TestContext context = new TestContext();
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_invalidHexColorFormat() {
+    CssColor.valueOf( "#0000" );
   }
 
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_invalidHexColor() {
+    CssColor.valueOf( "#xyz" );
   }
 
-  @Test
-  public void testIllegalArguments() {
-    try {
-      QxColor.valueOf( "#0000" );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      QxColor.valueOf( "#xyz" );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      QxColor.valueOf( "grey" );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_invalidNamedColor() {
+    CssColor.valueOf( "grey" );
   }
 
-  @Test
-  public void testIllegalArguments_OutOfRangeAlpha() {
-    try {
-      QxColor.valueOf( "1, 2, 3, 1.01" );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_outOfRangeAlpha() {
+    CssColor.valueOf( "1, 2, 3, 1.01" );
   }
 
-  @Test
-  public void testIllegalArguments_NegativeAlpha() {
-    try {
-      QxColor.valueOf( "1, 2, 3, -0.01" );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testValueOf_negativeAlpha() {
+    CssColor.valueOf( "1, 2, 3, -0.01" );
   }
 
   @Test
   public void test6HexNotation() {
-    QxColor color1 = QxColor.valueOf( "#0023ff" );
+    CssColor color1 = CssColor.valueOf( "#0023ff" );
     assertEquals( 0, color1.red );
     assertEquals( 35, color1.green );
     assertEquals( 255, color1.blue );
     assertEquals( 1f, color1.alpha, 0 );
-    QxColor color2 = QxColor.valueOf( "#efeFEF" );
+    CssColor color2 = CssColor.valueOf( "#efeFEF" );
     assertEquals( 239, color2.red );
     assertEquals( 239, color2.green );
     assertEquals( 239, color2.blue );
@@ -96,26 +70,26 @@ public class QxColor_Test {
 
   @Test
   public void test3HexNotation() {
-    QxColor color1 = QxColor.valueOf( "#03f" );
+    CssColor color1 = CssColor.valueOf( "#03f" );
     assertEquals( 0, color1.red );
     assertEquals( 51, color1.green );
     assertEquals( 255, color1.blue );
     assertEquals( 1f, color1.alpha, 0 );
-    QxColor color2 = QxColor.valueOf( "#ccc" );
+    CssColor color2 = CssColor.valueOf( "#ccc" );
     assertEquals( 204, color2.red );
     assertEquals( 204, color2.green );
     assertEquals( 204, color2.blue );
-    assertEquals( QxColor.valueOf( "#ffffff"), QxColor.valueOf( "#fff" ) );
+    assertEquals( CssColor.valueOf( "#ffffff"), CssColor.valueOf( "#fff" ) );
   }
 
   @Test
   public void testNamedColors() {
-    QxColor color1 = QxColor.valueOf( "red" );
+    CssColor color1 = CssColor.valueOf( "red" );
     assertEquals( 255, color1.red );
     assertEquals( 0, color1.green );
     assertEquals( 0, color1.blue );
     assertEquals( 1f, color1.alpha, 0 );
-    QxColor color2 = QxColor.valueOf( "blue" );
+    CssColor color2 = CssColor.valueOf( "blue" );
     assertEquals( 0, color2.red );
     assertEquals( 0, color2.green );
     assertEquals( 255, color2.blue );
@@ -123,7 +97,7 @@ public class QxColor_Test {
 
   @Test
   public void testCommaSeparatedValues() {
-    QxColor color = QxColor.valueOf( "100, 23, 42" );
+    CssColor color = CssColor.valueOf( "100, 23, 42" );
     assertEquals( 100, color.red );
     assertEquals( 23, color.green );
     assertEquals( 42, color.blue );
@@ -132,7 +106,7 @@ public class QxColor_Test {
 
   @Test
   public void testCommaSeparatedValues_WithAlpha() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0.5" );
     assertEquals( 100, color.red );
     assertEquals( 23, color.green );
     assertEquals( 42, color.blue );
@@ -141,47 +115,47 @@ public class QxColor_Test {
 
   @Test
   public void testTransparent() {
-    assertTrue( QxColor.TRANSPARENT.isTransparent() );
+    assertTrue( CssColor.TRANSPARENT.isTransparent() );
   }
 
   @Test
   public void testShared() {
-    assertSame( QxColor.WHITE, QxColor.valueOf( "white" ) );
-    assertSame( QxColor.WHITE, QxColor.valueOf( "255, 255, 255" ) );
-    assertSame( QxColor.WHITE, QxColor.valueOf( "#ffffff" ) );
-    assertSame( QxColor.BLACK, QxColor.valueOf( "Black" ) );
-    assertSame( QxColor.BLACK, QxColor.valueOf( "0, 0, 0" ) );
-    assertSame( QxColor.BLACK, QxColor.valueOf( "#000" ) );
-    assertSame( QxColor.TRANSPARENT, QxColor.valueOf( "transparent" ) );
+    assertSame( CssColor.WHITE, CssColor.valueOf( "white" ) );
+    assertSame( CssColor.WHITE, CssColor.valueOf( "255, 255, 255" ) );
+    assertSame( CssColor.WHITE, CssColor.valueOf( "#ffffff" ) );
+    assertSame( CssColor.BLACK, CssColor.valueOf( "Black" ) );
+    assertSame( CssColor.BLACK, CssColor.valueOf( "0, 0, 0" ) );
+    assertSame( CssColor.BLACK, CssColor.valueOf( "#000" ) );
+    assertSame( CssColor.TRANSPARENT, CssColor.valueOf( "transparent" ) );
   }
 
   @Test
   public void testToString() {
-    QxColor color = QxColor.valueOf( "100, 23, 42" );
-    assertEquals( "QxColor{ 100, 23, 42, 1.0 }", color.toString() );
+    CssColor color = CssColor.valueOf( "100, 23, 42" );
+    assertEquals( "CssColor{ 100, 23, 42, 1.0 }", color.toString() );
   }
 
   @Test
   public void testToString_WithAlpha() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
-    assertEquals( "QxColor{ 100, 23, 42, 0.5 }", color.toString() );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0.5" );
+    assertEquals( "CssColor{ 100, 23, 42, 0.5 }", color.toString() );
   }
 
   @Test
   public void testDefaultString() {
-    QxColor color = QxColor.valueOf( "100, 23, 42" );
+    CssColor color = CssColor.valueOf( "100, 23, 42" );
     assertEquals( "#64172a", color.toDefaultString() );
   }
 
   @Test
   public void testDefaultString_Transparent() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0" );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0" );
     assertEquals( "transparent", color.toDefaultString() );
   }
 
   @Test
   public void testDefaultString_WithAlpha() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0.5" );
     assertEquals( "rgba(100,23,42,0.5)", color.toDefaultString() );
   }
 
@@ -190,7 +164,7 @@ public class QxColor_Test {
     Locale originalLocale = Locale.getDefault();
     try {
       Locale.setDefault( new Locale( "tr", "TR" ) );
-      assertSame( QxColor.WHITE, QxColor.valueOf( "WHITE" ) );
+      assertSame( CssColor.WHITE, CssColor.valueOf( "WHITE" ) );
     } finally {
       Locale.setDefault( originalLocale );
     }
@@ -198,8 +172,8 @@ public class QxColor_Test {
 
   @Test
   public void testCreateColor_WithoutAlpha() {
-    QxColor color = QxColor.valueOf( "100, 23, 42" );
-    Color result = QxColor.createColor( color );
+    CssColor color = CssColor.valueOf( "100, 23, 42" );
+    Color result = CssColor.createColor( color );
     assertNotNull( result );
     assertEquals( 100, result.getRed() );
     assertEquals( 23, result.getGreen() );
@@ -208,8 +182,8 @@ public class QxColor_Test {
 
   @Test
   public void testCreateColor_WithAlpha() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
-    Color result = QxColor.createColor( color );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0.5" );
+    Color result = CssColor.createColor( color );
     assertNotNull( result );
     assertEquals( 100, result.getRed() );
     assertEquals( 23, result.getGreen() );
@@ -218,8 +192,8 @@ public class QxColor_Test {
 
   @Test
   public void testCreateColor_FullyTransparent() {
-    QxColor color = QxColor.valueOf( "100, 23, 42, 0" );
-    Color result = QxColor.createColor( color );
+    CssColor color = CssColor.valueOf( "100, 23, 42, 0" );
+    Color result = CssColor.createColor( color );
     assertNull( result );
   }
 

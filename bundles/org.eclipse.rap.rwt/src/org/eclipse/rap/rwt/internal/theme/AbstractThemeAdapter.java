@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,32 +54,32 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   // Delegator methods
 
   protected Color getCssColor( String cssElement, String cssProperty, Widget widget ) {
-    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return QxColor.createColor( ( QxColor )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return CssColor.createColor( ( CssColor )cssValue );
   }
 
   protected Font getCssFont( String cssElement, String cssProperty, Widget widget ) {
-    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return QxFont.createFont( ( QxFont )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return CssFont.createFont( ( CssFont )cssValue );
   }
 
   protected int getCssBorderWidth( String cssElement, String cssProperty, Widget widget ) {
-    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return ( ( QxBorder )cssValue ).width;
+    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return ( ( CssBorder )cssValue ).width;
   }
 
   protected int getCssDimension( String cssElement, String cssProperty, Widget widget ) {
-    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return ( ( QxDimension )cssValue ).value;
+    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return ( ( CssDimension )cssValue ).value;
   }
 
   protected Rectangle getCssBoxDimensions( String cssElement, String cssProperty, Widget widget ) {
-    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
   protected Point getCssImageDimension( String cssElement, String cssProperty, Widget widget ) {
-    QxImage image = ( QxImage ) ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssImage image = ( CssImage ) ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return new Point( image.width, image.height );
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,14 +84,14 @@ public class ThemeStoreWriter_Test {
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"animations\":{"
-                      + "\"46ab28c4\":{"
+                      + "\"46c84065\":{"
                       + "\"slideIn\":[2000,\"easeIn\"],"
                       + "\"slideOut\":[2000,\"easeOut\"]"
                       + "}"
                       + "}";
     assertTrue( output.contains( expected ) );
     expected =   "\"Menu\":{"
-               + "\"animation\":[[[],\"46ab28c4\"]]"
+               + "\"animation\":[[[],\"46c84065\"]]"
                + "}";
     assertTrue( output.contains( expected ) );
   }

@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import org.eclipse.rap.rwt.internal.theme.QxBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.QxType;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.CssType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.graphics.Rectangle;
@@ -27,14 +27,14 @@ public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
 
   public Rectangle getItemPadding( boolean selected ) {
     SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
-    QxType cssValue = ThemeUtil.getCssValue( "TabItem", "padding", selector );
-    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "TabItem", "padding", selector );
+    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
   public Rectangle getItemMargin( boolean selected ) {
     SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
-    QxType cssValue = ThemeUtil.getCssValue( "TabItem", "margin", selector );
-    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
+    CssType cssValue = ThemeUtil.getCssValue( "TabItem", "margin", selector );
+    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
 }

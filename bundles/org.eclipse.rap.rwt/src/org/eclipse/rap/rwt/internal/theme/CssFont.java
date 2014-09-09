@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,36 +24,32 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 
-public class QxFont implements QxType {
+public class CssFont implements CssType {
 
   private static final Pattern FONT_DEF_PATTERN
     = Pattern.compile( "(\".+?\"|'.+?'|\\S[^\\s,]+)(\\s*,)?" );
 
   public final String[] family;
-
   public final int size;
-
   public final boolean bold;
-
   public final boolean italic;
-
   private String familyAsString;
 
-  private QxFont( String[] family, int size, boolean bold, boolean italic ) {
+  private CssFont( String[] family, int size, boolean bold, boolean italic ) {
     this.family = family;
     this.size = size;
     this.bold = bold;
     this.italic = italic;
   }
 
-  public static QxFont create( String[] families, int size, boolean bold, boolean italic ) {
+  public static CssFont create( String[] families, int size, boolean bold, boolean italic ) {
     if( size < 0 ) {
       throw new IllegalArgumentException( "Negative width: " + size );
     }
-    return new QxFont( families, size, bold, italic );
+    return new CssFont( families, size, bold, italic );
   }
 
-  public static QxFont valueOf( String input ) {
+  public static CssFont valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -78,7 +74,7 @@ public class QxFont implements QxType {
       } else if( "italic".equalsIgnoreCase( part ) ) {
         italic = true;
       } else {
-        Integer parsedSize = QxDimension.parseLength( part );
+        Integer parsedSize = CssDimension.parseLength( part );
         if( parsedSize != null ) {
           size = parsedSize.intValue();
         } else {
@@ -89,7 +85,7 @@ public class QxFont implements QxType {
     }
     // TODO [rst] Check for illegal input and throw exception
     String[] familyArr = family.toArray( new String[ family.size() ] );
-    return new QxFont( familyArr, size, bold, italic ) ;
+    return new CssFont( familyArr, size, bold, italic ) ;
   }
 
   public String getFamilyAsString() {
@@ -128,18 +124,18 @@ public class QxFont implements QxType {
   }
 
   @Override
-  public boolean equals( Object obj ) {
-    boolean result = false;
-    if( obj == this ) {
-      result = true;
-    } else if( obj instanceof QxFont ) {
-      QxFont other = ( QxFont )obj;
-      result =  Arrays.equals( other.family, family )
+  public boolean equals( Object object ) {
+    if( object == this ) {
+      return true;
+    }
+    if( object instanceof CssFont ) {
+      CssFont other = ( CssFont )object;
+      return    Arrays.equals( other.family, family )
              && other.size == size
              && other.bold == bold
              && other.italic == italic;
     }
-    return result;
+    return false;
   }
 
   @Override
@@ -157,7 +153,7 @@ public class QxFont implements QxType {
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
-    result.append( "QxFont{ " );
+    result.append( "CssFont{ " );
     if( bold ) {
       result.append( "bold " );
     }
@@ -171,7 +167,7 @@ public class QxFont implements QxType {
     return result.toString();
   }
 
-  public static Font createFont( QxFont font ) {
+  public static Font createFont( CssFont font ) {
     String name = font.getFamilyAsString();
     int style = SWT.NORMAL;
     if( font.bold ) {
@@ -183,4 +179,5 @@ public class QxFont implements QxType {
     FontData data = new FontData( name, font.size, style );
     return getApplicationContext().getResourceFactory().getFont( data );
   }
+
 }
