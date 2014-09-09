@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2012 EclipseSource and others.
+* Copyright (c) 2010, 2014 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
-import org.eclipse.rap.rwt.internal.theme.css.IStylePropertyMap;
 import org.eclipse.rap.rwt.internal.theme.css.SelectorExt;
+import org.eclipse.rap.rwt.internal.theme.css.StylePropertyMap;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -55,7 +55,7 @@ public abstract class ThemeTestBase {
 
   private static void processTestStyleRule( StyleRule styleRule ) {
     SelectorList selectors = styleRule.getSelectors();
-    IStylePropertyMap properties = styleRule.getProperties();
+    StylePropertyMap properties = styleRule.getProperties();
     int length = selectors.getLength();
     for( int i = 0; i < length; i++ ) {
       Selector selector = selectors.item( i );
@@ -64,7 +64,7 @@ public abstract class ThemeTestBase {
     }
   }
 
-  private static void checkProperties( SelectorExt selector, IStylePropertyMap expectedValues ) {
+  private static void checkProperties( SelectorExt selector, StylePropertyMap expectedValues ) {
     String[] properties = expectedValues.getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];

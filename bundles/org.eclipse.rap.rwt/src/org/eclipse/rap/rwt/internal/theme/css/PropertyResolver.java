@@ -29,14 +29,10 @@ import org.eclipse.rap.rwt.internal.theme.QxFont;
 import org.eclipse.rap.rwt.internal.theme.QxIdentifier;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxShadow;
-import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.w3c.css.sac.LexicalUnit;
 
 
-/**
- * Utility class to read values from LexicalUnits.
- */
 public final class PropertyResolver {
 
   private static final String BOLD = "bold";
@@ -112,42 +108,50 @@ public final class PropertyResolver {
     BORDER_STYLES.add( OUTSET );
   }
 
-  public static QxType resolveProperty( String name, LexicalUnit unit, ResourceLoader loader ) {
-    QxType result;
+  private StylePropertyMap resolvedProperties;
+
+  public PropertyResolver() {
+    resolvedProperties = new StylePropertyMap();
+  }
+
+  public void resolveProperty( String name, LexicalUnit unit, ResourceLoader loader ) {
     if( isBorderProperty( name ) ) {
-      result = readBorder( unit );
+      resolvedProperties.setProperty( name, readBorder( unit ) );
     } else if( isBoxDimensionProperty( name ) ) {
-      result = readBoxDimensions( unit );
+      resolvedProperties.setProperty( name, readBoxDimensions( unit ) );
     } else if( isColorProperty( name ) ) {
-      result = readColor( unit );
+      resolvedProperties.setProperty( name, readColor( unit ) );
     } else if( isDimensionProperty( name ) ) {
-      result = readDimension( unit );
+      resolvedProperties.setProperty( name, readDimension( unit ) );
     } else if( isFontProperty( name ) ) {
-      result = readFont( unit );
+      resolvedProperties.setProperty( name, readFont( unit ) );
     } else if( isImageProperty( name ) ) {
-      result = readBackgroundImage( unit, loader );
+      resolvedProperties.setProperty( name, readBackgroundImage( unit, loader ) );
     } else if( isBackgroundRepeatProperty( name ) ) {
-      result = readBackgroundRepeat( unit );
+      resolvedProperties.setProperty( name, readBackgroundRepeat( unit ) );
     } else if( isBackgroundPositionProperty( name ) ) {
-      result = readBackgroundPosition( unit );
+      resolvedProperties.setProperty( name, readBackgroundPosition( unit ) );
     } else if( isTextDecorationProperty( name ) ) {
-      result = readTextDecoration( unit );
+      resolvedProperties.setProperty( name, readTextDecoration( unit ) );
     } else if( isTextOverflowProperty( name ) ) {
-      result = readTextOverflow( unit );
+      resolvedProperties.setProperty( name, readTextOverflow( unit ) );
     } else if( isTextAlignProperty( name ) ) {
-      result = readTextAlign( unit );
+      resolvedProperties.setProperty( name, readTextAlign( unit ) );
     } else if( isCursorProperty( name ) ) {
-      result = readCursor( unit, loader );
+      resolvedProperties.setProperty( name, readCursor( unit, loader ) );
     } else if( isFloatProperty( name ) ) {
-      result = readFloat( unit );
+      resolvedProperties.setProperty( name, readFloat( unit ) );
     } else if( isAnimationProperty( name ) ) {
-      result = readAnimation( unit );
+      resolvedProperties.setProperty( name, readAnimation( unit ) );
     } else if( isShadowProperty( name ) ) {
-      result = readShadow( unit );
+      resolvedProperties.setProperty( name, readShadow( unit ) );
     } else {
       throw new IllegalArgumentException( "Unknown property " + name );
     }
-    return result;
+  }
+
+  public StylePropertyMap getResolvedProperties() {
+    return resolvedProperties;
   }
 
   static boolean isColorProperty( String property ) {
@@ -325,6 +329,44 @@ public final class PropertyResolver {
     return result;
   }
 
+  static String readBorderStyle( LexicalUnit unit ) {
+    String result = null;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String string = unit.getStringValue();
+      if( BORDER_STYLES.contains( string ) ) {
+        result = string;
+      }
+    }
+    return result;
+  }
+
+  static int readBorderWidth( LexicalUnit unit ) {
+    int result = -1;
+    short type = unit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String string = unit.getStringValue();
+      if( THIN.equals( string ) ) {
+        result = THIN_VALUE;
+      } else if( MEDIUM.equals( string ) ) {
+        result = MEDIUM_VALUE;
+      } else if( THICK.equals( string ) ) {
+        result = THICK_VALUE;
+      }
+    } else if( type == LexicalUnit.SAC_INTEGER ) {
+      int value = unit.getIntegerValue();
+      if( value == 0 ) {
+        result = 0;
+      }
+    } else if( type == LexicalUnit.SAC_PIXEL ) {
+      float value = unit.getFloatValue();
+      if( value >= 0f ) {
+        result = Math.round( value );
+      }
+    }
+    return result;
+  }
+
   static boolean isBoxDimensionProperty( String property ) {
     return    "padding".equals( property )
            || "margin".equals( property )
@@ -362,44 +404,6 @@ public final class PropertyResolver {
     }
     if( result == null ) {
       throw new IllegalArgumentException( "Failed to parse box dimensions " + toString( unit ) );
-    }
-    return result;
-  }
-
-  static String readBorderStyle( LexicalUnit unit ) {
-    String result = null;
-    short type = unit.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_IDENT ) {
-      String string = unit.getStringValue();
-      if( BORDER_STYLES.contains( string ) ) {
-        result = string;
-      }
-    }
-    return result;
-  }
-
-  static int readBorderWidth( LexicalUnit unit ) {
-    int result = -1;
-    short type = unit.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_IDENT ) {
-      String string = unit.getStringValue();
-      if( THIN.equals( string ) ) {
-        result = THIN_VALUE;
-      } else if( MEDIUM.equals( string ) ) {
-        result = MEDIUM_VALUE;
-      } else if( THICK.equals( string ) ) {
-        result = THICK_VALUE;
-      }
-    } else if( type == LexicalUnit.SAC_INTEGER ) {
-      int value = unit.getIntegerValue();
-      if( value == 0 ) {
-        result = 0;
-      }
-    } else if( type == LexicalUnit.SAC_PIXEL ) {
-      float value = unit.getFloatValue();
-      if( value >= 0f ) {
-        result = Math.round( value );
-      }
     }
     return result;
   }
@@ -1152,5 +1156,7 @@ public final class PropertyResolver {
     final int red;
     final int green;
     final int blue;
+
   }
+
 }

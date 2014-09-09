@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.theme.StyleSheetBuilder;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.w3c.css.sac.CSSException;
@@ -29,7 +28,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   private final CssFileReader reader;
   private final ResourceLoader loader;
   private final StyleSheetBuilder styleSheetBuilder;
-  private StylePropertyMap currentStyleProperties;
+  private PropertyResolver propertyResolver;
 
   public DocumentHandlerImpl( CssFileReader reader, ResourceLoader loader ) {
     this.reader = reader;
@@ -46,40 +45,35 @@ public class DocumentHandlerImpl implements DocumentHandler {
     log( "___ endDocument ___" );
   }
 
-  public void startSelector( SelectorList selectors ) throws CSSException
-  {
+  public void startSelector( SelectorList selectors ) throws CSSException {
     log( "startSelector " + toString( selectors ) );
-    currentStyleProperties = new StylePropertyMap();
+    propertyResolver = new PropertyResolver();
   }
 
   public void endSelector( SelectorList selectors ) throws CSSException {
     log( "endSelector " + toString( selectors ) );
-    StyleRule styleRule = new StyleRule( selectors, currentStyleProperties );
+    StyleRule styleRule = new StyleRule( selectors, propertyResolver.getResolvedProperties() );
     styleSheetBuilder.addStyleRule( styleRule );
-    currentStyleProperties = null;
+    propertyResolver = null;
   }
 
-  public void property( String name, LexicalUnit value,  boolean important )
-    throws CSSException
-  {
+  public void property( String name, LexicalUnit value, boolean important ) throws CSSException {
     log( "  property "
          + name
          + " := "
          + PropertyResolver.toString( value )
          + ( important? " !" : "" ) );
     if( important ) {
-      reader.addProblem( new CSSException( "Important rules not supported"
-                                           + " - ignored" ) );
+      reader.addProblem( new CSSException( "Important rules not supported - ignored" ) );
     }
-    if( currentStyleProperties != null ) {
+    if( propertyResolver != null ) {
       try {
-        QxType resolved = PropertyResolver.resolveProperty( name, value, loader );
-        currentStyleProperties.setProperty( name, resolved );
-      } catch( IllegalArgumentException e ) {
+        propertyResolver.resolveProperty( name, value, loader );
+      } catch( IllegalArgumentException exception ) {
         reader.addProblem( new CSSException( "Failed to read property "
                                              + name
                                              + ": "
-                                             + e.getMessage() ) );
+                                             + exception.getMessage() ) );
       }
     }
   }
@@ -97,9 +91,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
     reader.addProblem( new CSSException( "import rules not supported - ignored" ) );
   }
 
-  public void namespaceDeclaration( String prefix, String uri )
-    throws CSSException
-  {
+  public void namespaceDeclaration( String prefix, String uri ) throws CSSException {
     log( "namespaceDeclaration " + prefix + ", " + uri );
     reader.addProblem( new CSSException( "unsupported namespace declaration '"
                                          + prefix
@@ -110,21 +102,15 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void ignorableAtRule( String atRule ) throws CSSException {
     log( "ignorableAtRule " + atRule );
-    reader.addProblem( new CSSException( "unsupported at rule '"
-                                         + atRule
-                                         + "' - ignored" ) );
+    reader.addProblem( new CSSException( "unsupported at rule '" + atRule + "' - ignored" ) );
   }
 
-  public void startPage( String name, String pseudo_page )
-    throws CSSException
-  {
+  public void startPage( String name, String pseudo_page ) throws CSSException {
     log( "startPage " + name + ", " + pseudo_page );
     reader.addProblem( new CSSException( "page rules not supported - ignored" ) );
   }
 
-  public void endPage( String name, String pseudo_page )
-    throws CSSException
-  {
+  public void endPage( String name, String pseudo_page ) throws CSSException {
     log( "endPage " + name + ", " + pseudo_page );
   }
 
@@ -139,8 +125,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
 
   public void startFontFace() throws CSSException {
     log( "startFontFace" );
-    reader.addProblem( new CSSException( "font face rules not supported"
-                                         + " - ignored" ) );
+    reader.addProblem( new CSSException( "font face rules not supported - ignored" ) );
   }
 
   public void endFontFace() throws CSSException {
@@ -152,7 +137,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   private void log( String message ) {
-    //    System.out.println( message );
+//    System.out.println( message );
   }
 
   private static String toString( SelectorList patterns ) {
@@ -167,4 +152,5 @@ public class DocumentHandlerImpl implements DocumentHandler {
     buffer.append( " ]" );
     return buffer.toString();
   }
+
 }

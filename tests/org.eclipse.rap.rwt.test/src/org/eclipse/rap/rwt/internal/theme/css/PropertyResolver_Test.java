@@ -38,8 +38,8 @@ import org.eclipse.rap.rwt.internal.theme.QxFont;
 import org.eclipse.rap.rwt.internal.theme.QxIdentifier;
 import org.eclipse.rap.rwt.internal.theme.QxImage;
 import org.eclipse.rap.rwt.internal.theme.QxShadow;
-import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.InputSource;
@@ -49,6 +49,46 @@ import org.w3c.css.sac.LexicalUnit;
 public class PropertyResolver_Test {
 
   private static Parser parser = new Parser();
+  private PropertyResolver propertyResolver;
+
+  @Before
+  public void setUp() {
+    propertyResolver = new PropertyResolver();
+  }
+
+  @Test
+  public void testResolveProperty_withValidProperty() throws Exception {
+    LexicalUnit unit = parseProperty( "white" );
+
+    propertyResolver.resolveProperty( "color", unit, null );
+
+    StylePropertyMap resolvedProperties = propertyResolver.getResolvedProperties();
+    assertEquals( QxColor.WHITE, resolvedProperties.getValue( "color" ) );
+  }
+
+  @Test
+  public void testResolveProperty_withInvalidPropertyName() throws Exception {
+    LexicalUnit unit = parseProperty( "white" );
+
+    try {
+      propertyResolver.resolveProperty( "xy", unit, null );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      assertTrue( e.getMessage().contains( "property xy" ) );
+    }
+  }
+
+  @Test
+  public void testResolveProperty_withInvalidPropertyValue() throws Exception {
+    LexicalUnit unit = parseProperty( "darkslategray" );
+
+    try {
+      propertyResolver.resolveProperty( "color", unit, null );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      assertTrue( e.getMessage().contains( "color darkslategray" ) );
+    }
+  }
 
   @Test
   public void testColor() throws Exception {
@@ -917,26 +957,6 @@ public class PropertyResolver_Test {
   public void testIsShadowProperty() {
     assertTrue( PropertyResolver.isShadowProperty( "box-shadow" ) );
     assertTrue( PropertyResolver.isShadowProperty( "text-shadow" ) );
-  }
-
-  @Test
-  public void testResolveProperty() throws Exception {
-    LexicalUnit unit = parseProperty( "white" );
-    QxType value = PropertyResolver.resolveProperty( "color", unit, null );
-    assertEquals( QxColor.WHITE, value );
-    try {
-      PropertyResolver.resolveProperty( "xy", unit, null );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().contains( "property xy" ) );
-    }
-    try {
-      LexicalUnit unit2 = parseProperty( "darkslategray" );
-      PropertyResolver.resolveProperty( "color", unit2 , null );
-      fail();
-    } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().contains( "color darkslategray" ) );
-    }
   }
 
   @Test

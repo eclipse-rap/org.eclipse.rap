@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.internal.theme.QxType;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
-public class StylePropertyMap implements IStylePropertyMap {
+public class StylePropertyMap {
 
   private final Map<String,QxType> properties;
 
@@ -42,6 +42,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     return properties.get( propertyName );
   }
 
+  @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append( "{\n" );
@@ -59,6 +60,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result.toString();
   }
 
+  @Override
   public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
@@ -70,7 +72,9 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result;
   }
 
+  @Override
   public int hashCode() {
     return properties.hashCode();
   }
+
 }

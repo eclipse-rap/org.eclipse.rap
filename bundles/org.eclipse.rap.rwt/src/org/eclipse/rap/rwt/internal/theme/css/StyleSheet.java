@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ public final class StyleSheet {
     return buffer.toArray( new ConditionalValue[ buffer.size() ] );
   }
 
+  @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
     StyleRule[] styleRules = getStyleRules();
@@ -102,7 +103,7 @@ public final class StyleSheet {
     for( int pos = 0; pos < styleRules.length; pos++ ) {
       StyleRule styleRule = styleRules[ pos ];
       SelectorList selectors = styleRule.getSelectors();
-      IStylePropertyMap properties = styleRule.getProperties();
+      StylePropertyMap properties = styleRule.getProperties();
       int length = selectors.getLength();
       for( int i = 0; i < length; i++ ) {
         Selector selector = selectors.item( i );
@@ -119,10 +120,10 @@ public final class StyleSheet {
   static class SelectorWrapper {
 
     public final Selector selector;
-    public final IStylePropertyMap propertyMap;
+    public final StylePropertyMap propertyMap;
     public final int position;
 
-    public SelectorWrapper( Selector selector, IStylePropertyMap propertyMap, int position ) {
+    public SelectorWrapper( Selector selector, StylePropertyMap propertyMap, int position ) {
       this.selector = selector;
       this.propertyMap = propertyMap;
       this.position = position;
@@ -147,4 +148,5 @@ public final class StyleSheet {
       return result;
     }
   }
+
 }
