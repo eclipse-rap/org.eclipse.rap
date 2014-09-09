@@ -479,8 +479,7 @@ public final class Fixture {
   }
 
   public static void fakePhase( PhaseId phase ) {
-    ServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( CurrentPhase.class.getName() + "#value", phase );
+    CurrentPhase.set( phase );
   }
 
   public static void executeLifeCycleFromServerThread() {

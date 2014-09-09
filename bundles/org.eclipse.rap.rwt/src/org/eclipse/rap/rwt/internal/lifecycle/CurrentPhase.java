@@ -25,15 +25,14 @@ public final class CurrentPhase {
   }
 
   public static PhaseId get() {
-    PhaseId result = null;
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore != null ) {
-      result = ( PhaseId )serviceStore.getAttribute( ATTR_CURRENT_PHASE );
+      return ( PhaseId )serviceStore.getAttribute( ATTR_CURRENT_PHASE );
     }
-    return result;
+    return null;
   }
 
-  static void set( PhaseId phaseId ) {
+  public static void set( PhaseId phaseId ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( ATTR_CURRENT_PHASE, phaseId );
   }
