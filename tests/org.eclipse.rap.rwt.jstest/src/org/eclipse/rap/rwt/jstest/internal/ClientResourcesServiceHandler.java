@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.jstest.internal;
 
 import static java.util.Arrays.asList;
-import static org.eclipse.rap.rwt.jstest.internal.RapTestApplicationConfigurator.ENTRY_POINT_PATH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -156,8 +155,7 @@ public class ClientResourcesServiceHandler implements ServiceHandler {
   private static String getResourceLocation( TestContribution contribution, String resource )
     throws IOException
   {
-    StringBuilder url = new StringBuilder( ENTRY_POINT_PATH );
-    url.append( RWT.getServiceManager().getServiceHandlerUrl( ID ) );
+    StringBuilder url = new StringBuilder( RWT.getServiceManager().getServiceHandlerUrl( ID ) );
     appendParameter( url, PARAM_CONTRIBUTION, contribution.getName() );
     appendParameter( url, PARAM_FILE, resource );
     appendParameter( url, PARAM_NOCACHE, getResourceHash( contribution, resource ) );
