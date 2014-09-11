@@ -25,7 +25,19 @@
         description="Background color for trees." />
 
     <property name="border"
-        description="The border around the tree including header." />
+        description="The border that is drawn around the tree including header." />
+
+    <property name="border-top"
+        description="The top side border for trees." />
+
+    <property name="border-right"
+        description="The right side border for trees." />
+
+    <property name="border-bottom"
+        description="The bottom side border for trees." />
+
+    <property name="border-left"
+        description="The left side border for trees." />
 
     <style name="BORDER"
         description="Indicates that the tree should have a border." />

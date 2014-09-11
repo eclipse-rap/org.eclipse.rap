@@ -13,48 +13,41 @@
 
 CCombo {
   border: none;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: #fcfcfc;
-  color: #464a4e;
-  border-radius: 0;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: #4a4a4a;
+  border-radius: 0 2px 2px 0;
   background-image: none;
   text-shadow: none;
 }
 
 CCombo[BORDER] {
-  border: 1px solid #c1c1c1;
-  border-radius: 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e2e2e2 ),
-    color-stop( 15%, #f8f8f8 ),
-    to( #fbfbfb )
-  );
+  border: 1px solid #aaaaaa;
+  border-radius: 0 2px 2px 0;
   text-shadow: none;
 }
 
 CCombo-Button {
   cursor: default;
-  background-color: transparent;
-  border: none;
-  border-left: none;
+  background-color: #efefef;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  width: 18px;
+  width: 30px;
 }
 
 CCombo-Button:pressed {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
 }
 
@@ -66,17 +59,9 @@ CCombo-Button-Icon:hover {
   background-image: url( resource/widget/rap/ccombo/down-hover.png );
 }
 
-CCombo-Button[FLAT] {
-  border: none;
-}
-
-CCombo-Button[FLAT]:hover {
-  border: 1px outset;
-}
-
 CCombo-List {
-  border: 1px solid #c1c1c1;
-  border-radius: 0px 0px 2px 2px;
+  border: 1px solid #4f7cb1;
+  border-radius: 2px;
 }
 
 CCombo-List-Item {
@@ -121,12 +106,12 @@ CCombo-List-Item:selected:even {
 }
 
 CCombo-Field {
-  padding: 2px 3px;
+  padding: 5px 10px;
 }
 
 CCombo-FocusIndicator {
   background-color: transparent;
-  border: 1px dotted #b8b8b8;
-  margin: 1px 19px 1px 1px;
-  opacity: 1;
+  border: none;
+  margin: 0;
+  opacity: 0;
 }

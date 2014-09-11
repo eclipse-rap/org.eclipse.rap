@@ -157,7 +157,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       };
       child.addEventListener( "insertDom", logger );
       child.setParent( parent );
-      parent.setBorder( new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
+      parent.setBorder( new rwt.html.Border( 3, "solid", "#FF00FF", [ 0, 1, 2, 3 ] ) );
       TestUtil.flush();
       assertEquals( 1, log.length );
       assertIdentical( parent._getTargetNode(), log[ 0 ] );

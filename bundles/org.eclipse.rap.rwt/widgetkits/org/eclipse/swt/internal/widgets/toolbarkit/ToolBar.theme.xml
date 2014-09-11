@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -35,7 +35,19 @@
         description="Spacing between the tool items" />
 
     <property name="border"
-        description="Border for tool bar" />
+        description="The border that is drawn around tool bars." />
+
+    <property name="border-top"
+        description="The top side border for tool bars." />
+
+    <property name="border-right"
+        description="The right side border for tool bars." />
+
+    <property name="border-bottom"
+        description="The bottom side border for tool bars." />
+
+    <property name="border-left"
+        description="The left side border for tool bars." />
 
     <property name="border-radius">
       <description>
@@ -44,12 +56,12 @@
       </description>
     </property>
 
-    <property name="opacity" 
+    <property name="opacity"
         description="The opacity of the tool bar. A value between 0 and 1." />
 
     <state name="disabled"
         description="Applies to disabled tool bars" />
-        
+
     <style name="BORDER"
         description="Applies when style BORDER is set" />
 
@@ -66,7 +78,19 @@
           description="Background image for tool bar items" />
 
       <property name="border"
-          description="Border for tool bar items" />
+          description="The border that is drawn around tool bar items." />
+
+      <property name="border-top"
+          description="The top side border for tool items." />
+
+      <property name="border-right"
+          description="The right side border for tool items." />
+
+      <property name="border-bottom"
+          description="The bottom side border for tool items." />
+
+      <property name="border-left"
+          description="The left side border for tool items." />
 
       <property name="border-radius">
         <description>
@@ -87,12 +111,12 @@
       <property name="padding"
           description="Padding (inner distance) for tool bar items." />
 
-      <property name="opacity" 
+      <property name="opacity"
           description="The opacity of the item. A value between 0 and 1." />
 
       <property name="text-shadow"
           description="Shadow for text." />
-          
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent ToolBar." />
 
@@ -125,7 +149,19 @@
           description="The icon" />
 
       <property name="border"
-          description="Border for the line separating the dropDown-icon" />
+          description="Border for the line separating the dropDown-icon." />
+
+      <property name="border-top"
+          description="The top side border for separating line." />
+
+      <property name="border-right"
+          description="The right side border for separating line." />
+
+      <property name="border-bottom"
+          description="The bottom side border for separating line." />
+
+      <property name="border-left"
+          description="The left side border for separating line." />
 
       <state name="hover"
           description="Applies on mouse over." />

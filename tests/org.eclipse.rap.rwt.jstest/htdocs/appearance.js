@@ -407,7 +407,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         } else {
           borderRadii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
         }
-        result.border = new rwt.html.Border( borderWidth, "rounded", color, borderRadii );
+        result.border = new rwt.html.Border( borderWidth, "solid", color, borderRadii );
       } else {
         result.border = new rwt.html.Border( borderWidth, "solid", color );
       }
@@ -491,7 +491,7 @@ rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {
         borderWidths[ 3 ] = 1;
       }
       if( rounded && states.selected ) {
-        result.border = new rwt.html.Border( borderWidths, "rounded", color, radii );
+        result.border = new rwt.html.Border( borderWidths, "solid", color, radii );
         result.containerOverflow = false;
       } else {
         result.border = new rwt.html.Border( borderWidths, "solid", color );

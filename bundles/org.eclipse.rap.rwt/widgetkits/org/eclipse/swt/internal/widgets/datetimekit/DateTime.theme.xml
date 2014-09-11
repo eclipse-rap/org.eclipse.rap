@@ -35,7 +35,19 @@
     </property>
 
     <property name="border"
-        description="DateTime border" />
+        description="The border that is drawn around a DateTime." />
+
+    <property name="border-top"
+        description="The top side border for DateTime." />
+
+    <property name="border-right"
+        description="The right side border for DateTime." />
+
+    <property name="border-bottom"
+        description="The bottom side border for DateTime." />
+
+    <property name="border-left"
+        description="The left side border for DateTime." />
 
     <property name="border-radius">
       <description>
@@ -86,7 +98,19 @@
         description="Day from the calendar">
 
       <property name="border"
-          description="Border for calendar day box." />
+          description="The border that is drawn around calendar day box." />
+
+      <property name="border-top"
+          description="The top side border for calendar day box." />
+
+      <property name="border-right"
+          description="The right side border for calendar day box." />
+
+      <property name="border-bottom"
+          description="The bottom side border for calendar day box." />
+
+      <property name="border-left"
+          description="The left side border for calendar day box." />
 
       <property name="color"
           description="Text color" />
@@ -118,7 +142,19 @@
         description="The calendar navigation bar">
 
       <property name="border"
-          description="Calendar navigation bar border" />
+          description="The border that is drawn around calendar navigation bar." />
+
+      <property name="border-top"
+          description="The top side border for calendar navigation bar." />
+
+      <property name="border-right"
+          description="The right side border for calendar navigation bar." />
+
+      <property name="border-bottom"
+          description="The bottom side border for calendar navigation bar." />
+
+      <property name="border-left"
+          description="The left side border for calendar navigation bar." />
 
       <property name="border-radius">
         <description>
@@ -249,17 +285,20 @@
         </description>
       </property>
 
-      <property name="border">
-        <description>
-          The border of the DateTime Date/Time up button.
-        </description>
-      </property>
+      <property name="border"
+          description="The border that is drawn around DateTime Date/Time up button." />
 
-      <property name="border-left">
-        <description>
-          The left side border of the DateTime Date/Time up button.
-        </description>
-      </property>
+      <property name="border-top"
+          description="The top side border for DateTime Date/Time up button." />
+
+      <property name="border-right"
+          description="The right side border for DateTime Date/Time up button." />
+
+      <property name="border-bottom"
+          description="The bottom side border for DateTime Date/Time up button." />
+
+      <property name="border-left"
+          description="The left side border for DateTime Date/Time up button." />
 
       <property name="border-radius">
         <description>
@@ -320,17 +359,20 @@
         </description>
       </property>
 
-      <property name="border">
-        <description>
-          The border of the DateTime Date/Time down button.
-        </description>
-      </property>
+      <property name="border"
+          description="The border that is drawn around DateTime Date/Time down button." />
 
-      <property name="border-left">
-        <description>
-          The left side border of the DateTime Date/Time down button.
-        </description>
-      </property>
+      <property name="border-top"
+          description="The top side border for DateTime Date/Time down button." />
+
+      <property name="border-right"
+          description="The right side border for DateTime Date/Time down button." />
+
+      <property name="border-bottom"
+          description="The bottom side border for DateTime Date/Time down button." />
+
+      <property name="border-left"
+          description="The left side border for DateTime Date/Time down button." />
 
       <property name="border-radius">
         <description>
@@ -394,17 +436,20 @@
         </description>
       </property>
 
-      <property name="border">
-        <description>
-          The border of the DateTime Date drop-down button.
-        </description>
-      </property>
+      <property name="border"
+          description="The border that is drawn around DateTime Date drop-down button." />
 
-      <property name="border-left">
-        <description>
-          The left side border of the DateTime Date drop-down button.
-        </description>
-      </property>
+      <property name="border-top"
+          description="The top side border for DateTime Date drop-down button." />
+
+      <property name="border-right"
+          description="The right side border for DateTime Date drop-down button." />
+
+      <property name="border-bottom"
+          description="The bottom side border for DateTime Date drop-down button." />
+
+      <property name="border-left"
+          description="The left side border for DateTime Date drop-down button." />
 
       <property name="border-radius">
         <description>
@@ -458,11 +503,20 @@
         used.
       </description>
 
-      <property name="border">
-        <description>
-          The border of the drop-down calendar.
-        </description>
-      </property>
+      <property name="border"
+          description="The border that is drawn around drop-down calendar." />
+
+      <property name="border-top"
+          description="The top side border for drop-down calendar." />
+
+      <property name="border-right"
+          description="The right side border for drop-down calendar." />
+
+      <property name="border-bottom"
+          description="The bottom side border for drop-down calendar." />
+
+      <property name="border-left"
+          description="The left side border for drop-down calendar." />
 
     </element>
 

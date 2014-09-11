@@ -53,8 +53,8 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     },
 
     testConstructor_SetsDefaultPopUpStyling : function() {
-      assertEquals( "solid", popup.getBorder().getStyle() );
-      assertEquals( "#000000", popup.getBorder().getColor() );
+      assertEquals( [ "solid", "solid", "solid", "solid" ], popup.getBorder().getStyles() );
+      assertEquals( [ "#000000", "#000000", "#000000", "#000000" ], popup.getBorder().getColors() );
       assertEquals( [ 1, 1, 1, 1] , popup.getBorder().getWidths() );
       assertEquals( "#ffffff", popup.getBackgroundColor() );
     },

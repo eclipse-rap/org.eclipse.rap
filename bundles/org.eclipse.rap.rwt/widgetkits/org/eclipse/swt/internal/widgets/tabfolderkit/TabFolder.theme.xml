@@ -17,13 +17,25 @@
       description="SWT TabFolder controls (don't mix up with CTabFolder).">
 
       <property name="border"
-        description="Border for TabFolder." />
+          description="The border that is drawn around a TabFolder." />
+
+      <property name="border-top"
+          description="The top side border for TabFolder." />
+
+      <property name="border-right"
+          description="The right side border for TabFolder." />
+
+      <property name="border-bottom"
+          description="The bottom side border for TabFolder." />
+
+      <property name="border-left"
+          description="The left side border for TabFolder." />
 
       <property name="font"
-        description="Font for tab items text." />
+          description="Font for tab items text." />
 
       <style name="BORDER"
-        description="Indicates that the TabFolder should have a border." />
+          description="Indicates that the TabFolder should have a border." />
 
     <element name="TabItem"
         description="Items of TabFolder controls.">
@@ -88,6 +100,21 @@
 
       <property name="border"
           description="Border for the content container." />
+
+      <property name="border"
+          description="The border that is drawn around TabFolder content container." />
+
+      <property name="border-top"
+          description="The top side border for content container." />
+
+      <property name="border-right"
+          description="The right side border for content container." />
+
+      <property name="border-bottom"
+          description="The bottom side border for content container." />
+
+      <property name="border-left"
+          description="The left side border for content container." />
 
     </element>
 

@@ -140,7 +140,19 @@
         description="Background color for badges." />
 
     <property name="border"
-        description="Outer border for badges." />
+        description="The outer border that is drawn around badges." />
+
+    <property name="border-top"
+        description="The top side border for badges." />
+
+    <property name="border-right"
+        description="The right side border for badges." />
+
+    <property name="border-bottom"
+        description="The bottom side border for badges." />
+
+    <property name="border-left"
+        description="The left side border for badges." />
 
     <property name="border-radius">
       <description>
@@ -166,7 +178,19 @@
         description="Background color for tooltips." />
 
     <property name="border"
-        description="Outer border for tooltips." />
+        description="The outer border that is drawn around tooltips." />
+
+    <property name="border-top"
+        description="The top side border for tooltips." />
+
+    <property name="border-right"
+        description="The right side border for tooltips." />
+
+    <property name="border-bottom"
+        description="The bottom side border for tooltips." />
+
+    <property name="border-left"
+        description="The left side border for tooltips." />
 
     <property name="border-radius">
       <description>
@@ -230,6 +254,14 @@
     <property name="font"/>
 
     <property name="border"/>
+
+    <property name="border-top"/>
+
+    <property name="border-right"/>
+
+    <property name="border-bottom"/>
+
+    <property name="border-left"/>
 
     <property name="padding"/>
 

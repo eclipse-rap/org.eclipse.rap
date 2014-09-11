@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -32,9 +32,21 @@
         Applied to the expand item header label.
       </description>
     </property>
-    
+
     <property name="border"
-      description="ExpandBar border" />
+        description="The border that is drawn around an ExpandBar." />
+
+    <property name="border-top"
+        description="The top side border for ExpandBar." />
+
+    <property name="border-right"
+        description="The right side border for ExpandBar." />
+
+    <property name="border-bottom"
+        description="The bottom side border for ExpandBar." />
+
+    <property name="border-left"
+        description="The left side border for ExpandBar." />
 
     <property name="border-radius">
       <description>
@@ -42,20 +54,32 @@
         like "inset" or "outset" is used.
       </description>
     </property>
-    
+
     <state name="disabled"
         description="Applies to disbled ExpandBar controls." />
-    
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
-        
+
     <element name="ExpandItem">
       <description>
         The ExpandItem.
       </description>
 
       <property name="border"
-        description="ExpandItem border" />
+          description="The border that is drawn around an ExpandItem" />
+
+      <property name="border-top"
+          description="The top side border for ExpandItem." />
+
+      <property name="border-right"
+          description="The right side border for ExpandItem." />
+
+      <property name="border-bottom"
+          description="The bottom side border for ExpandItem." />
+
+      <property name="border-left"
+          description="The left side border for ExpandItem." />
 
       <property name="border-radius">
         <description>
@@ -79,15 +103,27 @@
           Background color for the expand item header.
         </description>
       </property>
-      
+
       <property name="background-image">
         <description>
           Background image or gradient for the expand item header.
         </description>
       </property>
-      
+
       <property name="border"
-        description="Expand item header border" />
+          description="The border that is drawn around ExpandItem header." />
+
+      <property name="border-top"
+          description="The top side border for ExpandItem header." />
+
+      <property name="border-right"
+          description="The right side border for ExpandItem header." />
+
+      <property name="border-bottom"
+          description="The bottom side border for ExpandItem header." />
+
+      <property name="border-left"
+          description="The left side border for ExpandItem header." />
 
       <property name="border-radius">
         <description>
@@ -95,7 +131,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Expand item header cursor." />
 
@@ -104,7 +140,7 @@
 
       <state name="expanded"
           description="Applies while the ExpandItem is expanded." />
-          
+
       <state name="disabled"
           description="Applies for disabled ExpandBars." />
 

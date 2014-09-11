@@ -37,7 +37,9 @@ Combo[BORDER]:disabled {
 Combo-Button {
   cursor: default;
   background-color: #efefef;
-  border: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(

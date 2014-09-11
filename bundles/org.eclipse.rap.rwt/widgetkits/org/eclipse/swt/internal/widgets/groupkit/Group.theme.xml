@@ -29,7 +29,19 @@
         description="Font for group boxes. Applied to the group box label." />
 
     <property name="border"
-        description="Border for group boxes." />
+        description="The border that is drawn around group boxes." />
+
+    <property name="border-top"
+        description="The top side border for group boxes." />
+
+    <property name="border-right"
+        description="The right side border for group boxes." />
+
+    <property name="border-bottom"
+        description="The bottom side border for group boxes." />
+
+    <property name="border-left"
+        description="The left side border for group boxes." />
 
     <style name="BORDER"
         description="Indicates that the group box should have a border." />
@@ -41,7 +53,19 @@
         description="The frame that contains the child controls.">
 
       <property name="border"
-          description="Border for group box frames." />
+          description="The border that is drawn for group box frames." />
+
+      <property name="border-top"
+          description="The top side border for group box frames." />
+
+      <property name="border-right"
+          description="The right side border for group box frames." />
+
+      <property name="border-bottom"
+          description="The bottom side border for group box frames." />
+
+      <property name="border-left"
+          description="The left side border for group box frames." />
 
       <property name="border-radius">
         <description>
@@ -68,7 +92,19 @@
         description="The label of a group box.">
 
       <property name="border"
-          description="Border for group box label." />
+          description="The border that is drawn around group box label." />
+
+      <property name="border-top"
+          description="The top side border for group box label." />
+
+      <property name="border-right"
+          description="The right side border for group box label." />
+
+      <property name="border-bottom"
+          description="The bottom side border for group box label." />
+
+      <property name="border-left"
+          description="The left side border for group box label." />
 
       <property name="border-radius">
         <description>

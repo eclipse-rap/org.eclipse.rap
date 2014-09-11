@@ -245,41 +245,58 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
     },
 
     getBorder : function( element, states, property, theme ) {
+      var key = this._createCompleteBorderKey( element, states, theme );
+      var radiiKey = this._getCssValue( element, states, "border-radius", theme );
+      var radii = this._values.boxdims[ radiiKey ];
+      var rounded = radii != null && ( radii.join( "" ) !== "0000" );
+      if( rounded ) {
+        key += "#" + radiiKey;
+      }
+      var border = this._values.borders[ key ];
+      if( !border || !( border instanceof rwt.html.Border ) ) {
+        var top = this.getBorderEdge( element, states, "border-top", theme );
+        var right = this.getBorderEdge( element, states, "border-right", theme );
+        var bottom = this.getBorderEdge( element, states, "border-bottom", theme );
+        var left = this.getBorderEdge( element, states, "border-left", theme );
+        var widths
+          = [ top.getWidthTop(), right.getWidthTop(), bottom.getWidthTop(), left.getWidthTop() ];
+        var colors
+          = [ top.getColorTop(), right.getColorTop(), bottom.getColorTop(), left.getColorTop() ];
+        var styles
+          = [ top.getStyleTop(), right.getStyleTop(), bottom.getStyleTop(), left.getStyleTop() ];
+        border = new rwt.html.Border( widths, styles, colors, rounded ? radii : undefined );
+        this._values.borders[ key ] = border;
+      }
+      return border;
+    },
+
+    getBorderEdge : function( element, states, property, theme ) {
       var border;
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.borders[ key ];
       var resolved = value instanceof rwt.html.Border;
-      var style = resolved ? value.getStyle() : value.style;
-      if( style === "solid" || style === "none" || style === null ) {
-        var radiiKey = this._getCssValue( element, states, "border-radius", theme );
-        var radii = this._values.boxdims[ radiiKey ];
-        if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
-          var roundedBorderKey = key + "#" + radiiKey;
-          var roundedBorder = this._values.borders[ roundedBorderKey ];
-          if( !roundedBorder ) {
-            var width = resolved ? value.getWidthTop() : value.width;
-            var color = resolved ? value.getColorTop() : value.color;
-            border = new rwt.html.Border( width, "rounded", color, radii );
-            this._values.borders[ roundedBorderKey ] = border;
-          } else {
-            border = roundedBorder;
-          }
+      var radiiKey = this._getCssValue( element, states, "border-radius", theme );
+      var radii = this._values.boxdims[ radiiKey ];
+      if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
+        var roundedBorderKey = key + "#" + radiiKey;
+        border = this._values.borders[ roundedBorderKey ];
+        if( !border ) {
+          var width = resolved ? value.getWidthTop() : value.width;
+          var style = resolved ? value.getStyleTop() : value.style;
+          var color = resolved ? value.getColorTop() : value.color;
+          border = new rwt.html.Border( width, style, color, radii );
+          this._values.borders[ roundedBorderKey ] = border;
         }
       }
       if( !border ) {
         if( resolved ) {
           border = value;
         } else {
-          border = this._getBorderFromValue( value );
+          border = new rwt.html.Border( value.width, value.style, value.color );
           this._values.borders[ key ] = border;
         }
       }
       return border;
-    },
-
-    getShadow : function( element, states, property, theme ) {
-      var key = this._getCssValue( element, states, property, theme );
-      return this._values.shadows[ key ];
     },
 
     getNamedBorder : function( name ) {
@@ -297,6 +314,11 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
         }
       }
       return result;
+    },
+
+    getShadow : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.shadows[ key ];
     },
 
     getGradient : function( element, states, property, theme ) {
@@ -419,24 +441,17 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
         = this.getColor( "Widget-ToolTip", {}, "color", theme );
     },
 
-    _getBorderFromValue : function( value ) {
-      var result = null;
-      if( value.color == null ) {
-        if( value.width == 1 ) {
-          if( value.style == "outset" ) {
-            result = this.getNamedBorder( "thinOutset" );
-          } else if( value.style == "inset" ) {
-            result = this.getNamedBorder( "thinInset" );
-          }
-        } else if( value.width == 2 ) {
-          result = this.getNamedBorder( value.style );
-        }
+    _createCompleteBorderKey : function( element, states, theme ) {
+      var topKey = this._getCssValue( element, states, "border-top", theme );
+      var rightKey = this._getCssValue( element, states, "border-right", theme );
+      var bottomKey = this._getCssValue( element, states, "border-bottom", theme );
+      var leftKey = this._getCssValue( element, states, "border-left", theme );
+      if( topKey === rightKey && topKey === bottomKey && topKey === leftKey ) {
+        return topKey;
       }
-      if( result === null ) {
-        result = new rwt.html.Border( value.width, value.style, value.color );
-      }
-      return result;
+      return topKey + "#" + rightKey + "#" + bottomKey + "#" + leftKey;
     }
 
   }
+
 } );

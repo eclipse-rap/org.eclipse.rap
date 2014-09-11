@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -15,19 +15,31 @@
 
   <element name="Sash"
       description="Sash control">
-      
+
     <property name="background-color"
         description="Background color for sash." />
 
     <property name="background-image"
         description="Background image for sash." />
-    
+
     <property name="border"
-        description="The border around the sash." />
+        description="The border that is drawn around sash." />
+
+    <property name="border-top"
+        description="The top side border for sash." />
+
+    <property name="border-right"
+        description="The right side border for sash." />
+
+    <property name="border-bottom"
+        description="The bottom side border for sash." />
+
+    <property name="border-left"
+        description="The left side border for sash." />
 
     <style name="BORDER"
         description="Indicates that the sash should have a border." />
-        
+
     <state name="hover"
         description="Applies while the user hovers over a sash." />
 

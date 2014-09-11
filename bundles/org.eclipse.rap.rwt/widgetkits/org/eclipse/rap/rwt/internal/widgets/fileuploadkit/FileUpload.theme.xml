@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2012, 2013 EclipseSource and others.
+ Copyright (c) 2012, 2014 EclipseSource and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -34,6 +34,18 @@
 
     <property name="border"
         description="Border for FileUpload controls." />
+
+    <property name="border-top"
+        description="The top side border for FileUpload controls." />
+
+    <property name="border-right"
+        description="The right side border for FileUpload controls." />
+
+    <property name="border-bottom"
+        description="The bottom side border for FileUpload controls." />
+
+    <property name="border-left"
+        description="The left side border for FileUpload controls." />
 
     <property name="border-radius">
       <description>
@@ -84,12 +96,20 @@
       <property name="background-color"
           description="The fill-color of the frame." />
 
-      <property name="border">
-        <description>
-          The border of the frame.
-          3D-styles inset, outset, etc are not supported.
-        </description>
-      </property>
+      <property name="border"
+          description="The border of the frame. 3D-styles inset, outset, etc are not supported." />
+
+      <property name="border-top"
+          description="The top side border of the frame." />
+
+      <property name="border-right"
+          description="The right side border of the frame." />
+
+      <property name="border-bottom"
+          description="The bottom side border of the frame." />
+
+      <property name="border-left"
+          description="The left side border of the frame." />
 
       <property name="padding">
         <description>

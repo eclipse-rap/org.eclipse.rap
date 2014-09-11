@@ -69,15 +69,26 @@ public abstract class ThemeTestBase {
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
       CssType expected = expectedValues.getValue( property );
-      SimpleSelector config = new SimpleSelector( selector.getConstraints() );
-      CssType actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
-      if( !actual.equals( expected ) ) {
-        String message =   "Css test failed for "
-                         + createSelectorString( selector )
-                         + ", property "
-                         + property;
-        assertEquals( message, expected, actual );
+      if( property.equals( "border" ) ) {
+        checkProperty( selector, "border-top", expected );
+        checkProperty( selector, "border-right", expected );
+        checkProperty( selector, "border-bottom", expected );
+        checkProperty( selector, "border-left", expected );
+      } else {
+        checkProperty( selector, property, expected );
       }
+    }
+  }
+
+  private static void checkProperty( SelectorExt selector, String property, CssType expected ) {
+    SimpleSelector config = new SimpleSelector( selector.getConstraints() );
+    CssType actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
+    if( !actual.equals( expected ) ) {
+      String message =   "Css test failed for "
+                       + createSelectorString( selector )
+                       + ", property "
+                       + property;
+      assertEquals( message, expected, actual );
     }
   }
 

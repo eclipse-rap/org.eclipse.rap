@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -26,7 +26,19 @@
         description="Text font" />
 
     <property name="border"
-        description="Border for text fields. Also used for spinner widget." />
+        description="The border that is drawn around text fields." />
+
+    <property name="border-top"
+        description="The top side border for text fields." />
+
+    <property name="border-right"
+        description="The right side border for text fields." />
+
+    <property name="border-bottom"
+        description="The bottom side border for text fields." />
+
+    <property name="border-left"
+        description="The left side border for text fields." />
 
     <property name="border-radius">
       <description>

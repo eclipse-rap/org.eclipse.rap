@@ -43,11 +43,20 @@
       </description>
     </property>
 
-    <property name="border">
-      <description>
-        The border that is drawn around a CCombo.
-      </description>
-    </property>
+    <property name="border"
+        description="The border that is drawn around a CCombo." />
+
+    <property name="border-top"
+        description="The top side border for CCombo." />
+
+    <property name="border-right"
+        description="The right side border for CCombo." />
+
+    <property name="border-bottom"
+        description="The bottom side border for CCombo." />
+
+    <property name="border-left"
+        description="The left side border for CCombo." />
 
     <property name="border-radius">
         <description>
@@ -92,17 +101,20 @@
         </description>
       </property>
 
-      <property name="border">
-        <description>
-          The border of the drop-down button of the CCombo.
-        </description>
-      </property>
+      <property name="border"
+          description="The border of the drop-down button of the CCombo." />
 
-      <property name="border-left">
-        <description>
-          The left side border of the CCombo drop-down button.
-        </description>
-      </property>
+      <property name="border-top"
+          description="The top side border of the CCombo drop-down button." />
+
+      <property name="border-right"
+          description="The right side border of the CCombo drop-down button." />
+
+      <property name="border-bottom"
+          description="The bottom side border of the CCombo drop-down button." />
+
+      <property name="border-left"
+          description="The left side border of the CCombo drop-down button." />
 
       <property name="border-radius">
           <description>
@@ -177,11 +189,20 @@
         The list of RWT CCombo.
       </description>
 
-      <property name="border">
-        <description>
-          The border of the list of the CCombo.
-        </description>
-      </property>
+      <property name="border"
+          description="The border of the CCombo list." />
+
+      <property name="border-top"
+          description="The top side border for CCombo list." />
+
+      <property name="border-right"
+          description="The right side border for CCombo list." />
+
+      <property name="border-bottom"
+          description="The bottom side border for CCombo list." />
+
+      <property name="border-left"
+          description="The left side border for CCombo list." />
 
       <property name="border-radius">
           <description>
@@ -237,12 +258,20 @@
       <property name="background-color"
           description="The fill-color of the frame." />
 
-      <property name="border">
-        <description>
-          The border of the frame.
-          3D-styles inset, outset, etc are not supported.
-        </description>
-      </property>
+      <property name="border"
+          description="The border of the frame. 3D-styles inset, outset, etc are not supported." />
+
+      <property name="border-top"
+          description="The top side border of the frame." />
+
+      <property name="border-right"
+          description="The right side border of the frame." />
+
+      <property name="border-bottom"
+          description="The bottom side border of the frame." />
+
+      <property name="border-left"
+          description="The left side border of the frame." />
 
       <property name="margin">
         <description>

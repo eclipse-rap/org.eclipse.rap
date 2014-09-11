@@ -116,6 +116,13 @@ public final class PropertyResolver {
 
   public void resolveProperty( String name, LexicalUnit unit, ResourceLoader loader ) {
     if( isBorderProperty( name ) ) {
+      CssBorder border = readBorder( unit );
+      resolvedProperties.setProperty( name, border );
+      resolvedProperties.setProperty( "border-top", border );
+      resolvedProperties.setProperty( "border-right", border );
+      resolvedProperties.setProperty( "border-bottom", border );
+      resolvedProperties.setProperty( "border-left", border );
+    } else if( isBorderEdgeProperty( name ) ) {
       resolvedProperties.setProperty( name, readBorder( unit ) );
     } else if( isBoxDimensionProperty( name ) ) {
       resolvedProperties.setProperty( name, readBoxDimensions( unit ) );
@@ -289,9 +296,14 @@ public final class PropertyResolver {
   }
 
   static boolean isBorderProperty( String property ) {
-    return    "border".equals( property )
-           || "border-left".equals( property )
-           || "border-bottom".equals( property );
+    return "border".equals( property );
+  }
+
+  static boolean isBorderEdgeProperty( String property ) {
+    return    "border-top".equals( property )
+           || "border-right".equals( property )
+           || "border-bottom".equals( property )
+           || "border-left".equals( property );
   }
 
   static CssBorder readBorder( LexicalUnit unit ) {

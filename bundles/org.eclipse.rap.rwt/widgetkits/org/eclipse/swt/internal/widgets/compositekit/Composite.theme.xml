@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -18,11 +18,20 @@
       The theming of RWT Composite.
     </description>
 
-    <property name="border">
-      <description>
-        The border that is drawn around the composite.
-      </description>
-    </property>
+    <property name="border"
+        description="The border that is drawn around the composite." />
+
+    <property name="border-top"
+        description="The top side border for composites." />
+
+    <property name="border-right"
+        description="The right side border for composites." />
+
+    <property name="border-bottom"
+        description="The bottom side border for composites." />
+
+    <property name="border-left"
+        description="The left side border for composites." />
 
     <property name="border-radius">
       <description>

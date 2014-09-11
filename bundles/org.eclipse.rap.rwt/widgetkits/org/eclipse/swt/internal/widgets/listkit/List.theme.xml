@@ -26,7 +26,19 @@
         description="Background color for lists." />
 
     <property name="border"
-        description="Border for lists." />
+        description="The border that is drawn around lists." />
+
+    <property name="border-top"
+        description="The top side border for lists." />
+
+    <property name="border-right"
+        description="The right side border for lists." />
+
+    <property name="border-bottom"
+        description="The bottom side border for lists." />
+
+    <property name="border-left"
+        description="The left side border for lists." />
 
     <style name="BORDER"
         description="Indicates that the list should have a border." />

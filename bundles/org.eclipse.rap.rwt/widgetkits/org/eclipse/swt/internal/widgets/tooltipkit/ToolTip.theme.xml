@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2011 Rüdiger Herrmann and others.
+ Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -15,31 +15,31 @@
 
   <element name="ToolTip">
     <description>
-      ToolTip widgets represent popup windows that are used to inform or warn 
+      ToolTip widgets represent popup windows that are used to inform or warn
       the user
     </description>
 
     <style name="BALLOON"
         description="Style constant for balloon behavior." />
-    
+
     <style name="ICON_ERROR"
         description="The image used for ToolTips with style SWT#ICON_ERROR." />
-    
+
     <style name="ICON_INFORMATION"
         description="The image used for ToolTips with style SWT#ICON_INFORMATION." />
-    
+
     <style name="ICON_WARNING"
         description="The image used for ToolTips with style SWT#ICON_WARNING." />
 
     <property name="font"
         description="Text font for tooltips." />
-        
+
     <property name="color"
         description="Text color" />
 
     <property name="background-color"
         description="Background color" />
-        
+
     <property name="cursor"
         description="The cursor for the tooltip" />
 
@@ -49,11 +49,23 @@
       </description>
     </property>
 
-    <property name="opacity" 
+    <property name="opacity"
         description="The opacity of the tooltip widget. A value between 0 and 1." />
 
     <property name="border"
-        description="Border for text tooltip widget." />
+        description="The border that is drawn around tooltip widget." />
+
+    <property name="border-top"
+        description="The top side border for tooltip widgets." />
+
+    <property name="border-right"
+        description="The right side border for tooltip widgets." />
+
+    <property name="border-bottom"
+        description="The bottom side border for tooltip widgets." />
+
+    <property name="border-left"
+        description="The left side border for tooltip widgets." />
 
     <property name="border-radius">
       <description>
@@ -73,9 +85,9 @@
 
     <property name="box-shadow" description="The shadow behind the tooltip." />
 
-    <element name="ToolTip-Image" 
+    <element name="ToolTip-Image"
         description="The image area.">
-      
+
       <style name="ICON_ERROR"
           description="The image used for ToolTips with style SWT#ICON_ERROR." />
 
@@ -84,18 +96,18 @@
 
       <style name="ICON_WARNING"
           description="The image used for ToolTips with style SWT#ICON_WARNING." />
-  
+
       <property name="background-image"
           description="The image URL" />
 
     </element>
 
-    <element name="ToolTip-Text" 
+    <element name="ToolTip-Text"
         description="The title text area.">
-      
+
       <property name="color"
           description="Text message color" />
-        
+
       <property name="font"
           description="Text font" />
 
@@ -104,12 +116,12 @@
 
     </element>
 
-    <element name="ToolTip-Message" 
+    <element name="ToolTip-Message"
         description="The message area.">
-      
+
       <property name="color"
           description="Text message color" />
-        
+
       <property name="font"
           description="Text font" />
 

@@ -20,6 +20,18 @@
     <property name="border"
         description="Border for DropDown widget." />
 
+    <property name="border-top"
+        description="The top side border for DropDown widget." />
+
+    <property name="border-right"
+        description="The right side border for DropDown widget." />
+
+    <property name="border-bottom"
+        description="The bottom side border for DropDown widget." />
+
+    <property name="border-left"
+        description="The left side border for DropDown widget." />
+
     <property name="border-radius">
       <description>
         Border radius. The border radius has no effect if an enhanced border,

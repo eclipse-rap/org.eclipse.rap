@@ -33,6 +33,7 @@ public class DefaultTheme_Test extends ThemeTestBase {
     processCssTestFile( getClass(), "CLabel.test.css" );
     processCssTestFile( getClass(), "Label.test.css" );
     processCssTestFile( getClass(), "ExpandBar.test.css" );
+    processCssTestFile( getClass(), "CCombo.test.css" );
     processCssTestFile( getClass(), "Combo.test.css" );
     processCssTestFile( getClass(), "DropDown.test.css" );
     processCssTestFile( getClass(), "Spinner.test.css" );

@@ -66,7 +66,7 @@ describe( "Badges", function() {
           return key === "background-color" ? "#ff00ff" : "#00ff00";
         }
       };
-      themeValues.getCssBorder.andReturn( new rwt.html.Border( 2, "rounded", "#fff000", 3 ) );
+      themeValues.getCssBorder.andReturn( new rwt.html.Border( 2, "solid", "#fff000", 3 ) );
       themeValues.getCssFont.andReturn( new rwt.html.Font( 6, [ "fantasy" ] ) );
       spyOn( rwt.theme, "ThemeValues").andCallFake( function() {
         return themeValues;

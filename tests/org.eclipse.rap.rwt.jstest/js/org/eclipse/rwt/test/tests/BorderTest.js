@@ -71,7 +71,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRoundedBorderConstructor : function() {
       // NOTE: Render RoundedBorder Tests are only in GraphicsMixinTest for now
-      var border = new rwt.html.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
+      var border = new rwt.html.Border( 3, "solid", "#FF00F0", [ 0, 1, 2, 3 ] );
       assertEquals( "#FF00F0", border.getColor() );
       assertEquals( 3, border.getWidthTop() );
       assertEquals( [ 0, 1, 2, 3 ], border.getRadii() );
@@ -80,7 +80,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
 
     testRoundedBorderWithoutRadii : function() {
       try{
-        var border = new rwt.html.Border( 3, "rounded", "#FF00F0" );
+        var border = new rwt.html.Border( 3, "solid", "#FF00F0" );
         fail();
       } catch( ex ) {
         //expected
@@ -88,7 +88,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     },
 
     testRoundedBorderWithSingleRadius: function() {
-      var border = new rwt.html.Border( 3, "rounded", "#FF00F0", 4 );
+      var border = new rwt.html.Border( 3, "solid", "#FF00F0", 4 );
       assertEquals( [ 4, 4, 4, 4 ], border.getRadii() );
       border.dispose();
     },
@@ -96,7 +96,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     testRoundedBorderWithMultipleColors : function() {
       var colors = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       try{
-        var border = new rwt.html.Border( 3, "rounded", colors, [ 3, 3, 3, 3 ] );
+        var border = new rwt.html.Border( 3, "solid", colors, [ 3, 3, 3, 3 ] );
         fail();
       } catch( ex ) {
         //expected
@@ -296,7 +296,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
-        var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var border = new rwt.html.Border( 3, "solid", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
         assertEquals( [ "", "", "", "" ], this._getBorderColors( widget._style ) );
         assertEquals( [ "", "", "", "" ], this._getBorderStyles( widget._style ) );
@@ -320,7 +320,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
-        var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var border = new rwt.html.Border( 3, "solid", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
         widget.setBorder( border );
         TestUtil.flush();
@@ -339,7 +339,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
-        var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var border = new rwt.html.Border( 3, "solid", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
         widget.setBorder( border );
         TestUtil.flush();
@@ -356,7 +356,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       if( rwt.client.Client.supportsCss3() ) {
         var radii = [ 0, 1, 2, 3 ];
-        var border = new rwt.html.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var border = new rwt.html.Border( 3, "solid", "#FF00FF", [ 0, 1, 2, 3 ] );
         var widget = this._createWidget();
         widget.setBorder( border );
         TestUtil.flush();

@@ -151,7 +151,9 @@ DateTime-UpButton {
     to( #efefef )
   );;
   width: 30px;
-  border: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 0px 0px;
   cursor: default;
@@ -173,7 +175,9 @@ DateTime-DownButton {
     to( #e4e4e4 )
   );
   width: 30px;
-  border: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
@@ -182,7 +186,9 @@ DateTime-DownButton {
 DateTime-DropDownButton {
   cursor: default;
   background-color: #f0f0f0;
-  border: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(

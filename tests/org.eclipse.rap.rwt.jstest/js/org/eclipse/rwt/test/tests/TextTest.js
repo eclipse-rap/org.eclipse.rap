@@ -324,7 +324,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       if( !Client.supportsCss3() ) {
         createText();
         text.setPadding( 3 );
-        text.setBorder( new Border( 1, "rounded", "black", 0 ) );
+        text.setBorder( new Border( 1, "solid", "black", 0 ) );
         TestUtil.flush();
         assertEquals( "", text._style.paddingLeft );
         assertEquals( "3px", text._innerStyle.paddingLeft );

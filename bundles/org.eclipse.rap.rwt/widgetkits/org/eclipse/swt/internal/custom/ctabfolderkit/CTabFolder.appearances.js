@@ -28,20 +28,17 @@ var appearances = {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
+      var width = states.rwt_BORDER ? 1 : 0;
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
-      var borderWidth = states.rwt_BORDER ? 1 : 0;
-      if( radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0 ) {
-        var borderRadii;
+      if( radii.join( "" ) !== "0000" ) {
         if( states.barTop ) {
-          borderRadii = [ radii[ 0 ], radii[ 1 ], 0, 0 ];
+          radii = [ radii[ 0 ], radii[ 1 ], 0, 0 ];
         } else {
-          borderRadii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
+          radii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
         }
-        result.border = new rwt.html.Border( borderWidth, "rounded", color, borderRadii );
-      } else {
-        result.border = new rwt.html.Border( borderWidth, "solid", color );
       }
+      result.border = new rwt.html.Border( width, "solid", color, radii );
       return result;
     }
   },
@@ -122,7 +119,7 @@ var appearances = {
         borderWidths[ 3 ] = 1;
       }
       if( rounded && states.selected ) {
-        result.border = new rwt.html.Border( borderWidths, "rounded", color, radii );
+        result.border = new rwt.html.Border( borderWidths, "solid", color, radii );
         result.containerOverflow = false;
       } else {
         result.border = new rwt.html.Border( borderWidths, "solid", color );

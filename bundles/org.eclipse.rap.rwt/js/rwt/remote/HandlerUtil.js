@@ -344,7 +344,7 @@ rwt.remote.HandlerUtil = {
         var width = value[ 0 ];
         var color = rwt.util.Colors.rgbToRgbString( value[ 1 ] );
         var radii = value.slice( -4 );
-        var border = new rwt.html.Border( width, "rounded", color, radii );
+        var border = new rwt.html.Border( width, "solid", color, radii );
         widget.setBorder( border );
       } else {
         widget.resetBorder();

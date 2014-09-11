@@ -39,7 +39,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       var widget = new rwt.widgets.Composite();
       handler( widget, [ 1, [ 0, 0, 255, 255 ], 2, 3, 4, 5 ] );
       var border = widget.getBorder();
-      assertEquals( "rounded", border.getStyle() );
+      assertEquals( "solid", border.getStyle() );
       assertEquals( "rgb(0,0,255)", border.getColor() );
       assertEquals( [ 2, 3, 4, 5 ], border.getRadii() );
     },

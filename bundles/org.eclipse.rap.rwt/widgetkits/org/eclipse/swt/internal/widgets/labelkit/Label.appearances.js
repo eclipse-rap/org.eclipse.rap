@@ -52,17 +52,6 @@ var appearances = {
         result.height = tv.getCssDimension( "Label-SeparatorLine", "width" );
       }
       result.border = tv.getCssBorder( "Label-SeparatorLine", "border" );
-      var orient = states.rwt_VERTICAL ? "vertical" : "horizontal";
-      // TODO [tb] : Can we prevent creating a potentially useless border instance?
-      var borderName;
-      if( result.border === tv.getCssNamedBorder( "thinInset" ) ) {
-        borderName = "separator.shadowin." + orient + ".border";
-      } else if( result.border === tv.getCssNamedBorder( "thinOutset" ) ) {
-        borderName = "separator.shadowout." + orient + ".border";
-      }
-      if( borderName ) {
-        result.border = tv.getCssNamedBorder( borderName );
-      }
       result.backgroundColor = tv.getCssColor( "Label-SeparatorLine", "background-color" );
       result.backgroundImage = tv.getCssImage( "Label-SeparatorLine", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Label-SeparatorLine", "background-image" );

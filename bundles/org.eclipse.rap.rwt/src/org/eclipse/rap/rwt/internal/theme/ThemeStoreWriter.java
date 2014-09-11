@@ -66,27 +66,29 @@ public final class ThemeStoreWriter {
                                                 IThemeCssElement element )
   {
     JsonObject result = new JsonObject();
-    String[] properties = element.getProperties();
     ThemePropertyAdapterRegistry registry
       = ThemePropertyAdapterRegistry.getInstance( applicationContext );
-    for( int i = 0; i < properties.length; i++ ) {
-      String propertyName = properties[ i ];
-      JsonArray valuesArray = new JsonArray();
-      String elementName = element.getName();
-      ConditionalValue[] values = valuesMap.getValues( elementName, propertyName );
-      for( int j = 0; j < values.length; j++ ) {
-        ConditionalValue conditionalValue = values[ j ];
-        JsonArray array = new JsonArray();
-        array.add( createJsonArray( conditionalValue.constraints ) );
-        CssType value = conditionalValue.value;
-        ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
-        String cssKey = adapter.getKey( value );
-        array.add( cssKey );
-        valuesArray.add( array );
+    for( String propertyName : element.getProperties() ) {
+      if( shouldRenderProperty( propertyName ) ) {
+        JsonArray valuesArray = new JsonArray();
+        String elementName = element.getName();
+        for( ConditionalValue conditionalValue : valuesMap.getValues( elementName, propertyName ) ) {
+          JsonArray array = new JsonArray();
+          array.add( createJsonArray( conditionalValue.constraints ) );
+          CssType value = conditionalValue.value;
+          ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
+          String cssKey = adapter.getKey( value );
+          array.add( cssKey );
+          valuesArray.add( array );
+        }
+        result.add( propertyName, valuesArray );
       }
-      result.add( propertyName, valuesArray );
     }
     return result;
+  }
+
+  private boolean shouldRenderProperty( String propertyName ) {
+    return !"border".equals( propertyName );
   }
 
   private Map createValuesMap( CssType[] values ) {

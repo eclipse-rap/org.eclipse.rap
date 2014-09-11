@@ -91,6 +91,53 @@ public class PropertyResolver_Test {
   }
 
   @Test
+  public void testResolveProperty_resolvesBorderToBorderEdges() throws Exception {
+    LexicalUnit unit = parseProperty( "1px solid black" );
+
+    propertyResolver.resolveProperty( "border", unit, null );
+
+    StylePropertyMap resolvedProperties = propertyResolver.getResolvedProperties();
+    CssBorder border = CssBorder.create( 1, "solid", CssColor.BLACK );
+    assertEquals( border, resolvedProperties.getValue( "border-top" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-right" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-bottom" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-left" ) );
+  }
+
+  @Test
+  public void testResolveProperty_borderEdgeOverwritesBorder() throws Exception {
+    LexicalUnit borderUnit = parseProperty( "1px solid black" );
+    LexicalUnit borderTopUnit = parseProperty( "2px dashed white" );
+
+    propertyResolver.resolveProperty( "border", borderUnit, null );
+    propertyResolver.resolveProperty( "border-top", borderTopUnit, null );
+
+    StylePropertyMap resolvedProperties = propertyResolver.getResolvedProperties();
+    CssBorder border = CssBorder.create( 1, "solid", CssColor.BLACK );
+    CssBorder borderTop = CssBorder.create( 2, "dashed", CssColor.WHITE );
+    assertEquals( borderTop, resolvedProperties.getValue( "border-top" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-right" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-bottom" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-left" ) );
+  }
+
+  @Test
+  public void testResolveProperty_borderOverwritesBorderEdges() throws Exception {
+    LexicalUnit borderUnit = parseProperty( "1px solid black" );
+    LexicalUnit borderTopUnit = parseProperty( "2px dashed white" );
+
+    propertyResolver.resolveProperty( "border-top", borderTopUnit, null );
+    propertyResolver.resolveProperty( "border", borderUnit, null );
+
+    StylePropertyMap resolvedProperties = propertyResolver.getResolvedProperties();
+    CssBorder border = CssBorder.create( 1, "solid", CssColor.BLACK );
+    assertEquals( border, resolvedProperties.getValue( "border-top" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-right" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-bottom" ) );
+    assertEquals( border, resolvedProperties.getValue( "border-left" ) );
+  }
+
+  @Test
   public void testColor() throws Exception {
     CssColor transparent = PropertyResolver.readColor( parseProperty( "transparent" ) );
     assertEquals( CssColor.TRANSPARENT, transparent );
@@ -915,8 +962,14 @@ public class PropertyResolver_Test {
   @Test
   public void testIsBorderProperty() {
     assertTrue( PropertyResolver.isBorderProperty( "border" ) );
-    assertTrue( PropertyResolver.isBorderProperty( "border-left" ) );
-    assertTrue( PropertyResolver.isBorderProperty( "border-bottom" ) );
+  }
+
+  @Test
+  public void testIsBorderEdgeProperty() {
+    assertTrue( PropertyResolver.isBorderEdgeProperty( "border-top" ) );
+    assertTrue( PropertyResolver.isBorderEdgeProperty( "border-right" ) );
+    assertTrue( PropertyResolver.isBorderEdgeProperty( "border-bottom" ) );
+    assertTrue( PropertyResolver.isBorderEdgeProperty( "border-left" ) );
   }
 
   @Test

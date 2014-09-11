@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -19,6 +19,18 @@
     <property name="border"
         description="Outer window border." />
 
+    <property name="border-top"
+        description="The top side border for sells." />
+
+    <property name="border-right"
+        description="The right side border for sells." />
+
+    <property name="border-bottom"
+        description="The bottom side border for sells." />
+
+    <property name="border-left"
+        description="The left side border for sells." />
+
     <property name="border-radius">
       <description>
         Border radius. The border radius has no effect if an enhanced border,
@@ -35,20 +47,20 @@
     <property name="background-color"
         description="Background color for shells." />
 
-    <property name="opacity" 
+    <property name="opacity"
         description="The opacity of the shell. A value between 0 and 1." />
-        
-    <property name="box-shadow" 
+
+    <property name="box-shadow"
         description="The shadow behind the shell." />
 
     <property name="animation">
       <description>
-        Animation that is triggered on emergence and disappearance of a Shell. 
-        Supported animation types are "flyInTop", "flyInBottom", "flyInRight", "flyInLeft", 
+        Animation that is triggered on emergence and disappearance of a Shell.
+        Supported animation types are "flyInTop", "flyInBottom", "flyInRight", "flyInLeft",
         "flyOutTop", "flyOutBottom", "flyOutRight" and "flyOutLeft".
       </description>
     </property>
-    
+
     <style name="BORDER"
         description="Indicates that the shell should have a border." />
 
@@ -109,7 +121,7 @@
       <property name="height"
           description="Height of the title bar." />
 
-      <property name="text-shadow" 
+      <property name="text-shadow"
           description="Shadow for title bar text." />
 
       <state name="inactive"
@@ -117,6 +129,18 @@
 
       <property name="border"
           description="Shell titlebar border." />
+
+      <property name="border-top"
+          description="The top side border for shell titlebar." />
+
+      <property name="border-right"
+          description="The right side border for shell titlebar." />
+
+      <property name="border-bottom"
+          description="The bottom side border for shell titlebar." />
+
+      <property name="border-left"
+          description="The left side border for shell titlebar." />
 
       <property name="border-radius">
         <description>
@@ -198,10 +222,10 @@
 
     <element name="Shell-DisplayOverlay">
       <description>
-        An overlay that stays between (regarding the z-order) the display area 
+        An overlay that stays between (regarding the z-order) the display area
         and a modal shell when it is open.
       </description>
-      
+
       <property name="background-color"
           description="Background color for the overlay." />
 
@@ -213,24 +237,24 @@
         Supports animations-types "fadeIn" and "fadeOut". Others are ignored.
       </description>
     </property>
- 
-      <property name="opacity" 
-          description="The opacity of the overlay. A value between 0 and 1." />
- 
-      <style name="BORDER"
-          description="Indicates that the modal shell has the BORDER style." /> 
 
-      <style name="TOOL" 
+      <property name="opacity"
+          description="The opacity of the overlay. A value between 0 and 1." />
+
+      <style name="BORDER"
+          description="Indicates that the modal shell has the BORDER style." />
+
+      <style name="TOOL"
           description="Indicates that the modal shell has the TOOL style." />
 
-      <style name="SHEET" 
+      <style name="SHEET"
           description="Indicates that the modal shell has the SHEET style." />
 
-      <style name="TITLE" 
+      <style name="TITLE"
           description="Indicates that the modal shell has the TITLE style." />
 
     </element>
-    
+
   </element>
 
 </theme>

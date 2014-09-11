@@ -25,6 +25,8 @@ import org.junit.Test;
 
 
 public class ThemeStoreWriter_Test {
+
+  private static final String THEME_WRITE_BORDERS = "themeWriteBorders";
   private static final String THEME_WRITE_IMAGES = "themeWriteImages";
   private static final String THEME_WRITE_COLORS = "themeWriteColors";
   private static final String THEME_WRITE_SHADOW = "themeWriteShadow";
@@ -226,6 +228,29 @@ public class ThemeStoreWriter_Test {
     assertTrue( output.contains( expected ) );
   }
 
+  @Test
+  public void testWriteBorder_onlyFourEdgeProperties() {
+    ThemeCssElement element = new ThemeCssElement( "Button" );
+    element.addProperty( "border" );
+    element.addProperty( "border-top" );
+    element.addProperty( "border-right" );
+    element.addProperty( "border-bottom" );
+    element.addProperty( "border-left" );
+    Theme theme = getTheme( THEME_WRITE_BORDERS );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
+    String output = storeWriter.createJson();
+
+    String expected =
+        "\"Button\":{"
+      + "\"border-top\":[[[],\"674bae62\"]],"
+      + "\"border-right\":[[[],\"385f3eae\"]],"
+      + "\"border-bottom\":[[[],\"385f3eae\"]],"
+      + "\"border-left\":[[[],\"385f3eae\"]]"
+      + "}";
+    assertTrue( output.contains( expected ) );
+  }
+
   private void initializeThemesOnFirstSetUp() throws Exception {
     if( themes == null ) {
       themes = new HashMap<String,Theme>();
@@ -236,17 +261,25 @@ public class ThemeStoreWriter_Test {
       registerThemeForTestWriteImages();
       registerThemeForTestWriteShadow();
       registerThemeForTestWriteVerticalGradient();
+      registerThemeForTestWriteBorders();
     }
   }
 
+  private void registerThemeForTestWriteBorders() throws IOException {
+    String cssCode =   "Button { border: 1px solid red;\n"
+                     + "  border-top: 2px dashed blue; "
+                     + "}\n";
+    registerTheme( THEME_WRITE_BORDERS, cssCode );
+  }
+
   private void registerThemeForTestWriteImages() throws IOException {
-    String cssCode = "Button { background-image: url( " + Fixture.IMAGE_100x50 + " );\n"
-    + "  background-repeat: repeat-x;\n"
-    + "  background-position: left top; }\n"
-    + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
-    + "  from( #000000 ),\n"
-    + "  to( #ffffff )\n"
-    + "); }\n";
+    String cssCode =   "Button { background-image: url( " + Fixture.IMAGE_100x50 + " );\n"
+                     + "  background-repeat: repeat-x;\n"
+                     + "  background-position: left top; }\n"
+                     + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
+                     + "  from( #000000 ),\n"
+                     + "  to( #ffffff )\n"
+                     + "); }\n";
     registerTheme( THEME_WRITE_IMAGES, cssCode );
   }
 

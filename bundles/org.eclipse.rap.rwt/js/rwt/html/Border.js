@@ -22,7 +22,7 @@ rwt.qx.Class.define( "rwt.html.Border", {
    *
    * @param width Integer. Multiple values can be given for rounded border but only the
    *        biggest and zero may be used. Null is allowed.
-   * @param style String, either a browser-recognized border-style, or "complex" or "rounded".
+   * @param style String, either a browser-recognized border-style or "complex".
    *        The last two are not accepted as an array, only as a single string.
    * @param color String in any browser-recognized color-format. For rounded border only one
    *        color may be given.
@@ -35,7 +35,7 @@ rwt.qx.Class.define( "rwt.html.Border", {
     this._widths = null;
     this._styles = null;
     this._innerColors = [ null, null, null, null ];
-    this._radii = [ null, null, null, null ];
+    this._radii = [ 0, 0, 0, 0 ];
     this._singleColor = null;
     this._singleStyle = null;
     this._setWidth( width );
@@ -46,13 +46,8 @@ rwt.qx.Class.define( "rwt.html.Border", {
         throw new Error( "Missing innerColors" );
       }
       this._setInnerColor( colorsOrRadii );
-    } else if( style === "rounded" ) {
-      if( colorsOrRadii === undefined || this.getColor() === null ) {
-        throw new Error( "Invalid arguments for border style rounded" );
-      }
-      this._setRadii( colorsOrRadii );
     } else if( colorsOrRadii !== undefined ) {
-      throw new Error( "colorsOrRadii set for style " + this.getStyle() );
+      this._setRadii( colorsOrRadii );
     }
   },
 
@@ -141,14 +136,8 @@ rwt.qx.Class.define( "rwt.html.Border", {
     _setStyle : function( value ) {
       if( typeof value === "string" ) {
         this._singleStyle = value;
-        if( value === "complex" || value === "rounded" ) {
-          this._styles = this._normalizeValue( "solid" );
-        } else {
-          this._styles = this._normalizeValue( value );
-        }
-      } else {
-        this._styles = this._normalizeValue( value );
       }
+      this._styles = this._normalizeValue( value === "complex" ? "solid" : value );
     },
 
     _setInnerColor : function( value ) {
@@ -264,7 +253,7 @@ rwt.qx.Class.define( "rwt.html.Border", {
     renderWidget : function( widget ) {
       if( this.getStyle() === "complex" ) {
         this._renderComplexBorder( widget );
-      } else if( this.getStyle() === "rounded" ) {
+      } else if( this._isRounded() ) {
         this._renderRoundedBorder( widget );
       } else {
         this._renderSimpleBorder( widget );
@@ -276,7 +265,7 @@ rwt.qx.Class.define( "rwt.html.Border", {
         throw new Error( "Rendering complex or rounded border on elements currently unsupported" );
       }
       this._renderSimpleBorderStyle( element.style );
-      if( this.getStyle() === "rounded" ) {
+      if( this._isRounded() ) {
         this._renderRadii( element.style );
       }
     },
@@ -354,6 +343,10 @@ rwt.qx.Class.define( "rwt.html.Border", {
       for( var i = 0; i < 4; i++ ) {
         style[ statics._BORDERRADII[ i ] ] = this._radii[ i ] + "px";
       }
+    },
+
+    _isRounded : function() {
+      return this._radii.join( "" ) !== "0000";
     }
 
   }
