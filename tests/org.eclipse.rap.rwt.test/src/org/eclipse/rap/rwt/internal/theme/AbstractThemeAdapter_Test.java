@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
@@ -23,6 +22,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -100,15 +100,15 @@ public class AbstractThemeAdapter_Test {
     // check default values
     Color defaultColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertNotNull( defaultColor );
-    int defaultBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
+    Rectangle defaultBorderWidth = adapter.getCssBorder( "CustomWidget", custom );
     // switch theme
     ThemeUtil.setCurrentThemeId( ContextProvider.getUISession(), "customId" );
     // color is redefined
     Color customColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertFalse( defaultColor.equals( customColor ) );
     // borderWidth is not
-    int customBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
-    assertTrue( defaultBorderWidth == customBorderWidth );
+    Rectangle customBorderWidth = adapter.getCssBorder( "CustomWidget", custom );
+    assertEquals( defaultBorderWidth, customBorderWidth );
     getApplicationContext().getThemeManager().deactivate();
   }
 

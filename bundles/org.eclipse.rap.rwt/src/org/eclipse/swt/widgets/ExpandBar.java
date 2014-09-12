@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,7 +183,7 @@ public class ExpandBar extends Composite {
         height += spacing;
         for( int i = 0; i < itemCount; i++ ) {
           ExpandItem item = getItem( i );
-          height += item.getHeaderHeight();
+          height += item.getHeaderHeight() + item.getItemBorder().height;
           if( item.expanded ) {
             height += item.height;
           }
@@ -205,9 +205,9 @@ public class ExpandBar extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
+    Rectangle border = getBorder();
+    width += border.width;
+    height += border.height;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
       width += getVerticalBar().getSize().x;
     }
@@ -376,7 +376,7 @@ public class ExpandBar extends Composite {
         if( item.expanded ) {
           y += item.height;
         }
-        y += item.getHeaderHeight() + spacing;
+        y += item.getHeaderHeight() + item.getItemBorder().height + spacing;
       }
       for( int i = index; i < itemCount; i++ ) {
         ExpandItem item = getItem( i );
@@ -384,7 +384,7 @@ public class ExpandBar extends Composite {
         if( item.expanded ) {
           y += item.height;
         }
-        y += item.getHeaderHeight() + spacing;
+        y += item.getHeaderHeight() + item.getItemBorder().height + spacing;
       }
     }
     // Calculate all items size
@@ -395,15 +395,15 @@ public class ExpandBar extends Composite {
     updateScrollBars();
     // Set items width based on scrollbar visibility
     Rectangle bounds = getBounds();
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     int scrollBarWidth = getVScrollBarWidth();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
       if( isVScrollBarVisible() ) {
-        int width = bounds.width - scrollBarWidth - 2 * border - 2 * spacing;
+        int width = bounds.width - scrollBarWidth - border.width - 2 * spacing;
         item.setBounds( 0, 0, width, item.height, false, true );
       } else {
-        int width = bounds.width - 2 * border - 2 * spacing;
+        int width = bounds.width - border.width - 2 * spacing;
         item.setBounds( 0, 0, width, item.height, false, true );
       }
     }
@@ -481,7 +481,8 @@ public class ExpandBar extends Composite {
   private void updateScrollBars() {
     ScrollBar vScroll = getVerticalBar();
     if( vScroll != null ) {
-      vScroll.setVisible( allItemsHeight > getBounds().height - 2 * getBorderWidth() - spacing );
+      int availableHeight = getBounds().height - getBorder().height - spacing;
+      vScroll.setVisible( allItemsHeight > availableHeight );
     }
   }
 

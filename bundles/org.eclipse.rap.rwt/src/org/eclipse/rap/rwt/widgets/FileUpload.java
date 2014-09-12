@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -314,8 +314,7 @@ public class FileUpload extends Canvas {
     if( height == 0 ) {
       height = 10;
     }
-    FileUploadThemeAdapter themeAdapter
-      = ( FileUploadThemeAdapter )getAdapter( IThemeAdapter.class );
+    FileUploadThemeAdapter themeAdapter = getThemeAdapter();
     if( hasText && hasImage ) {
       int spacing = themeAdapter.getSpacing( this );
       width += spacing;
@@ -329,9 +328,9 @@ public class FileUpload extends Canvas {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
+    Rectangle border = themeAdapter.getBorder( this );
+    width += border.width;
+    height += border.height;
     return new Point( width, height );
   }
 
@@ -362,6 +361,10 @@ public class FileUpload extends Canvas {
   private static int checkStyle( int style ) {
     int mask = SWT.BORDER | SWT.MULTI;
     return style & mask;
+  }
+
+  private FileUploadThemeAdapter getThemeAdapter() {
+    return ( FileUploadThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 
   ////////////////

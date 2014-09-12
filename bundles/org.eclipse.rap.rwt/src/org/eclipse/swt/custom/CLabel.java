@@ -157,17 +157,17 @@ public class CLabel extends Canvas {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    int borderWidth = getCLabelThemeAdapter().getBorderWidth( this );
+    Rectangle border = getCLabelThemeAdapter().getBorder( this );
     Point e = getTotalSize( image, text );
     if ( wHint == SWT.DEFAULT ) {
       e.x += leftMargin + rightMargin;
-      e.x += 2 * borderWidth;
+      e.x += border.width;
     } else {
       e.x = wHint;
     }
     if ( hHint == SWT.DEFAULT ) {
       e.y += topMargin + bottomMargin;
-      e.y += 2 * borderWidth;
+      e.y += border.height;
     } else {
       e.y = hHint;
     }

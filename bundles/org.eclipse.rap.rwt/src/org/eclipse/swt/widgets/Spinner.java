@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -503,7 +503,7 @@ public class Spinner extends Composite {
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
     if( hHint == SWT.DEFAULT ) {
-      int upDownHeight = UP_DOWN_MIN_HEIGHT + 2 * getBorderWidth();
+      int upDownHeight = UP_DOWN_MIN_HEIGHT + getBorder().height;
       trim.height = Math.max( trim.height, upDownHeight );
     }
     return new Point( trim.width, trim.height );
@@ -514,11 +514,11 @@ public class Spinner extends Composite {
     checkWidget();
     Rectangle result = new Rectangle( x, y, width, height );
     if( ( style & SWT.BORDER ) != 0 ) {
-      int border = getBorderWidth();
-      result.x -= border ;
-      result.y -= border;
-      result.width += 2 * border;
-      result.height += 2 * border;
+      Rectangle border = getBorder();
+      result.x -= border.x;
+      result.y -= border.y;
+      result.width += border.width;
+      result.height += border.height;
     }
     int buttonWidth = getButtonWidth();
     result.width += buttonWidth;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.layout;
 import java.util.List;
 
 import org.eclipse.jface.util.Geometry;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -332,8 +333,9 @@ public class SizeCache {
             widthAdjustment = trim.width;
             heightAdjustment = trim.height;
         } else {
-            // For non-composites, subtract off 2 * the border size
-            widthAdjustment = control.getBorderWidth() * 2;
+            // For non-composites, subtract off border width size
+            ControlThemeAdapter themeAdapter = control.getAdapter( ControlThemeAdapter.class );
+            widthAdjustment = themeAdapter.getBorder( control ).width;
             heightAdjustment = widthAdjustment;
         }
     }

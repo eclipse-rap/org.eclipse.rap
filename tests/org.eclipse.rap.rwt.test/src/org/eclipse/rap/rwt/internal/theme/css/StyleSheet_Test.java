@@ -72,7 +72,7 @@ public class StyleSheet_Test {
   @Test
   public void testGetConditionalValues() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_EXAMPLE_CSS );
-    ConditionalValue[] values = styleSheet.getValues( "Button", "border" );
+    ConditionalValue[] values = styleSheet.getValues( "Button", "border-top" );
     CssColor color = CssColor.valueOf( "#1695d4" );
     assertEquals( 5, values.length );
     assertEquals( "[BORDER,[TOGGLE", join( values[ 0 ].constraints ) );

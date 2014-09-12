@@ -444,9 +444,7 @@ public abstract class Control extends Widget implements Drawable {
     }
     Color result = control.background;
     if( result == null ) {
-      ControlThemeAdapter themeAdapter =
-        ( ControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-      result = themeAdapter.getBackground( control );
+      result = getControlThemeAdapter().getBackground( control );
     }
     Shell shell = control.getShell();
     control = control.parent;
@@ -554,8 +552,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     Color result = foreground;
     if( result == null ) {
-      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
-      result = themeAdapter.getForeground( this );
+      result = getControlThemeAdapter().getForeground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -666,8 +663,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     Font result = font;
     if( result == null ) {
-      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
-      result = themeAdapter.getFont( this );
+      result = getControlThemeAdapter().getFont( this );
     }
     return result;
   }
@@ -1078,9 +1074,9 @@ public abstract class Control extends Widget implements Drawable {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
+    Rectangle border = getBorder();
+    width += border.width;
+    height += border.height;
     return new Point( width, height );
   }
 
@@ -1130,6 +1126,8 @@ public abstract class Control extends Widget implements Drawable {
 
   /**
    * Returns the receiver's border width.
+   * Note: When the theming defines different border widths for the four edges, this method returns
+   * the maximum border width.
    *
    * @return the border width
    *
@@ -1140,16 +1138,22 @@ public abstract class Control extends Widget implements Drawable {
    */
   public int getBorderWidth() {
     checkWidget();
-    ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getBorderWidth( this );
+    return getControlThemeAdapter().getBorderWidth( this );
+  }
+
+  Rectangle getBorder() {
+    return getControlThemeAdapter().getBorder( this );
   }
 
   Rectangle getPadding() {
     if( bufferedPadding == null ) {
-      ControlThemeAdapter themeAdapter = ( ControlThemeAdapter )getAdapter( IThemeAdapter.class );
-      bufferedPadding = themeAdapter.getPadding( this );
+      bufferedPadding = getControlThemeAdapter().getPadding( this );
     }
     return bufferedPadding;
+  }
+
+  private ControlThemeAdapter getControlThemeAdapter() {
+    return getAdapter( ControlThemeAdapter.class );
   }
 
   /**
@@ -1474,6 +1478,8 @@ public abstract class Control extends Widget implements Drawable {
         controlAdapter = new ControlAdapter();
       }
       result = ( T )controlAdapter;
+    } else if( adapter == ControlThemeAdapter.class ) {
+      result = ( T )super.getAdapter( IThemeAdapter.class );
     } else {
       result = super.getAdapter( adapter );
     }

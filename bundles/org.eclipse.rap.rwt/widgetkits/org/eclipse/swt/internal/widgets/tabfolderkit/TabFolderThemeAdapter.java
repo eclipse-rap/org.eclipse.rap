@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.TabFolder;
 
 public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
 
-  public int getContentContainerBorderWidth( TabFolder folder ) {
-    return getCssBorderWidth( "TabFolder-ContentContainer", "border", folder );
+  public Rectangle getContentContainerBorder( TabFolder folder ) {
+    return getCssBorder( "TabFolder-ContentContainer", folder );
   }
 
   public Rectangle getItemPadding( boolean selected ) {

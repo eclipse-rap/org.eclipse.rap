@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -195,9 +195,7 @@ public class ExpandItem extends Item {
    */
   public int getHeaderHeight() {
     checkWidget();
-    int headerHeight = Math.max( parent.getBandHeight(), imageHeight );
-    headerHeight += getItemHeaderBorderWidth();
-    return headerHeight;
+    return Math.max( parent.getBandHeight(), imageHeight ) + getItemHeaderBorder().height;
   }
 
   /**
@@ -254,10 +252,12 @@ public class ExpandItem extends Item {
 
   Rectangle getBounds() {
     Rectangle result;
+    int headerHeight = getHeaderHeight();
+    int itemBorderHeight = getItemBorder().height;
     if( expanded ) {
-      result = new Rectangle( x, y, width, getHeaderHeight() + height );
+      result = new Rectangle( x, y, width, headerHeight + itemBorderHeight + height );
     } else {
-      result = new Rectangle( x, y, width, getHeaderHeight() );
+      result = new Rectangle( x, y, width, headerHeight + itemBorderHeight );
     }
     return result;
   }
@@ -281,10 +281,11 @@ public class ExpandItem extends Item {
     }
     if( control != null && !control.isDisposed() ) {
       if( !parent.isAppThemed() ) {
-        int border = getItemBorderWidth();
-        aX += border;
-        aWidth = Math.max( 0, aWidth - border * 2 );
-        aHeight = Math.max( 0, aHeight - border );
+        Rectangle border = getItemBorder();
+        aX += border.x;
+        aY += border.y;
+        aWidth = Math.max( 0, aWidth - border.width );
+        aHeight = Math.max( 0, aHeight - border.height );
       }
       if( move && size ) {
         control.setBounds( aX, aY + headerHeight, aWidth, aHeight );
@@ -330,10 +331,10 @@ public class ExpandItem extends Item {
       int headerHeight = getHeaderHeight();
       control.setVisible( expanded );
       if( !parent.isAppThemed() ) {
-        int border = getItemBorderWidth();
-        int width = Math.max( 0, this.width - border * 2 );
-        int height = Math.max( 0, this.height - border );
-        control.setBounds( x + border, y + headerHeight, width, height );
+        Rectangle border = getItemBorder();
+        int width = Math.max( 0, this.width - border.width );
+        int height = Math.max( 0, this.height - border.height );
+        control.setBounds( x + border.x, y + border.y + headerHeight, width, height );
       } else {
         control.setBounds( x, y + headerHeight, width, height );
       }
@@ -422,15 +423,16 @@ public class ExpandItem extends Item {
   ////////////////////////////
   // Helping methods - various
 
-  int getItemBorderWidth() {
-    ExpandBarThemeAdapter themeAdapter
-      = ( ExpandBarThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-    return themeAdapter.getItemBorderWidth( parent );
+  Rectangle getItemBorder() {
+    return getExpandBarThemeAdapter().getItemBorder( parent );
   }
 
-  int getItemHeaderBorderWidth() {
-    ExpandBarThemeAdapter themeAdapter
-      = ( ExpandBarThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-    return themeAdapter.getItemHeaderBorderWidth( parent );
+  Rectangle getItemHeaderBorder() {
+    return getExpandBarThemeAdapter().getItemHeaderBorder( parent );
   }
+
+  private ExpandBarThemeAdapter getExpandBarThemeAdapter() {
+    return ( ExpandBarThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+  }
+
 }

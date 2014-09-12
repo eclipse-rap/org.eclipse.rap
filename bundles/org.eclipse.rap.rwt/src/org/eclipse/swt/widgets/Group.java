@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -143,9 +143,9 @@ public class Group extends Composite {
     Rectangle bounds = getBounds();
     GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
-    int border = getBorderWidth();
-    int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
-    int height = Math.max( 0, bounds.height - trimmings.height - 2 * border );
+    Rectangle border = getBorder();
+    int width = Math.max( 0, bounds.width - trimmings.width - border.width );
+    int height = Math.max( 0, bounds.height - trimmings.height - border.height );
     return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
 
@@ -154,11 +154,11 @@ public class Group extends Composite {
     GroupThemeAdapter themeAdapter
       = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
-    int border = getBorderWidth();
-    return super.computeTrim( x - trimmings.x - border,
-                              y - trimmings.y - border,
-                              width + trimmings.width + 2 * border,
-                              height + trimmings.height + 2 * border );
+    Rectangle border = getBorder();
+    return super.computeTrim( x - trimmings.x - border.x,
+                              y - trimmings.y - border.y,
+                              width + trimmings.width + border.width,
+                              height + trimmings.height + border.height );
   }
 
   @Override

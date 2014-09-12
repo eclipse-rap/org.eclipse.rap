@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.graphics.Point;
@@ -229,7 +230,9 @@ public class TrimArea {
 			// the banner will occupy is calculated
 			if (ctrl instanceof CBanner) {
 				CBanner banner = (CBanner) ctrl;
-				prefSize.x = banner.getRightWidth() + banner.getBorderWidth() + MIN_BANNER_LEFT;
+				ControlThemeAdapter themeAdapter = banner.getAdapter( ControlThemeAdapter.class );
+                Rectangle border = themeAdapter.getBorder( banner );
+				prefSize.x = banner.getRightWidth() + border.width + MIN_BANNER_LEFT;
 				prefSize.y = 0;  // No height for now, computed later
 			}
 			else if (getData(ctrl).getId().equals("org.eclipse.jface.action.StatusLineManager")) { //$NON-NLS-1$

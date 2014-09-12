@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,7 @@ public class ToolBar extends Composite {
     this.itemHolder = new ItemHolder<ToolItem>( ToolItem.class );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -236,6 +237,7 @@ public class ToolBar extends Composite {
   ////////////////////
   // Size computations
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -284,11 +286,6 @@ public class ToolBar extends Composite {
     return new Point( width, height );
   }
 
-  public int getBorderWidth() {
-    ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getBorderWidth( this );
-  }
-
   Rectangle getToolBarPadding() {
     ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getToolBarPadding( this );
@@ -313,6 +310,7 @@ public class ToolBar extends Composite {
     return 1;
   }
 
+  @Override
   public void setBounds( Rectangle bounds ) {
     Point oldSize = getSize();
     super.setBounds( bounds );
@@ -321,6 +319,7 @@ public class ToolBar extends Composite {
     }
   }
 
+  @Override
   public void setFont( Font font ) {
     super.setFont( font );
     layoutItems();
@@ -329,6 +328,7 @@ public class ToolBar extends Composite {
   ////////////////////////
   // Child control removal
 
+  @Override
   void removeControl( Control control ) {
     super.removeControl( control );
     ToolItem[] items = itemHolder.getItems();
@@ -343,6 +343,7 @@ public class ToolBar extends Composite {
   ////////////////////
   // Widget overrides
 
+  @Override
   final void releaseChildren() {
     ToolItem[] toolItems = itemHolder.getItems();
     for( int i = 0; i < toolItems.length; i++ ) {
@@ -388,6 +389,7 @@ public class ToolBar extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     ToolItem[] items = getItems();
     if( items != null ) {
@@ -400,4 +402,5 @@ public class ToolBar extends Composite {
     }
     super.reskinChildren( flags );
   }
+
 }

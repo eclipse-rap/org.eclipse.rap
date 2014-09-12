@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -652,10 +652,10 @@ public class DateTime extends Composite {
     Font font = getFont();
     int width = 0, height = 0;
     Rectangle padding = getFieldPadding();
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     if( ( style & SWT.CALENDAR ) != 0 ) {
-      width = cellSize.x * 8 + border * 2;
-      height = cellSize.y * 7 + CALENDAR_HEADER_HEIGHT + border * 2;
+      width = cellSize.x * 8 + border.width;
+      height = cellSize.y * 7 + CALENDAR_HEADER_HEIGHT + border.height;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( datePattern.equals( "MDY" ) ) {
@@ -670,8 +670,8 @@ public class DateTime extends Composite {
         }
       }
       // Overall default widget size
-      width = prefSize.x + border * 2;
-      height = prefSize.y + border * 2;
+      width = prefSize.x + border.width;
+      height = prefSize.y + border.height;
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
@@ -706,8 +706,8 @@ public class DateTime extends Composite {
       spinnerBounds.width = getSpinnerButtonWidth();
       spinnerBounds.height = hoursTextFieldBounds.height + padding.height;
       // Overall default widget size
-      width = spinnerBounds.x + spinnerBounds.width + border * 2;
-      height = spinnerBounds.height + border * 2;
+      width = spinnerBounds.x + spinnerBounds.width + border.width;
+      height = spinnerBounds.height + border.height;
     }
     adjustButtonsBounds();
     return new Point( width, height );
@@ -938,13 +938,13 @@ public class DateTime extends Composite {
 
   private void adjustButtonsBounds() {
     Point size = getSize();
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
-      dropDownButtonBounds.x = size.x - 2 * border - dropDownButtonBounds.width;
-      dropDownButtonBounds.height = size.y - 2 * border;
+      dropDownButtonBounds.x = size.x - border.width - dropDownButtonBounds.width;
+      dropDownButtonBounds.height = size.y - border.height;
     } else if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
-      spinnerBounds.x = size.x - 2 * border - spinnerBounds.width;
-      spinnerBounds.height = size.y - 2 * border;
+      spinnerBounds.x = size.x - border.width - spinnerBounds.width;
+      spinnerBounds.height = size.y - border.height;
     }
   }
 

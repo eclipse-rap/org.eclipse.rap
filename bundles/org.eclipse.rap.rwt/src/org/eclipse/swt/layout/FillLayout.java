@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.layout;
 
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -155,7 +156,9 @@ Point computeChildSize (Control control, int wHint, int hHint, boolean flushCach
       trimX = rect.width;
       trimY = rect.height;
     } else {
-      trimX = trimY = control.getBorderWidth () * 2;
+      Rectangle border = control.getAdapter( ControlThemeAdapter.class ).getBorder( control );
+      trimX = border.width;
+      trimY = border.height;
     }
     int w = wHint == SWT.DEFAULT ? wHint : Math.max (0, wHint - trimX);
     int h = hHint == SWT.DEFAULT ? hHint : Math.max (0, hHint - trimY);

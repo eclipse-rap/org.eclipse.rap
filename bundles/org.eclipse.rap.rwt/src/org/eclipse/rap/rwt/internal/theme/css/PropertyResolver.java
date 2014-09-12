@@ -117,7 +117,6 @@ public final class PropertyResolver {
   public void resolveProperty( String name, LexicalUnit unit, ResourceLoader loader ) {
     if( isBorderProperty( name ) ) {
       CssBorder border = readBorder( unit );
-      resolvedProperties.setProperty( name, border );
       resolvedProperties.setProperty( "border-top", border );
       resolvedProperties.setProperty( "border-right", border );
       resolvedProperties.setProperty( "border-bottom", border );

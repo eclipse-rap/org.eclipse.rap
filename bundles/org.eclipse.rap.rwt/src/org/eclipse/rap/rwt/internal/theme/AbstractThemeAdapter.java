@@ -63,6 +63,14 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
     return CssFont.createFont( ( CssFont )cssValue );
   }
 
+  protected Rectangle getCssBorder( String cssElement, Widget widget ) {
+    int top = getCssBorderWidth( cssElement, "border-top", widget );
+    int right = getCssBorderWidth( cssElement, "border-right", widget );
+    int bottom = getCssBorderWidth( cssElement, "border-bottom", widget );
+    int left = getCssBorderWidth( cssElement, "border-left", widget );
+    return new Rectangle( left, top, left + right, top + bottom );
+  }
+
   protected int getCssBorderWidth( String cssElement, String cssProperty, Widget widget ) {
     CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return ( ( CssBorder )cssValue ).width;

@@ -504,11 +504,11 @@ public class Shell extends Decorations {
     hTopTrim = getTitleBarMargin().height;
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     return new Rectangle( padding.x,
                           hTopTrim + padding.y,
-                          bounds.width - padding.width - border * 2,
-                          bounds.height - hTopTrim - padding.height - border * 2 );
+                          bounds.width - padding.width - border.width,
+                          bounds.height - hTopTrim - padding.height - border.height );
   }
 
   // TODO [rst] Move to class Decorations, as soon as it exists
@@ -517,11 +517,11 @@ public class Shell extends Decorations {
     checkWidget();
     int hTopTrim = getTopTrim();
     Rectangle padding = getPadding();
-    int border = getBorderWidth();
-    Rectangle rect = new Rectangle( x - padding.x - border,
-                                    y - hTopTrim - padding.y - border,
-                                    width + padding.width + border * 2,
-                                    height + hTopTrim + padding.height + border * 2 );
+    Rectangle border = getBorder();
+    Rectangle rect = new Rectangle( x - padding.x - border.x,
+                                    y - hTopTrim - padding.y - border.y,
+                                    width + padding.width + border.width,
+                                    height + hTopTrim + padding.height + border.height );
     return rect;
   }
 
@@ -532,10 +532,7 @@ public class Shell extends Decorations {
   }
 
   private int getMinHeightLimit() {
-    int result = getTitleBarMargin().height;
-    result += getTitleBarHeight();
-    result += 2 * getBorderWidth();
-    return result;
+    return getTitleBarMargin().height + getTitleBarHeight() + getBorder().height;
   }
 
   private Rectangle getMenuBounds() {
@@ -547,10 +544,10 @@ public class Shell extends Decorations {
       int hTop = ( style & SWT.TITLE ) != 0 ? 1 : 0;
       hTop += getTitleBarHeight();
       Rectangle padding = getPadding();
-      int border = getBorderWidth();
+      Rectangle border = getBorder();
       result = new Rectangle( padding.x,
                               hTop + padding.y,
-                              bounds.width - padding.width - border * 2,
+                              bounds.width - padding.width - border.width,
                               getMenuBarHeight() );
     }
     return result;
@@ -559,6 +556,11 @@ public class Shell extends Decorations {
   @Override
   public int getBorderWidth() {
     return getFullScreen() ? 0 : super.getBorderWidth();
+  }
+
+  @Override
+  Rectangle getBorder() {
+    return getFullScreen() ? new Rectangle( 0, 0, 0, 0 ) : super.getBorder();
   }
 
   private int getTopTrim() {

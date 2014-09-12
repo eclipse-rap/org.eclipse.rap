@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
@@ -628,8 +629,8 @@ public class ScrolledComposite extends Composite {
       return false;
     }
     Rectangle hostRect = getBounds();
-    int border = getBorderWidth();
-    hostRect.width -= 2 * border;
+    Rectangle border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
+    hostRect.width -= border.width;
     ScrollBar vBar = getVerticalBar();
     if( vVisible && vBar != null ) {
       hostRect.width -= vBar.getSize().x;
@@ -649,8 +650,8 @@ public class ScrolledComposite extends Composite {
       return false;
     }
     Rectangle hostRect = getBounds();
-    int border = getBorderWidth();
-    hostRect.height -= 2 * border;
+    Rectangle border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
+    hostRect.height -= border.height;
     ScrollBar hBar = getHorizontalBar();
     if( hVisible && hBar != null ) {
       hostRect.height -= hBar.getSize().y;

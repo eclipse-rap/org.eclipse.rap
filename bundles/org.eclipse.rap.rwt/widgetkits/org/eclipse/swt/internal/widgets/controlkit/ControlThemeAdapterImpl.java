@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 
-public class ControlThemeAdapterImpl extends AbstractThemeAdapter
-  implements ControlThemeAdapter
-{
+public class ControlThemeAdapterImpl extends AbstractThemeAdapter implements ControlThemeAdapter {
 
   @Override
   protected void configureMatcher( WidgetMatcher matcher ) {
@@ -31,7 +29,14 @@ public class ControlThemeAdapterImpl extends AbstractThemeAdapter
   }
 
   public int getBorderWidth( Control control ) {
-    return getCssBorderWidth( getPrimaryElement( control ), "border", control );
+    Rectangle borderWidths = getBorder( control );
+    int max1 = Math.max( borderWidths.x, borderWidths.width - borderWidths.x );
+    int max2 = Math.max( borderWidths.y, borderWidths.height - borderWidths.y );
+    return Math.max( max1, max2 );
+  }
+
+  public Rectangle getBorder( Control control ) {
+    return getCssBorder( getPrimaryElement( control ), control );
   }
 
   public Rectangle getPadding( Control control ) {

@@ -127,8 +127,7 @@ public class ExpandItem_Test {
     item.setText( "What is your favorite button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    assertEquals( composite.getSize().y + item.getItemBorderWidth(),
-                  item.getHeight() );
+    assertEquals( composite.getSize().y + item.getItemBorder().height, item.getHeight() );
   }
 
   @Test

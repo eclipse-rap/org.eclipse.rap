@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.layout;
 
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -219,7 +220,7 @@ Point layout (Composite composite, boolean move, int x, int y, int width, int he
           Rectangle rect = ((Scrollable) child).computeTrim (0, 0, 0, 0);
           trim = rect.width;
         } else {
-          trim = child.getBorderWidth () * 2;
+          trim = child.getAdapter( ControlThemeAdapter.class ).getBorder( child ).width;
         }
         data.cacheWidth = data.cacheHeight = SWT.DEFAULT;
         data.computeSize (child, Math.max (0, data.minimumWidth - trim), data.heightHint, false);
@@ -468,7 +469,7 @@ Point layout (Composite composite, boolean move, int x, int y, int width, int he
                 Rectangle rect = ((Scrollable) child).computeTrim (0, 0, 0, 0);
                 trim = rect.width;
               } else {
-                trim = child.getBorderWidth () * 2;
+                trim = child.getAdapter( ControlThemeAdapter.class ).getBorder( child ).width;
               }
               data.cacheWidth = data.cacheHeight = SWT.DEFAULT;
               data.computeSize (child, Math.max (0, currentWidth - trim), data.heightHint, false);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,8 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
     matcher.addStyle( "FLAT", SWT.FLAT );
   }
 
-  public int getItemBorderWidth( Control control ) {
-    return getCssBorderWidth( "ToolItem", "border", control );
+  public Rectangle getItemBorder( Control control ) {
+    return getCssBorder( "ToolItem", control );
   }
 
   public Rectangle getItemPadding( Control control ) {
@@ -51,8 +51,7 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
   }
 
   public Point getDropDownImageDimension( Control control ) {
-    return getCssImageDimension(
-      "ToolItem-DropDownIcon", "background-image", control );
+    return getCssImageDimension( "ToolItem-DropDownIcon", "background-image", control );
   }
 
 }

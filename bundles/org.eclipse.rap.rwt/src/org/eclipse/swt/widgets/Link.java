@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 
@@ -205,7 +206,7 @@ public class Link extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     if( ( displayText.length() > 0 ) ) {
       // Replace '&' with '&&' to ensure proper size calculation with one '&',
       // because the other will be escaped in
@@ -221,8 +222,8 @@ public class Link extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    width += border * 2 + PADDING * 2;
-    height += border * 2 + PADDING * 2;
+    width += border.width + PADDING * 2;
+    height += border.height + PADDING * 2;
     return new Point( width, height );
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.swt.custom;
 // import org.eclipse.swt.*;
 // import org.eclipse.swt.graphics.*;
 // import org.eclipse.swt.widgets.*;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -132,7 +133,7 @@ class CBannerLayout extends Layout {
       Rectangle rect = ( ( Scrollable )c ).computeTrim( 0, 0, 0, 0 );
       return rect.width;
     }
-    return c.getBorderWidth() * 2;
+    return c.getAdapter( ControlThemeAdapter.class ).getBorder( c ).width;
   }
 
   protected boolean flushCache( Control control ) {
@@ -151,8 +152,9 @@ class CBannerLayout extends Layout {
     Sash separator = banner.separator;
     Point size = banner.getSize();
     boolean showCurve = left != null && right != null;
-    int width = size.x - 2 * banner.getBorderWidth();
-    int height = size.y - 2 * banner.getBorderWidth();
+    Rectangle border = banner.getAdapter( ControlThemeAdapter.class ).getBorder( banner );
+    int width = size.x - border.width;
+    int height = size.y - border.height;
     Point bottomSize = new Point( 0, 0 );
     if( bottom != null ) {
       int trim = computeTrim( bottom );

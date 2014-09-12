@@ -250,7 +250,7 @@ public class TabItem extends Item {
           result.y += SELECTED_ITEM_BORDER;
         }
       } else {
-        result.y = parent.getBounds().height - 2 * parent.getBorderWidth() - result.height;
+        result.y = parent.getBounds().height - parent.getBorder().height - result.height;
         if( index != selectionIndex ) {
           result.y -= SELECTED_ITEM_BORDER;
         }

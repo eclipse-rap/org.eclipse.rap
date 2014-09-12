@@ -437,9 +437,9 @@ public class Button extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
+    Rectangle border = getBorder();
+    width += border.width;
+    height += border.height;
     return new Point( width, height );
   }
 

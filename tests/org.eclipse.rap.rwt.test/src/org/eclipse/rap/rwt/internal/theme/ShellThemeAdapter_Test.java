@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class ShellThemeAdapter_Test {
     setCustomTheme(   " * { color: blue; }"
                     + "Shell { border: 3px solid blue; background-color: yellow; }" );
 
-    assertEquals( 3, themeAdapter.getBorderWidth( shell ) );
+    assertEquals( new Rectangle( 3, 3, 6, 6 ), themeAdapter.getBorder( shell ) );
     assertEquals( blue, themeAdapter.getForeground( shell ) );
     assertEquals( yellow, themeAdapter.getBackground( shell ) );
   }
@@ -64,9 +64,9 @@ public class ShellThemeAdapter_Test {
   public void testShellWithBorder() {
     Shell shell = new Shell( display, SWT.BORDER );
     ShellThemeAdapter themeAdapter = getShellThemeAdapter( shell );
-    assertEquals( 1, themeAdapter.getBorderWidth( shell ) );
+    assertEquals( new Rectangle( 1, 1, 2, 2 ), themeAdapter.getBorder( shell ) );
     shell.setMaximized( true );
-    assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getBorder( shell ) );
   }
 
   @Test

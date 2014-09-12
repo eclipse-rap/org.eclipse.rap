@@ -1721,9 +1721,9 @@ public class Tree extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();
-    width += border * 2;
-    height += border * 2;
+    Rectangle border = getBorder();
+    width += border.width;
+    height += border.height;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
       width += getVerticalBar().getSize().x;
     }

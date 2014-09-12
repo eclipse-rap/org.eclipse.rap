@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -71,15 +72,21 @@ protected Point computeSize(Composite composite, int wHint, int hHint, boolean f
     total += ratios[i];
   }
   if (ratios[maxIndex] > 0) {
-    int sashwidth = sashForm.sashes.length > 0 ? sashForm.SASH_WIDTH + sashForm.sashes [0].getBorderWidth() * 2 : sashForm.SASH_WIDTH;
+    int sashwidth = sashForm.SASH_WIDTH;
+    if( sashForm.sashes.length > 0 ) {
+      Sash first = sashForm.sashes[ 0 ];
+      Rectangle border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
+      sashwidth += border.width;
+    }
     if (vertical) {
       height += (int)(total * maxValue / ratios[maxIndex]) + (cArray.length - 1) * sashwidth;
     } else {
       width += (int)(total * maxValue / ratios[maxIndex]) + (cArray.length - 1) * sashwidth;
     }
   }
-  width += sashForm.getBorderWidth()*2;
-  height += sashForm.getBorderWidth()*2;
+  Rectangle border = sashForm.getAdapter( ControlThemeAdapter.class ).getBorder( sashForm );
+  width += border.width;
+  height += border.height;
   if (wHint != SWT.DEFAULT) width = wHint;
   if (hHint != SWT.DEFAULT) height = hHint;
   return new Point(width, height);
@@ -155,8 +162,12 @@ protected void layout(Composite composite, boolean flushCache) {
     }
     total += ratios[i];
   }
-  
-  int sashwidth = sashes.length > 0 ? sashForm.SASH_WIDTH + sashes [0].getBorderWidth() * 2 : sashForm.SASH_WIDTH;
+  int sashwidth = sashForm.SASH_WIDTH;
+  if( sashes.length > 0 ) {
+    Sash first = sashes[ 0 ];
+    Rectangle border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
+    sashwidth =+ border.width;
+  }
   if (sashForm.getOrientation() == SWT.HORIZONTAL) {
     int width = (int)(ratios[0] * (area.width - sashes.length * sashwidth) / total);
     int x = area.x;

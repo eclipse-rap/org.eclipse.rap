@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -512,7 +512,7 @@ public class ToolItem extends Item {
       }
       int innerParentHeight = parent.getSize().y
                             - parent.getToolBarPadding().height
-                            - parent.getBorderWidth() * 2;
+                            - parent.getBorder().height;
       top += parent.getToolBarPadding().y + innerParentHeight / 2 - height / 2;
       top = Math.max( top, 0 );
     }
@@ -573,7 +573,7 @@ public class ToolItem extends Item {
   int getPreferredHeight() {
     int height = DEFAULT_HEIGHT;
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      int frameHeight = getPadding().height + ( getBorderWidth() * 2 );
+      int frameHeight = getPadding().height + getBorder().height;
       if( !"".equals( getText() ) ) {
         int charHeight = TextSizeUtil.getCharHeight( parent.getFont() );
         height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
@@ -601,7 +601,7 @@ public class ToolItem extends Item {
       result += getSpacing();
     }
     int paddingWidth = getPadding().width;
-    int borderWidth = getBorderWidth() * 2;
+    int borderWidth = getBorder().width;
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       result += getSpacing() * 2;
       result += 1; // the separator-line
@@ -611,34 +611,28 @@ public class ToolItem extends Item {
     return result;
   }
 
-  private int getBorderWidth() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemBorderWidth( parent );
+  private Rectangle getBorder() {
+    return getToolBarThemeAdapter().getItemBorder( parent );
   }
 
   private Point getDropDownImageDimension() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getDropDownImageDimension( parent );
+    return getToolBarThemeAdapter().getDropDownImageDimension( parent );
   }
 
   private Rectangle getPadding() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemPadding( parent );
+    return getToolBarThemeAdapter().getItemPadding( parent );
   }
 
   private int getToolBarSpacing() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getToolBarSpacing( parent );
+    return getToolBarThemeAdapter().getToolBarSpacing( parent );
   }
 
   private int getSpacing() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemSpacing( parent );
+    return getToolBarThemeAdapter().getItemSpacing( parent );
   }
 
   int getSeparatorWidth() {
-    ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getSeparatorWidth( parent );
+    return getToolBarThemeAdapter().getSeparatorWidth( parent );
   }
 
   private ToolBarThemeAdapter getToolBarThemeAdapter() {

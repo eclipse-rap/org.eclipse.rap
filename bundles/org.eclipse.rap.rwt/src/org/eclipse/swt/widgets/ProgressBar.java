@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarThemeAdapter;
 
 /**
@@ -88,10 +89,10 @@ public class ProgressBar extends Control {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    int border = getBorderWidth();
+    Rectangle border = getBorder();
     int barWidth = getProgressBarWidth();
-    int width = border * 2;
-    int height = border * 2;
+    int width = border.width;
+    int height = border.height;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width += barWidth * 10;
       height += barWidth;
@@ -100,10 +101,10 @@ public class ProgressBar extends Control {
       height += barWidth * 10;
     }
      if( wHint != SWT.DEFAULT ) {
-       width = wHint + ( border * 2 );
+       width = wHint + border.width;
      }
      if( hHint != SWT.DEFAULT ) {
-       height = hHint + ( border * 2 );
+       height = hHint + border.height;
      }
     return new Point( width, height );
   }

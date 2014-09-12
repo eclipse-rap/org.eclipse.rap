@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -272,7 +273,9 @@ public abstract class AbstractColumnLayout extends Layout {
 			// initially, the table has no extend and no client area - use the
 			// border with
 			// plus some padding as educated guess
-			trim = 2 * scrollable.getBorderWidth() + 1;
+		    ControlThemeAdapter themeAdapter = scrollable.getAdapter( ControlThemeAdapter.class );
+            Rectangle border = themeAdapter.getBorder( scrollable );
+			trim = border.width + 1;
 		}
 
 		return trim;

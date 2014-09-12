@@ -570,9 +570,9 @@ public class Display extends Device implements Adaptable {
     // Since only composites can contain child widgets, only they need this
     // correction. This implementation seems to be a good fit with SWT.
     if( control instanceof Composite ) {
-      int borderWidth = control.getBorderWidth();
-      result.x += borderWidth;
-      result.y += borderWidth;
+      Rectangle borderWidth = control.getBorder();
+      result.x += borderWidth.x;
+      result.y += borderWidth.y;
     }
     return result;
   }

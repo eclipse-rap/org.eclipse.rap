@@ -13,35 +13,35 @@ package org.eclipse.swt.widgets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Layout_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
+  private Shell shell;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   @Test
   public void testLayoutCall() {
-    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Rectangle empty = new Rectangle( 0, 0, 0, 0 );
@@ -66,18 +66,12 @@ public class Layout_Test {
     assertEquals( shellBounds, shell.getBounds() );
     Rectangle clientArea = shell.getClientArea();
     assertEquals( clientArea, composite.getBounds() );
-    Rectangle expected = new Rectangle( 0,
-                                        0,
-                                        clientArea.width,
-                                        clientArea.height );
+    Rectangle expected = new Rectangle( 0, 0, clientArea.width, clientArea.height );
     assertEquals( expected, control.getBounds() );
   }
 
   @Test
   public void testClientArea() {
-    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Composite comp1 = new Composite( shell, SWT.NONE );
     comp1.setBounds( 0, 0, 50, 100 );
     assertEquals( 0, comp1.getBorderWidth() );
@@ -89,10 +83,24 @@ public class Layout_Test {
   }
 
   @Test
+  public void testClientArea_withDifferentBorderWidths() {
+    Composite composite = spy( new Composite( shell, SWT.BORDER ) );
+    when( composite.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+    composite.setBounds( 0, 0, 50, 100 );
+
+    assertEquals( new Rectangle( 0, 0, 46, 94 ), composite.getClientArea() );
+  }
+
+  @Test
+  public void testComputeTrim_withDifferentBorderWidths() {
+    Composite composite = spy( new Composite( shell, SWT.BORDER ) );
+    when( composite.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+
+    assertEquals( new Rectangle( -1, -2, 54, 106 ), composite.computeTrim( 0, 0, 50, 100 ) );
+  }
+
+  @Test
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Button control1 = new Button( shell, SWT.PUSH );
     assertEquals( 1, control1.getBorderWidth() );
     assertEquals( new Point( 52, 102 ), control1.computeSize( 50, 100 ) );
@@ -100,4 +108,13 @@ public class Layout_Test {
     assertEquals( 1, control2.getBorderWidth() );
     assertEquals( new Point( 52, 102 ), control2.computeSize( 50, 100 ) );
   }
+
+  @Test
+  public void testComputeSize_withDifferentBorderWidths() {
+    Button button = spy( new Button( shell, SWT.PUSH | SWT.BORDER ) );
+    when( button.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+
+    assertEquals( new Point( 54, 106 ), button.computeSize( 50, 100 ) );
+  }
+
 }

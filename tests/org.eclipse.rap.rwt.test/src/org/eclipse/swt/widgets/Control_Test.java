@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -88,6 +89,15 @@ public class Control_Test {
     Control control = new Button( shell, SWT.NONE );
     Object adapter = control.getAdapter( IControlAdapter.class );
     assertNotNull( adapter );
+  }
+  
+  @Test
+  public void testGetAdapterWithControlThemeAdapter() {
+    Control control = new Button( shell, SWT.NONE );
+    Object controlThemeAdapter = control.getAdapter( ControlThemeAdapter.class );
+    Object themeAdapter = control.getAdapter( IThemeAdapter.class );
+    assertNotNull( controlThemeAdapter );
+    assertSame( controlThemeAdapter, themeAdapter );
   }
 
   @Test
@@ -1437,6 +1447,29 @@ public class Control_Test {
 
     assertEquals( Boolean.TRUE, shell.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
   }
+
+  @Test
+  public void testGetBorderWidth_returnsTheMaximumBorderEdgeWidth() throws IOException {
+    String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
+    ThemeTestUtil.registerTheme( "custom", css, null );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
+
+    Composite composite = new Composite( shell, SWT.BORDER );
+
+    assertEquals( 3, composite.getBorderWidth() );
+  }
+
+  @Test
+    public void testGetBorder() throws IOException {
+      String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
+      ThemeTestUtil.registerTheme( "custom", css, null );
+      ThemeTestUtil.setCurrentThemeId( "custom" );
+  
+      Composite composite = new Composite( shell, SWT.BORDER );
+  
+      Rectangle expected = new Rectangle( 1, 3, 2, 4 );
+      assertEquals( expected, composite.getBorder() );
+    }
 
   private static class RedrawLogginShell extends Shell {
     private final List<Widget> log;
