@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -387,6 +387,22 @@ public class CComboLCA_Test {
   public void testRenderSelectionIndex() throws IOException {
     ccombo.setItems( new String[] { "a", "b", "c" } );
 
+    ccombo.select( 1 );
+    lca.renderChanges( ccombo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 1, message.findSetProperty( ccombo, "selectionIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderSelectionIndex_onItemsChange() throws IOException {
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+    ccombo.select( 1 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.setItems( new String[] { "a", "b" } );
     ccombo.select( 1 );
     lca.renderChanges( ccombo );
 
