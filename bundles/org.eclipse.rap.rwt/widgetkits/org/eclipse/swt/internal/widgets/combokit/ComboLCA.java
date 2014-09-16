@@ -29,6 +29,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -125,18 +126,18 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderSelectionIndex( Combo combo ) {
-    Integer newValue = Integer.valueOf( combo.getSelectionIndex() );
+    Integer newSelectionIndex = Integer.valueOf( combo.getSelectionIndex() );
     boolean selectionChanged
-      = hasChanged( combo, PROP_SELECTION_INDEX, newValue, DEFAULT_SELECTION_INDEX );
-    // The 'textChanged' statement covers the following use case:
+      = hasChanged( combo, PROP_SELECTION_INDEX, newSelectionIndex, DEFAULT_SELECTION_INDEX );
+    // The 'itemsChanged' statement covers the following use case:
     // combo.add( "a" );  combo.select( 0 );
     // -- in a subsequent request --
     // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
-    boolean textChanged
-      = !isEditable( combo ) && hasChanged( combo, PROP_TEXT, combo.getText(), "" );
-    if( selectionChanged || textChanged ) {
-      getRemoteObject( combo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
+    boolean itemsChanged = hasChanged( combo, PROP_ITEMS, combo.getItems(), DEFAUT_ITEMS );
+    boolean isInitialized = WidgetUtil.getAdapter( combo ).isInitialized();
+    if( selectionChanged || ( itemsChanged && isInitialized ) ) {
+      getRemoteObject( combo ).set( PROP_SELECTION_INDEX, newSelectionIndex.intValue() );
     }
   }
 

@@ -395,6 +395,22 @@ public class CComboLCA_Test {
   }
 
   @Test
+  public void testRenderSelectionIndex_onItemsChange() throws IOException {
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+    ccombo.select( 1 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.setItems( new String[] { "a", "b" } );
+    ccombo.select( 1 );
+    lca.renderChanges( ccombo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 1, message.findSetProperty( ccombo, "selectionIndex" ).asInt() );
+  }
+
+  @Test
   public void testRenderSelectionIndexUnchanged() throws IOException {
     ccombo.setItems( new String[] { "a", "b", "c" } );
     Fixture.markInitialized( display );

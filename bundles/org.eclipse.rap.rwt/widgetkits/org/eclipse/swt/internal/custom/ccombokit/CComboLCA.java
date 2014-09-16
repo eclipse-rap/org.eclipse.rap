@@ -27,6 +27,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -123,18 +124,18 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderSelectionIndex( CCombo ccombo ) {
-    Integer newValue = Integer.valueOf( ccombo.getSelectionIndex() );
+    Integer newSelectionIndex = Integer.valueOf( ccombo.getSelectionIndex() );
     boolean selectionChanged
-      = WidgetLCAUtil.hasChanged( ccombo, PROP_SELECTION_INDEX, newValue, DEFAULT_SELECTION_INDEX );
-    // The 'textChanged' statement covers the following use case:
-    // ccombo.add( "a" );  ccombo.select( 0 );
+      = hasChanged( ccombo, PROP_SELECTION_INDEX, newSelectionIndex, DEFAULT_SELECTION_INDEX );
+    // The 'itemsChanged' statement covers the following use case:
+    // combo.add( "a" );  combo.select( 0 );
     // -- in a subsequent request --
-    // ccombo.removeAll();  ccombo.add( "b" );  ccombo.select( 0 );
+    // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
-    boolean textChanged = !ccombo.getEditable()
-                          && hasChanged( ccombo, PROP_TEXT, ccombo.getText(), "" );
-    if( selectionChanged || textChanged ) {
-      getRemoteObject( ccombo ).set( PROP_SELECTION_INDEX, newValue.intValue() );
+    boolean itemsChanged = hasChanged( ccombo, PROP_ITEMS, ccombo.getItems(), DEFAUT_ITEMS );
+    boolean isInitialized = WidgetUtil.getAdapter( ccombo ).isInitialized();
+    if( selectionChanged || ( itemsChanged && isInitialized ) ) {
+      getRemoteObject( ccombo ).set( PROP_SELECTION_INDEX, newSelectionIndex.intValue() );
     }
   }
 

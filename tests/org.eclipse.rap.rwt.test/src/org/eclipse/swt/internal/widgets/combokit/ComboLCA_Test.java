@@ -29,12 +29,12 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -385,6 +385,22 @@ public class ComboLCA_Test {
   public void testRenderSelectionIndex() throws IOException {
     combo.setItems( new String[] { "a", "b", "c" } );
 
+    combo.select( 1 );
+    lca.renderChanges( combo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 1, message.findSetProperty( combo, "selectionIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderSelectionIndex_onItemsChange() throws IOException {
+    combo.setItems( new String[] { "a", "b", "c" } );
+    combo.select( 1 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.setItems( new String[] { "a", "b" } );
     combo.select( 1 );
     lca.renderChanges( combo );
 
