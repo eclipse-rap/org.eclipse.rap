@@ -97,3 +97,7 @@ List-Item:even:selected:unfocused {
     to( #818181 )
   );
 }
+
+List-GridLine {
+  color: transparent;
+}

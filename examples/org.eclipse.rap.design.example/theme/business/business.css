@@ -634,6 +634,10 @@ List-Item:even:selected:unfocused {
   );
 }
 
+List-GridLine {
+  color: transparent;
+}
+
 /* Menu default theme */
 
 Menu {

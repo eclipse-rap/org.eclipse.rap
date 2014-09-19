@@ -37,6 +37,10 @@ var appearances = {
         verticalChildrenAlign : "top",
         spacing : 4
       };
+      var gridColor = tv.getCssColor( "List-GridLine", "color" );
+      if( gridColor !== "undefined" ) {
+        result.border = new rwt.html.Border( [ 0, 0, 1, 0 ], "solid", gridColor );
+      }
       var textColor = tv.getCssColor( "List-Item", "color" );
       result.textColor = textColor === "undefined" ? "inherit" : textColor;
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );

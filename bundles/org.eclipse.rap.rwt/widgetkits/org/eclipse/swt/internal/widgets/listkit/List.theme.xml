@@ -78,6 +78,14 @@
 
     </element>
 
+    <element name="List-GridLine"
+        description="Grid lines in List controls">
+
+      <property name="color"
+          description="The grid line color" />
+
+    </element>
+
   </element>
 
 </theme>

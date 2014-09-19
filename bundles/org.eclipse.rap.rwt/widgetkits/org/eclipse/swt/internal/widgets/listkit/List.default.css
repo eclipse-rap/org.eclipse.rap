@@ -38,3 +38,7 @@ List-Item:selected {
   color: #ffffff;
   background-color: #00589f;
 }
+
+List-GridLine {
+  color: transparent;
+}
