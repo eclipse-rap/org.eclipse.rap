@@ -435,7 +435,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     testTextOverflow_byTheming : function() {
       var widget = this.createDefaultWidget();
       TestUtil.fakeAppearance( "foo", {
-        "style" : function( states ) {
+        "style" : function() {
           return {
             textOverflow : "ellipsis"
           };
@@ -592,7 +592,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       "default": function() {
         var widget = this.createDefaultWidget();
         this.initWidget( widget, true );
-        var parentNode = widget._getTargetNode();
         assertFalse( TestUtil.getElementSelectable( widget._getTargetNode() ) );
         this.disposeWidget( widget );
       }

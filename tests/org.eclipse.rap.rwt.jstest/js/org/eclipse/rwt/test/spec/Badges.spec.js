@@ -34,7 +34,6 @@ describe( "Badges", function() {
     it( "adds badge with text to a new widget", function() {
       Badges.setBadge( widget, "bar" );
       TestUtil.flush();
-
       var element = Badges._getBadgeElement( widget );
       expect( element.parentNode ).toBe( widget.getElement() );
       expect( element.innerHTML ).toBe( "bar" );

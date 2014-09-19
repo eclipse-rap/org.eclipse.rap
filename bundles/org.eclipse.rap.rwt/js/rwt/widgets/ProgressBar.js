@@ -162,19 +162,19 @@ rwt.qx.Class.define( "rwt.widgets.ProgressBar", {
     },
 
     _applyIndicatorColor : function( value ) {
-      this.$indicator.css( "backgroundColor", value );
+      this.$indicator.css( "backgroundColor", value || "" );
     },
 
     _applyIndicatorImage : function( value ) {
-      this.$indicator.css( "backgroundImage", value );
+      this.$indicator.css( "backgroundImage", value || "" );
     },
 
     _applyIndicatorGradient : function( value ) {
-      this.$indicator.css( "backgroundGradient", value );
+      this.$indicator.css( "backgroundGradient", value || "" );
     },
 
     _applyIndicatorOpacity : function( value ) {
-      this.$indicator.css( "opacity", value );
+      this.$indicator.css( "opacity", value || "" );
     },
 
     _onInterval : function() {

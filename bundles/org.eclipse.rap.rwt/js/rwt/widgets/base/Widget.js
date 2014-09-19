@@ -3182,32 +3182,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     /////////////////////
     // SELECTABLE SUPPORT
 
-    _applySelectable : rwt.util.Variant.select("qx.client", {
-      "gecko" : function(value) {
-        if (value) {
-          this.removeStyleProperty("MozUserSelect");
-        } else {
-          this.setStyleProperty("MozUserSelect", "none");
-        }
-      },
-      "webkit" : function(value) {
-        if (value) {
-          this.removeStyleProperty("WebkitUserSelect");
-          this.removeStyleProperty("KhtmlUserSelect");
-        } else {
-          this.setStyleProperty("WebkitUserSelect", "none");
-          this.setStyleProperty("KhtmlUserSelect", "none");
-        }
-      },
-      // Opera currently has no support to prohibit user selection
-      "default" : function(value) {
-        if (value) {
-          return this.removeStyleProperty("userSelect");
-        } else {
-          this.setStyleProperty("userSelect", "none");
-        }
-      }
-    } ),
+    _applySelectable : function( value ) {
+      rwt.html.Style.setUserSelect( this, value ?  "" : "none" );
+    },
 
     //////////////////
     // OPACITY SUPPORT
@@ -3349,120 +3326,11 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       return this.setStyleProperty("clip", ("rect(" + vTop + "," + vRight + "," + vBottom + "," + vLeft + ")"));
     },
 
-    ///////////////////
-    // OVERFLOW SUPPORT
-
-    _applyOverflow : rwt.util.Variant.select("qx.client", {
-      "default" : function(value, old) {
-        var pv = value;
-        var pn = "overflow";
-        switch(value) {
-          case "scrollX":
-            pn = "overflowX";
-            pv = "scroll";
-          break;
-          case "scrollY":
-            pn = "overflowY";
-            pv = "scroll";
-          break;
-        }
-        // Clear up concurrenting rules
-        var a = [ "overflow", "overflowX", "overflowY" ];
-        for (var i=0; i<a.length; i++) {
-          if (a[i] != pn) {
-            this.removeStyleProperty(a[i]);
-          }
-        }
-        switch(value) {
-          case "scrollX":
-            this.setStyleProperty("overflowY", "hidden");
-          break;
-          case "scrollY":
-            this.setStyleProperty("overflowX", "hidden");
-          break;
-        }
-        this._renderOverflow(pn, pv, value, old);
-        this.addToQueue("overflow");
-      },
-      "gecko" : function(value, old) {
-        var pv = value;
-        var pn = "overflow";
-        switch(pv) {
-          case "hidden":
-            pv = "-moz-scrollbars-none";
-          break;
-          case "scrollX":
-            pv = "-moz-scrollbars-horizontal";
-          break;
-          case "scrollY":
-            pv = "-moz-scrollbars-vertical";
-          break;
-        }
-        this._renderOverflow(pn, pv, value, old);
-        this.addToQueue("overflow");
-      },
-      "opera" : function(value, old) {
-        // Opera/Khtml Mode...
-        // hopefully somewhat of this is supported in the near future.
-        // overflow-x and overflow-y are also not supported by Opera 9.0 Beta1
-        // and also not if we switch to IE emulation mode
-        var pv = value;
-        var pn = "overflow";
-        if( rwt.client.Client.getVersion() < 9.8 ) {
-          switch( pv ) {
-            case "scrollX":
-            case "scrollY":
-              pv = "scroll";
-            break;
-          }
-        } else {
-          switch( pv ) {
-            case "scrollX":
-              pn = "overflowX";
-              pv = "scroll";
-            break;
-            case "scrollY":
-              pn = "overflowY";
-              pv = "scroll";
-            break;
-          }
-          // Clear up concurrenting rules
-          var a = [ "overflow", "overflowX", "overflowY" ];
-          for( var i = 0; i < a.length; i++ ) {
-            if( a[ i ] != pn ) {
-              this.removeStyleProperty( a[ i ] );
-            }
-          }
-          switch( value ) {
-            case "scrollX":
-              this.setStyleProperty( "overflowY", "hidden" );
-            break;
-            case "scrollY":
-              this.setStyleProperty( "overflowX", "hidden" );
-            break;
-          }
-        }
-        this._renderOverflow(pn, pv, value, old);
-        this.addToQueue("overflow");
-      }
-    } ),
-
-    _renderOverflow : function(pn, pv) {
-      // Apply Style
-      this.setStyleProperty(pn, pv || "");
-      // Invalidate Frame
+    _applyOverflow : function( value ) {
+      this.setStyleProperty( "overflow", value || "");
       this._invalidateFrameWidth();
       this._invalidateFrameHeight();
-    },
-
-    getOverflowX : function() {
-      var vOverflow = this.getOverflow();
-      return vOverflow == "scrollY" ? "hidden" : vOverflow;
-    },
-
-    getOverflowY : function() {
-      var vOverflow = this.getOverflow();
-      return vOverflow == "scrollX" ? "hidden" : vOverflow;
+      this.addToQueue( "overflow" );
     },
 
     _applyContainerOverflow : function( value ) {

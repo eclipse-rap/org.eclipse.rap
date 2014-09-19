@@ -20,7 +20,8 @@
     setBadge : function( widget, text ) {
       if( text ) {
         var badge = this._getBadgeElement( widget );
-        $( widget ).append( badge );
+        var element = $( widget ).get( 0 ); // add to OUTER element, do not use append diretly
+        $( element ).append( badge );
         $( badge ).text( text );
         widget.addEventListener( "appear", this._renderBadgePosition, widget );
         widget.addEventListener( "flush", this._renderBadgePosition, widget );
