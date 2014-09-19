@@ -223,6 +223,9 @@
       <state name="selected"
           description="Applies when CCombo list item is selected." />
 
+      <state name="even"
+          description="Applies to CCombo list items with an even index." />
+
       <state name="hover"
           description="Applies while the user hovers over the CCombo list item." />
 

@@ -362,7 +362,7 @@ Combo-List-Item {
   padding: 3px 5px;
 }
 
-Combo-List-Item:hover {
+Combo-List-Item:hover, Combo-List-Item:even:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #dae9f7 ),
@@ -370,7 +370,7 @@ Combo-List-Item:hover {
   );
 }
 
-Combo-List-Item:selected {
+Combo-List-Item:selected, Combo-List-Item:even:selected {
   color: white;
   background-image: gradient(
     linear, left top, left bottom,
@@ -2062,7 +2062,7 @@ CCombo-List-Item {
   padding: 3px 5px;
 }
 
-CCombo-List-Item:hover {
+CCombo-List-Item:hover, CCombo-List-Item:even:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #dae9f7 ),
@@ -2070,7 +2070,7 @@ CCombo-List-Item:hover {
   );
 }
 
-CCombo-List-Item:selected {
+CCombo-List-Item:selected, CCombo-List-Item:even:selected {
   color: white;
   background-image: gradient(
     linear, left top, left bottom,

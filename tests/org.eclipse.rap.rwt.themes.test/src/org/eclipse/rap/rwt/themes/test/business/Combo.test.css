@@ -68,7 +68,10 @@ Combo-List-Item, CCombo-List-Item {
   padding: 3px 5px;
 }
 
-Combo-List-Item:hover, CCombo-List-Item:hover {
+Combo-List-Item:hover,
+CCombo-List-Item:hover,
+Combo-List-Item:even:hover,
+CCombo-List-Item:even:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #dae9f7 ),
@@ -78,6 +81,8 @@ Combo-List-Item:hover, CCombo-List-Item:hover {
 
 Combo-List-Item:selected,
 CCombo-List-Item:selected,
+Combo-List-Item:even:selected,
+CCombo-List-Item:even:selected,
 Combo-List-Item:selected:hover,
 CCombo-List-Item:selected:hover {
   color: white;
@@ -86,6 +91,10 @@ CCombo-List-Item:selected:hover {
     from( #0078Bf ),
     to( #00589f )
   );
+}
+
+Combo-List-Item:even, Combo-List-Item:even {
+  background-color: transparent;
 }
 
 Combo-FocusIndicator, CCombo-FocusIndicator {

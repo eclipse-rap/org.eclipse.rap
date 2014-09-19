@@ -208,6 +208,9 @@
       <state name="selected"
           description="Applies when Combo list item is selected." />
 
+      <state name="even"
+          description="Applies to Combo list items with an even index." />
+
       <state name="hover"
           description="Applies while the user hovers over the Combo list item." />
 
