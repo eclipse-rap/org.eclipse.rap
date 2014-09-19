@@ -426,6 +426,7 @@ rwt.qx.Class.define( "rwt.event.DragAndDropHandler", {
           pageX             : e.getPageX(),
           pageY             : e.getPageY(),
           sourceWidget      : e.getTarget(),
+          sourceElement     : e.getDomTarget(),
           sourceTopLevel    : e.getTarget().getTopLevelWidget(),
           dragHandlerActive : false,
           hasFiredDragStart : false

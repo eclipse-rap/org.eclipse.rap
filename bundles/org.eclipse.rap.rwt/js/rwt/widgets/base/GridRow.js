@@ -14,54 +14,60 @@
  * Represents a visible TreeItem.
  */
 
-(function() {
-
-var Style = rwt.html.Style;
+(function( $ ) {
 
 var cellRenderer = rwt.widgets.util.CellRendererRegistry.getInstance().getAll();
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
-  extend : rwt.widgets.base.Terminator,
+  extend : rwt.qx.Target,
 
   construct : function() {
     this.base( arguments );
-    this.setSelectable( false ); // Prevents user from selecting text
-    this.setOverflow( "hidden" );
-    this.setHeight( 16 );
+    this.$el = $( "<div>" ).css( {
+      "overflow" : "hidden",
+      "userSelect" : "none",
+      "height" : 16,
+      "position" : "relative"
+    });
+    this.$el.prop( "row", this );
     this._styleMap = {};
+    this._appearance = null;
     this._overlayStyleMap = {};
     this._elementStyleCache = {};
     this._variant = null;
-    this._expandElement = null;
-    this._checkBoxElement = null;
-    this._overlayElement = null;
-    this._treeColumnElements = [];
-    this._cellLabels = [];
-    this._cellImages = [];
-    this._cellCheckImages = [];
-    this._cellBackgrounds = [];
-    this._miscNodes = [];
-    this._usedMiscNodes = 0;
+    this.$expandIcon = null;
+    this.$checkBox = null;
+    this.$overlay = null;
+    this.$treeColumnParts = [];
+    this._lastAttributes = {};
+    this.$cellLabels = [];
+    this.$cellImages = [];
+    this.$cellCheckBoxes = [];
+    this.$cellBackgrounds = [];
+    this.$indentIcons = [];
+    this._usedIdentIcons = 0;
     this._cellsRendered = 0;
     this._templateRenderer = null;
   },
 
   destruct : function() {
-    this._expandElement = null;
-    this._checkBoxElement = null;
-    this._treeColumnElements = null;
-    this._cellLabels = null;
-    this._cellImages = null;
-    this._cellCheckImages = null;
-    this._cellBackgrounds = null;
-    this._miscNodes = null;
+    this.$el.removeProp( "row" ).detach();
+    this.$el = null;
+    this.$expandIcon = null;
+    this.$checkBox = null;
+    this.$treeColumnParts = null;
+    this.$cellLabels = null;
+    this.$cellImages = null;
+    this.$cellCheckBoxes = null;
+    this.$cellBackgrounds = null;
+    this.$indentIcons = null;
   },
 
   members : {
 
     renderItem : function( item, config, selected, hoverTarget, scrolling ) {
-      this._usedMiscNodes = 0;
+      this._usedIdentIcons = 0;
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
         var heightChanged = this._renderHeight( item, config );
@@ -83,9 +89,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._hideRemainingElements();
       } else {
         var contentOnly = scrolling || !config;
-        this.setBackgroundColor( null );
-        this.setBackgroundImage( null );
-        this.setBackgroundGradient( null );
+        this.$el.css( {
+          "backgroundColor" : "",
+          "backgroundImage" : "",
+          "backgroundGradient" : ""
+       } );
         if( config.rowTemplate ) {
           this._renderTemplate( null, config );
           this._hideRemainingElements();
@@ -100,19 +108,21 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.dispatchSimpleEvent( "itemRendered", item );
     },
 
-    getTargetIdentifier : function( event ) {
-      var node = event.getDomTarget();
+    identify : function( node ) {
       var result = [ "other" ];
-      if( this._expandElement !== null && this._expandElement === node ) {
+      var match = function( candidate ) {
+        return candidate != null && candidate.is( node );
+      };
+      if( match( this.$expandIcon ) ) {
         result = [ "expandIcon" ];
-      } else if( this._checkBoxElement !== null && this._checkBoxElement === node ) {
+      } else if( match( this.$checkBox ) ) {
         result = [ "checkBox" ];
-      } else if( this._cellCheckImages.indexOf( node ) !== -1 ) {
-        var cell = this._cellCheckImages.indexOf( node );
-        result = [ "cellCheckBox", cell ];
+      } else if( this.$cellCheckBoxes.some( match ) ) {
+        var cell = this.$cellCheckBoxes.filter( match )[ 0 ];
+        result = [ "cellCheckBox", this.$cellCheckBoxes.indexOf( cell ) ];
       } else {
-        while( node !== this.getElement() && result[ 0 ] === "other" ) { // Can be removed?
-          if( this._treeColumnElements.indexOf( node ) != -1 ) {
+        while( !this.$el.is( node ) && result[ 0 ] === "other" ) { // Can be removed?
+          if( this.$treeColumnParts.some( match ) ) {
             result = [ "treeColumn" ]; // TODO [tb] : now should be [ "label", 0 ] / [ "image", 0 ]
           } else if( this._templateRenderer ) {
             if( this._templateRenderer.isCellSelectable( node ) ) {
@@ -129,12 +139,34 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this.setState( "even", index % 2 === 0 );
     },
 
-    requestToolTipText : function() {
-      this.dispatchSimpleEvent( "renderCellToolTip", this, true );
+    setAppearance : function( appearance ) {
+      this._appearance = appearance;
     },
 
-    getToolTipTargetBounds : function() {
-      return rwt.widgets.util.GridCellToolTipSupport.getCurrentToolTipTargetBounds( this );
+    getAppearance : function() {
+      return this._appearance;
+    },
+
+    setWidth : function( width ) {
+      this.$el.css( "width", width );
+    },
+
+    setHeight : function( height ) {
+      this.$el.css( "height", height );
+    },
+
+    getTop : function() {
+      return this.$el.get( 0 ).offsetTop;
+    },
+
+    getWidth : function() {
+      // Do NOT use anything like offsetWidth/outerWidth/clientRectBounds for this, it would
+      // force rendering and potentially impact performance!
+      return parseInt( this.$el.css( "width" ) || "0" );
+    },
+
+    getHeight : function() {
+      return parseInt( this.$el.css( "height" ) || "0" );
     },
 
     ////////////
@@ -154,7 +186,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       renderer.targetBounds = [ xOffset, 0, this.getWidth() - xOffset, this.getHeight() ];
       renderer.markupEnabled = config.markupEnabled;
       renderer.targetIsEnabled = config.enabled;
-      renderer.targetIsSeeable = this.isSeeable();
+      renderer.targetIsSeeable = config.seeable;
       renderer.renderItem( item );
     },
 
@@ -162,7 +194,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( this._templateRenderer == null ) {
         this._templateRenderer = new rwt.widgets.util.TemplateRenderer(
           config.rowTemplate,
-          this._getTargetNode(),
+          this.$el.get( 0 ),
           100
         );
       }
@@ -173,7 +205,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var result = false;
       var itemHeight = item.getOwnHeight();
       if( itemHeight !== this.getHeight() ) {
-        this.setHeight( item.getOwnHeight() );
+        this.$el.css( "height", item.getOwnHeight() );
         result = true;
       }
       return result;
@@ -225,32 +257,30 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
+    hasState : function( state ) {
+      return this.__states && this.__states[ state ] ? true : false;
+    },
+
     _getStyleMap : function() {
       var manager = rwt.theme.AppearanceManager.getInstance();
-      return manager.styleFrom( this.getAppearance(), this.__states );
+      return manager.styleFrom( this._appearance, this.__states );
     },
 
     _getOverlayStyleMap : function() {
       var manager = rwt.theme.AppearanceManager.getInstance();
-      return manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
+      return manager.styleFrom( this._appearance + "-overlay", this.__states );
     },
 
     _getTreeColumnStyleMap : function( selected ) {
       var manager = rwt.theme.AppearanceManager.getInstance();
-      var overlayMap = manager.styleFrom( this.getAppearance() + "-overlay", this.__states );
+      var overlayMap = manager.styleFrom( this._appearance + "-overlay", this.__states );
       if( selected ) {
-        var rowMap = manager.styleFrom( this.getAppearance(), this.__states );
+        var rowMap = manager.styleFrom( this._appearance, this.__states );
         overlayMap.rowForeground = rowMap.foreground;
       } else {
         overlayMap.rowForeground = "undefined";
       }
       return overlayMap;
-    },
-
-    _styleFromMap : function() {
-      // TODO [tb] : Overwrites (now) useless function from Widget.js
-      //             Find a clean way to disable renderAppearance.
-      //             This would need changes to Widget.js
     },
 
     _renderBackground : function( item, config ) {
@@ -263,9 +293,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         gradient = null;
       }
       // Note: "undefined" is a string stored in the themestore
-      this.setBackgroundColor( color !== "undefined" ? color : null );
-      this.setBackgroundImage( image !== "undefined" ? image : null );
-      this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
+      this.$el.css( {
+        "backgroundColor" :  color !== "undefined" ? color || "" : "",
+        "backgroundImage" : image !== "undefined" ? image || "" : "",
+        "backgroundGradient" : gradient !== "undefined" || "" ? gradient : ""
+      } );
     },
 
     _hasOverlayBackground : function( config ) {
@@ -277,12 +309,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
              || this._overlayStyleMap.backgroundGradient !== null;
     },
 
+    // TODO: broken on first render
     _renderIndention : function( item, config, hoverTarget ) {
       var expandSymbol = this._getExpandSymbol( item, config, hoverTarget );
       if( expandSymbol != null ) {
-        this._expandElement = this._addIndentSymbol( item.getLevel(), config, expandSymbol );
+        this.$expandIcon = this._addIndentSymbol( item.getLevel(), config, expandSymbol );
       } else {
-        this._expandElement = null;
+        this.$expandIcon = null;
       }
       var lineSymbol = this._getLineSymbol( item, config );
       if( lineSymbol != null ) {
@@ -332,7 +365,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _getImageFromAppearance : function( image, states ) {
-      var appearance = this.getAppearance() + "-" + image;
+      var appearance = this._appearance + "-" + image;
       var manager = rwt.theme.AppearanceManager.getInstance();
       var styleMap = manager.styleFrom( appearance, states );
       var valid = styleMap && styleMap.backgroundImage;
@@ -345,11 +378,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var cellWidth = config.itemWidth[ config.treeColumn ];
       if( nextLevelOffset <= cellWidth || config.rowTemplate ) {
         var offset = level * config.indentionWidth;
-        var height = this.getHeight();
         var width = nextLevelOffset - offset;
-        var element = this._getMiscImage();
+        var element = this._getIndentImage();
         this._setImage( element, source, config.enabled );
-        this._setBounds( element, offset, 0, width, height );
+        element.css( { "left" : offset, "top" : 0, "width" : width, "height" : "100%" } );
         result = element;
       }
       return result;
@@ -361,17 +393,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this.setState( "over", hoverTarget && hoverTarget[ 0 ] === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
         this.setState( "over", hoverTarget !== null );
-        if( this._checkBoxElement === null ) {
-          this._checkBoxElement = this._createElement( 3 );
-          Style.setBackgroundRepeat( this._checkBoxElement, "no-repeat" );
-          Style.setBackgroundPosition( this._checkBoxElement, "center" );
+        if( this.$checkBox === null ) {
+          this.$checkBox = this._createElement( 3 ).css( {
+            "backgroundRepeat" : "no-repeat",
+            "backgroundPosition" : "center"
+          } );
         }
-        this._setImage( this._checkBoxElement, image, config.enabled );
+        this._setImage( this.$checkBox, image, config.enabled );
         if( config.treeColumn !== -1 || !contentOnly ) {
           var left = this._getCheckBoxLeft( item, config );
           var width = this._getCheckBoxWidth( item, config );
-          var height = this.getHeight();
-          this._setBounds( this._checkBoxElement, left, 0, width, height );
+          this.$checkBox.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
         }
       }
     },
@@ -389,7 +421,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           var imageElement = this._renderCellImage( item, i, config, isTreeColumn, contentOnly );
           var labelElement = this._renderCellLabel( item, i, config, isTreeColumn, contentOnly );
           if( !config.fullSelection && isTreeColumn ) {
-            this._treeColumnElements = [ imageElement, labelElement ];
+            this.$treeColumnParts = [ imageElement, labelElement ];
           }
         } else {
           this._removeCell( i );
@@ -402,8 +434,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( item && this._hasOverlayBackground( config ) ) {
         this._styleOverlay( item, config );
         this._layoutOverlay( item, config );
-      } else if( this._overlayElement ){
-        this._overlayElement.style.display = "none";
+      } else if( this.$overlay ){
+        this.$overlay.css( "display", "none" );
       }
     },
 
@@ -414,46 +446,42 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( gradient ) {
         this._renderOverlayGradient( element, gradient );
       } else {
-        Style.setBackgroundColor( element, styleMap.background );
-        element.style.opacity = styleMap.backgroundAlpha;
+        element.css( {
+          "backgroundColor" : styleMap.background,
+          "opacity" : styleMap.backgroundAlpha
+      } );
       }
     },
 
     _renderOverlayGradient : function( element, gradient ) {
-      Style.setBackgroundGradient( element, gradient );
+      element.css( "backgroundGradient", gradient || "" );
     },
 
-    _layoutOverlay : function( item, config ) {
-      var element = this._getOverlayElement();
-      var height = this.getHeight();
-      var left;
-      var width;
-      if( config.fullSelection ) {
-        left = 0;
-        width = this.getWidth();
-      } else {
+    _layoutOverlay : function( item, config ) { // TODO: broken on first render
+      if( !config.fullSelection ) {
+        var element = this._getOverlayElement();
         var cell = config.treeColumn;
         var padding = config.selectionPadding;
-        left = this._getItemTextLeft( item, cell, config );
+        var left = this._getItemTextLeft( item, cell, config );
         left -= padding[ 0 ];
-        width = this._getItemTextWidth( item, cell, config );
+        var width = this._getItemTextWidth( item, cell, config );
         width += width > 0 ? padding[ 0 ] : 0;
         var visualWidth  = this._getVisualTextWidth( item, cell, config );
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
+        element.css( { "left" : left, "width" : width } );
       }
-      this._setBounds( element, left, 0, width, height );
     },
 
     _renderCellBackground : function( item, cell, config, contentOnly ) {
       var background = this._getCellBackgroundColor( item, cell, config );
       var renderBounds = false;
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
-        renderBounds = !contentOnly || !this._cellBackgrounds[ cell ];
+        renderBounds = !contentOnly || !this.$cellBackgrounds[ cell ];
         var element = this._getBackgroundElement( cell );
-        Style.setBackgroundColor( element, background );
-      } else if( this._cellBackgrounds[ cell ] ) {
-        Style.setBackgroundColor( this._cellBackgrounds[ cell ], null );
+        element.css( "backgroundColor", background );
+      } else if( this.$cellBackgrounds[ cell ] ) {
+        this.$cellBackgrounds[ cell ].css( "backgroundColor", "" );
         renderBounds = !contentOnly;
       }
       if( renderBounds ) {
@@ -462,15 +490,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderCellBackgroundBounds : function( item, cell, config ) {
-      var element = this._cellBackgrounds[ cell ];
+      var element = this.$cellBackgrounds[ cell ];
       if( element ) {
         var left = this._getItemLeft( item, cell, config );
         var width = this._getItemWidth( item, cell, config );
-        var height = this.getHeight();
+        var height = this.getHeight(); // TODO: get rid of all getHeight uses, replace with 100%
         if( this.hasState( "linesvisible" ) ) {
           height -= 1;
         }
-        this._setBounds( element, left, 0, width, height );
+        element.css( { "left" : left, "top" : 0, "width" : width, "height" : height } );
       }
     },
 
@@ -484,7 +512,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
                                && hoverTarget[ 0 ] === "cellCheckBox"
                                && hoverTarget[ 1 ] === cell );
         var source = this._getImageFromAppearance( "check-box", this.__states );
-        renderBounds = isTreeColumn || !contentOnly || !this._cellCheckImages[ cell ];
+        renderBounds = isTreeColumn || !contentOnly || !this.$cellCheckBoxes[ cell ];
         element = this._getCellCheckImage( cell );
         this._setImage( element, source, config.enabled );
       }
@@ -495,11 +523,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderCellCheckBounds : function( item, cell, config ) {
-      var element = this._cellCheckImages[ cell ];
+      var element = this.$cellCheckBoxes[ cell ];
       if( element ) {
         var left = this._getCellCheckLeft( item, cell, config );
         var width = this._getCellCheckWidth( item, cell, config );
-        this._setBounds( element, left, 0, width, this.getHeight() );
+        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
       }
     },
 
@@ -508,10 +536,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var element = null;
       var renderBounds = false;
       if( source !== null ) {
-        renderBounds = isTreeColumn || !contentOnly || !this._cellImages[ cell ];
+        renderBounds = isTreeColumn || !contentOnly || !this.$cellImages[ cell ];
         element = this._getCellImage( cell );
         this._setImage( element, source[ 0 ], renderBounds ? config.enabled : null );
-      } else if( this._cellImages[ cell ] ) {
+      } else if( this.$cellImages[ cell ] ) {
         renderBounds = isTreeColumn || !contentOnly;
         element = this._getCellImage( cell );
         this._setImage( element, null, null );
@@ -523,11 +551,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderCellImageBounds : function( item, cell, config ) {
-      var element = this._cellImages[ cell ];
+      var element = this.$cellImages[ cell ];
       if( element ) {
         var left = this._getItemImageLeft( item, cell, config );
         var width = this._getItemImageWidth( item, cell, config );
-        this._setBounds( element, left, 0, width, this.getHeight() );
+        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
       }
     },
 
@@ -538,17 +566,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var element = null;
       var renderBounds = false;
       if( item.hasText( cell ) ) {
-        renderBounds = isTreeColumn || !contentOnly || !this._cellLabels[ cell ];
+        renderBounds = isTreeColumn || !contentOnly || !this.$cellLabels[ cell ];
         element = this._getTextElement( cell );
-        this._renderElementContent( element, item, cell, config.markupEnabled );
+        this._renderElementContent( element, item, cell, config );
         if( renderBounds ) {
-          element.style.textAlign = isTreeColumn ? "left" : this._getAlignment( cell, config );
+          element.css( "textAlign", isTreeColumn ? "left" : this._getAlignment( cell, config ) );
         }
         this._styleLabel( element, item, cell, config );
-      } else if( this._cellLabels[ cell ] ) {
+      } else if( this.$cellLabels[ cell ] ) {
         renderBounds = isTreeColumn || !contentOnly;
         element = this._getTextElement( cell );
-        this._renderElementContent( element, null, -1, config.markupEnabled );
+        this._renderElementContent( element, null, -1, config );
       }
       if( renderBounds ) {
         this._renderCellLabelBounds( item, cell, config );
@@ -557,24 +585,24 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderCellLabelBounds : function( item, cell, config ) {
-      var element = this._cellLabels[ cell ];
+      var element = this.$cellLabels[ cell ];
       if( element ) {
         var left = this._getItemTextLeft( item, cell, config );
         var width = this._getItemTextWidth( item, cell, config );
         var top = this._getCellPadding( config )[ 0 ];
         // TODO : for vertical center rendering line-height should also be set,
         //        but not otherwise. Also not sure about bottom alignment.
-        this._setBounds( element, left, top, width, this.getHeight() - top );
+        element.css( { "left" : left, "top" : top, "width" : width, "height" : "auto" } );
       }
     },
 
-    _renderElementContent : function( element, item, cell, markupEnabled ) {
+    _renderElementContent : function( element, item, cell, config ) {
       var options = {
-        "markupEnabled" : markupEnabled,
-        "seeable" : this.isSeeable(),
+        "markupEnabled" : config.markupEnabled,
+        "seeable" : config.seeable,
         "removeNewLines" : true
       };
-      cellRenderer.text.renderContent( element,
+      cellRenderer.text.renderContent( element.get( 0 ),
                                        item ? item.getText( cell ) : null,
                                        null,
                                        options );
@@ -587,37 +615,37 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _renderItemForeground : function( item, config ) {
-      this._setForeground( this._getTargetNode(), this._getItemColor( item, config ) );
+      this._setForeground( this.$el, this._getItemColor( item, config ) );
     },
 
     _renderItemFont : function( item, config ) {
-      var element = this.getElement();
       if( this._elementStyleCache.font !== config.font ) {
         this._elementStyleCache.font = config.font;
-        this._setFont( element, config.font );
+        this._setFont( this.$el, config.font );
       }
       if( this._elementStyleCache.textDecoration !== this._styleMap.textDecoration ) {
         this._elementStyleCache.textDecoration = this._styleMap.textDecoration;
-        this._setTextDecoration( element, this._styleMap.textDecoration );
+        this._setTextDecoration( this.$el, this._styleMap.textDecoration );
       }
       if( this._elementStyleCache.textOverflow !== this._styleMap.textOverflow ) {
         this._elementStyleCache.textOverflow = this._styleMap.textOverflow;
-        this._setTextOverflow( element, this._styleMap.textOverflow );
+        this._setTextOverflow( this.$el, this._styleMap.textOverflow );
       }
       if( this._elementStyleCache.textShadow !== this._styleMap.textShadow ) {
         this._elementStyleCache.textShadow = this._styleMap.textShadow;
-        Style.setTextShadow( element, this._styleMap.textShadow );
+        this.$el.css( "textShadow", this._styleMap.textShadow || "" );
       }
     },
 
     _renderHtmlAttributes : function( item, config ) {
-      this.clearHtmlAttributes();
+      this.$el.removeAttr( Object.keys( this._lastAttributes ).join( " " ) );
       var attributes = item ? item.getHtmlAttributes() : {};
       if( attributes[ "id" ] && config.containerNumber === 1 ) {
         attributes = rwt.util.Objects.copy( attributes );
         attributes[ "id" ] += "-1";
       }
-      this.setHtmlAttributes( attributes );
+      this.$el.attr( attributes );
+      this._lastAttributes = attributes;
     },
 
     _getCellBackgroundColor : function( item, cell, config ) {
@@ -679,10 +707,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getVisualTextWidth : function( item, cell, config ) {
       var calc = rwt.widgets.util.FontSizeCalculation;
       var result = 0;
-      if( this._cellLabels[ cell ] ) {
+      if( this.$cellLabels[ cell ] ) {
         var font = this._getCellFont( item, cell, config );
         var fontProps = this._getFontProps( font );
-        var text = this._cellLabels[ cell ].innerHTML;
+        var text = this.$cellLabels[ cell ].html();
         var dimensions = calc.computeTextDimensions( text, fontProps );
         result = dimensions[ 0 ];
       }
@@ -719,169 +747,145 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._resetFont( element );
       } else {
         if( font instanceof rwt.html.Font ) {
-          font.renderStyle( element.style );
+          font.renderStyle( element.get( 0 ).style );
         } else {
-          element.style.font = font;
+          element.css( "font", font );
         }
       }
     },
 
     _resetFont : function( element ) {
-      element.style.font = "";
-      element.style.fontFamily = "";
-      element.style.fontSize = "";
-      element.style.fontVariant = "";
-      element.style.fontStyle = "";
-      element.style.fontWeight = "";
+      element.css( {
+        "font" : "",
+        "fontFamily" : "",
+        "fontSize" : "",
+        "fontVariant" : "",
+        "fontStyle" : "",
+        "fontWeight" : ""
+      } );
     },
 
     _setTextDecoration : function( element, decoration ) {
-      if( decoration == null || decoration === "none" ) {
-        element.style.textDecoration = "";
-      } else {
-        element.style.textDecoration = decoration;
-      }
+      element.css( {
+        "textDecoration" : ( decoration == null || decoration === "none" ) ? "" : decoration
+      } );
     },
 
     _setTextOverflow : function( element, overflow ) {
-      if( overflow == null || overflow === "clip" ) {
-        element.style.textOverflow = "";
-      } else {
-        element.style.textOverflow = overflow;
-      }
+      element.css( "textOverflow", ( overflow == null || overflow === "clip" ) ? "" : overflow );
     },
 
     _setWordWrap : function( element, wordWrap ) {
-      element.style.whiteSpace = wordWrap ? "" : "nowrap";
-    },
-
-    _setBounds : function( element, x, y, width, height ) {
-      try{
-        element.style.left = x + "px";
-        element.style.top = y + "px";
-        element.style.width = width + "px";
-        element.style.height = height + "px";
-      }catch( ex ) {
-        throw "setBounds failed: " + [ element, x, y, width, height ];
-      }
+      element.css( "whiteSpace", wordWrap ? "" : "nowrap" );
     },
 
     _setForeground : function( element, color ) {
-      element.style.color = color != null ? color : "";
+      element.css( "color", color || "" );
     },
 
     _setImage : function( element, src, enabled ) {
       var opacity = enabled ? 1 : 0.3;
-      Style.setBackgroundImage( element, src );
-      element.style.opacity = enabled != null ? opacity : "";
+      element.css( { "opacity" : enabled != null ? opacity : "", "backgroundImage" : src || "" } );
     },
 
     _getTextElement : function( cell ) {
-      var result = this._cellLabels[ cell ];
+      var result = this.$cellLabels[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        result.style.textDecoration = "inherit";
-        result.style.textOverflow = "inherit";
-        Style.setBackgroundColor( result, null );
-        this._cellLabels[ cell ] = result;
+        result.css( {
+          "textDecoration" : "inherit",
+          "textOverflow": "inherit",
+          "backgroundColor" : ""
+        } );
+        this.$cellLabels[ cell ] = result;
       }
       return result;
     },
 
     _getCellImage : function( cell ) {
-      var result = this._cellImages[ cell ];
+      var result = this.$cellImages[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        Style.setBackgroundRepeat( result, "no-repeat" );
-        Style.setBackgroundPosition( result, "center" );
-        this._cellImages[ cell ] = result;
+        result.css( { "backgroundRepeat" : "no-repeat", "backgroundPosition" : "center" } );
+        this.$cellImages[ cell ] = result;
       }
       return result;
     },
 
     _getCellCheckImage : function( cell ) {
-      var result = this._cellCheckImages[ cell ];
+      var result = this.$cellCheckBoxes[ cell ];
       if( !result ) {
         result = this._createElement( 3 );
-        Style.setBackgroundRepeat( result, "no-repeat" );
-        Style.setBackgroundPosition( result, "center" );
-        this._cellCheckImages[ cell ] = result;
+        result.css( { "backgroundRepeat" : "no-repeat", "backgroundPosition" : "center" } );
+        this.$cellCheckBoxes[ cell ] = result;
       }
-      return result;
-    },
-
-    _getMiscImage : function() {
-      var result = this._getMiscElement( 3 );
-      result.innerHTML = "";
-      Style.setBackgroundColor( result, null );
       return result;
     },
 
     _getOverlayElement : function() {
-      if( this._overlayElement === null ) {
-        this._overlayElement = this._createElement( 2 );
+      if( this.$overlay === null ) {
+        this.$overlay = this._createElement( 2 );
+        this.$overlay.css( { "width" : "100%", "height" : "100%" } );
       }
-      this._overlayElement.style.display = "";
-      return this._overlayElement;
+      return this.$overlay.css( { "display" : "" } );
     },
 
     _getBackgroundElement : function( cell ) {
-      var result = this._cellBackgrounds[ cell ];
+      var result = this.$cellBackgrounds[ cell ];
       if( !result ) {
         result = this._createElement( 1 );
-        this._cellBackgrounds[ cell ] = result;
+        this.$cellBackgrounds[ cell ] = result;
       }
       return result;
     },
 
-    _getMiscElement : function( zIndex ) {
+    _getIndentImage : function() {
       var result;
-      if( this._usedMiscNodes < this._miscNodes.length ) {
-        result = this._miscNodes[ this._usedMiscNodes ];
-        result.style.display = "";
-        result.style.zIndex = zIndex;
+      if( this._usedIdentIcons < this.$indentIcons.length ) {
+        result = this.$indentIcons[ this._usedIdentIcons ];
       } else {
-        result = this._createElement( zIndex );
-        Style.setBackgroundRepeat( result, "no-repeat" );
-        Style.setBackgroundPosition( result, "center" );
-        this._miscNodes.push( result );
+        result = this._createElement( 3 ).css( {
+          "backgroundRepeat" : "no-repeat",
+          "backgroundPosition" : "center",
+          "zIndex" : 3
+        } );
+        this.$indentIcons.push( result );
       }
-      this._usedMiscNodes++;
-      return result;
+      this._usedIdentIcons++;
+      return result.html( "" ).css( { "backgroundColor" : "", "display" : "" } );
     },
 
     _createElement : function( zIndex ) {
-      var result = document.createElement( "div" );
-      result.style.position = "absolute";
-      result.style.overflow = "hidden";
-      result.style.zIndex = zIndex;
-      this._getTargetNode().appendChild( result );
-      return result;
+      return $( "<div>" ).css( {
+        "position" : "absolute",
+        "overflow" : "hidden",
+        "zIndex" : zIndex
+      } ).appendTo( this.$el );
     },
 
     _clearContent : function( config ) {
-      for( var i = 0; i < this._cellBackgrounds.length; i++ ) {
-        if( this._cellBackgrounds[ i ] ) {
-          Style.setBackgroundColor( this._cellBackgrounds[ i ], null );
+      for( var i = 0; i < this.$cellBackgrounds.length; i++ ) {
+        if( this.$cellBackgrounds[ i ] ) {
+          this.$cellBackgrounds[ i ].css( "backgroundColor", "" );
         }
       }
-      for( var i = 0; i < this._cellCheckImages.length; i++ ) {
-        if( this._cellCheckImages[ i ] ) {
-          Style.setBackgroundImage( this._cellCheckImages[ i ], null );
+      for( var i = 0; i < this.$cellCheckBoxes.length; i++ ) {
+        if( this.$cellCheckBoxes[ i ] ) {
+          this.$cellCheckBoxes[ i ].css( "backgroundImage", "" );
         }
       }
-      for( var i = 0; i < this._cellImages.length; i++ ) {
-        if( this._cellImages[ i ] ) {
-          Style.setBackgroundImage( this._cellImages[ i ], null );
+      for( var i = 0; i < this.$cellImages.length; i++ ) {
+        if( this.$cellImages[ i ] ) {
+          this.$cellImages[ i ].css( "backgroundImage", "" );
         }
       }
-      for( var i = 0; i < this._cellLabels.length; i++ ) {
-        if( this._cellLabels[ i ] ) {
-          this._renderElementContent( this._cellLabels[ i ], null, -1, config.markupEnabled );
+      for( var i = 0; i < this.$cellLabels.length; i++ ) {
+        if( this.$cellLabels[ i ] ) {
+          this._renderElementContent( this.$cellLabels[ i ], null, -1, config );
         }
       }
-      if( this._checkBoxElement ) {
-        Style.setBackgroundImage( this._checkBoxElement, null );
+      if( this.$checkBox ) {
+        this.$checkBox.css( "backgroundImage", "" );
       }
       this._renderOverlay( null );
       this._hideRemainingElements();
@@ -900,8 +904,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _hideRemainingElements : function() {
-      for( var i = this._usedMiscNodes; i < this._miscNodes.length; i++ ) {
-        this._miscNodes[ i ].style.display = "none";
+      for( var i = this._usedIdentIcons; i < this.$indentIcons.length; i++ ) {
+        this.$indentIcons[ i ].css( "display", "none" );
       }
     },
 
@@ -912,16 +916,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _removeCell : function( cell ) {
-      this._removeNode( this._cellBackgrounds, cell );
-      this._removeNode( this._cellImages, cell );
-      this._removeNode( this._cellCheckImages, cell );
-      this._removeNode( this._cellLabels, cell );
+      this._removeNode( this.$cellBackgrounds, cell );
+      this._removeNode( this.$cellImages, cell );
+      this._removeNode( this.$cellCheckBoxes, cell );
+      this._removeNode( this.$cellLabels, cell );
     },
 
     _removeNode : function( arr, pos ) {
       var node = arr[ pos ];
       if( node ) {
-        this._getTargetNode().removeChild( node );
+        node.detach();
         arr[ pos ] = null;
       }
     },
@@ -1032,17 +1036,10 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _isTreeColumn : function( columnIndex, config ) {
       return columnIndex === config.treeColumn;
-    },
-
-    //////////////
-    // DND-Support
-
-   supportsDrop : function() {
-     return true;
-   }
+    }
 
   }
 
 } );
 
-}());
+}( rwt.util._RWTQuery ));

@@ -87,7 +87,7 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
       switch( target.classname ) {
         case "rwt.widgets.Label":
         case "rwt.widgets.Text":
-        case "rwt.widgets.base.GridRow":
+        case "rwt.widgets.base.GridRowContainer":
         case "rwt.widgets.ListItem":
         case "rwt.widgets.base.BasicText":
         case "qx.ui.form.TextArea":

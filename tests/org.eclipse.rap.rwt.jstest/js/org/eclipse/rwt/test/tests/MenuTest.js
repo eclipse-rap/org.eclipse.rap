@@ -1679,9 +1679,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       item.setTexts( [ "<a href=\"foo\">Test</a>" ] );
       TestUtil.flush();
 
-      var row = tree.getRowContainer().getChildren()[ 0 ];
-      var element = row.getElement().getElementsByTagName( "a" )[ 0 ];
-      assertTrue( rwt.widgets.Menu.getAllowContextMenu( row, element ) );
+      var row = tree.getRowContainer().getRow( 0 ).$el.get( 0 );
+      var element = row.getElementsByTagName( "a" )[ 0 ];
+      assertTrue( rwt.widgets.Menu.getAllowContextMenu( tree.getRowContainer(), element ) );
       tree.destroy();
     },
 

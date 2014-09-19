@@ -537,13 +537,15 @@
   };
 
   var onMouseDown = function( event ) {
-    if( event.getOriginalTarget() instanceof rwt.widgets.base.GridRow ) {
+    if( event.getOriginalTarget() instanceof rwt.widgets.base.GridRowContainer ) {
       this._.inMouseSelection = true;
     }
   };
 
   var onMouseUp = function( event ) {
-    if( this._.inMouseSelection && event.getOriginalTarget() instanceof rwt.widgets.base.GridRow ) {
+    if(    this._.inMouseSelection
+        && event.getOriginalTarget() instanceof rwt.widgets.base.GridRowContainer )
+    {
       this._.inMouseSelection = false;
       fireEvent.call( this, "DefaultSelection" );
     }

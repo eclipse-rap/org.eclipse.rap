@@ -75,6 +75,10 @@ rwt.qx.Class.define( "rwt.widgets.util.WidgetUtil", {
      * rwt.event.EventHandler will not receive the event.
      */
     _fakeMouseEvent : function( originalTarget, type ) {
+      if( !( originalTarget instanceof rwt.widgets.base.Widget ) ) {
+        originalTarget = rwt.event.EventHandlerUtil.getTargetObject( originalTarget );
+        originalTarget = originalTarget || rwt.widgets.base.ClientDocument.getInstance();
+      }
       if( originalTarget.getEnabled() ) {
         var domTarget = originalTarget._getTargetNode();
         var EventHandlerUtil = rwt.event.EventHandlerUtil;

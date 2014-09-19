@@ -129,6 +129,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
+      this._rowContainer.addEventListener( "appear", this._onChangeSeeable );
+      this._rowContainer.addEventListener( "disappear", this._onChangeSeeable );
     },
 
     _parseArgsMap : function( map ) {
@@ -463,6 +465,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleColumnUpdate();
     },
 
+    _onChangeSeeable : function() {
+      this._config.seeable = this.isSeeable();
+    },
+
     _scheduleColumnUpdate : function() {
       rwt.widgets.base.Widget.addToGlobalWidgetQueue( this );
       this._scheduleUpdate();
@@ -501,9 +507,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _onMouseDown : function( event ) {
       this._delayedSelection = false;
       if( !this._checkAndProcessHyperlink( event ) ) {
-        var target = event.getOriginalTarget();
-        if( target instanceof rwt.widgets.base.GridRow ) {
-          this._onRowMouseDown( target, event );
+        var row = this._rowContainer.findRowByElement( event.getDomTarget() );
+        if( row ) {
+          this._onRowMouseDown( row, event );
         }
       }
     },
@@ -523,7 +529,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _onRowMouseDown : function( row, event ) {
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
-        var identifier = row.getTargetIdentifier( event );
+        var identifier = row.identify( event.getDomTarget() );
         if( identifier[ 0 ] === "expandIcon" && item.hasChildren() ) {
           this._onExpandClick( item );
         } else if( identifier[ 0 ] === "checkBox" || identifier[ 0 ] === "cellCheckBox" ) {
@@ -543,12 +549,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _checkAndProcessHyperlink : function( event ) {
       var hyperlink = null;
       var target = event.getOriginalTarget();
-      if( this._config.markupEnabled && target instanceof rwt.widgets.base.GridRow ) {
+      if( this._config.markupEnabled && target instanceof rwt.widgets.base.GridRowContainer ) {
         hyperlink = this._findHyperlink( event );
         if( hyperlink !== null && this._isRWTHyperlink( hyperlink ) ) {
           event.setDefaultPrevented( true );
           if( event.getType() === "click" ) {
-            var item = this._rowContainer.findItemByRow( target );
+            var row = this._rowContainer.findRowByElement( event.getDomTarget() );
+            var item = this._rowContainer.findItemByRow( row );
             var text = hyperlink.getAttribute( "href" );
             if( !text ) {
               text = hyperlink.innerHTML;
@@ -904,7 +911,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _updateScrollThumbHeight : function() {
-      var value = Math.max( 1, this._rowContainer.getChildrenLength() - 1 );
+      var value = Math.max( 1, this._rowContainer.getRowCount() - 1 );
       this._vertScrollBar.setThumb( value );
     },
 

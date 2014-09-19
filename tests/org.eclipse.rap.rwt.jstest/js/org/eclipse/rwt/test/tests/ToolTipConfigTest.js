@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2014 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -210,7 +210,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "align-left", getConfig( new rwt.widgets.Text() ).position );
       assertEquals( "align-left", getConfig( new rwt.widgets.Spinner() ).position );
       assertEquals( "align-left", getConfig( new rwt.widgets.Combo() ).position );
-      assertEquals( "align-left", getConfig( new rwt.widgets.base.GridRow() ).position );
       assertEquals( "align-left", getConfig( createDateTimeDate() ).position );
       assertEquals( "align-left", getConfig( createDateTimeTime() ).position );
     },
@@ -219,7 +218,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertTrue( getConfig( new rwt.widgets.Text() ).autoHide );
       assertTrue( getConfig( new rwt.widgets.Spinner() ).autoHide );
       assertTrue( getConfig( new rwt.widgets.Combo() ).autoHide );
-      assertTrue( getConfig( new rwt.widgets.base.GridRow() ).autoHide );
       assertTrue( getConfig( createDateTimeDate() ).autoHide );
       assertTrue( getConfig( createDateTimeTime() ).autoHide );
     },
@@ -240,7 +238,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "rest", getConfig( new rwt.widgets.Shell( [] ) ).appearOn );
       assertEquals( "rest", getConfig( new rwt.widgets.List( false ) ).appearOn );
       assertEquals( "rest", getConfig( createDateTimeCalendar() ).appearOn );
-      assertEquals( "rest", getConfig( new rwt.widgets.base.GridRow() ).appearOn );
       assertEquals( "rest", getConfig( new rwt.widgets.Text() ).appearOn );
       assertEquals( "rest", getConfig( new rwt.widgets.Spinner() ).appearOn );
       assertEquals( "rest", getConfig( new rwt.widgets.Combo() ).appearOn );
@@ -251,11 +248,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipConfigTest", {
       assertEquals( "enter", getConfig( new rwt.widgets.Scale() ).appearOn );
       assertEquals( "enter", getConfig( new rwt.widgets.Slider() ).appearOn );
       assertEquals( "enter", getConfig( new rwt.widgets.ProgressBar() ).appearOn );
-    },
-
-    testGridRowConfig : function() {
-      assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
-      assertEquals( "exitTargetBounds", getConfig( new rwt.widgets.base.GridRow() ).disappearOn );
     }
 
   }

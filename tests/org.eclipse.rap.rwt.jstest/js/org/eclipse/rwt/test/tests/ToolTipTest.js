@@ -209,7 +209,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
       widget.destroy();
     },
 
-    testClienAreaOverflow : function() {
+    testClientAreaOverflow : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var widget = this._createToolTipByProtocol( "w3", "w2", [ "BALLOON" ] );
 

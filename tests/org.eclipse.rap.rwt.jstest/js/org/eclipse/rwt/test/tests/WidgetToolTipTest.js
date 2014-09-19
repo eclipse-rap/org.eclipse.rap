@@ -13,7 +13,6 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 
-var manager = rwt.widgets.util.ToolTipManager.getInstance();
 var WidgetToolTip = rwt.widgets.base.WidgetToolTip;
 var toolTip = rwt.widgets.base.WidgetToolTip.getInstance();
 
@@ -349,7 +348,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip.isSeeable() );
     },
 
-    testTextIsEmptyString_ShowsWhenTextIsUpdated : function() {
+    testTextIsEmptyString_ShowsWhenTextIsUpdatedWithValidString : function() {
       widget.setToolTipText( "" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       TestUtil.forceInterval( toolTip._showTimer );
@@ -358,6 +357,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       toolTip.updateText();
 
       assertTrue( toolTip.isSeeable() );
+    },
+
+    testTextIsEmptyString_HidesWhenAreadyVisible : function() {
+      widget.setToolTipText( "foo" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      TestUtil.forceInterval( toolTip._showTimer );
+
+      widget.setToolTipText( "" );
+      toolTip.updateText();
+
+      assertFalse( toolTip.isSeeable() );
     },
 
     testAppear_DefaultDelayNotRestartedOnMouseMove : function() {
@@ -439,6 +449,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertNull( toolTip.getBoundToWidget() );
     },
 
+    testHideAfterBlur : function() {
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+      widget.focus();
+
+      widget.blur();
+
+      assertFalse( toolTip.isSeeable() );
+      assertNotNull( toolTip.getBoundToWidget() );
+    },
+
     testAutoHideFalseByConfig : function() {
       config = { "autoHide" : false };
       WidgetToolTip.setToolTipText( widget, "test1" );
@@ -481,16 +503,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip.isSeeable() );
     },
 
-    testHideAfterKeyDownAndTimer : function() {
+    testHideAfterKeyDownWithoutTimer : function() {
       config = { "disappearOn" : "move" };
       WidgetToolTip.setToolTipText( widget, "test1" );
       TestUtil.hoverFromTo( document.body, widget.getElement() );
       showToolTip();
 
       TestUtil.press( widget, "A" );
-      TestUtil.forceInterval( toolTip._hideTimer );
 
       assertFalse( toolTip.isSeeable() );
+      assertNotNull( toolTip.getBoundToWidget() );
     },
 
     testDoHideAfterModifierKeyDownAndTimer : function() {

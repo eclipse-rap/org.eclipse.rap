@@ -243,7 +243,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var composite = this._createComposite();
       var client = composite._clientArea;
       var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
-      assertEquals( "scroll", client._getTargetNode().style.overflow );
+      assertEquals( "scroll", client._getTargetNode().style.overflowX );
+      assertEquals( "scroll", client._getTargetNode().style.overflowY );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
@@ -531,7 +532,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var composite = this._createComposite();
       var client = composite._clientArea;
       var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
-      assertEquals( "scroll", client._getTargetNode().style.overflow );
+      assertEquals( "scroll", client._getTargetNode().style.overflowX );
+      assertEquals( "scroll", client._getTargetNode().style.overflowY );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );

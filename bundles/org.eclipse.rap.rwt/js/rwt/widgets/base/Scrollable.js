@@ -68,15 +68,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     setScrollBarsVisible : function( horizontal, vertical ) {
       this._horzScrollBar.setDisplay( horizontal );
       this._vertScrollBar.setDisplay( vertical );
-      var overflow = "hidden";
-      if( horizontal && vertical ) {
-        overflow = "scroll";
-      } else if( horizontal ) {
-        overflow = "scrollX";
-      } else if( vertical ) {
-        overflow = "scrollY";
-      }
-      this._clientArea.setOverflow( overflow );
+      this._clientArea.setStyleProperty( "overflowX", horizontal ? "scroll" : "hidden" );
+      this._clientArea.setStyleProperty( "overflowY", vertical ? "scroll" : "hidden" );
       this._layoutX();
       this._layoutY();
     },
@@ -117,7 +110,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     // Layout
 
     _configureClientArea : function() {
-      this._clientArea.setOverflow( "scroll" );
+      this._clientArea.setStyleProperty( "overflowX", "scroll" );
+      this._clientArea.setStyleProperty( "overflowY", "scroll" );
       this._clientArea.setLeft( 0 );
       this._clientArea.setTop( 0 );
       this._clientArea.addEventListener( "create", this._onClientCreate, this );
@@ -188,13 +182,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
           var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
           var node = this._clientArea._getTargetNode();
           var el = this._clientArea.getElement();
-          var overflow = this._clientArea.getOverflow();
           var width = parseInt( el.style.width, 10 );
           var height = parseInt( el.style.height, 10 );
-          if( overflow === "scroll" || overflow === "scrollY" ) {
+          if( this._vertScrollBar.getDisplay() ) {
             width += ( 2 * barWidth );
           }
-          if( overflow === "scroll" || overflow === "scrollX" ) {
+          if( this._horzScrollBar.getDisplay() ) {
             height += ( 2 * barWidth );
           }
           node.style.width = width + "px";
@@ -205,13 +198,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
           var barWidth = rwt.widgets.base.Scrollable.getNativeScrollBarWidth();
           var node = this._clientArea._getTargetNode();
           var el = this._clientArea.getElement();
-          var overflow = this._clientArea.getOverflow();
           var width = parseInt( el.style.width, 10 );
           var height = parseInt( el.style.height, 10 );
-          if( overflow === "scroll" || overflow === "scrollY" ) {
+          if( this._vertScrollBar.getDisplay() ) {
             width += barWidth;
           }
-          if( overflow === "scroll" || overflow === "scrollX" ) {
+          if( this._horzScrollBar.getDisplay() ) {
             height += barWidth;
           }
           node.style.width = width + "px";

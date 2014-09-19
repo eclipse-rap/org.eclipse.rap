@@ -29,12 +29,11 @@ rwt.widgets.util.GridCellToolTipSupport = {
     if( this._isValidToolTip( text ) ) {
       var grid = this._cell[ 0 ];
       var item = rwt.remote.ObjectRegistry.getObject( this._cell[ 1 ] );
-      var row = grid.getRowContainer()._findRowByItem( item, this._cell[ 2 ] );
-      var tooltip = rwt.widgets.base.WidgetToolTip.getInstance();
-      if( row && tooltip.getBoundToWidget() === row ) {
-        row.setToolTipText( text );
+      var row = grid.getRowContainer().findRowByItem( item, this._cell[ 2 ] );
+      if( row ) {
+        grid.getRowContainer().setToolTipText( text );
         rwt.widgets.base.WidgetToolTip.getInstance().updateText();
-        row.setToolTipText( "" );
+        grid.getRowContainer().setToolTipText( "" );
       }
     }
   },
@@ -45,8 +44,8 @@ rwt.widgets.util.GridCellToolTipSupport = {
     var splitOffset = container.getSplitOffset ? container.getSplitOffset( this._cell[ 2 ] ) : 0;
     return {
       left : grid.getRenderConfig().itemLeft[ this._cell[ 2 ] ] - splitOffset,
-      top : 0,
-      height : row.getBoxHeight(),
+      top : row.getTop(),
+      height : row.getHeight(),
       width : grid.getRenderConfig().itemWidth[ this._cell[ 2 ] ]
     };
   },

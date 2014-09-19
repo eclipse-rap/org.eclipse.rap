@@ -300,7 +300,6 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     testHideOnItemClick : function() {
       dropdown.setItems( [ "a", "b" ] );
       showDropDown();
-
       clickItem( 1 );
 
       assertFalse( popup.isSeeable() );
@@ -1633,12 +1632,8 @@ var clickItem = function( index ) {
   TestUtil.click( getItem( index ) );
 };
 
-var doubleClickItem = function( index ) {
-  TestUtil.doubleClick( getItem( index ) );
-};
-
 var getItem = function( index ) {
-  return grid.getRowContainer()._findRowByItem( grid.getRootItem().getChild( index ) );
+  return grid.getRowContainer().findRowByItem( grid.getRootItem().getChild( index ) );
 };
 
 var forceTimer = function() {

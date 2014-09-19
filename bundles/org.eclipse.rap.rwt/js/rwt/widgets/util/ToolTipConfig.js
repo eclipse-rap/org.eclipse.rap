@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ namespace( "rwt.client" );
         case "rwt.widgets.Scale":
         case "rwt.widgets.Slider":
           return rwt.util.Objects.mergeWith( { "overlap" : -2 }, this._getBarConfig( widget ) );
-        case "rwt.widgets.base.GridRow":
+        case "rwt.widgets.base.GridRowContainer":
           return this._rowConfig;
         default:
           return this._defaultConfig;
@@ -122,14 +122,6 @@ namespace( "rwt.client" );
       "appearDelay" : 200,
       "disappearDelay" : 100,
       "autoHide" : false
-    },
-
-    _checkConfig : {
-      "position" : "align-left",
-      "appearOn" : "enter",
-      "disappearOn" : "exit",
-      "appearDelay" : 200,
-      "disappearDelay" : 100
     },
 
     _fieldConfig : {

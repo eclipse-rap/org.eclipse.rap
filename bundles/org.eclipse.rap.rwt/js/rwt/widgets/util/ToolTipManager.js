@@ -92,7 +92,6 @@ rwt.qx.Class.define( "rwt.widgets.util.ToolTipManager", {
       this.setCurrentToolTipTarget( vTarget );
     },
 
-
     _handleMouseOut : function( e ) {
       var vTarget = e.getTarget();
       var vRelatedTarget = e.getRelatedTarget();
@@ -131,10 +130,9 @@ rwt.qx.Class.define( "rwt.widgets.util.ToolTipManager", {
 
       var tTarget = this.getCurrentToolTipTarget();
 
-      // Only set to null if blured widget is the
-      // one which has created the current tooltip
       if (tTarget === vTarget) {
-        this.setCurrentToolTipTarget(null);
+        getToolTip()._stopShowTimer();
+        getToolTip()._startHideTimer();
       }
     },
 
@@ -147,10 +145,8 @@ rwt.qx.Class.define( "rwt.widgets.util.ToolTipManager", {
         case "Win":
         break;
         default:
-          var toolTipTarget = this.getCurrentToolTipTarget();
-          if( toolTipTarget ) {
-            this.setCurrentToolTipTarget( null );
-          }
+          getToolTip()._stopShowTimer();
+          getToolTip()._quickHide();
         break;
       }
     },

@@ -59,7 +59,7 @@ rwt.widgets.util.GridUtil = {
     var config = container.getRenderConfig();
     var columnCount = config.columnCount;
     var columnIndex = columnCount === 0 ? 0 : -1;
-    var element = container.getFirstChild().getElement();
+    var element = container.getRow( 0 ).$el.get( 0 );
     var leftOffset = rwt.html.Location.getLeft( element );
     for( var i = 0; columnIndex == -1 && i < columnCount; i++ ) {
       var pageLeft = leftOffset + config.itemLeft[ i ];

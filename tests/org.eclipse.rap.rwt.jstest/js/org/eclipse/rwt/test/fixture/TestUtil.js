@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
@@ -224,6 +223,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   hoverFromTo : function( fromNode, toNode ) {
+    fromNode = this._toElement( fromNode );
+    toNode = this._toElement( toNode );
     var outEvent = this._createFakeMouseEventDOM( fromNode, "mouseout", 0 );
     outEvent.relatedTarget = toNode;
     this.fireFakeDomEvent( outEvent );
@@ -394,16 +395,16 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   _sendKeyDownOnHold : rwt.util.Variant.select("qx.client", {
-    "default" : function( key ) {
+    "default" : function() {
       return true;
     },
-    "opera" : function( key ) {
+    "opera" : function() {
       return false;
     }
   } ),
 
   _sendKeyPress : rwt.util.Variant.select("qx.client", {
-    "gecko|opera" : function( key, keyDownEvent ) {
+    "gecko|opera" : function( key ) {
       return !this._isModifier( key );
     },
     "default" : function( key, keyDownEvent ) {
@@ -454,7 +455,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   } ),
 
   _getCharCode : rwt.util.Variant.select("qx.client", {
-    "default" : function( type, stringOrKeyCode ) {
+    "default" : function() {
       return undefined;
     },
     "gecko|webkit" : function( type, stringOrKeyCode ) {
@@ -551,11 +552,11 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // Event handling - Qooxdoo
 
   click : function( widget, left, top ) {
-    this.clickDOM( widget._getTargetNode(), left, top );
+    this.clickDOM( this._toElement( widget ), left, top );
   },
 
   doubleClick : function( widget ) {
-    var node = widget._getTargetNode();
+    var node = this._toElement( widget );
     this.clickDOM( node );
     this.clickDOM( node );
     var left = rwt.event.MouseEvent.buttons.left;
@@ -563,18 +564,18 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   shiftClick : function( widget ) {
-    var node = widget._getTargetNode();
+    var node = this._toElement( widget );
     this.shiftClickDOM( node );
   },
 
   ctrlClick : function( widget ) {
-    var node = widget._getTargetNode();
+    var node = this._toElement( widget );
     this.ctrlClickDOM( node );
   },
 
   rightClick : function( widget ) {
     var right = rwt.event.MouseEvent.buttons.right;
-    var node = widget._getTargetNode();
+    var node = this._toElement( widget );
     // TODO [tb] : Event order differs on MAC OS
     this.fakeMouseEventDOM( node, "mousedown", right );
     this.fakeMouseEventDOM( node, "mouseup", right );
@@ -630,17 +631,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     }
   } ),
 
-  fakeMouseEvent : function( widget, type, left, top ) {
-    if( !widget._isCreated ) {
-      throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
-    }
+  fakeMouseEvent : function( target, type, left, top ) {
     var button = rwt.event.MouseEvent.buttons.left;
-    var target = widget._getTargetNode();
-    this.fakeMouseEventDOM( target, type, button, left, top, 0 );
+    var node = this._toElement( target );
+    this.fakeMouseEventDOM( node, type, button, left, top, 0 );
   },
 
   press : function( widget, key, checkActive, mod ) {
-    var target = widget._getTargetNode();
+    var target = this._toElement( widget );
     if( checkActive !== true && !this.isActive( widget ) ) {
       widget.focus();
     }
@@ -699,6 +697,19 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     keyHandler._lastUpDownType = {};
     rwt.event.EventHandler.setCaptureWidget( null );
     rwt.event.EventHandler.setBlockKeyEvents( false );
+  },
+
+  _toElement : function( target ) {
+    if( target instanceof rwt.widgets.base.Widget ) {
+      return target._getTargetNode();
+    }
+    if( target instanceof rwt.util.RWTQuery ) {
+      return target.get( 0 );
+    }
+    if( target.$el ) {
+      return target.$el.get( 0 );
+    }
+    return target;
   },
 
   ////////////////
@@ -830,7 +841,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // assumes that the set appearance-theme does never change during tests
   fakeAppearance : function( appearanceId, value ) {
     var manager = rwt.theme.AppearanceManager.getInstance();
-    var themeName = manager.getCurrentTheme().name;
     var base = manager.getCurrentTheme().appearances;
     if( typeof this._appearanceBackups[ appearanceId ] == "undefined" ) {
       if( base[ appearanceId ] ) {

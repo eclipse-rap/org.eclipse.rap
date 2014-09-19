@@ -21,8 +21,7 @@ rwt.widgets.util.GridRowContainerWrapper = function() {
   this._width = 0;
   this._splitOffset = 0;
   this._rowWidth = 0;
-  this.addEventListener( "mouseover", this._onRowOver, this );
-  this.addEventListener( "mouseout", this._onRowOver, this );
+  this.addEventListener( "hoverItem", this._onHoverItem, this );
 };
 
 rwt.widgets.util.GridRowContainerWrapper.createInstance = function() {
@@ -67,7 +66,9 @@ rwt.widgets.util.GridRowContainerWrapper._CONTAINER_DELEGATES = [
   "setToolTip",
   "renderItemQueue",
   "setBaseAppearance",
-  "setCellToolTipsEnabled"
+  "setCellToolTipsEnabled",
+  "getRow",
+  "setToolTipText"
 ];
 
 rwt.widgets.util.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
@@ -75,7 +76,8 @@ rwt.widgets.util.GridRowContainerWrapper._CONTAINER_GETTER_DELEGATES = [
   "getHeight",
   "getHoverItem",
   "getElement",
-  "getChildrenLength"
+  "getChildrenLength",
+  "getRowCount"
 ];
 
 rwt.widgets.util.GridRowContainerWrapper.prototype = {
@@ -135,6 +137,14 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     return result;
   },
 
+  findRowByElement : function( el ) {
+    var result = this._container[ 0 ].findRowByElement( el );
+    if( result == null ) {
+      result = this._container[ 0 ].findRowByElement( el );
+    }
+    return result;
+  },
+
   updateRowLines : function() {
     this._container[ 0 ].getRenderConfig().linesVisible = this._config.linesVisible;
     this._container[ 0 ].updateRowLines();
@@ -152,10 +162,10 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     return column < this._fixedColumns ? 0 : this._splitOffset;
   },
 
-  indexOf : function( child ) {
-    var index = this._container[ 0 ].indexOf( child );
+  getRowIndex : function( row ) {
+    var index = this._container[ 0 ].getRowIndex( row );
     if( index < 0 ) {
-      index = this._container[ 1 ].indexOf( child );
+      index = this._container[ 1 ].getRowIndex( row );
     }
     return index;
   },
@@ -229,18 +239,15 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     return result;
   },
 
-  _onRowOver : function( event ) {
-    var eventTarget = event.getCurrentTarget();
+  _onHoverItem : function( item ) {
     for( var i = 0; i < this._container.length; i++ ) {
-      if( this._container[ i ] !== eventTarget ) {
-        this._container[ i ].setHoverItem( eventTarget.getHoverItem() );
-      }
+      this._container[ i ]._setHoverItem( item );
     }
   },
 
-  _findRowByItem : function( item, column ) {
+  findRowByItem : function( item, column ) {
     var pos = column < this._fixedColumns ? 0 : 1;
-    return this._container[ pos ]._findRowByItem( item );
+    return this._container[ pos ].findRowByItem( item );
   }
 
 };
