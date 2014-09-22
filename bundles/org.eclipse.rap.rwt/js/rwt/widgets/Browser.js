@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,15 +55,24 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
       if( url !== null ) {
         var lowerCaseUrl = url.toLowerCase();
         // Accepted limitation: In case of other protocls this detection fails.
-        if(    lowerCaseUrl.indexOf( "http://" ) === 0
-            || lowerCaseUrl.indexOf( "https://" ) === 0
-            || lowerCaseUrl.indexOf( "ftp://" ) === 0
-            || lowerCaseUrl.indexOf( "ftps://" ) === 0
-        ) {
+        var defaultPort;
+        if( lowerCaseUrl.indexOf( "http://" ) === 0 ) {
+          defaultPort = 80;
+        } else if( lowerCaseUrl.indexOf( "https://" ) === 0 ) {
+          defaultPort = 443;
+        } else if( lowerCaseUrl.indexOf( "ftp://" ) === 0 ) {
+          defaultPort = 21;
+        } else if( lowerCaseUrl.indexOf( "ftps://" ) === 0 ) {
+          defaultPort = 990;
+        }
+        if( defaultPort ) {
           domain = lowerCaseUrl.slice( lowerCaseUrl.indexOf( "://" ) + 3 );
           var pathStart = domain.indexOf( "/" );
           if( pathStart !== -1 ) {
             domain = domain.slice( 0, pathStart );
+          }
+          if( domain.indexOf( ":" ) === -1 ) {
+            domain += ":" + defaultPort;
           }
         }
       }
