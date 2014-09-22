@@ -101,10 +101,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       var domain2 = rwt.widgets.Browser.getDomain( url2 );
       var domain3 = rwt.widgets.Browser.getDomain( url3 );
       var domain4 = rwt.widgets.Browser.getDomain( url4 );
-      assertEquals( "google.de", domain1 );
+      assertEquals( "google.de:80", domain1 );
       assertEquals( "www.sub.somedomain.com:84", domain2 );
-      assertEquals( "amazon.com", domain3 );
-      assertEquals( "mydomain.com", domain4 );
+      assertEquals( "amazon.com:443", domain3 );
+      assertEquals( "mydomain.com:990", domain4 );
     },
 
     testGetDomainFails : function() {
