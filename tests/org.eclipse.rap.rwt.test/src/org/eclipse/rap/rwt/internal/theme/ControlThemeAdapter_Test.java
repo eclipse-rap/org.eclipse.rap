@@ -85,18 +85,7 @@ public class ControlThemeAdapter_Test {
   }
 
   @Test
-  public void testGetBorderWidth_returnsTheMaximumBorderEdgeWidth() throws IOException {
-    String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
-    ThemeTestUtil.registerTheme( "custom", css, null );
-    ThemeTestUtil.setCurrentThemeId( "custom" );
-
-    Composite composite = new Composite( shell, SWT.BORDER );
-
-    assertEquals( 3, getControlThemeAdapter( composite ).getBorderWidth( composite ) );
-  }
-
-  @Test
-  public void testGetBorderWidths() throws IOException {
+  public void testGetBorder() throws IOException {
     String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
     ThemeTestUtil.registerTheme( "custom", css, null );
     ThemeTestUtil.setCurrentThemeId( "custom" );

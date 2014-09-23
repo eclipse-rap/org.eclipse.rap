@@ -1138,7 +1138,10 @@ public abstract class Control extends Widget implements Drawable {
    */
   public int getBorderWidth() {
     checkWidget();
-    return getControlThemeAdapter().getBorderWidth( this );
+    Rectangle border = getBorder();
+    int max1 = Math.max( border.x, border.width - border.x );
+    int max2 = Math.max( border.y, border.height - border.y );
+    return Math.max( max1, max2 );
   }
 
   Rectangle getBorder() {

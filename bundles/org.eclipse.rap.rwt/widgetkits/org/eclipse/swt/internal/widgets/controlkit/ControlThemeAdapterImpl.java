@@ -28,13 +28,6 @@ public class ControlThemeAdapterImpl extends AbstractThemeAdapter implements Con
     matcher.addStyle( "BORDER", SWT.BORDER );
   }
 
-  public int getBorderWidth( Control control ) {
-    Rectangle borderWidths = getBorder( control );
-    int max1 = Math.max( borderWidths.x, borderWidths.width - borderWidths.x );
-    int max2 = Math.max( borderWidths.y, borderWidths.height - borderWidths.y );
-    return Math.max( max1, max2 );
-  }
-
   public Rectangle getBorder( Control control ) {
     return getCssBorder( getPrimaryElement( control ), control );
   }

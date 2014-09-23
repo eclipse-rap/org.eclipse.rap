@@ -90,7 +90,7 @@ public class Control_Test {
     Object adapter = control.getAdapter( IControlAdapter.class );
     assertNotNull( adapter );
   }
-  
+
   @Test
   public void testGetAdapterWithControlThemeAdapter() {
     Control control = new Button( shell, SWT.NONE );
@@ -1460,16 +1460,16 @@ public class Control_Test {
   }
 
   @Test
-    public void testGetBorder() throws IOException {
-      String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
-      ThemeTestUtil.registerTheme( "custom", css, null );
-      ThemeTestUtil.setCurrentThemeId( "custom" );
-  
-      Composite composite = new Composite( shell, SWT.BORDER );
-  
-      Rectangle expected = new Rectangle( 1, 3, 2, 4 );
-      assertEquals( expected, composite.getBorder() );
-    }
+  public void testGetBorder() throws IOException {
+    String css = "Composite { border: 1px solid black; border-top: 3px solid black; }";
+    ThemeTestUtil.registerTheme( "custom", css, null );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
+
+    Composite composite = new Composite( shell, SWT.BORDER );
+
+    Rectangle expected = new Rectangle( 1, 3, 2, 4 );
+    assertEquals( expected, composite.getBorder() );
+  }
 
   private static class RedrawLogginShell extends Shell {
     private final List<Widget> log;

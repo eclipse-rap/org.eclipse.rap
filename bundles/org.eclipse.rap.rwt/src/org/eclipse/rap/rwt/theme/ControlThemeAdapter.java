@@ -28,16 +28,6 @@ import org.eclipse.swt.widgets.Control;
 public interface ControlThemeAdapter extends IThemeAdapter {
 
   /**
-   * Returns the width of the specified control's border.
-   * Note: When the theming defines different border widths for the four edges, this method returns
-   * the maximum border width.
-   *
-   * @param control the control whose border width is requested
-   * @return the border width in px
-   */
-  int getBorderWidth( Control control );
-
-  /**
    * Returns the border of the specified control.
    *
    * @param control the control whose border is requested
