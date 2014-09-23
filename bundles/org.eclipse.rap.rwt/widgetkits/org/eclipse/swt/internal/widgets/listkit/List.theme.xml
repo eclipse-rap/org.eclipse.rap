@@ -25,7 +25,7 @@
     <property name="background-color"
         description="Background color for lists." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around lists." />
 
     <property name="border-top"

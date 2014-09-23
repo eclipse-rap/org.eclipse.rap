@@ -24,7 +24,7 @@
         draging the cool item.
       </description>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border of cool item handle." />
 
       <property name="border-top"

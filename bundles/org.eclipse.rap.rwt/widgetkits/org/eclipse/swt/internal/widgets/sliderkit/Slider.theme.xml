@@ -19,7 +19,7 @@
     <property name="background-color"
         description="Background color for slider" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around sliders." />
 
     <property name="border-top"
@@ -59,7 +59,7 @@
       <property name="background-color"
           description="Background color for slider thumb" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around slider thumb." />
 
       <property name="border-top"
@@ -106,7 +106,7 @@
       <property name="background-color"
           description="Background color for min button" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around down button." />
 
       <property name="border-top"
@@ -210,7 +210,7 @@
       <property name="background-color"
           description="Background color for up button" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around up button." />
 
       <property name="border-top"

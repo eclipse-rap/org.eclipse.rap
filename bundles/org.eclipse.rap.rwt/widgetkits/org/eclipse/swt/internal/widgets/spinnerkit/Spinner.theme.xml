@@ -30,7 +30,7 @@
     <property name="font"
         description="Text font" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around spinners." />
 
     <property name="border-top"
@@ -90,7 +90,7 @@
       <property name="background-color"
           description="Background color of spinner up button." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around up button." />
 
       <property name="border-top"
@@ -158,7 +158,7 @@
       <property name="background-color"
           description="Background color of spinner down button." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around down button." />
 
       <property name="border-top"

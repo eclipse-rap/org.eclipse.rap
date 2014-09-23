@@ -18,7 +18,7 @@
       The theming of RWT Composite.
     </description>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around the composite." />
 
     <property name="border-top"

@@ -44,7 +44,7 @@
       </description>
     </property>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around a Combo." />
 
     <property name="border-top"
@@ -98,7 +98,7 @@
         </description>
       </property>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border of the drop-down button of the Combo." />
 
       <property name="border-top"
@@ -183,7 +183,7 @@
         The list of RWT Combo.
       </description>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border of the Combo list." />
 
       <property name="border-top"
@@ -249,7 +249,7 @@
       <property name="background-color"
           description="The fill-color of the frame." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border of the frame. 3D-styles inset, outset, etc are not supported." />
 
       <property name="border-top"

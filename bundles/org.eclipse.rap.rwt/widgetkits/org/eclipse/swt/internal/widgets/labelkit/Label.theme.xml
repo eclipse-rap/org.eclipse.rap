@@ -28,7 +28,7 @@
     <property name="font"
         description="Text font for labels." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around a Label." />
 
     <property name="border-top"
@@ -86,7 +86,7 @@
     <element name="Label-SeparatorLine"
         description="The separator line.">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn for separator line." />
 
       <property name="border-top"

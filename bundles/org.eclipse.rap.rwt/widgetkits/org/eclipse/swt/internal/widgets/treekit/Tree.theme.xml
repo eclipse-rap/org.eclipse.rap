@@ -24,7 +24,7 @@
     <property name="background-color"
         description="Background color for trees." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around the tree including header." />
 
     <property name="border-top"

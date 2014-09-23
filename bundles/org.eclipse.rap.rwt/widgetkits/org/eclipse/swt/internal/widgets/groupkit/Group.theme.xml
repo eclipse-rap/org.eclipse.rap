@@ -28,7 +28,7 @@
     <property name="font"
         description="Font for group boxes. Applied to the group box label." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around group boxes." />
 
     <property name="border-top"
@@ -52,7 +52,7 @@
     <element name="Group-Frame"
         description="The frame that contains the child controls.">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn for group box frames." />
 
       <property name="border-top"
@@ -91,7 +91,7 @@
     <element name="Group-Label"
         description="The label of a group box.">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around group box label." />
 
       <property name="border-top"

@@ -19,7 +19,7 @@
     <property name="background-color"
         description="Background color for scale" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around scales." />
 
     <property name="border-top"
@@ -56,7 +56,7 @@
       <property name="background-color"
           description="Background color for scale thumb." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around scale thumb." />
 
       <property name="border-top"

@@ -24,7 +24,7 @@
     <property name="background-color"
         description="Background color for tables." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around the table including header." />
 
     <property name="border-top"

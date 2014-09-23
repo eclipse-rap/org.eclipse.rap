@@ -17,7 +17,7 @@
       The theming of RWT Browser.
     </description>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around a Browser." />
 
     <property name="border-top"

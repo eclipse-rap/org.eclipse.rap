@@ -69,26 +69,20 @@ public final class ThemeStoreWriter {
     ThemePropertyAdapterRegistry registry
       = ThemePropertyAdapterRegistry.getInstance( applicationContext );
     for( String propertyName : element.getProperties() ) {
-      if( shouldRenderProperty( propertyName ) ) {
-        JsonArray valuesArray = new JsonArray();
-        String elementName = element.getName();
-        for( ConditionalValue conditionalValue : valuesMap.getValues( elementName, propertyName ) ) {
-          JsonArray array = new JsonArray();
-          array.add( createJsonArray( conditionalValue.constraints ) );
-          CssType value = conditionalValue.value;
-          ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
-          String cssKey = adapter.getKey( value );
-          array.add( cssKey );
-          valuesArray.add( array );
-        }
-        result.add( propertyName, valuesArray );
+      JsonArray valuesArray = new JsonArray();
+      String elementName = element.getName();
+      for( ConditionalValue conditionalValue : valuesMap.getValues( elementName, propertyName ) ) {
+        JsonArray array = new JsonArray();
+        array.add( createJsonArray( conditionalValue.constraints ) );
+        CssType value = conditionalValue.value;
+        ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
+        String cssKey = adapter.getKey( value );
+        array.add( cssKey );
+        valuesArray.add( array );
       }
+      result.add( propertyName, valuesArray );
     }
     return result;
-  }
-
-  private boolean shouldRenderProperty( String propertyName ) {
-    return !"border".equals( propertyName );
   }
 
   private Map createValuesMap( CssType[] values ) {

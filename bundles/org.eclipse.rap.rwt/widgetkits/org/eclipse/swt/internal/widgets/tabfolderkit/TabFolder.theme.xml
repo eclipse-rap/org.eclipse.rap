@@ -16,7 +16,7 @@
   <element name="TabFolder"
       description="SWT TabFolder controls (don't mix up with CTabFolder).">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around a TabFolder." />
 
       <property name="border-top"
@@ -102,10 +102,10 @@
     <element name="TabFolder-ContentContainer"
         description="Applies to the area where the content is placed.">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="Border for the content container." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around TabFolder content container." />
 
       <property name="border-top"

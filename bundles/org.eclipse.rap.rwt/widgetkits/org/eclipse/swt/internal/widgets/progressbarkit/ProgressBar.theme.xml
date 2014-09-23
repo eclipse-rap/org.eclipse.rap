@@ -22,7 +22,7 @@
     <property name="background-image"
         description="Background image for progress bars. Gradient supported." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around progress bars." />
 
     <property name="border-top"

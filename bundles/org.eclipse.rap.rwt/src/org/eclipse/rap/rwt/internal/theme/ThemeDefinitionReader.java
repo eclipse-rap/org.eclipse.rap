@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,8 @@ public final class ThemeDefinitionReader {
   private static final String ELEM_STATE = "state";
 
   private static final String ATTR_NAME = "name";
+
+  private static final String ATTR_SHORTHAND = "shorthand";
 
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
 
@@ -117,7 +119,9 @@ public final class ThemeDefinitionReader {
         if( ELEM_ELEMENT.equals( childNode.getNodeName() ) ) {
           readElement( childNode );
         } else if( ELEM_PROPERTY.equals( childNode.getNodeName() ) ) {
-          themeElement.addProperty( getAttributeValue( childNode, ATTR_NAME ) );
+          if( !isShorthandProperty( childNode ) ) {
+            themeElement.addProperty( getAttributeValue( childNode, ATTR_NAME ) );
+          }
         } else if( ELEM_STYLE.equals( childNode.getNodeName() ) ) {
           themeElement.addStyle( getAttributeValue( childNode, ATTR_NAME ) );
         } else if( ELEM_STATE.equals( childNode.getNodeName() ) ) {
@@ -125,6 +129,10 @@ public final class ThemeDefinitionReader {
         }
       }
     }
+  }
+
+  private static boolean isShorthandProperty( Node node ) {
+    return "true".equals( getAttributeValue( node, ATTR_SHORTHAND ) );
   }
 
   private Document parseThemeDefinition( InputStream is ) throws SAXException, IOException {
@@ -165,8 +173,7 @@ public final class ThemeDefinitionReader {
     return builder.parse( is );
   }
 
-  private static String getAttributeValue( Node node, String name )
-  {
+  private static String getAttributeValue( Node node, String name ) {
     String result = null;
     NamedNodeMap attributes = node.getAttributes();
     if( attributes != null ) {

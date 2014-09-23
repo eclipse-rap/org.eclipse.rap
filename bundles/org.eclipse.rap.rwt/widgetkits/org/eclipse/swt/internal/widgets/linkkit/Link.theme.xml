@@ -19,7 +19,7 @@
     <property name="font"
         description="Font for link texts." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around a link." />
 
     <property name="border-top"

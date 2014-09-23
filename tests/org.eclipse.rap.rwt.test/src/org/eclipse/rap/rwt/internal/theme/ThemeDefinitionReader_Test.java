@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.eclipse.swt.widgets.Widget;
 import org.junit.Test;
@@ -27,7 +29,7 @@ public class ThemeDefinitionReader_Test {
     = "org/eclipse/swt/internal/widgets/buttonkit/Button.theme.xml";
 
   private static final String SHELL_THEME_FILE
-  = "org/eclipse/swt/internal/widgets/shellkit/Shell.theme.xml";
+    = "org/eclipse/swt/internal/widgets/shellkit/Shell.theme.xml";
 
   @Test
   public void testReadCss() throws Exception {
@@ -55,6 +57,23 @@ public class ThemeDefinitionReader_Test {
     assertNotNull( states );
     assertTrue( states.length > 0 );
     assertEquals( "hover", states[ 0 ] );
+  }
+
+  @Test
+  public void testReadCss_excludesShorthandProperties() throws Exception {
+    ClassLoader loader = Widget.class.getClassLoader();
+    InputStream is = loader.getResourceAsStream( BUTTON_THEME_FILE );
+    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, "test" );
+    try {
+      reader.read();
+    } finally {
+      is.close();
+    }
+    IThemeCssElement[] elements = reader.getThemeCssElements();
+    assertNotNull( elements );
+    assertTrue( elements.length > 0 );
+    assertEquals( "Button", elements[ 0 ].getName() );
+    assertFalse( Arrays.asList( elements[ 0 ].getProperties() ).contains( "border" ) );
   }
 
   @Test

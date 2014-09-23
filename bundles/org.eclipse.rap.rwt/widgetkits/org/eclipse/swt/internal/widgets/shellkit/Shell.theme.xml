@@ -16,7 +16,7 @@
   <element name="Shell"
       description="SWT Shells (the window in SWT).">
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="Outer window border." />
 
     <property name="border-top"
@@ -127,7 +127,7 @@
       <state name="inactive"
           description="Applies for all shells except the active shell." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="Shell titlebar border." />
 
       <property name="border-top"

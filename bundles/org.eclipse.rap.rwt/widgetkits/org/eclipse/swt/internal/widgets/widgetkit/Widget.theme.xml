@@ -139,7 +139,7 @@
     <property name="background-color"
         description="Background color for badges." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The outer border that is drawn around badges." />
 
     <property name="border-top"
@@ -177,7 +177,7 @@
     <property name="background-color"
         description="Background color for tooltips." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The outer border that is drawn around tooltips." />
 
     <property name="border-top"
@@ -253,7 +253,7 @@
 
     <property name="font"/>
 
-    <property name="border"/>
+    <property name="border" shorthand="true"/>
 
     <property name="border-top"/>
 

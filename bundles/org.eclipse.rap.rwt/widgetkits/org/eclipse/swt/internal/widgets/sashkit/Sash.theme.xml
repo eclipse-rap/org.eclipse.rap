@@ -22,7 +22,7 @@
     <property name="background-image"
         description="Background image for sash." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around sash." />
 
     <property name="border-top"

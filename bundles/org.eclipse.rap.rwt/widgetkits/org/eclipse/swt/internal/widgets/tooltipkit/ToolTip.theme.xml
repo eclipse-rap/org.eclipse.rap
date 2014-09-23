@@ -52,7 +52,7 @@
     <property name="opacity"
         description="The opacity of the tooltip widget. A value between 0 and 1." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around tooltip widget." />
 
     <property name="border-top"

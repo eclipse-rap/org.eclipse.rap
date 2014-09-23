@@ -24,7 +24,7 @@
     <property name="font"
         description="Font for FormText control text." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around FormText." />
 
     <property name="border-top"

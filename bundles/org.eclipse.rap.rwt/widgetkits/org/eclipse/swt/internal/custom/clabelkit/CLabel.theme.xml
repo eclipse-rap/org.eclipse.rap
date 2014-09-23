@@ -27,7 +27,7 @@
     <property name="font"
         description="Text font for clabels." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around clabels." />
 
     <property name="border-top"

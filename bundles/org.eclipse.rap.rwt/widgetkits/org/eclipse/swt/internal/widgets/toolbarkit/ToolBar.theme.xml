@@ -34,7 +34,7 @@
     <property name="spacing"
         description="Spacing between the tool items" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around tool bars." />
 
     <property name="border-top"
@@ -77,7 +77,7 @@
       <property name="background-image"
           description="Background image for tool bar items" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around tool bar items." />
 
       <property name="border-top"
@@ -148,7 +148,7 @@
       <property name="background-image"
           description="The icon" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="Border for the line separating the dropDown-icon." />
 
       <property name="border-top"

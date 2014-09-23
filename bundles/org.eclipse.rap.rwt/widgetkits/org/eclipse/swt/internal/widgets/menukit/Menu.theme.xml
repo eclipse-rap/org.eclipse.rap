@@ -28,7 +28,7 @@
     <property name="font"
         description="Menu font" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around menus." />
 
     <property name="border-top"

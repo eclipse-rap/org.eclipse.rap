@@ -17,7 +17,7 @@
       DropDown widget. Font, color, backgroundColor and cursor are inherited from the parent widget.
     </description>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="Border for DropDown widget." />
 
     <property name="border-top"

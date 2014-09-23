@@ -24,7 +24,7 @@
         </description>
     </property>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around scrollbars." />
 
     <property name="border-top"
@@ -68,7 +68,7 @@
       <property name="background-color"
           description="Background color for scrollbar thumb" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around scrollbar thumb." />
 
       <property name="border-top"
@@ -131,7 +131,7 @@
       <property name="background-color"
           description="Background color for min button" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around down button." />
 
       <property name="border-top"
@@ -203,7 +203,7 @@
       <property name="background-color"
           description="Background color for up button" />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around up button." />
 
       <property name="border-top"

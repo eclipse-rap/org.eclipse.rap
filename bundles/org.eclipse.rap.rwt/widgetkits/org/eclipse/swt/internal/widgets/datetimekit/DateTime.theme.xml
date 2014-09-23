@@ -34,7 +34,7 @@
       </description>
     </property>
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around a DateTime." />
 
     <property name="border-top"
@@ -97,7 +97,7 @@
     <element name="DateTime-Calendar-Day"
         description="Day from the calendar">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around calendar day box." />
 
       <property name="border-top"
@@ -141,7 +141,7 @@
     <element name="DateTime-Calendar-Navbar"
         description="The calendar navigation bar">
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around calendar navigation bar." />
 
       <property name="border-top"
@@ -285,7 +285,7 @@
         </description>
       </property>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around DateTime Date/Time up button." />
 
       <property name="border-top"
@@ -359,7 +359,7 @@
         </description>
       </property>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around DateTime Date/Time down button." />
 
       <property name="border-top"
@@ -436,7 +436,7 @@
         </description>
       </property>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around DateTime Date drop-down button." />
 
       <property name="border-top"
@@ -503,7 +503,7 @@
         used.
       </description>
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around drop-down calendar." />
 
       <property name="border-top"

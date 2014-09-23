@@ -25,7 +25,7 @@
     <property name="font"
         description="Text font" />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around text fields." />
 
     <property name="border-top"

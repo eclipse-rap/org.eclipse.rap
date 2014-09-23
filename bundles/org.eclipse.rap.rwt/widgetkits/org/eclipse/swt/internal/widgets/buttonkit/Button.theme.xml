@@ -33,7 +33,7 @@
     <property name="background-repeat"
         description="Background image repetition for buttons." />
 
-    <property name="border"
+    <property name="border" shorthand="true"
         description="The border that is drawn around buttons." />
 
     <property name="border-top"
@@ -199,7 +199,7 @@
       <property name="background-color"
           description="The fill-color of the frame." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border of the frame. 3D-styles inset, outset, etc are not supported." />
 
       <property name="border-top"
