@@ -48,37 +48,22 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      var borderColor = tv.getCssNamedColor( "thinborder" );
-      var top_color = tv.getCssColor( "TabItem", "border-top-color" );
-      var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
-      var checkedColorTop = [ top_color, borderColor, borderColor, borderColor ];
-      var checkedColorBottom = [ borderColor, borderColor, bottom_color, borderColor ];
       var containerBorder = tv.getCssBorder( "TabFolder-ContentContainer", "border" );
       result.padding = tv.getCssBoxDimensions( "TabItem", "padding" );
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         if( states.barTop ) {
-          result.border = new rwt.html.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
           // Hack to hide the content containder border below the selected tab
           result.paddingBottom = result.padding[ 2 ] + containerBorder.getWidthTop() + 1;
         } else {
-          result.border = new rwt.html.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
           // Hack to hide the content containder border below the selected tab
           result.paddingTop = result.padding[ 0 ] + containerBorder.getWidthTop() + 1;
         }
       } else {
         result.zIndex = 0; // TODO [rst] Doesn't this interfere with our z-order?
-        if( states.barTop ) {
-          result.border = new rwt.html.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
-        } else {
-          result.border = new rwt.html.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
-        }
       }
-      var margin = tv.getCssBoxDimensions( "TabItem", "margin" );
-      if( states.barBottom ) {
-        margin = [ margin[ 2 ], margin[ 1 ], margin[ 0 ], margin[ 3 ] ];
-      }
-      result.margin = margin;
+      result.border = tv.getCssBorder( "TabItem", "border" );
+      result.margin = tv.getCssBoxDimensions( "TabItem", "margin" );
       result.textColor = tv.getCssColor( "TabItem", "color" );
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );

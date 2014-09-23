@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.junit.After;
 import org.junit.Before;
@@ -67,6 +68,28 @@ public class TabItem_Test {
     assertEquals( 0, folder.indexOf( secondItem ) );
     assertSame( item, folder.getItem( 1 ) );
     assertEquals( 1, folder.indexOf( item ) );
+  }
+
+  @Test
+  public void testGetBounds_top() {
+    folder.setSize( 400, 400 );
+    item.setText( "TabItem 0" );
+    createItems( folder, 2 );
+
+    assertEquals( new Rectangle( 0, 0, 74, 32 ), folder.getItem( 0 ).getBounds() );
+    assertEquals( new Rectangle( 74, 3, 74, 29 ), folder.getItem( 1 ).getBounds() );
+    assertEquals( new Rectangle( 149, 3, 74, 29 ), folder.getItem( 2 ).getBounds() );
+  }
+
+  @Test
+  public void testGetBounds_bottom() {
+    folder = new TabFolder( shell, SWT.BOTTOM );
+    folder.setSize( 400, 400 );
+    createItems( folder, 3 );
+
+    assertEquals( new Rectangle( 0, 368, 74, 32 ), folder.getItem( 0 ).getBounds() );
+    assertEquals( new Rectangle( 74, 368, 74, 29 ), folder.getItem( 1 ).getBounds() );
+    assertEquals( new Rectangle( 149, 368, 74, 29 ), folder.getItem( 2 ).getBounds() );
   }
 
   @Test
@@ -212,6 +235,13 @@ public class TabItem_Test {
     item.setData( RWT.BADGE, null );
 
     assertNull( item.getData( RWT.BADGE ) );
+  }
+
+  private void createItems( TabFolder folder, int number ) {
+    for( int i = 0; i < number; i++ ) {
+      TabItem item = new TabItem( folder, SWT.NONE );
+      item.setText( "TabItem " + i );
+    }
   }
 
 }

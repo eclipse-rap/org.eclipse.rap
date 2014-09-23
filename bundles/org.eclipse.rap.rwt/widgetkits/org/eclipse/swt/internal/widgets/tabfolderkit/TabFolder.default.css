@@ -36,14 +36,32 @@ TabItem {
   text-shadow: none;
   padding: 6px;
   margin: 3px 1px 1px 0px;
+  border: 1px solid #bdbdbd;
+  border-bottom: none;
+}
+
+TabItem:bottom {
+  margin: 1px 1px 3px 0px;
+  border: 1px solid #bdbdbd;
+  border-top: none;
 }
 
 TabItem:selected {
   background-color: #d6d6d6;
   padding: 6px 6px 7px 6px;
   margin: 0px -1px 0px -2px;
+  border: 1px solid #bdbdbd;
+  border-top: 3px solid #5882b5;
+  border-bottom: none;
 }
 
-TabItem:selected:first {
+TabItem:bottom:selected {
+  margin: 0px -1px 0px -2px;
+  border: 1px solid #bdbdbd;
+  border-top: none;
+  border-bottom: 3px solid #5882b5;
+}
+
+TabItem:selected:first, TabItem:bottom:selected:first {
   margin: 0px -1px 0px 0px;
 }

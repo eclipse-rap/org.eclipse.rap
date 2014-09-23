@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderThemeAdapter;
 
 
 /**
@@ -42,8 +43,6 @@ public class TabItem extends Item {
   // [if] This constants must be kept in sync with AppearancesBase.js
   private final static int TABS_SPACING = 1;
   private final static int IMAGE_TEXT_SPACING = 4;
-  private final static int ITEM_BORDER = 1;
-  final static int SELECTED_ITEM_BORDER = 3;
 
   private final TabFolder parent;
   private Control control;
@@ -220,9 +219,6 @@ public class TabItem extends Item {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     int index = parent.indexOf( this );
     if( index != -1 ) {
-      int selectionIndex = parent.getSelectionIndex();
-      boolean selected = index == selectionIndex;
-      Rectangle padding = parent.getItemPadding( selected );
       String text = getText();
       if( text != null ) {
         Point extent = TextSizeUtil.stringExtent( parent.getFont(), text );
@@ -235,30 +231,23 @@ public class TabItem extends Item {
         result.width += imageSize.width + IMAGE_TEXT_SPACING;
         result.height = Math.max( result.height, imageSize.height );
       }
-      result.width += 2 * ITEM_BORDER + padding.width;
-      result.height += ITEM_BORDER + padding.height;
-      if( selected ) {
-        result.height += SELECTED_ITEM_BORDER;
-      }
-      if( selectionIndex != -1 ) {
-        if( index + 1 == selectionIndex || index - 1 == selectionIndex ) {
-          result.width -= ITEM_BORDER;
-        }
-      }
+      TabFolderThemeAdapter themeAdapter = parent.getThemeAdapter();
+      Rectangle padding = themeAdapter.getItemPadding( this );
+      Rectangle margin = themeAdapter.getItemMargin( this );
+      Rectangle border = themeAdapter.getItemBorder( this );
+      result.width += border.width + padding.width;
+      result.height += border.height + padding.height;
       if( isBarTop() ) {
-        if( index != selectionIndex ) {
-          result.y += SELECTED_ITEM_BORDER;
-        }
+        result.y = margin.y;
       } else {
         result.y = parent.getBounds().height - parent.getBorder().height - result.height;
-        if( index != selectionIndex ) {
-          result.y -= SELECTED_ITEM_BORDER;
-        }
+        result.y -= ( margin.height - margin.y );
       }
       if( index > 0 ) {
         TabItem leftItem = parent.getItem( index - 1 );
         Rectangle leftItemBounds = leftItem.getBounds();
         result.x = leftItemBounds.x + leftItemBounds.width + TABS_SPACING;
+        int selectionIndex = parent.getSelectionIndex();
         if( index == selectionIndex || index - 1 == selectionIndex ) {
           result.x -= TABS_SPACING;
         }

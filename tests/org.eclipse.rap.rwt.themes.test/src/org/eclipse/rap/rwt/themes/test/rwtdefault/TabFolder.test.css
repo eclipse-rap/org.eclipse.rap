@@ -34,11 +34,17 @@ TabItem {
   );
   background-repeat: repeat;
   background-position: left top;
-  border-top-color: #5882b5;
-  border-bottom-color: #5882b5;
   text-shadow: 0 1px 0 #ffffff;
   padding : 6px;
   margin: 6px 1px 1px 0px;
+  border: 1px solid #bdbdbd;
+  border-bottom: none;
+}
+
+TabItem:bottom {
+  margin: 1px 1px 6px 0px;
+  border: 1px solid #bdbdbd;
+  border-top: none;
 }
 
 TabItem:selected, TabItem:selected:last {
@@ -51,6 +57,24 @@ TabItem:selected, TabItem:selected:last {
   background-repeat: repeat;
   background-position: left top;
   margin: 3px -1px 0px -2px;
+  border: 1px solid #bdbdbd;
+  border-top: 3px solid #5882b5;
+  border-bottom: none;
+}
+
+TabItem:selected:bottom {
+  color: #4a4a4a;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #d5d5d5 ),
+    to( #eaeaea )
+  );
+  background-repeat: repeat;
+  background-position: left top;
+  margin: 0px -1px 3px -2px;
+  border: 1px solid #bdbdbd;
+  border-bottom: 3px solid #5882b5;
+  border-top: none;
 }
 
 TabItem:selected:first {
@@ -58,4 +82,7 @@ TabItem:selected:first {
   background-repeat: repeat;
   background-position: left top;
   margin: 3px -1px 0px 0px;
+  border: 1px solid #bdbdbd;
+  border-top: 3px solid #5882b5;
+  border-bottom: none;
 }

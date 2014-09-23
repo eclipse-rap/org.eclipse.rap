@@ -55,19 +55,20 @@
       <property name="background-repeat"
           description="Background image repetition for tab folder headers." />
 
-      <property name="border-top-color">
-        <description>
-          The top border color.
-          This color is used when the TabFolder style flag SWT.TOP is set.
-        </description>
-      </property>
+      <property name="border"
+          description="The border that is drawn around a TabFolder." />
 
-      <property name="border-bottom-color">
-        <description>
-          The bottom border color.
-          This color is used when the TabFolder style flag SWT.BOTTOM is set.
-        </description>
-      </property>
+      <property name="border-top"
+          description="The top side border for tab folder headers." />
+
+      <property name="border-right"
+          description="The right side border for tab folder headers." />
+
+      <property name="border-bottom"
+          description="The bottom side border for tab folder headers." />
+
+      <property name="border-left"
+          description="The left side border for tab folder headers." />
 
       <property name="text-shadow"
           description="Shadow for text." />
@@ -89,6 +90,9 @@
 
       <state name="hover"
           description="On mouse over" />
+
+      <state name="bottom"
+          description="Applies when TabFolder style flag SWT.BOTTOM is set." />
 
       <state name="disabled"
           description="Applies to tab items in a disabled tab folder." />

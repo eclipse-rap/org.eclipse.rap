@@ -18,26 +18,44 @@ TabFolder-ContentContainer {
 TabItem {
   color: #4a4a4a;
   background-color: white;
-  border-top-color: white;
-  border-bottom-color: white;
   background-image: none;
   background-repeat: repeat;
   background-position: left top;
   padding: 4px 6px 2px 5px;
   margin: 7px 1px 1px 0px;
+  border: 1px solid #a4a4a4;
+  border-bottom: none;
+}
+
+TabItem:bottom {
+  margin: 1px 1px 7px 0px;
+  border: 1px solid #a4a4a4;
+  border-top: none;
 }
 
 TabItem:selected, TabItem:selected:last {
   color: #4a4a4a;
-  border-top-color: #abe033;
-  border-bottom-color: #abe033;
   padding: 4px 8px 2px 7px;
   margin: 4px -1px 0px -2px;
+  border: 1px solid #a4a4a4;
+  border-top: 3px solid #abe033;
+  border-bottom: none;
+}
+
+TabItem:bottom:selected {
+  margin: 0px -1px 4px -2px;
+  border: 1px solid #a4a4a4;
+  border-top: none;
+  border-bottom: 3px solid #abe033;
 }
 
 TabItem:selected:first {
   color: #4a4a4a;
   margin: 4px -1px 0px 0px;
+}
+
+TabItem:bottom:selected:first {
+  margin: 0px -1px 4px 0px;
 }
 
 TabItem:hover {

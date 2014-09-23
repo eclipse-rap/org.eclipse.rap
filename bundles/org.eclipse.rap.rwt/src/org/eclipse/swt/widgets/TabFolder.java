@@ -578,35 +578,27 @@ public class TabFolder extends Composite {
   }
 
   private Rectangle getContentContainerBorder() {
-    TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getContentContainerBorder( this );
+    return getThemeAdapter().getContentContainerBorder( this );
   }
 
   private int getTabBarHeight() {
+    int result = 0;
+    TabFolderThemeAdapter themeAdapter = getThemeAdapter();
     int textHeight = TextSizeUtil.getCharHeight( getFont() );
-    int imageHeight = 0;
     for( TabItem item : getItems() ) {
       Image image = item.getImage();
-      int height = image == null ? 0 : image.getBounds().height;
-      if( height > imageHeight ) {
-        imageHeight = height;
-      }
+      int imageHeight = image == null ? 0 : image.getBounds().height;
+      int padding = themeAdapter.getItemPadding( item ) .height;
+      int margin = themeAdapter.getItemMargin( item ).height;
+      int border = themeAdapter.getItemBorder( item ).height;
+      int itemHeight = Math.max( textHeight, imageHeight ) + padding + margin + border;
+      result = Math.max( result, itemHeight );
     }
-    int result = Math.max( textHeight, imageHeight );
-    result += getItemPadding( true ).height;
-    result += getItemMargin( true ).height;
-    result += TabItem.SELECTED_ITEM_BORDER;
     return result;
   }
 
-  Rectangle getItemPadding( boolean selected ) {
-    TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getItemPadding( true );
-  }
-
-  private Rectangle getItemMargin( boolean selected ) {
-    TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getItemMargin( true );
+  TabFolderThemeAdapter getThemeAdapter() {
+    return ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 
   @Override

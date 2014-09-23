@@ -89,7 +89,8 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
       "TabItem" : {
         "selected" : "checked",
         "first" : "firstChild",
-        "last" : "lastChild"
+        "last" : "lastChild",
+        "bottom" : "barBottom"
       }
     };
     this._namedColors = {};

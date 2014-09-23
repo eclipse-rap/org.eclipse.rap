@@ -1062,6 +1062,14 @@ TabItem {
   text-shadow: 0 1px 0 #ffffff;
   padding: 6px;
   margin: 6px 1px 1px 0px;
+  border: 1px solid #bdbdbd;
+  border-bottom: none;
+}
+
+TabItem:bottom {
+  margin: 1px 1px 6px 0px;
+  border: 1px solid #bdbdbd;
+  border-top: none;
 }
 
 TabItem:selected {
@@ -1071,10 +1079,24 @@ TabItem:selected {
     to( #eaeaea )
   );
   margin: 3px -1px 0px -2px;
+  border: 1px solid #bdbdbd;
+  border-top: 3px solid #5882b5;
+  border-bottom: none;
+}
+
+TabItem:bottom:selected {
+  margin: 0px -1px 3px -2px;
+  border: 1px solid #bdbdbd;
+  border-top: none;
+  border-bottom: 3px solid #5882b5;
 }
 
 TabItem:selected:first {
   margin: 3px -1px 0px 0px;
+}
+
+TabItem:bottom:selected:first {
+  margin: 0px -1px 3px 0px;
 }
 
 /* Table default theme */
