@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
+Bundle-SymbolicName: org.eclipse.rap.nebula.widgets.grid
+Bundle-Version: 3.0.0.qualifier
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: javax.servlet;version="[2.3.0,4.0.0)",
+ javax.servlet.http;version="[2.3.0,4.0.0)"
+Export-Package: org.eclipse.nebula.widgets.grid,
+ org.eclipse.nebula.widgets.grid.internal;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
+ org.eclipse.nebula.widgets.grid.internal.gridcolumngroupkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
+ org.eclipse.nebula.widgets.grid.internal.gridcolumnkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
+ org.eclipse.nebula.widgets.grid.internal.griditemkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test",
+ org.eclipse.nebula.widgets.grid.internal.gridkit;x-friends:="org.eclipse.rap.nebula.widgets.grid.test"
