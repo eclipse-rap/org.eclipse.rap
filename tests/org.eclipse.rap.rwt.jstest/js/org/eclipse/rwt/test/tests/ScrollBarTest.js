@@ -382,6 +382,60 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
+    testMinMaxButtonsDisplay_withoutIcon : function() {
+      TestUtil.fakeAppearance( "scrollbar-min-button", {
+        "style" : function() {
+          return {
+            icon : [ null, 0, 0 ],
+            height : 10
+          };
+        }
+      } );
+      TestUtil.fakeAppearance( "scrollbar-max-button", {
+        "style" : function() {
+          return {
+            icon : [ null, 0, 0 ],
+            height : 10
+          };
+        }
+      } );
+
+      var bar = this._createScrollBar( false, false );
+
+      assertFalse( bar._minButton.getDisplay() );
+      assertEquals( 0, bar._minButton.getHeight() );
+      assertFalse( bar._maxButton.getDisplay() );
+      assertEquals( 0, bar._maxButton.getHeight() );
+      bar.destroy();
+    },
+
+    testMinMaxButtonsDisplay_withIcon : function() {
+      TestUtil.fakeAppearance( "scrollbar-min-button", {
+        "style" : function() {
+          return {
+            icon : [ "bar.png", 0, 0 ],
+            height : 10
+          };
+        }
+      } );
+      TestUtil.fakeAppearance( "scrollbar-max-button", {
+        "style" : function() {
+          return {
+            icon : [ "bar.png", 0, 0 ],
+            height : 10
+          };
+        }
+      } );
+
+      var bar = this._createScrollBar( false, false );
+
+      assertTrue( bar._minButton.getDisplay() );
+      assertEquals( 10, bar._minButton.getHeight() );
+      assertTrue( bar._maxButton.getDisplay() );
+      assertEquals( 10, bar._maxButton.getHeight() );
+      bar.destroy();
+    },
+
     testNegativeLineSize : function() {
       var bar = this._createScrollBar( false, false );
       bar.setHeight( 10 );

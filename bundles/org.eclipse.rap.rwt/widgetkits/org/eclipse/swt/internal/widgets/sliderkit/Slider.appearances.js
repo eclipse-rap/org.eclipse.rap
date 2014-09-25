@@ -43,20 +43,17 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getCssFont( "Button", "font" );
-      result.textColor = tv.getCssColor( "Button", "color" );
-      result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Slider-DownButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", "background-image" );
-      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
         result.icon = tv.getCssSizedImage( "Slider-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-DownButton", "background-image" );
       }
       result.backgroundGradient = tv.getCssGradient( "Slider-DownButton", "background-image" );
       result.border = tv.getCssBorder( "Slider-DownButton", "border" );
-      if( states[ "rwt_HORIZONTAL" ] ){
+      if( states[ "rwt_HORIZONTAL" ] ) {
         result.width = 16;
       } else {
         result.height = 16;
@@ -71,13 +68,10 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getCssFont( "Button", "font" );
-      result.textColor = tv.getCssColor( "Button", "color" );
-      result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Slider-UpButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", "background-image" );
-      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
         result.icon = tv.getCssSizedImage( "Slider-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "Slider-UpButton", "background-image" );

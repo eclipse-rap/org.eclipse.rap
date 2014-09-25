@@ -44,6 +44,8 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     this._configureAppearance();
     this._setStates();
     this._registerListeners();
+    this._setDisplayFor( this._minButton );
+    this._setDisplayFor( this._maxButton );
   },
 
   destruct : function() {
@@ -440,9 +442,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
     _getLineSize : function() {
       var buttonSize = this._getMinButtonWidth() + this._getMaxButtonWidth();
-      return   this._getSliderSize()
-             - this.getFrameWidth()
-             - buttonSize;
+      return this._getSliderSize() - this.getFrameWidth() - buttonSize;
     },
 
     _getSliderSize : function() {
@@ -473,6 +473,17 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
         result = this._maxButton.getHeight();
       }
       return result;
+    },
+
+    _setDisplayFor : function( button ) {
+      if( button.getImage()[ 0 ] === null ) {
+        if( this._horizontal ) {
+          button.setWidth( 0 );
+        } else {
+          button.setHeight( 0 );
+        }
+        button.setDisplay( false );
+      }
     }
 
   }

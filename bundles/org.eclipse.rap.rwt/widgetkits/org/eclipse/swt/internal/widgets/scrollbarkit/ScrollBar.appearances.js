@@ -51,11 +51,9 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.spacing = tv.getCssDimension( "Button", "spacing" );
-      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-DownButton-Icon", "background-image" );
-      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-DownButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-DownButton", "background-image" );
@@ -63,7 +61,7 @@ var appearances = {
       result.backgroundGradient = tv.getCssGradient( "ScrollBar-DownButton", "background-image" );
       result.border = tv.getCssBorder( "ScrollBar-DownButton", "border" );
       var width = tv.getCssDimension( "ScrollBar", "width" );
-      if( states[ "rwt_HORIZONTAL" ] ){
+      if( states[ "rwt_HORIZONTAL" ] ) {
         result.width = width;
       } else {
         result.height = width;
@@ -78,13 +76,9 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getCssFont( "Button", "font" );
-      result.textColor = tv.getCssColor( "Button", "color" );
-      result.spacing = tv.getCssDimension( "Button", "spacing" );
-      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "ScrollBar-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "ScrollBar-UpButton-Icon", "background-image" );
-      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
+      if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
         result.icon = tv.getCssSizedImage( "ScrollBar-UpButton", "background-image" );
       } else {
         result.backgroundImage = tv.getCssImage( "ScrollBar-UpButton", "background-image" );

@@ -97,6 +97,10 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicButton", {
       this._updateButtonImage();
     },
 
+    getImage : function() {
+      return this._image;
+    },
+
     setHotImage : function( value, width, height ) {
       this._hotImage = [ value, width, height ];
       this._updateButtonImage();

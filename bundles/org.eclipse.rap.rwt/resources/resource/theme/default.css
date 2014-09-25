@@ -2217,10 +2217,10 @@ ScrollBar {
 }
 
 ScrollBar-Thumb {
-  background-color: #f0f0f0;
+  background-color: #cccccc;
   border: 1px solid #bdbdbd;
   border-radius: 15px;
-  background-image: url( resource/widget/rap/scrollbar/scrollbar-background.png );
+  background-image: none;
   min-height: 20px;
 }
 
@@ -2230,22 +2230,7 @@ ScrollBar-DownButton {
   border: none;
   border-radius: 0;
   cursor: default;
-}
-
-ScrollBar-UpButton[HORIZONTAL] {
-  background-image: url( resource/widget/rap/scrollbar/right.png );
-}
-
-ScrollBar-DownButton[HORIZONTAL] {
-  background-image: url( resource/widget/rap/scrollbar/left.png );
-}
-
-ScrollBar-UpButton[VERTICAL] {
-  background-image: url( resource/widget/rap/scrollbar/down.png )
-}
-
-ScrollBar-DownButton[VERTICAL] {
-  background-image: url( resource/widget/rap/scrollbar/up.png );
+  background-image: none;
 }
 
 /* FileUpload default theme */
