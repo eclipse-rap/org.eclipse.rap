@@ -321,66 +321,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       widget.destroy();
     },
 
-    testFocusIndicatorPush : function() {
-      var hasFocusIndicator = function( widget ) {
-        var node = widget._getTargetNode();
-        var result = false;
-        for( var i = 0; i < node.childNodes.length; i++ ) {
-          if( node.childNodes[ i ].getAttribute( "id" ) == "focusIndicator" ) {
-            result = true;
-          }
-        }
-        return result;
-      };
-      var button = new rwt.widgets.Button( "push" );
-      button.addState( "rwt_PUSH" );
-      button.setText( "bla" );
-      button.addToDocument();
-      TestUtil.flush();
-      assertFalse( button.hasState( "focus" ) );
+    testFocusIndicator_onMouseFocus : function() {
+      var button = this.createButton( "w11", "push" );
+
+      TestUtil.click( button );
+
+      assertTrue( button.getFocused() );
       assertFalse( hasFocusIndicator( button ) );
-      button.focus();
-      TestUtil.flush();
-      assertTrue( hasFocusIndicator( button ) );
-      button.setImage( "test.jpg" );
-      TestUtil.flush();
-      assertTrue( hasFocusIndicator( button ) );
+
       button.blur();
-      TestUtil.flush();
+
+      assertFalse( button.getFocused() );
       assertFalse( hasFocusIndicator( button ) );
       button.destroy();
-      TestUtil.flush();
     },
 
-    testFocusIndicatorCheck : function() {
-      var hasFocusIndicator = function( widget ) {
-        var node = widget._getTargetNode();
-        var result = false;
-        for( var i = 0; i < node.childNodes.length; i++ ) {
-          if( node.childNodes[ i ].getAttribute( "id") == "focusIndicator" ) {
-            result = true;
-          }
-        }
-        return result;
-      };
-      var button = new rwt.widgets.Button( "check" );
-      button.addState( "rwt_CHECK" );
-      button.setText( "bla" );
-      button.addToDocument();
-      TestUtil.flush();
-      assertFalse( button.hasState( "focus" ) );
-      assertFalse( hasFocusIndicator( button ) );
+    testFocusIndicator_onTabFocus : function() {
+      var button = this.createButton( "w11", "push" );
+
       button.focus();
-      TestUtil.flush();
+      button._ontabfocus();
+
+      assertTrue( button.getFocused() );
       assertTrue( hasFocusIndicator( button ) );
-      button.setImage( "test.jpg" );
-      TestUtil.flush();
-      assertTrue( hasFocusIndicator( button ) );
+
       button.blur();
-      TestUtil.flush();
+
+      assertFalse( button.getFocused() );
       assertFalse( hasFocusIndicator( button ) );
       button.destroy();
+    },
+
+    testFocusIndicator_afterAddingImage : function() {
+      var button = this.createButton( "w11", "push" );
+
+      button.focus();
+      button._ontabfocus();
+      button.setImage( "test.jpg" );
       TestUtil.flush();
+
+      assertTrue( button.getFocused() );
+      assertTrue( hasFocusIndicator( button ) );
+      button.destroy();
     },
 
     testParent : function() {
@@ -856,6 +838,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
   }
 
 } );
+
+var hasFocusIndicator = function( widget ) {
+  var node = widget._getTargetNode();
+  for( var i = 0; i < node.childNodes.length; i++ ) {
+    if( node.childNodes[ i ].getAttribute( "id" ) == "focusIndicator" ) {
+      return true;
+    }
+  }
+  return false;
+};
 
 var createActiveShell = function() {
   var shell = TestUtil.createShellByProtocol( "w2" );

@@ -143,8 +143,16 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _ontabfocus : function() {
+      this._showFocusIndicator();
       if( this._field.isCreated() ) {
         this._field.selectAll();
+      }
+    },
+
+    _showFocusIndicator : function() {
+      if( !this._editable ) {
+        var cssSelector = ( this.getAppearance() === "combo" ? "" : "C" ) + "Combo-FocusIndicator";
+        rwt.widgets.util.FocusIndicator.getInstance().show( this, cssSelector, null );
       }
     },
 
@@ -152,10 +160,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
         this._field._renderSelection();
-      }
-      if( !this._editable ) {
-        var cssSelector = ( this.getAppearance() === "combo" ? "" : "C" ) + "Combo-FocusIndicator";
-        rwt.widgets.util.FocusIndicator.getInstance().show( this, cssSelector, null );
       }
       this.addState( "focused" );
     },

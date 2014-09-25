@@ -826,6 +826,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( [ 3, 3 ], TestUtil.getMessageObject().findSetProperty( "w3", "selection" ) );
     },
 
+    testFocusIndicator_onMouseFocus : function() {
+      combo.blur();
+
+      TestUtil.click( field );
+
+      assertTrue( combo.getFocused() );
+      assertFalse( hasFocusIndicator( combo ) );
+
+      combo.blur();
+
+      assertFalse( combo.getFocused() );
+      assertFalse( hasFocusIndicator( combo ) );
+    },
+
+    testFocusIndicator_onTabFocus : function() {
+      combo.blur();
+
+      combo.focus();
+      combo._ontabfocus();
+
+      assertTrue( combo.getFocused() );
+      assertTrue( hasFocusIndicator( combo ) );
+
+      combo.blur();
+
+      assertFalse( combo.getFocused() );
+      assertFalse( hasFocusIndicator( combo ) );
+    },
+
     //////////
     // Helpers
 
@@ -854,5 +883,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
   }
 
 } );
+
+var hasFocusIndicator = function( widget ) {
+  var node = widget._getTargetNode();
+  for( var i = 0; i < node.childNodes.length; i++ ) {
+    if( node.childNodes[ i ].getAttribute( "id" ) == "focusIndicator" ) {
+      return true;
+    }
+  }
+  return false;
+};
 
 }() );

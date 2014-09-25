@@ -287,26 +287,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       upload.destroy();
     },
 
-    testShowFocusIndicator : function() {
-      var isChrome = rwt.client.Client.getBrowser() === "chrome";
-      var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-      if( focusIndicator._frame == null ) {
-        focusIndicator._createFrame();
-      }
-      var upload = createFileUpload();
-      var node = upload._getTargetNode();
-      upload.focus();
-      assertEquals( !isChrome, focusIndicator._frame.parentNode === node );
-      upload.blur();
-      assertFalse( focusIndicator._frame.parentNode === node );
-      TestUtil.click( upload );
-      assertEquals( !isChrome, focusIndicator._frame.parentNode === node );
-      upload.focus();
-      upload._ontabfocus();
-      assertTrue( focusIndicator._frame.parentNode === node );
-      upload.destroy();
-    },
-
     testMouseUpWhileAbandoned : function() {
       var upload = createFileUpload();
       TestUtil.fakeMouseEventDOM( upload._inputElement, "mouseover" );

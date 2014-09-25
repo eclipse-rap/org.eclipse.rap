@@ -258,24 +258,10 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     _onKeyDown : rwt.util.Functions.returnTrue,
     _onKeyUp : rwt.util.Functions.returnTrue,
 
-    // NOTE : In chrome (windows?), the input-element needs to be focused using
-    //        tabulator for keyboard control to work. To minimize confusion,
-    //        do not display focus frame in other cases.
-    _ontabfocus : function() {
-      if( rwt.client.Client.getBrowser() === "chrome" ) {
-        this._showFocusIndicator( true );
-      }
-    },
-
-    _showFocusIndicator : function( allow ) {
-      var isChrome = rwt.client.Client.getBrowser() === "chrome";
-      if( !isChrome || allow ) {
-        var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-        var node =   this.getCellNode( 2 ) != null
-                   ? this.getCellNode( 2 )
-                   : this.getCellNode( 1 );
-        focusIndicator.show( this, "FileUpload-FocusIndicator", node );
-      }
+    _showFocusIndicator : function() {
+      var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
+      var node = this.getCellNode( 2 ) != null ? this.getCellNode( 2 ) : this.getCellNode( 1 );
+      focusIndicator.show( this, "FileUpload-FocusIndicator", node );
     },
 
     /////////

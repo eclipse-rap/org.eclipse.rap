@@ -32,8 +32,6 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
        this.setAppearance( "radio-button" );
     }
     this.initTabIndex();
-    this.addEventListener( "focus", this._onFocus );
-    this.addEventListener( "blur", this._onBlur );
     this._rawText = null;
     this._mnemonicIndex = null;
     this._markupEnabled = false;
@@ -153,24 +151,26 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
 
     //overwritten:
     _afterRenderLayout : function() {
-      if( this.hasState( "focused" ) ) {
+      if( this.getFocused() ) {
          this._showFocusIndicator();
       }
     },
 
-    _showFocusIndicator : function() {
-      var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-      var node = this.getCellNode( 2 ) != null ? this.getCellNode( 2 ) : this.getCellNode( 1 );
-      focusIndicator.show( this, "Button-FocusIndicator", node );
-    },
-
-    _onFocus : function() {
+    _ontabfocus : function() {
       this._showFocusIndicator();
     },
 
-    _onBlur : function() {
-      var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
-      focusIndicator.hide( this );
+    _showFocusIndicator : function() {
+      if( !rwt.widgets.util.FocusHandler.mouseFocus ) {
+        var focusIndicator = rwt.widgets.util.FocusIndicator.getInstance();
+        var node = this.getCellNode( 2 ) != null ? this.getCellNode( 2 ) : this.getCellNode( 1 );
+        focusIndicator.show( this, "Button-FocusIndicator", node );
+      }
+    },
+
+    _visualizeBlur : function() {
+      this.base( arguments );
+      rwt.widgets.util.FocusIndicator.getInstance().hide( this );
     },
 
     // overwritten:
