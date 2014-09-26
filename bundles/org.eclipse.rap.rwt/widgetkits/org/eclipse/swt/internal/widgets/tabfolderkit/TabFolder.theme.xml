@@ -55,7 +55,7 @@
       <property name="background-repeat"
           description="Background image repetition for tab folder headers." />
 
-      <property name="border"
+      <property name="border" shorthand="true"
           description="The border that is drawn around a TabFolder." />
 
       <property name="border-top"
