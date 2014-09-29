@@ -166,7 +166,7 @@ protected void layout(Composite composite, boolean flushCache) {
   if( sashes.length > 0 ) {
     Sash first = sashes[ 0 ];
     Rectangle border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
-    sashwidth =+ border.width;
+    sashwidth += border.width;
   }
   if (sashForm.getOrientation() == SWT.HORIZONTAL) {
     int width = (int)(ratios[0] * (area.width - sashes.length * sashwidth) / total);
