@@ -23,40 +23,44 @@
 
   <modules>
     <!-- Runtime projects -->
-    <module>bundles/org.eclipse.rap.rwt</module>
-    <module>bundles/org.eclipse.rap.rwt.osgi</module>
-    <module>bundles/org.eclipse.rap.jface</module>
     <module>bundles/org.eclipse.rap.jface.databinding</module>
+    <module>bundles/org.eclipse.rap.jface</module>
     <module>bundles/org.eclipse.rap.junit</module>
     <module>bundles/org.eclipse.rap.junit.runtime</module>
-    <module>bundles/org.eclipse.rap.ui</module>
+    <module>bundles/org.eclipse.rap.nebula.jface.gridviewer</module>
+    <module>bundles/org.eclipse.rap.nebula.widgets.grid</module>
+    <module>bundles/org.eclipse.rap.rwt</module>
+    <module>bundles/org.eclipse.rap.rwt.osgi</module>
     <module>bundles/org.eclipse.rap.ui.cheatsheets</module>
     <module>bundles/org.eclipse.rap.ui.forms</module>
+    <module>bundles/org.eclipse.rap.ui</module>
     <module>bundles/org.eclipse.rap.ui.views</module>
     <module>bundles/org.eclipse.rap.ui.workbench</module>
     <!-- Examples projects -->
-    <module>examples/org.eclipse.rap.demo</module>
-    <module>examples/org.eclipse.rap.demo.databinding</module>
     <module>examples/org.eclipse.rap.demo.controls</module>
+    <module>examples/org.eclipse.rap.demo.databinding</module>
+    <module>examples/org.eclipse.rap.demo</module>
     <module>examples/org.eclipse.rap.design.example</module>
     <module>examples/org.eclipse.rap.examples</module>
     <module>examples/org.eclipse.rap.examples.pages</module>
+    <module>examples/org.eclipse.rap.nebula.widgets.grid.demo.examples</module>
     <!-- Test projects -->
-    <module>tests/org.eclipse.rap.rwt.testfixture</module>
+    <module>tests/org.eclipse.rap.nebula.widgets.grid.test</module>
     <module>tests/org.eclipse.rap.rwt.cluster.testfixture</module>
-    <module>tests/org.eclipse.rap.rwt.test</module>
+    <module>tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
+    <module>tests/org.eclipse.rap.rwt.cluster.test</module>
     <module>tests/org.eclipse.rap.rwt.osgi.test</module>
+    <module>tests/org.eclipse.rap.rwt.testfixture</module>
+    <module>tests/org.eclipse.rap.rwt.test</module>
     <module>tests/org.eclipse.rap.rwt.themes.test</module>
     <module>tests/org.eclipse.rap.ui.forms.test</module>
-    <module>tests/org.eclipse.rap.rwt.cluster.test</module>
-    <module>tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
     <!-- Packaging projects -->
+    <module>features/org.eclipse.rap.equinox.mars.target.feature</module>
+    <module>features/org.eclipse.rap.equinox.target.feature</module>
+    <module>features/org.eclipse.rap.examples.feature</module>
     <module>features/org.eclipse.rap.feature</module>
     <module>features/org.eclipse.rap.sdk.feature</module>
-    <module>features/org.eclipse.rap.examples.feature</module>
-    <module>features/org.eclipse.rap.equinox.target.feature</module>
     <module>releng/org.eclipse.rap.build/repository.luna</module>
-    <module>features/org.eclipse.rap.equinox.mars.target.feature</module>
     <module>releng/org.eclipse.rap.build/repository.mars</module>
     <!-- Builder projects -->
     <module>releng/org.eclipse.rap.clientbuilder</module>
