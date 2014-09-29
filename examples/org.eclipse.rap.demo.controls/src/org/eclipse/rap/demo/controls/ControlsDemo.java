@@ -149,6 +149,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       new LabelTab(),
       new ListTab(),
       new LinkTab(),
+      new NebulaGridTab(),
       new ProgressBarTab(),
 //      new RequestTab(),
       new SashTab(),
