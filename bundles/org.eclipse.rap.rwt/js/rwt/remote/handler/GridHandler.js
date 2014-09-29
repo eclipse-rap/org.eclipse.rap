@@ -76,7 +76,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Grid", {
     "alwaysHideSelection",
     "enableCellToolTip",
     "cellToolTipText",
-    "columnOrder"
+    "columnOrder",
+    "autoHeight"
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {

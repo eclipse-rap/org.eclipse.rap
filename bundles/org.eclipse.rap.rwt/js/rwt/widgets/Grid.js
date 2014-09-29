@@ -17,9 +17,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
   construct : function( argsMap ) {
     this.base( arguments );
     this._rootItem = new rwt.widgets.GridItem();
-    // Style-Flags:
     this._hasMultiSelection = false;
-    // Internal State:
     this._leadItem = null;
     this._topItemIndex = 0;
     this._topItem = null;
@@ -33,11 +31,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this._sortDirection = null;
     this._sortColumn = null;
     this._hasFixedColumns = false;
-    // Layout:
     this._headerHeight = 0;
     this._footerHeight = 0;
     this._itemHeight = 16;
-    // Subwidgets
     this._rowContainer = rwt.widgets.util.GridUtil.createTreeRowContainer( argsMap );
     this._columns = {};
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
@@ -48,12 +44,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
-    // Configure:
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
-    // Disable scrolling (see bugs 279460 and 364739)
-    rwt.widgets.base.Widget.disableScrolling( this );
+    rwt.widgets.base.Widget.disableScrolling( this ); // see bugs 279460 and 364739
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
@@ -137,15 +131,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
-      if( map.hideSelection ) {
-        this._config.hideSelection = true;
-      }
-      if( map.multiSelection ) {
-        this._hasMultiSelection = true;
-      }
-      if( map.fullSelection ) {
-        this._config.fullSelection = true;
-      } else {
+      this._config.hideSelection = !!map.hideSelection;
+      this._hasMultiSelection = !!map.multiSelection;
+      this._config.fullSelection = !!map.fullSelection;
+      this._config.markupEnabled = map.markupEnabled;
+      this._hasFixedColumns = map.splitContainer;
+      this._config.baseAppearance = map.appearance;
+      this._config.rowTemplate = map.rowTemplate;
+      if( !map.fullSelection ) {
         this._config.selectionPadding = map.selectionPadding;
       }
       if( map.check ) {
@@ -156,12 +149,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( typeof map.indentionWidth === "number" ) {
         this._config.indentionWidth = map.indentionWidth;
       }
-      if( map.markupEnabled ) {
-        this._config.markupEnabled = true;
-      }
-      this._hasFixedColumns = map.splitContainer;
-      this._config.baseAppearance = map.appearance;
-      this._config.rowTemplate = map.rowTemplate;
       if( this._config.rowTemplate ) {
         this.addState( "rowtemplate" );
       }
@@ -343,6 +330,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleUpdate();
     },
 
+    setAutoHeight : function( value ) {
+      this._config.autoHeight = value;
+      this._scheduleUpdate();
+    },
+
     setCellCheck : function( column, value ) {
       this._config.itemCellCheck[ column ] = value;
       this._scheduleUpdate();
@@ -449,14 +441,15 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         ) {
           this.setFocusItem( item );
         }
-      }
-      if( event.msg === "remove" ) {
+      } else if( event.msg === "remove" ) {
         this._scheduleUpdate( "checkDisposedItems" );
+      } else if( event.msg === "height" ) {
+        this._enableAltScrolling();
+        this._scheduleUpdate( "scrollHeight" );
       }
-      if( event.msg === "expanded" || event.msg === "collapsed" ) {
-        this._fireExpand( item, event.msg === "expanded" );
+      if( !event.rendering ) {
+        this._renderItemUpdate( item, event );
       }
-      this._renderItemUpdate( item, event );
       return false;
     },
 
@@ -829,7 +822,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         switch( event.msg ) {
           case "expanded":
           case "collapsed":
-          case "height":
             this._topItem = null;
             this._scheduleUpdate( "scrollHeight" );
           break;
@@ -903,16 +895,51 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     ////////////
     // scrolling
 
+    _enableAltScrolling : function() {
+      if( !this._altScrollingEnabled ) {
+        this._altScrollingEnabled = true;
+        this._vertScrollBar.setThumb( 1 );
+      }
+    },
+
     _updateScrollHeight : function() {
       var max = this.getRootItem().getVisibleChildrenCount();
+      if( this._altScrollingEnabled ) {
+        max = max - this._getLastPageRowCount() + 1;
+        this._setVerticalScrollBarVisible( max > 1 );
+      }
       if( !this._vertScrollBar.getDisposed() && ( this._vertScrollBar.getMaximum() !== max ) ) {
         this._vertScrollBar.setMaximum( max );
       }
     },
 
+    _getLastPageRowCount : function() {
+      var availableHeight = this._rowContainer.getHeight();
+      var item = this.getRootItem().getLastChild();
+      var result = 0;
+      while( item && availableHeight > 0 ) {
+        availableHeight -= item.getOwnHeight();
+        if( availableHeight > 0 ) {
+          result++;
+          item = item.getPreviousItem();
+        }
+      }
+      return result;
+    },
+
     _updateScrollThumbHeight : function() {
-      var value = Math.max( 1, this._rowContainer.getRowCount() - 1 );
-      this._vertScrollBar.setThumb( value );
+      if( !this._altScrollingEnabled ) {
+        var value = Math.max( 1, this._rowContainer.getRowCount() - 1 );
+        this._vertScrollBar.setThumb( value );
+      }
+    },
+
+    _setVerticalScrollBarVisible : function( value ) {
+      var oldValue = this._vertScrollBar.getVisibility();
+      if( value !== oldValue ) {
+        this._vertScrollBar.setVisibility( value );
+        this._layoutX();
+      }
     },
 
     /**
@@ -965,11 +992,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     //////////////
     // Fire events
-
-    _fireExpand : function( item, expanded ) {
-      var data = { "item" : item , "expanded" : expanded };
-      this.dispatchSimpleEvent( "expand", data );
-    },
 
     _fireSelectionChanged : function( item, type, index, text ) {
       var data = {
@@ -1238,7 +1260,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._rowContainer.setTop( top );
       this._rowContainer.setHeight( height );
       this._updateScrollThumbHeight();
-      this._scheduleUpdate();
+      this._scheduleUpdate( "scrollHeight" );
     },
 
     _getItemWidth : function() {

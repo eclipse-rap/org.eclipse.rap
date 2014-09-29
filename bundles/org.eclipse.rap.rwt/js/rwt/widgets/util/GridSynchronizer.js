@@ -17,7 +17,7 @@ rwt.widgets.util.GridSynchronizer = function( grid ) {
   this._grid.addEventListener( "focusItemChanged", this._onFocusItemChanged, this );
   this._grid.addEventListener( "topItemChanged", this._onTopItemChanged, this );
   this._grid.addEventListener( "scrollLeftChanged", this._onScrollLeftChanged, this );
-  this._grid.addEventListener( "expand", this._onExpand, this );
+  this._grid.getRootItem().addEventListener( "update", this._onItemUpdate, this );
 };
 
 rwt.widgets.util.GridSynchronizer.prototype = {
@@ -107,14 +107,18 @@ rwt.widgets.util.GridSynchronizer.prototype = {
     }
   },
 
-  _onExpand : function( event ) {
-    if( !rwt.remote.EventUtil.getSuspended() ) {
-      var item = event.item;
+  _onItemUpdate : function( event ) {
+    if( !rwt.remote.EventUtil.getSuspended() || event.rendering ) {
       var connection = rwt.remote.Connection.getInstance();
-      connection.getRemoteObject( item ).set( "expanded", event.expanded );
-      connection.getRemoteObject( this._grid ).notify( event.expanded ? "Expand" : "Collapse", {
-        "item" : this._getItemId( item )
-      } );
+      if( event.msg === "height" ) {
+        connection.getRemoteObject( event.target ).set( "height", event.target.getOwnHeight() );
+      } else if( event.msg === "expanded" || event.msg === "collapsed" ) {
+        var expanded = event.msg === "expanded";
+        connection.getRemoteObject( event.target ).set( "expanded", expanded );
+        connection.getRemoteObject( this._grid ).notify( expanded ? "Expand" : "Collapse", {
+          "item" : this._getItemId( event.target )
+        } );
+      }
     }
   },
 

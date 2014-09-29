@@ -273,6 +273,56 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 45, node.childNodes[ 0 ].offsetWidth );
     },
 
+    testLabelWithWrapIncreasesAutoItemHeight : function() {
+      tree.setTreeColumn( -1 );
+      tree.setColumnCount( 2 );
+      tree.setItemMetrics( 1, 104, 66, 124, 10, 105, 45 );
+      tree.setWordWrap( 1, true );
+      tree.setAutoHeight( true );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "LongTextWithNoWhiteSpaces TextThatIsOnANewLine" ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var cellLabel = row.$el.get( 0 ).childNodes[ 1 ];
+      var newHeight = cellLabel.offsetHeight + 12;
+      assertEquals( "auto", cellLabel.style.height );
+      assertEquals( newHeight, row.getHeight() );
+      assertEquals( newHeight, item.getHeight() );
+    },
+
+    testRemovedLabelIgnoredForAutoItemHeight : function() {
+      tree.setTreeColumn( -1 );
+      tree.setColumnCount( 2 );
+      tree.setWordWrap( 1, true );
+      tree.setAutoHeight( true );
+      tree.setItemMetrics( 1, 104, 66, 124, 10, 105, 45 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "foo", "LongTextWithNoWhiteSpaces TextThatIsOnANewLine" ] );
+      row.renderItem( item, tree._config, false, null ); // force label creation
+      tree.setColumnCount( 1 );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var cellLabel = row.$el.get( 0 ).childNodes[ 0 ];
+      var newHeight = cellLabel.offsetHeight + 12;
+      assertEquals( "auto", cellLabel.style.height );
+      assertEquals( newHeight, row.getHeight() );
+      assertEquals( newHeight, item.getHeight() );
+    },
+
+    testLabelWithSmallFontHasMinimalAutoItemHeight : function() {
+      tree.setTreeColumn( -1 );
+      tree.setAutoHeight( true );
+      var item = this._createItem( tree );
+      item.setFont( "1px Arial" );
+      item.setTexts( [ "foo" ] );
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 15, row.getHeight() );
+      assertNull( item.getHeight() );
+    },
+
     testChangeItemLabelMetricsWithEmptyItemThenScroll : function() {
       this._createTree( true );
       this._createRow( tree, true );
@@ -929,7 +979,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( "red", node.style.backgroundColor );
       var bounds = getElementBounds( node );
       assertEquals( 4, bounds.left );
-      assertEquals( 14, bounds.height );
+      assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
       assertEquals( 0, bounds.top );
     },

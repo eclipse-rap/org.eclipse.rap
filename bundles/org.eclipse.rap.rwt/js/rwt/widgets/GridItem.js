@@ -107,10 +107,6 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
   },
 
-  events: {
-    "update" : "rwt.event.Event"
-  },
-
   members : {
 
     setItemCount : function( value ) {
@@ -295,9 +291,12 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       this._height = value;
     },
 
-    setHeight : function( value ) {
+    setHeight : function( value, rendering ) {
       if( this.isRootItem() ) {
         throw new Error( "Can not set item height on root item" );
+      }
+      if( this._height === value ) {
+        return;
       }
       this._height = value;
       if( value !== null ) {
@@ -305,7 +304,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       } else {
         this._removeFromCustomHeightItems( this );
       }
-      this._update( "height" );
+      this._update( "height", null, rendering );
+    },
+
+    getHeight : function() {
+      return this._height;
     },
 
     getDefaultHeight : function() {
@@ -698,10 +701,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       return true;
     },
 
-    _update : function( msg, related ) {
+    _update : function( msg, related, rendering ) {
       var event = {
         "msg" : msg,
         "related" : related,
+        "rendering" : rendering,
         "target" : this
       };
       this.dispatchSimpleEvent( "update", event, true );

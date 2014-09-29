@@ -68,6 +68,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
         "fullSelection" : false,
         "hideSelection" : false,
         "alwaysHideSelection" : false,
+        "autoHeight" : false,
         "variant" : null,
         "selectionPadding" : null,
         "indentionWidth" : 16,

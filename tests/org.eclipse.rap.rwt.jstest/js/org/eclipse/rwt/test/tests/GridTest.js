@@ -54,6 +54,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( "tree", widget.getRenderConfig().baseAppearance );
       assertFalse( widget.getRenderConfig().fullSelection );
       assertFalse( widget.getRenderConfig().hideSelection );
+      assertFalse( widget.getRenderConfig().autoHeight );
       assertFalse( widget.getRenderConfig().hasCheckBoxes );
       assertFalse( widget._hasMultiSelection );
       assertTrue( widget._rowContainer.hasEventListeners( "mousewheel" ) );
@@ -62,7 +63,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( undefined, widget.getRenderConfig().checkBoxLeft );
       assertEquals( undefined, widget.getRenderConfig().checkBoxWidth );
       shell.destroy();
-      widget.destroy();
+    },
+
+    testCreateTreeWithAutoItemHeightByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Grid",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "appearance": "tree",
+          "selectionPadding" : [ 2, 4 ],
+          "indentionWidth" : 16,
+          "checkBoxMetrics" : [ 5, 16 ]
+        }
+      } );
+
+      TestUtil.protocolSet( "w3", { "autoHeight" : true } );
+
+      var widget = ObjectRegistry.getObject( "w3" );
+      assertTrue( widget.getRenderConfig().autoHeight );
+      shell.destroy();
     },
 
     testDestroyGridWithItemsByProtocol : function() {
@@ -1341,7 +1364,118 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fillTree( tree, 100 );
 
       TestUtil.flush();
-      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+      assertEquals( 25, tree._vertScrollBar.getThumb() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+
+      tree.getRootItem().getChild( 40 ).setHeight( 50 );
+      TestUtil.flush();
+
+      assertEquals( 77, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollHeightHasMinimalMaxValue : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 10 );
+
+      tree.getRootItem().getChild( 4 ).setHeight( 50 );
+      TestUtil.flush();
+
+      assertEquals( 1, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollAutoHeightCanShowScrollBar : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 22 );
+      tree.setScrollBarsVisible( false, false );
+
+      tree.getRootItem().getChild( 4 ).setHeight( 150 );
+      TestUtil.flush();
+
+      assertTrue( tree._vertScrollBar.getVisibility() );
+      assertEquals( 5, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollAutoHeightCanHideScrollBar : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 22 );
+      tree.getRootItem().getChild( 4 ).setHeight( 150 );
+      tree.setScrollBarsVisible( true, false );
+
+      tree.getRootItem().getChild( 4 ).setHeight( null );
+      TestUtil.flush();
+
+      assertFalse( tree._vertScrollBar.getVisibility() );
+      assertEquals( 1, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollHeightChangesWithGridHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      this._fillTree( tree, 100 );
+      tree.getRootItem().getChild( 40 ).setHeight( 50 );
+      TestUtil.flush();
+
+      tree.setHeight( 1000 );
+      TestUtil.flush();
+
+      assertEquals( 52, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollHeightNeverChangesWithHeightOfItemBeforeLastPage : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      TestUtil.flush();
+
+      tree.getRootItem().getChild( 75 ).setHeight( 50 );
+      TestUtil.flush();
+
+      assertEquals( 77, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollHeightChangesWithHeightOfLastPage : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      TestUtil.flush();
+
+      tree.getRootItem().getChild( 76 ).setHeight( 50 );
+      TestUtil.flush();
+
+      assertEquals( 78, tree._vertScrollBar.getMaximum() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollThumbHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+
+      tree.getRootItem().getChild( 40 ).setHeight( 50 );
+      TestUtil.flush();
+
+      assertEquals( 1, tree._vertScrollBar.getThumb() );
+      tree.destroy();
+    },
+
+    testScrollAltModeScrollThumbHeightNeverChangesWithGridHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      tree.getRootItem().getChild( 40 ).setHeight( 50 );
+      TestUtil.flush();
+
+      tree.setHeight( 1000 );
+      TestUtil.flush();
+
+      assertEquals( 1, tree._vertScrollBar.getThumb() );
       tree.destroy();
     },
 
@@ -1380,18 +1514,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testUpdateScrollHeightOnCustomItemHeight : function() {
+    testChangeCustomItemHeightOutsideRequestSendsItemHeight : function() {
       var tree = this._createDefaultTree();
-      this._fillTree( tree, 100 );
-      TestUtil.flush();
-      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+      this._fillTree( tree, 10 );
+      var item = tree.getRootItem().getChild( 3 );
 
-      for( var i = 0; i < 100; i++ ) {
-        tree.getRootItem().getChild( i ).setHeight( 40 );
-      }
+      item.setHeight( 40 );
+      rwt.remote.Connection.getInstance().send();
 
-      TestUtil.flush();
-      assertEquals( 100, tree._vertScrollBar.getMaximum() );
+      var id = rwt.remote.ObjectRegistry.getId( item );
+      assertEquals( 40, TestUtil.getLastMessage().findSetProperty( id, "height" ) );
+      tree.destroy();
+    },
+
+    testChangeCustomItemHeightInsideRequestDoesNotSendItemHeight : function() {
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 10 );
+      var item = tree.getRootItem().getChild( 3 );
+
+      TestUtil.fakeResponse( true );
+      item.setHeight( 40 );
+      TestUtil.fakeResponse( false );
+      rwt.remote.Connection.getInstance().send();
+
+      var id = rwt.remote.ObjectRegistry.getId( item );
+      assertNull( TestUtil.getLastMessage().findSetOperation( id, "height" ) );
       tree.destroy();
     },
 
@@ -4583,6 +4730,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widget.destroy();
       hScroll.destroy();
       vScroll.destroy();
+    },
+
+    testAutoHeightDoesNotCauseStackOverflow : function() {
+      var widget = this._createDefaultTree( false, false, "fixedColumns", 1 );
+      TestUtil.protocolSet( "w3", { "autoHeight": true } );
+      this._fillTree( widget, 10 );
+      TestUtil.flush();
+      widget.destroy();
     },
 
     /////////

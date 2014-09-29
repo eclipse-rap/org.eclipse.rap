@@ -106,6 +106,14 @@ rwt.util._RWTQuery.prototype = $.prototype = {
     return this.__access( arguments, css_widget, css_element );
   },
 
+  outerHeight : function() {
+    return this.__access( arguments, "getElement", outerHeight_element );
+  },
+
+  outerWidth : function() {
+    return this.__access( arguments, "getElement", outerWidth_element );
+  },
+
   text : function() {
     return this.__access( arguments, "_getTargetNode", text_element );
   },
@@ -364,6 +372,14 @@ var css_element = unwrapSetterArgsFor( function( element, args ) {
   }
   return this;
 } );
+
+var outerHeight_element = function( element ) {
+  return element.offsetHeight;
+};
+
+var outerWidth_element = function( element ) {
+  return element.offsetWidth;
+};
 
 var append_element = function( element, args ) {
   element.appendChild( asElement( args[ 0 ] ) );

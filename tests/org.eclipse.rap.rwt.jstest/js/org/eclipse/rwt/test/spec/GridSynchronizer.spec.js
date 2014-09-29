@@ -13,16 +13,19 @@
 describe( "GridSynchronizer", function() {
 
   var grid;
+  var rootItem;
   var gridRemoteObject;
   var connection;
   var synchronizer;
 
   beforeEach( function() {
     grid = mock( rwt.widgets.Grid, "grid" );
+    rootItem = mock( rwt.widgets.GridItem, "gridItem" );
+    grid.getRootItem.andReturn( rootItem );
     gridRemoteObject = mock( rwt.remote.RemoteObject, "gridRemoteObject" );
     synchronizer = new rwt.widgets.util.GridSynchronizer( grid );
     connection = rwt.remote.Connection.getInstance();
-    spyOn( connection, "onNextSend" ).andCallFake( function( func, context ) {
+    spyOn( connection, "onNextSend" ).andCallFake( function( func ) {
       func();
     } );
     spyOn( connection, "getRemoteObject" ).andReturn( gridRemoteObject );
@@ -299,13 +302,13 @@ describe( "GridSynchronizer", function() {
 
   } );
 
-  describe( "expand event", function() {
+  describe( "item update event", function() {
 
     var item;
     var itemRemoteObject;
 
     beforeEach( function() {
-      item = mock( rwt.widgets.GridItem, "item" );
+      item = mock( rwt.widgets.GridItem, "gridItem" );
       item.isCached.andReturn( true );
       rwt.remote.ObjectRegistry.add( "foo", item );
       itemRemoteObject = mock( rwt.remote.RemoteObject, "itemRemoteObject" );
@@ -315,31 +318,57 @@ describe( "GridSynchronizer", function() {
     } );
 
     it( "sets expanded property", function() {
-      notifyListener( "expand", { "item" : item, "expanded" : true } );
+      notifyListener( "update", { "target" : item, "msg" : "expanded" } );
 
       expect( itemRemoteObject.set ).toHaveBeenCalledWith( "expanded", true );
     } );
 
     it( "notifies Expand", function() {
-      notifyListener( "expand", { "item" : item, "expanded" : true } );
+      notifyListener( "update", { "target" : item, "msg" : "expanded" } );
 
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Expand", { "item" : "foo" } );
     } );
 
     it( "notifies Collapse", function() {
-      notifyListener( "expand", { "item" : item, "expanded" : false } );
+      notifyListener( "update", { "target" : item, "msg" : "collapsed" } );
 
       expect( gridRemoteObject.notify ).toHaveBeenCalledWith( "Collapse", { "item" : "foo" } );
+    } );
+
+    it( "sets height property", function() {
+      item.getOwnHeight.andReturn( 23 );
+      notifyListener( "update", { "target" : item, "msg" : "height" } );
+
+      expect( itemRemoteObject.set ).toHaveBeenCalledWith( "height", 23 );
+    } );
+
+    it( "do not set height property if in response", function() {
+      rwt.remote.EventUtil.setSuspended( true );
+      notifyListener( "update", { "target" : item, "msg" : "height" } );
+      rwt.remote.EventUtil.setSuspended( false );
+
+      expect( itemRemoteObject.set ).not.toHaveBeenCalled();
+    } );
+
+    it( "do set height property if in response and rendering", function() {
+      item.getOwnHeight.andReturn( 23 );
+
+      rwt.remote.EventUtil.setSuspended( true );
+      notifyListener( "update", { "target" : item, "msg" : "height", "rendering" : true } );
+      rwt.remote.EventUtil.setSuspended( false );
+
+      expect( itemRemoteObject.set ).toHaveBeenCalledWith( "height", 23 );
     } );
 
   } );
 
   function notifyListener( type, data ) {
-    getListener( type ).apply( synchronizer, [ data ] );
+    var mock = type === "update" ? rootItem : grid;
+    getListener( mock, type ).apply( synchronizer, [ data ] );
   }
 
-  function getListener( type ) {
-    var spy = grid.addEventListener;
+  function getListener( mock, type ) {
+    var spy = mock.addEventListener;
     for( var i = 0; i < spy.callCount; i++ ) {
       if( spy.argsForCall[ i ][ 0 ] === type ) {
         return spy.argsForCall[ i ][ 1 ];

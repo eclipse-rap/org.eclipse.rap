@@ -725,7 +725,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
         log.push( event.msg );
       }, this);
       root.setItemCount( 1 );
-      var child1 = new rwt.widgets.GridItem( root, 0 );
+      new rwt.widgets.GridItem( root, 0 );
       assertEquals( 1, log.length );
       assertEquals( "add", log[ 0 ] );
     },
@@ -940,6 +940,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       child1.setChecked( true );
       child1.setChecked( false );
       assertEquals( 2, log.length );
+    },
+
+    testItemHeightChangeEvent : function() {
+      var log = [];
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 1 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
+      root.addEventListener( "update", function( event ) {
+        log.push( rwt.util.Objects.copy( event ) );
+      }, this);
+
+      child1.setHeight( 23 );
+
+      assertEquals( 1, log.length );
+      assertEquals( "height", log[ 0 ].msg );
+      assertTrue( !log[ 0 ].rendering );
+    },
+
+    testItemHeightChangeEventWithRendering : function() {
+      var log = [];
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 1 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
+      root.addEventListener( "update", function( event ) {
+        log.push( rwt.util.Objects.copy( event ) );
+      }, this);
+
+      child1.setHeight( 23, true );
+
+      assertEquals( 1, log.length );
+      assertTrue( log[ 0 ].rendering );
+    },
+
+    testNoItemHeightChangeEventWithUnchangedHeight : function() {
+      var log = [];
+      var root = new rwt.widgets.GridItem();
+      root.setItemCount( 1 );
+      var child1 = new rwt.widgets.GridItem( root, 0 );
+      child1.setHeight( null );
+      root.addEventListener( "update", function( event ) {
+        log.push( rwt.util.Objects.copy( event ) );
+      }, this);
+
+      child1.setHeight( null );
+
+      assertEquals( 0, log.length );
     },
 
     testAddItemAt : function() {

@@ -70,7 +70,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       this._usedIdentIcons = 0;
       if( item !== null ) {
         var renderSelected = this._renderAsSelected( config, selected );
-        var heightChanged = this._renderHeight( item, config );
         this._renderStates( item, config, renderSelected, hoverTarget );
         this._renderBackground( item, config, renderSelected );
         // TODO [tb] : item foreground and font could be inherited
@@ -80,10 +79,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this._renderIndention( item, config, hoverTarget );
         }
         if( config.rowTemplate ) {
+          this._renderHeight( item, config );
           this._renderTemplate( item, config );
         } else {
-          var contentOnly = scrolling && !heightChanged;
-          this._renderColumnModel( item, config, hoverTarget, renderSelected, contentOnly );
+          this._renderColumnModel( item, config, hoverTarget, renderSelected, scrolling );
+          this._renderHeight( item, config );
         }
         this._renderOverlay( item, config );
         this._hideRemainingElements();
@@ -201,14 +201,30 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return this._templateRenderer;
     },
 
-    _renderHeight : function( item ) {
-      var result = false;
+    _renderHeight : function( item, config ) {
+      if( config.autoHeight ) {
+        var computedHeight = this._computeAutoHeight( item, config );
+        if( item.getDefaultHeight() >= computedHeight - 1 ) {
+          // forgive rounding error for network optimization
+          computedHeight = null;
+        }
+        item.setHeight( computedHeight, true );
+      }
       var itemHeight = item.getOwnHeight();
       if( itemHeight !== this.getHeight() ) {
         this.$el.css( "height", item.getOwnHeight() );
-        result = true;
       }
-      return result;
+    },
+
+    _computeAutoHeight : function( item, config ) {
+      var maxHeight = 0;
+      for( var i = 0; i < this.$cellLabels.length; i++ ) {
+        if( this.$cellLabels[ i ] ) {
+          maxHeight = Math.max( maxHeight, Math.ceil( this.$cellLabels[ i ].outerHeight() ) );
+        }
+      }
+      var padding = this._getCellPadding( config );
+      return maxHeight + padding[ 0 ] + padding[ 2 ];
     },
 
     _renderStates : function( item, config, selected, hoverTarget ) {
@@ -494,11 +510,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( element ) {
         var left = this._getItemLeft( item, cell, config );
         var width = this._getItemWidth( item, cell, config );
-        var height = this.getHeight(); // TODO: get rid of all getHeight uses, replace with 100%
-        if( this.hasState( "linesvisible" ) ) {
-          height -= 1;
-        }
-        element.css( { "left" : left, "top" : 0, "width" : width, "height" : height } );
+        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
       }
     },
 
