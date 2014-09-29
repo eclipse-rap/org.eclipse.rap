@@ -196,7 +196,6 @@ rwt.event.EventHandler = {
     }
   },
 
-
   _onkeyevent_post : function( vDomEvent, vType, vKeyCode, vCharCode ) {
     var process = true;
     if( typeof this._filter[ "keyevent" ] !== "undefined" ) {
@@ -522,19 +521,9 @@ rwt.event.EventHandler = {
     rwt.client.Client.isGecko() ? "DOMMouseScroll" : "mousewheel"
   ],
 
-  _keyEventTypes : [
-    "keydown",
-    "keypress",
-    "keyup"
-  ],
+  _keyEventTypes : [ "keydown", "keypress", "keyup" ],
 
-  _dragEventTypes : [
-    "dragstart",
-    "drop",
-    "dragover",
-    "dragleave",
-    "dragenter"
-  ],
+  _dragEventTypes : [ "dragstart", "drop", "dragover", "dragleave", "dragenter" ],
 
   ////////////////////
   // Helper-functions:

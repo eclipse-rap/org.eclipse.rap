@@ -165,6 +165,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.destroy();
     },
 
+    testHoverRowAfterOptimizedScrollingForward : function() {
+      var tree = this._createDefaultTree();
+      tree.setScrollBarsVisible( false, true );
+      tree.setItemCount( 100 );
+      var container = tree.getRowContainer();
+      var items = [];
+      for( var i = 0; i < 100; i++ ) {
+        items[ i ] = new rwt.widgets.GridItem( tree.getRootItem(), i );
+        items[ i ].setTexts( [ "Test" + i ] );
+      }
+      TestUtil.flush();
+      container.getRow( 2 ).$el.get( 0 );
+      TestUtil.fakeMouseEvent( container.getRow( 2 ), "mouseover", 12, 34 );
+      assertEquals( items[ 2 ], container.getHoverItem() );
+      spyOn( rwt.event.EventHandlerUtil, "getElementAt" )
+        .andReturn( container.getRow( 3 ).$el.get( 0 ) );
+
+      tree._vertScrollBar.setValue( 1 );
+      TestUtil.flush();
+
+      expect( rwt.event.EventHandlerUtil.getElementAt ).toHaveBeenCalledWith( 12, 34 );
+      assertEquals( items[ 3 ], container.getHoverItem() );
+      tree.destroy();
+    },
+
     testRenderEmptyRowOnHoverBug : function() {
       // See Bug 349310 - Mouseover on invisible items in SWT Tree
       var tree = this._createDefaultTree();

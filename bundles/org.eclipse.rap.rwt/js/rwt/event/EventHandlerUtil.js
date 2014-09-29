@@ -390,6 +390,10 @@ rwt.event.EventHandlerUtil = {
     return result;
   },
 
+  getElementAt : function( x, y ) {
+    return document.elementFromPoint( x, y );
+  },
+
   ///////////////
   // Helper-maps:
 
