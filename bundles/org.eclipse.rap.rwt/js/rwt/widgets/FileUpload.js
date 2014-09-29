@@ -232,7 +232,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
       }
       if( rwt.client.Client.getBrowser() === "chrome") {
         // Chrome looses keyboard control on mouse-focus, see _ontabfocus.
-        this._onBlur();
+        this._visualizeBlur();
       }
     },
 
