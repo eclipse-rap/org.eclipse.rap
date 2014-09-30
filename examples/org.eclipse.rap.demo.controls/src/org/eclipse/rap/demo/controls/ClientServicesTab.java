@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class ClientServicesTab extends ExampleTab {
 
   public ClientServicesTab() {
     super( "Client Services" );
+    setHorizontalSashFormWeights( new int[] { 100, 0 } );
   }
 
   @Override
@@ -107,6 +108,7 @@ public class ClientServicesTab extends ExampleTab {
     title.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
     Button add = new Button( group, SWT.PUSH );
     add.setText( "Add to History" );
+    add.setLayoutData( createButtonGridData() );
     add.addListener( SWT.Selection, new Listener() {
       public void handleEvent( Event event ) {
         final BrowserNavigation navigation = RWT.getClient().getService( BrowserNavigation.class );
@@ -140,8 +142,8 @@ public class ClientServicesTab extends ExampleTab {
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     url.setLayoutData( layoutData );
     Button launch = new Button( group, SWT.PUSH );
-    launch.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
     launch.setText( "Launch" );
+    launch.setLayoutData( createButtonGridData() );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
         UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
@@ -159,8 +161,8 @@ public class ClientServicesTab extends ExampleTab {
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     text.setLayoutData( layoutData );
     Button require = new Button( group, SWT.PUSH );
-    require.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
     require.setText( "Set" );
+    require.setLayoutData( createButtonGridData() );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
         ExitConfirmation conf = RWT.getClient().getService( ExitConfirmation.class );
@@ -178,8 +180,8 @@ public class ClientServicesTab extends ExampleTab {
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     url.setLayoutData( layoutData );
     Button require = new Button( group, SWT.PUSH );
-    require.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
     require.setText( "Require" );
+    require.setLayoutData( createButtonGridData() );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
         JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
@@ -201,8 +203,8 @@ public class ClientServicesTab extends ExampleTab {
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, false );
     script.setLayoutData( layoutData );
     Button execute = new Button( group, SWT.PUSH );
-    execute.setLayoutData( new GridData( SWT.LEFT, SWT.FILL, false, false ) );
     execute.setText( "Execute" );
+    execute.setLayoutData( createButtonGridData() );
     Listener executeListener = new Listener() {
       public void handleEvent( Event event ) {
         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
@@ -228,5 +230,8 @@ public class ClientServicesTab extends ExampleTab {
     locale.setText( text );
   }
 
+  private static GridData createButtonGridData() {
+    return new GridData( 150, SWT.DEFAULT );
+  }
 
 }

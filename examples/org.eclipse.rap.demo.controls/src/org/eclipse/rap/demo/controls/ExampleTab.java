@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,7 @@ abstract class ExampleTab implements Serializable {
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
+  private int[] horizontalWeights = new int[] { 50, 50 };
   private final Set<String> properties = new HashSet<String>();
   private Object data;
 
@@ -183,7 +184,7 @@ abstract class ExampleTab implements Serializable {
     createLeft( horSashForm );
     createRight( horSashForm );
     createFoot( vertSashForm );
-    horSashForm.setWeights( new int[] { 50, 50 } );
+    horSashForm.setWeights( horizontalWeights );
     vertSashForm.setWeights( new int[] { 93, 7 } );
     return vertSashForm;
   }
@@ -268,6 +269,10 @@ abstract class ExampleTab implements Serializable {
   // TODO [rst] Refactor ExampleTab to evaluate style controls before example controls are created
   protected void setDefaultStyle( int style ) {
     defaultStyle = style;
+  }
+
+  protected void setHorizontalSashFormWeights( int[] weights ) {
+    horizontalWeights = weights;
   }
 
   protected Button createStyleButton( String fieldName, int style ) {

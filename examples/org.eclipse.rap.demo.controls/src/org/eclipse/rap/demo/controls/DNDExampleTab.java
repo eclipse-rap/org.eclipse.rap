@@ -94,6 +94,7 @@ public class DNDExampleTab extends ExampleTab {
 
   public DNDExampleTab() {
     super( "Drag & Drop" );
+    setHorizontalSashFormWeights( new int[] { 100, 0 } );
     dragEnabled = true;
     dropEnabled = true;
     addDragTransfer( TextTransfer.getInstance() );
