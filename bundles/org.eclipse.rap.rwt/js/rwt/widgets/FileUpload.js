@@ -61,7 +61,7 @@ rwt.qx.Class.define( "rwt.widgets.FileUpload", {
     ////////////
     // Internals
 
-    _createSubelements : function() {
+    _createSubElements : function() {
       // NOTE: MultiCellWidget uses innerHTML, therefore this must be done here:
       if( this._formElement === null ) {
         this.base( arguments );

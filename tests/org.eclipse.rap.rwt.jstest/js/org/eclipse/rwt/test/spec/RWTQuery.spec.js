@@ -931,6 +931,18 @@ describe( "RWTQuery", function() {
 
     } );
 
+    describe( "empty", function() {
+
+      it( "removes all children", function() {
+        $( element ).html( "<div></div><span></span>" );
+
+        $( element ).empty();
+
+        expect( element.children.length ).toBe( 0 );
+      } );
+
+    } );
+
     describe( "is", function() {
 
       it( "compares with element", function() {

@@ -494,7 +494,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       widget.setFont( new rwt.html.Font( 10, [ "monospace" ] ) );
       this.initWidget( widget, true );
-      var style = widget._getTargetNode().lastChild.style;
+      var style = widget.getElement().style;
       assertEquals( '10px', style.fontSize );
       assertTrue( style.fontFamily.search( 'monospace' ) != -1 );
       widget.setFont( new rwt.html.Font( 12, [ "serif" ] ) );

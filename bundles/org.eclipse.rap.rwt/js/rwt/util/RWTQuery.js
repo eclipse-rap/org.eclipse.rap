@@ -122,6 +122,14 @@ rwt.util._RWTQuery.prototype = $.prototype = {
     return this.__access( arguments, "_getTargetNode", html_element );
   },
 
+  empty : function() {
+    return this.__access( arguments, "_getTargetNode", empty_element );
+  },
+
+  clone : function() {
+    return this.__access( arguments, "getElement", clone_element );
+  },
+
   "get" : function() {
     return this.__access( arguments, "getElement", get_element );
   },
@@ -436,6 +444,17 @@ var html_element = function( element, args ) {
   }
   element.innerHTML = args[ 0 ];
   return this;
+};
+
+var empty_element = function( element ) {
+  while( element.firstChild ) {
+    element.removeChild( element.firstChild );
+  }
+  return this;
+};
+
+var clone_element = function( element ) {
+  return $( element.cloneNode( true ) );
 };
 
 var restrictedAttributes = {

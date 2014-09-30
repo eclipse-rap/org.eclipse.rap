@@ -9,6 +9,19 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function($){
+
+var $labelTemplate = $( "<div>" ).css( {
+  position : "absolute",
+  overflow : "hidden",
+  whiteSpace : "nowrap"
+} );
+
+var $imageTemplate = $( "<div>" ).css( {
+  position : "absolute",
+  backgroundRepeat : "no-repeat"
+} );
+
 rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
   extend : rwt.widgets.base.Terminator,
@@ -22,10 +35,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
    */
   construct : function( cells ) {
     this.base( arguments );
+    this.$el = $( this );
     // cellData for a single cell is:
     // [ type, content, width, height, computedWidth, computedHeight, visible ]
     this.__cellData = null;
-    this.__cellNodes = null;
+    this.$cells = null;
     this.__cellCount = null;
     this.__computedTotalSpacing = null;
     this.__styleRegExp = /([a-z])([A-Z])/g;
@@ -47,7 +61,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
   destruct : function() {
     this._disposeObjectDeep( "__cellData", 0 );
-    this._disposeObjectDeep( "__cellNodes", 0 );
+    this._disposeObjectDeep( "$cells", 0 );
     this._disposeObjectDeep( "__paddingCache", 0 );
     this._disposeObjectDeep( "_fontCache", 0 );
   },
@@ -171,8 +185,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
      */
     setCellVisible : function( cell, value ) {
       this.__cellData[ cell ][ 6 ] = value;
-      if( this.getCellNode( cell ) ) {
-        this.getCellNode( cell ).style.display = value ? "" : "none";
+      if( this.$cells[ cell ] ) {
+        this.$cells[ cell ].css( "display", value ? "" : "none" );
       }
     },
 
@@ -181,7 +195,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     },
 
     getCellNode : function( cell ) {
-      return this.__cellNodes[ cell ];
+      return this.$cells[ cell ] ? this.$cells[ cell ].get( 0 ) : null;
     },
 
     getCellContent : function( cell ) {
@@ -270,33 +284,26 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     _applyElement : function( value, old ) {
       this.base( arguments, value, old );
       if( value ) {
-        this._createSubelements();
-        this._catchSubelements();
+        this._createSubElements();
+        var font = this.getFont();
+        if( font ) {
+          font.render( this );
+        } else {
+          rwt.html.Font.reset( this );
+        }
       }
     },
 
-    _createSubelements : function() {
-      var html = "";
+    _createSubElements : function() {
+      this.$el.empty();
       for( var i = 0; i < this.__cellCount; i++ ) {
         this.__setCellNode( i, null );
         if( this._cellHasContent( i ) ) {
           if( this._isTextCell( i ) ) {
-            html += this._getLabelHtml( i );
+            this.__setCellNode( i, $labelTemplate.clone() );
           } else if( this._isImageCell( i ) ) {
-            html += this._getImageHtml( i );
+            this.__setCellNode( i, $imageTemplate.clone() );
           }
-        }
-      }
-      this._getTargetNode().innerHTML = html;
-    },
-
-    _catchSubelements : function() {
-      var el = this._getTargetNode();
-      var childNumber = 0;
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._cellHasContent( i ) ) {
-          this.__setCellNode( i, el.childNodes[ childNumber ] );
-          childNumber++;
         }
       }
       if( !this.getEnabled() ) {
@@ -361,19 +368,15 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     _applyTextOverflow : function( value ) {
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this._isTextCell( i ) && this.__cellHasNode( i ) ) {
-          var node = this.getCellNode( i );
-          rwt.html.Style.setStyleProperty( node, "textOverflow", value === "clip" ? "" : value );
+        if( this._isTextCell( i ) && this.$cells[ i ] ) {
+          this.$cells[ i ].css( "textOverflow", value === "clip" ? "" : value );
         }
       }
     },
 
     _applyWordWrap : function( value  ) {
-      if( this._flexibleCell !== -1 ) {
-        var node = this.getCellNode( this._flexibleCell );
-        if( node ) {
-          rwt.html.Style.setStyleProperty( node, "whiteSpace", value ? "" : "nowrap" );
-        }
+      if( this._flexibleCell !== -1 && this.$cells[ this._flexibleCell ] ) {
+        this.$cells[ this._flexibleCell ].css( "whiteSpace", value ? "" : "nowrap" );
       }
     },
 
@@ -432,15 +435,18 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       this.__cellData[ cell ][ 3 ] = height;
     },
 
-    __setCellNode : function( cell, node ) {
-      this.__cellNodes[ cell ] = node;
-      if( node !== null && !this.isCellVisible( cell ) ) {
-        node.style.display = "none";
+    __setCellNode : function( cell, $node ) {
+      this.$cells[ cell ] = $node;
+      if( $node !== null && !this.isCellVisible( cell ) ) {
+        $node.css( "display", "none" );
+      }
+      if( $node !== null ) {
+        this.$el.append( $node );
       }
     },
 
     __cellHasNode : function( cell ) {
-      return this.__cellNodes[ cell ] != null;
+      return this.$cells[ cell ] != null;
     },
 
     __createCellData : function( cells ) {
@@ -451,7 +457,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         nodes[ i ] = null;
         data[ i ] = [ cells[ i ], null, null, null, null, null, true ];
       }
-      this.__cellNodes = nodes;
+      this.$cells = nodes;
       this.__cellData = data;
     },
 
@@ -469,6 +475,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
     },
 
+    // TODO: calculate in actual cell node directly when possible
     __computeCellDimension : function( cellEntry, wrapWidth ) {
       var dimension;
       if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
@@ -593,17 +600,13 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     _layoutPost : function( changes ) {
       if( changes.createContent ){
-        this._createSubelements();
-        this._catchSubelements();
+        this._createSubElements();
       }
-      if( changes.updateContent && !changes.createContent ) {
+      if( changes.updateContent || changes.createContent ) {
         this._updateAllImages();
         this._updateAllLabels();
       }
-      changes.layoutX =    changes.width
-                        || changes.layoutX
-                        || changes.frameWidth
-                        || changes.initial;
+      changes.layoutX = changes.width || changes.layoutX || changes.frameWidth || changes.initial;
       changes.layoutY =    changes.height
                         || changes.layoutY
                         || changes.frameHeight
@@ -642,15 +645,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         break;
       }
       var left = firstCellLeft ;
-      var width = null;
-      var style = null;
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this.cellIsDisplayable( i ) ) {
-          width = this.getCellWidth( i );
+          var width = this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
-            style = this.getCellNode( i ).style;
-            style.left = left + "px";
-            style.width = Math.max( 0, width ) + "px";
+            this.$cells[ i ].css( { left: left, width: Math.max( 0, width ) } );
           }
           left += ( width + space );
         }
@@ -685,9 +684,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
       }
-      var style = this.getCellNode( cell ).style;
-      style.top = top + "px";
-      style.height = Math.max( 0, height ) + "px";
+      this.$cells[ cell ].css( { top: top, height: Math.max( 0, height ) } );
     },
 
     /*
@@ -695,25 +692,6 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       IMAGE
     ---------------------------------------------------------------------------
     */
-
-    _getImageHtml : function( cell ) {
-      var content = this.getCellContent( cell );
-      var cssImageStr = "";
-      if( content ) {
-        cssImageStr = "background-image:url(" + content + ")";
-      }
-      return   "<div style='position:absolute;border:0 none;"
-             + cssImageStr
-             + ";background-repeat:no-repeat;' ></div>";
-    },
-
-    _updateImage : function( cell ) {
-      var node = this.getCellNode( cell );
-      var source = this.getCellContent( cell );
-      var opacity = this.getEnabled() ? 1 : 0.3;
-      rwt.html.Style.setBackgroundImage( node, source );
-      node.style.opacity = opacity;
-    },
 
     _updateAllImages : function() {
       for( var i = 0; i < this.__cellCount; i++ ) {
@@ -731,32 +709,18 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       }
     },
 
+    _updateImage : function( cell ) {
+      this.$cells[ cell ].css( {
+        opacity : this.getEnabled() ? 1 : 0.3,
+        backgroundImage : this.getCellContent( cell )
+      } );
+    },
+
     /*
     ---------------------------------------------------------------------------
       LABEL
     ---------------------------------------------------------------------------
     */
-
-    _getLabelHtml : function( cell ) {
-      return   "<div style='position:absolute;border:0 none;overflow:hidden;white-space:nowrap;"
-             + this._joinStyleProperties( this.__fontCache )
-             + "'>"
-             + this.getCellContent( cell )
-             + "</div>";
-    },
-
-   _joinStyleProperties : function( map ) {
-      var str = [];
-      var value;
-      for( var attribute in map ) {
-        value = map[ attribute ];
-        if( value ) {
-          str.push( attribute, ":", value, ";" );
-        }
-      }
-      var joinedCss = str.join( "" );
-      return joinedCss.replace( this.__styleRegExp, "$1-$2" ).toLowerCase();
-    },
 
     _applyFont : function( value ) {
       this._styleFont( value );
@@ -764,26 +728,17 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     _styleFont : function( font ) {
       if( font ) {
+        font.render( this );
         font.renderStyle( this.__fontCache );
       } else {
+        rwt.html.Font.reset( this );
         rwt.html.Font.resetStyle( this.__fontCache );
       }
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isTextCell( i ) && this._cellHasContent( i ) ) {
-          if( this.__cellHasNode( i ) ) {
-            if( font ) {
-              font.renderStyle( this.getCellNode( i ).style );
-            } else {
-              rwt.html.Font.resetStyle( this.getCellNode( i ).style );
-            }
-          }
           this.__updateComputedCellDimension( i );
         }
       }
-    },
-
-    _updateLabel : function( cell ) {
-      this.getCellNode( cell ).innerHTML = this.getCellContent( cell );
     },
 
     _updateAllLabels : function() {
@@ -792,8 +747,14 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
           this._updateLabel( i );
         }
       }
+    },
+
+    _updateLabel : function( cell ) {
+      this.$cells[ cell ].html( this.getCellContent( cell ) );
     }
 
   }
 
 } );
+
+}( rwt.util._RWTQuery ));
