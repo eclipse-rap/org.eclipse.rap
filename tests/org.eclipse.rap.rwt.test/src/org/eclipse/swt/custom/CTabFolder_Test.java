@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -853,6 +854,14 @@ public class CTabFolder_Test {
       tabFolder.removeSelectionListener( null );
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testGetBorder_returnsZeroRectangle() {
+    CTabFolder tabFolder = new CTabFolder( shell, SWT.BORDER );
+
+    Rectangle border = tabFolder.getAdapter( ControlThemeAdapter.class ).getBorder( tabFolder );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), border );
   }
 
   private static Rectangle getChevronRect( CTabFolder folder ) {

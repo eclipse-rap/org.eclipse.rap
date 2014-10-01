@@ -23,9 +23,21 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
+import org.eclipse.swt.widgets.Control;
 
 
 public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
+
+  /*
+   * [if] CTabFolder border is not themeable. It overrides getBorderWidth to return 0.
+   * Make getBorder to return zero rectangle as well.
+   * See bug 445620: ViewPart toolbar overlap border
+   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=445620
+   */
+  @Override
+  public Rectangle getBorder( Control control ) {
+    return new Rectangle( 0, 0, 0, 0 );
+  }
 
   public Color getBackground( CTabFolder folder ) {
     return getCssColor( "CTabItem", "background-color", folder );
@@ -43,33 +55,26 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
   }
 
   public Color getSelectedForeground( CTabFolder folder ) {
-    CssType cssValue = ThemeUtil.getCssValue( "CTabItem",
-                                              "color",
-                                              SimpleSelector.SELECTED );
+    CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "color", SimpleSelector.SELECTED );
     return CssColor.createColor( ( CssColor )cssValue );
   }
 
   public Rectangle getItemPadding( boolean selected ) {
-    SimpleSelector selector = selected
-                              ? SimpleSelector.SELECTED
-                              : SimpleSelector.DEFAULT;
+    SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
     CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
     return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
   public int getItemSpacing( boolean selected ) {
-    SimpleSelector selector = selected
-                              ? SimpleSelector.SELECTED
-                              : SimpleSelector.DEFAULT;
+    SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
     CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "spacing", selector );
     return ( ( CssDimension )cssValue ).value;
   }
 
   public Font getItemFont( boolean selected ) {
-    SimpleSelector selector = selected
-                              ? SimpleSelector.SELECTED
-                              : SimpleSelector.DEFAULT;
+    SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
     CssType cssValue = ThemeUtil.getCssValue( "CTabItem", "font", selector );
     return CssFont.createFont( ( CssFont )cssValue );
   }
+
 }
