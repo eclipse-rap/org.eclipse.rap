@@ -433,6 +433,7 @@ CTabItem {
   padding: 2px 4px;
   spacing: 4px;
   text-shadow: none;
+  text-decoration: none;
 }
 
 CTabItem:selected {

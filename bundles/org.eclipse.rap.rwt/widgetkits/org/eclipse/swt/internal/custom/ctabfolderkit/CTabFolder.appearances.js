@@ -83,12 +83,21 @@ var appearances = {
     style: function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      result.cursor = "default";
+      result.font = tv.getCssFont( "CTabItem", "font" );
+      var decoration = tv.getCssIdentifier( "CTabItem", "text-decoration" );
+      if( decoration != null && decoration !== "none" ) {
+        var decoratedFont = new rwt.html.Font();
+        decoratedFont.setSize( result.font.getSize() );
+        decoratedFont.setFamily( result.font.getFamily() );
+        decoratedFont.setBold( result.font.getBold() );
+        decoratedFont.setItalic( result.font.getItalic() );
+        decoratedFont.setDecoration( decoration );
+        result.font = decoratedFont;
+      }
       var padding = tv.getCssBoxDimensions( "CTabItem", "padding" );
       result.paddingLeft = padding[ 3 ];
       result.paddingRight = padding[ 1 ];
       result.spacing = tv.getCssDimension( "CTabItem", "spacing" );
-      result.font = tv.getCssFont( "CTabItem", "font" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
       result.textShadow = tv.getCssShadow( "CTabItem", "text-shadow" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
@@ -127,6 +136,7 @@ var appearances = {
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "CTabItem", "background-image" );
+      result.cursor = "default";
       return result;
     }
   },

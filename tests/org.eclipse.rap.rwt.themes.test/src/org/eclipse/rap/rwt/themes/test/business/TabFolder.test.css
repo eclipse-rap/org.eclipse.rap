@@ -79,9 +79,13 @@ CTabItem {
   background-image: none;
   padding: 2px 4px;
   spacing: 4px;
+  text-shadow: none;
+  text-decoration: none;
 }
 
 CTabItem:selected {
   color: white;
   background-color: #00589f;
+  text-shadow: none;
+  text-decoration: none;
 }

@@ -481,6 +481,7 @@ CTabItem {
   padding: 6px 15px;
   spacing: 10px;
   text-shadow: none;
+  text-decoration: none;
 }
 
 CTabItem:selected {

@@ -16,7 +16,7 @@
   <element name="CTabFolder">
 
     <description>
-      This widget implements the notebook user interface metaphor.  It allows 
+      This widget implements the notebook user interface metaphor.  It allows
       the user to select a notebook page from set of pages.
     </description>
 
@@ -51,7 +51,10 @@
           description="Spacing between text and image" />
 
       <property name="text-shadow"
-          description="Shadow for text." />
+          description="Shadow for CTabItem text." />
+
+      <property name="text-decoration"
+          description="Decoration for CTabItem text." />
 
       <state name="selected"
           description="Applies to the selected item." />
@@ -60,24 +63,24 @@
           description="Applies to items of a disabled CTabFolder." />
 
     </element>
-            
+
     <element name="CTabFolder-DropDownButton-Icon">
       <description>
         The drop-down button icon (chevron).
       </description>
-      
+
       <property name="background-image">
         <description>
           The icon for the CTabFolder drop-down button.
         </description>
       </property>
-      
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-      
+
     </element>
 
   </element>
