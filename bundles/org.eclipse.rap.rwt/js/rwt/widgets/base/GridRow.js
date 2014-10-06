@@ -405,16 +405,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _renderCheckBox : function( item, config, hoverTarget, contentOnly ) {
       if( config.hasCheckBoxes ) {
-        var states = this.__states;
         this.setState( "over", hoverTarget && hoverTarget[ 0 ] === "checkBox" );
-        var image = this._getImageFromAppearance( "check-box", states );
+        this.setState( "disabled", !item.isCellCheckable( 0 ) );
+        var image = this._getImageFromAppearance( "check-box", this.__states );
         this.setState( "over", hoverTarget !== null );
+        this.setState( "disabled", false );
         if( this.$checkBox === null ) {
           this.$checkBox = this._createElement( 3 ).css( {
             "backgroundRepeat" : "no-repeat",
             "backgroundPosition" : "center"
           } );
         }
+        this.$checkBox.css( "display", image === null ? "none" : "" );
         this._setImage( this.$checkBox, image, config.enabled );
         if( config.treeColumn !== -1 || !contentOnly ) {
           var left = this._getCheckBoxLeft( item, config );
@@ -519,14 +521,17 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var renderBounds = false;
       if( config.itemCellCheck[ cell ] ) {
         this.setState( "checked", item.isCellChecked( cell ) );
+        this.setState( "disabled", !item.isCellCheckable( cell ) );
         this.setState( "grayed", item.isCellGrayed( cell ) );
         this.setState( "over",    hoverTarget
                                && hoverTarget[ 0 ] === "cellCheckBox"
                                && hoverTarget[ 1 ] === cell );
-        var source = this._getImageFromAppearance( "check-box", this.__states );
+        var image = this._getImageFromAppearance( "check-box", this.__states );
+        this.setState( "disabled", false );
         renderBounds = isTreeColumn || !contentOnly || !this.$cellCheckBoxes[ cell ];
         element = this._getCellCheckImage( cell );
-        this._setImage( element, source, config.enabled );
+        element.css( "display", image === null ? "none" : "" );
+        this._setImage( element, image, config.enabled );
       }
       if( renderBounds ) {
         this._renderCellCheckBounds( item, cell, config );

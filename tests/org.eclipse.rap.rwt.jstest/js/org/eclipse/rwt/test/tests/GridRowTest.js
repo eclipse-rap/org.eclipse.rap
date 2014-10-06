@@ -533,7 +533,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       if( rwt.client.Client.isTrident() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
       }
-      console.log( row.$el.attr( "style" ) );
       assertTrue( /user-select:\s*none/.test( row.$el.attr( "style" ) ) );
     },
 
@@ -1385,6 +1384,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertTrue( url.indexOf( "mycheckbox.gif" ) != -1 );
     },
 
+    testRenderCheckBoxDisabled : function() {
+      this._createTree( false, "check" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      item.setCellCheckable( [ false ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "disabled-mycheckbox.gif" ) != -1 );
+      assertEquals( "", node.style.display );
+    },
+
+    testRenderCheckBoxDisabled_withoutBackgroundImage : function() {
+      this._createTree( false, "check" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      item.setCellCheckable( [ false ] );
+      TestUtil.fakeAppearance( "tree-row-check-box",  {
+        style : function( states ) {
+          return {
+            "backgroundImage" : null
+          };
+        }
+      } );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      assertEquals( "none", node.style.display );
+    },
+
     testRenderCellCheckBox : function() {
       tree.setColumnCount( 3 );
       tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
@@ -1435,6 +1468,42 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row.$el.get( 0 ).childNodes[ 1 ];
       var url = TestUtil.getCssBackgroundImage( node );
       assertTrue( url.indexOf( "grayed-mycheckbox.gif" ) != -1 );
+    },
+
+    testRenderCellCheckBoxDisabled : function() {
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var item = this._createItem( tree );
+      item.setCellCheckable( [ false ] );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var url = TestUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "disabled-mycheckbox.gif" ) != -1 );
+      assertEquals( "", node.style.display );
+    },
+
+    testRenderCellCheckBoxDisabled_withoutBackgroundImage : function() {
+      tree.setColumnCount( 1 );
+      tree.setItemMetrics( 0, 0, 20, 10, 0, 10, 10, 2, 8 );
+      tree.setCellCheck( 0, true );
+      var item = this._createItem( tree );
+      item.setCellCheckable( [ false ] );
+      TestUtil.fakeAppearance( "tree-row-check-box",  {
+        style : function( states ) {
+          return {
+            "backgroundImage" : null
+          };
+        }
+      } );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      assertEquals( "none", node.style.display );
     },
 
     testRenderCellCheckBoxHoveredItem : function() {
@@ -3119,7 +3188,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       }
       TestUtil.fakeAppearance( appearance,  {
         style : function( states ) {
-          var pre = states.checked ? "checked-" : "";
+          var pre = states.disabled ? "disabled-" : "";
+          pre += states.checked ? "checked-" : "";
           pre += states.grayed ? "grayed-" : "";
           return {
             "backgroundImage" : pre + ( states.over ? "over.gif" : value )
@@ -3273,7 +3343,7 @@ var getElementBounds = function( element ) {
     "top" : element.offsetTop,
     "width" : element.offsetWidth,
     "height" : element.offsetHeight
-  }
+  };
 };
 
 }() );

@@ -270,6 +270,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     setCellCheckable : function( value ) {
       this._cellCheckable = value;
+      this._update( "check" );
     },
 
     isCellCheckable : function( column ) {

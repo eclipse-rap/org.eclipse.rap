@@ -232,6 +232,9 @@
       <state name="checked"
         description="When tree checkbox is checked" />
 
+      <state name="disabled"
+        description="When tree checkbox is not checkable (used by Nebula Grid)." />
+
       <state name="hover"
         description="Applies while the user hovers over a tree check box." />
 
