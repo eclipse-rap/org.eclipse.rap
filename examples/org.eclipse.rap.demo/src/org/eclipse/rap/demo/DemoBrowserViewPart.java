@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,9 @@ import org.eclipse.ui.part.ViewPart;
 public class DemoBrowserViewPart extends ViewPart {
 
   Browser browser;
-  private static String BIRT_DEMO
-                 = "http://www.eclipse.org/birt/phoenix/examples/solution/TopSellingProducts.html";
+  private static String URL = "http://xkcd.com/";
 
-
+  @Override
   public void createPartControl( final Composite parent ) {
     browser = new Browser( parent, SWT.NONE );
     IWorkbench workbench = PlatformUI.getWorkbench();
@@ -36,6 +35,7 @@ public class DemoBrowserViewPart extends ViewPart {
     createSelectionListener();
   }
 
+  @Override
   public void setFocus() {
     browser.setFocus();
   }
@@ -56,7 +56,7 @@ public class DemoBrowserViewPart extends ViewPart {
 
   private void setUrlFromSelection( final ISelection selection ) {
     if( !browser.isDisposed() ) {
-      browser.setUrl( BIRT_DEMO );
+      browser.setUrl( URL );
       if( selection != null ) {
         IStructuredSelection sselection = ( IStructuredSelection )selection;
         Object firstElement = sselection.getFirstElement();
