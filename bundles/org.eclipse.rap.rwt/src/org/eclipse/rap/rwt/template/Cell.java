@@ -317,7 +317,7 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   }
 
   /**
-   * Sets the width of the cell, i.e. the distance from the bottom edge of the template.
+   * Sets the width of the cell.
    * A value of <code>SWT.DEFAULT</code> resets the width.
    *
    * @param width the width in px, must not be negative
@@ -334,7 +334,7 @@ public abstract class Cell<T extends Cell> implements Serializable  {
   }
 
   /**
-   * Sets the height of the cell, i.e. the distance from the bottom edge of the template.
+   * Sets the height of the cell.
    * A value of <code>SWT.DEFAULT</code> resets the height.
    *
    * @param height the height in px, must not be negative
