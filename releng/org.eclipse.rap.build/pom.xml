@@ -26,7 +26,7 @@
     <surefire-version>2.15</surefire-version>
     <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
     <junit-version>4.11</junit-version>
-    <base-platform-luna>4.4milestones/M-4.4.1RC4-201409102310/</base-platform-luna>
+    <base-platform-luna>4.4/R-4.4.1-201409250400/</base-platform-luna>
     <base-platform-luna-repository>http://download.eclipse.org/eclipse/updates/${base-platform-luna}</base-platform-luna-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- disabled due to bug 393977
@@ -81,11 +81,11 @@
             <artifactId>tycho-buildtimestamp-jgit</artifactId>
             <version>${tycho-extras-version}</version>
           </dependency>
-          <dependency> 
-            <groupId>org.eclipse.tycho.extras</groupId> 
-            <artifactId>tycho-sourceref-jgit</artifactId> 
-            <version>${tycho-extras-version}</version> 
-          </dependency> 
+          <dependency>
+            <groupId>org.eclipse.tycho.extras</groupId>
+            <artifactId>tycho-sourceref-jgit</artifactId>
+            <version>${tycho-extras-version}</version>
+          </dependency>
         </dependencies>
         <configuration>
           <timestampProvider>jgit</timestampProvider>
@@ -95,9 +95,9 @@
           </jgit.ignore>
  -->
           <format>yyyyMMdd-HHmm</format>
-          <sourceReferences> 
-            <generate>true</generate> 
-          </sourceReferences> 
+          <sourceReferences>
+            <generate>true</generate>
+          </sourceReferences>
         </configuration>
       </plugin>
 
