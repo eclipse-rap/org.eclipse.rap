@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var MessageProcessor = rwt.remote.MessageProcessor;
+var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
@@ -70,10 +71,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
 
 
     testSizeWithSequentialWhitespacesNoWrap : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
-      var item1 = [ "id1", "foo bar", "Arial", 12, false, false, -1 ];
-      var item2 = [ "id2", "foo  bar", "Arial", 12, false, false, -1 ];
-      var item3 = [ "id3", " foo bar", "Arial", 12, false, false, -1 ];
+      var item1 = [ "id1", "foo bar", [ "Arial" ], 12, false, false, -1 ];
+      var item2 = [ "id2", "foo  bar", [ "Arial" ], 12, false, false, -1 ];
+      var item3 = [ "id3", " foo bar", [ "Arial" ], 12, false, false, -1 ];
 
       var size1 = FontSizeCalculation._measureItem( item1, true );
       var size2 = FontSizeCalculation._measureItem( item2, true );
@@ -84,10 +84,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testSizeWithSequentialWhitespacesWrap : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
-      var item1 = [ "id1", "foo bar", "Arial", 12, false, false, -1 ];
-      var item2 = [ "id2", "foo bar", "Arial", 12, false, false, 20 ];
-      var item3 = [ "id3", "foo      bar", "Arial", 12, false, false, 20 ];
+      var item1 = [ "id1", "foo bar", [ "Arial" ], 12, false, false, -1 ];
+      var item2 = [ "id2", "foo bar", [ "Arial" ], 12, false, false, 20 ];
+      var item3 = [ "id3", "foo      bar", [ "Arial" ], 12, false, false, 20 ];
 
       var size1 = FontSizeCalculation._measureItem( item1, true );
       var size2 = FontSizeCalculation._measureItem( item2, true );
@@ -100,12 +99,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testMeasureVeryLongTextWithoutWrap : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
       var veryLongText = "";
       for( var i = 0; i < 10; i++ ) {
         veryLongText += "foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar ";
       }
-      var item = [ "id1", veryLongText, "Arial", 12, false, false, -1, false ];
+      var item = [ "id1", veryLongText, [ "Arial" ], 12, false, false, -1, false ];
 
       var size = FontSizeCalculation._measureItem( item, true );
 
@@ -113,12 +111,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testMeasureVeryLongTextWithWrap : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
       var veryLongText = "";
       for( var i = 0; i < 10; i++ ) {
         veryLongText += "foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar ";
       }
-      var item = [ "id1", veryLongText, "Arial", 12, false, false, 500, false ];
+      var item = [ "id1", veryLongText, [ "Arial" ], 12, false, false, 500, false ];
 
       var size = FontSizeCalculation._measureItem( item, true );
 
@@ -126,8 +123,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testMeasureShortTextWithWrap : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
-      var item = [ "id1", "foo", "Arial", 12, false, false, 200, false ];
+      var item = [ "id1", "foo", [ "Arial" ], 12, false, false, 200, false ];
 
       var size = FontSizeCalculation._measureItem( item, true );
 
@@ -135,14 +131,40 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.FontSizeCalculationTest", {
     },
 
     testMeasureShortTextWithWrapReturnsSameWidthOnDifferentWrapWidth : function() {
-      var FontSizeCalculation = rwt.widgets.util.FontSizeCalculation;
-      var item1 = [ "id1", "foo", "Arial", 12, false, false, 200, false ];
-      var item2 = [ "id1", "foo", "Arial", 12, false, false, 250, false ];
+      var item1 = [ "id1", "foo", [ "Arial" ], 12, false, false, 200, false ];
+      var item2 = [ "id1", "foo", [ "Arial" ], 12, false, false, 250, false ];
 
       var size1 = FontSizeCalculation._measureItem( item1, true );
       var size2 = FontSizeCalculation._measureItem( item2, true );
 
       assertEquals( size1[ 0 ], size2[ 0 ] );
+    },
+
+    // 446182: Label sizes calculated wrong for some fonts on Chrome
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=446182
+    testMesureNodeFontProperties_withSpacesInFontName : function() {
+      var item = [ "id1", "foo", [ "Bauhaus 93" ], 12, true, true, 200, false ];
+
+      FontSizeCalculation._measureItem( item, true );
+
+      var style = FontSizeCalculation._getMeasureNode().style;
+      assertTrue( style.fontFamily.indexOf( "Bauhaus 93" ) != -1 );
+      assertEquals( "12px", style.fontSize );
+      assertEquals( "bold", style.fontWeight );
+      assertEquals( "italic", style.fontStyle );
+    },
+
+    testMesureNodeFontProperties_withMultipleFontNames : function() {
+      var item = [ "id1", "foo", [ "Verdana", "Arial" ], 16, false, false, 200, false ];
+
+      FontSizeCalculation._measureItem( item, true );
+
+      var style = FontSizeCalculation._getMeasureNode().style;
+      assertTrue( style.fontFamily.indexOf( "Verdana" ) != -1 );
+      assertTrue( style.fontFamily.indexOf( "Arial" ) != -1 );
+      assertEquals( "16px", style.fontSize );
+      assertEquals( "normal", style.fontWeight );
+      assertEquals( "normal", style.fontStyle );
     }
 
   }

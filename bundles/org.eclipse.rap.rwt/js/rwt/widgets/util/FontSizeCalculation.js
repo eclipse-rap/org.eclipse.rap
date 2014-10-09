@@ -33,12 +33,9 @@ rwt.qx.Class.define( "rwt.widgets.util.FontSizeCalculation", {
 
     _measureItem : function( item, escapeText ) {
       var text = escapeText ? this._escapeText( item[ 1 ] ) : item[ 1 ];
-      var fontProps = {
-        "fontFamily" : item[ 2 ],
-        "fontSize" : item[ 3 ] + "px",
-        "fontWeight" : item[ 4 ] ? "bold" : "normal",
-        "fontStyle" : item[ 5 ] ? "italic" : "normal"
-      };
+      var font = rwt.html.Font.fromArray( item.slice( 2, 6 ) );
+      var fontProps = {};
+      font.renderStyle( fontProps );
       var width = item[ 6 ] > 0 ? item[ 6 ] : null;
       return this.computeTextDimensions( text, fontProps, width );
     },
