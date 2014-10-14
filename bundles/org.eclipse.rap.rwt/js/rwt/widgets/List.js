@@ -337,7 +337,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
         // the assumtion is that if 'this' is visible, the item to scroll into
         // view is also visible
         if ( this._clientArea.isCreated() && this._clientArea.isDisplayable() ) {
-          this._manager.scrollItemIntoView( item, undefined );
+          this._manager.scrollItemIntoView( item );
         }
       }
     },

@@ -115,7 +115,7 @@
         var item = this._.grid.getRootItem().getChild( index );
         this._.grid.selectItem( item );
         this._.grid.setFocusItem( item );
-        this._.grid.scrollIntoView( item );
+        this._.grid.scrollItemIntoView( item );
       } else {
         this._.grid.setFocusItem( null );
         this._.grid.setTopItemIndex( 0 );

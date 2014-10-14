@@ -48,6 +48,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
     rwt.widgets.base.Widget.disableScrolling( this ); // see bugs 279460 and 364739
+    rwt.widgets.util.ScrollBarsActivator.install( this );
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
@@ -241,7 +242,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._config.treeColumn = columnIndex;
     },
 
-    scrollIntoView : function( item ) {
+    scrollItemIntoView : function( item ) {
       this._disableRender = true;
       this._scrollIntoView( item.getFlatIndex(), item );
       delete this._disableRender;
@@ -956,12 +957,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       if( !this._horzScrollBar.getDisposed() ) {
         this._horzScrollBar.setMaximum( width );
       }
-      var headerOverlap = this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
       if( this._header ) {
-        this._header.setScrollWidth( width + headerOverlap );
+        this._header.setScrollWidth( width + this._getVerticalBarWidth() );
       }
       if( this._footer ) {
-        this._footer.setScrollWidth( width );
+        this._footer.setScrollWidth( width + this._getVerticalBarWidth() );
       }
     },
 
@@ -1221,35 +1221,33 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _layoutX : function() {
       var width = Math.max( 0, this.getWidth() - this.getFrameWidth() );
-      if( this._header && this._header.getDisplay() ) {
+      if( this._header ) {
         this._header.setWidth( width );
-      }
-      if( this._vertScrollBar.getVisibility() ) {
-        width -= this._vertScrollBar.getWidth();
-        this._vertScrollBar.setLeft( width );
       }
       if( this._footer ) {
         this._footer.setWidth( width );
       }
-      this._horzScrollBar.setWidth( width );
+      if( this._vertScrollBar.getVisibility() ) {
+        this._vertScrollBar.setLeft( width - this._vertScrollBar.getWidth() );
+      }
+      this._horzScrollBar.setWidth( width - this._getVerticalBarWidth() );
       this._rowContainer.setWidth( width );
       this._updateScrollWidth();
       this._scheduleUpdate();
     },
 
     _layoutY : function() {
-      var top = 0;
-      top += this._header ? this._headerHeight : 0;
+      var top = this._header ? this._headerHeight : 0;
       var height = this.getHeight() - this.getFrameHeight();
       height -= this._header ? this._headerHeight : 0;
       height -= this._footer ? this._footerHeight : 0;
-      height -= this._horzScrollBar.getVisibility() ? this._horzScrollBar.getHeight() : 0;
+      height -= this._getHorizontalBarHeight();
       height = Math.max( 0, height );
       if( this._header ) {
         this._header.setHeight( this._headerHeight );
       }
       if( this._footer ) {
-        this._footer.setHeight( this._footerHeight );
+        this._footer.setHeight( this._footerHeight + this._getHorizontalBarHeight() );
         this._footer.setTop( top + height );
       }
       if( this._horzScrollBar.getVisibility() ) {
@@ -1278,7 +1276,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getRowWidth : function() {
       var width = this._rowContainer.getWidth();
-      return Math.max( this._getItemWidth(), width );
+      return Math.max( this._getItemWidth() + this._getVerticalBarWidth(), width );
     },
 
     /////////
@@ -1297,6 +1295,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         this._topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
       }
       return this._topItem;
+    },
+
+    _getHorizontalBarHeight : function() {
+      return this._horzScrollBar.getVisibility() ? this._horzScrollBar.getHeight() : 0;
+    },
+
+    _getVerticalBarWidth : function() {
+      return this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
     },
 
     ////////////////////////

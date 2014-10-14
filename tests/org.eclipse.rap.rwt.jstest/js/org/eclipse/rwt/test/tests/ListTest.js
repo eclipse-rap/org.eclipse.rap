@@ -490,25 +490,43 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( "item2", selection[ 0 ].getLabel() );
     },
 
-    testSelectItem_ScrollDown : function() {
+    testSelectItem_ScrollsDown : function() {
       this._addItems( list, 100 );
       TestUtil.flush();
 
       list.selectItem( 40 );
 
-      var selection = this._getSelection( list );
       assertEquals( [ 0, 394 ], this._getScrollPosition( list ) );
     },
 
-    testSelectItem_ScrollUp : function() {
+    testSelectItem_ScrollsUp : function() {
       this._addItems( list, 100 );
       TestUtil.flush();
 
       list.selectItem( 99 );
       list.selectItem( 40 );
 
-      var selection = this._getSelection( list );
       assertEquals( [ 0, 800 ], this._getScrollPosition( list ) );
+    },
+
+    testKeyDown_ScrollsDown : function() {
+      this._addItems( list, 100 );
+      TestUtil.flush();
+
+      list.focusItem( 20 );
+      TestUtil.press( list, "Down" );
+
+      assertEquals( [ 0, 14 ], this._getScrollPosition( list ) );
+    },
+
+    testKeyUp_ScrollsUp : function() {
+      this._addItems( list, 100 );
+      TestUtil.flush();
+
+      list.focusItem( 40 );
+      TestUtil.press( list, "Up" );
+
+      assertEquals( [ 0, 374 ], this._getScrollPosition( list ) );
     },
 
     testSelectItemByCharacter : function() {
@@ -721,14 +739,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var vbarBounds = TestUtil.getElementBounds( vbar.getElement() );
       assertEquals( 0, clientBounds.left );
       assertEquals( 0, clientBounds.top );
-      assertEquals( barWidth, clientBounds.right );
-      assertEquals( barWidth, clientBounds.bottom );
+      assertEquals( 0, clientBounds.right );
+      assertEquals( 0, clientBounds.bottom );
       assertEquals( 0, hbarBounds.left );
       assertEquals( barWidth, hbarBounds.right );
       assertEquals( 0, vbarBounds.top );
       assertEquals( barWidth, vbarBounds.bottom );
-      assertEquals( clientBounds.width, vbarBounds.left );
-      assertEquals( clientBounds.height, hbarBounds.top );
+      assertEquals( clientBounds.width - barWidth, vbarBounds.left );
+      assertEquals( clientBounds.height - barWidth, hbarBounds.top );
     },
 
     testScrollBarVisibility : function() {
@@ -758,8 +776,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list.setScrollBarsVisible( true, false );
       TestUtil.flush();
       var newClientBounds = TestUtil.getElementBounds( client.getElement() );
-      assertTrue( clientBounds.width < newClientBounds.width );
-      assertTrue( clientBounds.height > newClientBounds.height );
+      assertEquals( clientBounds.width, newClientBounds.width );
+      assertEquals( clientBounds.height, newClientBounds.height );
     },
 
     testScrollBarMaximum : function() {

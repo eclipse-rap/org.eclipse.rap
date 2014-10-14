@@ -471,6 +471,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
+    testAddChangeMaximumListener : function() {
+      var bar = this._createScrollBar( false, false );
+      var logger = TestUtil.getLogger();
+
+      bar.addEventListener( "changeMaximum", logger.log );
+      bar.setMaximum( 10 );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testAddChangeMinimumListener : function() {
+      var bar = this._createScrollBar( false, false );
+      var logger = TestUtil.getLogger();
+
+      bar.addEventListener( "changeMinimum", logger.log );
+      bar.setMinimum( 10 );
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
     testMouseWheel : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );

@@ -3104,6 +3104,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         if (value) {
           vFocusRoot.setFocusedChild(this);
           this._visualizeFocus();
+          this.scrollIntoView();
         } else {
           if (vFocusRoot.getFocusedChild() == this) {
             vFocusRoot.setFocusedChild(null);

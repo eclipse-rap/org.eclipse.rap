@@ -11,7 +11,10 @@
  *    EclipseSource - adaptation for the Eclipse Remote Application Platform
  ******************************************************************************/
 
+( function( $ ) {
+
 rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( clientArea ) {
@@ -20,11 +23,18 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     this._clientArea = clientArea;
     this._horzScrollBar = new rwt.widgets.base.ScrollBar( true );
     this._vertScrollBar = new rwt.widgets.base.ScrollBar( false );
+    this.$spacer = $( "<div>" ).css( {
+      "position" : "absolute",
+      "visibility" : "hidden",
+      "width" : "1px",
+      "height" : "1px"
+    } );
     this._blockScrolling = false;
     this._internalChangeFlag = false;
     this.add( this._clientArea );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
+    rwt.widgets.util.ScrollBarsActivator.install( this );
     this._configureScrollBars();
     this._configureClientArea();
     this.__onscroll = rwt.util.Functions.bind( this._onscroll, this );
@@ -39,6 +49,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     this._clientArea = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
+    this.$spacer = null;
   },
 
   statics : {
@@ -53,7 +64,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
         dummy.style.visibility = "hidden";
         document.body.appendChild( dummy );
         this._nativeWidth = dummy.offsetWidth - dummy.clientWidth;
-        document.body.removeChild(dummy);
+        document.body.removeChild( dummy );
       }
       return this._nativeWidth;
     }
@@ -70,6 +81,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._vertScrollBar.setDisplay( vertical );
       this._clientArea.setStyleProperty( "overflowX", horizontal ? "scroll" : "hidden" );
       this._clientArea.setStyleProperty( "overflowY", vertical ? "scroll" : "hidden" );
+      // Note: [if] Client area does not change its dimensions after show/hide scrollbars anymore.
+      // To hide the native scrollbars schedule clientArea._layoutPost manually.
+      this._clientArea.addToQueue( "layout" );
+      this._syncSpacer();
       this._layoutX();
       this._layoutY();
     },
@@ -106,6 +121,14 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       return this._horzScrollBar.getDisplay();
     },
 
+    getHorizontalBarHeight : function() {
+      return this._horzScrollBar.getDisplay() ? this._horzScrollBar.getHeight() : 0;
+    },
+
+    getVerticalBarWidth : function() {
+      return this._vertScrollBar.getDisplay() ? this._vertScrollBar.getWidth() : 0;
+    },
+
     /////////
     // Layout
 
@@ -122,12 +145,16 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
 
     _configureScrollBars : function() {
       var dragBlocker = function( event ) { event.stopPropagation(); };
+      this._horzScrollBar.setZIndex( 1e8 );
       this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
+      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
+      this._horzScrollBar.addEventListener( "changeMaximum", this._syncSpacer, this );
+      this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setTop( 0 );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
-      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
+      this._vertScrollBar.addEventListener( "changeMaximum", this._syncSpacer, this );
     },
 
     _applyWidth : function( newValue, oldValue ) {
@@ -148,29 +175,25 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
 
     _layoutX : function() {
       var clientWidth = this.getWidth() - this.getFrameWidth();
-      if( this._vertScrollBar.getDisplay() ) {
-        clientWidth -= this._vertScrollBar.getWidth();
-      }
       this._clientArea.setWidth( clientWidth );
-      this._vertScrollBar.setLeft( clientWidth );
-      this._horzScrollBar.setWidth( clientWidth );
+      this._vertScrollBar.setLeft( clientWidth - this._vertScrollBar.getWidth() );
+      this._horzScrollBar.setWidth( clientWidth - this.getVerticalBarWidth() );
     },
 
     _layoutY : function() {
       var clientHeight = this.getHeight() - this.getFrameHeight();
-      if( this._horzScrollBar.getDisplay() ) {
-        clientHeight -= this._horzScrollBar.getHeight();
-      }
       this._clientArea.setHeight( clientHeight );
-      this._vertScrollBar.setHeight( clientHeight );
-      this._horzScrollBar.setTop( clientHeight );
+      this._horzScrollBar.setTop( clientHeight - this._horzScrollBar.getHeight() );
+      this._vertScrollBar.setHeight( clientHeight - this.getHorizontalBarHeight() );
     },
 
     _onClientCreate : function() {
       this._clientArea.prepareEnhancedBorder();
       this._clientArea.setContainerOverflow( false );
-      var el = this._clientArea._getTargetNode();
-      el.addEventListener( "scroll", this.__onscroll, false );
+      var node = this._clientArea._getTargetNode();
+      node.addEventListener( "scroll", this.__onscroll, false );
+      this.$spacer.appendTo( node );
+      $( node ).prop( "rwtScrollable", this );
       rwt.html.Scroll.disableScrolling( this._clientArea.getElement() );
     },
 
@@ -252,6 +275,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
           this._syncClientArea( blockH, blockV );
           this._internalChangeFlag = false;
           this._syncScrollBars();
+          if( !this._blockScrolling ) {
+            this.dispatchSimpleEvent( "scroll" );
+          }
         }
       } catch( ex ) {
         rwt.runtime.ErrorHandler.processJavaScriptError( ex );
@@ -274,7 +300,6 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
         var scrollY = this._vertScrollBar.getValue();
         if( this._clientArea.getScrollTop() !== scrollY ) {
           this._clientArea.setScrollTop( scrollY );
-        } else {
         }
         var newScrollTop = this._clientArea.getScrollTop();
         this._ignoreScrollTo[ 1 ] = newScrollTop;
@@ -301,7 +326,17 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
       this._horzScrollBar.setValue( scrollX );
       var scrollY = this._clientArea.getScrollTop();
       this._vertScrollBar.setValue( scrollY );
+    },
+
+    _syncSpacer : function() {
+      this.$spacer.css( {
+        "top" : this._vertScrollBar.getMaximum() + this.getHorizontalBarHeight(),
+        "left" : this._horzScrollBar.getMaximum() + this.getVerticalBarWidth()
+      } );
     }
 
   }
+
 } );
+
+}( rwt.util._RWTQuery ) );

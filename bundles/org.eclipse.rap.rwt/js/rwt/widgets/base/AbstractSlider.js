@@ -80,6 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       }
       this._maximum = value;
       this._renderThumb();
+      this.dispatchSimpleEvent( "changeMaximum" );
     },
 
     getMaximum : function() {
@@ -89,6 +90,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     setMinimum : function( value ) {
       this._minimum = value;
       this._renderThumb();
+      this.dispatchSimpleEvent( "changeMinimum" );
     },
 
     getMinimum : function() {
@@ -245,8 +247,7 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
       event.stopPropagation();
       if( this._thumb.getCapture() ) {
         var mousePos = this._getMouseOffset( event );
-        var newSelection
-          = this._pxToVirtual( mousePos - this._thumbDragOffset );
+        var newSelection = this._pxToVirtual( mousePos - this._thumbDragOffset );
         this._setSelection( newSelection );
       }
     },

@@ -93,6 +93,7 @@ rwt/widgets/base/Popup.js
 rwt/widgets/util/PopupManager.js
 rwt/widgets/util/SelectionManager.js
 rwt/widgets/util/Selection.js
+rwt/widgets/util/ScrollBarsActivator.js
 rwt/widgets/base/AbstractSlider.js
 rwt/widgets/base/ScrollBar.js
 rwt/html/ImagePreloaderSystem.js
