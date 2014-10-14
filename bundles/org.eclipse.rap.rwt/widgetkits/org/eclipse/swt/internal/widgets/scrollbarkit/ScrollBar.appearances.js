@@ -20,7 +20,8 @@ var appearances = {
         border : tv.getCssBorder( "ScrollBar", "border" ),
         backgroundColor : tv.getCssColor( "ScrollBar", "background-color" ),
         backgroundImage : tv.getCssImage( "ScrollBar", "background-image" ),
-        backgroundGradient : tv.getCssGradient( "ScrollBar", "background-image" )
+        backgroundGradient : tv.getCssGradient( "ScrollBar", "background-image" ),
+        opacity : tv.getCssFloat( "ScrollBar", "opacity" )
       };
       var width = tv.getCssDimension( "ScrollBar", "width" );
       if( states[ "rwt_HORIZONTAL" ] ) {

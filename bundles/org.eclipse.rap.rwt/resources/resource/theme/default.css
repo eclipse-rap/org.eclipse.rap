@@ -2210,11 +2210,16 @@ Browser[BORDER] {
 /* ScrollBar default theme */
 
 ScrollBar {
-  background-color: #f0f0f0;
+  background-color: transparent;
   background-image: none;
   border: none;
   border-radius: 0;
-  width: 10px;
+  width: 8px;
+  opacity: 0;
+}
+
+ScrollBar:active {
+  opacity: 0.8;
 }
 
 ScrollBar-Thumb {

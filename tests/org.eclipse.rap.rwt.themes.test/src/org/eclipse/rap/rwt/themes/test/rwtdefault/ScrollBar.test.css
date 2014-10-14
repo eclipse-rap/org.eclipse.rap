@@ -11,11 +11,17 @@
 
 ScrollBar[HORIZONTAL],
 ScrollBar[VERTICAL] {
-  background-color: #f0f0f0;
+  background-color: transparent;
   background-image: none;
   border: none;
   border-radius: 0;
-  width: 10px;
+  width: 8px;
+  opacity: 0;
+}
+
+ScrollBar[HORIZONTAL]:active,
+ScrollBar[VERTICAL]:active {
+  opacity: 0.8;
 }
 
 /* Thumb */
