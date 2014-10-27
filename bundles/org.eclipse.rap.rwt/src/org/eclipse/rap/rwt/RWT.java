@@ -504,6 +504,7 @@ public final class RWT {
    * <ul>
    * <li><code>Table</code></li>
    * <li><code>Tree</code></li>
+   * <li><code>Grid</code></li>
    * </ul>
    * </p>
    *

@@ -32,6 +32,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -101,6 +102,7 @@ public class GridLCA extends AbstractWidgetLCA {
     IGridAdapter adapter = getGridAdapter( grid );
     remoteObject.set( "indentionWidth", adapter.getIndentationWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );
+    TemplateLCAUtil.renderRowTemplate( grid );
     ScrollBarLCAUtil.renderInitialization( grid );
   }
 

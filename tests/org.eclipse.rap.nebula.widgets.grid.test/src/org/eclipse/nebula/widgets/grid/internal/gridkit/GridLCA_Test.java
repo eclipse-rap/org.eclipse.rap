@@ -44,6 +44,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestMessage;
 import org.eclipse.swt.SWT;
@@ -129,6 +130,17 @@ public class GridLCA_Test {
 
     OperationHandler handler = RemoteObjectRegistry.getInstance().get( id ).getHandler();
     assertTrue( handler instanceof GridOperationHandler );
+  }
+
+  @Test
+  public void testRenderInitialization_rendersRowTemplate() throws IOException {
+    grid.setData( RWT.ROW_TEMPLATE, new Template() );
+
+    lca.renderInitialization( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+
+    assertNotNull( message.findCreateProperty( grid, "rowTemplate" ) );
   }
 
   @Test
