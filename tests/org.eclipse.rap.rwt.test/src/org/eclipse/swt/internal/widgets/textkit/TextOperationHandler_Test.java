@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -23,10 +24,12 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
@@ -86,6 +89,23 @@ public class TextOperationHandler_Test {
     assertEquals( "verify me", text.getText() );
   }
 
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetText_withVerifyListener_onDisposedWidget() {
+    handler = new TextOperationHandler( text );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+    handler.handleSet( new JsonObject().add( "text", "verify me" ) );
+    text.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
+  }
+
   @Test
   public void testHandleSetText_doesNotResetSelection() {
     handler = new TextOperationHandler( text );
@@ -113,10 +133,28 @@ public class TextOperationHandler_Test {
     handler = new TextOperationHandler( text );
     text.setText( "abc" );
     text.addListener( SWT.Verify, mock( Listener.class ) );
-  
+
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
-  
+
     assertEquals( new Point( 1, 2 ), text.getSelection() );
+  }
+
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetSelection_withVerifyListener_onDisposedWidget() {
+    handler = new TextOperationHandler( text );
+    text.setText( "abc" );
+    text.addListener( SWT.Verify, mock( Listener.class ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
+    text.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
   }
 
   @Test
@@ -125,9 +163,9 @@ public class TextOperationHandler_Test {
     handler = new TextOperationHandler( text );
     text.setText( "abc" );
     text.addListener( SWT.Verify, mock( Listener.class ) );
-  
+
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 10 ).add( 12 ) ) );
-  
+
     assertEquals( new Point( 3, 3 ), getPreservedSelection( text ) );
   }
 

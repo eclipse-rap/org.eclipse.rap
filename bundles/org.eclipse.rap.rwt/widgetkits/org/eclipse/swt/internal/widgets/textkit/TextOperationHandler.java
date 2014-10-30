@@ -72,10 +72,12 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            setText( text, stringValue );
-            // since text is set in process action, preserved values have to be replaced
-            getAdapter( text ).preserve( PROP_TEXT, stringValue );
-         }
+            if( !text.isDisposed() ) {
+              setText( text, stringValue );
+              // since text is set in process action, preserved values have to be replaced
+              getAdapter( text ).preserve( PROP_TEXT, stringValue );
+            }
+          }
         } );
       } else {
         setText( text, stringValue );
@@ -96,9 +98,11 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            text.setSelection( selection );
-            // since selection is set in process action, preserved values have to be replaced
-            getAdapter( text ).preserve( PROP_SELECTION, text.getSelection() );
+            if( !text.isDisposed() ) {
+              text.setSelection( selection );
+              // since selection is set in process action, preserved values have to be replaced
+              getAdapter( text ).preserve( PROP_SELECTION, text.getSelection() );
+            }
           }
         } );
       } else {

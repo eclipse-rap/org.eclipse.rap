@@ -100,9 +100,11 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            setText( combo, text );
-            // since text is set in process action, preserved values have to be replaced
-            getAdapter( combo ).preserve( PROP_TEXT, text );
+            if( !combo.isDisposed() ) {
+              setText( combo, text );
+              // since text is set in process action, preserved values have to be replaced
+              getAdapter( combo ).preserve( PROP_TEXT, text );
+            }
          }
         } );
       } else {
@@ -124,9 +126,11 @@ public class ComboOperationHandler extends ControlOperationHandler<Combo> {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            combo.setSelection( selection );
-            // since selection is set in process action, preserved values have to be replaced
-            getAdapter( combo ).preserve( PROP_SELECTION, combo.getSelection() );
+            if( !combo.isDisposed() ) {
+              combo.setSelection( selection );
+              // since selection is set in process action, preserved values have to be replaced
+              getAdapter( combo ).preserve( PROP_SELECTION, combo.getSelection() );
+            }
           }
         } );
       } else {

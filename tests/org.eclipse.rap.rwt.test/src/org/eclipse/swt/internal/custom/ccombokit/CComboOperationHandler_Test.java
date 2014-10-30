@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MOD
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -25,9 +26,11 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
@@ -105,6 +108,22 @@ public class CComboOperationHandler_Test {
     assertEquals( "verify me", ccombo.getText() );
   }
 
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetText_withVerifyListener_onDisposedWidget() {
+    ccombo.addListener( SWT.Verify, mock( Listener.class ) );
+    handler.handleSet( new JsonObject().add( "text", "verify me" ) );
+    ccombo.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
+  }
+
   @Test
   public void testHandleSetSelection() {
     ccombo.setText( "text" );
@@ -123,6 +142,23 @@ public class CComboOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), ccombo.getSelection() );
+  }
+
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetSelection_withVerifyListener_onDisposedWidget() {
+    ccombo.setText( "abc" );
+    ccombo.addListener( SWT.Verify, mock( Listener.class ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
+    ccombo.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
   }
 
   @Test

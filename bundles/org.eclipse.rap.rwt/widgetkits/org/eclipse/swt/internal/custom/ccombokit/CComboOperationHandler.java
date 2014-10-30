@@ -100,9 +100,11 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            setText( ccombo, text );
-            // since text is set in process action, preserved values have to be replaced
-            getAdapter( ccombo ).preserve( PROP_TEXT, text );
+            if( !ccombo.isDisposed() ) {
+              setText( ccombo, text );
+              // since text is set in process action, preserved values have to be replaced
+              getAdapter( ccombo ).preserve( PROP_TEXT, text );
+            }
          }
         } );
       } else {
@@ -124,9 +126,11 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            ccombo.setSelection( selection );
-            // since selection is set in process action, preserved values have to be replaced
-            getAdapter( ccombo ).preserve( PROP_SELECTION, ccombo.getSelection() );
+            if( !ccombo.isDisposed() ) {
+              ccombo.setSelection( selection );
+              // since selection is set in process action, preserved values have to be replaced
+              getAdapter( ccombo ).preserve( PROP_SELECTION, ccombo.getSelection() );
+            }
           }
         } );
       } else {

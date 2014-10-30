@@ -23,6 +23,7 @@ import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SEL
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_TRAVERSE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -34,10 +35,12 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Combo;
@@ -128,6 +131,24 @@ public class ComboOperationHandler_Test {
     assertEquals( "verify me", combo.getText() );
   }
 
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetText_withVerifyListener_onDisposedWidget() {
+    handler = new ComboOperationHandler( combo );
+    Listener listener = mock( Listener.class );
+    combo.addListener( SWT.Verify, listener );
+    handler.handleSet( new JsonObject().add( "text", "verify me" ) );
+    combo.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
+  }
+
   @Test
   public void testHandleSetSelection() {
     handler = new ComboOperationHandler( combo );
@@ -148,6 +169,24 @@ public class ComboOperationHandler_Test {
     handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
 
     assertEquals( new Point( 1, 2 ), combo.getSelection() );
+  }
+
+  /*
+   * See bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=449350
+   */
+  @Test
+  public void testHandleSetSelection_withVerifyListener_onDisposedWidget() {
+    handler = new ComboOperationHandler( combo );
+    combo.setText( "abc" );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
+    handler.handleSet( new JsonObject().add( "selection", new JsonArray().add( 1 ).add( 2 ) ) );
+    combo.dispose();
+
+    try {
+      ProcessActionRunner.execute();
+    } catch( SWTException exception ) {
+      fail();
+    }
   }
 
   @Test
