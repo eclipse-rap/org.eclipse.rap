@@ -772,7 +772,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "foobar", TestUtil.getMessageObject().findSetProperty( "w3", "text" ) );
     },
 
-    testSendTextModifyEventWithModifyListener : function() {
+    testSendModifyEvent_withModifyListener : function() {
       createText();
       TestUtil.fakeListener( text, "Modify", true );
 
@@ -782,7 +782,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertNotNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
-    testSendNoModifyEvent : function() {
+    testSendModifyEvent_withoutModifyListener : function() {
       createText();
 
       text.setValue( "foobar" );
@@ -797,7 +797,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
     },
 
-    testDontSendTextModifyEventTwice : function() {
+    testSendModifyEvent_onDisposedWidget : function() {
+      createText();
+      TestUtil.fakeListener( text, "Modify", true );
+
+      text.setValue( "foobar" );
+      text.dispose();
+      TestUtil.forceInterval( Connection.getInstance()._delayTimer );
+
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
+    },
+
+    testDontSendModifyEventTwice : function() {
       createText();
       TestUtil.fakeListener( text, "Modify", true );
 

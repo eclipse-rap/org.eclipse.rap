@@ -504,7 +504,9 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _updateValueProperty : function() {
-      this.setValue( this.getComputedValue().toString() );
+      if( !this.isDisposed() ) {
+        this.setValue( this.getComputedValue().toString() );
+      }
     },
 
     _ontabfocus : function() {

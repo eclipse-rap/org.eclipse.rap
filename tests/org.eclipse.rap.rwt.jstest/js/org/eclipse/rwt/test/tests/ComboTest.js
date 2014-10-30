@@ -685,6 +685,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertNotNull( message.findNotifyOperation( "w3", "Modify" ) );
     },
 
+    testSendModifyEvent_onDisposedWidget : function() {
+      TestUtil.fakeListener( combo, "Modify", true );
+      combo.setEditable( true );
+
+      field.setValue( "a" );
+      field._oninput();
+      combo.dispose();
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
+
+      assertNull( TestUtil.getMessageObject().findNotifyOperation( "w3", "Modify" ) );
+    },
+
     testSelectionByFirstLetter_ReadOnly : function() {
       TestUtil.press( field, "R" );
 

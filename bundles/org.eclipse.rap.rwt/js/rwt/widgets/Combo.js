@@ -404,7 +404,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     },
 
     _onSend : function() {
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+      if( !this.isDisposed() ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+      }
     },
 
     applyObjectId : function( id ) {

@@ -149,7 +149,9 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _onSend : function() {
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+      if( !this.isDisposed() ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+      }
     },
 
     ///////////////////
