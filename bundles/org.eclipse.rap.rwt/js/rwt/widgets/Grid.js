@@ -997,7 +997,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var data = {
         "item" : item,
         "type" : type,
-        "index" : !isNaN( index ) ? index : undefined,
+        "index" : typeof index === "number" ? index : undefined,
         "text" : text != null ? text : undefined
       };
       this.dispatchSimpleEvent( "selectionChanged", data );

@@ -1933,6 +1933,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Selection", "item" ) );
       assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
+      assertEquals( undefined, message.findNotifyProperty( "w3", "Selection", "index" ) );
       var text = message.findNotifyProperty( "w3", "Selection", "text" );
       if( text.indexOf( "/" ) !== 0 ) {
         text = text.slice( text.lastIndexOf( "/" ) + 1 );
@@ -1960,6 +1961,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var message = TestUtil.getMessageObject();
       assertEquals( "w4", message.findNotifyProperty( "w3", "Selection", "item" ) );
       assertEquals( "hyperlink", message.findNotifyProperty( "w3", "Selection", "detail" ) );
+      assertEquals( undefined, message.findNotifyProperty( "w3", "Selection", "index" ) );
       assertEquals( "Test", message.findNotifyProperty( "w3", "Selection", "text" ) );
       tree.destroy();
     },
