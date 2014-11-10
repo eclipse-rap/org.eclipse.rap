@@ -15,7 +15,7 @@ namespace( "rwt.widgets.util" );
 rwt.widgets.util.ScrollBarsActivator = function( scrollable ) {
   this._scrollable = scrollable;
   this._hovered = false;
-  this._activateScrollBarsTimer = new rwt.client.Timer( 250 );
+  this._activateScrollBarsTimer = new rwt.client.Timer( 150 );
   this._activateScrollBarsTimer.addEventListener( "interval", this._onActivationTimer, this );
   this._deactivateScrollBarsTimer = new rwt.client.Timer( 1000 );
   this._deactivateScrollBarsTimer.addEventListener( "interval", this._onDeactivationTimer, this );

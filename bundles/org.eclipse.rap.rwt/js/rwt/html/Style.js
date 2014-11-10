@@ -436,6 +436,22 @@ rwt.qx.Class.define( "rwt.html.Style", {
       return this.getOwnProperty( target, this._prefixProperty( "userSelect" ) );
     },
 
+    setTransition : function( target, value ) {
+      if( !this._transitionProperty ) {
+        // TODO [tb] : Find a more general solution for transitions and/or style support tests
+        this._transitionProperty = "transition";
+        var dummy = document.createElement( "div" );
+        if( !( "transition" in dummy.style ) ) {
+          if( "MozTransition" in dummy.style ) {
+            this._transitionProperty = "MozTransition";
+          } else if( "webkitTransition" in dummy.style  ) {
+            this._transitionProperty = "webkitTransition";
+          }
+        }
+      }
+      this.setStyleProperty( target, this._transitionProperty, value );
+    },
+
     setStyleProperty : function( target, property, value ) {
       if( target.setStyleProperty ) {
         target.setStyleProperty( property, value );

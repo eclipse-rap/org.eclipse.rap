@@ -42,6 +42,12 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
       this._maxButton.setAppearance( "scrollbar-max-button" );
     },
 
+    _applyOpacity : function( value, old ) {
+      this.base( arguments, value, old );
+      // No transition for the very first time opacity is applied (widget creation)
+      rwt.html.Style.setTransition( this, "opacity 250ms" );
+    },
+
     //////
     // API
 

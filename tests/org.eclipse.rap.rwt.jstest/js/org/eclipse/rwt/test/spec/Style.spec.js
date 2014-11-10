@@ -359,4 +359,18 @@ describe( "Style", function() {
 
   } );
 
+  describe( "setTransition", function() {
+
+    if(!Client.isTrident() || !Client.getVersion() < 10) {
+      it("sets transition with or without vendor prefix", function() {
+        Style.setTransition( element, "opacity 1s");
+
+        var style = element.style;
+        var transition = style.transition || style.webkitTransition || style.MozTransition;
+        expect( transition ).toContain( "opacity 1s" );
+      });
+    }
+
+  });
+
 } );
