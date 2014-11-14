@@ -1237,23 +1237,22 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _layoutY : function() {
-      var top = this._header ? this._headerHeight : 0;
-      var height = this.getHeight() - this.getFrameHeight();
-      height -= this._header ? this._headerHeight : 0;
-      height -= this._footer ? this._footerHeight : 0;
-      height -= this._getHorizontalBarHeight();
+      var headerHeight = this._header ? this._headerHeight : 0;
+      var footerHeight = this._footer ? this._footerHeight : 0;
+      var top = headerHeight;
+      var height = this.getHeight() - this.getFrameHeight() - headerHeight - footerHeight;
       height = Math.max( 0, height );
       if( this._header ) {
         this._header.setHeight( this._headerHeight );
       }
       if( this._footer ) {
-        this._footer.setHeight( this._footerHeight + this._getHorizontalBarHeight() );
+        this._footer.setHeight( this._footerHeight );
         this._footer.setTop( top + height );
       }
       if( this._horzScrollBar.getVisibility() ) {
-        this._horzScrollBar.setTop( top + height + ( this._footer ? this._footerHeight : 0  ) );
+        this._horzScrollBar.setTop( top + height + footerHeight - this._getHorizontalBarHeight() );
       }
-      this._vertScrollBar.setHeight( height + ( this._footer ? this._footerHeight : 0  ) );
+      this._vertScrollBar.setHeight( height + footerHeight - this._getHorizontalBarHeight() );
       this._vertScrollBar.setTop( top );
       this._rowContainer.setTop( top );
       this._rowContainer.setHeight( height );

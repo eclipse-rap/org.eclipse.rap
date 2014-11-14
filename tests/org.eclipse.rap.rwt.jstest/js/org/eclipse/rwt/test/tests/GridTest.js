@@ -1326,7 +1326,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( 0, horizontal.bottom );
       assertEquals( 0, horizontal.right );
       assertEquals( 500, area.width );
-      assertTrue( area.height == 500 - horizontal.height );
+      assertEquals( 500, area.height );
       tree.destroy();
     },
 
@@ -1339,7 +1339,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var vertical = TestUtil.getElementBounds( tree._vertScrollBar.getElement() );
       var height = 500 - horizontal.height;
       var width = 500 - vertical.width;
-      assertTrue( area.height == height );
+      assertEquals( 500, area.height );
       assertEquals( 500, area.width );
       assertTrue( horizontal.width == width );
       assertTrue( vertical.height == height );
@@ -2983,11 +2983,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var headerNode = tree._header.getElement();
       assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
       var areaNode = tree._rowContainer.getElement();
-      var expectedAreaHeight = 470 - horizontal.height;
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
-      assertEquals( expectedAreaHeight, vertical.height );
+      assertEquals( 470, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 470 - horizontal.height, vertical.height );
       assertEquals( 30, vertical.top );
-      assertEquals( expectedAreaHeight + 30, horizontal.top );
+      assertEquals( 500 - horizontal.height, horizontal.top );
       tree.destroy();
     },
 
@@ -3060,18 +3059,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var vertical = TestUtil.getElementBounds( tree._vertScrollBar.getElement() );
       var footerNode = tree._footer.getElement();
       var areaNode = tree._rowContainer.getElement();
-      var expectedAreaHeight = 470 - horizontal.height; // 500 - footerHeight = 470
-      var expectedAreaWidth = 600 - vertical.width;
       assertEquals( 0, parseInt( areaNode.style.top, 10 ) );
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 470, parseInt( areaNode.style.height, 10 ) );
       assertEquals( 600, parseInt( areaNode.style.width, 10 ) );
-      assertEquals( 40, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
       assertEquals( 600, parseInt( footerNode.style.width, 10 ) );
       assertEquals( 0, vertical.top );
-      assertEquals( expectedAreaHeight + 30, vertical.height );
-      assertEquals( expectedAreaWidth, vertical.left );
-      assertEquals( expectedAreaHeight + 30, horizontal.top );
-      assertEquals( expectedAreaWidth, horizontal.width );
+      assertEquals( 500 - horizontal.height, vertical.height );
+      assertEquals( 600 - vertical.width, vertical.left );
+      assertEquals( 500 - horizontal.height, horizontal.top );
+      assertEquals( 600 - vertical.width, horizontal.width );
       assertEquals( 0, horizontal.left );
       tree.destroy();
     },
@@ -3096,22 +3093,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var footerNode = tree._footer.getElement();
       var headerNode = tree._header.getElement();
       var areaNode = tree._rowContainer.getElement();
-      var expectedAreaHeight = 450 - horizontal.height; // 500 - footerHeight - headerHeigth = 450
-      var expectedAreaWidth = 600 - vertical.width;
       assertEquals( 20, parseInt( areaNode.style.top, 10 ) );
-      assertEquals( expectedAreaHeight, parseInt( areaNode.style.height, 10 ) );
+      assertEquals( 450, parseInt( areaNode.style.height, 10 ) );
       assertEquals( 600, parseInt( areaNode.style.width, 10 ) );
-      assertEquals( expectedAreaHeight + 20, parseInt( footerNode.style.top, 10 ) );
-      assertEquals( 40, parseInt( footerNode.style.height, 10 ) );
+      assertEquals( 470, parseInt( footerNode.style.top, 10 ) );
+      assertEquals( 30, parseInt( footerNode.style.height, 10 ) );
       assertEquals( 600, parseInt( footerNode.style.width, 10 ) );
       assertEquals( 0, parseInt( headerNode.style.top, 10 ) );
       assertEquals( 20, parseInt( headerNode.style.height, 10 ) );
       assertEquals( 600, parseInt( headerNode.style.width, 10 ) );
       assertEquals( 20, vertical.top );
-      assertEquals( expectedAreaHeight + 30, vertical.height );
-      assertEquals( expectedAreaWidth, vertical.left );
-      assertEquals( expectedAreaHeight + 50, horizontal.top );
-      assertEquals( expectedAreaWidth, horizontal.width );
+      assertEquals( 480 - horizontal.height, vertical.height );
+      assertEquals( 600 - vertical.width, vertical.left );
+      assertEquals( 500 - horizontal.height, horizontal.top );
+      assertEquals( 600 - vertical.width, horizontal.width );
       assertEquals( 0, horizontal.left );
       tree.destroy();
     },
