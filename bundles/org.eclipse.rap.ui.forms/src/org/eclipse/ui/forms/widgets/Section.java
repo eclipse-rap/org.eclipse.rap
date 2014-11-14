@@ -15,6 +15,7 @@ package org.eclipse.ui.forms.widgets;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
@@ -23,6 +24,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -52,6 +54,7 @@ import org.eclipse.ui.internal.forms.widgets.FormImages;
  *
  * @since 1.0
  */
+@SuppressWarnings("restriction")
 public class Section extends ExpandableComposite {
 	/**
 	 * Description style. If used, description will be rendered below the title.
@@ -544,8 +547,25 @@ public class Section extends ExpandableComposite {
 	}
 
 	// Fix 1px border introduced by the titlebar rounded border
-	public int getBorderWidth() {
-	  return ( getExpansionStyle() & TITLE_BAR ) != 0 ? 1 : super.getBorderWidth();
-	}
+	private ControlThemeAdapter controlThemeAdapter;
+    @Override
+    public <T> T getAdapter( Class<T> adapter ) {
+      if( adapter == ControlThemeAdapter.class ) {
+        if( controlThemeAdapter == null ) {
+          controlThemeAdapter = new ControlThemeAdapterImpl() {
+            @Override
+            public Rectangle getBorder( Control control ) {
+              if( ( getExpansionStyle() & TITLE_BAR ) != 0 ) {
+                return new Rectangle( 1, 1, 2, 2 );
+              }
+              return super.getBorder( control );
+            }
+          };
+        }
+        return ( T )controlThemeAdapter;
+      }
+      return super.getAdapter( adapter );
+    }
+
 // ENDRAP [if]
 }
