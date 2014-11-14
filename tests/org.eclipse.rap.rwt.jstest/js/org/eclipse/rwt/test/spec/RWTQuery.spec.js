@@ -238,6 +238,19 @@ describe( "RWTQuery", function() {
         expect( rwt.widgets.base.Widget.removeFromGlobalElementQueue).not.toHaveBeenCalled();
       } );
 
+      it( "appends an element to created custom widget targetNode", function() {
+        // Create custom widget that extends rwt.widgets.base.Widget,
+        // but have classname not in rwt.widgets namespace
+        var widget = new rwt.widgets.base.Terminator();
+        widget.classname = "my.custom.widget.Foo";
+
+        $( widget ).append( childElement );
+
+        expect( childElement.parentElement ).toBe( widget._getTargetNode() );
+        expect( rwt.widgets.base.Widget.removeFromGlobalElementQueue).toHaveBeenCalledWith( same( widget ) );
+        widget.destroy();
+      } );
+
       it( "appends an element by forced widget creation", function() {
         $( widget ).append( childElement );
 

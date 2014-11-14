@@ -541,7 +541,8 @@ var asElement = function( target, widgetElementGetter ) {
 };
 
 var isWidget = function( target ) {
-  return ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0;
+  return    ( ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0 )
+         || ( target instanceof rwt.widgets.base.Widget );
 };
 
 }());
