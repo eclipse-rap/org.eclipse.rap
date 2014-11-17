@@ -520,6 +520,16 @@ public final class RWT {
    * selection events on markup hyperlinks, the <code>a</code> element must have it's
    * <code>target</code> property set to “<code>_rwt</code>”.
    *
+   * <p>
+   * <b>Supported by:</b>
+   * <ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * <li><code>Grid</code></li>
+   * <li><code>List</code></li>
+   * </ul>
+   * </p>
+   *
    * @see RWT#MARKUP_ENABLED
    * @see org.eclipse.swt.events.SelectionEvent#detail
    * @since 2.1
