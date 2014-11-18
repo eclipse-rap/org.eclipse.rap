@@ -374,8 +374,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( [ 2, 5 ], text.getComputedSelection() );
     },
 
-    testRestoreSelectionOnTabFocus : function() {
+    testRestoreSelectionOnFocus : function() {
       createText();
+      text.setValue( "asdfjkloe" );
+      text.setSelection( [ 2, 5 ] );
+      text.blur();
+
+      text.focus();
+
+      assertEquals( [ 2, 5 ], text.getSelection() );
+      assertEquals( [ 2, 5 ], text.getComputedSelection() );
+    },
+
+    testSetSelection_onTabFocus_single : function() {
+      createText();
+      text.setValue( "asdfjkloe" );
+      text.setSelection( [ 2, 5 ] );
+      text.blur();
+
+      text.focus();
+      text._ontabfocus();
+      TestUtil.keyUp( text, "Tab" );
+
+      assertEquals( [ 0, 9 ], text.getSelection() );
+      assertEquals( [ 0, 9 ], text.getComputedSelection() );
+    },
+
+    testSetSelection_onTabFocus_multi : function() {
+      createText( false, true );
       text.setValue( "asdfjkloe" );
       text.setSelection( [ 2, 5 ] );
       text.blur();

@@ -76,7 +76,11 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     // event handler
 
     _ontabfocus : function() {
-      this._renderSelection();
+      if( this._isTextArea() ) {
+        this._renderSelection();
+      } else {
+        this.selectAll();
+      }
     },
 
     _onkeydown : function( event ) {
