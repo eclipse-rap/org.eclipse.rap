@@ -129,11 +129,11 @@ public class ApplicationImpl implements Application {
     }
   }
 
-  public void addThemableWidget( Class<? extends Widget> widget ) {
-    addThemableWidget( widget, new ResourceLoaderImpl( widget.getClassLoader() ) );
+  public void addThemeableWidget( Class<? extends Widget> widget ) {
+    addThemeableWidget( widget, new ResourceLoaderImpl( widget.getClassLoader() ) );
   }
 
-  public void addThemableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader ) {
+  public void addThemeableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( widget, "widget" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
 

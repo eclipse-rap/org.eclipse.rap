@@ -211,8 +211,9 @@ public interface Application {
    * details on custom widgets, please refer to the documentation.
    *
    * @param widget the widget to register as themeable widget
+   * @since 3.0
    */
-  void addThemableWidget( Class<? extends Widget> widget );
+  void addThemeableWidget( Class<? extends Widget> widget );
 
   /**
    * Adds a service handler to the application. A service handler is used to

@@ -218,7 +218,7 @@ public class WorkbenchApplicationConfiguration implements ApplicationConfigurati
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
         Class<? extends Widget> widget = (Class<? extends Widget>)bundle.loadClass( widgetClass );
-        application.addThemableWidget( widget );
+        application.addThemeableWidget( widget );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };

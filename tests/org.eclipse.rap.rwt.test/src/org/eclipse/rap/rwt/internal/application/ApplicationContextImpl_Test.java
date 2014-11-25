@@ -472,7 +472,7 @@ public class ApplicationContextImpl_Test {
         application.addServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
         application.addStyleSheet( THEME_ID, STYLE_SHEET );
         application.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
-        application.addThemableWidget( TestWidget.class );
+        application.addThemeableWidget( TestWidget.class );
         application.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
