@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.getCharHeight;
-import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.textExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
@@ -416,12 +415,11 @@ public class Button extends Control {
       if( hasText ) {
         Point extent;
         boolean markupEnabled = isMarkupEnabledFor( this );
-        if( ( style & SWT.WRAP ) != 0 ) {
-          int wrapWidth = wHint == SWT.DEFAULT ? wHint : wHint - width - padding.width;
-          extent = textExtent( font, text, wrapWidth, markupEnabled );
-        } else {
-          extent = stringExtent( font, text, markupEnabled );
+        int wrapWidth = SWT.DEFAULT;
+        if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
+          wrapWidth = wHint - width - padding.width;
         }
+        extent = textExtent( font, text, wrapWidth, markupEnabled );
         width += extent.x;
         height = Math.max( height, extent.y );
       }

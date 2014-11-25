@@ -139,9 +139,7 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
         if( !this._markupEnabled ) {
           var mnemonicIndex = mnemonic ? this._mnemonicIndex : undefined;
           text = EncodingUtil.escapeText( this._rawText, mnemonicIndex );
-          if( this.hasState( "rwt_WRAP" ) ) {
-            text = EncodingUtil.replaceNewLines( text, "<br/>" );
-          }
+          text = EncodingUtil.replaceNewLines( text, "<br/>" );
         }
         this.setCellContent( 2, text );
       } else {

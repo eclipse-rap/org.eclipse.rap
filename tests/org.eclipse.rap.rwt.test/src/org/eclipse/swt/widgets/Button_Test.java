@@ -200,7 +200,7 @@ public class Button_Test {
     Point expected = new Point( 32, 28 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 92, 30 );
+    expected = new Point( 92, 32 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 194, 64 );
@@ -221,7 +221,7 @@ public class Button_Test {
     // TOGGLE button
     button = new Button( shell, SWT.TOGGLE );
     button.setText( text );
-    expected = new Point( 92, 30 );
+    expected = new Point( 92, 32 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 194, 64 );
@@ -241,7 +241,7 @@ public class Button_Test {
     expected = new Point( 27, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 94, 23 );
+    expected = new Point( 94, 24 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 201, 56 );
@@ -252,7 +252,7 @@ public class Button_Test {
     expected = new Point( 29, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 96, 25 );
+    expected = new Point( 96, 26 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 203, 58 );
@@ -263,7 +263,7 @@ public class Button_Test {
     expected = new Point( 23, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 90, 23 );
+    expected = new Point( 90, 24 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 197, 56 );
@@ -274,7 +274,7 @@ public class Button_Test {
     expected = new Point( 25, 25 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 92, 25 );
+    expected = new Point( 92, 26 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 199, 58 );
@@ -306,7 +306,7 @@ public class Button_Test {
     // CHECK button
     button = new Button( shell, SWT.CHECK );
     button.setText( text );
-    expected = new Point( 97, 23 );
+    expected = new Point( 97, 24 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
     expected = new Point( 207, 56 );
@@ -322,18 +322,17 @@ public class Button_Test {
 
     buttonWrap.setText( text );
     buttonNoWrap.setText( text );
-    assertEquals( new Point( 92, 30 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    // NOTE : Different calculation due to WRAP flag causes slightly different result in height:
+    assertEquals( new Point( 92, 32 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 92, 32 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     buttonWrap.setText( textWithBreak );
     buttonNoWrap.setText( textWithBreak );
-    assertEquals( new Point( 92, 30 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 66, 49 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 66, 49 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     buttonWrap.setText( text );
     buttonNoWrap.setText( text );
-    assertEquals( new Point( 77, 30 ), buttonNoWrap.computeSize( 75, SWT.DEFAULT ) );
+    assertEquals( new Point( 77, 32 ), buttonNoWrap.computeSize( 75, SWT.DEFAULT ) );
     assertEquals( new Point( 77, 49 ), buttonWrap.computeSize( 75, SWT.DEFAULT ) );
   }
 

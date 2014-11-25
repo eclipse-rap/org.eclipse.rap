@@ -659,13 +659,13 @@ public class CTabFolder_Test {
     Button content1 = new Button( folder, SWT.PUSH );
     content1.setText( "Content for tab 1" );
     item1.setControl( content1 );
-    expected = new Point( 150, 65 );
+    expected = new Point( 150, 67 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     Label content2 = new Label( folder, SWT.NONE );
     content2.setText( "Content for tab 2 which is wider." );
     item2.setControl( content2 );
-    expected = new Point( 226, 65 );
+    expected = new Point( 226, 67 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     Rectangle trimExpected = new Rectangle( -2, -33, 4, 35 );
