@@ -182,13 +182,45 @@ public class Image_Test {
   }
 
   @Test
-  public void testImageConstructor() throws IOException {
+  public void testImageConstructor_withCopyFlag() throws IOException {
     Image image = createImage( device, Fixture.IMAGE1 );
+
     Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
+
     assertEquals( image.getBounds(), copiedImage.getBounds() );
     assertSame( image.internalImage, copiedImage.internalImage );
+  }
+
+  @Test
+  public void testImageConstructor_withCopyFlag_safeCopy() throws IOException {
+    Image image = createImage( device, Fixture.IMAGE1 );
+    Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
+
     image.dispose();
+
     assertFalse( copiedImage.isDisposed() );
+  }
+
+  @Test
+  public void testImageConstructor_withDisableFlag() throws IOException {
+    Fixture.useDefaultResourceManager();
+    Image image = createImage( device, Fixture.IMAGE1 );
+
+    Image disabledImage = new Image( device, image, SWT.IMAGE_DISABLE );
+
+    assertEquals( image.getBounds(), disabledImage.getBounds() );
+    assertNotSame( image.internalImage, disabledImage.internalImage );
+  }
+
+  @Test
+  public void testImageConstructor_withGrayFlag() throws IOException {
+    Fixture.useDefaultResourceManager();
+    Image image = createImage( device, Fixture.IMAGE1 );
+
+    Image greyedImage = new Image( device, image, SWT.IMAGE_DISABLE );
+
+    assertEquals( image.getBounds(), greyedImage.getBounds() );
+    assertNotSame( image.internalImage, greyedImage.internalImage );
   }
 
   ////////////////////////
