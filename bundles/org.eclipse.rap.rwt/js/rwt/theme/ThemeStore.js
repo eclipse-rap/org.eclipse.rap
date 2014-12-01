@@ -341,13 +341,6 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
       return result;
     },
 
-    // Used by GraphicsMixin:
-    getImageSize : function( source ) {
-      var key = source.slice( "rwt-resources/themes/images/".length );
-      var image = this._values.images[ key ];
-      return image != null ? [ image[ 0 ], image[ 1 ] ] : [ 0, 0 ];
-    },
-
     ////////////
     // Internals
 
