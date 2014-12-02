@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
 Scale,
 Scale[HORIZONTAL],
 Scale[VERTICAL] {
-  background-color: #ffffff;
+  background-color: white;
   background-image: none;
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 Scale-Thumb,
@@ -23,7 +23,7 @@ Scale-Thumb[VERTICAL],
 Scale-Thumb:hover,
 Scale-Thumb[HORIZONTAL]:hover,
 Scale-Thumb[VERTICAL]:hover {
-  background-color: #e5e5e5;
+  background-color: #00589f;
   background-image: none;
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;

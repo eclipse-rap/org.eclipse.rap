@@ -35,9 +35,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
     // Base line
     this._line = new rwt.widgets.base.Image();
-    if( this._horizontal ) {
-      this._line.addState( rwt.widgets.Scale.STATE_HORIZONTAL );
-    }
+    this._line.addState( this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL" );
     this._line.setAppearance( "scale-line" );
     this._line.setResizeToInner( true );
     this._line.addEventListener( "mousedown", this._onLineMouseDown, this );
@@ -45,9 +43,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
     // Thumb
     this._thumb = new rwt.widgets.base.BasicButton( "push", true );
-    if( this._horizontal ) {
-      this._thumb.addState( rwt.widgets.Scale.STATE_HORIZONTAL );
-    }
+    this._thumb.addState( this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL" );
     this._thumb.setAppearance( "scale-thumb" );
     this._thumb.addEventListener( "mousedown", this._onThumbMouseDown, this );
     this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
@@ -85,7 +81,6 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
   },
 
   statics : {
-    STATE_HORIZONTAL : "horizontal",
     PADDING : 8,
     SCALE_LINE_OFFSET : 9,
     THUMB_OFFSET : 9,

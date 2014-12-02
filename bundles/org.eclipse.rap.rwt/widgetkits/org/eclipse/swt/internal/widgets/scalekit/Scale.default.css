@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,13 @@
 
 Scale {
   background-color: white;
+  background-image: none;
   border-radius: 0;
 }
 
 Scale-Thumb {
   background-color: #ffffff;
+  background-image: none;
   border: 1px solid #aaaaaa;
   border-radius: 0;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,9 @@ var appearances = {
         border : tv.getCssBorder( "Scale", "border" ),
         font : tv.getCssFont( "*", "font" ),
         textColor : tv.getCssColor( "*", "color" ),
-        backgroundColor : tv.getCssColor( "Scale", "background-color" )
+        backgroundColor : tv.getCssColor( "Scale", "background-color" ),
+        backgroundImage : tv.getCssImage( "Scale", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Scale", "background-image" ),
       };
     }
   },
@@ -31,7 +33,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var path = rwt.remote.Connection.RESOURCE_PATH + "widget/rap/scale/";
-      if( states.horizontal ) {
+      if( states[ "rwt_HORIZONTAL" ] ) {
         result.left = rwt.widgets.Scale.PADDING;
         result.top = rwt.widgets.Scale.SCALE_LINE_OFFSET;
         result.source = path + "h_line.gif";
@@ -50,7 +52,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      if( states.horizontal ) {
+      if( states[ "rwt_HORIZONTAL" ] ) {
         result.left = rwt.widgets.Scale.PADDING;
         result.top = rwt.widgets.Scale.THUMB_OFFSET;
         // TODO: make it themable
@@ -63,9 +65,10 @@ var appearances = {
         result.width = 21;
         result.height = 11;
       }
-      // TODO: add themable background-image (gradient)
       result.border = tv.getCssBorder( "Scale-Thumb", "border" );
       result.backgroundColor = tv.getCssColor( "Scale-Thumb", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Scale-Thumb", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Scale-Thumb", "background-image" );
       return result;
     }
   }

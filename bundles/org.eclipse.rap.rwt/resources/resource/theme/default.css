@@ -1663,11 +1663,13 @@ Tree-Indent:first:last:expanded:hover {
 
 Scale {
   background-color: white;
+  background-image: none;
   border-radius: 3px;
 }
 
 Scale-Thumb {
   background-color: #e5e5e5;
+  background-image: none;
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
 }
