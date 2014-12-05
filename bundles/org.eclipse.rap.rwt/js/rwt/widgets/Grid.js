@@ -459,6 +459,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleColumnUpdate();
     },
 
+    _afterInsertDom : function() {
+      this.base( arguments );
+      if( this._config.autoHeight ) {
+        this._rowContainer.renderRowHeight();
+      }
+    },
+
     _onChangeSeeable : function() {
       this._config.seeable = this.isSeeable();
     },

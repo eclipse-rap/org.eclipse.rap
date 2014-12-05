@@ -219,6 +219,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       }
     },
 
+    renderRowHeight : function() {
+      this._forEachRow( function( row ) {
+        var item = this.findItemByRow( row );
+        if( item != null ) {
+          row.renderHeight( item, this._config );
+        }
+      } );
+    },
+
     setScrollLeft : function( value ) {
       this._scrollLeft = value;
       if( this.isSeeable() ) {

@@ -914,6 +914,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    // 453711: [Nebula Grid] Wrong initial line height
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=453711
+    testChangeTreeRowBounds_withAutoHeight : function() {
+      var tree = this._createDefaultTree( true, false );
+      tree.setAutoHeight( true );
+      tree.setWidth( 400 );
+      tree.setItemHeight( 15 );
+      this._fillTree( tree, 10 );
+
+      TestUtil.flush();
+
+      var sample = tree._rowContainer.getRow( 5 ).$el.get( 0 );
+      var bounds = getElementBounds( sample );
+      assertEquals( 0, bounds.left );
+      assertEquals( 140, bounds.top );
+      assertEquals( 500, bounds.width );
+      assertEquals( 28, bounds.height );
+      tree.destroy();
+    },
+
     testRenderFirstLayer : function() {
       var tree = this._createDefaultTree();
       this._fillTree( tree, 10 );

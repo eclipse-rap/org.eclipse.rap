@@ -79,11 +79,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           this._renderIndention( item, config, hoverTarget );
         }
         if( config.rowTemplate ) {
-          this._renderHeight( item, config );
+          this.renderHeight( item, config );
           this._renderTemplate( item, config );
         } else {
           this._renderColumnModel( item, config, hoverTarget, renderSelected, scrolling );
-          this._renderHeight( item, config );
+          this.renderHeight( item, config );
         }
         this._renderOverlay( item, config );
         this._hideRemainingElements();
@@ -201,7 +201,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return this._templateRenderer;
     },
 
-    _renderHeight : function( item, config ) {
+    renderHeight : function( item, config ) {
       if( config.autoHeight ) {
         var computedHeight = this._computeAutoHeight( item, config );
         if( item.getDefaultHeight() >= computedHeight - 1 ) {
