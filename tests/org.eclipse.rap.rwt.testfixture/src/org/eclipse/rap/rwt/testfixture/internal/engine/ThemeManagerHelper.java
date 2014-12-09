@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceLoader;
@@ -29,15 +28,9 @@ import org.eclipse.rap.rwt.service.ResourceLoader;
 public class ThemeManagerHelper {
 
   private static ThemeManager themeManager;
+
   static {
     replaceStandardResourceLoader();
-  }
-
-  public static void adaptApplicationContext( Object toAdapt ) {
-    if( toAdapt instanceof ApplicationContextImpl ) {
-      ensureThemeManager();
-      ( ( ApplicationContextImpl )toAdapt ).setThemeManager( themeManager );
-    }
   }
 
   public static void resetThemeManager() {
@@ -56,10 +49,11 @@ public class ThemeManagerHelper {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
 
-  private static void ensureThemeManager() {
+  public static ThemeManager ensureThemeManager() {
     if( themeManager == null ) {
       themeManager = new TestThemeManager();
     }
+    return themeManager;
   }
 
   private static void doThemeManagerReset() {

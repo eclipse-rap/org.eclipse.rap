@@ -82,12 +82,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
   public static boolean skipResoureDeletion;
 
-  // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
-  //                TestServletContext#setAttribute(String,Object) will replace the runtime
-  //                implementation with an optimized version for testing purpose. Think about
-  //                a less intrusive solution.
-  private ThemeManager themeManager;
-
+  private final ThemeManager themeManager;
   private final ApplicationConfiguration applicationConfiguration;
   private final ResourceDirectory resourceDirectory;
   private final ResourceManagerImpl resourceManager;
@@ -129,7 +124,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     lifeCycleFactory = new LifeCycleFactory( this );
     RWTMessageHandler rwtHandler = new RWTMessageHandler( lifeCycleFactory );
     messageChainReference = new MessageChainReference( new MessageChainElement( rwtHandler, null ) );
-    themeManager = new ThemeManager();
+    themeManager = createThemeManager();
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();
     internalImageFactory = new InternalImageFactory();
@@ -147,6 +142,10 @@ public class ApplicationContextImpl implements ApplicationContext {
     listeners = new HashSet<ApplicationContextListener>();
     listenersLock = new SerializableLock();
     state = new AtomicReference<State>( State.INACTIVE );
+  }
+
+  protected ThemeManager createThemeManager() {
+    return new ThemeManager();
   }
 
   public static ApplicationContextImpl getFrom( ServletContext servletContext ) {
@@ -268,14 +267,6 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   public ThemeManager getThemeManager() {
     return themeManager;
-  }
-
-  // TODO [fappel]: setThemeManager exists only for performance reasons of the testsuite.
-  //                TestServletContext#setAttribute(String,Object) will replace the runtime
-  //                implementation with an optimized version for testing purpose using this
-  //                method. Think about a less intrusive solution.
-  public void setThemeManager( ThemeManager themeManager ) {
-    this.themeManager = themeManager;
   }
 
   public LifeCycleFactory getLifeCycleFactory() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,6 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-
 
 /**
  * <p>
@@ -54,12 +52,12 @@ public class TestServletContext implements ServletContext {
   private int minorVersion;
 
   public TestServletContext() {
-    this.initParameters = new HashMap<String,Object>();
-    this.attributes = new HashMap<String,Object>();
-    this.filters = new HashMap<String,FilterRegistration>();
-    this.servlets = new HashMap<String,ServletRegistration>();
+    initParameters = new HashMap<String,Object>();
+    attributes = new HashMap<String,Object>();
+    filters = new HashMap<String,FilterRegistration>();
+    servlets = new HashMap<String,ServletRegistration>();
   }
-  
+
   public void setVersion( int majorVersion, int minorVersion ) {
     this.majorVersion = majorVersion;
     this.minorVersion = minorVersion;
@@ -171,7 +169,6 @@ public class TestServletContext implements ServletContext {
   }
 
   public void setAttribute( String arg0, Object arg1 ) {
-    ThemeManagerHelper.adaptApplicationContext( arg1 );
     attributes.put( arg0, arg1 );
   }
 
@@ -240,7 +237,7 @@ public class TestServletContext implements ServletContext {
   {
     return null;
   }
-  
+
   public <T extends Filter> T createFilter( Class<T> clazz ) throws ServletException {
     return null;
   }

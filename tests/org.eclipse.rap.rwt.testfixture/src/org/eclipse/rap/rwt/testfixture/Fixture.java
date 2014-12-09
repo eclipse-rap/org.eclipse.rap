@@ -66,6 +66,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -148,7 +149,12 @@ public final class Fixture {
     ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader( Fixture.class.getClassLoader() );
-      applicationContext = new ApplicationContextImpl( config, servletContext );
+      applicationContext = new ApplicationContextImpl( config, servletContext ) {
+        @Override
+        protected ThemeManager createThemeManager() {
+          return ThemeManagerHelper.ensureThemeManager();
+        }
+      };
       applicationContext.attachToServletContext();
       SingletonManager.install( applicationContext );
       applicationContext.activate();

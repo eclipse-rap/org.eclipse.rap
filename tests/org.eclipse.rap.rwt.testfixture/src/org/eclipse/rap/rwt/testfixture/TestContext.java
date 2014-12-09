@@ -26,9 +26,11 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -89,6 +91,7 @@ public class TestContext implements TestRule {
     uiSession = null;
     applicationContext = null;
     ContextProvider.disposeContext();
+    ThemeManagerHelper.resetThemeManagerIfNeeded();
   }
 
   private static ApplicationConfiguration createApplicationConfiguration() {
@@ -102,7 +105,13 @@ public class TestContext implements TestRule {
   private static ApplicationContextImpl createApplicationContext( ApplicationConfiguration config )
   {
     TestServletContext servletContext = new TestServletContext();
-    ApplicationContextImpl appContext = new ApplicationContextImpl( config, servletContext );
+    ApplicationContextImpl appContext = new ApplicationContextImpl( config, servletContext ) {
+      @Override
+      protected ThemeManager createThemeManager() {
+        return ThemeManagerHelper.ensureThemeManager();
+      }
+    };
+    appContext.attachToServletContext();
     appContext.activate();
     return appContext;
   }
