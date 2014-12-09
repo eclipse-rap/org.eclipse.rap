@@ -631,6 +631,14 @@ describe( "RWTQuery", function() {
         expect( rwt.html.Style.setBackgroundImage ).toHaveBeenCalledWith( same( element ), "foo" );
       } );
 
+      it( "sets backgroundImage to null", function() {
+        spyOn( rwt.html.Style, "setBackgroundImage" );
+
+        $( element ).css( "backgroundImage", null );
+
+        expect( rwt.html.Style.setBackgroundImage ).toHaveBeenCalledWith( same( element ), null );
+      } );
+
       it( "sets border directly for strings", function() {
         $( element ).css( "border", "2px solid rgb( 255, 0, 255)" );
 

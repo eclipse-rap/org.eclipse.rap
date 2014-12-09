@@ -479,7 +479,7 @@ var parseHTML = function( str ) {
 };
 
 var fixBackgroundImage = function( value ) {
-  if( value.trim().toLowerCase().indexOf( "url(" ) === 0 ) {
+  if( value && value.trim().toLowerCase().indexOf( "url(" ) === 0 ) {
     return getCssFunctionParams( "url", value )[ 0 ];
   }
   return value;
