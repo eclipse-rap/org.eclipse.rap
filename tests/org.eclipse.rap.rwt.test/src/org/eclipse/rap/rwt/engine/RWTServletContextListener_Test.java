@@ -18,14 +18,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -36,6 +37,8 @@ import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 
 public class RWTServletContextListener_Test {
@@ -124,17 +127,14 @@ public class RWTServletContextListener_Test {
     assertEntryPointPath( "/test" );
   }
 
-  @SuppressWarnings( "unchecked" )
   @Test
   public void testConfigurationWithThreadContextClassLoader() throws ClassNotFoundException {
     // See bug 367033
     // use a class name that cannot be found by RWT's class loader
     servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, "not.Existing" );
-    ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
-    Class configuratorClass = TestConfiguration.class;
+    final ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
     // set a context class loader that can find the class
-    ClassLoader contextClassLoader = mock( ClassLoader.class );
-    when( contextClassLoader.loadClass( anyString() ) ).thenReturn( configuratorClass );
+    ClassLoader contextClassLoader = mockClassLoader( "not.Existing", TestConfiguration.class );
 
     Thread.currentThread().setContextClassLoader( contextClassLoader );
     try {
@@ -144,6 +144,21 @@ public class RWTServletContextListener_Test {
     }
 
     verify( contextClassLoader ).loadClass( "not.Existing" );
+  }
+
+  private ClassLoader mockClassLoader( final String className, final Class clazz )
+    throws ClassNotFoundException
+  {
+    ClassLoader contextClassLoader = mock( ClassLoader.class );
+    Answer answer = new Answer<Object>() {
+      public Object answer( InvocationOnMock invocation ) throws Throwable {
+        String name = ( String )invocation.getArguments()[ 0 ];
+        ClassLoader parent = RWT.class.getClassLoader();
+        return className.equals( name ) ? clazz : parent.loadClass( name );
+      }
+    };
+    doAnswer( answer ).when( contextClassLoader ).loadClass( anyString() );
+    return contextClassLoader;
   }
 
   private void assertResourceManagerIsRegistered() {
