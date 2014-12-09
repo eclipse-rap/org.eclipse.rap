@@ -43,9 +43,7 @@ public class ThemeManager {
   private static final String FALLBACK_THEME_NAME = "RAP Fallback Theme";
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
-  // TODO [ApplicationContextImpl]: made field public to replace with a performance
-  //      optimized solution for tests. Think about a less intrusive solution.
-  public static ResourceLoader STANDARD_RESOURCE_LOADER = new ResourceLoader() {
+  public static final ResourceLoader STANDARD_RESOURCE_LOADER = new ResourceLoader() {
     ClassLoader classLoader = getClass().getClassLoader();
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return classLoader.getResourceAsStream( resourceName );

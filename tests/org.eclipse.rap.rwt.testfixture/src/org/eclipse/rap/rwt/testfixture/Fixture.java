@@ -109,7 +109,6 @@ public final class Fixture {
     = "usePerformanceOptimizations";
 
   static {
-    ThemeManagerHelper.replaceStandardResourceLoader();
     setSkipResourceRegistration( isPerformanceOptimizationsEnabled() );
     setSkipResourceDeletion( isPerformanceOptimizationsEnabled() );
   }

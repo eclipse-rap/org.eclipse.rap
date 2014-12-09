@@ -11,27 +11,17 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.engine;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
-import org.eclipse.rap.rwt.service.ResourceLoader;
 
 
 public class ThemeManagerHelper {
 
   private static ThemeManager themeManager;
-
-  static {
-    replaceStandardResourceLoader();
-  }
 
   public static void resetThemeManager() {
     if( isThemeManagerAvailable() ) {
@@ -43,10 +33,6 @@ public class ThemeManagerHelper {
     if( isThemeManagerResetNeeded() ) {
       doThemeManagerReset();
     }
-  }
-
-  public static void replaceStandardResourceLoader() {
-    ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
 
   public static ThemeManager ensureThemeManager() {
@@ -119,49 +105,6 @@ public class ThemeManagerHelper {
       activated = false;
       super.deactivate();
     }
-  }
-
-  // TODO [ApplicationContext]: Used as performance optimized solution for tests. At the time being
-  //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive
-  //      solution.
-  private static class TestResourceLoader implements ResourceLoader {
-    private final ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    private final Map<String,StreamBuffer> resourceStreams = new HashMap<String,StreamBuffer>();
-
-    public InputStream getResourceAsStream( String name )
-      throws IOException
-    {
-      StreamBuffer result = resourceStreams.get( name );
-      if( !hasStreamBuffer( result ) ) {
-        result = bufferStream( name );
-      } else {
-        result.reset();
-      }
-      return result;
-    }
-
-    private StreamBuffer bufferStream( String name ) {
-      StreamBuffer result = null;
-      InputStream in = classLoader.getResourceAsStream( name );
-      if( in != null ) {
-        result = new StreamBuffer( in );
-        result.mark( Integer.MAX_VALUE );
-        resourceStreams.put( name, result );
-      }
-      return result;
-    }
-
-    private boolean hasStreamBuffer( StreamBuffer result ) {
-      return result != null;
-    }
-  }
-
-  private static class StreamBuffer extends BufferedInputStream {
-    private StreamBuffer( InputStream in ) {
-      super( in );
-    }
-    @Override
-    public void close() throws IOException {}
   }
 
 }
