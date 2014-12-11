@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
@@ -46,7 +47,7 @@ public class CBanner_Test {
     banner.setLeft( new CCombo( banner, SWT.NONE ) );
     banner.setRight( new CCombo( banner, SWT.NONE ) );
 
-    CBanner deserializedBanner = Fixture.serializeAndDeserialize( banner );
+    CBanner deserializedBanner = serializeAndDeserialize( banner );
 
     assertNotNull( deserializedBanner.getLeft() );
     assertNotNull( deserializedBanner.getRight() );

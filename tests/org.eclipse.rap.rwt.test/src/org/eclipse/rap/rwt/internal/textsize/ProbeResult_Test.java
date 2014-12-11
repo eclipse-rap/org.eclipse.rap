@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -64,7 +64,7 @@ public class ProbeResult_Test {
   public void testIsSerializable() throws Exception {
     ProbeResult probeResult = createProbeResult( "0123456789", 2 );
 
-    ProbeResult deserializeProbeResult = Fixture.serializeAndDeserialize( probeResult );
+    ProbeResult deserializeProbeResult = serializeAndDeserialize( probeResult );
 
     assertEquals( probeResult.getSize(), deserializeProbeResult.getSize() );
     assertEquals( probeResult.getProbe(), deserializeProbeResult.getProbe() );

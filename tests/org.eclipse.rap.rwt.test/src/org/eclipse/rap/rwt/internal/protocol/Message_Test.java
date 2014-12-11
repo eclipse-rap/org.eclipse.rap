@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.protocol;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -21,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Test;
 
 
@@ -186,7 +186,7 @@ public class Message_Test {
     operations.add( new SetOperation( "w3", new JsonObject().add( "bar", 42 ) ) );
     Message message = new Message( head, operations );
 
-    Message deserialized = Fixture.serializeAndDeserialize( message );
+    Message deserialized = serializeAndDeserialize( message );
 
     assertEquals( message.toJson(), deserialized.toJson() );
   }

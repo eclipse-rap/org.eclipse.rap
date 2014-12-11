@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -271,7 +272,7 @@ public class CoolBar_Test {
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
 
-    CoolBar deserializedCoolBar = Fixture.serializeAndDeserialize( coolBar );
+    CoolBar deserializedCoolBar = serializeAndDeserialize( coolBar );
 
     assertEquals( 1, deserializedCoolBar.getItemCount() );
   }

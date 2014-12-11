@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -260,7 +261,7 @@ public class ScrolledComposite_Test {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setContent( new Label( sc, SWT.NONE ) );
 
-    ScrolledComposite deserializedSC = Fixture.serializeAndDeserialize( sc );
+    ScrolledComposite deserializedSC = serializeAndDeserialize( sc );
 
     assertTrue( deserializedSC.getContent() instanceof Label );
     assertTrue( deserializedSC.getLayout() instanceof ScrolledCompositeLayout );

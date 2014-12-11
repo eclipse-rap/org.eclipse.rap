@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -2627,7 +2628,7 @@ public class Table_Test {
     Table table = createTable( SWT.VIRTUAL, 1 );
     new TableItem( table, 0 );
 
-    Table deserializedTable = Fixture.serializeAndDeserialize( table );
+    Table deserializedTable = serializeAndDeserialize( table );
 
     assertEquals( 1, deserializedTable.getItemCount() );
     assertEquals( 1, deserializedTable.getColumnCount() );

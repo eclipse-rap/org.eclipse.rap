@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.service;
 
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -208,7 +209,7 @@ public class ServerPushSession_Test {
   public void testIsSerializable() throws Exception {
     ServerPushSession pushSession = new ServerPushSession();
 
-    Fixture.serializeAndDeserialize( pushSession );
+    serializeAndDeserialize( pushSession );
   }
 
 }

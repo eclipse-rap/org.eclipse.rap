@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -124,7 +125,7 @@ public class Dialog_Test {
     IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     adapter.openNonBlocking( mock( DialogCallback.class ) );
 
-    TestDialog deserializedDialog = Fixture.serializeAndDeserialize( dialog );
+    TestDialog deserializedDialog = serializeAndDeserialize( dialog );
 
     assertEquals( text, deserializedDialog.getText() );
   }

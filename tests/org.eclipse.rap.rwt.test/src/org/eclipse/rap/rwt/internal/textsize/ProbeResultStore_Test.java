@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -58,7 +58,7 @@ public class ProbeResultStore_Test {
   public void testIsSerializable() throws Exception {
     probeResultStore.createProbeResult( PROBE_OF_FONT_DATA_1, SIZE );
 
-    ProbeResultStore deserialized = Fixture.serializeAndDeserialize( probeResultStore );
+    ProbeResultStore deserialized = serializeAndDeserialize( probeResultStore );
 
     assertTrue( deserialized.containsProbeResult( FONT_DATA_1 ) );
   }

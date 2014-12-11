@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -145,7 +146,7 @@ public class WidgetAdapterImpl_Test {
     WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     adapter.setInitialized( true );
 
-    WidgetAdapterImpl deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
+    WidgetAdapterImpl deserializedAdapter = serializeAndDeserialize( adapter );
 
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
     assertTrue( deserializedAdapter.isInitialized() );
@@ -159,7 +160,7 @@ public class WidgetAdapterImpl_Test {
     adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
 
-    WidgetAdapterImpl deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
+    WidgetAdapterImpl deserializedAdapter = serializeAndDeserialize( adapter );
 
     assertNull( deserializedAdapter.getCachedVariant() );
     assertEquals( 0, deserializedAdapter.getRenderRunnables().length );

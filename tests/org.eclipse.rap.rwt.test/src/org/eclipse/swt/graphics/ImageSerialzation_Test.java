@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -62,7 +64,7 @@ public class ImageSerialzation_Test {
     inputStream.close();
 
     try {
-      Fixture.serialize( image );
+      serialize( image );
       fail();
     } catch( NotSerializableException expected ) {
     }
@@ -76,7 +78,7 @@ public class ImageSerialzation_Test {
     ImageData imageData = image.getImageData();
     ContextProvider.disposeContext();
 
-    Image deserializedImage = Fixture.serializeAndDeserialize( image );
+    Image deserializedImage = serializeAndDeserialize( image );
     createServiceContext( deserializedImage.getDevice() );
     runClusterSupportFilter();
 

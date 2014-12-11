@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,28 +48,28 @@ public class UISessionImplSerialization_Test {
     String attributeName = "foo";
     String attributeValue = "bar";
     uiSession.setAttribute( attributeName, attributeValue );
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
 
     assertEquals( attributeValue, deserializedUiSession.getAttribute( attributeName ) );
   }
 
   @Test
   public void testHttpSessionIsNotSerializable() throws Exception {
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
 
     assertNull( deserializedUiSession.getHttpSession() );
   }
 
   @Test
   public void testIdIsSerializable() throws Exception {
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
 
     assertEquals( uiSession.getId(), deserializedUiSession.getId() );
   }
 
   @Test
   public void testBoundIsSerializable() throws Exception {
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
 
     assertTrue( deserializedUiSession.isBound() );
   }
@@ -77,7 +78,7 @@ public class UISessionImplSerialization_Test {
   public void testListenersAreSerializable() throws Exception {
     UISessionListener listener = new LoggingUISessionListener();
     uiSession.addUISessionListener( listener );
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
     HttpSession newHttpSession = new TestSession();
     deserializedUiSession.setHttpSession( newHttpSession );
     deserializedUiSession.attachToHttpSession();
@@ -90,7 +91,7 @@ public class UISessionImplSerialization_Test {
   public void testNonSerializableAttributeCausesException() throws IOException {
     uiSession.setAttribute( "foo", new Object() );
     try {
-      Fixture.serialize( uiSession );
+      serialize( uiSession );
       fail();
     } catch( NotSerializableException expected ) {
     }

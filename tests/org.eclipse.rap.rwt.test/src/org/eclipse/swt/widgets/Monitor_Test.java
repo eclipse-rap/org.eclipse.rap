@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -82,7 +83,7 @@ public class Monitor_Test {
     Monitor monitor = display.getPrimaryMonitor();
     Rectangle bounds = monitor.getBounds();
 
-    Monitor deserializedMonitor = Fixture.serializeAndDeserialize( monitor );
+    Monitor deserializedMonitor = serializeAndDeserialize( monitor );
     getDisplayAdapter( deserializedMonitor.display ).attachThread();
 
     assertEquals( bounds, deserializedMonitor.getBounds() );

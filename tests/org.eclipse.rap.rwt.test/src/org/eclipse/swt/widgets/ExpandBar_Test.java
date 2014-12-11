@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -199,7 +200,7 @@ public class ExpandBar_Test {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     new ExpandItem( expandBar, SWT.NONE );
 
-    ExpandBar deserializedExpandBar = Fixture.serializeAndDeserialize( expandBar );
+    ExpandBar deserializedExpandBar = serializeAndDeserialize( expandBar );
 
     assertEquals( 1, deserializedExpandBar.getItemCount() );
   }

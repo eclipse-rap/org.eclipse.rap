@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -187,7 +188,7 @@ public class Composite_Test {
     Composite composite = new Composite( shell, SWT.NONE );
     new Label( composite, SWT.NONE );
 
-    Composite deserializedComposite = Fixture.serializeAndDeserialize( composite );
+    Composite deserializedComposite = serializeAndDeserialize( composite );
 
     assertEquals( 1, deserializedComposite.getChildren().length );
     assertTrue( deserializedComposite.getChildren()[ 0 ] instanceof Label );

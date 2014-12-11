@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class Probe_Test {
   public void testIsSerializable() throws Exception {
     Probe probe = new Probe( "text", new FontData( "name", 1, SWT.ITALIC ) );
 
-    Probe deserializedProbe = Fixture.serializeAndDeserialize( probe );
+    Probe deserializedProbe = serializeAndDeserialize( probe );
 
     assertEquals( probe.getText(), deserializedProbe.getText() );
     assertEquals( probe.getFontData(), deserializedProbe.getFontData() );

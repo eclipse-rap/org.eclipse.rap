@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class IdGenerator_Test {
   public void testSerialize() throws Exception {
     String id1 = idGenerator.createId( "x" );
 
-    IdGenerator deserializedIdGenerator = Fixture.serializeAndDeserialize( idGenerator );
+    IdGenerator deserializedIdGenerator = serializeAndDeserialize( idGenerator );
     String id2 = deserializedIdGenerator.createId( "x" );
 
     assertFalse( id2.equals( id1 ) );

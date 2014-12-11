@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class MeasurementItem_Test {
   public void testIsSerializable() throws Exception {
     MeasurementItem measurementItem = createItem( "text", FONT_DATA, 155, MODE );
 
-    MeasurementItem deserialized = Fixture.serializeAndDeserialize( measurementItem );
+    MeasurementItem deserialized = serializeAndDeserialize( measurementItem );
 
     assertEquals( measurementItem.getTextToMeasure(), deserialized.getTextToMeasure() );
     assertEquals( measurementItem.getFontData(), deserialized.getFontData() );

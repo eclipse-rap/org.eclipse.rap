@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -46,7 +47,7 @@ public class ControlEditor_Test {
     ControlEditor controlEditor = new ControlEditor( new CLabel( shell, SWT.NONE ) );
     controlEditor.minimumHeight = 6;
 
-    ControlEditor deserialized = Fixture.serializeAndDeserialize( controlEditor );
+    ControlEditor deserialized = serializeAndDeserialize( controlEditor );
 
     assertNotNull( deserialized.parent );
     assertEquals( 6, deserialized.minimumHeight );

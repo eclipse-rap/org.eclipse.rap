@@ -12,6 +12,7 @@
 package org.eclipse.swt.browser;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -335,7 +336,7 @@ public class Browser_Test {
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
 
-    Browser deserializedBrowser = Fixture.serializeAndDeserialize( browser );
+    Browser deserializedBrowser = serializeAndDeserialize( browser );
 
     assertEquals( browser.getUrl(), deserializedBrowser.getUrl() );
   }

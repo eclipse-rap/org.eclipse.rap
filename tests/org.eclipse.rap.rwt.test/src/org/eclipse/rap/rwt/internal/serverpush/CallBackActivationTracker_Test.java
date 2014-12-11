@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.serverpush;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,28 +92,23 @@ public class CallBackActivationTracker_Test {
 
   @Test
   public void testSerializeWhenEmpty() throws Exception {
-    byte[] bytes = Fixture.serialize( serverPushActivationTracker );
+    ServerPushActivationTracker deserializedTracker
+      = serializeAndDeserialize( serverPushActivationTracker );
 
-    ServerPushActivationTracker deserializedIdManager = deserialize( bytes );
-
-    assertTrue( serverPushActivationTracker.isActive() == deserializedIdManager.isActive() );
+    assertTrue( serverPushActivationTracker.isActive() == deserializedTracker.isActive() );
   }
 
   @Test
   public void testSerializeWhenHoldingIds() throws Exception {
     String id = "id";
     serverPushActivationTracker.activate( id );
-    byte[] bytes = Fixture.serialize( serverPushActivationTracker );
 
-    ServerPushActivationTracker deserializedIdManager = deserialize( bytes );
+    ServerPushActivationTracker deserializedTracker
+      = serializeAndDeserialize( serverPushActivationTracker );
 
-    assertTrue( serverPushActivationTracker.isActive() == deserializedIdManager.isActive() );
-    deserializedIdManager.deactivate( id );
-    assertFalse( deserializedIdManager.isActive() );
-  }
-
-  private static ServerPushActivationTracker deserialize( byte[] bytes ) throws Exception {
-    return ( ServerPushActivationTracker )Fixture.deserialize( bytes );
+    assertTrue( serverPushActivationTracker.isActive() == deserializedTracker.isActive() );
+    deserializedTracker.deactivate( id );
+    assertFalse( deserializedTracker.isActive() );
   }
 
 }

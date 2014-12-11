@@ -14,6 +14,8 @@ import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.fakeAttribute
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -31,7 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,7 +213,7 @@ public class SingletonManager_Test {
       = singletonManager.getSingleton( SerializableTestSingleton.class );
     singleton.value = new Integer( 4711 );
 
-    SingletonManager deserialized = Fixture.serializeAndDeserialize( singletonManager );
+    SingletonManager deserialized = serializeAndDeserialize( singletonManager );
 
     SerializableTestSingleton deserializedSingleton
       = deserialized.getSingleton( SerializableTestSingleton.class );
@@ -224,7 +225,7 @@ public class SingletonManager_Test {
     SingletonManager singletonManager = new SingletonManager();
     singletonManager.getSingleton( NonSerializableTestSingleton.class );
 
-    Fixture.serialize( singletonManager );
+    serialize( singletonManager );
   }
 
   private static class TestSingleton {

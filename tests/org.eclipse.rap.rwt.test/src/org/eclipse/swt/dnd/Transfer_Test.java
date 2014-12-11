@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -211,7 +212,7 @@ public class Transfer_Test {
   public void testIsTransferSerializable() throws Exception {
     TextTransfer transfer = TextTransfer.getInstance();
 
-    TextTransfer deserializedTransfer = Fixture.serializeAndDeserialize( transfer );
+    TextTransfer deserializedTransfer = serializeAndDeserialize( transfer );
 
     TransferData type = transfer.getSupportedTypes()[ 0 ];
     TransferData deserializedType = deserializedTransfer.getSupportedTypes()[ 0 ];
@@ -225,7 +226,7 @@ public class Transfer_Test {
     transferData.data = "data";
     transferData.result = 456;
 
-    TransferData deserializedTransferData = Fixture.serializeAndDeserialize( transferData );
+    TransferData deserializedTransferData = serializeAndDeserialize( transferData );
 
     assertEquals( transferData.type, deserializedTransferData.type );
     assertEquals( transferData.data, deserializedTransferData.data );

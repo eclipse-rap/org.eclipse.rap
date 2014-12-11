@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.DROP_DOWN_BUTTON;
 import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.SPINNER;
 import static org.junit.Assert.assertEquals;
@@ -290,7 +291,7 @@ public class DateTime_Test {
     dateTime = new DateTime( shell, SWT.DATE );
     dateTime.setDate( 2000, 1, 1 );
 
-    DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
+    DateTime deserializedDateTime = serializeAndDeserialize( dateTime );
 
     assertEquals( 1, deserializedDateTime.getDay() );
     assertEquals( 1, deserializedDateTime.getMonth() );
@@ -302,7 +303,7 @@ public class DateTime_Test {
     dateTime = new DateTime( shell, SWT.TIME );
     dateTime.setTime( 12, 12, 12 );
 
-    DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
+    DateTime deserializedDateTime = serializeAndDeserialize( dateTime );
 
     assertEquals( 12, deserializedDateTime.getHours() );
     assertEquals( 12, deserializedDateTime.getMinutes() );

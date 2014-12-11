@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -367,7 +368,7 @@ public class TabFolder_Test {
     TabItem item = new TabItem( folder, SWT.NONE );
     item.setText( "item1" );
 
-    TabFolder deserializedFolder = Fixture.serializeAndDeserialize( folder );
+    TabFolder deserializedFolder = serializeAndDeserialize( folder );
 
     assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
     assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );

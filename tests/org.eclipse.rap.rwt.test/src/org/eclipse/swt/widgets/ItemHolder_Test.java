@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -119,7 +120,7 @@ public class ItemHolder_Test {
     ItemHolder<TestItem> itemHolder = new ItemHolder<TestItem>( TestItem.class );
     itemHolder.add( new TestItem( new Shell( new Display() ) ) );
 
-    ItemHolder<TestItem> deserializedItemHolder = Fixture.serializeAndDeserialize( itemHolder );
+    ItemHolder<TestItem> deserializedItemHolder = serializeAndDeserialize( itemHolder );
 
     assertEquals( 1, deserializedItemHolder.getItems().length );
   }

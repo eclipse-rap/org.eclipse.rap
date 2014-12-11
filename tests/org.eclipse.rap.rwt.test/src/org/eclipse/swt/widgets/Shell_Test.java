@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -927,7 +928,7 @@ public class Shell_Test {
   public void testIsSerializable() throws Exception {
     shell.setText( "text" );
 
-    Shell deserializedShell = Fixture.serializeAndDeserialize( shell );
+    Shell deserializedShell = serializeAndDeserialize( shell );
 
     assertEquals( shell.getText(), deserializedShell.getText() );
   }

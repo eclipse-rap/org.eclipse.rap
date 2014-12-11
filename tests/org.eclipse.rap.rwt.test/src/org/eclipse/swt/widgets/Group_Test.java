@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -112,8 +113,9 @@ public class Group_Test {
     Group group = new Group( shell, SWT.NONE );
     group.setText( groupText );
 
-    Group deserializedGroup = Fixture.serializeAndDeserialize( group );
+    Group deserializedGroup = serializeAndDeserialize( group );
 
     assertEquals( groupText, deserializedGroup.getText() );
   }
+
 }

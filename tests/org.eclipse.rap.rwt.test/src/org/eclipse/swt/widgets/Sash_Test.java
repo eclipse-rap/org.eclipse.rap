@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -44,7 +45,7 @@ public class Sash_Test {
     Sash sash = new Sash( shell, SWT.NONE );
     sash.setSize( 1, 2 );
 
-    Sash deserializedSash = Fixture.serializeAndDeserialize( sash );
+    Sash deserializedSash = serializeAndDeserialize( sash );
 
     assertEquals( sash.getSize(), deserializedSash.getSize() );
   }

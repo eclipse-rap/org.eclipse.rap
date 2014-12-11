@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.service;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -54,7 +55,6 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
@@ -800,7 +800,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testApplicationContextInUISessionIsNotSerialized() throws Exception {
-    UISessionImpl deserializedUiSession = Fixture.serializeAndDeserialize( uiSession );
+    UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
 
     assertNull( deserializedUiSession.getApplicationContext() );
   }

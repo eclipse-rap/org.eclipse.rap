@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -1392,7 +1393,7 @@ public class List_Test {
     List list = new List( shell, SWT.NONE  );
     list.add( listItem );
 
-    List deserializedList = Fixture.serializeAndDeserialize( list );
+    List deserializedList = serializeAndDeserialize( list );
 
     assertEquals( listItem, deserializedList.getItem( 0 ) );
   }

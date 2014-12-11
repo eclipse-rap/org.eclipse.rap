@@ -19,14 +19,10 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWr
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletContext;
@@ -70,7 +66,6 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -557,35 +552,6 @@ public final class Fixture {
     } finally {
       bis.close();
     }
-  }
-
-  public static byte[] serialize( Object object ) throws IOException {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ObjectOutputStream objectOutputStream = new ObjectOutputStream( outputStream );
-    objectOutputStream.writeObject( object );
-    return outputStream.toByteArray();
-  }
-
-  public static Object deserialize( byte[] bytes ) throws IOException, ClassNotFoundException {
-    ByteArrayInputStream inputStream = new ByteArrayInputStream( bytes );
-    ObjectInputStream objectInputStream = new ObjectInputStream( inputStream );
-    return objectInputStream.readObject();
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T> T serializeAndDeserialize( T instance ) throws Exception {
-    byte[] bytes = serialize( instance );
-    return ( T )deserialize( bytes );
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T extends Widget> T serializeAndDeserialize( T instance ) throws Exception {
-    byte[] bytes = serialize( instance );
-    T result = ( T )deserialize( bytes );
-    Object adapter = result.getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    displayAdapter.attachThread();
-    return result;
   }
 
   private static void ensureServletContext() {

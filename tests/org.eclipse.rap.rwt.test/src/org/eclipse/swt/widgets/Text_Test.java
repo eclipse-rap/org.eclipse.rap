@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -607,7 +608,7 @@ public class Text_Test {
   public void testIsSerializable() throws Exception {
     text.setText( "foo" );
 
-    Text deserializedText = Fixture.serializeAndDeserialize( text );
+    Text deserializedText = serializeAndDeserialize( text );
 
     assertEquals( text.getText(), deserializedText.getText() );
   }

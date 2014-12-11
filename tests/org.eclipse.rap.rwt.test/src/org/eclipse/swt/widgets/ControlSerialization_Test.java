@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -36,7 +37,7 @@ public class ControlSerialization_Test {
 
   @Test
   public void testControlAdapterIsNotSerializable() throws Exception {
-    Control deserializedControl = Fixture.serializeAndDeserialize( control );
+    Control deserializedControl = serializeAndDeserialize( control );
     assertNotNull( deserializedControl.getAdapter( IControlAdapter.class ) );
   }
 

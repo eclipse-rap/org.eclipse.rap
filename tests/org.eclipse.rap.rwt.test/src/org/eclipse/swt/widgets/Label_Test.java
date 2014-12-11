@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -206,7 +207,7 @@ public class Label_Test {
     String text = "labelText";
     label.setText( text );
 
-    Label deserializedLabel = Fixture.serializeAndDeserialize( label );
+    Label deserializedLabel = serializeAndDeserialize( label );
 
     assertEquals( text, deserializedLabel.getText() );
   }

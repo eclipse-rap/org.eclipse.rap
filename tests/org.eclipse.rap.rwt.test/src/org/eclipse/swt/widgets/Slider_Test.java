@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -156,7 +157,7 @@ public class Slider_Test {
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     slider.setSelection( 2 );
 
-    Slider deserializedSlider = Fixture.serializeAndDeserialize( slider );
+    Slider deserializedSlider = serializeAndDeserialize( slider );
 
     assertEquals( slider.getSelection(), deserializedSlider.getSelection() );
   }

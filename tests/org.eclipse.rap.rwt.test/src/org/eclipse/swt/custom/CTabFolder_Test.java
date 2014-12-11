@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -759,7 +760,7 @@ public class CTabFolder_Test {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     item.setText( "item1" );
 
-    CTabFolder deserializedFolder = Fixture.serializeAndDeserialize( folder );
+    CTabFolder deserializedFolder = serializeAndDeserialize( folder );
 
     assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
     assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );

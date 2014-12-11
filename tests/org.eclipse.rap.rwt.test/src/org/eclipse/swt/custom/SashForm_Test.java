@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
@@ -48,7 +49,7 @@ public class SashForm_Test {
     new Label( sashForm, SWT.NONE );
     sashForm.setWeights( new int[]{ 30, 70 } );
 
-    SashForm deserializedSashForm = Fixture.serializeAndDeserialize( sashForm );
+    SashForm deserializedSashForm = serializeAndDeserialize( sashForm );
 
     assertEquals( sashForm.getWeights()[ 0 ], deserializedSashForm.getWeights()[ 0 ] );
     assertEquals( sashForm.getWeights()[ 1 ], deserializedSashForm.getWeights()[ 1 ] );

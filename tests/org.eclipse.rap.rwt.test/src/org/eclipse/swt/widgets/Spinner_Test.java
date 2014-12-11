@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -376,7 +377,7 @@ public class Spinner_Test {
     Spinner spinner = new Spinner( shell, SWT.HORIZONTAL );
     spinner.setSelection( 2 );
 
-    Spinner deserializedSpinner = Fixture.serializeAndDeserialize( spinner );
+    Spinner deserializedSpinner = serializeAndDeserialize( spinner );
 
     assertEquals( spinner.getSelection(), deserializedSpinner.getSelection() );
   }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -200,7 +201,7 @@ public class Font_Test {
   public void testSerializeSessionFont() throws Exception {
     Font font = new Font( device, "roman", 1, SWT.NORMAL );
 
-    Font deserializedFont = Fixture.serializeAndDeserialize( font );
+    Font deserializedFont = serializeAndDeserialize( font );
 
     assertTrue( font.isDisposed() == deserializedFont.isDisposed() );
     assertEquals( font.getFontData().length, deserializedFont.getFontData().length );
@@ -213,7 +214,7 @@ public class Font_Test {
   public void testSerializeSharedFont() throws Exception {
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
 
-    Font deserializedFont = Fixture.serializeAndDeserialize( font );
+    Font deserializedFont = serializeAndDeserialize( font );
 
     assertTrue( font.isDisposed() == deserializedFont.isDisposed() );
     assertEquals( font.getFontData().length, deserializedFont.getFontData().length );

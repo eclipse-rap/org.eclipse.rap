@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -214,7 +215,7 @@ public class Color_Test {
   public void testSerializeSessionColor() throws Exception {
     Color color = new Color( device, 1, 2, 3 );
 
-    Color deserializedColor = Fixture.serializeAndDeserialize( color );
+    Color deserializedColor = serializeAndDeserialize( color );
 
     assertEquals( color.getRGB(), deserializedColor.getRGB() );
     assertFalse( deserializedColor.isDisposed() );
@@ -226,7 +227,7 @@ public class Color_Test {
   public void testSerializeSharedColor() throws Exception {
     Color color = Graphics.getColor( 1, 2, 3 );
 
-    Color deserializedColor = Fixture.serializeAndDeserialize( color );
+    Color deserializedColor = serializeAndDeserialize( color );
 
     assertEquals( color.getRGB(), deserializedColor.getRGB() );
     assertFalse( deserializedColor.isDisposed() );

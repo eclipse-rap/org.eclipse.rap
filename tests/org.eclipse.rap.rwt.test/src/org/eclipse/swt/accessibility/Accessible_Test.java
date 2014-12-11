@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,18 @@
  ******************************************************************************/
 package org.eclipse.swt.accessibility;
 
-import java.io.NotSerializableException;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.io.NotSerializableException;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class Accessible_Test {
@@ -42,7 +43,7 @@ public class Accessible_Test {
     Accessible accessible = new Accessible( control );
 
     try {
-      Fixture.serializeAndDeserialize( accessible );
+      serializeAndDeserialize( accessible );
     } catch( NotSerializableException expected ) {
     }
   }
@@ -52,7 +53,7 @@ public class Accessible_Test {
     Display display = new Display();
     Control control = new Shell( display );
 
-    Control deserializedControl = Fixture.serializeAndDeserialize( control );
+    Control deserializedControl = serializeAndDeserialize( control );
 
     assertNotNull( deserializedControl.getAccessible() );
   }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -123,7 +124,7 @@ public class Link_Test {
     link.getAdapter( ILinkAdapter.class );
     link.setText( text );
 
-    Link deserializedLink = Fixture.serializeAndDeserialize( link );
+    Link deserializedLink = serializeAndDeserialize( link );
 
     assertEquals( text, deserializedLink.getText() );
   }

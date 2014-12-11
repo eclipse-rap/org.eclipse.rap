@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -220,7 +221,7 @@ public class Menu_Test {
     Menu menu = new Menu( shell, SWT.POP_UP );
     new MenuItem( menu, SWT.PUSH );
 
-    Menu deserializedMenu = Fixture.serializeAndDeserialize( menu );
+    Menu deserializedMenu = serializeAndDeserialize( menu );
 
     assertEquals( 1, deserializedMenu.getItemCount() );
   }

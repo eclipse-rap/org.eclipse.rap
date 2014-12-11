@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -872,7 +873,7 @@ public class Combo_Test {
     String item = "foo";
     combo.add( item );
 
-    Combo deserializedCombo = Fixture.serializeAndDeserialize( combo );
+    Combo deserializedCombo = serializeAndDeserialize( combo );
 
     assertEquals( item, deserializedCombo.getItem( 0 ) );
   }

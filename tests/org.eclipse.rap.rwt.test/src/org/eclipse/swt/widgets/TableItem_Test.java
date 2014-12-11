@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1219,7 +1220,7 @@ public class TableItem_Test {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( itemText );
 
-    TableItem deserializedItem = Fixture.serializeAndDeserialize( item );
+    TableItem deserializedItem = serializeAndDeserialize( item );
 
     assertEquals( itemText, deserializedItem.getText() );
   }

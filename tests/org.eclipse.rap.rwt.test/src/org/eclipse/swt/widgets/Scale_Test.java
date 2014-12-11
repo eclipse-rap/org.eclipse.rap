@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -149,7 +150,7 @@ public class Scale_Test {
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     scale.setSelection( 12 );
 
-    Scale deserializedScale = Fixture.serializeAndDeserialize( scale );
+    Scale deserializedScale = serializeAndDeserialize( scale );
 
     assertEquals( scale.getSelection(), deserializedScale.getSelection() );
   }

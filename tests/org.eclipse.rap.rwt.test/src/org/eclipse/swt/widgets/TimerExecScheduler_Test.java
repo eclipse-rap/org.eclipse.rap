@@ -12,6 +12,7 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -135,7 +136,7 @@ public class TimerExecScheduler_Test {
 
     Thread[] threads = startThreads( 10, runnable );
     for( int i = 0; i < 5; i++ ) {
-      Fixture.serialize( scheduler );
+      serialize( scheduler );
     }
     joinThreads( threads );
 

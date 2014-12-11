@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -791,7 +792,7 @@ public class CCombo_Test {
     combo.add( "1" );
     combo.select( 1 );
 
-    CCombo deserializedCombo = Fixture.serializeAndDeserialize( combo );
+    CCombo deserializedCombo = serializeAndDeserialize( combo );
 
     assertEquals( "1", deserializedCombo.getText() );
     assertEquals( 1, deserializedCombo.getSelectionIndex() );

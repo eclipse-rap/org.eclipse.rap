@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -54,7 +55,7 @@ public class TableEditor_Test {
     tableEditor.setColumn( 1 );
     tableEditor.setItem( item );
 
-    TableEditor deserializedTableEditor = Fixture.serializeAndDeserialize( tableEditor );
+    TableEditor deserializedTableEditor = serializeAndDeserialize( tableEditor );
 
     attachThread( deserializedTableEditor.getItem().getDisplay() );
     assertEquals( 1, deserializedTableEditor.getColumn() );

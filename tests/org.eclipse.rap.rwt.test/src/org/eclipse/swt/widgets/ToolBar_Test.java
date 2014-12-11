@@ -10,6 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -208,8 +209,9 @@ public class ToolBar_Test {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     new ToolItem( toolBar, SWT.PUSH );
 
-    ToolBar deserializedToolBar = Fixture.serializeAndDeserialize( toolBar );
+    ToolBar deserializedToolBar = serializeAndDeserialize( toolBar );
 
     assertEquals( 1, deserializedToolBar.getItemCount() );
   }
+
 }

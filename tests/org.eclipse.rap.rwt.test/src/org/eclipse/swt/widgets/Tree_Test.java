@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1617,7 +1618,7 @@ public class Tree_Test {
     new TreeItem( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
 
-    Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
+    Tree deserializedTree = serializeAndDeserialize( tree );
 
     assertEquals( 1, deserializedTree.getItemCount() );
     assertEquals( 1, deserializedTree.getColumnCount() );
@@ -1629,7 +1630,7 @@ public class Tree_Test {
     new TreeColumn( tree, SWT.NONE );
     int headerHeight = tree.getHeaderHeight();
 
-    Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
+    Tree deserializedTree = serializeAndDeserialize( tree );
 
     assertEquals( headerHeight, deserializedTree.getHeaderHeight() );
   }

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -268,7 +269,7 @@ public class CLabel_Test {
   public void testIsSerializable() throws Exception {
     label.setText( "text" );
 
-    CLabel deserializedLabel = Fixture.serializeAndDeserialize( label );
+    CLabel deserializedLabel = serializeAndDeserialize( label );
 
     assertEquals( "text", deserializedLabel.getText() );
   }

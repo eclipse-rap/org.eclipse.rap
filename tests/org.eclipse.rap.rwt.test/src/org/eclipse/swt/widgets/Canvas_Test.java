@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -100,7 +101,7 @@ public class Canvas_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
+    Canvas deserializedCanvas = serializeAndDeserialize( canvas );
     assertNotNull( deserializedCanvas );
   }
 

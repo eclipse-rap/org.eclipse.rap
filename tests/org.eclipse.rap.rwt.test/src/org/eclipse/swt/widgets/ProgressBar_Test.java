@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
@@ -123,8 +124,9 @@ public class ProgressBar_Test {
     ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
     bar.setSelection( 54 );
 
-    ProgressBar deserializedBar = Fixture.serializeAndDeserialize( bar );
+    ProgressBar deserializedBar = serializeAndDeserialize( bar );
 
     assertEquals( bar.getSelection(), deserializedBar.getSelection() );
   }
+
 }

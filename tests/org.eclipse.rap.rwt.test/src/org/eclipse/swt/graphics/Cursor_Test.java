@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -102,7 +103,7 @@ public class Cursor_Test {
   public void testSerializeSessionCursor() throws Exception {
     Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
 
-    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
+    Cursor deserializedCurosr = serializeAndDeserialize( cursor );
 
     assertEquals( cursor, deserializedCurosr );
     assertFalse( deserializedCurosr.isDisposed() );
@@ -114,7 +115,7 @@ public class Cursor_Test {
   public void testSerializeSystemCursor() throws Exception {
     Cursor cursor = device.getSystemCursor( SWT.CURSOR_CROSS );
 
-    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
+    Cursor deserializedCurosr = serializeAndDeserialize( cursor );
 
     assertEquals( cursor, deserializedCurosr );
     assertFalse( deserializedCurosr.isDisposed() );

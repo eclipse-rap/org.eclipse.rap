@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.SerializationTestUtil;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -119,7 +120,7 @@ public class DisplaySerialization_Test {
   public void testThreadIsNotSerializable() throws Exception {
     getDisplayAdapter( display ).attachThread();
 
-    Display deserializedDisplay = Fixture.serializeAndDeserialize( display );
+    Display deserializedDisplay = SerializationTestUtil.serializeAndDeserialize( display );
 
     assertNull( deserializedDisplay.getThread() );
   }
@@ -250,7 +251,7 @@ public class DisplaySerialization_Test {
   }
 
   private static Display serializeAndDeserialize( Display display ) throws Exception {
-    Display result = Fixture.serializeAndDeserialize( display );
+    Display result = SerializationTestUtil.serializeAndDeserialize( display );
     getDisplayAdapter( result ).attachThread();
     return result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.junit.Test;
 
 
@@ -48,7 +48,7 @@ public class RGB_Test {
   @Test
   public void testSerialization() throws Exception {
     RGB rgb = new RGB( 1, 2, 3 );
-    RGB deserializedRGB = Fixture.serializeAndDeserialize( rgb );
+    RGB deserializedRGB = serializeAndDeserialize( rgb );
     assertEquals( rgb, deserializedRGB );
   }
 

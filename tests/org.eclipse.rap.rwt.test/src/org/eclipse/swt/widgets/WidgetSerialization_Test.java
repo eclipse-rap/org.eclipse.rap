@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -46,7 +47,7 @@ public class WidgetSerialization_Test {
     WidgetAdapterImpl adapter = getWidgetAdapter( widget );
     adapter.setInitialized( true );
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
     WidgetAdapter deserializedAdapter = getWidgetAdapter( deserializedWidget );
 
     assertNotNull( deserializedAdapter );
@@ -59,7 +60,7 @@ public class WidgetSerialization_Test {
     int style = 1234;
     widget.style = style;
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
 
     assertEquals( style, deserializedWidget.style );
   }
@@ -69,7 +70,7 @@ public class WidgetSerialization_Test {
     int state = 5678;
     widget.state = state;
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
 
     assertEquals( state, deserializedWidget.state );
   }
@@ -82,7 +83,7 @@ public class WidgetSerialization_Test {
     widget.setData( data );
     widget.setData( key, keyedData );
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
 
     assertEquals( data, deserializedWidget.getData() );
     assertEquals( keyedData, deserializedWidget.getData( key ) );
@@ -92,7 +93,7 @@ public class WidgetSerialization_Test {
   public void testListenerIsSerializable() throws Exception {
     widget.addListener( SWT.Dispose, new TestListener() );
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
 
     Listener[] listeners = deserializedWidget.getListeners( SWT.Dispose );
     assertEquals( 1, listeners.length );
@@ -104,7 +105,7 @@ public class WidgetSerialization_Test {
     WidgetAdapterImpl adapter = getWidgetAdapter( widget );
     adapter.preserve( propertyName, "bar" );
 
-    Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
+    Widget deserializedWidget = serializeAndDeserialize( widget );
     WidgetAdapter deserializedAdapter = getWidgetAdapter( deserializedWidget );
 
     assertNull( deserializedAdapter.getPreserved( propertyName ) );

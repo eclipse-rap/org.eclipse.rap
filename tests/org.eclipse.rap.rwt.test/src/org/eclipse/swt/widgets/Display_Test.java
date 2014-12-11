@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1903,7 +1904,7 @@ public class Display_Test {
     Fixture.fakeSetProperty( "w1", "colorDepth", 32 );
     TestDisplay display = new TestDisplay();
 
-    TestDisplay deserializedDisplay = Fixture.serializeAndDeserialize( display );
+    TestDisplay deserializedDisplay = serializeAndDeserialize( display );
 
     Rectangle bounds = deserializedDisplay.getBounds();
     assertEquals( 1, bounds.x );
