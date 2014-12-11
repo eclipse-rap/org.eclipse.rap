@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.serverpush;
 
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -441,7 +442,7 @@ public class ServerPushManager_Test {
         otherSession[ 0 ] = ServerPushManager.getInstance().needsActivation();
       }
     };
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
     assertFalse( otherSession[ 0 ] );
   }
 
@@ -553,7 +554,7 @@ public class ServerPushManager_Test {
         display.asyncExec( new AsyncExecRunnable() );
       }
     };
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
   }
 
   private void simulateAsyncExecDuringLifeCycle() {
@@ -565,7 +566,7 @@ public class ServerPushManager_Test {
           }
         };
         try {
-          Fixture.runInThread( target );
+          runInThread( target );
         } catch( Throwable e ) {
           e.printStackTrace();
         }
@@ -579,7 +580,7 @@ public class ServerPushManager_Test {
         display.wake();
       }
     };
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
   }
 
   private void fakeNewRequest() {

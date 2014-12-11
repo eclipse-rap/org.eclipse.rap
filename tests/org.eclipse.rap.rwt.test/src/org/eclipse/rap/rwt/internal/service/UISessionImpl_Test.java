@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -401,8 +404,7 @@ public class UISessionImpl_Test {
         }
       }
     };
-    Thread[] threads = Fixture.startThreads( 100, runnable );
-    Fixture.joinThreads( threads );
+    joinThreads( startThreads( 100, runnable ) );
     assertNull( exception[ 0 ] );
   }
 
@@ -651,7 +653,7 @@ public class UISessionImpl_Test {
     fakeClient( mock( Client.class ) );
     final AtomicReference<Locale> localeCaptor = new AtomicReference<Locale>();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         localeCaptor.set( uiSession.getLocale() );
       }
@@ -730,7 +732,7 @@ public class UISessionImpl_Test {
     ServiceContext context = ContextProvider.getContext();
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         uiSession.exec( runnable );
       }
@@ -745,7 +747,7 @@ public class UISessionImpl_Test {
     ServiceContext context = ContextProvider.getContext();
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         HttpServletRequest request = mock( HttpServletRequest.class );
         HttpServletResponse response = mock( HttpServletResponse.class );

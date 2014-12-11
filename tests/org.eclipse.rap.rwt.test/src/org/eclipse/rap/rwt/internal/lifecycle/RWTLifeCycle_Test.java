@@ -13,6 +13,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -915,7 +916,7 @@ public class RWTLifeCycle_Test {
         uiSession.getHttpSession().invalidate();
       }
     };
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
   }
 
   private static ServiceContext newContext( UISession uiSession ) {

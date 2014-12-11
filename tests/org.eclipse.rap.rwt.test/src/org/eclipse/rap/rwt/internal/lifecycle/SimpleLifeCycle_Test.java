@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -226,7 +227,7 @@ public class SimpleLifeCycle_Test {
     Display display = new Display();
     lifeCycle.execute();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         uiSession.getHttpSession().invalidate();
       }

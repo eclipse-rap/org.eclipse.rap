@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt;
 
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockApplicationContextWithAttributeStore;
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockUISessionWithAttributeStore;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -168,7 +169,7 @@ public class SingletonUtil_Test {
     Object instance1 = SingletonUtil.getSessionInstance( TestSingleton.class );
     final AtomicReference<Object> instance2 = new AtomicReference<Object>();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         instance2.set( SingletonUtil.getSessionInstance( TestSingleton.class ) );
@@ -183,7 +184,7 @@ public class SingletonUtil_Test {
     final ServiceContext serviceContext = ContextProvider.getContext();
     final Object[] instance = { null };
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         ContextProvider.setContext( serviceContext );
         instance[ 0 ] = SingletonUtil.getSessionInstance( TestSingleton.class );

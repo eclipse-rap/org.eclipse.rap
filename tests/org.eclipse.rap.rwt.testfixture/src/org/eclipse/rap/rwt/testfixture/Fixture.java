@@ -28,9 +28,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -559,47 +556,6 @@ public final class Fixture {
       }
     } finally {
       bis.close();
-    }
-  }
-
-  public static void runInThread( final Runnable runnable ) throws Throwable {
-    final AtomicReference<Throwable> exception = new AtomicReference<Throwable>();
-    Runnable exceptionGuard = new Runnable() {
-      public void run() {
-        try {
-          runnable.run();
-        } catch( Throwable throwable ) {
-          exception.set( throwable );
-        }
-      }
-    };
-    Thread thread = new Thread( exceptionGuard );
-    thread.setDaemon( true );
-    thread.start();
-    thread.join();
-    if( exception.get() != null ) {
-      throw exception.get();
-    }
-  }
-
-  public static Thread[] startThreads( int threadCount, Runnable runnable ) {
-    List<Thread> threads = new ArrayList<Thread>();
-    for( int i = 0; i < threadCount; i++ ) {
-      Thread thread = new Thread( runnable );
-      thread.setDaemon( true );
-      thread.start();
-      threads.add( thread );
-      Thread.yield();
-    }
-    Thread[] result = new Thread[ threads.size() ];
-    threads.toArray( result );
-    return result;
-  }
-
-  public static void joinThreads( Thread[] threads ) throws InterruptedException {
-    for( int i = 0; i < threads.length; i++ ) {
-      Thread thread = threads[ i ];
-      thread.join();
     }
   }
 

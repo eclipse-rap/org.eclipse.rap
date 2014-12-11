@@ -12,6 +12,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -151,8 +153,7 @@ public class PhaseListenerManager_Test {
         succeededThreads.add( Thread.currentThread() );
       }
     };
-    Thread[] threads = Fixture.startThreads( threadCount, runnable );
-    Fixture.joinThreads( threads );
+    joinThreads( startThreads( threadCount, runnable ) );
     assertEquals( threadCount, succeededThreads.size() );
     assertTrue( getPhaseListeners().isEmpty() );
   }

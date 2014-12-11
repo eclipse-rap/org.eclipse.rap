@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -131,11 +133,11 @@ public class TimerExecScheduler_Test {
       }
     };
 
-    Thread[] threads = Fixture.startThreads( 10, runnable );
+    Thread[] threads = startThreads( 10, runnable );
     for( int i = 0; i < 5; i++ ) {
       Fixture.serialize( scheduler );
     }
-    Fixture.joinThreads( threads );
+    joinThreads( threads );
 
     assertEquals( 0, exceptions.size() );
   }

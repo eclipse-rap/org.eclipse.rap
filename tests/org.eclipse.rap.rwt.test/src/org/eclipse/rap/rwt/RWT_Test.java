@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -61,7 +62,7 @@ public class RWT_Test {
       }
     };
     try {
-      Fixture.runInThread( runnable );
+      runInThread( runnable );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "Invalid thread access", exception.getMessage() );
@@ -145,7 +146,7 @@ public class RWT_Test {
     };
 
     try {
-      Fixture.runInThread( runnable );
+      runInThread( runnable );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "Invalid thread access", exception.getMessage() );
@@ -161,7 +162,7 @@ public class RWT_Test {
     };
 
     try {
-      Fixture.runInThread( runnable );
+      runInThread( runnable );
       fail();
     } catch( IllegalStateException exception ) {
       assertEquals( "Invalid thread access", exception.getMessage() );
@@ -189,7 +190,7 @@ public class RWT_Test {
   @Test
   public void testGetApplicationContext_failsInBackgroundThread() throws Throwable {
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           RWT.getApplicationContext();
         }
@@ -206,7 +207,7 @@ public class RWT_Test {
     ApplicationContext applicationContext = RWT.getApplicationContext();
     final UISession currentUISession = RWT.getUISession();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         ContextProvider.getContext().setUISession( currentUISession );
@@ -227,7 +228,7 @@ public class RWT_Test {
   @Test
   public void testGetUISession_failsInBackgroundThread() throws Throwable {
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           RWT.getUISession();
         }
@@ -243,7 +244,7 @@ public class RWT_Test {
     final AtomicReference<UISession> result = new AtomicReference<UISession>();
     final UISession currentUISession = RWT.getUISession();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         ContextProvider.getContext().setUISession( currentUISession );
@@ -278,7 +279,7 @@ public class RWT_Test {
     final AtomicReference<UISession> result = new AtomicReference<UISession>();
     final Display display = new Display();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         result.set( RWT.getUISession( display ) );
       }

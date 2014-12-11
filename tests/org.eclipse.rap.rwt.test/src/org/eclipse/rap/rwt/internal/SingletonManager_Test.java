@@ -11,6 +11,9 @@
 package org.eclipse.rap.rwt.internal;
 
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.fakeAttributeStore;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -185,8 +188,7 @@ public class SingletonManager_Test {
       }
     };
 
-    Thread[] threads = Fixture.startThreads( 50, runnable );
-    Fixture.joinThreads( threads );
+    joinThreads( startThreads( 50, runnable ) );
 
     assertNull( problem.get() );
     assertEquals( 2, instances.size() );
@@ -241,7 +243,7 @@ public class SingletonManager_Test {
           SingletonManager.getInstance( currentUISession ).getSingleton( TestSingleton.class );
         }
       };
-      Fixture.runInThread( runnable );
+      runInThread( runnable );
     }
   }
 

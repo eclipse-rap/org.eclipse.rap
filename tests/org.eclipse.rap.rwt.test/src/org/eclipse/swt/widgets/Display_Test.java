@@ -13,6 +13,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -167,7 +168,7 @@ public class Display_Test {
     final Display display = new Display();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         resultCaptor.set( Display.getCurrent() );
       }
@@ -181,7 +182,7 @@ public class Display_Test {
     final Display display = new Display();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         RWT.getUISession( display ).exec( new Runnable() {
           public void run() {
@@ -235,7 +236,7 @@ public class Display_Test {
       }
     };
 
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
 
     assertNull( resultCaptor.get() );
   }
@@ -249,7 +250,7 @@ public class Display_Test {
       }
     };
 
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
 
     assertNull( backgroundDisplay[ 0 ] ) ;
   }
@@ -268,7 +269,7 @@ public class Display_Test {
       }
     };
 
-    Fixture.runInThread( runnable );
+    runInThread( runnable );
 
     assertSame( display, backgroundDisplay[ 0 ] );
   }
@@ -300,7 +301,7 @@ public class Display_Test {
     final Display display = new Display();
     final AtomicReference<Thread> resultCaptor = new AtomicReference<Thread>();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         resultCaptor.set( display.getThread() );
       }
@@ -1100,7 +1101,7 @@ public class Display_Test {
   public void testTimerExec_failsFromBackgroundThread() throws Throwable {
     final Display display = new Display();
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           display.timerExec( 1, mock( Runnable.class ) );
         }
@@ -1298,7 +1299,7 @@ public class Display_Test {
   public void testCheckDevice() throws Throwable {
     final Display display = new Display();
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           // access some method that calls checkDevice()
           display.getShells();
@@ -1562,7 +1563,7 @@ public class Display_Test {
     final Thread uiThread = Thread.currentThread();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         resultCaptor.set( Display.findDisplay( uiThread ) );

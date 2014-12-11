@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.service;
 
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +43,7 @@ public class ServerPushSession_Test {
   @Test
   public void testCreate_failsFromBackgroundThread() throws Throwable {
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           new ServerPushSession();
         }
@@ -58,7 +59,7 @@ public class ServerPushSession_Test {
     final ServerPushSession pushSession = new ServerPushSession();
 
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           pushSession.start();
         }
@@ -75,7 +76,7 @@ public class ServerPushSession_Test {
     final ServerPushSession pushSession = new ServerPushSession();
 
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           uiSession.exec( new Runnable() {
             public void run() {
@@ -95,7 +96,7 @@ public class ServerPushSession_Test {
     final ServerPushSession pushSession = new ServerPushSession();
 
     try {
-      Fixture.runInThread( new Runnable() {
+      runInThread( new Runnable() {
         public void run() {
           Fixture.createServiceContext();
           Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -140,7 +141,7 @@ public class ServerPushSession_Test {
     final ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         pushSession.stop();
       }
@@ -155,7 +156,7 @@ public class ServerPushSession_Test {
     final ServerPushSession pushSession = new ServerPushSession();
     pushSession.start();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         uiSession.exec( new Runnable() {
           public void run() {

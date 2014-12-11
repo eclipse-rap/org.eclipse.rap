@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -126,7 +127,7 @@ public class Widget_Test {
       }
     };
     try {
-      Fixture.runInThread( target );
+      runInThread( target );
       fail( "Illegal thread access expected." );
     } catch( SWTException swte ) {
       assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swte.code );
@@ -260,7 +261,7 @@ public class Widget_Test {
 
   @Test( expected = SWTException.class )
   public void testDispose_failsOnIllegalThread() throws Throwable {
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         widget.dispose();
       }
@@ -813,7 +814,7 @@ public class Widget_Test {
   public void testGetDisplay_worksFromNonUIThread() throws Throwable {
     final AtomicReference<Display> displayCaptor = new AtomicReference<Display>();
 
-    Fixture.runInThread( new Runnable() {
+    runInThread( new Runnable() {
       public void run() {
         displayCaptor.set( widget.getDisplay() );
       }

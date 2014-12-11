@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
+import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -222,7 +223,7 @@ public class RemoteObjectImpl_Test {
 
   private static void runInBackgroundThread( Runnable runnable ) {
     try {
-      Fixture.runInThread( runnable );
+      runInThread( runnable );
     } catch( RuntimeException exception ) {
       throw exception;
     } catch( Throwable exception ) {
