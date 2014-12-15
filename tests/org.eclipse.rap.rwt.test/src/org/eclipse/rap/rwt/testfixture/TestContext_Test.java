@@ -17,7 +17,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.swt.SWT;
@@ -104,8 +108,39 @@ public class TestContext_Test {
   public void testResourceManager() {
     ResourceManager resourceManager = context.getApplicationContext().getResourceManager();
 
-    assertNotNull( resourceManager );
     assertTrue( resourceManager instanceof TestResourceManager );
+  }
+
+  public void testClientIsAvailable() {
+    assertTrue( RWT.getClient() instanceof WebClient );
+  }
+
+  @Test
+  public void testRequest_isAvailable() {
+    assertTrue( RWT.getRequest() instanceof TestRequest );
+  }
+
+  @Test
+  public void testRequest_hasHttpSession() {
+    HttpServletRequest request = RWT.getRequest();
+
+    assertNotNull( request.getSession() );
+    assertTrue( request.getSession() instanceof TestSession );
+    assertSame( context.getUISession().getHttpSession(), request.getSession() );
+  }
+
+  @Test
+  public void testRequest_hasCorrectParametersSet() {
+    HttpServletRequest request = RWT.getRequest();
+
+    assertEquals( HTTP.METHOD_POST, request.getMethod() );
+    assertEquals( HTTP.CONTENT_TYPE_JSON, request.getContentType() );
+    assertTrue( request.getContentLength() > 0 );
+  }
+
+  @Test
+  public void testResponse_isAvailable() {
+    assertTrue( RWT.getResponse() instanceof TestResponse );
   }
 
 }
