@@ -88,10 +88,12 @@ public class TestContext implements TestRule {
   }
 
   private void tearDown() {
-    uiSession = null;
-    applicationContext = null;
-    ContextProvider.disposeContext();
     ThemeManagerHelper.resetThemeManagerIfNeeded();
+    ContextProvider.disposeContext();
+    applicationContext.deactivate();
+    applicationContext.removeFromServletContext();
+    applicationContext = null;
+    uiSession = null;
   }
 
   private static ApplicationConfiguration createApplicationConfiguration() {
