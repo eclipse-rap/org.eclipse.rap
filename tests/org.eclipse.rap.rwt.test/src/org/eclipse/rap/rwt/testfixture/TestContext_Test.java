@@ -10,12 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.testfixture.TestContext;
+import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,13 +52,13 @@ public class TestContext_Test {
     assertNotNull( context.getUISession() );
   }
 
-  @Test()
+  @Test
   public void testStoresAreAvailable() {
     assertSame( RWT.getApplicationContext(), context.getApplicationContext() );
     assertSame( RWT.getUISession(), context.getUISession() );
   }
 
-  @Test()
+  @Test
   public void testStoresAreAccessible() {
     assertEquals( "bar", context.getApplicationContext().getAttribute( "foo" ) );
     assertEquals( "bar", context.getUISession().getAttribute( "foo" ) );
@@ -70,7 +74,7 @@ public class TestContext_Test {
     assertTrue( shell.isVisible() );
   }
 
-  @Test()
+  @Test
   public void testListenersAreNotified() {
     Listener listener = mock( Listener.class );
     Event event = new Event();
@@ -83,7 +87,7 @@ public class TestContext_Test {
     verify( listener ).handleEvent( event );
   }
 
-  @Test()
+  @Test
   public void testLayoutCanBePerformed() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -94,6 +98,14 @@ public class TestContext_Test {
     shell.layout();
 
     assertTrue( button.getSize().x > 0 );
+  }
+
+  @Test
+  public void testResourceManager() {
+    ResourceManager resourceManager = context.getApplicationContext().getResourceManager();
+
+    assertNotNull( resourceManager );
+    assertTrue( resourceManager instanceof TestResourceManager );
   }
 
 }
