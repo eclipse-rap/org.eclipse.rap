@@ -39,7 +39,7 @@ public class Transfer_Test {
 
   @Before
   public void setUp() {
-    Fixture.createApplicationContext();
+    Fixture.createApplicationContext( true );
     Fixture.createServiceContext();
     display = new Display();
   }
@@ -109,7 +109,6 @@ public class Transfer_Test {
 
   @Test
   public void testImageTransferConversion() throws IOException {
-    Fixture.useDefaultResourceManager();
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
     Image image = createImage( display, Fixture.IMAGE1 );

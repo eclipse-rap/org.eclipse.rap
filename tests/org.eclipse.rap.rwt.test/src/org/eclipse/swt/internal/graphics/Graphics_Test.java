@@ -39,9 +39,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.internal.graphics.Graphics;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -52,6 +49,19 @@ import org.junit.Test;
 public class Graphics_Test {
 
   private Display display;
+
+  @Before
+  public void setUp() {
+    Fixture.createApplicationContext( true );
+    Fixture.createServiceContext();
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+  }
 
   @Test
   public void testGetColorWithNullArgument() {
@@ -124,7 +134,6 @@ public class Graphics_Test {
 
   @Test
   public void testGetImage() {
-    Fixture.useDefaultResourceManager();
     ResourceManager resourceManager = RWT.getResourceManager();
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
@@ -297,19 +306,6 @@ public class Graphics_Test {
     assertTrue( exception[ 0 ] instanceof SWTException );
     SWTException swtException = ( SWTException )exception[ 0 ];
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
-  }
-
-  @Before
-  public void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    display = new Display();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfApplicationContext();
   }
 
   private static String getRegisterPath( Image image ) {

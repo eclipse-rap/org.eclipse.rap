@@ -55,8 +55,7 @@ public class StartupJson_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.useDefaultResourceManager();
+    Fixture.setUp( true );
     applicationContext = getApplicationContext();
     clientResources = new ClientResources( applicationContext );
   }

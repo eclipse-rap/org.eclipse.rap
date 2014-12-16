@@ -45,9 +45,8 @@ public class ImageSerialzation_Test {
 
   @Before
   public void setUp() {
-    Fixture.createApplicationContext();
+    Fixture.createApplicationContext( true );
     Fixture.createServiceContext();
-    Fixture.useDefaultResourceManager();
     display = new Display();
   }
 

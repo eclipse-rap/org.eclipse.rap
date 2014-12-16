@@ -16,11 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.resources.ClientResources;
-import org.eclipse.rap.rwt.internal.resources.TestUtil;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceManager;
@@ -39,8 +38,7 @@ public class ClientResources_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.useDefaultResourceManager();
+    Fixture.setUp( true );
     applicationContext = getApplicationContext();
     resourceManager = applicationContext.getResourceManager();
     themeManager = applicationContext.getThemeManager();

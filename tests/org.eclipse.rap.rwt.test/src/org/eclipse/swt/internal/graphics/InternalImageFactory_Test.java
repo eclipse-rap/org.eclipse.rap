@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ public class InternalImageFactory_Test {
 
   @Before
   public void setUp() {
-    Fixture.createApplicationContext();
+    Fixture.createApplicationContext( true );
     Fixture.createServiceContext();
     internalImageFactory = new InternalImageFactory();
   }
@@ -114,7 +114,6 @@ public class InternalImageFactory_Test {
   @Test
   public void testInternalImagesFromImageDataAreCached() throws IOException {
     Display display = new Display();
-    Fixture.useDefaultResourceManager();
     Image image = createImage( display, Fixture.IMAGE_100x50 );
     ImageData imageData1 = image.getImageData();
     ImageData imageData2 = image.getImageData();

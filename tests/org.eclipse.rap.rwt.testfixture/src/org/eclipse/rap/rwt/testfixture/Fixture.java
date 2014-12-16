@@ -113,7 +113,6 @@ public final class Fixture {
 
   public static ServletContext createServletContext() {
     servletContext = new TestServletContext();
-    Fixture.useTestResourceManager();
     return servletContext;
   }
 
@@ -134,6 +133,10 @@ public final class Fixture {
   // Methods to control ApplicationContext
 
   public static void createApplicationContext() {
+    createApplicationContext( false );
+  }
+
+  public static void createApplicationContext( final boolean useDefaultResourceManager ) {
     ensureServletContext();
     createWebContextDirectory();
     ApplicationConfiguration config = new FixtureApplicationConfiguration();
@@ -144,6 +147,13 @@ public final class Fixture {
         @Override
         protected ThemeManager createThemeManager() {
           return ThemeManagerHelper.ensureThemeManager();
+        }
+        @Override
+        protected ResourceManager createResourceManager() {
+          if( useDefaultResourceManager ) {
+            return super.createResourceManager();
+          }
+          return new TestResourceManager();
         }
       };
       applicationContext.attachToServletContext();
@@ -216,25 +226,19 @@ public final class Fixture {
   // general setup and tear down
 
   public static void setUp() {
-    useTestResourceManager();
-    createApplicationContext();
+    setUp( false );
+  }
+
+  public static void setUp( boolean useDefaultResourceManager ) {
+    createApplicationContext( useDefaultResourceManager );
     createServiceContext();
     fakeClient( new WebClient() );
-  }
-
-  public static void useDefaultResourceManager() {
-    ApplicationContextHelper.fakeResourceManager( null );
-  }
-
-  private static void useTestResourceManager() {
-    ApplicationContextHelper.fakeResourceManager( new TestResourceManager() );
   }
 
   public static void tearDown() {
     disposeOfServiceContext();
     disposeOfApplicationContext();
     disposeOfServletContext();
-    useDefaultResourceManager();
   }
 
 
@@ -463,10 +467,6 @@ public final class Fixture {
     if( ProtocolUtil.isClientMessageProcessed() ) {
       throw new IllegalStateException( "Client message is already processed" );
     }
-  }
-
-  public static void fakeResourceManager( ResourceManager resourceManager ) {
-    ApplicationContextHelper.fakeResourceManager( resourceManager );
   }
 
   public static void fakeResponseWriter() {

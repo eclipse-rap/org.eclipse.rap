@@ -54,9 +54,8 @@ public class DisplaySerialization_Test {
   @Before
   public void setUp() {
     SerializableRunnable.wasInvoked = false;
-    Fixture.createApplicationContext();
+    Fixture.createApplicationContext( true );
     Fixture.createServiceContext();
-    Fixture.useDefaultResourceManager();
     applicationContext = getApplicationContext();
     applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

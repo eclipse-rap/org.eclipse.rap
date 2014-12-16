@@ -67,11 +67,6 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContextImpl.class.getName() + "#instance";
 
-  // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
-  //                Think about a less intrusive solution.
-  // [rst] made public to allow access from testfixture in OSGi (bug 391510)
-  public static ResourceManager testResourceManager;
-
   // TODO [fappel]: this flag is used to skip resource registration. Think about
   //                a less intrusive solution.
   // [rst] made public to allow access from testfixture in OSGi (bug 391510)
@@ -85,7 +80,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ThemeManager themeManager;
   private final ApplicationConfiguration applicationConfiguration;
   private final ResourceDirectory resourceDirectory;
-  private final ResourceManagerImpl resourceManager;
+  private final ResourceManager resourceManager;
   private final PhaseListenerManager phaseListenerManager;
   private final LifeCycleFactory lifeCycleFactory;
   private final MessageChainReference messageChainReference;
@@ -118,7 +113,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     this.servletContext = servletContext;
     applicationStore = new ApplicationStoreImpl();
     resourceDirectory = new ResourceDirectory();
-    resourceManager = new ResourceManagerImpl( resourceDirectory );
+    resourceManager = createResourceManager();
     phaseListenerManager = new PhaseListenerManager();
     entryPointManager = new EntryPointManager();
     lifeCycleFactory = new LifeCycleFactory( this );
@@ -146,6 +141,10 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   protected ThemeManager createThemeManager() {
     return new ThemeManager();
+  }
+
+  protected ResourceManager createResourceManager() {
+    return new ResourceManagerImpl( resourceDirectory );
   }
 
   public static ApplicationContextImpl getFrom( ServletContext servletContext ) {
@@ -238,7 +237,7 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   public ResourceManager getResourceManager() {
-    return testResourceManager != null ? testResourceManager : resourceManager;
+    return resourceManager;
   }
 
   public EntryPointManager getEntryPointManager() {

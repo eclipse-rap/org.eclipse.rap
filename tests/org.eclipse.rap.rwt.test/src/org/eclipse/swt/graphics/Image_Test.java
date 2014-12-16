@@ -41,7 +41,7 @@ public class Image_Test {
 
   @Before
   public void setUp() {
-    Fixture.createApplicationContext();
+    Fixture.createApplicationContext( true );
     Fixture.createServiceContext();
     device = new Display();
   }
@@ -203,7 +203,6 @@ public class Image_Test {
 
   @Test
   public void testImageConstructor_withDisableFlag() throws IOException {
-    Fixture.useDefaultResourceManager();
     Image image = createImage( device, Fixture.IMAGE1 );
 
     Image disabledImage = new Image( device, image, SWT.IMAGE_DISABLE );
@@ -214,7 +213,6 @@ public class Image_Test {
 
   @Test
   public void testImageConstructor_withGrayFlag() throws IOException {
-    Fixture.useDefaultResourceManager();
     Image image = createImage( device, Fixture.IMAGE1 );
 
     Image greyedImage = new Image( device, image, SWT.IMAGE_DISABLE );
@@ -265,7 +263,6 @@ public class Image_Test {
 
   @Test
   public void testWidthHeightConstructor() {
-    Fixture.useDefaultResourceManager();
     Image image = new Image( device, 1, 1 );
     ImageData imageData = image.getImageData();
     RGB[] rgbs = imageData.getRGBs();
@@ -328,7 +325,6 @@ public class Image_Test {
 
   @Test
   public void testGetImageData() throws IOException {
-    Fixture.useDefaultResourceManager();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
