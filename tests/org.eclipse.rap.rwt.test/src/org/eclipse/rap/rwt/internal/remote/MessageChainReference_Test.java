@@ -20,8 +20,8 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
-import org.eclipse.rap.rwt.testfixture.TestMessage;
-import org.eclipse.rap.rwt.testfixture.TestResponseMessage;
+import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
+import org.eclipse.rap.rwt.testfixture.internal.TestResponseMessage;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;

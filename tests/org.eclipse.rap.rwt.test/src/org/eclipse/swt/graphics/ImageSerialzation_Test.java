@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -28,8 +28,8 @@ import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.TestSession;
 import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;

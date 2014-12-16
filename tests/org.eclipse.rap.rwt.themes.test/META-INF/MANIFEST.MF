@@ -10,5 +10,6 @@ Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.rap.rwt.themes.test;x-internal:=true,
  org.eclipse.rap.rwt.themes.test.business;x-internal:=true
 Import-Package: org.eclipse.rap.rwt.testfixture;version="[3.0.0,4.0.0)",
+ org.eclipse.rap.rwt.testfixture.internal;version="3.0.0",
  org.eclipse.rap.rwt.testfixture.internal.engine;version="[3.0.0,4.0.0)",
  org.junit;version="4.8.2"

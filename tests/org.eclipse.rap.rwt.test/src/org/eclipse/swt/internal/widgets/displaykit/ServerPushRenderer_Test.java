@@ -16,8 +16,8 @@ import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;

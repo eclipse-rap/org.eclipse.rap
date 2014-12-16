@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestSession;
 import org.junit.Before;
 import org.junit.Test;
 

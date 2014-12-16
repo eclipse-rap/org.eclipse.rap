@@ -18,8 +18,8 @@ import static org.junit.Assert.assertNull;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestMessage;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

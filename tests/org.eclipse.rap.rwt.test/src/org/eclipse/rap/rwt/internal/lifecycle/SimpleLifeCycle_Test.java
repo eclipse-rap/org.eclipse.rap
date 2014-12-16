@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -32,9 +32,9 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
+import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;

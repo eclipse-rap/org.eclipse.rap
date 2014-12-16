@@ -25,8 +25,8 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

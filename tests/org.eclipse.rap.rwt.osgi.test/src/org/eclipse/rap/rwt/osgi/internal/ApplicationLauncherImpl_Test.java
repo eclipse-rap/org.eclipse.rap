@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rap.rwt.application.*;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
-import org.eclipse.rap.rwt.testfixture.FileUtil;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.FileUtil;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

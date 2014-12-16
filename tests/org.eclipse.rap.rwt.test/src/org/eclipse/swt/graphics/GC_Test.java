@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.NotSerializableException;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Control;

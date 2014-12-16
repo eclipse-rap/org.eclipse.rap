@@ -23,7 +23,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rap.rwt.testfixture;
+package org.eclipse.rap.rwt.testfixture.internal;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
@@ -64,7 +64,6 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;

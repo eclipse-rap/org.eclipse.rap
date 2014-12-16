@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.remote;
 
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.remote.OperationHandler;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

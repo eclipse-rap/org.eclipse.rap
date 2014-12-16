@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;

@@ -38,7 +38,7 @@ import org.eclipse.rap.rwt.internal.theme.CssFont;
 import org.eclipse.rap.rwt.internal.theme.CssIdentifier;
 import org.eclipse.rap.rwt.internal.theme.CssImage;
 import org.eclipse.rap.rwt.internal.theme.CssShadow;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.css.sac.CSSException;

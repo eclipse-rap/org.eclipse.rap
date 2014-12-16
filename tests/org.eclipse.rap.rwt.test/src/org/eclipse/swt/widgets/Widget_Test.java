@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +39,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtilAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.scripting.ClientListener;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;

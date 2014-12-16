@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.internal.theme.css.StylePropertyMap;
 import org.eclipse.rap.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rap.rwt.service.ResourceLoader;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.css.sac.Selector;

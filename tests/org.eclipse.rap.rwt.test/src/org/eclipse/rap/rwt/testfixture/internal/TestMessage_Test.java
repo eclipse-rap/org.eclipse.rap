@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.testfixture;
+package org.eclipse.rap.rwt.testfixture.internal;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.junit.Before;
 import org.junit.Test;
 

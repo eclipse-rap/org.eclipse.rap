@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt;
 
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockApplicationContextWithAttributeStore;
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.mockUISessionWithAttributeStore;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

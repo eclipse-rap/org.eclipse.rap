@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;

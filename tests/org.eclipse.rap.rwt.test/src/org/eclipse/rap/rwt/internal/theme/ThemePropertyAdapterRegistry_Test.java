@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.Dimension
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.DirectPropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ImagePropertyAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

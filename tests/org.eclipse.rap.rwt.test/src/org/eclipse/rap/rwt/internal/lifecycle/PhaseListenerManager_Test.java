@@ -12,8 +12,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.startThreads;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -29,10 +29,10 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestLogger;
-import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
+import org.eclipse.rap.rwt.testfixture.internal.TestLogger;
+import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;

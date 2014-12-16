@@ -11,8 +11,8 @@
 package org.eclipse.rap.rwt.internal.protocol;
 
 import static java.util.Arrays.asList;
-import static org.eclipse.rap.rwt.testfixture.TestMessage.getParent;
-import static org.eclipse.rap.rwt.testfixture.TestMessage.getStyles;
+import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
+import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.ListenOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;

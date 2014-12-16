@@ -13,7 +13,7 @@ package org.eclipse.swt.custom;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.events.EventTestHelper;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;

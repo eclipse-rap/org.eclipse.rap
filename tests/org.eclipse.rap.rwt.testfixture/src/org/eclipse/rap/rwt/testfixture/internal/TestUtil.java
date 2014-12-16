@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.testfixture.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 

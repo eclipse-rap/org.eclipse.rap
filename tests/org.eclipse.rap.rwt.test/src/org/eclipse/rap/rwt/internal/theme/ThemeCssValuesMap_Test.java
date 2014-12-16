@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.widgets.Button;
 import org.junit.After;
 import org.junit.Before;

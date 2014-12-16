@@ -11,11 +11,11 @@
 package org.eclipse.rap.rwt.internal;
 
 import static org.eclipse.rap.rwt.test.util.AttributeStoreTestUtil.fakeAttributeStore;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.runInThread;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serializeAndDeserialize;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;

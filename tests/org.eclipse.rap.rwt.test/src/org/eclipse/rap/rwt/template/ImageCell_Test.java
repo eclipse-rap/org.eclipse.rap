@@ -17,7 +17,7 @@ import static org.junit.Assert.assertSame;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.template.ImageCell.ScaleMode;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;

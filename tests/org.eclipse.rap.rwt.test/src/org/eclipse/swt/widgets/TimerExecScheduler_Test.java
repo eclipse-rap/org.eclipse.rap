@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.joinThreads;
-import static org.eclipse.rap.rwt.testfixture.ConcurrencyTestUtil.startThreads;
-import static org.eclipse.rap.rwt.testfixture.SerializationTestUtil.serialize;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.joinThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.startThreads;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.junit.After;
 import org.junit.Before;

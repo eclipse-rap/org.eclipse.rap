@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.service.ApplicationContext;
-import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestContext;
+import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
