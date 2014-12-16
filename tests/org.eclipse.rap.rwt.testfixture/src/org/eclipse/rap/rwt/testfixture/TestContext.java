@@ -50,11 +50,15 @@ import org.junit.runners.model.Statement;
 
 
 /**
- * JUnit rule for unit tests that need access to a RAP context including UISession and
- * ApplicationContext. To use this rule, add this line to a test case:
+ * JUnit rule that sets up a RAP context including UISession and ApplicationContext for test cases.
+ * Every test method will run in an isolated test context. The running thread will be marked as
+ * UIThread for the execution of a test method.
+ * <p>
+ * To use this rule, add the following line to a test case.
+ * </p>
  *
  * <pre>
- * @Rule
+ * &#064;Rule
  * public TestContext context = new TestContext();
  * </pre>
  *
@@ -80,10 +84,22 @@ public class TestContext implements TestRule {
     };
   }
 
+  /**
+   * Returns the UISession that is part of this test context. Within the running thread, this is
+   * equivalent to <code>RWT.getUISession()</code>.
+   *
+   * @return the UISession of this test context
+   */
   public UISession getUISession() {
     return uiSession;
   }
 
+  /**
+   * Returns the ApplicationContext that is part of this test context. Within the running thread,
+   * this is equivalent to <code>RWT.getApplicationContext()</code>.
+   *
+   * @return the ApplicationContext of this test context
+   */
   public ApplicationContext getApplicationContext() {
     return applicationContext;
   }
