@@ -151,6 +151,9 @@ public class TestResponse implements HttpServletResponse {
   public void setContentLength( int arg0 ) {
   }
 
+  public void setContentLengthLong( long len ) {
+  }
+
   public void setContentType( String contentType ) {
     this.contentType = contentType;
     setHeader( "Content-Type", contentType );
@@ -226,4 +229,5 @@ public class TestResponse implements HttpServletResponse {
   public Collection<String> getHeaderNames() {
     return null;
   }
+
 }

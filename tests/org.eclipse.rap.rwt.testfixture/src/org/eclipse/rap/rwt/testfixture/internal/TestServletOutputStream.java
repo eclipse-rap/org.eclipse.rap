@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 
 /**
@@ -26,6 +27,7 @@ public class TestServletOutputStream extends ServletOutputStream {
 
   private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+  @Override
   public void write( int bytes ) throws IOException {
     stream.write( bytes );
   }
@@ -33,4 +35,14 @@ public class TestServletOutputStream extends ServletOutputStream {
   public ByteArrayOutputStream getContent() {
     return stream;
   }
+
+  @Override
+  public boolean isReady() {
+    return true;
+  }
+
+  @Override
+  public void setWriteListener( WriteListener writeListener ) {
+  }
+
 }

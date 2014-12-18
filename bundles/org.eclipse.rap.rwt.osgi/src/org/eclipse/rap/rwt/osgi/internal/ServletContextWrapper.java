@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2014 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ class ServletContextWrapper implements ServletContext {
     this.servletContext = servletContext;
     this.attributes = new HashMap<String, Object>();
     this.attributes.put( ApplicationConfiguration.RESOURCE_ROOT_LOCATION, contextDirectory );
-    
+
   }
 
   public ServletContext getContext( String uripath ) {
@@ -187,6 +187,10 @@ class ServletContextWrapper implements ServletContext {
     return servletContext.getServletContextName();
   }
 
+  public String getVirtualServerName() {
+    return null;
+  }
+
   public int getEffectiveMajorVersion() {
     return 0;
   }
@@ -287,4 +291,5 @@ class ServletContextWrapper implements ServletContext {
 
   public void declareRoles( String... roleNames ) {
   }
+
 }

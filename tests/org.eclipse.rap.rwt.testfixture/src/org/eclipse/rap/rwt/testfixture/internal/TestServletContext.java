@@ -184,6 +184,10 @@ public class TestServletContext implements ServletContext {
     this.servletContextName = servletContextName;
   }
 
+  public String getVirtualServerName() {
+    return null;
+  }
+
   public String getContextPath() {
     return null;
   }
@@ -288,4 +292,5 @@ public class TestServletContext implements ServletContext {
 
   public void declareRoles( String... roleNames ) {
   }
+
 }

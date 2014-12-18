@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+@SuppressWarnings( "restriction" )
 public class ServletContextWrapper_Test {
   private static final String CONTEXT_DIRECTORY = "contextDirectory";
 
@@ -295,7 +296,8 @@ public class ServletContextWrapper_Test {
 
   public void getContextDirectory() {
     Object found = wrapper.getAttribute( ApplicationConfiguration.RESOURCE_ROOT_LOCATION );
-  
+
     assertSame( CONTEXT_DIRECTORY, found );
   }
+
 }

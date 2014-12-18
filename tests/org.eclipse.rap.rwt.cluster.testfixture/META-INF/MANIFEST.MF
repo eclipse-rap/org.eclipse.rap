@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.testfixture
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: javax.servlet;version="[2.6.0,4.0.0)",
- javax.servlet.http;version="[2.6.0,4.0.0)",
+Import-Package: javax.servlet;version="[2.6.0,3.2.0)",
+ javax.servlet.http;version="[2.6.0,3.2.0)",
  org.apache.catalina;version="[7.0.0,8.0.0)",
  org.apache.catalina.connector;version="[7.0.0,8.0.0)",
  org.apache.catalina.core;version="[7.0.0,8.0.0)",
