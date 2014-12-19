@@ -55,12 +55,10 @@
     <module>tests/org.eclipse.rap.rwt.themes.test</module>
     <module>tests/org.eclipse.rap.ui.forms.test</module>
     <!-- Packaging projects -->
-    <module>features/org.eclipse.rap.equinox.mars.target.feature</module>
     <module>features/org.eclipse.rap.equinox.target.feature</module>
     <module>features/org.eclipse.rap.examples.feature</module>
     <module>features/org.eclipse.rap.feature</module>
     <module>features/org.eclipse.rap.sdk.feature</module>
-    <module>releng/org.eclipse.rap.build/repository.luna</module>
     <module>releng/org.eclipse.rap.build/repository.mars</module>
     <!-- Builder projects -->
     <module>releng/org.eclipse.rap.clientbuilder</module>

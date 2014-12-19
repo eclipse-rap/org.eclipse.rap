@@ -38,7 +38,7 @@
   </feature>
 
   <feature url="http://eclipse.org/rap"
-      id="org.eclipse.rap.equinox.mars.target.feature"
+      id="org.eclipse.rap.equinox.target.feature"
       version="3.0.0.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
