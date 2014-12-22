@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -33,7 +34,7 @@ class JettyController {
   static {
     Log.setLog( new ServletEngineLogger() );
   }
-  
+
   private final ISessionManagerProvider sessionManagerProvider;
   private final int port;
   private Server server;
@@ -49,14 +50,15 @@ class JettyController {
     ensureServer();
     server.start();
   }
-  
+
   void stop( int timeout ) throws Exception {
     ensureServer();
-    server.setGracefulShutdown( timeout );
+    // Jetty 9 doesn't like 0 timeout
+    server.setStopTimeout( Math.max( 10, timeout ) );
     server.stop();
     cleanUp();
   }
-  
+
   ServletContextHandler createServletContext( String path ) {
     ensureServer();
     ServletContextHandler result = new ServletContextHandler( getHandlerContainer(), path );
@@ -73,9 +75,9 @@ class JettyController {
 
   int getPort() {
     ensureServer();
-    return server.getConnectors()[ 0 ].getLocalPort();
+    return ( ( ServerConnector )server.getConnectors()[ 0 ] ).getLocalPort();
   }
-  
+
   private void ensureServer() {
     if( server == null ) {
       createServer();
@@ -86,10 +88,11 @@ class JettyController {
 
   private void createServer() {
     server = new Server( port );
-    server.setGracefulShutdown( 2000 );
+    server.setStopTimeout( 2000 );
+    server.setStopAtShutdown( true );
     server.setHandler( new ContextHandlerCollection() );
   }
-  
+
   private void createSessionManager() {
     sessionManager = sessionManagerProvider.createSessionManager( server );
     SessionIdManager sessionIdManager = sessionManagerProvider.createSessionIdManager( server );

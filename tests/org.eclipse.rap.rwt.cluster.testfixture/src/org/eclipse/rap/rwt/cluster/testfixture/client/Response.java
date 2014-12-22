@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,13 +55,15 @@ public class Response {
 
   public boolean isValidJsonResponse() {
     return responseCode == 200
-           && "application/json;charset=UTF-8".equals( contentType )
+           && contentType.startsWith( "application/json" )
+           && contentType.endsWith( "charset=UTF-8" )
            && getContentText().trim().startsWith( "{" );
   }
 
   public boolean isValidStartupPage() {
     return responseCode == 200
-           && "text/html;charset=UTF-8".equals( contentType )
+           && contentType.startsWith( "text/html" )
+           && contentType.endsWith( "charset=UTF-8" )
            && getContentText().startsWith( HTML_PROLOGUE );
   }
 

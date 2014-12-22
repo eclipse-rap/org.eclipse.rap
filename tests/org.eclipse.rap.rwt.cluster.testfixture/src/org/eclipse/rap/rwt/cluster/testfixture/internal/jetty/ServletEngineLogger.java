@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ class ServletEngineLogger implements Logger {
   ServletEngineLogger() {
     this( ServletEngineLogger.class.getName(), false );
   }
-  
+
   ServletEngineLogger( String name, boolean debugEnabled ) {
     this.name = name;
     this.debugEnabled = debugEnabled;
@@ -81,6 +81,10 @@ class ServletEngineLogger implements Logger {
     debug( null, throwable );
   }
 
+  public void debug( String msg, long value ) {
+    debug( msg, ( Throwable )null );
+  }
+
   public void debug( String msg, Throwable throwable ) {
     if( debugEnabled ) {
       if( msg != null ) {
@@ -94,4 +98,5 @@ class ServletEngineLogger implements Logger {
 
   public void ignore( Throwable ignored ) {
   }
+
 }
