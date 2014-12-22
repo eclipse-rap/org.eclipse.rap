@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,6 +192,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
     testRenderMnemonicChar : function() {
       var expected = "Pu<span style=\"text-decoration:underline\">s</span>h";
       assertEquals( expected, EncodingUtil.escapeText( "Push", 2 ) );
+    },
+
+    testRemoveAmpersandControlCharacters_singleMnemonics : function() {
+      assertEquals( "foobar", EncodingUtil.removeAmpersandControlCharacters( "foo&bar" ) );
+    },
+
+    testRemoveAmpersandControlCharacters_multipleMnemonics : function() {
+      assertEquals( "foobar", EncodingUtil.removeAmpersandControlCharacters( "foo&ba&r" ) );
+    },
+
+    testRemoveAmpersandControlCharacters_doubleAmpersands : function() {
+      assertEquals( "foo&bar", EncodingUtil.removeAmpersandControlCharacters( "foo&&bar" ) );
+    },
+
+    testRemoveAmpersandControlCharacters_sequentialAmpersands : function() {
+      assertEquals( "foo&&bar", EncodingUtil.removeAmpersandControlCharacters( "foo&&&&&bar" ) );
+    },
+
+    testRemoveAmpersandControlCharacters_lastAmpersand : function() {
+      assertEquals( "foobar", EncodingUtil.removeAmpersandControlCharacters( "foobar&" ) );
     }
 
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,12 +21,6 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     this._context = null;
     this._createCanvas();
     this._canvas.rwtObject = this; // like "rwtWidget" in Widget.js, useful for custom JS components
-    this._textCanvas = document.createElement( "div" );
-    this._textCanvas.style.position = "absolute";
-    this._textCanvas.style.overflow = "hidden";
-    this._textCanvas.style.left = "0px";
-    this._textCanvas.style.top = "0px";
-    this._textCanvas.rwtObject = this;
     if( this._control.isCreated() ) {
       this._addCanvasToDOM();
     }
@@ -45,14 +39,11 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._context.dispose();
     }
     this._context = null;
-    this._textCanvas.rwtObject = null;
-    this._textCanvas = null;
   },
 
   members : {
 
     init : function( width, height, font, background, foreground  ) {
-      this._initTextCanvas( width, height );
       this._canvas.width = width;
       this._canvas.style.width = width + "px";
       this._canvas.height = height;
@@ -124,29 +115,17 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _addCanvasToDOM  : function() {
-      // TODO [tb] : append textCanvas onDemand
       var controlElement = this._control._getTargetNode();
       var firstChild = controlElement.firstChild;
       if( firstChild ) {
         controlElement.insertBefore( this._canvas, firstChild );
-        controlElement.insertBefore( this._textCanvas, firstChild );
       } else {
         controlElement.appendChild( this._canvas );
-        controlElement.appendChild( this._textCanvas );
       }
     },
 
     _removeCanvasFromDOM : function() {
       this._canvas.parentNode.removeChild( this._canvas );
-      this._textCanvas.parentNode.removeChild( this._textCanvas );
-    },
-
-    _initTextCanvas : function( width, height ) {
-      this._textCanvas.width = width;
-      this._textCanvas.style.width = width + "px";
-      this._textCanvas.height = height;
-      this._textCanvas.style.height = height + "px";
-      this._textCanvas.innerHTML = "";
     },
 
     _initFields : function( font, background, foreground ) {
@@ -157,6 +136,8 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       this._context.lineCap = "butt";
       this._context.lineJoin = "miter";
       this._context.font = this._toCssFont( font );
+      this._context.textBaseline = "top";
+      this._context.textAlign = "left";
     },
 
     // See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#building-paths
@@ -193,38 +174,36 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     },
 
     _strokeText : function( operation ) {
-      this._fillText( operation );
+      var x = operation[ 5 ];
+      var y = operation[ 6 ];
+      var text = this._prepareText.apply( this, operation.slice( 1, 5 ) );
+      var lines = text.split( "\n" );
+      if( lines.length > 1 ) {
+        var textBounds = this._getTextBounds.apply( this, operation.slice( 1, 7 ) );
+        this._drawText( lines, textBounds, false );
+      } else {
+        this._context.fillText( text, x, y );
+      }
     },
 
     _fillText : function( operation ) {
-      var fill = operation[ 0 ] === "fillText";
-      var text = this._escapeText( operation[ 1 ], operation[ 2 ], operation[ 3 ], operation[ 4 ] );
-      var x = operation[ 5 ];
-      var y = operation[ 6 ];
-      var textElement = document.createElement( "div" );
-      var style = textElement.style;
-      style.position = "absolute";
-      style.left = x + "px";
-      style.top = y + "px";
-      style.color = this._context.strokeStyle;
-      if( fill ) {
-        style.backgroundColor = this._context.fillStyle;
-      }
-      if( this._context.font !== "" && this._context.font != null ) {
-        style.font = this._context.font;
-      }
-      textElement.innerHTML = text;
-      this._textCanvas.appendChild( textElement );
+      var text = this._prepareText.apply( this, operation.slice( 1, 5 ) );
+      var lines = text.split( "\n" );
+      var textBounds = this._getTextBounds.apply( this, operation.slice( 1, 7 ) );
+      this._drawText( lines, textBounds, true );
     },
 
-    _escapeText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
-      var EncodingUtil = rwt.util.Encoding;
-      var text = EncodingUtil.escapeText( value, drawMnemonic );
-      var replacement = drawDelemiter ? "<br/>" : "";
-      text = EncodingUtil.replaceNewLines( text, replacement );
-      replacement = drawTab ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "";
-      text = text.replace( /\t/g, replacement );
-      return text;
+    _drawText : function( textLines, bounds, fill ) {
+      this._context.save();
+      if( fill ) {
+        this._context.fillRect.apply( this._context, bounds );
+      }
+      this._context.fillStyle = this._context.strokeStyle;
+      var lineHeight = bounds[ 3 ] / textLines.length;
+      for( var i = 0; i < textLines.length; i++ ) {
+        this._context.fillText( textLines[ i ], bounds[ 0 ], i * lineHeight + bounds[ 1 ] );
+      }
+      this._context.restore();
     },
 
     _drawImage : function( operation ) {
@@ -258,6 +237,35 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
         operation[ 1 ],
         rwt.util.Colors.rgbToRgbString( operation[ 2 ] )
       );
+    },
+
+    _prepareText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
+      var EncodingUtil = rwt.util.Encoding;
+      var text = drawMnemonic ? EncodingUtil.removeAmpersandControlCharacters( value ) : value;
+      var replacement = drawDelemiter ? "\n" : "";
+      text = EncodingUtil.replaceNewLines( text, replacement );
+      replacement = drawTab ? "    " : "";
+      text = text.replace( /\t/g, replacement );
+      return text;
+    },
+
+    _getTextBounds : function( text, drawMnemonic, drawDelemiter, drawTab, x, y ) {
+      var escapedText = this._escapeText( text, drawMnemonic, drawDelemiter, drawTab );
+      var fontProps = {};
+      rwt.html.Font.fromString( this._context.font ).renderStyle( fontProps );
+      var calc = rwt.widgets.util.FontSizeCalculation;
+      var dimension = calc.computeTextDimensions( escapedText, fontProps );
+      return [ x, y, dimension[ 0 ], dimension[ 1 ] ];
+    },
+
+    _escapeText : function( value, drawMnemonic, drawDelemiter, drawTab ) {
+      var EncodingUtil = rwt.util.Encoding;
+      var text = EncodingUtil.escapeText( value, drawMnemonic );
+      var replacement = drawDelemiter ? "<br/>" : "";
+      text = EncodingUtil.replaceNewLines( text, replacement );
+      replacement = drawTab ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "";
+      text = text.replace( /\t/g, replacement );
+      return text;
     },
 
     _toCssFont : function( fontArray ) {

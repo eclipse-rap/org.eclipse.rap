@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,14 +27,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( "function", typeof context.beginPath );
       var node = canvas._getTargetNode();
       assertIdentical( node.childNodes[ 0 ], gc._canvas );
-      assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       canvas.destroy();
       gc.dispose();
       TestUtil.flush();
       assertTrue( canvas.isDisposed() );
       assertTrue( gc.isDisposed() );
       assertNull( gc._canvas );
-      assertNull( gc._textCanvas );
       assertNull( gc._context );
       assertTrue( !context.isDisposed || context.isDisposed() );
     },
@@ -48,7 +46,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var gc = new rwt.widgets.GC( canvas );
 
       assertIdentical( gc, gc._canvas.rwtObject );
-      assertIdentical( gc, gc._textCanvas.rwtObject );
       canvas.destroy();
     },
 
@@ -78,7 +75,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       var gc = ObjectManager.getObject( "w4" );
       assertTrue( gc instanceof rwt.widgets.GC );
       var node = canvas._getTargetNode();
-      assertTrue( node.childNodes.length > 1 );
+      assertTrue( node.childNodes.length > 0 );
 
       var processor = rwt.remote.MessageProcessor;
       processor.processOperation( {
@@ -108,7 +105,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       TestUtil.flush();
       var node = canvas._getTargetNode();
       assertIdentical( node.childNodes[ 0 ], gc._canvas );
-      assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
       canvas.destroy();
       TestUtil.flush();
     },
@@ -126,8 +122,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertIdentical( node.childNodes[ 0 ], widget.getElement() );
       var gc = new rwt.widgets.GC( canvas );
       assertIdentical( node.childNodes[ 0 ], gc._canvas );
-      assertIdentical( node.childNodes[ 1 ], gc._textCanvas );
-      assertIdentical( node.childNodes[ 2 ], widget.getElement() );
+      assertIdentical( node.childNodes[ 1 ], widget.getElement() );
       canvas.destroy();
       TestUtil.flush();
     },
@@ -208,34 +203,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       TestUtil.flush();
     },
 
-    testDrawText : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new rwt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      TestUtil.flush();
-      var gc = new rwt.widgets.GC( canvas );
-      gc.init( 300, 300,
-               [ [ "Arial" ], 10, false, false ],
-               [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
-      assertEquals( 0, gc._textCanvas.childNodes.length );
-      gc.draw( [ [ "fillText", "Hello World", false, false, false, 40, 50 ] ]);
-      assertEquals( 1, gc._textCanvas.childNodes.length );
-      var textNode = gc._textCanvas.firstChild;
-      assertEquals( "Hello World", textNode.innerHTML );
-      assertEquals( 40, parseInt( textNode.style.left, 10 ) );
-      assertEquals( 50, parseInt( textNode.style.top, 10 ) );
-      assertTrue( textNode.style.font.indexOf( "Arial" ) != -1 );
-      assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( textNode.style.color ) );
-      assertEquals( [ 255, 255, 255 ], rwt.util.Colors.stringToRgb( textNode.style.backgroundColor ) );
-      gc.init( 300, 300,
-               [ [ "Arial" ], 10, false, false ],
-               [ 255, 255, 255 ], [ 0, 0, 0 ] );
-      assertEquals( 0, gc._textCanvas.childNodes.length );
-      canvas.destroy();
-      TestUtil.flush();
-    },
-
     // Tests ported from GCOperationWriter_Test#testProcessText...
     testEscapeText : function() {
       var text = "text with \ttab, \nnew line and &mnemonic";
@@ -262,6 +229,37 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( expected, gc._escapeText( text, true, false, false ) );
       expected = "text with &amp;&amp;mnemonic";
       assertEquals( expected, gc._escapeText( text, false, false, false ) );
+
+      gc.dispose();
+      rwt.remote.ObjectRegistry.getObject( "w2" ).destroy();
+      rwt.remote.ObjectRegistry.getObject( "w3" ).destroy();
+    },
+
+    testPrepareText : function() {
+      var text = "text with \ttab, \nnew line and &mnemonic";
+      var gc = this._createGCByProtocol();
+      var expected = "text with     tab, \nnew line and mnemonic";
+      assertEquals( expected, gc._prepareText( text, true, true, true ) );
+      expected = "text with     tab, \nnew line and &mnemonic";
+      assertEquals( expected, gc._prepareText( text, false, true, true ) );
+      expected = "text with     tab, new line and &mnemonic";
+      assertEquals( expected, gc._prepareText( text, false, false, true ) );
+      expected = "text with tab, new line and &mnemonic";
+      assertEquals( expected, gc._prepareText( text, false, false, false ) );
+
+      // test mnemonic
+      text = "text without mnemonic";
+      assertEquals( text, gc._prepareText( text, true, false, false ) );
+      text = "text with &mnemonic";
+      expected = "text with mnemonic";
+      assertEquals( expected, gc._prepareText( text, true, false, false ) );
+      expected = "text with &mnemonic";
+      assertEquals( expected, gc._prepareText( text, false, false, false ) );
+      text = "text with &&mnemonic";
+      expected = "text with &mnemonic";
+      assertEquals( expected, gc._prepareText( text, true, false, false ) );
+      expected = "text with &&mnemonic";
+      assertEquals( expected, gc._prepareText( text, false, false, false ) );
 
       gc.dispose();
       rwt.remote.ObjectRegistry.getObject( "w2" ).destroy();
