@@ -57,7 +57,7 @@ import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.rap.rwt.testfixture.internal.TestLogger;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class UISessionImpl_Test {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
     applicationContext = mock( ApplicationContextImpl.class );
-    httpSession = new TestSession();
+    httpSession = new TestHttpSession();
     uiSession = new UISessionImpl( applicationContext, httpSession );
     uiSession.attachToHttpSession();
     HttpServletRequest request = mock( HttpServletRequest.class );
@@ -197,7 +197,7 @@ public class UISessionImpl_Test {
 
   @Test
   public void testSetHttpSession() {
-    HttpSession anotherSession = new TestSession();
+    HttpSession anotherSession = new TestHttpSession();
     uiSession.setHttpSession( anotherSession );
 
     assertSame( anotherSession, uiSession.getHttpSession() );
@@ -215,7 +215,7 @@ public class UISessionImpl_Test {
   @Test
   public void testSetHttpSession_doesNotChangeId() {
     String initialId = uiSession.getId();
-    TestSession anotherSession = new TestSession();
+    TestHttpSession anotherSession = new TestHttpSession();
     anotherSession.setId( "some.other.id" );
     uiSession.setHttpSession( anotherSession );
 
@@ -233,7 +233,7 @@ public class UISessionImpl_Test {
       }
     } );
 
-    uiSession.setHttpSession( new TestSession() );
+    uiSession.setHttpSession( new TestHttpSession() );
 
     assertFalse( wasCalled[ 0 ] );
   }

@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class UISessionBuilder_Test {
 
   @Before
   public void setUp() {
-    httpSession = new TestSession();
+    httpSession = new TestHttpSession();
     request = new TestRequest();
     request.setSession( httpSession );
     HttpServletResponse response = mock( HttpServletResponse.class );

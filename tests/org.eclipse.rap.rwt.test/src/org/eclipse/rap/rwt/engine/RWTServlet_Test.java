@@ -46,7 +46,7 @@ import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,7 +142,7 @@ public class RWTServlet_Test {
         serviceStoreRef.set( ContextProvider.getServiceStore() );
       }
     } );
-    request.setSession( new TestSession() );
+    request.setSession( new TestHttpSession() );
 
     servlet.doPost( request, new TestResponse() );
 
@@ -157,7 +157,7 @@ public class RWTServlet_Test {
         appContextRef.set( ContextProvider.getContext().getApplicationContext() );
       }
     } );
-    request.setSession( new TestSession() );
+    request.setSession( new TestHttpSession() );
 
     servlet.doPost( request, new TestResponse() );
 
@@ -167,7 +167,7 @@ public class RWTServlet_Test {
   @Test
   public void testEnsureUISession() {
     ApplicationContextImpl applicationContext = createRealApplicationContext();
-    request.setSession( new TestSession() );
+    request.setSession( new TestHttpSession() );
     ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
     ContextProvider.setContext( serviceContext );
 
@@ -180,7 +180,7 @@ public class RWTServlet_Test {
   @Test
   public void testEnsureUISession_returnsExistingUISession() {
     ApplicationContextImpl applicationContext = createRealApplicationContext();
-    HttpSession httpSession = new TestSession();
+    HttpSession httpSession = new TestHttpSession();
     request.setSession( httpSession );
     UISessionImpl uiSession = new UISessionImpl( applicationContext, httpSession );
     uiSession.attachToHttpSession();
@@ -196,7 +196,7 @@ public class RWTServlet_Test {
   @Test
   public void testEnsureUISession_returnsExistingUISession_withConnectionId() {
     ApplicationContextImpl applicationContext = createRealApplicationContext();
-    HttpSession httpSession = new TestSession();
+    HttpSession httpSession = new TestHttpSession();
     request.setSession( httpSession );
     request.setParameter( "cid", "foo" );
     UISessionImpl uiSession = new UISessionImpl( applicationContext, httpSession, "foo" );

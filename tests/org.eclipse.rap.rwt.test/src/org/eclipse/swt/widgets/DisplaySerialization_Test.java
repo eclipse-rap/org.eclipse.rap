@@ -35,7 +35,7 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -264,7 +264,7 @@ public class DisplaySerialization_Test {
 
   private void createServiceContext( Display display ) {
     Fixture.createServiceContext();
-    TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
+    TestHttpSession session = ( TestHttpSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( display );
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();

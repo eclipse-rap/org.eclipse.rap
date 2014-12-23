@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -124,7 +124,7 @@ public class ConnectionImpl_Test {
 
   private static UISession createUISession() {
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
-    UISession uiSession = new UISessionImpl( applicationContext, new TestSession() );
+    UISession uiSession = new UISessionImpl( applicationContext, new TestHttpSession() );
     SingletonManager.install( uiSession );
     return uiSession;
   }

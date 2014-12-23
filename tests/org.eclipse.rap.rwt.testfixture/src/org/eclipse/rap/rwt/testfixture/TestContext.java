@@ -42,7 +42,7 @@ import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -107,7 +107,7 @@ public class TestContext implements TestRule {
   private void setup( Description description ) {
     ApplicationConfiguration config = createApplicationConfiguration();
     applicationContext = createApplicationContext( config );
-    uiSession = new UISessionImpl( applicationContext, new TestSession() );
+    uiSession = new UISessionImpl( applicationContext, new TestHttpSession() );
     ContextProvider.setContext( createServiceContext( applicationContext, uiSession ) );
     SingletonManager.install( uiSession );
     MeasurementUtil.installMeasurementOperator( uiSession );

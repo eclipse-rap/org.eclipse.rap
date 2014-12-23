@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class ServiceContext_Test {
     when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
     applicationContext = new ApplicationContextImpl( applicationConfiguration, servletContext );
     Fixture.setSkipResourceRegistration( true );
-    uiSession = new UISessionImpl( applicationContext, new TestSession() );
+    uiSession = new UISessionImpl( applicationContext, new TestHttpSession() );
   }
 
   @After

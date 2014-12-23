@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class UISessionEvent_Test {
 
   @Before
   public void setUp() {
-    uiSession = new UISessionImpl( mock( ApplicationContextImpl.class ), new TestSession() );
+    uiSession = new UISessionImpl( mock( ApplicationContextImpl.class ), new TestHttpSession() );
   }
 
   @Test

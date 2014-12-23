@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -109,8 +109,8 @@ public class LifeCycleUtil_Test {
     IUIThreadHolder uiThread1 = mock( IUIThreadHolder.class );
     IUIThreadHolder uiThread2 = mock( IUIThreadHolder.class );
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
-    UISession uiSession1 = new UISessionImpl( applicationContext, new TestSession() );
-    UISession uiSession2 = new UISessionImpl( applicationContext, new TestSession() );
+    UISession uiSession1 = new UISessionImpl( applicationContext, new TestHttpSession() );
+    UISession uiSession2 = new UISessionImpl( applicationContext, new TestHttpSession() );
 
     LifeCycleUtil.setUIThread( uiSession1, uiThread1 );
     LifeCycleUtil.setUIThread( uiSession2, uiThread2 );

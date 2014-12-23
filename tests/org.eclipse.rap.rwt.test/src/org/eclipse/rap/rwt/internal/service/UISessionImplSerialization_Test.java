@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class UISessionImplSerialization_Test {
   @Before
   public void setUp() {
     LoggingUISessionListener.wasCalled = false;
-    httpSession = new TestSession();
+    httpSession = new TestHttpSession();
     uiSession = new UISessionImpl( mock( ApplicationContextImpl.class ), httpSession );
   }
 
@@ -79,7 +79,7 @@ public class UISessionImplSerialization_Test {
     UISessionListener listener = new LoggingUISessionListener();
     uiSession.addUISessionListener( listener );
     UISessionImpl deserializedUiSession = serializeAndDeserialize( uiSession );
-    HttpSession newHttpSession = new TestSession();
+    HttpSession newHttpSession = new TestHttpSession();
     deserializedUiSession.setHttpSession( newHttpSession );
     deserializedUiSession.attachToHttpSession();
     newHttpSession.invalidate();

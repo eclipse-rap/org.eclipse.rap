@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class PostDeserialization_Test {
   }
 
   private static UISessionImpl createUISession() {
-    return new UISessionImpl( mock( ApplicationContextImpl.class ), new TestSession() );
+    return new UISessionImpl( mock( ApplicationContextImpl.class ), new TestHttpSession() );
   }
 
 }

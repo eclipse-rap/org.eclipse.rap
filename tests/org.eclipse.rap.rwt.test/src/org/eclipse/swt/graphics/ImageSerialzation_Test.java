@@ -29,7 +29,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -88,7 +88,7 @@ public class ImageSerialzation_Test {
 
   private void createServiceContext( Device device ) {
     Fixture.createServiceContext();
-    TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
+    TestHttpSession session = ( TestHttpSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();

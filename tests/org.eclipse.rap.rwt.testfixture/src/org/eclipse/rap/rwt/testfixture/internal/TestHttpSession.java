@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSessionContext;
  * </p>
  */
 @SuppressWarnings( "deprecation" )
-public class TestSession implements HttpSession {
+public class TestHttpSession implements HttpSession {
 
   private final Map<String,Object> attributes;
   private String id;
@@ -40,7 +40,7 @@ public class TestSession implements HttpSession {
   private boolean newSession;
   private int maxInactiveInterval;
 
-  public TestSession() {
+  public TestHttpSession() {
     attributes = new HashMap<String,Object>();
     servletContext = new TestServletContext();
     id = String.valueOf( hashCode() );

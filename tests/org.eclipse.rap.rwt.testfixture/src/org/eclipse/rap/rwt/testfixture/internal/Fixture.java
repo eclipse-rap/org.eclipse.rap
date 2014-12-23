@@ -192,8 +192,8 @@ public final class Fixture {
     ProtocolUtil.setClientMessage( message );
   }
 
-  private static TestSession createTestSession() {
-    TestSession result = new TestSession();
+  private static TestHttpSession createTestSession() {
+    TestHttpSession result = new TestHttpSession();
     if( servletContext != null ) {
       result.setServletContext( servletContext );
     }

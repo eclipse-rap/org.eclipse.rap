@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestResponse;
-import org.eclipse.rap.rwt.testfixture.internal.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -128,7 +128,7 @@ public class TestContext_Test {
     HttpServletRequest request = RWT.getRequest();
 
     assertNotNull( request.getSession() );
-    assertTrue( request.getSession() instanceof TestSession );
+    assertTrue( request.getSession() instanceof TestHttpSession );
     assertSame( context.getUISession().getHttpSession(), request.getSession() );
   }
 
