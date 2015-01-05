@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public final class CanvasTab extends ExampleTab {
         paintImages( event.display, event.gc );
         paintTexts( event.display, event.gc );
         paintPolylines( event.display, event.gc );
+        paintWithClipping( event.display, event.gc );
         paintPath( event.display, event.gc );
       }
     } );
@@ -195,16 +196,24 @@ public final class CanvasTab extends ExampleTab {
     path.lineTo( 500, 490 );
     gc.drawPath( path );
     path.dispose();
+  }
 
-    gc.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
-    gc.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
-    path = new Path( display );
+  private void paintWithClipping( Display display, GC gc ) {
+    Path path = new Path( display );
     path.moveTo( 30, 430 );
     path.lineTo( 150, 550 );
     path.cubicTo( 60, 470, 60, 470, 70, 550 );
     path.close();
-    gc.fillPath( path );
+    gc.setClipping( path );
     path.dispose();
+
+    gc.setBackground( display.getSystemColor( SWT.COLOR_BLACK ) );
+    gc.fillRectangle( 20, 420, 500, 50 );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+    gc.fillRectangle( 20, 470, 500, 50 );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_YELLOW ) );
+    gc.fillRectangle( 20, 520, 500, 50 );
+    gc.setClipping( ( Path )null );
   }
 
 }

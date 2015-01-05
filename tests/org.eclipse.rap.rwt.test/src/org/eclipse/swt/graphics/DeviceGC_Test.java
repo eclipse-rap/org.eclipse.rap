@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,9 +100,52 @@ public class DeviceGC_Test {
   }
 
   @Test
-  public void testGetClipping() {
-    Rectangle clipping = gc.getClipping();
-    assertEquals( display.getBounds(), clipping );
+  public void testGetClipping_withoutClipping() {
+    assertEquals( display.getBounds(), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_rectangle() {
+    gc.setClipping( new Rectangle( 10, 10, 10, 10 ) );
+
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_dimensions() {
+    gc.setClipping( 10, 10, 10, 10 );
+
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_path() {
+    Path path = new Path( display );
+    path.moveTo( 20, 20 );
+    path.lineTo( 30, 30 );
+    path.lineTo( 10, 40 );
+    path.close();
+
+    gc.setClipping( path );
+
+    assertEquals( new Rectangle( 10, 20, 20, 20 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_afterClippingReset() {
+    gc.setClipping( 10, 10, 10, 10 );
+
+    gc.setClipping( ( Path )null );
+
+    assertEquals( display.getBounds(), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_setClippingTwice() {
+    gc.setClipping( 10, 10, 10, 10 );
+    gc.setClipping( 20, 20, 20, 20 );
+
+    assertEquals( new Rectangle( 20, 20, 20, 20 ), gc.getClipping() );
   }
 
   private Font createFont() {

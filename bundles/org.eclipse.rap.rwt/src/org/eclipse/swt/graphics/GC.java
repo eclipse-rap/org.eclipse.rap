@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -347,6 +347,83 @@ public class GC extends Resource {
   public Color getForeground() {
     checkDisposed();
     return delegate.getForeground();
+  }
+
+  /**
+   * Sets the area of the receiver which can be changed
+   * by drawing operations to the rectangular area specified
+   * by the argument.  Specifying <code>null</code> for the
+   * rectangle reverts the receiver's clipping area to its
+   * original value.
+   *
+   * @param rect the clipping rectangle or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 3.0
+   */
+  public void setClipping( Rectangle rect ) {
+    checkDisposed();
+    if( rect == null ) {
+      delegate.setClipping( ( Rectangle )null );
+    } else {
+      setClipping( rect.x, rect.y, rect.width, rect.height );
+    }
+  }
+
+  /**
+   * Sets the area of the receiver which can be changed
+   * by drawing operations to the rectangular area specified
+   * by the arguments.
+   *
+   * @param x the x coordinate of the clipping rectangle
+   * @param y the y coordinate of the clipping rectangle
+   * @param width the width of the clipping rectangle
+   * @param height the height of the clipping rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 3.0
+   */
+  public void setClipping( int x, int y, int width, int height ) {
+    checkDisposed();
+    delegate.setClipping( new Rectangle( x, y, width, height ) );
+  }
+
+  /**
+   * Sets the area of the receiver which can be changed
+   * by drawing operations to the path specified
+   * by the argument.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   *
+   * @param path the clipping path.
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the path has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   *
+   * @see Path
+   * @see #getAdvanced
+   * @see #setAdvanced
+   *
+   * @since 3.0
+   */
+  public void setClipping( Path path ) {
+    checkDisposed();
+    if( path != null && path.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    delegate.setClipping( path );
   }
 
   /**

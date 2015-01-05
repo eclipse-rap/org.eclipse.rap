@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Button;
@@ -48,6 +49,7 @@ import org.junit.Test;
 
 
 public class ControlGC_Test {
+
   private Display display;
   private Canvas canvas;
   private GC gc;
@@ -58,6 +60,7 @@ public class ControlGC_Test {
     display = new Display();
     Shell shell = new Shell( display );
     canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 100, 100 );
     gc = new GC( canvas );
   }
 
@@ -633,14 +636,6 @@ public class ControlGC_Test {
   }
 
   @Test
-  public void testGetClipping() {
-    canvas.setSize( 100, 100 );
-    GC gc = new GC( canvas );
-    Rectangle clipping = gc.getClipping();
-    assertEquals( new Rectangle( 0, 0, 100, 100 ), clipping );
-  }
-
-  @Test
   public void testDrawPath() {
     Path path = new Path( display );
     path.lineTo( 10, 10 );
@@ -680,18 +675,146 @@ public class ControlGC_Test {
     assertTrue( operation.fill );
   }
 
+  @Test
+  public void testGetClipping_withoutClipping() {
+    assertEquals( canvas.getBounds(), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_rectangle() {
+    gc.setClipping( new Rectangle( 10, 10, 10, 10 ) );
+
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_dimensions() {
+    gc.setClipping( 10, 10, 10, 10 );
+
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_withClipping_path() {
+    Path path = new Path( display );
+    path.moveTo( 20, 20 );
+    path.lineTo( 30, 30 );
+    path.lineTo( 10, 40 );
+    path.close();
+
+    gc.setClipping( path );
+
+    assertEquals( new Rectangle( 10, 20, 20, 20 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_afterClippingReset() {
+    gc.setClipping( 10, 10, 10, 10 );
+
+    gc.setClipping( ( Path )null );
+
+    assertEquals( canvas.getBounds(), gc.getClipping() );
+  }
+
+  @Test
+  public void testGetClipping_afterClippingSetTwice() {
+    gc.setClipping( 10, 10, 10, 10 );
+    gc.setClipping( 20, 20, 20, 20 );
+
+    assertEquals( new Rectangle( 20, 20, 20, 20 ), gc.getClipping() );
+  }
+
+  @Test
+  public void testSetClipping_withRectangle() {
+    gc.setClipping( new Rectangle( 10, 10, 10, 10 ) );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetClipping operation = ( SetClipping )gcOperations[ 0 ];
+    assertNull( operation.types );
+    assertNull( operation.points );
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), operation.rectangle );
+    assertFalse( operation.isReset() );
+    assertTrue( operation.isRectangular() );
+  }
+
+  @Test
+  public void testSetClipping_withDimensions() {
+    gc.setClipping( 10, 10, 10, 10 );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetClipping operation = ( SetClipping )gcOperations[ 0 ];
+    assertNull( operation.types );
+    assertNull( operation.points );
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), operation.rectangle );
+    assertFalse( operation.isReset() );
+    assertTrue( operation.isRectangular() );
+  }
+
+  @Test
+  public void testSetClipping_withPath() {
+    Path path = new Path( display );
+    path.moveTo( 20, 20 );
+    path.lineTo( 30, 30 );
+    path.lineTo( 10, 40 );
+    path.close();
+
+    gc.setClipping( path );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetClipping operation = ( SetClipping )gcOperations[ 0 ];
+    assertNull( operation.rectangle );
+    byte[] expectedTypes = new byte[] {
+      SWT.PATH_MOVE_TO, SWT.PATH_LINE_TO, SWT.PATH_LINE_TO, SWT.PATH_CLOSE
+    };
+    assertArrayEquals( expectedTypes, operation.types );
+    assertArrayEquals( new float[] { 20, 20, 30, 30, 10, 40 }, operation.points, 0 );
+    assertFalse( operation.isReset() );
+    assertFalse( operation.isRectangular() );
+  }
+
+  @Test
+  public void testSetClipping_resetWithClipping() {
+    gc.setClipping( 10, 10, 10, 10 );
+    getGCAdapter( gc ).clearGCOperations();
+
+    gc.setClipping( ( Rectangle )null );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetClipping operation = ( SetClipping )gcOperations[ 0 ];
+    assertTrue( operation.isReset() );
+  }
+
+  @Test
+  public void testSetClipping_resetWithoutClipping() {
+    gc.setClipping( ( Rectangle )null );
+
+    assertEquals( 0, getGCOperations( gc ).length );
+  }
+
+  @Test
+  public void testSetClipping_twice() {
+    gc.setClipping( 10, 10, 10, 10 );
+    gc.setClipping( 20, 20, 20, 20 );
+
+    GCOperation[] gcOperations = getGCOperations( gc );
+    SetClipping operation = ( SetClipping )gcOperations[ 0 ];
+    assertEquals( new Rectangle( 10, 10, 10, 10 ), operation.rectangle );
+    operation = ( SetClipping )gcOperations[ 1 ];
+    assertTrue( operation.isReset() );
+    operation = ( SetClipping )gcOperations[ 2 ];
+    assertEquals( new Rectangle( 20, 20, 20, 20 ), operation.rectangle );
+  }
+
   private static GCOperation[] getGCOperations( GC gc ) {
-    GCAdapter adapter = getGCAdapter( gc );
-    return adapter.getGCOperations();
+    return getGCAdapter( gc ).getGCOperations();
   }
 
   private static GCAdapter getGCAdapter( GC gc ) {
-    GCAdapter result = null;
     GCDelegate delegate = gc.getGCDelegate();
     if( delegate instanceof ControlGC ) {
-      result = ( ( ControlGC )delegate ).getGCAdapter();
+      return ( ( ControlGC )delegate ).getGCAdapter();
     }
-    return result;
+    return null;
   }
 
   private Font createFont() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
@@ -32,6 +33,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Control;
@@ -93,6 +95,8 @@ final class GCOperationWriter {
       drawPath( ( DrawPath )operation );
     } else if( operation instanceof SetProperty ) {
       setProperty( ( SetProperty )operation );
+    } else if( operation instanceof SetClipping ) {
+      setClipping( ( SetClipping )operation );
     } else {
       String name = operation.getClass().getName();
       throw new IllegalArgumentException( "Unsupported GCOperation: " + name );
@@ -285,41 +289,7 @@ final class GCOperationWriter {
   }
 
   private void drawPath( DrawPath operation ) {
-    byte[] types = operation.types;
-    float[] points = operation.points;
-    addClientOperation( "beginPath" );
-    for( int i = 0, j = 0; i < types.length; i++ ) {
-      switch( types[ i ] ) {
-        case SWT.PATH_MOVE_TO:
-          addClientOperation( "moveTo", points[ j++ ], points[ j++ ] );
-        break;
-        case SWT.PATH_LINE_TO:
-          addClientOperation( "lineTo", points[ j++ ], points[ j++ ] );
-        break;
-        case SWT.PATH_CUBIC_TO:
-          addClientOperation( "bezierCurveTo",
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ] );
-        break;
-        case SWT.PATH_QUAD_TO:
-          addClientOperation( "quadraticCurveTo",
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ],
-                              points[ j++ ] );
-        break;
-        case SWT.PATH_CLOSE:
-          addClientOperation( "closePath" );
-        break;
-        default:
-          String msg = "Unsupported point type: " + types[ i ];
-          throw new RuntimeException( msg );
-      }
-    }
+    renderPath( operation.types, operation.points );
     addClientOperation( operation.fill ? "fill" : "stroke" );
   }
 
@@ -389,6 +359,57 @@ final class GCOperationWriter {
         throw new RuntimeException( msg );
     }
     operations.add( new JsonArray().add( name ).add( value ) );
+  }
+
+  private void setClipping( SetClipping operation ) {
+    if( operation.isReset() ) {
+      addClientOperation( "restore" );
+    } else {
+      addClientOperation( "save" );
+      if( operation.isRectangular() ) {
+        Rectangle rect = operation.rectangle;
+        addClientOperation( "rect", rect.x, rect.y, rect.width, rect.height );
+      } else {
+        renderPath( operation.types, operation.points );
+      }
+      addClientOperation( "clip" );
+    }
+  }
+
+  private void renderPath( byte[] types, float[] points ) {
+    addClientOperation( "beginPath" );
+    for( int i = 0, j = 0; i < types.length; i++ ) {
+      switch( types[ i ] ) {
+        case SWT.PATH_MOVE_TO:
+          addClientOperation( "moveTo", points[ j++ ], points[ j++ ] );
+        break;
+        case SWT.PATH_LINE_TO:
+          addClientOperation( "lineTo", points[ j++ ], points[ j++ ] );
+        break;
+        case SWT.PATH_CUBIC_TO:
+          addClientOperation( "bezierCurveTo",
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ] );
+        break;
+        case SWT.PATH_QUAD_TO:
+          addClientOperation( "quadraticCurveTo",
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ],
+                              points[ j++ ] );
+        break;
+        case SWT.PATH_CLOSE:
+          addClientOperation( "closePath" );
+        break;
+        default:
+          String msg = "Unsupported point type: " + types[ i ];
+          throw new RuntimeException( msg );
+      }
+    }
   }
 
   private void addClientOperation( String name, float... args ) {

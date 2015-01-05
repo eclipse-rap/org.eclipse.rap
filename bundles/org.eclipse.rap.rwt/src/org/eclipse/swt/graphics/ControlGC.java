@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -40,6 +41,7 @@ class ControlGC extends GCDelegate {
   private int lineWidth;
   private int lineCap;
   private int lineJoin;
+  private Rectangle clippingRect;
 
   ControlGC( Control control ) {
     this.control = control;
@@ -148,8 +150,36 @@ class ControlGC extends GCDelegate {
   }
 
   @Override
+  void setClipping( Rectangle rectangle ) {
+    if( clippingRect != null ) {
+      addGCOperation( new SetClipping() );
+    }
+    clippingRect = rectangle;
+    if( clippingRect != null ) {
+      GCOperation operation = new SetClipping( rectangle );
+      addGCOperation( operation );
+    }
+  }
+
+  @Override
+  void setClipping( Path path ) {
+    if( clippingRect != null ) {
+      addGCOperation( new SetClipping() );
+    }
+    clippingRect = getClippingRectangle( path );
+    if( clippingRect != null ) {
+      PathData pathData = path.getPathData();
+      GCOperation operation = new SetClipping( pathData.types, pathData.points );
+      addGCOperation( operation );
+    }
+  }
+
+  @Override
   Rectangle getClipping() {
-    return control.getBounds();
+    if( clippingRect == null ) {
+      return control.getBounds();
+    }
+    return new Rectangle( clippingRect.x, clippingRect.y, clippingRect.width, clippingRect.height );
   }
 
   @Override

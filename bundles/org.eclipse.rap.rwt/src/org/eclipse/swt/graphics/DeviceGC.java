@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ class DeviceGC extends GCDelegate {
   private int lineWidth;
   private int lineCap;
   private int lineJoin;
+  private Rectangle clippingRect;
 
   DeviceGC( Device device ) {
     this.device = device;
@@ -112,8 +113,21 @@ class DeviceGC extends GCDelegate {
   }
 
   @Override
+  void setClipping( Rectangle rectangle ) {
+    clippingRect = rectangle;
+  }
+
+  @Override
+  void setClipping( Path path ) {
+    clippingRect = getClippingRectangle( path );
+  }
+
+  @Override
   Rectangle getClipping() {
-    return device.getBounds();
+    if( clippingRect == null ) {
+      return device.getBounds();
+    }
+    return new Rectangle( clippingRect.x, clippingRect.y, clippingRect.width, clippingRect.height );
   }
 
   @Override

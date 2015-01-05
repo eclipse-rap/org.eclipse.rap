@@ -823,6 +823,27 @@ public class GC_Test {
     gc.fillPath( path );
   }
 
+  @Test(expected = SWTException.class)
+  public void testSetClipping_withDisposedGC_rectangle() {
+    gc.dispose();
+
+    gc.setClipping( new Rectangle( 10, 10, 10, 10 ) );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testSetClipping_withDisposedGC_dimensions() {
+    gc.dispose();
+
+    gc.setClipping( 10, 10, 10, 10 );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testSetClipping_withDisposedGC_path() {
+    gc.dispose();
+
+    gc.setClipping( new Path( display ) );
+  }
+
   private Image createImage() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );

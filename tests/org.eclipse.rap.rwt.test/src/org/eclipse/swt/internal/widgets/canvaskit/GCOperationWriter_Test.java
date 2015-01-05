@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,17 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -28,6 +30,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -611,6 +614,47 @@ public class GCOperationWriter_Test {
   }
 
   @Test
+  public void testSetClipping_withRectangle() {
+    gc.setClipping( 1, 2, 3, 4 );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"save\"]", getOperation( 0, ops ) );
+    assertEquals( "[\"rect\",1,2,3,4]", getOperation( 1, ops ) );
+    assertEquals( "[\"clip\"]", getOperation( 2, ops ) );
+  }
+
+  @Test
+  public void testSetClipping_withPath() {
+    Path path = new Path( display );
+    path.moveTo( 20, 20 );
+    path.lineTo( 30, 30 );
+    path.lineTo( 10, 40 );
+    path.close();
+
+    gc.setClipping( path );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"save\"]", getOperation( 0, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"moveTo\",20,20]", getOperation( 2, ops ) );
+    assertEquals( "[\"lineTo\",30,30]", getOperation( 3, ops ) );
+    assertEquals( "[\"lineTo\",10,40]", getOperation( 4, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 5, ops ) );
+    assertEquals( "[\"clip\"]", getOperation( 6, ops ) );
+  }
+
+  @Test
+  public void testSetClipping_reset() {
+    gc.setClipping( 1, 2, 3, 4 );
+    getGCAdapter( canvas ).clearGCOperations();
+
+    gc.setClipping( ( Rectangle )null );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"restore\"]", getOperation( 0, ops ) );
+  }
+
+  @Test
   public void testGetGcId() {
     String gcId = GCOperationWriter.getGcId( canvas );
 
@@ -635,13 +679,16 @@ public class GCOperationWriter_Test {
   }
 
   private static void writeGCOperations( Canvas canvas ) {
-    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
-    GCOperation[] operations = adapter.getGCOperations();
+    GCOperation[] operations = getGCAdapter( canvas ).getGCOperations();
     GCOperationWriter operationWriter = new GCOperationWriter( canvas );
     for( GCOperation operation : operations ) {
       operationWriter.write( operation );
     }
     operationWriter.render();
+  }
+
+  private static IGCAdapter getGCAdapter( Canvas canvas ) {
+    return canvas.getAdapter( IGCAdapter.class );
   }
 
 }

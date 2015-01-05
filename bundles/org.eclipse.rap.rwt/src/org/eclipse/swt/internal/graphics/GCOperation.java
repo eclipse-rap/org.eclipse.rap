@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -199,6 +199,40 @@ public abstract class GCOperation {
       this.types = types;
       this.points = points;
       this.fill = fill;
+    }
+
+  }
+
+  public static final class SetClipping extends GCOperation {
+
+    public final byte[] types;
+    public final float[] points;
+    public final Rectangle rectangle;
+
+    public SetClipping() {
+      types = null;
+      points = null;
+      rectangle = null;
+    }
+
+    public SetClipping( Rectangle rectangle ) {
+      this.types = null;
+      this.points = null;
+      this.rectangle = rectangle;
+    }
+
+    public SetClipping( byte[] types, float[] points ) {
+      this.types = types;
+      this.points = points;
+      rectangle = null;
+    }
+
+    public boolean isRectangular() {
+      return rectangle != null;
+    }
+
+    public boolean isReset() {
+      return types == null && points == null && rectangle == null;
     }
 
   }
