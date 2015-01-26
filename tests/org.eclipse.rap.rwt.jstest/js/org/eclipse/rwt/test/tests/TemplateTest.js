@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -216,6 +216,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 75, getLeft( element.firstChild ) );
     },
 
+    testGetCellLeft_LeftAndRightAreUndefined : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "width" : 10,
+        "right" : undefined,
+        "left" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 90, getLeft( element.firstChild ) );
+    },
+
     testGetCellLeft_LeftIsUndefinedWithRenderOffset : function() {
       var template = createTemplate( {
         "bindingIndex" : 0,
@@ -280,6 +295,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
                             { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 5, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopAndBottomAreUndefined : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "height" : 10,
+        "bottom" : undefined,
+        "top" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 20, getTop( element.firstChild ) );
     },
 
     testGetCellTop_TopIsUndefinedWithRenderOffset : function() {
