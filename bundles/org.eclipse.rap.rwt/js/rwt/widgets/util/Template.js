@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,7 +324,8 @@ rwt.widgets.util.Template.prototype = {
              + Math.round( cellData.left[ 0 ] * options.bounds[ 2 ] / 100 )
              + cellData.left[ 1 ];
     }
-    return options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - cellData.right[ 1 ];
+    var right = cellData.right ? cellData.right[ 1 ] : 0;
+    return options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - right;
   },
 
   _getCellTop : function( options, cell ) {
@@ -334,7 +335,8 @@ rwt.widgets.util.Template.prototype = {
              + Math.round( cellData.top[ 0 ] * options.bounds[ 3 ] / 100 )
              + cellData.top[ 1 ];
     }
-    return options.bounds[ 1 ] + options.bounds[ 3 ] - cellData.height - cellData.bottom[ 1 ];
+    var bottom = cellData.bottom ? cellData.bottom[ 1 ] : 0;
+    return options.bounds[ 1 ] + options.bounds[ 3 ] - cellData.height - bottom;
   },
 
   _getCellRight : function( options, cell ) {
