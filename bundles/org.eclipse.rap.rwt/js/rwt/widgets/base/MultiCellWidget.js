@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -295,15 +295,19 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     },
 
     _createSubElements : function() {
-      this.$el.empty();
       for( var i = 0; i < this.__cellCount; i++ ) {
-        this.__setCellNode( i, null );
-        if( this._cellHasContent( i ) ) {
+        var hasContent = this._cellHasContent( i );
+        var hasNode = this.getCellNode( i ) != null;
+        if( !hasNode && hasContent ) {
           if( this._isTextCell( i ) ) {
             this.__setCellNode( i, $labelTemplate.clone() );
           } else if( this._isImageCell( i ) ) {
             this.__setCellNode( i, $imageTemplate.clone() );
           }
+        } else if( hasNode && !hasContent ) {
+          this.$cells[ i ].css( "display", "none" );
+        } else if( hasNode && hasContent && this.isCellVisible( i ) ) {
+          this.$cells[ i ].css( "display", "" );
         }
       }
       if( !this.getEnabled() ) {

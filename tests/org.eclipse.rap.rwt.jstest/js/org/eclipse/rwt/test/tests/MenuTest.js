@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -385,18 +385,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu.addMenuItemAt( item5, 0 );
       TestUtil.flush();
       assertTrue( itemsXLayoutIsIdentical( menu ) );
-      item2.setImage( "bla.jpg", 20, 20  );
+      item2.setImage( "bla.jpg", 20, 20 );
       TestUtil.flush();
       assertTrue( itemsXLayoutIsIdentical( menu ) );
-      item3.setImage( "bla.jpg", 40, 40  );
+      item3.setImage( "bla.jpg", 40, 40 );
       TestUtil.flush();
       assertTrue( itemsXLayoutIsIdentical( menu ) );
-      item3.setImage( null, 0, 0  );
+      item3.setImage( null, 0, 0 );
       item2.setArrow( [ "bla.jpg", 13, 13 ] );
       item2.setSelectionIndicator( [ "bla.jpg", 13, 13 ] );
       TestUtil.flush();
       assertTrue( itemsXLayoutIsIdentical( menu ) );
-      item2.setImage( null, 0, 0  );
+      item2.setImage( null, 0, 0 );
       item2.setArrow( null );
       item2.setSelectionIndicator( null );
       TestUtil.flush();
@@ -1871,7 +1871,6 @@ var createMenuBar = function( type, barItemType ) {
 };
 
 var itemsXLayoutIsIdentical = function( menu ) {
-  var ret = true;
   var children = menu._layout.getChildren();
   if( children.length >= 2 ) {
     var masterLayout = null;
@@ -1885,17 +1884,17 @@ var itemsXLayoutIsIdentical = function( menu ) {
         for( var key in masterLayout ) {
           var value = layout[ key ];
           var masterValue = masterLayout[ key ];
-          if( masterValue == null && value != null ){
+          if( masterValue == null && value != null ) {
             masterLayout[ key ] = value;
           }
           if( value != null && masterValue != null && value != masterValue ) {
-            ret = false;
+            return false;
           }
         }
       }
     }
   }
-  return ret;
+  return true;
 };
 
 var getMenuItemLayout = function( item ) {
@@ -1912,25 +1911,25 @@ var getMenuItemLayout = function( item ) {
     arrowWidth : null
   };
   node = item.getCellNode( 0 );
-  if( node ) {
+  if( node && node.style.display !== "none" ) {
     nodeBounds = TestUtil.getElementBounds( node );
     layout.indicatorLeft = nodeBounds.left;
     layout.indicatorWidth = nodeBounds.width;
   }
   node = item.getCellNode( 1 );
-  if( node ) {
+  if( node && node.style.display !== "none" ) {
     nodeBounds = TestUtil.getElementBounds( node );
     layout.iconLeft = nodeBounds.left;
     layout.iconWidth = nodeBounds.width;
   }
   node = item.getCellNode( 2 );
-  if( node ) {
+  if( node && node.style.display !== "none" ) {
     nodeBounds = TestUtil.getElementBounds( node );
     layout.labelLeft = nodeBounds.left;
     layout.labelWidth = nodeBounds.width;
   }
   node = item.getCellNode( 3 );
-  if( node ) {
+  if( node && node.style.display !== "none" ) {
     nodeBounds = TestUtil.getElementBounds( node );
     layout.arrowLeft = nodeBounds.left;
     layout.arrowWidth = nodeBounds.width;

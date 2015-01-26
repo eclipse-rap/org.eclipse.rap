@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
 
     testEmptyContentNotCreated : function() {
       var widget = this.createDefaultWidget();
-      this.initWidget( widget, true );
+      this.initWidget( widget, false );
       widget.setCellContent( 0, null );
       widget.setCellContent( 1, null );
       TestUtil.flush();
@@ -74,6 +74,54 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       }
       assertEquals( "test text", widget._getTargetNode().lastChild.innerHTML );
       this.disposeWidget( widget );
+    },
+
+    testSetCellContent_createsCellNode : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, false );
+
+      widget.setCellContent( 1, "foo" );
+      TestUtil.flush();
+
+      assertNotNull( widget.getCellNode( 1 ) );
+    },
+
+    testSetCellContent_hidesEmptyCells : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+
+      widget.setCellContent( 1, null );
+      TestUtil.flush();
+
+      var node1 = widget._getTargetNode().lastChild;
+      assertEquals( "none", node1.style.display );
+    },
+
+    testSetCellContent_showsNotEmptyCells : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setCellContent( 1, null );
+      TestUtil.flush();
+
+      widget.setCellContent( 1, "foo" );
+      TestUtil.flush();
+
+      var node1 = widget._getTargetNode().lastChild;
+      assertEquals( "", node1.style.display );
+    },
+
+    testSetCellContent_doesNotShowInvisibleCells : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setCellVisible( 1, false );
+      widget.setCellContent( 1, null );
+      TestUtil.flush();
+
+      widget.setCellContent( 1, "foo" );
+      TestUtil.flush();
+
+      var node1 = widget._getTargetNode().lastChild;
+      assertEquals( "none", node1.style.display );
     },
 
     testSetCellVisible : function() {
