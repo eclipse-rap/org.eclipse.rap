@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -378,6 +378,91 @@ rwt.remote.HandlerUtil = {
   _controlScriptingMethods : /** @lends Control.prototype */ {
 
     /**
+     * @description  Forces the receiver to have the <em>keyboard focus</em>, causing
+     * all keyboard events to be delivered to it.
+     * @return {boolean} <code>true</code> if the control got focus, and <code>false</code> if it was unable to.
+     */
+    forceFocus : function() {
+      var result = false;
+      if( this.getEnabled() && rwt.widgets.util.WidgetUtil.isVisible( this ) ) {
+        var id = rwt.remote.ObjectRegistry.getId( this );
+        rwt.widgets.Display.getCurrent().setFocusControl( id );
+        result = true;
+      }
+      return result;
+    },
+
+    /**
+     * @description Returns the receiver's background color.
+     * @return {int[]} the background color as array [ red, green, blue ]
+     */
+    getBackground : function() {
+      return rwt.util.Colors.stringToRgb( this.getBackgroundColor() );
+    },
+
+    /**
+     * @description Returns the receiver's foreground color.
+     * @return {int[]} the foreground color as array [ red, green, blue ]
+     */
+    getForeground : function() {
+      return rwt.util.Colors.stringToRgb( this.getTextColor() );
+    },
+
+    /**
+    * @description Returns the receiver's tool tip text, or null if it has
+    * not been set.
+    * @return {string|null} the receiver's tool tip text
+    */
+    getToolTipText : function() {
+      return this.getToolTipText();
+    },
+
+    /**
+    * @description Returns <code>true</code> if the receiver is visible, and
+    * <code>false</code> otherwise.
+    * <p>
+    * If one of the receiver's ancestors is not visible or some
+    * other condition makes the receiver not visible, this method
+    * may still indicate that it is considered visible even though
+    * it may not actually be showing.
+    * </p>
+    * @return {boolean} the receiver's visibility state
+    */
+    getVisible : function() {
+      return this.getVisibility();
+    },
+
+    /**
+    * @description Returns <code>true</code> if the receiver is enabled, and
+    * <code>false</code> otherwise. A disabled control is typically
+    * not selectable from the user interface and draws with an
+    * inactive or "grayed" look.
+    * @return {boolean} the receiver's enabled state
+    */
+    getEnabled : function() {
+     return this.getEnabled();
+    },
+
+    /**
+    * @description Returns the receiver's cursor, or null if it has not been set.
+    * <p>
+    * When the mouse pointer passes over a control its appearance
+    * is changed to match the control's cursor.
+    * </p>
+    * <p>
+    * All possible values are available as constants on the {@link SWT} object.
+    * </p>
+    * @return {string|null} the receiver's cursor or <code>null</code>
+    */
+    getCursor : function() {
+      return this.__user$cursor || null;
+    }
+
+  },
+
+  _widgetScriptingMethods : /** @lends Widget.prototype */ {
+
+    /**
      * @name addListener
      * @methodOf Control#
      * @description Register the function as a listener of the given type
@@ -442,81 +527,8 @@ rwt.remote.HandlerUtil = {
         result = data[ property ];
       }
       return result;
-    },
-    /**
-     * @description  Forces the receiver to have the <em>keyboard focus</em>, causing
-     * all keyboard events to be delivered to it.
-     * @return {boolean} <code>true</code> if the control got focus, and <code>false</code> if it was unable to.
-     */
-    forceFocus : function() {
-      var result = false;
-      if( this.getEnabled() && rwt.widgets.util.WidgetUtil.isVisible( this ) ) {
-        var id = rwt.remote.ObjectRegistry.getId( this );
-        rwt.widgets.Display.getCurrent().setFocusControl( id );
-        result = true;
-      }
-      return result;
-    },
-    /**
-     * @description Returns the receiver's background color.
-     * @return {int[]} the background color as array [ red, green, blue ]
-     */
-    getBackground : function() {
-       return rwt.util.Colors.stringToRgb( this.getBackgroundColor() );
-    },
-    /**
-     * @description Returns the receiver's foreground color.
-     * @return {int[]} the foreground color as array [ red, green, blue ]
-     */
-    getForeground : function() {
-       return rwt.util.Colors.stringToRgb( this.getTextColor() );
-     },
-     /**
-      * @description Returns the receiver's tool tip text, or null if it has
-      * not been set.
-      * @return {string|null} the receiver's tool tip text
-      */
-     getToolTipText : function() {
-       return this.getToolTipText();
-     },
-     /**
-      * @description Returns <code>true</code> if the receiver is visible, and
-      * <code>false</code> otherwise.
-      * <p>
-      * If one of the receiver's ancestors is not visible or some
-      * other condition makes the receiver not visible, this method
-      * may still indicate that it is considered visible even though
-      * it may not actually be showing.
-      * </p>
-      * @return {boolean} the receiver's visibility state
-      */
-     getVisible : function() {
-        return this.getVisibility();
-     },
-     /**
-      * @description Returns <code>true</code> if the receiver is enabled, and
-      * <code>false</code> otherwise. A disabled control is typically
-      * not selectable from the user interface and draws with an
-      * inactive or "grayed" look.
-      * @return {boolean} the receiver's enabled state
-      */
-     getEnabled : function() {
-       return this.getEnabled();
-     },
-     /**
-      * @description Returns the receiver's cursor, or null if it has not been set.
-      * <p>
-      * When the mouse pointer passes over a control its appearance
-      * is changed to match the control's cursor.
-      * </p>
-      * <p>
-      * All possible values are available as constants on the {@link SWT} object.
-      * </p>
-      * @return {string|null} the receiver's cursor or <code>null</code>
-      */
-      getCursor : function() {
-        return this.__user$cursor || null;
-      }
+    }
+
   },
 
   ////////////////////

@@ -17,10 +17,31 @@ describe( "WidgetProxyFactory", function() {
   var WidgetProxyFactory = rwt.scripting.WidgetProxyFactory;
   var EventBinding = rwt.scripting.EventBinding;
 
-  var text;
+  var widget;
 
-  beforeEach( function() {
-    TestUtil.createShellByProtocol( "w2" );
+  function createWidget() {
+    rwt.remote.HandlerRegistry.add( "rwt.widgets.AnyWidget", {
+      factory: function( properties ) {
+        var result = new rwt.widgets.base.Terminator();
+        result.classname = "rwt.widgets.AnyWidget";
+        rwt.remote.HandlerUtil.setParent( result, properties.parent );
+        return result;
+      }
+    } );
+    Processor.processOperation( {
+      "target" : "w4",
+      "action" : "create",
+      "type" : "rwt.widgets.AnyWidget",
+      "properties" : {
+        "parent" : "w2"
+      }
+    } );
+    TestUtil.flush();
+    widget = ObjectManager.getObject( "w4" );
+    return widget;
+  }
+
+  function createText() {
     Processor.processOperation( {
       "target" : "w3",
       "action" : "create",
@@ -31,8 +52,13 @@ describe( "WidgetProxyFactory", function() {
       }
     } );
     TestUtil.flush();
-    text = ObjectManager.getObject( "w3" );
-    text.focus();
+    widget = ObjectManager.getObject( "w3" );
+    widget.focus();
+    return widget;
+  }
+
+  beforeEach( function() {
+    TestUtil.createShellByProtocol( "w2" );
   } );
 
   afterEach( function() {
@@ -40,12 +66,13 @@ describe( "WidgetProxyFactory", function() {
       "target" : "w2",
       "action" : "destroy"
     } );
-    text = null;
+    widget = null;
+    rwt.remote.HandlerRegistry.remove( "rwt.widgets.AnyWidget" );
     org.eclipse.rwt.test.fixture.Fixture.reset();
   } );
 
   it( "is used by rap.getObject", function() {
-    var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+    var widgetProxy = WidgetProxyFactory.getWidgetProxy( createText() );
 
     var otherProxy = rap.getObject( "w3" );
 
@@ -53,82 +80,60 @@ describe( "WidgetProxyFactory", function() {
   } );
 
   it( "creates only one proxy per object", function() {
-    var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( text );
-    var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( text );
+    createText();
+
+    var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( widget );
+    var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( widget );
 
     expect( widgetProxy1 ).toBe( widgetProxy2 );
   } );
 
-  it( "disposes proxy with original", function() {
-    var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+  describe( "any rwt widget proxy", function() {
 
-    text.destroy();
-    TestUtil.flush();
+    beforeEach(function() {
+      createWidget();
+    });
 
-    expect( TestUtil.hasNoObjects( widgetProxy ) ).toBeTruthy();
-  } );
+    it( "is disposed with original", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
-  it( "disposes user data", function() {
-    var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-    widgetProxy.setData( "key", {} );
-    var data = rwt.remote.HandlerUtil.getServerData( text );
-    expect( TestUtil.hasNoObjects( data ) ).toBeFalsy();
+      widget.destroy();
+      TestUtil.flush();
 
-    text.destroy();
-    TestUtil.flush();
-
-    expect( TestUtil.hasNoObjects( data ) ).toBeTruthy();
-  } );
-
-  describe( "any proxy", function() {
-
-    it( "has setter and getter", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-
-      widgetProxy.setText( "foo" );
-
-      expect( text.getValue() ).toBe( "foo" );
-    } );
-
-    it( "has setVisible instead of setVisibility", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-
-      widgetProxy.setVisible( false );
-
-      expect( text.getVisibility() ).toBeFalsy();
-    } );
-
-    it( "has working setData and getData", function() {
-      var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( text );
-      var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( text );
-
-      widgetProxy1.setData( "myKey", 24 );
-
-      expect( widgetProxy2.getData( "myWrongKey" ) ).toBeNull();
-      expect( widgetProxy2.getData( "myKey" ) ).toBe( 24 );
-    } );
-
-    it( "setData fires dataChanged event on original", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-      var listener = jasmine.createSpy( "listener" );
-      text.addEventListener( "dataChanged", listener );
-
-      widgetProxy.setData( "myKey", 24 );
-
-      expect( listener ).toHaveBeenCalled();
+      expect( TestUtil.hasNoObjects( widgetProxy ) ).toBeTruthy();
     } );
 
     describe( "setData", function() {
 
+      it( "sets data", function() {
+        var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( widget );
+        var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( widget );
+
+        widgetProxy1.setData( "myKey", 24 );
+
+        expect( widgetProxy2.getData( "myWrongKey" ) ).toBeNull();
+        expect( widgetProxy2.getData( "myKey" ) ).toBe( 24 );
+      } );
+
+      it( "fires dataChanged event on original", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        var listener = jasmine.createSpy( "listener" );
+        widget.addEventListener( "dataChanged", listener );
+
+        widgetProxy.setData( "myKey", 24 );
+
+        expect( listener ).toHaveBeenCalled();
+      } );
+
       it( "throws exception for too many arguments", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         expect( function(){
           widgetProxy.setData( "myKey", 24, "foo" );
         } ).toThrow();
       } );
 
       it( "throws exception for too few arguments", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         expect( function(){
           widgetProxy.setData( 24 );
         } ).toThrow();
@@ -139,14 +144,14 @@ describe( "WidgetProxyFactory", function() {
     describe( "setData", function() {
 
       it( "throws exception for too many arguments", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         expect( function() {
           widgetProxy.getData( "myKey", 24 );
         } ).toThrow();
       } );
 
       it( "throws exception for too few arguments", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
         expect( function() {
           widgetProxy.getData();
         } ).toThrow();
@@ -154,8 +159,144 @@ describe( "WidgetProxyFactory", function() {
 
     } );
 
+    it( "clears user data on dispose", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+      widgetProxy.setData( "key", {} );
+      var data = rwt.remote.HandlerUtil.getServerData( widget );
+      expect( TestUtil.hasNoObjects( data ) ).toBeFalsy();
+
+      widget.destroy();
+      TestUtil.flush();
+
+      expect( TestUtil.hasNoObjects( data ) ).toBeTruthy();
+    } );
+
+    describe( "$el", function() {
+
+      it( "is attached", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+        expect( widgetProxy.$el instanceof Object ).toBeTruthy();
+      } );
+
+      it( "does not exist for non-widget", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( {} );
+
+        expect( widgetProxy.$el ).toBeUndefined();
+      } );
+
+      it( "wraps same widget", function() {
+        widget.setHtmlAttribute( "foo", "bar" );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+        expect( widgetProxy.$el.attr( "foo" ) ).toBe( "bar" );
+      } );
+
+    } );
+
+  } );
+
+  describe( "any rwt control proxy", function() {
+
+    beforeEach(function() {
+      createText();
+    });
+
+    it( "is disposed with original", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+      widget.destroy();
+      TestUtil.flush();
+
+      expect( TestUtil.hasNoObjects( widgetProxy ) ).toBeTruthy();
+    } );
+
+    it( "has setter and getter", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+      widgetProxy.setText( "foo" );
+
+      expect( widget.getValue() ).toBe( "foo" );
+    } );
+
+    it( "has setVisible instead of setVisibility", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+      widgetProxy.setVisible( false );
+
+      expect( widget.getVisibility() ).toBeFalsy();
+    } );
+
+    describe( "setData", function() {
+
+      it( "sets data", function() {
+        var widgetProxy1 = WidgetProxyFactory.getWidgetProxy( widget );
+        var widgetProxy2 = WidgetProxyFactory.getWidgetProxy( widget );
+
+        widgetProxy1.setData( "myKey", 24 );
+
+        expect( widgetProxy2.getData( "myWrongKey" ) ).toBeNull();
+        expect( widgetProxy2.getData( "myKey" ) ).toBe( 24 );
+      } );
+
+      it( "fires dataChanged event on original", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        var listener = jasmine.createSpy( "listener" );
+        widget.addEventListener( "dataChanged", listener );
+
+        widgetProxy.setData( "myKey", 24 );
+
+        expect( listener ).toHaveBeenCalled();
+      } );
+
+      it( "throws exception for too many arguments", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        expect( function(){
+          widgetProxy.setData( "myKey", 24, "foo" );
+        } ).toThrow();
+      } );
+
+      it( "throws exception for too few arguments", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        expect( function(){
+          widgetProxy.setData( 24 );
+        } ).toThrow();
+      } );
+
+    } );
+
+    describe( "setData", function() {
+
+      it( "throws exception for too many arguments", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        expect( function() {
+          widgetProxy.getData( "myKey", 24 );
+        } ).toThrow();
+      } );
+
+      it( "throws exception for too few arguments", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        expect( function() {
+          widgetProxy.getData();
+        } ).toThrow();
+      } );
+
+    } );
+
+    it( "clear user data on dispose", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+      widgetProxy.setData( "key", {} );
+      var data = rwt.remote.HandlerUtil.getServerData( widget );
+      expect( TestUtil.hasNoObjects( data ) ).toBeFalsy();
+
+      widget.destroy();
+      TestUtil.flush();
+
+      expect( TestUtil.hasNoObjects( data ) ).toBeTruthy();
+    } );
+
     it( "delegates setBackground and getBackground", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setBackground( [ 1, 2, 3 ] );
 
@@ -163,7 +304,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegates setForeground and getForeground", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setForeground( [ 1, 2, 3 ] );
 
@@ -171,7 +312,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegates setToolTipText and getToolTipText", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setToolTipText( "foo" );
 
@@ -179,7 +320,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegates getVisible and setVisible", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setVisible( false );
 
@@ -187,7 +328,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegats setEnabled and getEnabled", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setEnabled( false );
 
@@ -195,7 +336,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegats setCursor and getCursor", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setCursor( SWT.CURSOR_HELP );
 
@@ -212,16 +353,9 @@ describe( "WidgetProxyFactory", function() {
         expect( widgetProxy.$el instanceof Object ).toBeTruthy();
       } );
 
-      it( "does not exist for any widget rwt.widgets.base", function() {
-        var fake = new rwt.widgets.base.Terminator();
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( fake );
-
-        expect( widgetProxy.$el ).toBeUndefined();
-      } );
-
       it( "wraps same widget", function() {
-        text.setHtmlAttribute( "foo", "bar" );
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        widget.setHtmlAttribute( "foo", "bar" );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
         expect( widgetProxy.$el.attr( "foo" ) ).toBe( "bar" );
       } );
@@ -239,23 +373,23 @@ describe( "WidgetProxyFactory", function() {
       } );
 
       it( "exists for text", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
         expect( widgetProxy.$input instanceof Object ).toBeTruthy();
       } );
 
       it( "has type attribute", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
         expect( widgetProxy.$input.attr( "type" ) ).toBe( "text" );
       } );
 
       it( "sets html attribute", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
         widgetProxy.$input.attr( "foo", "bar" );
 
-        expect( text.getInputElement().getAttribute( "foo" )  ).toBe( "bar" );
+        expect( widget.getInputElement().getAttribute( "foo" )  ).toBe( "bar" );
       } );
 
     } );
@@ -264,8 +398,12 @@ describe( "WidgetProxyFactory", function() {
 
   describe( "text proxy", function() {
 
+    beforeEach(function() {
+      createText();
+    });
+
     it( "synchronizes text value to server", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widgetProxy.setText( "foo" );
       rwt.remote.Connection.getInstance().send();
@@ -274,8 +412,8 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegates getText", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-      text.setValue( "foo" );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+      widget.setValue( "foo" );
 
       var value = widgetProxy.getText();
 
@@ -283,9 +421,9 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "delegates getSelection", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-      text.setValue( "foo" );
-      text.setSelection( [ 1,2 ] );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+      widget.setValue( "foo" );
+      widget.setSelection( [ 1,2 ] );
 
       var value = widgetProxy.getSelection();
 
@@ -293,7 +431,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "returns true for getEditable", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       var value = widgetProxy.getEditable();
 
@@ -301,7 +439,7 @@ describe( "WidgetProxyFactory", function() {
     } );
 
     it( "returns false for getEditable", function() {
-      var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
       widgetProxy.setEditable( false );
 
       var value = widgetProxy.getEditable();
@@ -309,49 +447,73 @@ describe( "WidgetProxyFactory", function() {
       expect( value ).toBeFalsy();
     } );
 
+    describe( "$input", function() {
+
+      it( "is attached", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+        expect( widgetProxy.$input instanceof Object ).toBeTruthy();
+      } );
+
+      it( "has type attribute", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+        expect( widgetProxy.$input.attr( "type" ) ).toBe( "text" );
+      } );
+
+      it( "sets html attribute", function() {
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+        widgetProxy.$input.attr( "foo", "bar" );
+
+        expect( widget.getInputElement().getAttribute( "foo" )  ).toBe( "bar" );
+      } );
+
+    } );
+
     describe( "forceFocus", function() {
 
       it( "focuses widget", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-        text.blur();
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        widget.blur();
 
         var value = widgetProxy.forceFocus();
 
-        expect( text.isFocused() ).toBeTruthy();
+        expect( widget.isFocused() ).toBeTruthy();
         expect( value ).toBeTruthy();
       } );
 
       it( "does not focus invisible widget", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-        text.blur();
-        text.setVisibility( false );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        widget.blur();
+        widget.setVisibility( false );
 
         var value = widgetProxy.forceFocus();
 
-        expect( text.isFocused() ).toBeFalsy();
+        expect( widget.isFocused() ).toBeFalsy();
         expect( value ).toBeFalsy();
       } );
 
       it( "does not focus widget with invisible parent", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-        text.blur();
-        text.getParent().setVisibility( false );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        widget.blur();
+        widget.getParent().setVisibility( false );
         TestUtil.flush();
 
         var value = widgetProxy.forceFocus();
 
-        expect( text.isFocused() ).toBeFalsy();
+        expect( widget.isFocused() ).toBeFalsy();
         expect( value ).toBeFalsy();
       } );
 
       it( "does not focus disabled widget", function() {
-        var widgetProxy = WidgetProxyFactory.getWidgetProxy( text );
-        text.blur();
-        text.setEnabled( false );
+        var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+        widget.blur();
+        widget.setEnabled( false );
 
         var value = widgetProxy.forceFocus();
 
-        expect( text.isFocused() ).toBeFalsy();
+        expect( widget.isFocused() ).toBeFalsy();
         expect( value ).toBeFalsy();
       } );
 

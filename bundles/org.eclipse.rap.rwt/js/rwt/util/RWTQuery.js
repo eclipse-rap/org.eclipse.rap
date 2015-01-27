@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ namespace( "rwt.util" );
 (function(){
 
   var Style = rwt.html.Style;
+  var WidgetUtil = rwt.widgets.util.WidgetUtil;
 
 /**
  * @private
@@ -41,7 +42,7 @@ rwt.util._RWTQuery.prototype = $.prototype = {
       target = parseHTML( target );
     }
     this.__access = function( args, callbackWidget, callbackElement ) {
-      if( isWidget( target ) ) {
+      if( WidgetUtil.isWidget( target ) ) {
         if( typeof callbackWidget === "function" ) {
           return callbackWidget.apply( this, [ target, args, privileged ] );
         } else if( typeof callbackWidget === "string" ) {
@@ -533,16 +534,11 @@ var ensureWidgetElement = function( widget ) {
 };
 
 var asElement = function( target, widgetElementGetter ) {
-  if( isWidget( target ) ) {
+  if( WidgetUtil.isWidget( target ) ) {
     ensureWidgetElement( target );
     return target[ ( widgetElementGetter || "getElement" ) ]();
   }
   return target instanceof $ ? target.get( 0 ) : target;
-};
-
-var isWidget = function( target ) {
-  return    ( ( target.classname || "" ).indexOf( "rwt.widgets" ) === 0 )
-         || ( target instanceof rwt.widgets.base.Widget );
 };
 
 }());
