@@ -216,6 +216,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
       assertEquals( 75, getLeft( element.firstChild ) );
     },
 
+    testGetCellLeft_LeftIsUndefinedWithPercentageForRight : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "width" : 10,
+        "right" : [ 25, 15 ],
+        "left" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 30 ] } );
+
+      assertEquals( 50, getLeft( element.firstChild ) );
+    },
+
     testGetCellLeft_LeftAndRightAreUndefined : function() {
       var template = createTemplate( {
         "bindingIndex" : 0,
@@ -295,6 +310,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TemplateTest", {
                             { "bounds" : [ 0, 0, 100, 30 ] } );
 
       assertEquals( 5, getTop( element.firstChild ) );
+    },
+
+    testGetCellTop_TopIsUndefinedWithPercentageForBottom : function() {
+      var template = createTemplate( {
+        "bindingIndex" : 0,
+        "type" : "text",
+        "height" : 10,
+        "bottom" : [ 25, 15 ],
+        "top" : undefined
+      } );
+      var element = render( template,
+                            createGridItem( [ "foo" ] ),
+                            { "bounds" : [ 0, 0, 100, 60 ] } );
+
+      assertEquals( 20, getTop( element.firstChild ) );
     },
 
     testGetCellTop_TopAndBottomAreUndefined : function() {

@@ -321,7 +321,7 @@ rwt.widgets.util.Template.prototype = {
              + Math.round( cellData.left[ 0 ] * options.bounds[ 2 ] / 100 )
              + cellData.left[ 1 ];
     }
-    var right = cellData.right ? cellData.right[ 1 ] : 0;
+    var right = this._getCellRight( options, cell );
     return options.bounds[ 0 ] + options.bounds[ 2 ] - cellData.width - right;
   },
 
@@ -332,7 +332,7 @@ rwt.widgets.util.Template.prototype = {
              + Math.round( cellData.top[ 0 ] * options.bounds[ 3 ] / 100 )
              + cellData.top[ 1 ];
     }
-    var bottom = cellData.bottom ? cellData.bottom[ 1 ] : 0;
+    var bottom = this._getCellBottom( options, cell );
     return options.bounds[ 1 ] + options.bounds[ 3 ] - cellData.height - bottom;
   },
 
