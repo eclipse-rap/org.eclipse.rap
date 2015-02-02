@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,9 +174,7 @@ rwt.widgets.Display.prototype = {
   },
 
   _appendWindowSize : function() {
-    var width = rwt.html.Window.getInnerWidth( window );
-    var height = rwt.html.Window.getInnerHeight( window );
-    var bounds = [ 0, 0, width, height ];
+    var bounds = [ 0, 0, window.innerWidth, window.innerHeight ];
     rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "bounds", bounds );
   },
 

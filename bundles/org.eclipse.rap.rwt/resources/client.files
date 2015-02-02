@@ -101,7 +101,6 @@ rwt/html/Iframes.js
 rwt/remote/Request.js
 rwt/widgets/base/ToolTip.js
 rwt/widgets/util/ToolTipManager.js
-rwt/html/Window.js
 rwt/client/FileUploader.js
 rwt/remote/handler/FileUploaderHandler.js
 rwt/client/BrowserNavigation.js

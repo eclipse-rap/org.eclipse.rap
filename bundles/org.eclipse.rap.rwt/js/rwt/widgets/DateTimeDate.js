@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -782,8 +782,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _setCalendarLocation : function() {
       if( this.getElement() && this._calendar != null ) {
-        var browserWidth = rwt.html.Window.getInnerWidth( window );
-        var browserHeight = rwt.html.Window.getInnerHeight( window );
+        var browserWidth = window.innerWidth;
+        var browserHeight = window.innerHeight;
         var elementPos = rwt.html.Location.get( this.getElement() );
         var left = elementPos.left;
         var top = elementPos.top + this.getHeight();
