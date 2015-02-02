@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -597,6 +597,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       processor.processMessage( message );
       assertEquals( [ "height", 33, "width", 24 ], targetObject.getLog() );
       registry.remove( "dummyType" );
+    },
+
+    testProcessMessage_firesGlobalEvents : function() {
+      var log = [];
+      var message = { "head": {}, "operations" : [ [ "call", "dummyId", "processing"] ] };
+      rwt.remote.HandlerRegistry.add( "dummyType", { methods : [ "processing" ] } );
+      this._getDummyTarget( "dummyId" ).processing = function() { log.push( "processing" ); };
+      rap.on( "receive", function(arg) { log.push( "receive", arg ); } );
+      rap.on( "process", function(arg) { log.push( "process", arg ); } );
+
+      rwt.remote.MessageProcessor.processMessage( message, function() {
+        log.push( "callback" );
+      } );
+
+      assertEquals( [ "receive", message, "processing", "process", message, "callback" ], log );
+      rwt.remote.HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessMessage_withCallback : function() {
