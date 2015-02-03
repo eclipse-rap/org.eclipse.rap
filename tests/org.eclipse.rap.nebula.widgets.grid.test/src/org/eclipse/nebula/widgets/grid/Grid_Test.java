@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2942,6 +2942,32 @@ public class Grid_Test {
 
     assertFalse( grid.layoutCache.hasHeaderHeight() );
     assertFalse( grid.layoutCache.hasFooterHeight() );
+  }
+
+  @Test
+  public void testGetImageWidth_withoutCellPadding() {
+    fakeCellPadding( grid, new Rectangle( 0, 0, 0, 0 ) );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+    columns[ 1 ].setWidth( 100 );
+    GridItem item = new GridItem( grid, SWT.NONE );
+    item.setImage( 1, loadImage( display, Fixture.IMAGE_100x50 ) );
+
+    int imageWidth = grid.getAdapter( IGridAdapter.class ).getImageWidth( 1 );
+
+    assertEquals( 100, imageWidth );
+  }
+
+  @Test
+  public void testGetImageWidth_withCellPadding() {
+    fakeCellPadding( grid, new Rectangle( 5, 0, 0, 0 ) );
+    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
+    columns[ 1 ].setWidth( 100 );
+    GridItem item = new GridItem( grid, SWT.NONE );
+    item.setImage( 1, loadImage( display, Fixture.IMAGE_100x50 ) );
+
+    int imageWidth = grid.getAdapter( IGridAdapter.class ).getImageWidth( 1 );
+
+    assertEquals( 95, imageWidth );
   }
 
   //////////////////

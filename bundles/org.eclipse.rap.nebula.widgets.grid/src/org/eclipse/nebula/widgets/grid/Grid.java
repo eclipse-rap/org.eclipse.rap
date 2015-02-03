@@ -2852,17 +2852,15 @@ public class Grid extends Composite {
   }
 
   private int getImageWidth( int index ) {
-    int result = 0;
     if( hasColumnImages( index ) ) {
-      result = getItemImageSize().x;
       int availableWidth = getCellWidth( index );
       if( !isTreeColumn( index ) ) {
-        result -= getCellPadding().x;
+        availableWidth -= getCellPadding().x;
       }
       availableWidth = Math.max( 0, availableWidth );
-      result = Math.min( result, availableWidth );
+      return Math.min( getItemImageSize().x, availableWidth );
     }
-    return result;
+    return 0;
   }
 
   private int getTextOffset( int index ) {
