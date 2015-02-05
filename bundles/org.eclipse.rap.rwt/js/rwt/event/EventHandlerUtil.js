@@ -56,7 +56,7 @@ rwt.event.EventHandlerUtil = {
   // GENERAL EVENT HANDLING
 
   getDomTarget : rwt.util.Variant.select( "qx.client", {
-    "webkit" : function( vDomEvent ) {
+    "webkit|blink" : function( vDomEvent ) {
       var vNode = vDomEvent.target || vDomEvent.srcElement;
       // Safari takes text nodes as targets for events
       if( vNode && ( vNode.nodeType == rwt.html.Nodes.TEXT ) ) {
@@ -347,7 +347,7 @@ rwt.event.EventHandlerUtil = {
     "default" : function( keyCode ) {
       return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
     },
-    "webkit" : function( keyCode ) {
+    "webkit|blink" : function( keyCode ) {
       return ( this._keyCodeToIdentifierMap[ keyCode ] || keyCode === 27 ) ? true : false;
     }
   } ),

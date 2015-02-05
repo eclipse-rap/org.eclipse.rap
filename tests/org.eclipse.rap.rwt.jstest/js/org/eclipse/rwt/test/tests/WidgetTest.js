@@ -437,7 +437,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
         TestUtil.flush();
         var result = this._getCssShadow( widget.getElement() );
         var expected;
-        if( rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
           // webkit currently outputs "rgba(9, 8, 7, 0.398438) 3px 5px 1px"
           assertTrue( result.indexOf( "3px 5px 1px" ) !== -1 );
           assertTrue( result.indexOf( "rgba(9, 8, 7, 0." ) !== -1 );
@@ -615,7 +615,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.setBackgroundPosition( "right bottom" );
       TestUtil.flush();
 
-      if( rwt.client.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
         assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
       } else {
         assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
@@ -634,7 +634,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       TestUtil.flush();
 
       assertEquals( "no-repeat", element.style.backgroundRepeat );
-      if( rwt.client.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
         assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
       } else {
         assertEquals( "right bottom", widget.getElement().style.backgroundPosition );
@@ -658,7 +658,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
 
         var element = widget.getElement();
         assertEquals( "no-repeat", element.style.backgroundRepeat );
-        if( rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
           assertEquals( "100% 100%", widget.getElement().style.backgroundPosition );
         } else {
           assertEquals( "right bottom", widget.getElement().style.backgroundPosition );

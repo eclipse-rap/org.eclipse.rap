@@ -412,7 +412,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
     // Webkit has problems with "new Image". Maybe related to "new Function" with
     // is also not working correctly.
     _createImageNode : rwt.util.Variant.select( "qx.client", {
-      "webkit" : function() {
+      "webkit|blink" : function() {
         this._image = document.createElement("img");
       },
       "default" : function() {
@@ -421,7 +421,7 @@ rwt.qx.Class.define("rwt.widgets.base.Image",
     } ),
 
     _imageNodeCreated : rwt.util.Variant.select( "qx.client", {
-      "gecko|webkit" : function() {
+      "gecko|webkit|blink" : function() {
         this._styleEnabled();
       },
       "default": rwt.util.Functions.returnTrue

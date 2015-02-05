@@ -57,7 +57,7 @@ rwt.qx.Class.define("rwt.html.Viewport",
      */
     getWidth : rwt.util.Variant.select("qx.client",
     {
-      "webkit" : function(win) {
+      "webkit|blink" : function(win) {
         return (win||window).innerWidth;
       },
 
@@ -101,7 +101,7 @@ rwt.qx.Class.define("rwt.html.Viewport",
      */
     getHeight : rwt.util.Variant.select("qx.client",
     {
-      "webkit" : function(win) {
+      "webkit|blink" : function(win) {
         return (win||window).innerHeight;
       },
 

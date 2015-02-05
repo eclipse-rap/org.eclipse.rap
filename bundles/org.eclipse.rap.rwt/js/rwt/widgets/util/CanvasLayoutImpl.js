@@ -250,7 +250,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
      */
     layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
-      "trident|webkit" : function(vChild, vJobs)
+      "trident|webkit|blink" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.width || vJobs.minWidth || vJobs.maxWidth || vJobs.left || vJobs.right)
         {
@@ -285,7 +285,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
      */
     layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
-      "trident|webkit" : function(vChild, vJobs)
+      "trident|webkit|blink" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.height || vJobs.minHeight || vJobs.maxHeight || vJobs.top || vJobs.bottom)
         {

@@ -737,7 +737,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
      */
     layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
-      "trident|webkit" : function(vChild, vJobs)
+      "trident|webkit|blink" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.width || vJobs.minWidth || vJobs.maxWidth)
         {
@@ -774,7 +774,7 @@ rwt.qx.Class.define("rwt.widgets.util.HorizontalBoxLayoutImpl",
      */
     layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
-      "trident|webkit" : function(vChild, vJobs)
+      "trident|webkit|blink" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.height || vJobs.minHeight || vJobs.maxHeight)
         {

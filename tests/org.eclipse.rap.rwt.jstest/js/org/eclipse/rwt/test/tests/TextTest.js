@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -538,7 +538,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
 
     testTextAreaMaxLength : rwt.util.Variant.select( "qx.client", {
-      "webkit" : function() {
+      "webkit|blink" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
         // prevents a textFields value from being overwritten and read in the
         // same call. In webkit it seems to fail randomly aswell.
@@ -970,7 +970,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var style = text._getTargetNode().firstChild.style;
       assertEquals( "10px", style.fontSize );
       assertEquals( "red", style.color );
-      if( Client.isGecko() || Client.isWebkit() ) {
+      if( !Client.isTrident() ) {
         assertTrue( style.textShadow.indexOf( "3px" ) != -1 );
       }
       assertEquals( "3px", style.left );
@@ -1196,7 +1196,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testTextFieldPreventEnter : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "webkit" : function() {
+      "webkit|blink" : function() {
         createText();
 
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
@@ -1208,7 +1208,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
     testTextAreaNotPreventEnter : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "webkit" : function() {
+      "webkit|blink" : function() {
         createText( false, true );
 
         var event = TestUtil.createFakeDomKeyEvent( text._inputElement, "keypress", "Enter" );
@@ -1503,7 +1503,7 @@ var typeCharacter = function( character ) {
   text._inValueProperty = true;
   text.getInputElement().value = newValue;
   text._inValueProperty = false;
-  if( Client.isWebkit() ) {
+  if( Client.isWebkit() || Client.isBlink() ) {
     text._setSelectionStart( newValue.length - character.length );
     text._oninput( { "propertyName" : "value" } );
     text._setSelectionStart( newValue.length );

@@ -450,7 +450,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     "default" : function() {
       return undefined;
     },
-    "gecko|webkit" : function( type, stringOrKeyCode ) {
+    "gecko|webkit|blink" : function( type, stringOrKeyCode ) {
       // NOTE [tb] : this is never called with keypress for webkit
       var result;
       if(    type === "keypress"
@@ -476,7 +476,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
                                 && idMap[ stringOrKeyCode ] != null;
     var result = isChar || isPrintableKeyCode || isPrintableIdentifier;
-    if( rwt.client.Client.isWebkit() ) {
+    if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
       if( stringOrKeyCode === 27 || stringOrKeyCode === "Escape" ) {
         result = false;
       }

@@ -67,7 +67,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.initWidget( widget, true );
 
       var url = TestUtil.getCssBackgroundImage( widget._getTargetNode().firstChild );
-      if( rwt.client.Client.isWebkit() ) {
+      if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
         assertTrue( url.indexOf( "test.jpg" ) !== -1 );
       } else {
         assertEquals( "test.jpg", url );

@@ -27,11 +27,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testEngine : function() {
-      var engines = [ "gecko", "webkit", "trident" ];
+      var engines = [ "gecko", "blink", "webkit", "trident" ];
       var currentEngine = Client.getEngine();
       assertTrue( engines.indexOf( currentEngine ) != -1 );
       var isEngine = 0;
       isEngine = Client.isGecko() ? isEngine + 1 : isEngine;
+      isEngine = Client.isBlink() ? isEngine + 1 : isEngine;
       isEngine = Client.isWebkit() ? isEngine + 1 : isEngine;
       isEngine = Client.isTrident() ? isEngine + 1 : isEngine;
       assertEquals( 1, isEngine );

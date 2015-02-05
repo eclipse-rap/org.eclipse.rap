@@ -418,7 +418,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertFalse( TestUtil._sendKeyPress( 112 ) );
         assertTrue( TestUtil._sendKeyPress( "Space" ) );
         assertTrue( TestUtil._sendKeyPress( 32 ) );
-        if( rwt.client.Client.isWebkit() ) {
+        if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
           assertFalse( TestUtil._sendKeyPress( "Escape" ) );
           assertFalse( TestUtil._sendKeyPress( 27 ) );
         } else {
@@ -518,7 +518,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       TestUtil.press( widget, "Enter" );
       var expected = rwt.util.Variant.select( "qx.client", {
-        "webkit" : [ 13, 13 ],
+        "webkit|blink" : [ 13, 13 ],
         "trident" : [ 13, undefined ],
         "default" : [ 13, 0 ]
       } );

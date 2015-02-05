@@ -107,7 +107,7 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
     __computeBody : rwt.util.Variant.select( "qx.client", {
-      "webkit" : function( elem ) {
+      "webkit|blink" : function( elem ) {
         // Find body element
         var doc = rwt.html.Nodes.getDocument(elem);
         var body = doc.body;
@@ -208,7 +208,7 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
     __computeOffset : rwt.util.Variant.select( "qx.client", {
-      "trident|webkit" : function( elem ) {
+      "trident|webkit|blink" : function( elem ) {
         var doc = rwt.html.Nodes.getDocument(elem);
 
         // TODO: Check if all supported browser have getBoundingClientRect

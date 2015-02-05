@@ -1,5 +1,5 @@
   /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 (function() {
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Client = rwt.client.Client;
 
 var tree;
 var row;
@@ -530,7 +531,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertTrue( "inherit" === node.style.textDecoration || "" === node.style.textDecoration );
       assertTrue( "inherit" === node.style.textOverflow || "" === node.style.textOverflow );
       assertEquals( "hidden", node.style.overflow );
-      if( rwt.client.Client.isTrident() ) {
+      if( Client.isTrident() ) {
         assertEquals( "rgba(0, 0, 0, 0)", node.style.backgroundColor );
       }
       assertTrue( /user-select:\s*none/.test( row.$el.attr( "style" ) ) );
@@ -635,7 +636,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var node = row.$el.get( 0 ).childNodes[ 0 ];
       var url = TestUtil.getCssBackgroundImage( node );
 
-      if( rwt.client.Client.isWebkit() ) {
+      if( Client.isWebkit() || Client.isBlink() ) {
         assertTrue( url.indexOf( "single.gif" ) !== -1 );
       } else {
         assertEquals( "single.gif", url );
@@ -1999,7 +2000,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testOverlayWithCssGradient : function() {
-      if( rwt.client.Client.supportsCss3() ) {
+      if( Client.supportsCss3() ) {
         this._setOverlayGradient( this._gradient );
         row.setAppearance( "tree-row" );
         var item = this._createItem( tree );
@@ -2111,7 +2112,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
 
       var element = this._getOverlayElement( row );
       assertTrue( TestUtil.hasElementOpacity( element ) );
-      if( rwt.client.Client.isWebkit() ) {
+      if( Client.isWebkit() || Client.isBlink() ) {
         assertEquals( "0.4", element.style.opacity );
       }
     },

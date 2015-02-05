@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,11 @@ describe( "Style", function() {
   hGradientObject.horizontal = true;
   var vGradientString = (function() {
     var result;
-    if( rwt.client.Client.isWebkit() ) {
+    if( Client.isWebkit() || Client.isBlink() ) {
       result = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
-    } else if( rwt.client.Client.isGecko() ) {
+    } else if( Client.isGecko() ) {
       result = "gradient(-90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
-    } else if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
+    } else if( Client.isTrident() && Client.getMajor() === 9 ) {
       result =   "url(\"data:image/svg+xml;charset=utf-8,"
                + encodeURIComponent( "<svg xmlns='http://www.w3.org/2000/svg'><linearGradient id='g' x2='0' y2='1'><stop offset='0%' stop-color='rgb(255, 0, 255)'/><stop offset='100%' stop-color='rgb(0, 255, 0)'/></linearGradient><rect fill='url(#g)' width='100%' height='100%'/></svg>" ) + "\")";
     } else {
@@ -34,11 +34,11 @@ describe( "Style", function() {
   }() );
   var hGradientString = (function() {
     var result;
-    if( rwt.client.Client.isWebkit() ) {
+    if( Client.isWebkit() || Client.isBlink() ) {
       result = "gradient(linear, 0% 0%, 100% 0%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
-    } else if( rwt.client.Client.isGecko() ) {
+    } else if( Client.isGecko() ) {
       result = "gradient(0deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
-    } else if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
+    } else if( Client.isTrident() && Client.getMajor() === 9 ) {
       result =   "url(\"data:image/svg+xml;charset=utf-8,"
                + encodeURIComponent( "<svg xmlns='http://www.w3.org/2000/svg'><linearGradient id='g'><stop offset='0%' stop-color='rgb(255, 0, 255)'/><stop offset='100%' stop-color='rgb(0, 255, 0)'/></linearGradient><rect fill='url(#g)' width='100%' height='100%'/></svg>" ) + "\")";
     } else {
@@ -115,7 +115,7 @@ describe( "Style", function() {
 
         Style.setBackgroundGradient( element, null );
 
-        if( Client.isWebkit() ) {
+        if( Client.isWebkit() || Client.isBlink() ) {
           expect( TestUtil.getCssGradient( element ) ).toBe( webkitFlatGradient );
         } else {
           expect( TestUtil.getCssGradient( element ) ).toBe( "" );
@@ -268,7 +268,7 @@ describe( "Style", function() {
       if( colorOffset === -1 ) {
         colorOffset = background.indexOf( "#f1f2f3" );
       }
-      if( Client.isWebkit() ) {
+      if( Client.isWebkit() || Client.isBlink() ) {
         expect( imageOffset ).toBeLessThan( gradientOffset );
         expect( gradientOffset ).toBeLessThan( colorOffset );
       } else {
@@ -303,7 +303,7 @@ describe( "Style", function() {
     it( "sets background gradient for color in webkit", function() {
       Style.setBackgroundColor( element, color );
 
-      if( Client.isWebkit() ) {
+      if( Client.isWebkit() || Client.isBlink() ) {
         expect( TestUtil.getCssGradient( element ) ).toBe( webkitFlatGradient );
       } else {
         expect( TestUtil.getCssGradient( element ) ).toBe( "" );

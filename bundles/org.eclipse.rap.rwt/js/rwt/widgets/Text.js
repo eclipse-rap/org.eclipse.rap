@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -411,7 +411,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _forceFocus : rwt.util.Variant.select( "qx.client", {
-      "webkit" : function() {
+      "webkit|blink" : function() {
         rwt.client.Timer.once( function() {
           if( this._inputElement ) {
             this._inputElement.focus();

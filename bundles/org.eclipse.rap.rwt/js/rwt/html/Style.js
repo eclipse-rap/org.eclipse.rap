@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -43,14 +43,14 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     VENDOR_PREFIX_VALUE : rwt.util.Variant.select( "qx.client", {
       "gecko" : "-moz-",
-      "webkit" : "-webkit-",
+      "webkit|blink" : "-webkit-",
       "trident" : "-ms-",
       "default" : ""
     } ),
 
     VENDOR_PREFIX_PROPERTY : rwt.util.Variant.select( "qx.client", {
       "gecko" : "Moz",
-      "webkit" : "webkit",
+      "webkit|blink" : "webkit",
       "trident" : "ms",
       "default" : ""
     } ),
@@ -383,7 +383,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
 
     setBoxShadow: function( target, shadowObject ) {
       var property;
-      if( Client.isWebkit() && !Client.isMobileChrome() ) {
+      if( ( Client.isWebkit() || Client.isBlink() ) && !Client.isMobileChrome() ) {
         property = this.VENDOR_PREFIX_VALUE + "box-shadow";
       } else {
         property = "boxShadow";
@@ -522,7 +522,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
     _pushBackgroundColor : function( target, backgroundArray ) {
       var value = target.___rwtStyle__backgroundColor;
       if( value ) {
-        if( Client.isWebkit() && !target.___rwtStyle__backgroundGradient ) {
+        if( ( Client.isWebkit() || Client.isBlink() ) && !target.___rwtStyle__backgroundGradient ) {
           backgroundArray.push( this._getGradientString( [ [ 0, value ], [ 1, value ] ] ) );
         }
         backgroundArray.push( value );
@@ -533,7 +533,7 @@ rwt.qx.Class.define( "rwt.html.Style", {
       // TODO [tb] : Webkit and Gecko now support the default syntax, but will continue to support
       //             their old syntax if prefexied. RAP should use new syntax if possible to be
       //             future proof.
-      "webkit" : function( gradientObject ) {
+      "webkit|blink" : function( gradientObject ) {
         var args = [ "linear", "left top" ];
         if( gradientObject.horizontal === true ) {
           args.push( "right top" );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -493,7 +493,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         if( doit ) {
           // at least webkit does sometiems fire "input" before the selection is updated
           rwt.client.Timer.once( this._updateValueProperty, this, 0 );
-        } else if( rwt.client.Client.isWebkit() ) {
+        } else if( rwt.client.Client.isWebkit() || rwt.client.Client.isBlink() ) {
           // some browser set new selection after input event, ignoring all changes before that
           rwt.client.Timer.once( this._renderSelection, this, 0 );
           this._selectionNeedsUpdate = true;
@@ -595,7 +595,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyBrowserFixesOnCreate  : rwt.util.Variant.select( "qx.client", {
       "default" : function() {},
-      "webkit" : function() {
+      "webkit|blink" : function() {
         this.addEventListener( "keydown", this._preventEnter, this );
         this.addEventListener( "keypress", this._preventEnter, this );
         this.addEventListener( "keyup", this._preventEnter, this );

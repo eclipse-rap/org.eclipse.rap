@@ -34,6 +34,7 @@ rwt.client.Client = {
     this._defaultLocale = "en";
     // NOTE: Order is important!
     this._initKonqueror();
+    this._initBlink();
     this._initWebkit();
     this._initGecko();
     this._initTrident();
@@ -80,6 +81,10 @@ rwt.client.Client = {
 
   isGecko : function() {
     return this._engineName === "gecko";
+  },
+
+  isBlink : function() {
+    return this._engineName === "blink";
   },
 
   isWebkit : function() {
@@ -158,7 +163,8 @@ rwt.client.Client = {
   supportsCss3 : function() {
     var engine = rwt.client.Client.getEngine();
     var version = rwt.client.Client.getVersion();
-    return    engine === "webkit" && version >= 522
+    return    engine === "blink"
+           || engine === "webkit" && version >= 522
            || engine === "gecko" && version >= 2 // firefox 4+
            || engine === "trident" && version >= 9;
   },
@@ -219,6 +225,29 @@ rwt.client.Client = {
     }
   },
 
+  _initBlink : function() {
+    if( !this._isBrowserDetected() ) {
+      var userAgent = navigator.userAgent;
+      // Some Blink browsers like Opera Mobile or Maxthon lack the window.chrome object.
+      // A v8 feature check is necessary to cover all current Blink engine browsers as of Dec 2014.
+      var isBlink = window.chrome || ( window.Intl && window.Intl.v8BreakIterator );
+      if( isBlink ) {
+        this._engineName = "blink";
+        if( userAgent.indexOf( "OPR" ) !== -1 ) {
+          this._browserName = "opera";
+          /OPR\/([^ ]+)/.test( userAgent );
+          this._parseVersion( RegExp.$1 );
+        } else if( userAgent.indexOf( "Chrome" ) !== -1 ) {
+          this._browserName = "chrome";
+          /Chrome\/([^ ]+)/.test( userAgent );
+          this._parseVersion( RegExp.$1 );
+        } else {
+          this._browserName = "other blink";
+        }
+      }
+    }
+  },
+
   _initWebkit : function() {
     if( !this._isBrowserDetected() ) {
       var userAgent = navigator.userAgent;
@@ -232,9 +261,7 @@ rwt.client.Client = {
           version = version.slice( 0, invalidCharacter.index );
         }
         this._parseVersion( version );
-        if( userAgent.indexOf( "Chrome" ) != -1 ) {
-          this._browserName = "chrome";
-        } else if( userAgent.indexOf( "Safari" ) != -1 ) {
+        if( userAgent.indexOf( "Safari" ) != -1 ) {
           if( userAgent.indexOf( "Android" ) != -1 ) {
             this._browserName = "android";
           } else {
@@ -321,6 +348,7 @@ rwt.client.Client = {
         vEngineBoxSizingAttr.push( "-moz-box-sizing" );
       break;
       case "webkit":
+      case "blink":
         vEngineBoxSizingAttr.push( "-khtml-box-sizing" );
         vEngineBoxSizingAttr.push( "-webkit-box-sizing" );
       break;
