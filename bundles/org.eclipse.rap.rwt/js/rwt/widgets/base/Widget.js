@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -2134,7 +2134,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE RANGES
 
     _recomputeRangeX : rwt.util.Variant.select("qx.client", {
-      "trident|opera|webkit" : function() {
+      "trident|webkit" : function() {
         if (this._computedLeftTypeNull || this._computedRightTypeNull) {
           return false;
         }
@@ -2147,7 +2147,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeRangeY : rwt.util.Variant.select("qx.client", {
-      "trident|opera|webkit" : function() {
+      "trident|webkit" : function() {
         if (this._computedTopTypeNull || this._computedBottomTypeNull) {
           return false;
         }
@@ -2163,7 +2163,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // RECOMPUTE STRETCHING
 
     _recomputeStretchingX : rwt.util.Variant.select("qx.client", {
-      "trident|opera|webkit" : function() {
+      "trident|webkit" : function() {
         if (this.getAllowStretchX() && this._computedWidthTypeNull) {
           this._computedWidthValue = null;
           this.addToLayoutChanges("width");
@@ -2180,7 +2180,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     } ),
 
     _recomputeStretchingY : rwt.util.Variant.select("qx.client", {
-      "trident|opera|webkit" : function() {
+      "trident|webkit" : function() {
         if (this.getAllowStretchY() && this._computedHeightTypeNull) {
           this._computedHeightValue = null;
           this.addToLayoutChanges("height");
@@ -3203,56 +3203,28 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     // CURSOR SUPPORT
 
     // TODO: maybe we could use cursor:url() for not suppoted cursors.
-    __cursorMap : rwt.util.Variant.select("qx.client", {
-      "opera" : {
-        "default" : "default",
-        "wait" : "wait",
-        "crosshair" : "crosshair",
-        "help" : "help",
-        "move" : "move",
-        "text" : "text",
-        "pointer" : "pointer",
-        "e-resize" : "e-resize",
-        "n-resize" : "n-resize",
-        "w-resize" : "w-resize",
-        "s-resize" : "s-resize",
-        "ne-resize" : "ne-resize",
-        "se-resize" : "se-resize",
-        "nw-resize" : "nw-resize",
-        "sw-resize" : "sw-resize",
-        "progress" : "progress",
-        "not-allowed" : "not-allowed",
-        "no-drop" : "no-drop",
-        "col-resize" : "e-resize",
-        "row-resize" : "n-resize",
-        "ew-resize" : "e-resize",
-        "ns-resize" : "n-resize",
-        "nesw-resize" : "ne-resize",
-        "nwse-resize" : "nw-resize"
-      },
-      "default" : {
-        "default" : "default",
-        "wait" : "wait",
-        "crosshair" : "crosshair",
-        "help" : "help",
-        "move" : "move",
-        "text" : "text",
-        "pointer" : "pointer",
-        "e-resize" : "e-resize",
-        "n-resize" : "n-resize",
-        "w-resize" : "w-resize",
-        "s-resize" : "s-resize",
-        "ne-resize" : "ne-resize",
-        "se-resize" : "se-resize",
-        "nw-resize" : "nw-resize",
-        "sw-resize" : "sw-resize",
-        "col-resize" : "col-resize",
-        "row-resize" : "row-resize",
-        "progress" : "progress",
-        "not-allowed" : "not-allowed",
-        "no-drop" : "no-drop"
-      }
-    } ),
+    __cursorMap : {
+      "default" : "default",
+      "wait" : "wait",
+      "crosshair" : "crosshair",
+      "help" : "help",
+      "move" : "move",
+      "text" : "text",
+      "pointer" : "pointer",
+      "e-resize" : "e-resize",
+      "n-resize" : "n-resize",
+      "w-resize" : "w-resize",
+      "s-resize" : "s-resize",
+      "ne-resize" : "ne-resize",
+      "se-resize" : "se-resize",
+      "nw-resize" : "nw-resize",
+      "sw-resize" : "sw-resize",
+      "col-resize" : "col-resize",
+      "row-resize" : "row-resize",
+      "progress" : "progress",
+      "not-allowed" : "not-allowed",
+      "no-drop" : "no-drop"
+    },
 
     _applyCursor : function(value) {
       if (value) {

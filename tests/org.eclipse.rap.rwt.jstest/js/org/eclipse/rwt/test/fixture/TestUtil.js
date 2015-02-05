@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -394,17 +394,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     this.fireFakeKeyDomEvent( target, "keyup", key, mod );
   },
 
-  _sendKeyDownOnHold : rwt.util.Variant.select("qx.client", {
-    "default" : function() {
-      return true;
-    },
-    "opera" : function() {
-      return false;
-    }
-  } ),
+  _sendKeyDownOnHold : rwt.util.Functions.returnTrue,
 
   _sendKeyPress : rwt.util.Variant.select("qx.client", {
-    "gecko|opera" : function( key ) {
+    "gecko" : function( key ) {
       return !this._isModifier( key );
     },
     "default" : function( key, keyDownEvent ) {
@@ -435,7 +428,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   _getKeyCode : rwt.util.Variant.select("qx.client", {
     "default" : function( type, stringOrKeyCode ) {
       var result;
-      // NOTE [tb] : This is called for non-printable keypress only in opera
       if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
         result = this._convertToCharCode( stringOrKeyCode );
       } else {

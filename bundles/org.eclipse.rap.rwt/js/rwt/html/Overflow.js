@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,19 +73,6 @@ rwt.qx.Class.define("rwt.html.Overflow",
         return rwt.html.Style.get( element, "overflowX" );
       },
 
-      // opera support differs
-      "opera" : rwt.client.Client.getVersion() < 9.5 ?
-
-      // older versions of opera have no support for splitted overflow properties.
-      function( element ) {
-        return rwt.html.Style.get(element, "overflow" );
-      } :
-
-      // opera >=9.5 supports overflowX, too
-      function( element ) {
-        return rwt.html.Style.get( element, "overflowX" );
-      },
-
       // use native overflowX property
       "default" : function( element ) {
         return rwt.html.Style.get( element, "overflowX" );
@@ -126,19 +113,6 @@ rwt.qx.Class.define("rwt.html.Overflow",
       } :
 
       // gecko >= 1.8 supports overflowY, too
-      function( element ) {
-        return rwt.html.Style.get(element, "overflowY" );
-      },
-
-      // opera support differs
-      "opera" : rwt.client.Client.getVersion() < 9.5 ?
-
-      // older versions of opera have no support for splitted overflow properties.
-      function( element ) {
-        return rwt.html.Style.get(element, "overflow" );
-      } :
-
-      // opera >=9.5 supports overflowY, too
       function( element ) {
         return rwt.html.Style.get(element, "overflowY" );
       },

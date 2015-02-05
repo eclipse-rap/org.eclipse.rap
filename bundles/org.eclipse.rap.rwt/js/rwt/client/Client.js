@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -33,7 +33,6 @@ rwt.client.Client = {
     this._runsLocally = window.location.protocol === "file:";
     this._defaultLocale = "en";
     // NOTE: Order is important!
-    this._initOpera();
     this._initKonqueror();
     this._initWebkit();
     this._initGecko();
@@ -81,10 +80,6 @@ rwt.client.Client = {
 
   isGecko : function() {
     return this._engineName === "gecko";
-  },
-
-  isOpera : function() {
-    return this._engineName === "opera";
   },
 
   isWebkit : function() {
@@ -172,7 +167,7 @@ rwt.client.Client = {
   // Inspired by https://github.com/yonran/detect-zoom
   isZoomed : function() {
     var result = false;
-    if( this._engineName === "mshtml" || this._engineName === "trident" ) {
+    if( this._engineName === "trident" ) {
       if( this._engineVersionMajor >= 8 ) {
         result = ( screen.deviceXDPI / screen.logicalXDPI ) !== 1;
       } else {
@@ -207,23 +202,6 @@ rwt.client.Client = {
       result = result.slice( 0, result.indexOf( "#" ) );
     }
     return result.slice( 0, result.lastIndexOf( "/" ) + 1 );
-  },
-
-  _initOpera : function() {
-    if( !this._isBrowserDetected() ) {
-      var isOpera = window.opera && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
-      if( isOpera ) {
-        this._browserName = "opera";
-        this._engineName = "opera";
-        var version = RegExp.$1;
-        version = version.substring( 0, 3 ) + "." + version.substring( 3 );
-        ( /Version[\s\/]([0-9\.]*)/ ).test( navigator.userAgent );
-        if( RegExp.$1 ) { // Newer Opera note the "real" version after "Version/".
-          version = RegExp.$1;
-        }
-        this._parseVersion( version );
-      }
-    }
   },
 
   _initKonqueror : function() {

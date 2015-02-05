@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
 
     testEngine : function() {
-      var engines = [ "gecko", "webkit", "opera", "trident" ];
+      var engines = [ "gecko", "webkit", "trident" ];
       var currentEngine = Client.getEngine();
       assertTrue( engines.indexOf( currentEngine ) != -1 );
       var isEngine = 0;
       isEngine = Client.isGecko() ? isEngine + 1 : isEngine;
-      isEngine = Client.isOpera() ? isEngine + 1 : isEngine;
       isEngine = Client.isWebkit() ? isEngine + 1 : isEngine;
       isEngine = Client.isTrident() ? isEngine + 1 : isEngine;
       assertEquals( 1, isEngine );

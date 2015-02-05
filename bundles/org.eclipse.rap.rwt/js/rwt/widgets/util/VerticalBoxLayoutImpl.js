@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -739,7 +739,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
      */
     layoutChild_sizeX : rwt.util.Variant.select("qx.client",
     {
-      "trident|opera|webkit" : function(vChild, vJobs)
+      "trident|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.width || vJobs.minWidth || vJobs.maxWidth)
         {
@@ -776,7 +776,7 @@ rwt.qx.Class.define("rwt.widgets.util.VerticalBoxLayoutImpl",
      */
     layoutChild_sizeY : rwt.util.Variant.select("qx.client",
     {
-      "trident|opera|webkit" : function(vChild, vJobs)
+      "trident|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.height || vJobs.minHeight || vJobs.maxHeight)
         {

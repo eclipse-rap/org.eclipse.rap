@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1320,41 +1320,6 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
         s = t[i];
         this[s] = new Function(rwt.widgets.base.Parent.prototype._remapStart + s + rwt.widgets.base.Parent.prototype._remapStop);
       }
-    }
-  },
-
-
-
-
-  /*
-  *****************************************************************************
-     DEFER
-  *****************************************************************************
-  */
-
-  defer : function(statics, members)
-  {
-    // TODO There must be a better way than to define this in defer
-
-    // Fix Operas Rendering Bugs
-    if( rwt.client.Client.isOpera() ) {
-      members._layoutChildOrig = members._layoutChild;
-
-      members._layoutChild = function(vChild)
-      {
-        if (!vChild._initialLayoutDone || !vChild._layoutChanges.border) {
-          return this._layoutChildOrig(vChild);
-        }
-
-        var vStyle = vChild.getElement().style;
-
-        var vOldDisplay = vStyle.display;
-        vStyle.display = "none";
-        var vRet = this._layoutChildOrig(vChild);
-        vStyle.display = vOldDisplay;
-
-        return vRet;
-      };
     }
   },
 

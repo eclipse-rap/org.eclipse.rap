@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -235,7 +235,7 @@ rwt.event.EventHandlerUtil = {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.charCode : 0;
     },
-    "trident|opera" : function( event ) {
+    "trident" : function( event ) {
       var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
       return hasCharCode ? event.keyCode : 0;
     }

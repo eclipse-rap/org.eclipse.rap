@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -208,7 +208,7 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Map} Map which contains the <code>left</code> and <code>top</code> offsets
      */
     __computeOffset : rwt.util.Variant.select( "qx.client", {
-      "trident|webkit|opera" : function( elem ) {
+      "trident|webkit" : function( elem ) {
         var doc = rwt.html.Nodes.getDocument(elem);
 
         // TODO: Check if all supported browser have getBoundingClientRect

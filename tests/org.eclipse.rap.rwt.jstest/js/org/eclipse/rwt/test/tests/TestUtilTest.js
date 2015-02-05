@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -379,7 +379,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
     testSendKeyPress : rwt.util.Variant.select("qx.client",  {
-      "gecko|opera" : function() {
+      "gecko" : function() {
         assertTrue( TestUtil._sendKeyPress( "a" ) );
         assertTrue( TestUtil._sendKeyPress( "A" ) );
         assertTrue( TestUtil._sendKeyPress( 65 ) );
@@ -395,13 +395,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertTrue( TestUtil._sendKeyPress( 9 ) );
         assertTrue( TestUtil._sendKeyPress( "Backspace" ) );
         assertTrue( TestUtil._sendKeyPress( 8 ) );
-        if( rwt.client.Client.isOpera() ) {
-          assertFalse( TestUtil._sendKeyPress( "Win" ) );
-          assertFalse( TestUtil._sendKeyPress( 91 ) );
-        } else {
-          assertTrue( TestUtil._sendKeyPress( "Win" ) ); // opera false
-          assertTrue( TestUtil._sendKeyPress( 91 ) );
-        }
+        assertTrue( TestUtil._sendKeyPress( "Win" ) );
+        assertTrue( TestUtil._sendKeyPress( 91 ) );
         assertTrue( TestUtil._sendKeyPress( "Left" ) );
         assertTrue( TestUtil._sendKeyPress( 37 ) );
         assertTrue( TestUtil._sendKeyPress( "Apps" ) );
@@ -481,12 +476,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
       TestUtil.press( widget, "Enter" );
-      var expected = [ "keydown", "Enter", "keypress", "Enter" ];
-      if( rwt.util.Variant.isSet( "qx.client", "opera" ) ) {
-        expected.push( "keyup", "Enter" );
-      } else {
-        expected.push( "keyup", "Enter" );
-      }
+      var expected = [ "keydown", "Enter", "keypress", "Enter", "keyup", "Enter" ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -529,7 +519,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       TestUtil.press( widget, "Enter" );
       var expected = rwt.util.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
-        "opera|trident" : [ 13, undefined ],
+        "trident" : [ 13, undefined ],
         "default" : [ 13, 0 ]
       } );
       assertEquals( expected, log );
