@@ -182,7 +182,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
         var textBounds = this._getTextBounds.apply( this, operation.slice( 1, 7 ) );
         this._drawText( lines, textBounds, false );
       } else {
+        this._context.save();
+        this._context.fillStyle = this._context.strokeStyle;
         this._context.fillText( text, x, y );
+        this._context.restore();
       }
     },
 
