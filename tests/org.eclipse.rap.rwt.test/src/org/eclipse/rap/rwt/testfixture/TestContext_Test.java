@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,11 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.TestResponse;
-import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -144,6 +145,15 @@ public class TestContext_Test {
   @Test
   public void testResponse_isAvailable() {
     assertTrue( RWT.getResponse() instanceof TestResponse );
+  }
+
+  @Test
+  public void testReplaceConnection() {
+    Connection connection = mock( Connection.class );
+
+    context.replaceConnection( connection );
+
+    assertSame( connection, context.getUISession().getConnection() );
   }
 
 }

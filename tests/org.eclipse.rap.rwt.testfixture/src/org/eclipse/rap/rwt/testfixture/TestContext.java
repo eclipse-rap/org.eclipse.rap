@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.HTTP;
+import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.service.UISession;
@@ -68,7 +69,7 @@ import org.junit.runners.model.Statement;
 public class TestContext implements TestRule {
 
   private ApplicationContextImpl applicationContext;
-  private UISession uiSession;
+  private UISessionImpl uiSession;
 
   public Statement apply( final Statement base, final Description description ) {
     return new Statement() {
@@ -102,6 +103,22 @@ public class TestContext implements TestRule {
    */
   public ApplicationContext getApplicationContext() {
     return applicationContext;
+  }
+
+  /**
+   * Replaces the connection of the current UISession. Can be used to return mocked RemoteObjects
+   * for a given type. Example:
+   * <pre>
+   * context.replaceConnection( new Connection() {
+   *   public RemoteObject createRemoteObject( String remoteType ) {
+   *     return mockedRemoteObject;
+   *   }
+   * } );
+   * </pre>
+   * @param connection a new Connection implementation
+   */
+  public void replaceConnection( Connection connection ) {
+    uiSession.setConnection( connection );
   }
 
   private void setup( Description description ) {
