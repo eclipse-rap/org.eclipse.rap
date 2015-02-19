@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
@@ -54,6 +53,7 @@ import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.internal.remote.MessageFilter;
 import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -299,9 +299,19 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testStartupJson_forOtherClients() throws IOException {
+  public void testStartupContent_withHtmlAcceptHeader() throws IOException {
     Fixture.fakeNewGetRequest();
-    Fixture.fakeClient( mock( Client.class ) );
+    getRequest().setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_HTML );
+
+    service( serviceHandler );
+
+    verify( startupPage ).send( getResponse() );
+  }
+
+  @Test
+  public void testStartupContent_withJsonAcceptHeader() throws IOException {
+    Fixture.fakeNewGetRequest();
+    getRequest().setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_JSON );
 
     service( serviceHandler );
 
@@ -310,9 +320,8 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testStartupPage_forWebClient() throws IOException {
+  public void testStartupContent_withoutAcceptHeader() throws IOException {
     Fixture.fakeNewGetRequest();
-    Fixture.fakeClient( mock( WebClient.class ) );
 
     service( serviceHandler );
 

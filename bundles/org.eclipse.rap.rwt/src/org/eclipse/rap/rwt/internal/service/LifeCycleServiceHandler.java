@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -42,6 +40,7 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 
@@ -112,13 +111,14 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private void sendStartupContent( ServletRequest request, HttpServletResponse response )
+  private void sendStartupContent( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    if( RWT.getClient() instanceof WebClient ) {
-      startupPage.send( response );
-    } else {
+    String accept = request.getHeader( HTTP.HEADER_ACCEPT );
+    if( accept != null && accept.contains( HTTP.CONTENT_TYPE_JSON ) ) {
       StartupJson.send( response );
+    } else {
+      startupPage.send( response );
     }
   }
 
