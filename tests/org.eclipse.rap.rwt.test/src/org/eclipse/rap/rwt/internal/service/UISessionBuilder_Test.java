@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.UISession;
-import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -131,20 +131,6 @@ public class UISessionBuilder_Test {
     UISession uiSession = builder.buildUISession();
 
     assertEquals( CUSTOM_THEME_ID, uiSession.getAttribute( ThemeUtil.CURR_THEME_ATTR ) );
-  }
-
-  @Test
-  public void testFailsWithNonExistingThemeId() {
-    HashMap<String, String> properties = new HashMap<String,String>();
-    properties.put( WebClient.THEME_ID, "does.not.exist" );
-    registerEntryPoint( properties );
-
-    UISessionBuilder builder = new UISessionBuilder( serviceContext );
-    try {
-      builder.buildUISession();
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,14 @@ package org.eclipse.rap.rwt.internal.theme;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
@@ -64,6 +71,16 @@ public final class ThemeUtil {
     uiSession.setAttribute( CURR_THEME_ATTR, themeId );
   }
 
+  public static String getThemeIdFor( String servletPath ) {
+    Map<String, String> properties = getEntryPointProperties( servletPath );
+    String themeId = properties.get( WebClient.THEME_ID );
+    if( themeId != null && themeId.length() > 0 ) {
+      verifyThemeId( themeId );
+      return themeId;
+    }
+    return RWT.DEFAULT_THEME_ID;
+  }
+
   public static Theme getCurrentTheme() {
     return getApplicationContext().getThemeManager().getTheme( getCurrentThemeId() );
   }
@@ -85,20 +102,48 @@ public final class ThemeUtil {
     return result;
   }
 
+  private static void verifyThemeId( String themeId ) {
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    if( !applicationContext.getThemeManager().hasTheme( themeId ) ) {
+      throw new IllegalArgumentException( "Illegal theme id: " + themeId );
+    }
+  }
+
+  private static Map<String, String> getEntryPointProperties( String servletPath ) {
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
+    if( registration != null ) {
+      return registration.getProperties();
+    }
+    return Collections.emptyMap();
+  }
+
   //////////////////////////////////////
   // Methods for accessing themed values
 
-  public static CssType getCssValue( String cssElement, String cssProperty, SimpleSelector selector )
+  public static CssType getCssValue( String cssElement,
+                                     String cssProperty,
+                                     SimpleSelector selector )
   {
     return getCssValue( cssElement, cssProperty, selector, null );
   }
 
   public static CssType getCssValue( String cssElement,
-                                    String cssProperty,
-                                    ValueSelector selector,
-                                    Widget widget )
+                                     String cssProperty,
+                                     ValueSelector selector,
+                                     Widget widget )
   {
-    Theme theme = getCurrentTheme();
+    return getCssValue( getCurrentThemeId(), cssElement, cssProperty, selector, widget );
+  }
+
+  public static CssType getCssValue( String themeId,
+                                     String cssElement,
+                                     String cssProperty,
+                                     ValueSelector selector,
+                                     Widget widget )
+  {
+    Theme theme =  getApplicationContext().getThemeManager().getTheme( themeId );
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
     CssType result = selector.select( values, widget );
@@ -115,4 +160,5 @@ public final class ThemeUtil {
   private ThemeUtil() {
     // prevent instantiation
   }
+
 }
