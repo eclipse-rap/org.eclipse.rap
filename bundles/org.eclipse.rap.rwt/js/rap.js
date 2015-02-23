@@ -146,13 +146,13 @@ rap = {
        * @description Sent right before a message is send to the server.
        * @name rap#send
        */
-      "render" : [],
+      "send" : [],
       /**
        * @event
        * @description Sent after a message has been processed.
        * @name rap#render
        */
-      "send" : [],
+      "render" : [],
       "receive" : [],
       "process" : []
     },
