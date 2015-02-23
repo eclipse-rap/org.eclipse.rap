@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,6 +115,7 @@ public class ControlLCAUtil {
     renderBackgroundImage( control );
     renderFont( control );
     renderCursor( control );
+    WidgetLCAUtil.renderData( control );
     ActiveKeysUtil.renderActiveKeys( control );
     ActiveKeysUtil.renderCancelKeys( control );
 //    TODO [rst] missing: writeControlListener( control );
@@ -125,7 +126,6 @@ public class ControlLCAUtil {
     renderListenTraverse( control );
     renderListenMenuDetect( control );
     WidgetLCAUtil.renderListenHelp( control );
-    WidgetLCAUtil.renderData( control );
   }
 
   public static void renderBounds( Control control ) {
