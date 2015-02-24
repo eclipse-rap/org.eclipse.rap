@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -425,6 +426,49 @@ public class Button_Test {
     button.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     assertEquals( Boolean.TRUE, button.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testBadge_isSetForPush() {
+    button.setData( RWT.BADGE, "11" );
+
+    assertEquals( "11", button.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForToggle() {
+    Button toggle = new Button( shell, SWT.TOGGLE );
+
+    toggle.setData( RWT.BADGE, "11" );
+
+    assertNull( toggle.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForArrow() {
+    Button arrow = new Button( shell, SWT.ARROW );
+
+    arrow.setData( RWT.BADGE, "11" );
+
+    assertNull( arrow.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForCheck() {
+    Button check = new Button( shell, SWT.CHECK );
+
+    check.setData( RWT.BADGE, "11" );
+
+    assertNull( check.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForRadio() {
+    Button radio = new Button( shell, SWT.RADIO );
+
+    radio.setData( RWT.BADGE, "11" );
+
+    assertNull( radio.getData( RWT.BADGE ) );
   }
 
 }

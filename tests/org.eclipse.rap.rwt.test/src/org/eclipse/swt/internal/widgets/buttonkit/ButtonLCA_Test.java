@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -704,6 +704,37 @@ public class ButtonLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findCallOperation( button, "addListener" ) );
+  }
+
+  @Test
+  public void testRenderInitialBadge() throws IOException {
+    lca.renderChanges( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "badge" ) );
+  }
+
+  @Test
+  public void testRenderBadge() throws IOException {
+    button.setData( RWT.BADGE, "11" );
+
+    lca.renderChanges( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "11", message.findSetProperty( button, "badge" ).asString() );
+  }
+
+  @Test
+  public void testRenderBadgeUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+
+    button.setData( RWT.BADGE, "11" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "badge" ) );
   }
 
   private void fakeActiveControl( Control control ) {

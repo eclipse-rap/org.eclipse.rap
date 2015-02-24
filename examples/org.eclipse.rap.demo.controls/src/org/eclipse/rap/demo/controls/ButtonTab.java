@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class ButtonTab extends ExampleTab {
 
   private Button pushButton;
   private Button toggleButton;
+  private Button arrowButton;
   private Button checkButton1;
   private Button checkButton2;
   private Button radioButton1;
@@ -80,6 +81,7 @@ public class ButtonTab extends ExampleTab {
     createBgImageButton();
     createFontChooser();
     createCursorCombo();
+    createBadgeComposite( parent );
     createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
     Button button = createPropertyButton( "Toggle Button", SWT.PUSH );
     button.setToolTipText( "Remote control the toggle button" );
@@ -113,7 +115,7 @@ public class ButtonTab extends ExampleTab {
     radioButton2.setText( "Radio 2" );
     radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
-    Button arrowButton = new Button( parent, style | SWT.ARROW );
+    arrowButton = new Button( parent, style | SWT.ARROW );
     arrowButton.setToolTipText( getToolTipText() );
     arrowButton.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
@@ -239,4 +241,21 @@ public class ButtonTab extends ExampleTab {
       button.setGrayed( setGrayed );
     }
   }
+
+  private void createBadgeComposite( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    new Label( composite, SWT.NONE ).setText( "Badge:" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Listener setBadgeListener = new Listener() {
+      public void handleEvent( Event event ) {
+        pushButton.setData( RWT.BADGE, text.getText() );
+      }
+    };
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Set" );
+    button.addListener( SWT.Selection, setBadgeListener );
+    text.addListener( SWT.DefaultSelection, setBadgeListener );
+  }
+
 }

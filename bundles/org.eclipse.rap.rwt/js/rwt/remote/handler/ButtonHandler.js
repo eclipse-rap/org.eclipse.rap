@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
      * @param {boolean} selected the new selection state
      */
     "selection",
-    "grayed"
+    "grayed",
+    "badge"
   ] ),
 
   propertyHandler : rwt.remote.HandlerUtil.extendControlPropertyHandler( {
@@ -74,6 +75,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.Button", {
       } else {
         widget.setImage.apply( widget, value );
       }
+    },
+    "badge" : function( widget, value ) {
+      rwt.widgets.util.Badges.setBadge( widget, value );
     }
   } ),
 

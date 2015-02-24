@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
@@ -52,6 +53,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   private static final String PROP_GRAYED = "grayed";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
+  private static final String PROP_BADGE = "badge";
   private static final String PROP_SELECTION_LISTENERS = "Selection";
 
   private static final String DEFAULT_ALIGNMENT = "center";
@@ -66,6 +68,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
     preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
+    preserveProperty( button, PROP_BADGE, getBadge( button ) );
     preserveListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ) );
   }
 
@@ -90,6 +93,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     renderProperty( button, PROP_ALIGNMENT, getAlignment( button ), DEFAULT_ALIGNMENT );
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
+    renderProperty( button, PROP_BADGE, getBadge( button ), null );
     renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
     renderClientListeners( widget );
   }
@@ -111,6 +115,10 @@ public final class ButtonLCA extends AbstractWidgetLCA {
       result = "left";
     }
     return result;
+  }
+
+  private static String getBadge( Button button ) {
+    return ( String )button.getData( RWT.BADGE );
   }
 
   private static void renderText( Button button ) {

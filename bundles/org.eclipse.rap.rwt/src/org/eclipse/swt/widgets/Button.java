@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -506,9 +506,12 @@ public class Button extends Control {
 
   @Override
   public void setData( String key, Object value ) {
-    if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
-      super.setData( key, value );
+    if( RWT.BADGE.equals( key ) && ( style & SWT.PUSH ) == 0 ) {
+      return;
+    } else if( RWT.MARKUP_ENABLED.equals( key ) && isMarkupEnabledFor( this ) ) {
+      return;
     }
+    super.setData( key, value );
   }
 
   //////////////////////////

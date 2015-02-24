@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -319,6 +319,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertTrue( widget.hasState( "grayed" ) );
       shell.destroy();
       widget.destroy();
+    },
+
+    testSetBadgeByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "badge" : "11"
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+      assertEquals( "11", widget.getElement().lastChild.textContent );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testComputeBadgePosition : function() {
+      var button = this.createButton( "w11", "push" );
+
+      assertEquals( [ -3, -5, "auto", "auto" ], button.computeBadgePosition() );
     },
 
     testFocusIndicator_onMouseFocus : function() {
