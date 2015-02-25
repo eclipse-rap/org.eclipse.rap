@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
@@ -21,13 +18,17 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preservePrope
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -51,6 +52,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
   private static final String PROP_HOT_IMAGE = "hotImage";
   private static final String PROP_CONTROL = "control";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_BADGE = "badge";
   private static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
@@ -67,6 +69,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_HOT_IMAGE, item.getHotImage() );
     preserveProperty( item, PROP_CONTROL, item.getControl() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
+    preserveProperty( item, PROP_BADGE, getBadge( item ) );
     if( !isSeparator( item ) ) {
       preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
     }
@@ -104,6 +107,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_HOT_IMAGE, item.getHotImage(), null );
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     renderProperty( item, PROP_SELECTION, item.getSelection(), false );
+    renderProperty( item, PROP_BADGE, getBadge( item ), null );
     if( !isSeparator( item ) ) {
       renderListener( item,
                       PROP_SELECTION_LISTENER,
@@ -146,9 +150,13 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static boolean isSeparator( ToolItem item ) {
     return ( item.getStyle() & SWT.SEPARATOR ) != 0;
+  }
+
+  private String getBadge( ToolItem item ) {
+    return ( String )item.getData( RWT.BADGE );
   }
 
 }

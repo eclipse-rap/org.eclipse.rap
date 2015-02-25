@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -654,6 +654,36 @@ public class ToolItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderInitialBadge() throws IOException {
+    lca.renderChanges( toolitem );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( toolitem, "badge" ) );
+  }
+
+  @Test
+  public void testRenderBadge() throws IOException {
+    toolitem.setData( RWT.BADGE, "11" );
+    lca.renderChanges( toolitem );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "11", message.findSetProperty( toolitem, "badge" ).asString() );
+  }
+
+  @Test
+  public void testRendeBadgeUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( toolitem );
+
+    toolitem.setData( RWT.BADGE, "11" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( toolitem );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( toolitem, "badge" ) );
   }
 
 }

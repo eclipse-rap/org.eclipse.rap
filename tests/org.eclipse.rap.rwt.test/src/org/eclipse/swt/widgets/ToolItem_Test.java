@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.swt.widgets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -294,6 +295,51 @@ public class ToolItem_Test {
     item.setData( "foo", "bar" );
 
     assertEquals( "bar", item.getData( "foo" ) );
+  }
+
+  @Test
+  public void testBadge_isSetForPush() {
+    item = new ToolItem( toolbar, SWT.PUSH );
+
+    item.setData( RWT.BADGE, "11" );
+
+    assertEquals( "11", item.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForCheck() {
+    item = new ToolItem( toolbar, SWT.CHECK );
+
+    item.setData( RWT.BADGE, "11" );
+
+    assertNull( item.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForRadio() {
+    item = new ToolItem( toolbar, SWT.RADIO );
+
+    item.setData( RWT.BADGE, "11" );
+
+    assertNull( item.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForSeparator() {
+    item = new ToolItem( toolbar, SWT.SEPARATOR );
+
+    item.setData( RWT.BADGE, "11" );
+
+    assertNull( item.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testBadge_isNotSetForDropDown() {
+    item = new ToolItem( toolbar, SWT.DROP_DOWN );
+
+    item.setData( RWT.BADGE, "11" );
+
+    assertNull( item.getData( RWT.BADGE ) );
   }
 
 }

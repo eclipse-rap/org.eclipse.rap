@@ -55,6 +55,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     "hotImage",
     "control",
     "selection",
+    "badge",
     "data"
   ],
 
@@ -82,6 +83,9 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ToolItem", {
     },
     "control" : function( widget, value ) {
       widget.setLineVisible( value === null );
+    },
+    "badge" : function( widget, value ) {
+      rwt.widgets.util.Badges.setBadge( widget, value );
     }
   },
 

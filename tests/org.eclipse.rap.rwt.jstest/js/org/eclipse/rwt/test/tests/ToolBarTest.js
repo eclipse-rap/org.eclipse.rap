@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -372,6 +372,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       shell.destroy();
       toolbar.destroy();
       widget.destroy();
+    },
+
+    testSetBadgeByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "CHECK" ] );
+
+      TestUtil.protocolSet( "w4", { "badge" : "11" } );
+
+      assertEquals( "11", widget.getElement().lastChild.textContent );
+      shell.destroy();
+      toolbar.destroy();
+      widget.destroy();
+    },
+
+    testComputeBadgePosition : function() {
+      var item = new rwt.widgets.ToolItem( "push" );
+
+      assertEquals( [ 0, 0, "auto", "auto" ], item.computeBadgePosition() );
     },
 
     testClickDropDown : function() {

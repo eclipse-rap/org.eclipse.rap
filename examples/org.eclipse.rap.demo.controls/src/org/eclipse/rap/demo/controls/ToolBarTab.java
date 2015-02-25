@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,8 +22,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
@@ -33,6 +36,12 @@ import org.eclipse.swt.widgets.ToolItem;
 public class ToolBarTab extends ExampleTab {
 
   private ToolBar toolBar;
+  private ToolItem pushItem1;
+  private ToolItem pushItem2;
+  private ToolItem pushItem3;
+  private ToolItem checkItem;
+  private ToolItem radioItem1;
+  private ToolItem radioItem2;
   private ToolItem dropDownItem;
   private int count = 0;
 
@@ -54,6 +63,7 @@ public class ToolBarTab extends ExampleTab {
     createBgImageButton();
     createFontChooser();
     createNewItemButton();
+    createBadgeComposite( parent );
   }
 
   private void createNewItemButton() {
@@ -92,13 +102,13 @@ public class ToolBarTab extends ExampleTab {
     toolBar = new ToolBar( parent, getStyle() );
     addContextMenu( toolBar );
     registerControl( toolBar );
-    ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
-    item1.setText( "new" );
-    item1.setImage( imageNewFile );
-    ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
-    item2.setText( "open" );
-    item2.setEnabled( false );
-    item2.setImage( imagenewFolder );
+    pushItem1 = new ToolItem( toolBar, SWT.PUSH );
+    pushItem1.setText( "new" );
+    pushItem1.setImage( imageNewFile );
+    pushItem2 = new ToolItem( toolBar, SWT.PUSH );
+    pushItem2.setText( "open" );
+    pushItem2.setEnabled( false );
+    pushItem2.setImage( imagenewFolder );
     new ToolItem( toolBar, SWT.SEPARATOR );
     dropDownItem = new ToolItem( toolBar, SWT.DROP_DOWN );
     dropDownItem.setText( "select" );
@@ -112,26 +122,26 @@ public class ToolBarTab extends ExampleTab {
     itemText.setControl( text );
     itemText.setWidth( 100 );
 
-    ToolItem item4 = new ToolItem( toolBar, SWT.CHECK );
-    item4.setImage( imageSearch );
-    item4.addSelectionListener( new SelectionAdapter() {
+    checkItem = new ToolItem( toolBar, SWT.CHECK );
+    checkItem.setImage( imageSearch );
+    checkItem.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( final SelectionEvent event ) {
         log( "check changed" + event );
       }
     } );
-    ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );
-    item5.setImage( imageSearch );
-    ToolItem item6 = new ToolItem( toolBar, SWT.RADIO );
+    radioItem1 = new ToolItem( toolBar, SWT.RADIO );
+    radioItem1.setImage( imageSearch );
+    radioItem2 = new ToolItem( toolBar, SWT.RADIO );
     SelectionAdapter radioSelectionListener = new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent event ) {
         log( "radio changed - " + event );
       }
     };
-    item6.setImage( imageSearch );
-    item5.addSelectionListener( radioSelectionListener);
-    item6.addSelectionListener( radioSelectionListener);
+    radioItem2.setImage( imageSearch );
+    radioItem1.addSelectionListener( radioSelectionListener);
+    radioItem2.addSelectionListener( radioSelectionListener);
     final Menu dropDownMenu = new Menu( toolBar.getShell(), SWT.POP_UP );
     for( int i = 0; i < 5; i++ ) {
       MenuItem item = new MenuItem( dropDownMenu, SWT.PUSH );
@@ -147,8 +157,8 @@ public class ToolBarTab extends ExampleTab {
         }
       }
     } );
-    ToolItem withoutImageIcon = new ToolItem( toolBar, SWT.PUSH );
-    withoutImageIcon.setText( "w/o <image>" );
+    pushItem3 = new ToolItem( toolBar, SWT.PUSH );
+    pushItem3.setText( "w/o <image>" );
   }
 
   private static void addContextMenu( ToolBar toolbar ) {
@@ -157,4 +167,23 @@ public class ToolBarTab extends ExampleTab {
     item.setText( "ToolBar context menu item" );
     toolbar.setMenu( menu );
   }
+
+  private void createBadgeComposite( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    new Label( composite, SWT.NONE ).setText( "Badge:" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Listener setBadgeListener = new Listener() {
+      public void handleEvent( Event event ) {
+        pushItem1.setData( RWT.BADGE, text.getText() );
+        pushItem2.setData( RWT.BADGE, text.getText() );
+        pushItem3.setData( RWT.BADGE, text.getText() );
+      }
+    };
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Set" );
+    button.addListener( SWT.Selection, setBadgeListener );
+    text.addListener( SWT.DefaultSelection, setBadgeListener );
+  }
+
 }
