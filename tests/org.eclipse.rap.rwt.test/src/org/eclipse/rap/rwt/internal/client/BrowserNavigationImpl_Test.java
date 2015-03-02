@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.client;
 
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -26,9 +27,9 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
@@ -233,6 +234,13 @@ public class BrowserNavigationImpl_Test {
     assertEquals( "addToHistory", callOperation2.getMethodName() );
     assertEquals( "testId2", callOperation2.getParameters().get( "state" ).asString() );
     assertEquals( "testText2", callOperation2.getParameters().get( "title" ).asString() );
+  }
+
+  @Test
+  public void testIsSerializable() throws Exception {
+    navigation.pushState( "testId1", "testText1" );
+
+    serializeAndDeserialize( navigation );
   }
 
 }

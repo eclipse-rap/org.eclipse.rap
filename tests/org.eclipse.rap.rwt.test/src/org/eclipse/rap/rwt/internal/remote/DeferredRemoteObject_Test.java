@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.remote;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -255,6 +256,16 @@ public class DeferredRemoteObject_Test {
     remoteObject.render( writer );
 
     verifyZeroInteractions( writer );
+  }
+
+  @Test
+  public void testIsSerializable() throws Exception {
+    remoteObject.set( "property", 23 );
+
+    DeferredRemoteObject deserializedRemoteObject = serializeAndDeserialize( remoteObject );
+    deserializedRemoteObject.render( writer );
+
+    verify( writer ).appendSet( eq( objectId ), eq( "property" ), eq( 23 ) );
   }
 
   private static TestMessage getMessage() {
