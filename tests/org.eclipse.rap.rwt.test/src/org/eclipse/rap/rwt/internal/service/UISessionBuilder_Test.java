@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -23,17 +24,22 @@ import static org.mockito.Mockito.when;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.client.ClientMessages;
+import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -57,6 +63,7 @@ public class UISessionBuilder_Test {
   private ApplicationConfiguration configuration;
   private ApplicationContextImpl applicationContext;
   private ServiceContext serviceContext;
+  private Client client;
 
   @Before
   public void setUp() {
@@ -66,8 +73,10 @@ public class UISessionBuilder_Test {
     HttpServletResponse response = mock( HttpServletResponse.class );
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
+    client = mock( Client.class );
     applicationContext = new ApplicationContextImpl( configuration, servletContext );
     applicationContext.getThemeManager().registerTheme( createCustomTheme( CUSTOM_THEME_ID ) );
+    applicationContext.getClientSelector().addClientProvider( createClientProvider( client ) );
     applicationContext.activate();
     serviceContext = new ServiceContext( request, response, applicationContext );
     ContextProvider.setContext( serviceContext );
@@ -175,6 +184,23 @@ public class UISessionBuilder_Test {
     assertNotNull( RemoteObjectRegistry.getInstance().get( "rwt.client.TextSizeMeasurement" ) );
   }
 
+  @Test
+  public void testUpdateClientMessages() {
+    registerEntryPoint( null );
+    ClientMessages messages = mockClientMessagesService();
+
+    UISessionBuilder builder = new UISessionBuilder( serviceContext );
+    builder.buildUISession();
+
+    verify( messages ).update( any( Locale.class ) );
+  }
+
+  private ClientMessages mockClientMessagesService() {
+    ClientMessages messagesService = mock( ClientMessages.class );
+    when( client.getService( ClientMessages.class ) ).thenReturn( messagesService );
+    return messagesService;
+  }
+
   private void registerEntryPoint( HashMap<String, String> properties ) {
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     EntryPointFactory factory = mock( EntryPointFactory.class );
@@ -199,6 +225,17 @@ public class UISessionBuilder_Test {
     Theme theme = mock( Theme.class );
     when( theme.getId() ).thenReturn( id );
     return theme;
+  }
+
+  private static ClientProvider createClientProvider( final Client client ) {
+    return new ClientProvider() {
+      public Client getClient() {
+        return client;
+      }
+      public boolean accept( HttpServletRequest request ) {
+        return true;
+      }
+    };
   }
 
 }

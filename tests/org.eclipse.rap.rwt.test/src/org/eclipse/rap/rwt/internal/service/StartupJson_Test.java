@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,7 @@ import static org.eclipse.rap.rwt.internal.service.StartupJson.METHOD_LOAD_FALLB
 import static org.eclipse.rap.rwt.internal.service.StartupJson.PROPERTY_URL;
 import static org.eclipse.rap.rwt.internal.service.StartupJson.THEME_STORE_TYPE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -27,9 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
-import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
@@ -139,28 +135,6 @@ public class StartupJson_Test {
     assertNotNull( operation );
     String expected = "rwt-resources/rap-rwt.theme.Custom_1465393d.json";
     assertEquals( expected, operation.getParameters().get( PROPERTY_URL ).asString() );
-  }
-
-  @Test
-  public void testGet_initializeClientMessages() {
-    clientResources.registerResources();
-
-    JsonObject content = StartupJson.get();
-
-    TestMessage message = new TestMessage( content );
-    JsonValue clientMessages = message.findSetProperty( "rwt.client.ClientMessages", "messages" );
-    assertFalse( clientMessages.asObject().isEmpty() );
-  }
-
-  @Test
-  public void testGet_doesNotInitializeClientMessagesForNonWebClient() {
-    clientResources.registerResources();
-    Fixture.fakeClient( mock( Client.class ) );
-
-    JsonObject content = StartupJson.get();
-
-    TestMessage message = new TestMessage( content );
-    assertNull( message.findSetOperation( "rwt.client.ClientMessages", "messages" ) );
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
@@ -43,10 +45,11 @@ import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.rap.rwt.testfixture.internal.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -219,7 +222,8 @@ public class RWTServlet_Test {
   private static ApplicationContextImpl mockApplicationContext() {
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
     when( applicationContext.getEntryPointManager() ).thenReturn( mock( EntryPointManager.class ) );
-    when( applicationContext.getClientSelector() ).thenReturn( mock( ClientSelector.class ) );
+    ClientSelector clientSelector = createClientSelector();
+    when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
     when( applicationContext.getProbeStore() ).thenReturn( createProbeStore() );
     when( Boolean.valueOf( applicationContext.isActive() ) ).thenReturn( Boolean.TRUE );
     when( Boolean.valueOf( applicationContext.allowsRequests() ) ).thenReturn( Boolean.TRUE );
@@ -228,6 +232,13 @@ public class RWTServlet_Test {
 
   private static ProbeStore createProbeStore() {
     return new ProbeStore( new TextSizeStorage() );
+  }
+
+  private static ClientSelector createClientSelector() {
+    Client client = mock( Client.class );
+    ClientSelector clientSelector = mock( ClientSelector.class );
+    when( clientSelector.getSelectedClient( any( UISession.class ) ) ).thenReturn( client );
+    return clientSelector;
   }
 
   private static void fakeServiceHandler( ApplicationContext applicationContext,

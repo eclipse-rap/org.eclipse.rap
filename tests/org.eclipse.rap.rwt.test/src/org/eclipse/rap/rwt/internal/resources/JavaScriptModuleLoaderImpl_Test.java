@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,18 +17,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -149,12 +150,12 @@ public class JavaScriptModuleLoaderImpl_Test {
   public void testDoNotLoadTwiceForSameRequest() {
     ensureFiles( new String[]{ JS_FILE_1 } );
     ensureFiles( new String[]{ JS_FILE_1 } );
+
     Fixture.executeLifeCycleFromServerThread();
 
     TestMessage message = Fixture.getProtocolMessage();
-    String expected = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
-    assertNotNull( findLoadOperation( message, expected ) );
-    assertEquals( 1, message.getOperationCount() );
+    String file = "rwt-resources/" + getRegistryPath() + "/" + JS_FILE_1;
+    assertEquals( 1, findLoadOperations( message, file ).length );
   }
 
   @Test
@@ -288,7 +289,12 @@ public class JavaScriptModuleLoaderImpl_Test {
   }
 
   private CallOperation findLoadOperation( TestMessage message, String file ) {
-    CallOperation result = null;
+    CallOperation[] operations = findLoadOperations( message, file );
+    return operations.length == 0 ? null : operations[ 0 ];
+  }
+
+  private CallOperation[] findLoadOperations( TestMessage message, String file ) {
+    List<CallOperation> result = new ArrayList<CallOperation>();
     for( int i = 0; i < message.getOperationCount(); i++ ) {
       if( message.getOperation( i ) instanceof CallOperation ) {
         CallOperation operation = ( CallOperation )message.getOperation( i );
@@ -298,13 +304,13 @@ public class JavaScriptModuleLoaderImpl_Test {
           JsonArray files = operation.getParameters().get( "files" ).asArray();
           for( int j = 0; j < files.size(); j++ ) {
             if( files.get( j ).asString().equals( file ) ) {
-              result = operation;
+              result.add( operation );
             }
           }
         }
       }
     }
-    return result;
+    return result.toArray( new CallOperation[ 0 ] );
   }
 
   private void newSession() {

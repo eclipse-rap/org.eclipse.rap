@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,18 @@
 namespace( "rwt.client" );
 
 rwt.client.ClientMessages = function() {
-  this._messages = {};
+  this._messages = {
+    "ServerError" : "Server Error",
+    "ServerErrorDescription" : "The application terminated unexpectedly.",
+    "ConnectionError" : "Network Error",
+    "ConnectionErrorDescription" : "The server seems to be temporarily unavailable.",
+    "SessionTimeout" : "Session Timeout",
+    "SessionTimeoutDescription" : "The server session timed out.",
+    "ClientError" : "Client Error",
+    "Retry" : "Retry",
+    "Restart" : "Restart",
+    "Details" : "Details:"
+  };
 };
 
 rwt.client.ClientMessages.getInstance = function() {
