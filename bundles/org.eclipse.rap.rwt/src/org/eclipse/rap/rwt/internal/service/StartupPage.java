@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.RWTMessages.getMessage;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getRequest;
 import static org.eclipse.rap.rwt.internal.theme.ThemeUtil.getCssValue;
 import static org.eclipse.rap.rwt.internal.theme.ThemeUtil.getThemeIdFor;
@@ -121,7 +122,7 @@ public class StartupPage {
   }
 
   protected void writeNoScriptMessage( PrintWriter printWriter ) {
-    String message = RWTMessages.getMessage( RWTMessages.NO_SCRIPT_WARNING );
+    String message = getMessage( RWTMessages.NO_SCRIPT_WARNING, getRequest().getLocale() );
     printWriter.write( message );
   }
 
