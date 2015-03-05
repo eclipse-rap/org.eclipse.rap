@@ -13,5 +13,5 @@ Import-Package: javax.servlet;version="[2.3.0,4.0.0)",
  org.apache.commons.fileupload.servlet;version="[1.3.1,2.0.0)",
  org.apache.commons.io;version="[2.2.0,3.0.0)"
 Export-Package: org.eclipse.rap.fileupload;version="3.0.0",
- org.eclipse.rap.fileupload.internal;version="3.0.0";x-friends:="org.eclipse.rap.addons.fileupload.test"
+ org.eclipse.rap.fileupload.internal;version="3.0.0";x-friends:="org.eclipse.rap.fileupload.test"
 Bundle-Localization: plugin
