@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="RAP Examples Demo Product" uid="org.eclipse.rap.examples.rapdemo.product" version="2.3.0.qualifier" useFeatures="false" includeLaunchers="false">
+<product name="RAP Examples Demo Product" uid="org.eclipse.rap.examples.rapdemo.product" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
@@ -35,10 +35,15 @@
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="org.eclipse.rap.addons.ckeditor"/>
       <plugin id="org.eclipse.rap.examples"/>
       <plugin id="org.eclipse.rap.examples.pages"/>
+      <plugin id="org.eclipse.rap.addons.ckeditor"/>
       <plugin id="org.eclipse.rap.examples.pages.ckeditor"/>
+      <plugin id="org.eclipse.rap.filedialog"/>
+      <plugin id="org.eclipse.rap.fileupload"/>
+      <plugin id="org.eclipse.rap.filedialog.demo.examples"/>
+      <plugin id="org.eclipse.rap.nebula.widgets.grid"/>
+      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples"/>
       <plugin id="org.eclipse.rap.jface"/>
       <plugin id="org.eclipse.rap.jface.databinding"/>
       <plugin id="org.eclipse.rap.rwt"/>
@@ -51,7 +56,9 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.rap.demo.ckeditor" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.examples.pages.ckeditor" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.filedialog.demo.examples" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.clientscripting" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.enrondata" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.gmaps" autoStart="true" startLevel="0" />
