@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,8 +176,8 @@ public class MeasurementOperator_Test {
     operator.addProbeToMeasure( FONT_DATA_2 );
 
     assertEquals( 2, operator.getProbeCount() );
-    assertSame( FONT_DATA_1, operator.getProbes()[ 0 ].getFontData() );
-    assertSame( FONT_DATA_2, operator.getProbes()[ 1 ].getFontData() );
+    assertTrue( probesContainFontData( FONT_DATA_1 ) );
+    assertTrue( probesContainFontData( FONT_DATA_2 ) );
   }
 
   @Test
@@ -203,6 +203,16 @@ public class MeasurementOperator_Test {
     operator.renderMeasurementItems();
 
     checkResponseContainsMeasurementCall();
+  }
+
+  private boolean probesContainFontData( FontData fontData ) {
+    Probe[] probes = operator.getProbes();
+    for( Probe probe : probes ) {
+      if( probe.getFontData() == fontData ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void removeRemoteObject( String type ) {
