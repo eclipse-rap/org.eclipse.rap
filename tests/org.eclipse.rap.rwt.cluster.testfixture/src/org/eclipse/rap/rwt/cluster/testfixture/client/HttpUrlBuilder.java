@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -28,7 +28,7 @@ class HttpUrlBuilder {
     this.hostName = hostName;
     this.port = port;
     this.path = path;
-    parameters = new HashMap<String,String>();
+    parameters = new LinkedHashMap<String,String>();
   }
 
   void addParameter( String name, String value ) {

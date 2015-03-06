@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class HttpUrlBuilder_Test {
 
   @Test
   public void testToStringWithAddedParameterMap() throws MalformedURLException {
-    Map<String,String> parameters = new HashMap<String,String>();
+    Map<String,String> parameters = new LinkedHashMap<String,String>();
     urlBuilder = new HttpUrlBuilder( "localhost", 80, "path" );
     parameters.put( "name1", "value1" );
     parameters.put( "name2", "value2" );
