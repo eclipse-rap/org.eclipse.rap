@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ rwt.remote.EventUtil = {
 
   eventTimestamp : function() {
     var init = rwt.runtime.System.getInstance();
-    return new Date().getTime() - init.getStartupTime();
+    return ( new Date().getTime() - init.getStartupTime() ) % 0x7fffffff;
   },
 
   widgetDefaultSelected : function( event ) {

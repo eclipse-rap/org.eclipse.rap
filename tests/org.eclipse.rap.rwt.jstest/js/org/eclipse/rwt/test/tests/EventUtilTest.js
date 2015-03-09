@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,6 +200,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "shiftKey" ) );
       assertTrue( message.findNotifyProperty( "w11", "DefaultSelection", "ctrlKey" ) );
       assertFalse( message.findNotifyProperty( "w11", "DefaultSelection", "altKey" ) );
+    },
+
+    testEventTimestampDoesNotExceedMaxIntenerValue : function() {
+      var system = rwt.runtime.System.getInstance();
+      var now = new Date().getTime();
+      system._startupTime = now - 0x7fffffff - 1000;
+
+      assertTrue( rwt.remote.EventUtil.eventTimestamp() < 0x7fffffff );
     }
 
   }
