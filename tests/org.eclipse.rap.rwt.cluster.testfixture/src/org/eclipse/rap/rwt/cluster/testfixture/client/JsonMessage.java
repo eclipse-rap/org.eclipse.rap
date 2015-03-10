@@ -24,11 +24,6 @@ public class JsonMessage {
     operations = new ArrayList<String>();
   }
 
-  public void setInitialize( boolean initialize ) {
-    headers.add( "\"rwt_initialize\":true" );
-    headers.add( "\"requestCounter\":0" );
-  }
-
   public void setRequestCounter( int counter ) {
     headers.add( "\"requestCounter\":" + counter );
   }

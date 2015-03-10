@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.internal.service;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.QUERY_STRING;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.REQUEST_COUNTER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -41,7 +41,7 @@ public class UrlParameters_Test {
   @Test
   public void testMerge_InitialPostRequest() {
     RequestMessage message = new TestMessage();
-    fakeInitializeParameter( message );
+    fakeInitialRequest( message );
     fakeQueryString( message, "key1=value1&key2=value2" );
 
     UrlParameters.merge( message );
@@ -113,8 +113,8 @@ public class UrlParameters_Test {
     assertEquals( "value/1", parametersMap.get( "key1" )[ 0 ] );
   }
 
-  private static void fakeInitializeParameter( RequestMessage requestMessage ) {
-    requestMessage.getHead().set( RWT_INITIALIZE, true );
+  private static void fakeInitialRequest( RequestMessage requestMessage ) {
+    requestMessage.getHead().set( REQUEST_COUNTER, 0 );
   }
 
   private static void fakeQueryString( RequestMessage requestMessage, String queryString ) {

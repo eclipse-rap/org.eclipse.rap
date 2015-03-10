@@ -18,7 +18,6 @@ public final class ClientMessageConst {
 
   // Head parameters
   public static final String REQUEST_COUNTER = "requestCounter";
-  public static final String RWT_INITIALIZE = "rwt_initialize";
   public static final String SHUTDOWN = "shutdown";
   public static final String QUERY_STRING = "queryString";
 

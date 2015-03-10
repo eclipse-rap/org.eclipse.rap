@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.internal.service;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.REQUEST_COUNTER;
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.SHUTDOWN;
+import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.isInitialRequest;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getServiceStore;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
@@ -241,12 +241,12 @@ public class LifeCycleServiceHandler implements ServiceHandler {
    * Session restart: we're in the same HttpSession and start over (e.g. by pressing F5)
    */
   private static boolean isSessionRestart( RequestMessage requestMessage ) {
-    return isSessionStarted() && hasInitializeParameter( requestMessage );
+    return isSessionStarted() && isInitialRequest( requestMessage );
   }
 
-  private static boolean isSessionTimeout( RequestMessage message ) {
+  private static boolean isSessionTimeout( RequestMessage requestMessage ) {
     // Session is not initialized because we got a new HTTPSession
-    return !isSessionStarted() && !hasInitializeParameter( message );
+    return !isSessionStarted() && !isInitialRequest( requestMessage );
   }
 
   static void markSessionStarted() {
@@ -259,10 +259,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static boolean isSessionShutdown( RequestMessage requestMessage ) {
     return JsonValue.TRUE.equals( requestMessage.getHead().get( SHUTDOWN ) );
-  }
-
-  private static boolean hasInitializeParameter( RequestMessage requestMessage ) {
-    return JsonValue.TRUE.equals( requestMessage.getHead().get( RWT_INITIALIZE ) );
   }
 
   private static void setJsonResponseHeaders( ServletResponse response ) {

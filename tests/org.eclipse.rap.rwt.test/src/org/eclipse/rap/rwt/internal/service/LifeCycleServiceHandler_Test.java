@@ -394,6 +394,7 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHandlesSessionTimeout() throws IOException {
+    RequestCounter.getInstance().nextRequestId();
     simulateUiRequest();
 
     service( serviceHandler );
@@ -553,7 +554,6 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
     Fixture.fakeHeadParameter( "requestCounter", 0 );
   }
 

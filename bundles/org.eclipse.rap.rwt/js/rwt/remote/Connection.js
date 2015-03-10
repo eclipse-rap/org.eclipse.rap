@@ -163,7 +163,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     },
 
     _startWaitHintTimer : function() {
-      if( !this.getMessageWriter().getHead( "rwt_initialize" ) ) {
+      if( this._requestCounter !== 0 ) {
         this._waitHintTimer.start();
       }
     },

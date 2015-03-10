@@ -66,7 +66,7 @@ public class RWTClient {
 
   public Response sendInitializationRequest() throws IOException {
     JsonMessage message = new JsonMessage();
-    message.setInitialize( true );
+    message.setRequestCounter( 0 );
     message.addOperation( "[\"set\",\"w1\",{\"bounds\":[0,0,800,600],\"dpi\":[96,96],\"colorDepth\":32}]" );
     message.addOperation( "[\"set\",\"w1\",{\"cursorLocation\":[0,0]}]" );
     return sendPostRequest( message );

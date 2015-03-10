@@ -27,17 +27,6 @@ public class JsonMessage_Test {
   }
 
   @Test
-  public void createsInitHeader() {
-    JsonMessage message = new JsonMessage();
-
-    message.setInitialize( true );
-    String json = message.toString();
-
-    assertEquals( "{\"head\":{\"rwt_initialize\":true,\"requestCounter\":0},\"operations\":[]}",
-                  json );
-  }
-
-  @Test
   public void createsRequestCounter() {
     JsonMessage message = new JsonMessage();
 

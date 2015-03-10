@@ -113,7 +113,6 @@ public class WrappedRequest_Test {
     ServiceHandler handler = getApplicationContext().getServiceManager().getHandler();
 
     Fixture.fakeNewRequest();
-    Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
     Fixture.fakeHeadParameter( ClientMessageConst.REQUEST_COUNTER, 0 );
     Fixture.fakeHeadParameter( ClientMessageConst.QUERY_STRING, "param=value" );
     handler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );

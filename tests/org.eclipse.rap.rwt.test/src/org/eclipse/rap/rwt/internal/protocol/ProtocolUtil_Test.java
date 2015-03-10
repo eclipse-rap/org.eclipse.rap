@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,22 @@ public class ProtocolUtil_Test {
 
     JsonValue expected = JsonValue.readFrom( "[\"a\", 2, true]" );
     assertEquals( expected, result );
+  }
+
+  @Test
+  public void testIsInitialRequest_withZeroRequestCounter() {
+    assertTrue( ProtocolUtil.isInitialRequest( createMessageWithRequestCounter( 0 ) ) );
+  }
+
+  @Test
+  public void testIsInitialRequest_withNonZeroRequestCounter() {
+    assertFalse( ProtocolUtil.isInitialRequest( createMessageWithRequestCounter( 3 ) ) );
+  }
+
+  private static RequestMessage createMessageWithRequestCounter( int requestCounter ) {
+    return new RequestMessage( new JsonObject()
+      .add( "head", new JsonObject().add( "requestCounter", requestCounter ) )
+      .add( "operations", new JsonArray() ) );
   }
 
 }
