@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,16 +27,13 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -53,7 +50,6 @@ import org.eclipse.swt.widgets.Widget;
 
 public class DisplayLCA implements DisplayLifeCycleAdapter {
 
-  private static final String PROP_REQUEST_COUNTER = "requestCounter";
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
@@ -89,7 +85,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   public void render( Display display ) throws IOException {
     disposeWidgets();
-    renderRequestCounter();
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
@@ -149,12 +144,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
       WidgetTreeVisitor.accept( shell, visitor );
       visitor.reThrowProblem();
     }
-  }
-
-  private static void renderRequestCounter() {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
-    int requestId = RequestCounter.getInstance().nextRequestId();
-    protocolWriter.appendHead( PROP_REQUEST_COUNTER, requestId );
   }
 
   private static void renderExitConfirmation( Display display ) {

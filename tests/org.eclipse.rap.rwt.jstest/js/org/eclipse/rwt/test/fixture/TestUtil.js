@@ -708,7 +708,6 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   // client-server
 
   _requestLog : [],
-  _requestCounter : 1,
   _response : null,
   _errorPage : null,
 
@@ -717,16 +716,12 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
     server.setRequestHandler( function( message ) {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      TestUtil._requestCounter++;
       TestUtil._requestLog.push( message );
       if( TestUtil._response !== null ) {
         TestUtil._response();
         TestUtil._response = null;
       }
-      var response =    "{ \"head\" : { \"requestCounter\" : "
-                      + TestUtil._requestCounter
-                      + " }, \"operations\" : [] }";
-      return response;
+      return "{ \"head\" : {}, \"operations\" : [] }";
     } );
   },
 

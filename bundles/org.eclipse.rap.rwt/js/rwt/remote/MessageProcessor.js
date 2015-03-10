@@ -47,9 +47,6 @@ rwt.remote.MessageProcessor = {
     if( head.url !== undefined ) {
       connection.setUrl( head.url );
     }
-    if( head.requestCounter !== undefined ) {
-      connection.setRequestCounter( head.requestCounter );
-    }
     if( head.redirect !== undefined ) {
       rwt.widgets.Display.getCurrent().setExitConfirmation( null );
       document.location = head.redirect;

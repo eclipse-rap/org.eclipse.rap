@@ -229,6 +229,31 @@ public class LifeCycleServiceHandler_Test {
     assertSame( applicationContext, uiSession.getApplicationContext() );
   }
 
+  @Test
+  public void testIncrementRequestCounter() throws IOException {
+    RequestCounter requestCounter = RequestCounter.getInstance();
+    markSessionStarted();
+    requestCounter.nextRequestId();
+    simulateUiRequest();
+
+    service( serviceHandler );
+
+    assertEquals( 2, requestCounter.currentRequestId() );
+  }
+
+  @Test
+  public void testResetRequestCounterAfterSessionRestart() throws IOException {
+    RequestCounter requestCounter = RequestCounter.getInstance();
+    markSessionStarted();
+    requestCounter.nextRequestId();
+    requestCounter.nextRequestId();
+    simulateInitialUiRequest();
+
+    service( serviceHandler );
+
+    assertEquals( 1, requestCounter.currentRequestId() );
+  }
+
   /*
    * When cleaning the session store, the display is disposed. This put a list with all disposed
    * widgets into the service store. As application is restarted in the same request, we have to
@@ -400,7 +425,6 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeHeadParameter( "requestCounter", requestCounter );
 
     service( serviceHandler );
-    RequestCounter.getInstance().nextRequestId();
     JsonObject firstResponse = JsonObject.readFrom( getResponse().getContent() );
 
     simulateUiRequest();
@@ -422,35 +446,35 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testHasValidRequestCounter_trueWithValidParameter() {
+  public void testIsRequestCounterValid_trueWithValidParameter() {
     int nextRequestId = RequestCounter.getInstance().nextRequestId();
     RequestMessage message = new TestMessage();
     message.getHead().set( "requestCounter", nextRequestId );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( message );
+    boolean valid = LifeCycleServiceHandler.isRequestCounterValid( message );
 
     assertTrue( valid );
   }
 
   @Test
-  public void testHasValidRequestCounter_falseWithInvalidParameter() {
+  public void testIsRequestCounterValid_falseWithInvalidParameter() {
     RequestCounter.getInstance().nextRequestId();
     RequestMessage requestMessage = new TestMessage();
     requestMessage.getHead().set( "requestCounter", 23 );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
+    boolean valid = LifeCycleServiceHandler.isRequestCounterValid( requestMessage );
 
     assertFalse( valid );
   }
 
   @Test
-  public void testHasValidRequestCounter_failsWithIllegalParameterFormat() {
+  public void testIsRequestCounterValid_failsWithIllegalParameterFormat() {
     RequestCounter.getInstance().nextRequestId();
     RequestMessage requestMessage = new TestMessage();
     requestMessage.getHead().set( "requestCounter", "not-a-number" );
 
     try {
-      LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
+      LifeCycleServiceHandler.isRequestCounterValid( requestMessage );
       fail();
     } catch( Exception exception ) {
       assertTrue( exception.getMessage().contains( "Not a number" ) );
@@ -458,20 +482,22 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testHasValidRequestCounter_toleratesMissingParameterInFirstRequest() {
+  public void testIsRequestCounterValid_toleratesZeroInFirstRequest() {
+    RequestCounter.getInstance().nextRequestId();
     RequestMessage requestMessage = new TestMessage();
+    requestMessage.getHead().set( "requestCounter", 0 );
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
+    boolean valid = LifeCycleServiceHandler.isRequestCounterValid( requestMessage );
 
     assertTrue( valid );
   }
 
   @Test
-  public void testHasValidRequestCounter_falseWithMissingParameter() {
+  public void testIsRequestCounterValid_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
     RequestMessage requestMessage = new TestMessage();
 
-    boolean valid = LifeCycleServiceHandler.hasValidRequestCounter( requestMessage );
+    boolean valid = LifeCycleServiceHandler.isRequestCounterValid( requestMessage );
 
     assertFalse( valid );
   }
@@ -522,11 +548,13 @@ public class LifeCycleServiceHandler_Test {
 
   private void simulateUiRequest() {
     Fixture.fakeNewRequest();
+    Fixture.fakeHeadParameter( "requestCounter", RequestCounter.getInstance().currentRequestId() );
   }
 
   private void simulateInitialUiRequest() {
     Fixture.fakeNewRequest();
     Fixture.fakeHeadParameter( ClientMessageConst.RWT_INITIALIZE, true );
+    Fixture.fakeHeadParameter( "requestCounter", 0 );
   }
 
   private void simulateShutdownUiRequest() {
@@ -555,7 +583,7 @@ public class LifeCycleServiceHandler_Test {
 
   private static JsonObject createExampleMessage() {
     return new JsonObject()
-      .add( "head", new JsonObject().add( "test", true ) )
+      .add( "head", new JsonObject().add( "test", true ).add( "requestCounter", 0 ) )
       .add( "operations", new JsonArray() );
   }
 

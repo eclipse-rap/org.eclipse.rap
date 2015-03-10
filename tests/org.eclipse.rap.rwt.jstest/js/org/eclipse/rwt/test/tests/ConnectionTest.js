@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
       assertIdentical( instance, rwt.runtime.Singletons.get( rwt.remote.Connection ) );
     },
 
-    testSendRequestCounter : function() {
+    testSend_addsRequestCounterToMessage : function() {
+      connection.setRequestCounter( 11 );
+
       connection.send();
 
-      assertEquals( "number", typeof TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
+      assertEquals( 11, TestUtil.getMessageObject().getHead()[ "requestCounter" ] );
+    },
+
+    testSend_incrementsRequestCounter : function() {
+      connection.setRequestCounter( 11 );
+
+      connection.send();
+
+      assertEquals( 12, connection.getRequestCounter() );
     },
 
     testGetServerObject : function() {
@@ -39,22 +49,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
       var remoteObject = connection.getRemoteObject( rwt.widgets.Display.getCurrent() );
 
       assertTrue( remoteObject instanceof rwt.remote.RemoteObject );
-    },
-
-    // See Bug 391393 - Invalid request counter on session restart
-    testSendTwoInitialRequests: function() {
-      var fakeServer = org.eclipse.rwt.test.fixture.FakeServer.getInstance();
-      fakeServer.setUseAsync( true );
-      connection.setRequestCounter( null );
-
-      connection.sendImmediate( true );
-      // NOTE [tb] : can not test sending second request since fixture for Connection.js
-      //             does not support the pending request case
-
-      assertTrue( connection._requestPending );
-      TestUtil.forceInterval( fakeServer._timer );
-      assertEquals( 1, TestUtil.getRequestsSend() );
-      org.eclipse.rwt.test.fixture.FakeServer.getInstance().setUseAsync( false );
     },
 
     testOnNextSend : function() {

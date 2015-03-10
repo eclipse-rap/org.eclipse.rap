@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ package org.eclipse.rap.rwt.internal.protocol;
 public final class ClientMessageConst {
 
   // Head parameters
+  public static final String REQUEST_COUNTER = "requestCounter";
   public static final String RWT_INITIALIZE = "rwt_initialize";
   public static final String SHUTDOWN = "shutdown";
   public static final String QUERY_STRING = "queryString";

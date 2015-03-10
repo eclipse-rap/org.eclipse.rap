@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
@@ -47,7 +45,7 @@ public class RWTClient {
     this.connectionProvider = connectionProvider;
     startTime = System.currentTimeMillis();
     sessionId = "";
-    requestCounter = -1;
+    requestCounter = 0;
   }
 
   public void changeServletEngine( IServletEngine servletEngine ) {
@@ -147,9 +145,8 @@ public class RWTClient {
     URL url = createUrl( IServletEngine.SERVLET_NAME );
     HttpURLConnection connection = createPostConnection( url, message.toString(), 0 );
     parseSessionId( connection );
-    Response response = new Response( connection );
-    requestCounter = parseRequestCounter( response.getContentText() );
-    return response;
+    requestCounter++;
+    return new Response( connection );
   }
 
   Response sendGetRequest( Map<String, String> parameters ) throws IOException {
@@ -221,15 +218,6 @@ public class RWTClient {
       String[] parts = cookieField.split( ";" );
       sessionId = parts[ 0 ].split( "=" )[ 1 ];
     }
-  }
-
-  static int parseRequestCounter( String content ) {
-    Pattern pattern = Pattern.compile( "\"requestCounter\":\\s*(\\d+)" );
-    Matcher matcher = pattern.matcher( content );
-    if( matcher.find() ) {
-      return Integer.parseInt( matcher.group( 1 ) );
-    }
-    return -1;
   }
 
   private static class DefaultConnectionProvider implements IConnectionProvider {

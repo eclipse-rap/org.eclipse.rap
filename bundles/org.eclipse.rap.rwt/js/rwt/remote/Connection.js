@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     this._url = "";
     this._writer = null;
     this._event = null;
-    this._requestCounter = null;
+    this._requestCounter = 0;
     this._requestPending = false;
     this._connectionId = this._generateConnectionId();
     this._sendTimer = new Timer( 60 );
@@ -129,9 +129,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
         rap._.notify( "send" );
         this._flushEvent();
         this._sendTimer.stop();
-        if( this._requestCounter != null ) {
-          this.getMessageWriter().appendHead( "requestCounter", this._requestCounter );
-        }
+        this.getMessageWriter().appendHead( "requestCounter", this._requestCounter++ );
         this._requestPending = true;
         this._startWaitHintTimer();
         var request = this._createRequest();

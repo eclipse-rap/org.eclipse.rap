@@ -44,6 +44,7 @@ rwt.widgets.Display.prototype = {
   },
 
   init : function() {
+    rwt.remote.Connection.getInstance().setRequestCounter( 0 );
     this._server.getMessageWriter().appendHead( "rwt_initialize", true );
     this._appendQueryString();
     this._appendWindowSize();

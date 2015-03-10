@@ -667,19 +667,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       registry.remove( "dummyType" );
     },
 
-    testProcessHeadSetRequestCounter : function() {
-      var processor = rwt.remote.MessageProcessor;
-      var message = {
-        "head": {
-          "requestCounter": 3
-        },
-        "operations" : []
-      };
-      processor.processMessage( message );
-      var req = rwt.remote.Connection.getInstance();
-      assertEquals( 3, req.getRequestCounter() );
-    },
-
     testGetService : function() {
       var registry = rwt.remote.HandlerRegistry;
       var processor = rwt.remote.MessageProcessor;
@@ -838,29 +825,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       MessageProcessor.continueExecution();
 
       assertEquals( [ "width", 44, "width", 45 ], this._getTargetById( "dummyId" ).getLog() );
-    },
-
-    testPauseExecution_doesNotDelaysHeadProcessing : function() {
-      // note: this is relevant because the request counter is used to check if a request is active
-      var connection = rwt.remote.Connection.getInstance();
-      connection.setRequestCounter( 2 );
-      var message = {
-        "head" : { "requestCounter": 33 },
-        "operations" : [
-          [
-            "call",
-            "rwt.client.JavaScriptExecutor",
-            "execute",
-            { "content" : "rwt.remote.MessageProcessor.pauseExecution();" }
-          ]
-        ]
-      };
-
-      MessageProcessor.processMessage( message );
-
-      assertEquals( 33, connection.getRequestCounter() );
-      MessageProcessor.continueExecution();
-      assertEquals( 33, connection.getRequestCounter() );
     },
 
     testPauseExecutionWhileFirstMessageStillPendingFails : function() {

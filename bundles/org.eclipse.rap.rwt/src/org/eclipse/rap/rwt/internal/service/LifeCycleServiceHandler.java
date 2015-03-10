@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.service;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.REQUEST_COUNTER;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.RWT_INITIALIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.SHUTDOWN;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
@@ -48,7 +49,6 @@ import org.eclipse.rap.rwt.service.UISession;
 public class LifeCycleServiceHandler implements ServiceHandler {
 
   private static final String PROP_ERROR = "error";
-  private static final String PROP_REQUEST_COUNTER = "requestCounter";
   private static final String ATTR_LAST_RESPONSE_MESSAGE
     = LifeCycleServiceHandler.class.getName() + "#lastResponseMessage";
   private static final String ATTR_SESSION_STARTED
@@ -142,8 +142,10 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       if( isSessionRestart( requestMessage ) ) {
         reinitializeUISession( request );
         reinitializeServiceStore();
+        RequestCounter.getInstance().resetRequestId();
       }
       UrlParameters.merge( requestMessage );
+      RequestCounter.getInstance().nextRequestId();
       ResponseMessage responseMessage = processMessage( requestMessage );
       writeResponseMessage( responseMessage, response );
       markSessionStarted();
@@ -175,22 +177,18 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     return messageChainReference.get().handleMessage( requestMessage );
   }
 
-  private static boolean isRequestCounterValid( RequestMessage requestMessage ) {
-    return hasInitializeParameter( requestMessage ) || hasValidRequestCounter( requestMessage );
-  }
-
-  static boolean hasValidRequestCounter( RequestMessage requestMessage ) {
-    int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = requestMessage.getHead().get( PROP_REQUEST_COUNTER );
+  static boolean isRequestCounterValid( RequestMessage requestMessage ) {
+    int expectedRequestId = RequestCounter.getInstance().currentRequestId();
+    JsonValue sentRequestId = requestMessage.getHead().get( REQUEST_COUNTER );
     if( sentRequestId == null ) {
-      return currentRequestId == 0;
+      return false;
     }
-    return currentRequestId == sentRequestId.asInt();
+    return sentRequestId.asInt() == 0 || sentRequestId.asInt() == expectedRequestId;
   }
 
   private static boolean isDuplicateRequest( RequestMessage requestMessage ) {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
-    JsonValue sentRequestId = requestMessage.getHead().get( PROP_REQUEST_COUNTER );
+    JsonValue sentRequestId = requestMessage.getHead().get( REQUEST_COUNTER );
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
   }
 
