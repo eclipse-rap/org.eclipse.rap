@@ -19,8 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.rap.fileupload.DiskFileUploadReceiver;
-import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.internal.FileDetailsImpl;
 import org.eclipse.rap.fileupload.test.FileUploadTestUtil;
 import org.junit.After;
@@ -55,7 +53,7 @@ public class DiskFileUploadReceiver_Test {
   public void testCreateTargetFile() throws IOException {
     DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
 
-    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain", 5 );
+    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain" );
     createdFile = receiver.createTargetFile( details );
 
     assertTrue( createdFile.exists() );
@@ -66,7 +64,7 @@ public class DiskFileUploadReceiver_Test {
   public void testCreateContentTypeFile() throws IOException {
     DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
 
-    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain", 5 );
+    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain" );
     createdFile = receiver.createTargetFile( details );
     createdContentTypeFile = receiver.createContentTypeFile( createdFile, details );
 
@@ -84,7 +82,7 @@ public class DiskFileUploadReceiver_Test {
   public void testCreatedTargetFilesDiffer() throws IOException {
     DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
 
-    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain", 5 );
+    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain" );
     createdFile = receiver.createTargetFile( details );
     File createdFile2 = receiver.createTargetFile( details );
     createdFile2.deleteOnExit();
@@ -97,7 +95,7 @@ public class DiskFileUploadReceiver_Test {
     DiskFileUploadReceiver receiver = new DiskFileUploadReceiver();
     String content = "Hello world!";
 
-    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain", content.length() );
+    FileDetails details = new FileDetailsImpl( "foo.bar", "text/plain" );
     receiver.receive( new ByteArrayInputStream( content.getBytes() ), details );
     createdFile = receiver.getTargetFiles()[ 0 ];
 

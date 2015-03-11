@@ -87,7 +87,6 @@ public class FileUploadProcessor_Test {
     FileDetails[] fileDetails = event.getFileDetails();
     assertEquals( "foo.txt", fileDetails[ 0 ].getFileName() );
     assertEquals( "text/plain", fileDetails[ 0 ].getContentType() );
-    assertEquals( -1, fileDetails[ 0 ].getContentLength() );
     assertEquals( event.getContentLength(), event.getBytesRead() );
   }
 
@@ -99,7 +98,6 @@ public class FileUploadProcessor_Test {
     ArgumentCaptor<FileDetails> captor = ArgumentCaptor.forClass( FileDetails.class );
     verify( receiver ).receive( any( InputStream.class ), captor.capture() );
     FileDetails uploadDetails = captor.getValue();
-    assertEquals( -1, uploadDetails.getContentLength() );
     assertEquals( "text/plain", uploadDetails.getContentType() );
     assertEquals( "foo.txt", uploadDetails.getFileName() );
   }
@@ -129,10 +127,8 @@ public class FileUploadProcessor_Test {
     FileDetails[] fileDetails = event.getFileDetails();
     assertEquals( "foo.txt", fileDetails[ 0 ].getFileName() );
     assertEquals( "text/plain", fileDetails[ 0 ].getContentType() );
-    assertEquals( -1, fileDetails[ 0 ].getContentLength() );
     assertEquals( "bar.png", fileDetails[ 1 ].getFileName() );
     assertEquals( "image/png", fileDetails[ 1 ].getContentType() );
-    assertEquals( -1, fileDetails[ 1 ].getContentLength() );
     assertEquals( event.getContentLength(), event.getBytesRead() );
   }
 
@@ -146,10 +142,8 @@ public class FileUploadProcessor_Test {
     ArgumentCaptor<FileDetails> captor = ArgumentCaptor.forClass( FileDetails.class );
     verify( receiver, times( 2 ) ).receive( any( InputStream.class ), captor.capture() );
     List<FileDetails> values = captor.getAllValues();
-    assertEquals( -1, values.get( 0 ).getContentLength() );
     assertEquals( "text/plain", values.get( 0 ).getContentType() );
     assertEquals( "foo.txt", values.get( 0 ).getFileName() );
-    assertEquals( -1, values.get( 1 ).getContentLength() );
     assertEquals( "image/png", values.get( 1 ).getContentType() );
     assertEquals( "bar.png", values.get( 1 ).getFileName() );
   }

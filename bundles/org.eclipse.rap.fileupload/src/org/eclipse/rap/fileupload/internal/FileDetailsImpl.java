@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,10 @@ public final class FileDetailsImpl implements FileDetails {
 
   private final String fileName;
   private final String contentType;
-  private final long contentLength;
 
-  public FileDetailsImpl( String fileName, String contentType, long contentLength ) {
+  public FileDetailsImpl( String fileName, String contentType ) {
     this.fileName = fileName;
     this.contentType = contentType;
-    this.contentLength = contentLength;
   }
 
   public String getFileName() {
@@ -31,10 +29,6 @@ public final class FileDetailsImpl implements FileDetails {
 
   public String getContentType() {
     return contentType;
-  }
-
-  public long getContentLength() {
-    return contentLength;
   }
 
 }
