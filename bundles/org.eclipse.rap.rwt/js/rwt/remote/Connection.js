@@ -77,14 +77,6 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
       return this._url;
     },
 
-    setRequestCounter : function( requestCounter ) {
-      this._requestCounter = requestCounter;
-    },
-
-    getRequestCounter : function() {
-      return this._requestCounter;
-    },
-
     getConnectionId : function() {
       return this._connectionId;
     },

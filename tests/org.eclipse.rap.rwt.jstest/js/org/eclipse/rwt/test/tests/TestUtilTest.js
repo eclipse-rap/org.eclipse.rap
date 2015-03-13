@@ -22,16 +22,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testSendSynchronousRequestsBug : function() {
       var req = rwt.remote.Connection.getInstance();
       req.send();
-      var counter = req.getRequestCounter();
+      var counter = req._requestCounter;
       req.sendImmediate( false );
       counter++;
-      assertEquals( counter, req.getRequestCounter() );
+      assertEquals( counter, req._requestCounter );
       req.send();
       counter++;
-      assertEquals( counter, req.getRequestCounter() );
+      assertEquals( counter, req._requestCounter );
       req.send();
       counter++;
-      assertEquals( counter, req.getRequestCounter() );
+      assertEquals( counter, req._requestCounter );
     },
 
     testGetElementBounds : function() {

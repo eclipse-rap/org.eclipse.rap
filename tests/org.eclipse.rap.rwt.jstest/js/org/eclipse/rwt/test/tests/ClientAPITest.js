@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -293,10 +293,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
 
     testOn_FireRenderEventAfterProcess : function() {
       var logger = TestUtil.getLogger();
-      var server = rwt.remote.Connection.getInstance();
-      var now = server.getRequestCounter();
+      var connection = rwt.remote.Connection.getInstance();
+      var now = connection._requestCounter;
 
-      rap.on( "render", function(){ logger.log( server.getRequestCounter() ); } );
+      rap.on( "render", function(){ logger.log( connection._requestCounter ); } );
       rap.getRemoteObject( shell ).call( "foo" );
 
       assertEquals( now + 1, logger.getLog()[ 0 ] );

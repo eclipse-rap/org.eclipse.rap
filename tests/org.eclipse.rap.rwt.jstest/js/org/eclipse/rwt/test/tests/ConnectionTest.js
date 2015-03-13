@@ -29,7 +29,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
     },
 
     testSend_addsRequestCounterToMessage : function() {
-      connection.setRequestCounter( 11 );
+      connection._requestCounter = 11;
 
       connection.send();
 
@@ -37,11 +37,11 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
     },
 
     testSend_incrementsRequestCounter : function() {
-      connection.setRequestCounter( 11 );
+      connection._requestCounter = 11;
 
       connection.send();
 
-      assertEquals( 12, connection.getRequestCounter() );
+      assertEquals( 12, connection._requestCounter );
     },
 
     testGetServerObject : function() {

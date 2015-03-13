@@ -67,7 +67,7 @@ org.eclipse.rwt.test.fixture.Fixture = {
     } );
     rwt.runtime.ErrorHandler.processJavaScriptErrorInResponse
       = function( script, error, currentRequest ) { throw error; };
-    connection.setRequestCounter( 0 );
+    connection._requestCounter = 0;
     org.eclipse.rwt.test.fixture.TestUtil.clearXMLHttpRequests();
     org.eclipse.rwt.test.fixture.TestUtil.initRequestLog();
     // prevent flush by timer

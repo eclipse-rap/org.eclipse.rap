@@ -44,7 +44,6 @@ rwt.widgets.Display.prototype = {
   },
 
   init : function() {
-    rwt.remote.Connection.getInstance().setRequestCounter( 0 );
     this._appendQueryString();
     this._appendWindowSize();
     this._appendSystemDPI();
