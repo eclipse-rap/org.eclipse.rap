@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.rap.fileupload.DiskFileUploadReceiver;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
+import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
@@ -78,6 +79,7 @@ import org.eclipse.swt.layout.GridLayout;
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further
  *      information</a>
  */
+@SuppressWarnings( "restriction" )
 public class FileDialog extends Dialog {
 
   private final ServerPushSession pushSession;
@@ -244,8 +246,16 @@ public class FileDialog extends Dialog {
         updateScrolledComposite();
       }
     } );
-    placeHolder = new UploadPanel( scrolledContent, new String[] { "" } );
-    placeHolder.setLayoutData( createHorizontalFillData() );
+    placeHolder = createPlaceHolder( scrolledContent );
+  }
+
+  private UploadPanel createPlaceHolder( Composite parent ) {
+    String text = isMulti()
+                ? RWTMessages.getMessage( "RWT_FileDialogMultiUploadPanelMessage" )
+                : RWTMessages.getMessage( "RWT_FileDialogSingleUploadPanelMessage" );
+    UploadPanel panel = new UploadPanel( parent, new String[] { text } );
+    panel.setLayoutData( createHorizontalFillData() );
+    return panel;
   }
 
   private void createProgressArea( Composite parent ) {
