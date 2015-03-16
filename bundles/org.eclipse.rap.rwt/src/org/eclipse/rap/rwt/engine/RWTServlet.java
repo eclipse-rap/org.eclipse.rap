@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,14 @@ package org.eclipse.rap.rwt.engine;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
+import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
 import java.io.IOException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +30,13 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.StartupJson;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
 
@@ -122,8 +129,14 @@ public class RWTServlet extends HttpServlet {
     ServiceContext serviceContext = createServiceContext( request, response );
     ContextProvider.setContext( serviceContext );
     try {
-      ensureUISession( serviceContext );
-      getServiceHandler().service( request, response );
+      ServiceHandler serviceHandler = getServiceHandler();
+      if( isCustomServiceHandler( serviceHandler ) || isUIRequest( request ) ) {
+        ensureUISession( serviceContext );
+        serviceHandler.service( request, response );
+      } else {
+        ensureHttpSession( request );
+        sendStartupContent( request, response );
+      }
     } finally {
       ContextProvider.disposeContext();
     }
@@ -139,6 +152,36 @@ public class RWTServlet extends HttpServlet {
 
   private ServiceHandler getServiceHandler() {
     return applicationContext.getServiceManager().getHandler();
+  }
+
+  private static boolean isCustomServiceHandler( ServiceHandler serviceHandler ) {
+    return !( serviceHandler instanceof LifeCycleServiceHandler );
+  }
+
+  private static boolean isUIRequest( HttpServletRequest request ) {
+    return METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request );
+  }
+
+  private static boolean isContentTypeValid( ServletRequest request ) {
+    String contentType = request.getContentType();
+    return contentType != null && contentType.startsWith( CONTENT_TYPE_JSON );
+  }
+
+  private void sendStartupContent( HttpServletRequest request, HttpServletResponse response )
+    throws IOException
+  {
+    String accept = request.getHeader( HTTP.HEADER_ACCEPT );
+    if( accept != null && accept.contains( HTTP.CONTENT_TYPE_JSON ) ) {
+      StartupJson.send( response );
+    } else {
+      applicationContext.getStartupPage().send( response );
+    }
+  }
+
+  private static void ensureHttpSession( HttpServletRequest request ) {
+    // [if] Some cluster tests fail if startup request does not create HTTP session.
+    // Investigate if this is really needed.
+    request.getSession( true );
   }
 
   static void ensureUISession( ServiceContext serviceContext ) {

@@ -234,16 +234,6 @@ public class RWTLifeCycle2_Test {
   }
 
   @Test
-  public void testGetRequestShutdownsDummyUISession() throws Exception {
-    Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
-    getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
-
-    runRWTServlet( newGetRequest() );
-
-    assertNull( ContextProvider.getUISession() );
-  }
-
-  @Test
   public void testGetRequestAlwaysReturnsHtml() throws Exception {
     Class<? extends EntryPoint> entryPoint = TestEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );

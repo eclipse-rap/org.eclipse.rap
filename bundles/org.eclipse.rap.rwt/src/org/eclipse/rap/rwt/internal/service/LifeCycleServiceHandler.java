@@ -21,13 +21,11 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getServiceSto
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 import static org.eclipse.rap.rwt.internal.util.HTTP.CHARSET_UTF_8;
 import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
-import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +39,6 @@ import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 
@@ -55,13 +52,9 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     = LifeCycleServiceHandler.class.getName() + "#isSessionStarted";
 
   private final MessageChainReference messageChainReference;
-  private final StartupPage startupPage;
 
-  public LifeCycleServiceHandler( MessageChainReference messageChainReference,
-                                  StartupPage startupPage )
-  {
+  public LifeCycleServiceHandler( MessageChainReference messageChainReference ) {
     this.messageChainReference = messageChainReference;
-    this.startupPage = startupPage;
   }
 
   public void service( HttpServletRequest request, HttpServletResponse response )
@@ -78,28 +71,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
   void synchronizedService( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    if( METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request ) ) {
-      handleUIRequest( request, response );
-    } else {
-      handleStartupRequest( request, response );
-    }
-  }
-
-  private void handleStartupRequest( HttpServletRequest request, HttpServletResponse response )
-    throws IOException
-  {
-    try {
-      sendStartupContent( request, response );
-    } finally {
-      // The GET request currently creates a dummy UI session needed for accessing the client
-      // information. It is not meant to be reused by other requests.
-      shutdownUISession();
-    }
-  }
-
-  private void handleUIRequest( HttpServletRequest request, HttpServletResponse response )
-    throws IOException
-  {
     try {
       processUIRequest( request, response );
     } catch( IOException exception ) {
@@ -108,17 +79,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     } catch( RuntimeException exception ) {
       shutdownUISession();
       throw exception;
-    }
-  }
-
-  private void sendStartupContent( HttpServletRequest request, HttpServletResponse response )
-    throws IOException
-  {
-    String accept = request.getHeader( HTTP.HEADER_ACCEPT );
-    if( accept != null && accept.contains( HTTP.CONTENT_TYPE_JSON ) ) {
-      StartupJson.send( response );
-    } else {
-      startupPage.send( response );
     }
   }
 
@@ -190,11 +150,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     int currentRequestId = RequestCounter.getInstance().currentRequestId();
     JsonValue sentRequestId = requestMessage.getHead().get( REQUEST_COUNTER );
     return sentRequestId != null && sentRequestId.asInt() == currentRequestId - 1;
-  }
-
-  private static boolean isContentTypeValid( ServletRequest request ) {
-    String contentType = request.getContentType();
-    return contentType != null && contentType.startsWith( CONTENT_TYPE_JSON );
   }
 
   private static void shutdownUISession() {

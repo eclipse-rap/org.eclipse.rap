@@ -20,6 +20,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -37,12 +38,17 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.service.StartupPage;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeStorage;
+import org.eclipse.rap.rwt.internal.theme.Theme;
+import org.eclipse.rap.rwt.internal.theme.ThemeManager;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
@@ -58,16 +64,15 @@ import org.junit.Test;
 public class RWTServlet_Test {
 
   private ApplicationContextImpl applicationContext;
-  private ServiceHandler serviceHandler;
+  private StartupPage startupPage;
   private RWTServlet servlet;
   private TestRequest request;
   private TestResponse response;
 
   @Before
   public void setUp() throws ServletException {
-    applicationContext = mockApplicationContext();
-    serviceHandler = mock( ServiceHandler.class );
-    fakeServiceHandler( applicationContext, serviceHandler );
+    startupPage = mock( StartupPage.class );
+    applicationContext = mockApplicationContext( startupPage );
     servlet = new RWTServlet() {
       @Override
       public ServletContext getServletContext() {
@@ -76,6 +81,7 @@ public class RWTServlet_Test {
     };
     servlet.init();
     request = new TestRequest();
+    request.setSession( new TestHttpSession() );
     response = new TestResponse();
   }
 
@@ -97,6 +103,8 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_withValidUrl() throws Exception {
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
+    fakeServiceHandler( applicationContext, serviceHandler );
     request.setServletPath( "/foo" );
     request.setPathInfo( null );
     request.setSession( mock( HttpSession.class ) );
@@ -108,6 +116,8 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_withRootServlet() throws Exception {
+    ServiceHandler serviceHandler = mock( ServiceHandler.class );
+    fakeServiceHandler( applicationContext, serviceHandler );
     request.setServletPath( "" );
     request.setPathInfo( "/" );
     request.setSession( mock( HttpSession.class ) );
@@ -213,15 +223,85 @@ public class RWTServlet_Test {
     ContextProvider.disposeContext();
   }
 
+  @Test
+  public void testStartupContent_withHtmlAcceptHeader() throws Exception {
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setMethod( HTTP.METHOD_GET );
+    request.setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_HTML );
+
+    servlet.service( request, response );
+
+    verify( startupPage ).send( response );
+  }
+
+  @Test
+  public void testStartupContent_withJsonAcceptHeader() throws Exception {
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setMethod( HTTP.METHOD_GET );
+    request.setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_JSON );
+
+    servlet.service( request, response );
+
+    verifyZeroInteractions( startupPage );
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
+  @Test
+  public void testStartupContent_withoutAcceptHeader() throws Exception {
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setMethod( HTTP.METHOD_GET );
+
+    servlet.service( request, response );
+
+    verify( startupPage ).send( response );
+  }
+
+  @Test
+  public void testStartupPage_forHeadRequest() throws Exception {
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setMethod( "HEAD" );
+
+    servlet.service( request, response );
+
+    verify( startupPage ).send( any( HttpServletResponse.class ) );
+  }
+
+  @Test
+  public void testHandlesInvalidRequestContentType() throws Exception {
+    // SECURITY: Checking the content-type prevents CSRF attacks, see bug 413668
+    // Also allows application to be started with POST request, see bug 416445
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setMethod( HTTP.METHOD_POST );
+    request.setContentType( "text/plain" );
+
+    servlet.service( request, response );
+
+    verify( startupPage ).send( response );
+  }
+
+  @Test
+  public void testEnsureHttpSessionInStartupRequest() throws Exception {
+    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    HttpServletRequest request = mock( HttpServletRequest.class );
+    when( request.getMethod() ).thenReturn( HTTP.METHOD_GET );
+
+    servlet.service( request, response );
+
+    verify( request ).getSession( true );
+  }
+
   private static ServletContext mockServletContext( ApplicationContext applicationContext ) {
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getAttribute( anyString() ) ).thenReturn( applicationContext );
     return servletContext;
   }
 
-  private static ApplicationContextImpl mockApplicationContext() {
+  private static ApplicationContextImpl mockApplicationContext( StartupPage startupPage ) {
     ApplicationContextImpl applicationContext = mock( ApplicationContextImpl.class );
     when( applicationContext.getEntryPointManager() ).thenReturn( mock( EntryPointManager.class ) );
+    ThemeManager themeManager = createThemeManager();
+    when( applicationContext.getThemeManager() ).thenReturn( themeManager );
+    when( applicationContext.getStartupPage() ).thenReturn( startupPage );
     ClientSelector clientSelector = createClientSelector();
     when( applicationContext.getClientSelector() ).thenReturn( clientSelector );
     when( applicationContext.getProbeStore() ).thenReturn( createProbeStore() );
@@ -239,6 +319,12 @@ public class RWTServlet_Test {
     ClientSelector clientSelector = mock( ClientSelector.class );
     when( clientSelector.getSelectedClient( any( UISession.class ) ) ).thenReturn( client );
     return clientSelector;
+  }
+
+  private static ThemeManager createThemeManager() {
+    ThemeManager themeManager = mock( ThemeManager.class );
+    when( themeManager.getTheme( any( String.class) ) ).thenReturn( mock( Theme.class ) );
+    return themeManager;
   }
 
   private static void fakeServiceHandler( ApplicationContext applicationContext,

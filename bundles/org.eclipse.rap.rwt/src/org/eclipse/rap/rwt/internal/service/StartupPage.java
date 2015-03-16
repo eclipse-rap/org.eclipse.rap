@@ -62,7 +62,7 @@ public class StartupPage {
     jsLibraries.add( location );
   }
 
-  void send( HttpServletResponse response ) throws IOException {
+  public void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
     startupPageTemplate.writePage( response.getWriter(), new StartupPageValueProvider() );
   }

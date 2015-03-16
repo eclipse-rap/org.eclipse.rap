@@ -39,7 +39,7 @@ public class StartupJson {
     // prevent instantiation
   }
 
-  static void send( HttpServletResponse response ) throws IOException {
+  public static void send( HttpServletResponse response ) throws IOException {
     setResponseHeaders( response );
     get().writeTo( response.getWriter() );
   }

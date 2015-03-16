@@ -28,7 +28,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -53,7 +52,6 @@ import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
 import org.eclipse.rap.rwt.internal.remote.MessageChainReference;
 import org.eclipse.rap.rwt.internal.remote.MessageFilter;
 import org.eclipse.rap.rwt.internal.remote.MessageFilterChain;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -80,7 +78,6 @@ public class LifeCycleServiceHandler_Test {
 
   private MessageFilter filter;
   private MessageChainReference messageChainReference;
-  private StartupPage startupPage;
   private LifeCycleServiceHandler serviceHandler;
   private StringBuilder log;
 
@@ -90,8 +87,7 @@ public class LifeCycleServiceHandler_Test {
     filter = mockMessageFilter();
     MessageChainElement handlerWrapper = new MessageChainElement( filter, null );
     messageChainReference = new MessageChainReference( handlerWrapper );
-    startupPage = mock( StartupPage.class );
-    serviceHandler = new LifeCycleServiceHandler( messageChainReference, startupPage );
+    serviceHandler = new LifeCycleServiceHandler( messageChainReference );
     log = new StringBuilder();
   }
 
@@ -107,7 +103,7 @@ public class LifeCycleServiceHandler_Test {
     getUISession();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
-      ServiceHandler syncHandler = new TestHandler( messageChainReference, startupPage );
+      ServiceHandler syncHandler = new TestHandler( messageChainReference );
       Thread thread = new Thread( new Worker( context, syncHandler ) );
       thread.setDaemon( true );
       thread.start();
@@ -324,47 +320,6 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testStartupContent_withHtmlAcceptHeader() throws IOException {
-    Fixture.fakeNewGetRequest();
-    getRequest().setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_HTML );
-
-    service( serviceHandler );
-
-    verify( startupPage ).send( getResponse() );
-  }
-
-  @Test
-  public void testStartupContent_withJsonAcceptHeader() throws IOException {
-    Fixture.fakeNewGetRequest();
-    getRequest().setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_JSON );
-
-    service( serviceHandler );
-
-    verifyZeroInteractions( startupPage );
-    assertEquals( "application/json; charset=UTF-8", getResponse().getHeader( "Content-Type" ) );
-  }
-
-  @Test
-  public void testStartupContent_withoutAcceptHeader() throws IOException {
-    Fixture.fakeNewGetRequest();
-
-    service( serviceHandler );
-
-    verify( startupPage ).send( getResponse() );
-  }
-
-  @Test
-  public void testStartupPage_forHeadRequest() throws IOException {
-    Fixture.fakeNewGetRequest();
-    getRequest().setMethod( "HEAD" );
-    Fixture.fakeClient( mock( WebClient.class ) );
-
-    service( serviceHandler );
-
-    verify( startupPage ).send( getResponse() );
-  }
-
-  @Test
   public void testStartupRequest_shutsDownUISession_ifExceptionInStartupPage() throws IOException {
     Fixture.fakeNewGetRequest();
     Fixture.fakeClient( mock( WebClient.class ) );
@@ -372,7 +327,7 @@ public class LifeCycleServiceHandler_Test {
     doThrow( new RuntimeException() ).when( startupPage ).send( any( HttpServletResponse.class ) );
 
     try {
-      service( new LifeCycleServiceHandler( messageChainReference, startupPage ) );
+      service( new LifeCycleServiceHandler( messageChainReference ) );
     } catch( RuntimeException exception ) {
     }
 
@@ -404,17 +359,6 @@ public class LifeCycleServiceHandler_Test {
     JsonObject message = JsonObject.readFrom( getResponse().getContent() );
     assertEquals( "session timeout", getError( message ) );
     assertTrue( message.get( "operations" ).asArray().isEmpty() );
-  }
-
-  @Test
-  public void testHandlesInvalidRequestContentType() throws IOException {
-    // SECURITY: Checking the content-type prevents CSRF attacks, see bug 413668
-    // Also allows application to be started with POST request, see bug 416445
-    simulateUiRequestWithIllegalContentType();
-
-    service( serviceHandler );
-
-    verify( startupPage ).send( any( HttpServletResponse.class ) );
   }
 
   @Test
@@ -525,7 +469,7 @@ public class LifeCycleServiceHandler_Test {
       .when( filter ).handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) );
 
     try {
-      service( new LifeCycleServiceHandler( messageChainReference, startupPage ) );
+      service( new LifeCycleServiceHandler( messageChainReference ) );
     } catch( RuntimeException exception ) {
     }
 
@@ -567,11 +511,6 @@ public class LifeCycleServiceHandler_Test {
     Fixture.fakeHeadParameter( "requestCounter", 23 );
   }
 
-  private void simulateUiRequestWithIllegalContentType() {
-    Fixture.fakeNewRequest();
-    getRequest().setContentType( "text/plain" );
-  }
-
   private static MessageFilter mockMessageFilter() {
     MessageFilter filter = mock( MessageFilter.class );
     ResponseMessage responseMessage = new TestResponseMessage();
@@ -605,8 +544,8 @@ public class LifeCycleServiceHandler_Test {
 
   private class TestHandler extends LifeCycleServiceHandler {
 
-    public TestHandler( MessageChainReference messageChainReference, StartupPage startupPage ) {
-      super( messageChainReference, startupPage );
+    public TestHandler( MessageChainReference messageChainReference ) {
+      super( messageChainReference );
     }
 
     @Override
