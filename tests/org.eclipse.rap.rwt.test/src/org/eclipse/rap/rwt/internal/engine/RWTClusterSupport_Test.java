@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.internal.engine;
 
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
@@ -25,7 +24,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
@@ -37,7 +35,6 @@ import org.junit.Test;
 public class RWTClusterSupport_Test {
 
   private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
-  private static final String ATTR_REQUEST_COUNTER = RequestCounter.class.getName() + "#instance:";
   private static final String ATTR_APPLICATION_CONTEXT = ApplicationContextImpl.class.getName()
                                                          + "#instance";
   private RWTClusterSupport rwtClusterSupport;
@@ -129,27 +126,6 @@ public class RWTClusterSupport_Test {
     rwtClusterSupport.doFilter( request, response, chain );
 
     verify( httpSession ).setAttribute( endsWith( "foo" ), same( deserializedUISession ) );
-  }
-
-  @Test
-  public void testDoFilter_marksRequestCounterAsChanged() throws Exception {
-    HttpSession httpSession = mock( HttpSession.class );
-    request.setSession( httpSession );
-
-    rwtClusterSupport.doFilter( request, response, chain );
-
-    verify( httpSession ).setAttribute( eq( ATTR_REQUEST_COUNTER ), any( RequestCounter.class ) );
-  }
-
-  @Test
-  public void testDoFilter_marksRequestCounterAsChangedWithConnectionId() throws Exception {
-    HttpSession httpSession = mock( HttpSession.class );
-    request.setSession( httpSession );
-    request.setParameter( "cid", "foo" );
-
-    rwtClusterSupport.doFilter( request, response, chain );
-
-    verify( httpSession ).setAttribute( endsWith( "foo" ), any( RequestCounter.class ) );
   }
 
   private static HttpSession mockHttpSession() {

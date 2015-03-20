@@ -11,59 +11,26 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.UrlParameters;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public final class RequestCounter implements SerializableCompatibility {
 
-  private static final String ATTR_INSTANCE = RequestCounter.class.getName() + "#instance:";
-
-  private final AtomicInteger requestId;
-
-  private RequestCounter() {
-    requestId = new AtomicInteger();
-  }
+  private int requestId;
 
   public static RequestCounter getInstance() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
-    String attributeName = getRequestCounterAttributeName( connectionId );
-    HttpSession httpSession = ContextProvider.getUISession().getHttpSession();
-    RequestCounter result = ( RequestCounter )httpSession.getAttribute( attributeName );
-    if( result == null ) {
-      result = new RequestCounter();
-      httpSession.setAttribute( attributeName, result );
-    }
-    return result;
-  }
-
-  public static void reattachToHttpSession( HttpSession httpSession, String connectionId ) {
-    String attributeName = getRequestCounterAttributeName( connectionId );
-    Object value = httpSession.getAttribute( attributeName );
-    httpSession.setAttribute( attributeName, value );
+    return SingletonUtil.getUniqueInstance( RequestCounter.class, getUISession() );
   }
 
   public int nextRequestId() {
-    return requestId.incrementAndGet();
+    return ++requestId;
   }
 
   public int currentRequestId() {
-    return requestId.get();
-  }
-
-  public void resetRequestId() {
-    requestId.set( 0 );
-  }
-
-  private static String getRequestCounterAttributeName( String connectionId ) {
-    return ATTR_INSTANCE + ( connectionId == null ? "" : connectionId );
+    return requestId;
   }
 
 }

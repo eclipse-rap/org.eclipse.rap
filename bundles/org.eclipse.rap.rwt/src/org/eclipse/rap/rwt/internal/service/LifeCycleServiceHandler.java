@@ -102,12 +102,11 @@ public class LifeCycleServiceHandler implements ServiceHandler {
       if( isSessionRestart( requestMessage ) ) {
         reinitializeUISession( request );
         reinitializeServiceStore();
-        RequestCounter.getInstance().resetRequestId();
       }
       UrlParameters.merge( requestMessage );
-      RequestCounter.getInstance().nextRequestId();
       ResponseMessage responseMessage = processMessage( requestMessage );
       writeResponseMessage( responseMessage, response );
+      RequestCounter.getInstance().nextRequestId();
       markSessionStarted();
     }
   }

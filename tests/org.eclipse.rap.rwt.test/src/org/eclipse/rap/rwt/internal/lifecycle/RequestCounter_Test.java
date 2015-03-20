@@ -15,16 +15,8 @@ import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.ser
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.endsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import javax.servlet.http.HttpSession;
-
-import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +36,7 @@ public class RequestCounter_Test {
   }
 
   @Test
-  public void testGetInstance_returnSame() {
+  public void testGetInstance_returnsSame() {
     RequestCounter result1 = RequestCounter.getInstance();
     RequestCounter result2 = RequestCounter.getInstance();
 
@@ -52,23 +44,13 @@ public class RequestCounter_Test {
   }
 
   @Test
-  public void testGetInstance_returnNotSameForDifferentConnectionId() {
+  public void testGetInstance_returnsNotSameForDifferentUISessions() {
     RequestCounter result1 = RequestCounter.getInstance();
-    TestRequest request = ( TestRequest )ContextProvider.getContext().getRequest();
-    request.setParameter( "cid", "foo" );
+
+    createNewSession();
     RequestCounter result2 = RequestCounter.getInstance();
 
     assertNotSame( result1, result2 );
-  }
-
-  @Test
-  public void testReattachToHttpSession() {
-    HttpSession httpSession = mock( HttpSession.class );
-
-    RequestCounter.reattachToHttpSession( httpSession, "foo" );
-
-    verify( httpSession ).getAttribute( endsWith( "foo" ) );
-    verify( httpSession ).setAttribute( endsWith( "foo" ), any() );
   }
 
   @Test
@@ -94,17 +76,6 @@ public class RequestCounter_Test {
   }
 
   @Test
-  public void testResetRequestId() {
-    RequestCounter instance = RequestCounter.getInstance();
-    instance.nextRequestId();
-    instance.nextRequestId();
-
-    instance.resetRequestId();
-
-    assertEquals( 0, instance.currentRequestId() );
-  }
-
-  @Test
   public void testSerialization() throws Exception {
     RequestCounter instance = RequestCounter.getInstance();
     instance.nextRequestId(); // ensure counter differs from zero
@@ -113,6 +84,11 @@ public class RequestCounter_Test {
     RequestCounter deserialized = serializeAndDeserialize( instance );
 
     assertEquals( currentRequestId, deserialized.currentRequestId() );
+  }
+
+  private static void createNewSession() {
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
   }
 
 }

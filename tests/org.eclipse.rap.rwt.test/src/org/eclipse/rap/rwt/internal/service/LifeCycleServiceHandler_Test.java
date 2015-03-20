@@ -247,7 +247,7 @@ public class LifeCycleServiceHandler_Test {
 
     service( serviceHandler );
 
-    assertEquals( 1, requestCounter.currentRequestId() );
+    assertEquals( 1, RequestCounter.getInstance().currentRequestId() );
   }
 
   /*
