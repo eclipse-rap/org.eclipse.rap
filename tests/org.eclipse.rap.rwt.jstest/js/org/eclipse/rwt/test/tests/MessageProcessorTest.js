@@ -23,13 +23,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
   members : {
 
     testAdapterRegistry : function() {
-      var registry = rwt.remote.HandlerRegistry;
       var adapter = {};
-      registry.add( "fooKey", adapter );
-      assertIdentical( adapter, registry.getHandler( "fooKey" ) );
-      registry.remove( "fooKey" );
+      HandlerRegistry.add( "fooKey", adapter );
+      assertIdentical( adapter, HandlerRegistry.getHandler( "fooKey" ) );
+      HandlerRegistry.remove( "fooKey" );
       try {
-        registry.getHandler( "fooKey" );
+        HandlerRegistry.getHandler( "fooKey" );
         fail();
       } catch( ex ) {
         // expected
@@ -37,9 +36,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessSet : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
@@ -48,30 +45,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         "width" : 24
       };
       var operation = [ "set", "dummyId", properties ];
-      processor.processOperationArray( operation );
+      MessageProcessor.processOperationArray( operation );
       assertEquals( [ "width", 24, "height", 33 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessSetLessProperties : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "height" : 33
       };
-      processor.processOperationArray( [ "set", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "set", "dummyId", properties ] );
       assertEquals( [ "height", 33 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessMoreProperties : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
@@ -80,29 +73,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         "width" : 24,
         "top" : 14
       };
-      processor.processOperationArray( [ "set", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "set", "dummyId", properties ] );
       assertEquals( [ "width", 24, "height", 33 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessSetNoproperties : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {} );
+      HandlerRegistry.add( "dummyType", {} );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "height" : 33,
         "width" : 24
       };
-      processor.processOperationArray( [ "set", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "set", "dummyId", properties ] );
       assertEquals( [], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessSetPropertyHandler : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "awesomeness" ],
         propertyHandler : {
           "awesomeness" : function( shell, value ) {
@@ -114,25 +103,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       var properties = {
         "awesomeness" : 1
       };
-      processor.processOperationArray( [ "set", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "set", "dummyId", properties ] );
       assertEquals( [ "coolness", 100 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreate : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
       var factory = this._getDummyFactory();
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : factory
       } );
       var properties = {
         style : []
       };
-      processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       var result = this._getTargetById( "dummyId" );
       assertEquals( "myclass", result.classname );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreate_RemoteObjectListenMapNotInitializedForEvents : function() {
@@ -163,10 +150,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessCreateServiceFails : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
       var factory = this._getDummyFactory();
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : factory,
         service : true
       } );
@@ -175,84 +160,74 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       };
 
       try {
-        processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+        MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
         fail();
       } catch( ex ) {
         // expected
       }
 
       assertTrue( this._getTargetById( "dummyId" ) == null );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateAdapterHasNoConstructorFails : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {} );
+      HandlerRegistry.add( "dummyType", {} );
       var properties = {};
       var error = null;
       try {
-        processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+        MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       } catch ( ex ) {
         error = ex;
       }
       assertNotNull( error );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateWithStyleStates : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
       };
-      processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       var result = this._getTargetById( "dummyId" );
       // NOTE: Order is NOT relevant!
       assertTrue( result.getLog().indexOf( "rwt_BORDER" ) !== -1 );
       assertTrue( result.getLog().indexOf( "rwt_FLAT" ) !== -1 );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateGetStyleMap : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
       };
-      processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       var result = this._getTargetById( "dummyId" );
       var style = result.getStyleMap();
       assertTrue( style.BORDER );
       assertTrue( style.FLAT );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateGetProperties : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
       };
-      processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       var result = this._getTargetById( "dummyId" );
       assertIdentical( properties.style, result.getProperties().style );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCreateAndSetProperties : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : this._getDummyFactory(),
         properties : [ "width", "height" ]
       } );
@@ -260,16 +235,14 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         style : [],
         width : 34
       };
-      processor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
+      MessageProcessor.processOperationArray( [ "create", "dummyId", "dummyType", properties ] );
       var result = this._getTargetById( "dummyId" );
       assertEquals( [ "width", 34 ], result.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
 //    testProcessCreateWithParent : function() {
-//      var registry = rwt.remote.HandlerRegistry;
-//      var processor = rwt.remote.MessageProcessor;
-//      registry.add( "dummyType", {
+//      HandlerRegistry.add( "dummyType", {
 //         factory : this._getDummyFactory()
 //      } );
 //      var properties = {
@@ -283,64 +256,56 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
 //        "action" : "create",
 //        "properties" : properties
 //      };
-//      processor.processOperation( operation );
+//      MessageProcessor.processOperation( operation );
 //      var result = this._getTargetById( "dummyId" );
 //      assertIdentical( parent, result.getParent() );
-//      registry.remove( "dummyType" );
+//      HandlerRegistry.remove( "dummyType" );
 //    },
 
     testProcessDestroy : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         "destructor" : function( obj ) {
           obj.destroy();
         }
       } );
       var target = this._getDummyTarget( "dummyId" );
-      processor.processOperationArray( [ "destroy", "dummyId" ] );
+      MessageProcessor.processOperationArray( [ "destroy", "dummyId" ] );
       assertEquals( [ "destroy" ], target.getLog() );
       assertNull( target.getParent() );
       assertTrue( this._getTargetById( "dummyId" ) == null );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessDestroy_CallDestroyMethodDirectlyWhenNameIsGiven : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         "destructor" : "destroy"
       } );
       var target = this._getDummyTarget( "dummyId" );
 
-      processor.processOperationArray( [ "destroy", "dummyId" ] );
+      MessageProcessor.processOperationArray( [ "destroy", "dummyId" ] );
 
       assertEquals( [ "destroy" ], target.getLog() );
       assertNull( target.getParent() );
       assertTrue( this._getTargetById( "dummyId" ) == null );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessDestroyWithDestructor : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         "destructor" : function( widget ) {
           widget.addState( "foo" );
           widget.destroy();
         }
       } );
       var target = this._getDummyTarget( "dummyId" );
-      processor.processOperationArray( [ "destroy", "dummyId" ] );
+      MessageProcessor.processOperationArray( [ "destroy", "dummyId" ] );
       assertEquals( [ "foo", "destroy" ], target.getLog() );
       assertTrue( this._getTargetById( "dummyId" ) == null );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessDestroyWithChildren : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         "destructor" : function( obj ) {
           obj.destroy();
         },
@@ -355,32 +320,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         return [ childOne, childTwo, null, undefined ];
       };
 
-      processor.processOperationArray( [ "destroy", "dummyId1" ] );
+      MessageProcessor.processOperationArray( [ "destroy", "dummyId1" ] );
 
       assertTrue( this._getTargetById( "dummyId1" ) == null );
       assertTrue( this._getTargetById( "dummyId2" ) == null );
       assertTrue( this._getTargetById( "dummyId3" ) == null );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCall : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         methods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {};
-      processor.processOperationArray( [ "call", "dummyId", "doFoo", properties ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyId", "doFoo", properties ] );
       assertEquals( "foo", targetObject.getLog()[ 0 ] );
       assertIdentical( properties, targetObject.getLog()[ 1 ] );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCustomCall : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         methods : [ "doBar" ],
         methodHandler : {
           "doBar" : function( widget, properties ) {
@@ -390,110 +351,96 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {};
-      processor.processOperationArray( [ "call", "dummyId", "doBar", properties ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyId", "doBar", properties ] );
       assertEquals( "foo", targetObject.getLog()[ 0 ] );
       assertIdentical( properties, targetObject.getLog()[ 1 ] );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCallWithParameters : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         methods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "foo" : [ 17, 42 ]
      };
-      processor.processOperationArray( [ "call", "dummyId", "doFoo", properties ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyId", "doFoo", properties ] );
       assertEquals( "foo", targetObject.getLog()[ 0 ] );
       var args = targetObject.getLog()[ 1 ];
       assertEquals( properties, args );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCallUnkownMethod : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         methods : [ "doBar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         name : "doFoo"
       };
-      processor.processOperationArray( [ "call", "dummyId", undefined, properties ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyId", undefined, properties ] );
       assertEquals( 0, targetObject.getLog().length );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessCallNoKownMethod : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", { } );
+      HandlerRegistry.add( "dummyType", { } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = { name : "doFoo" };
-      processor.processOperationArray( [ "call", "dummyId", "", properties ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyId", "", properties ] );
       assertEquals( 0, targetObject.getLog().length );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessUnkownListener : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         listeners : [ "focus" ]
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
         add : [ "foo" ]
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       // succeeds by not crashing
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
       targetObject.destroy();
     },
 
     testProcessNolisteners : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {} );
+      HandlerRegistry.add( "dummyType", {} );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
         add : [ "mouse" ]
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       // NOTE: hasEventListeners may return "undefined" instead of "false"
       assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
       assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
       targetObject.destroy();
     },
 
     testProcessSetterListener : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         listeners : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "foo" : true
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       properties = {
         "foo" : false
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertEquals(  [ "fooListener", true, "fooListener", false ], targetObject.getLog() );
       targetObject.destroy();
     },
 
     testProcessCustomListener : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         listeners : [ "foo", "bar" ],
         listenerHandler : {
           "bar" : function( targetObject, value ) {
@@ -505,25 +452,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       var properties = {
         "bar" : true
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertTrue( targetObject.getMyData( "barListener" ) );
       properties = {
         "bar" : false
       };
-      processor.processOperationArray( [ "listen", "dummyId", properties ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", properties ] );
       assertNull( targetObject.getMyData( "barListener" ) );
       targetObject.destroy();
     },
 
     testProcessListenUpdatesRemoteHandlerListen_ListenTrue : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         events : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
 
-      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
 
       var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
       assertTrue( remoteObject.isListening( "foo" ) );
@@ -532,14 +477,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessListenUpdatesRemoteHandlerListen_ListenForUnkownType : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         events : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
 
-      processor.processOperationArray( [ "listen", "dummyId", { "foox" : true } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foox" : true } ] );
 
       var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
       assertFalse( remoteObject.isListening( "foox" ) );
@@ -548,15 +491,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessListenUpdatesRemoteHandlerListen_ListenFalse : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         events : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
 
-      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
-      processor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
 
       var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
       assertFalse( remoteObject.isListening( "foo" ) );
@@ -565,15 +506,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessListenDoesNotUpdateRemoteHandlerListen_ListenFalse : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         listeners : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
 
-      processor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
-      processor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foo" : true } ] );
+      MessageProcessor.processOperationArray( [ "listen", "dummyId", { "foo" : false } ] );
 
       var remoteObject = rwt.remote.RemoteObjectFactory._getRemoteObject( "dummyId" );
       assertTrue( remoteObject.isListening( "foo" ) );
@@ -582,9 +521,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessMessage : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
@@ -594,9 +531,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         "head" : {},
         "operations" : [ operation1, operation2 ]
       };
-      processor.processMessage( message );
+      MessageProcessor.processMessage( message );
       assertEquals( [ "height", 33, "width", 24 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testProcessMessage_firesGlobalEvents : function() {
@@ -616,9 +553,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
     },
 
     testProcessMessage_withCallback : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
       var log;
@@ -627,18 +562,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       var operation2 = [ "set", "dummyId", { "width" : 24 } ];
       var message = { "head" : {}, "operations" : [ operation1, operation2 ] };
 
-      processor.processMessage( message, function() {
+      MessageProcessor.processMessage( message, function() {
         log = targetObject.getLog();
       } );
 
       assertEquals( [ "height", 33, "width", 24 ], log );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testSetError : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         properties : [ "width", "height", "fail" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
@@ -649,7 +582,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       };
       var error = null;
       try {
-        processor.processMessage( message );
+        MessageProcessor.processMessage( message );
       } catch( ex ) {
         error = ex;
       }
@@ -664,12 +597,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
       assertTrue( message.indexOf( expected2 ) !== - 1 );
       //assertTrue( message.indexOf( expected3 ) !== - 1 );
       assertTrue( message.indexOf( expected4 ) !== - 1 );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
+    },
+
+    testProcessHeadSetConnectionId : function() {
+      var message = {
+        "head": {
+          "cid": "foo"
+        },
+        "operations" : []
+      };
+      MessageProcessor.processMessage( message );
+      var connection = rwt.remote.Connection.getInstance();
+      assertEquals( "foo", connection.getConnectionId() );
     },
 
     testGetService : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
       var log = [];
       var object = {
         "call" : function() {
@@ -680,21 +623,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         log.push( "create" );
         return object;
       };
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : factory,
         service : true,
         methods : [ "call" ]
       } );
 
-      processor.processOperationArray( [ "call", "dummyType", "call", {} ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyType", "call", {} ] );
 
       assertEquals( [ "create", "call" ], log );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     testGetServiceTwice : function() {
-      var registry = rwt.remote.HandlerRegistry;
-      var processor = rwt.remote.MessageProcessor;
       var log = [];
       var object = {
           "call" : function() {
@@ -705,17 +646,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MessageProcessorTest", {
         log.push( "create" );
         return object;
       };
-      registry.add( "dummyType", {
+      HandlerRegistry.add( "dummyType", {
         factory : factory,
         service : true,
         methods : [ "call" ]
       } );
 
-      processor.processOperationArray( [ "call", "dummyType", "call", {} ] );
-      processor.processOperationArray( [ "call", "dummyType", "call", {} ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyType", "call", {} ] );
+      MessageProcessor.processOperationArray( [ "call", "dummyType", "call", {} ] );
 
       assertEquals( [ "create", "call", "call" ], log );
-      registry.remove( "dummyType" );
+      HandlerRegistry.remove( "dummyType" );
     },
 
     ////////////////////////

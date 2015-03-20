@@ -40,7 +40,7 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     this._event = null;
     this._requestCounter = 0;
     this._requestPending = false;
-    this._connectionId = this._generateConnectionId();
+    this._connectionId = null;
     this._sendTimer = new Timer( 60 );
     this._sendTimer.addEventListener( "interval", function() {
       this.sendImmediate( true );
@@ -77,12 +77,12 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
       return this._url;
     },
 
-    getConnectionId : function() {
-      return this._connectionId;
+    setConnectionId : function( connectionId ) {
+      this._connectionId = connectionId;
     },
 
-    _generateConnectionId : function() {
-      return Math.floor( Math.random() * 0xffffffff ).toString( 16 );
+    getConnectionId : function() {
+      return this._connectionId;
     },
 
     _flushEvent : function() {
@@ -172,9 +172,11 @@ rwt.qx.Class.define( "rwt.remote.Connection", {
     // Internals
 
     _createRequest : function() {
-      var parameters = "cid=" + this._connectionId;
-      var url = this._url + ( this._url.indexOf( "?" ) >= 0 ? "&" : "?" ) + parameters;
-      var result = new rwt.remote.Request( url, "POST", "application/json" );
+      var cid = "";
+      if( this._connectionId ) {
+        cid = ( this._url.indexOf( "?" ) === -1 ? "?cid=" : "&cid=" ) + this._connectionId;
+      }
+      var result = new rwt.remote.Request( this._url + cid, "POST", "application/json" );
       result.setSuccessHandler( this._handleSuccess, this );
       result.setErrorHandler( this._handleError, this );
       return result;

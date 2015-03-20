@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,6 +37,7 @@ import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil;
 import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -264,16 +266,17 @@ public class DisplaySerialization_Test {
 
   private void createServiceContext( Display display ) {
     Fixture.createServiceContext();
-    TestHttpSession session = ( TestHttpSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( display );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setParameter( PARAM_CONNECTION_ID, uiSession.getConnectionId() );
+    TestHttpSession session = ( TestHttpSession )request.getSession();
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   private static UISession getUISession( Display display ) {
-    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return displayAdapter.getUISession();
+    return getDisplayAdapter( display ).getUISession();
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {

@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -30,8 +34,7 @@ public class UISessionBuilder {
     ApplicationContextImpl applicationContext = serviceContext.getApplicationContext();
     HttpServletRequest request = serviceContext.getRequest();
     HttpSession httpSession = request.getSession( true );
-    String connectionId = request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
-    uiSession = new UISessionImpl( applicationContext, httpSession, connectionId );
+    uiSession = new UISessionImpl( applicationContext, httpSession, generateConnectionId() );
   }
 
   public UISessionImpl buildUISession() {
@@ -42,7 +45,12 @@ public class UISessionBuilder {
     setCurrentTheme();
     selectClient();
     updateClientMessages();
+    renderConnectionId();
     return uiSession;
+  }
+
+  private String generateConnectionId() {
+    return UUID.randomUUID().toString().substring( 0, 8 );
   }
 
   private void setCurrentTheme() {
@@ -60,6 +68,11 @@ public class UISessionBuilder {
     if( clientMessages != null ) {
       clientMessages.update( uiSession.getLocale() );
     }
+  }
+
+  private void renderConnectionId() {
+    String connectionId = uiSession.getConnectionId();
+    serviceContext.getProtocolWriter().appendHead( PARAM_CONNECTION_ID, connectionId );
   }
 
 }

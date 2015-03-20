@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +31,7 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
 import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -88,16 +90,17 @@ public class ImageSerialzation_Test {
 
   private void createServiceContext( Device device ) {
     Fixture.createServiceContext();
-    TestHttpSession session = ( TestHttpSession )ContextProvider.getRequest().getSession();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setParameter( PARAM_CONNECTION_ID, uiSession.getConnectionId() );
+    TestHttpSession session = ( TestHttpSession )request.getSession();
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();
   }
 
   private static UISession getUISession( Device device ) {
     Display display = ( Display )device;
-    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return displayAdapter.getUISession();
+    return display.getAdapter( IDisplayAdapter.class ).getUISession();
   }
 
   private void runClusterSupportFilter() throws Exception {

@@ -136,18 +136,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ConnectionTest", {
 
     testRequestUrl : function() {
       connection.setUrl( "foo" );
+      connection.setConnectionId( "bar" );
       var request = connection._createRequest();
 
-      var expected = "foo?cid=" + connection.getConnectionId();
-      assertEquals( expected, request._url );
+      assertEquals( "foo?cid=bar", request._url );
+    },
+
+    testRequestUrlWithoutConnectionId : function() {
+      connection.setUrl( "foo" );
+      connection.setConnectionId( null );
+      var request = connection._createRequest();
+
+      assertEquals( "foo", request._url );
     },
 
     testRequestUrlWithParameters : function() {
-      connection.setUrl( "foo?bar=23" );
+      connection.setUrl( "foo?param=23" );
+      connection.setConnectionId( "bar" );
       var request = connection._createRequest();
 
-      var expected = "foo?bar=23&cid=" + connection.getConnectionId();
-      assertEquals( expected, request._url );
+      assertEquals( "foo?param=23&cid=bar", request._url );
     },
 
     testRetry : function() {

@@ -17,10 +17,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
+import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.swt.dnd.Transfer;
 
 
@@ -35,6 +38,7 @@ public class RWTClient {
   private final long startTime;
   private String sessionId;
   private int requestCounter;
+  private String connectionId;
 
   public RWTClient( IServletEngine servletEngine ) {
     this( servletEngine, new DefaultConnectionProvider() );
@@ -58,6 +62,10 @@ public class RWTClient {
 
   public String getSessionId() {
     return sessionId;
+  }
+
+  public String getConnectionId() {
+    return connectionId;
   }
 
   public Response sendStartupRequest() throws IOException {
@@ -130,9 +138,10 @@ public class RWTClient {
     return new Response( connection );
   }
 
-  public Response sendUICallBackRequest( int timeout ) throws IOException {
+  public Response sendServerPushRequest( int timeout ) throws IOException {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put( ServiceManagerImpl.REQUEST_PARAM, ServerPushServiceHandler.HANDLER_ID );
+    parameters.put( UrlParameters.PARAM_CONNECTION_ID, connectionId );
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createGetConnection( url, timeout );
     return new Response( connection );
@@ -142,11 +151,19 @@ public class RWTClient {
     if( requestCounter >= 0 ) {
       message.setRequestCounter( requestCounter );
     }
-    URL url = createUrl( IServletEngine.SERVLET_NAME );
+    HashMap<String, String> parameters = new HashMap<String, String>();
+    if( connectionId != null ) {
+      parameters.put( UrlParameters.PARAM_CONNECTION_ID, connectionId );
+    }
+    URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createPostConnection( url, message.toString(), 0 );
     parseSessionId( connection );
     requestCounter++;
-    return new Response( connection );
+    Response response = new Response( connection );
+    if( connectionId == null ) {
+      connectionId = parseConnectionId( response.getContentText() );
+    }
+    return response;
   }
 
   Response sendGetRequest( Map<String, String> parameters ) throws IOException {
@@ -218,6 +235,15 @@ public class RWTClient {
       String[] parts = cookieField.split( ";" );
       sessionId = parts[ 0 ].split( "=" )[ 1 ];
     }
+  }
+
+  static String parseConnectionId( String content ) {
+    Pattern pattern = Pattern.compile( "\"cid\"\\s*:\\s*\"(\\w+)\"" );
+    Matcher matcher = pattern.matcher( content );
+    if( matcher.find() ) {
+      return matcher.group(1);
+    }
+    return null;
   }
 
   private static class DefaultConnectionProvider implements IConnectionProvider {

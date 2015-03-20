@@ -279,17 +279,6 @@ public class RWTServlet_Test {
     verify( startupPage ).send( response );
   }
 
-  @Test
-  public void testEnsureHttpSessionInStartupRequest() throws Exception {
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
-    HttpServletRequest request = mock( HttpServletRequest.class );
-    when( request.getMethod() ).thenReturn( HTTP.METHOD_GET );
-
-    servlet.service( request, response );
-
-    verify( request ).getSession( true );
-  }
-
   private static ServletContext mockServletContext( ApplicationContext applicationContext ) {
     ServletContext servletContext = mock( ServletContext.class );
     when( servletContext.getAttribute( anyString() ) ).thenReturn( applicationContext );

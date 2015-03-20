@@ -134,7 +134,6 @@ public class RWTServlet extends HttpServlet {
         ensureUISession( serviceContext );
         serviceHandler.service( request, response );
       } else {
-        ensureHttpSession( request );
         sendStartupContent( request, response );
       }
     } finally {
@@ -176,12 +175,6 @@ public class RWTServlet extends HttpServlet {
     } else {
       applicationContext.getStartupPage().send( response );
     }
-  }
-
-  private static void ensureHttpSession( HttpServletRequest request ) {
-    // [if] Some cluster tests fail if startup request does not create HTTP session.
-    // Investigate if this is really needed.
-    request.getSession( true );
   }
 
   static void ensureUISession( ServiceContext serviceContext ) {

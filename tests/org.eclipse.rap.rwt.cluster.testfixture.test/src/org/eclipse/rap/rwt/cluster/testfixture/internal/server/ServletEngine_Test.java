@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,27 +132,26 @@ public class ServletEngine_Test {
 
     Response startupPage = client.sendStartupRequest();
     assertTrue( startupPage.isValidStartupPage() );
-    assertTrue( client.getSessionId().length() > 0 );
 
     Response initialJavascript = client.sendInitializationRequest();
     assertTrue( initialJavascript.isValidJsonResponse() );
+    assertTrue( client.getSessionId().length() > 0 );
 
     Response subsequentRequest = client.sendDisplayResizeRequest( 300, 300 );
     assertTrue( subsequentRequest.isValidJsonResponse() );
 
     HttpSession[] sessions = servletEngine.getSessions();
     assertEquals( 1, sessions.length );
-    assertNotNull( ClusterTestHelper.getSessionDisplay( sessions[ 0 ] ) );
+    assertNotNull( ClusterTestHelper.getSessionDisplay( sessions[ 0 ], client.getConnectionId() ) );
   }
-
 
   @Test
   public void testServletEngineIsolation() throws Exception {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
 
-    sendStartupRequest( engine1 );
-    sendStartupRequest( engine2 );
+    sendStartupSequence( engine1 );
+    sendStartupSequence( engine2 );
 
     assertEquals( 1, engine1.getSessions().length );
     assertEquals( 1, engine2.getSessions().length );
@@ -168,7 +167,7 @@ public class ServletEngine_Test {
   @Test
   public void testSessionAttributeNeedNotBeSerializable() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
-    sendStartupRequest( engine );
+    sendStartupSequence( engine );
     HttpSession session = engine.getSessions()[ 0 ];
 
     String name = "name";
@@ -195,8 +194,10 @@ public class ServletEngine_Test {
     return result;
   }
 
-  private static void sendStartupRequest( IServletEngine servletEngine ) throws IOException {
-    new RWTClient( servletEngine ).sendStartupRequest();
+  private static void sendStartupSequence( IServletEngine servletEngine ) throws IOException {
+    RWTClient client = new RWTClient( servletEngine );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
   }
 
 }

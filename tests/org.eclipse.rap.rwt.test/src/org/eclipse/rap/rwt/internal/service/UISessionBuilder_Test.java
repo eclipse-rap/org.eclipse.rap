@@ -10,9 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -42,6 +43,7 @@ import org.eclipse.rap.rwt.internal.client.ClientMessages;
 import org.eclipse.rap.rwt.internal.client.ClientProvider;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
@@ -60,17 +62,19 @@ public class UISessionBuilder_Test {
   private ServletContext servletContext;
   private HttpSession httpSession;
   private TestRequest request;
+  private HttpServletResponse response;
   private ApplicationConfiguration configuration;
   private ApplicationContextImpl applicationContext;
   private ServiceContext serviceContext;
   private Client client;
+
 
   @Before
   public void setUp() {
     httpSession = new TestHttpSession();
     request = new TestRequest();
     request.setSession( httpSession );
-    HttpServletResponse response = mock( HttpServletResponse.class );
+    response = mock( HttpServletResponse.class );
     servletContext = httpSession.getServletContext();
     configuration = mock( ApplicationConfiguration.class );
     client = mock( Client.class );
@@ -143,24 +147,39 @@ public class UISessionBuilder_Test {
   }
 
   @Test
-  public void testUISessionContainsConnectionId() {
+  public void testConnectionIdIsGenerated() {
     registerEntryPoint( null );
-    request.setParameter( "cid", "foo" );
 
     UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISessionImpl uiSession = builder.buildUISession();
 
-    assertEquals( "foo", uiSession.getConnectionId() );
+    assertNotNull( uiSession.getConnectionId() );
   }
 
   @Test
-  public void testUISessionContainsNullConnectionId() {
+  public void testConnectionIdIsUnique() {
+    registerEntryPoint( null );
+
+    UISessionImpl uiSession1 = new UISessionBuilder( serviceContext ).buildUISession();
+    String connectionId1 = uiSession1.getConnectionId();
+    ContextProvider.disposeContext();
+
+    serviceContext = new ServiceContext( request, response, applicationContext );
+    ContextProvider.setContext( serviceContext );
+    UISessionImpl uiSession2 = new UISessionBuilder( serviceContext ).buildUISession();
+
+    assertNotEquals( connectionId1, uiSession2.getConnectionId() );
+  }
+
+  @Test
+  public void testConnectionIdIsRendered() {
     registerEntryPoint( null );
 
     UISessionBuilder builder = new UISessionBuilder( serviceContext );
     UISessionImpl uiSession = builder.buildUISession();
 
-    assertNull( uiSession.getConnectionId() );
+    ResponseMessage message = getProtocolWriter().createMessage();
+    assertEquals( uiSession.getConnectionId(), message.getHead().get( "cid" ).asString() );
   }
 
   @Test

@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URL;
@@ -67,16 +68,15 @@ public class RWTClient_Test {
   }
 
   @Test
-  public void testSendUICallBackRequest() throws IOException {
+  public void testSendServerPushRequest() throws IOException {
     connectionProvider.setConnection( new TestHttpUrlConnection( "responseContent" ) );
     RWTClient client = new RWTClient( servletEngine, connectionProvider );
 
-    client.sendUICallBackRequest( 2000 );
+    client.sendServerPushRequest( 2000 );
 
-    String expectedUrl = "http://localhost:-1/rwt?"
-                         + "servicehandler=org.eclipse.rap.serverpush";
+    String expectedUrl = "http://localhost:-1/rwt?servicehandler=org.eclipse.rap.serverpush";
     String connectionUrl = connectionProvider.getConnectionUrl().toExternalForm();
-    assertEquals( expectedUrl, connectionUrl );
+    assertTrue( connectionUrl.startsWith( expectedUrl ) );
   }
 
   @Test
@@ -160,12 +160,72 @@ public class RWTClient_Test {
   }
 
   @Test
+  public void testConnectionId_isReadFromInitializationResponse() throws IOException {
+    connectionProvider.setConnection( new TestHttpUrlConnection( "{\"cid\":\"12345678\"}" ) );
+    RWTClient client = new RWTClient( servletEngine, connectionProvider );
+
+    client.sendInitializationRequest();
+
+    assertEquals( "12345678", client.getConnectionId() );
+  }
+
+  @Test
+  public void testConnectionId_isNotOverridden() throws IOException {
+    connectionProvider.setConnection( new TestHttpUrlConnection( "{\"cid\":\"12345678\"}" ) );
+    RWTClient client = new RWTClient( servletEngine, connectionProvider );
+    client.sendInitializationRequest();
+
+    connectionProvider.setConnection( new TestHttpUrlConnection( "{\"cid\":\"87654321\"}" ) );
+    client.sendPostRequest( new JsonMessage() );
+
+    assertEquals( "12345678", client.getConnectionId() );
+  }
+
+  @Test
+  public void testConnectionId_isSentWithUIRequest() throws IOException {
+    connectionProvider.setConnection( new TestHttpUrlConnection( "{\"cid\":\"12345678\"}" ) );
+    RWTClient client = new RWTClient( servletEngine, connectionProvider );
+    client.sendInitializationRequest();
+
+    client.sendPostRequest( new JsonMessage() );
+
+    String expectedCidParam = "cid=" + client.getConnectionId();
+    String connectionUrl = connectionProvider.getConnectionUrl().toExternalForm();
+    assertTrue( connectionUrl.contains( expectedCidParam ) );
+  }
+
+  @Test
+  public void testConnectionId_isSentWithServerPushRequest() throws IOException {
+    connectionProvider.setConnection( new TestHttpUrlConnection( "responseContent" ) );
+    RWTClient client = new RWTClient( servletEngine, connectionProvider );
+    client.sendInitializationRequest();
+
+    client.sendServerPushRequest( 2000 );
+
+    String expectedCidParam = "cid=" + client.getConnectionId();
+    String connectionUrl = connectionProvider.getConnectionUrl().toExternalForm();
+    assertTrue( connectionUrl.contains( expectedCidParam ) );
+  }
+
+  @Test
   public void testChangeServletEngine() {
     RWTClient client = new RWTClient( servletEngine );
     TestServletEngine otherServletEngine = new TestServletEngine();
     client.changeServletEngine( otherServletEngine );
 
     assertSame( otherServletEngine, client.getServletEngine() );
+  }
+
+  @Test
+  public void testParseConnectionId() {
+    String connectionId = RWTClient.parseConnectionId( "{\"cid\":\"ab12cd34\"}" );
+    assertEquals( "ab12cd34", connectionId );
+  }
+
+  @Test
+  public void testParseConnectionId_withSpaces() {
+    String connectionId = RWTClient.parseConnectionId( "{\"cid\" :\n\"ab12cd34\"}" );
+    assertEquals( "ab12cd34", connectionId );
   }
 
   private static class TestConnectionProvider implements IConnectionProvider {

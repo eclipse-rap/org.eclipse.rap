@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,12 +70,12 @@ public class ServerPush_Test {
   }
 
   @Test
-  public void testCallbackRequestResponse() throws Exception {
+  public void testServerPushRequestResponse() throws Exception {
     servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
-    final Display display = ClusterTestHelper.getSessionDisplay( session );
+    final Display display = ClusterTestHelper.getSessionDisplay( session, client.getConnectionId() );
 
     Thread thread = new Thread( new Runnable() {
       public void run() {
@@ -93,7 +93,7 @@ public class ServerPush_Test {
     thread.setDaemon( true );
     thread.start();
 
-    Response response = client.sendUICallBackRequest( 0 );
+    Response response = client.sendServerPushRequest( 0 );
     thread.join();
 
     String contentText = response.getContentText();
@@ -101,14 +101,14 @@ public class ServerPush_Test {
   }
 
   @Test
-  public void testAbortConnectionDuringUICallbackRequest() throws Exception {
+  public void testAbortConnectionDuringServerPushRequest() throws Exception {
     servletEngine.start( ServerPushEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    configureCallbackRequestCheckInterval( 400 );
+    configureServerPushRequestCheckInterval( 400 );
 
     try {
-      client.sendUICallBackRequest( 200 );
+      client.sendServerPushRequest( 200 );
       fail();
     } catch( IOException expected ) {
       assertEquals( "Read timed out", expected.getMessage() );
@@ -116,30 +116,30 @@ public class ServerPush_Test {
 
     Thread.sleep( 800 );
 
-    ServerPushManager pushManager = getUICallBackManager();
+    ServerPushManager pushManager = getServerPushManager();
     assertFalse( pushManager.isCallBackRequestBlocked() );
   }
 
   @Test
-  public void testUICallBackRequestDoesNotKeepSessionAlive() throws Exception {
+  public void testServerPushRequestDoesNotKeepSessionAlive() throws Exception {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    getUICallBackManager().setRequestCheckInterval( 100 );
+    getServerPushManager().setRequestCheckInterval( 100 );
 
-    asyncSendUICallBackRequest();
+    asyncSendServerPushRequest();
     Thread.sleep( SessionTimeoutEntryPoint.SESSION_SWEEP_INTERVAL );
 
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
   @Test
-  public void testUICallBackRequestDoesNotPreventEngineShutdown() throws Exception {
+  public void testServerPushRequestDoesNotPreventEngineShutdown() throws Exception {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    ServerPushManager pushManager = getUICallBackManager();
-    asyncSendUICallBackRequest();
+    ServerPushManager pushManager = getServerPushManager();
+    asyncSendServerPushRequest();
     while( !pushManager.isCallBackRequestBlocked() ) {
       Thread.yield();
     }
@@ -149,10 +149,10 @@ public class ServerPush_Test {
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
-  private ServerPushManager getUICallBackManager() {
+  private ServerPushManager getServerPushManager() {
     final ServerPushManager[] result = { null };
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
-    Display display = ClusterTestHelper.getSessionDisplay( session );
+    Display display = ClusterTestHelper.getSessionDisplay( session, client.getConnectionId() );
     RWT.getUISession( display ).exec( new Runnable() {
       public void run() {
         result[ 0 ] = ServerPushManager.getInstance();
@@ -169,11 +169,11 @@ public class ServerPush_Test {
     }
   }
 
-  private void asyncSendUICallBackRequest() {
+  private void asyncSendServerPushRequest() {
     Thread thread = new Thread( new Runnable() {
       public void run() {
         try {
-          client.sendUICallBackRequest( 0 );
+          client.sendServerPushRequest( 0 );
         } catch( IOException ignore ) {
         }
       }
@@ -182,9 +182,9 @@ public class ServerPush_Test {
     thread.start();
   }
 
-  private void configureCallbackRequestCheckInterval( final int interval ) {
+  private void configureServerPushRequestCheckInterval( final int interval ) {
     HttpSession session = ClusterTestHelper.getFirstHttpSession( servletEngine );
-    Display display = ClusterTestHelper.getSessionDisplay( session );
+    Display display = ClusterTestHelper.getSessionDisplay( session, client.getConnectionId() );
     RWT.getUISession( display ).exec( new Runnable() {
       public void run() {
         ServerPushManager.getInstance().setRequestCheckInterval( interval );

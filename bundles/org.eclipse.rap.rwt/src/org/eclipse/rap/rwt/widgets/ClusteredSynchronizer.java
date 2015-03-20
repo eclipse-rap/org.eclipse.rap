@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,15 +106,10 @@ public class ClusteredSynchronizer extends Synchronizer {
     }
 
     static String createRequestUrl( HttpServletRequest request ) {
-      // TODO [rst] Replace with ServiceManager#getServiceHandlerUrl()
       StringBuilder buffer = new StringBuilder();
       buffer.append( "http://127.0.0.1:" );
       buffer.append( request.getServerPort() );
-      buffer.append( request.getRequestURI() );
-      buffer.append( "?" );
-      buffer.append( "servicehandler" );
-      buffer.append( "=" );
-      buffer.append( ID );
+      buffer.append( RWT.getServiceManager().getServiceHandlerUrl( ID ) );
       return buffer.toString();
     }
 
@@ -122,4 +117,5 @@ public class ClusteredSynchronizer extends Synchronizer {
       // do nothing
     }
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 EclipseSource and others.
+ * Copyright (c) 2002, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getProtocolWriter;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -63,7 +64,6 @@ import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
-import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
 import org.eclipse.swt.widgets.Display;
@@ -306,17 +306,17 @@ public final class Fixture {
   }
 
   public static void fakeClient( Client client ) {
-    ContextProvider.getUISession().setAttribute( ClientSelector.SELECTED_CLIENT, client );
+    getUISession().setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
   public static void fakeConnection( Connection connection ) {
-    UISession uiSession = ContextProvider.getUISession();
-    ( ( UISessionImpl )uiSession ).setConnection( connection );
+    ( ( UISessionImpl )getUISession() ).setConnection( connection );
   }
 
   public static TestRequest fakeNewRequest() {
     TestRequest request = createNewRequest( HTTP.METHOD_POST );
     request.setContentType( HTTP.CONTENT_TYPE_JSON );
+    request.setParameter( "cid", getConnectionId() );
     ClientMessage emptyMessage = createEmptyMessage();
     request.setBody( emptyMessage.toString() );
     createNewServiceContext( request, new TestResponse() );
@@ -352,6 +352,11 @@ public final class Fixture {
     return new ClientMessage( new JsonObject()
       .add( HEAD, new JsonObject() )
       .add( OPERATIONS, new JsonArray() ) );
+  }
+
+  private static String getConnectionId() {
+    UISessionImpl uiSession = ( UISessionImpl )getUISession();
+    return uiSession == null ? null : uiSession.getConnectionId();
   }
 
   public static void fakeHeadParameter( String key, long value ) {
@@ -502,8 +507,10 @@ public final class Fixture {
   }
 
   private static void ensureUISession( ServiceContext serviceContext ) {
-    HttpSession httpSession = serviceContext.getRequest().getSession( true );
-    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, null );
+    HttpServletRequest request = serviceContext.getRequest();
+    HttpSession httpSession = request.getSession( true );
+    String cid = request.getParameter( "cid" );
+    UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, cid );
     if( uiSession == null ) {
       uiSession = new UISessionBuilder( serviceContext ).buildUISession();
     }
@@ -624,8 +631,7 @@ public final class Fixture {
         return this;
       }
     };
-    UISession uiSession = ContextProvider.getUISession();
-    LifeCycleUtil.setUIThread( uiSession, result );
+    LifeCycleUtil.setUIThread( getUISession(), result );
     return result;
   }
 

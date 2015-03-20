@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionCleanupEntryPoint;
@@ -67,7 +68,7 @@ public class SessionCleanup_Test {
     client.sendDisplayResizeRequest( 400, 300 );
 
     HttpSession httpSession = ClusterTestHelper.getFirstHttpSession( servletEngine );
-    Display display = ClusterTestHelper.getSessionDisplay( httpSession );
+    Display display = ClusterTestHelper.getSessionDisplay( httpSession, client.getConnectionId() );
     httpSession.invalidate();
 
     assertTrue( display.isDisposed() );

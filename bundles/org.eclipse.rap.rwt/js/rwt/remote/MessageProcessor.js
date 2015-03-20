@@ -44,10 +44,13 @@ rwt.remote.MessageProcessor = {
 
   processHead : function( head ) {
     var connection = rwt.remote.Connection.getInstance();
-    if( head.url !== undefined ) {
+    if( head.url ) {
       connection.setUrl( head.url );
     }
-    if( head.redirect !== undefined ) {
+    if( head.cid ) {
+      connection.setConnectionId( head.cid );
+    }
+    if( head.redirect ) {
       rwt.widgets.Display.getCurrent().setExitConfirmation( null );
       document.location = head.redirect;
     }

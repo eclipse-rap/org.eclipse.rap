@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -184,15 +185,14 @@ public class ServiceManagerImpl_Test {
   }
 
   @Test
-  public void testGetServiceHandlerUrl_returnsAbsoluteUrlWithIdParam() {
+  public void testGetServiceHandlerUrl_returnsAbsoluteUrl() {
     String url = serviceManager.getServiceHandlerUrl( "foo" );
 
-    assertEquals( "/fooapp/rap?servicehandler=foo", url );
+    assertTrue( url.startsWith( "/fooapp/rap?servicehandler=foo" ) );
   }
 
-  @Test
   public void testGetServiceHandlerUrl_includesConnectionId() {
-    ContextProvider.getContext().setUISession( mockUISessionWithConnectionId( "bar" ) );
+    getContext().setUISession( mockUISessionWithConnectionId( "bar" ) );
 
     String url = serviceManager.getServiceHandlerUrl( "foo" );
 
@@ -201,9 +201,11 @@ public class ServiceManagerImpl_Test {
 
   @Test
   public void testGetServiceHandlerUrl_returnsUrlWithCharactersEscaped() {
+    getContext().setUISession( mockUISessionWithConnectionId( "bar" ) );
+
     String url = serviceManager.getServiceHandlerUrl( "Smørre brød" );
 
-    assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d", url );
+    assertEquals( "/fooapp/rap?servicehandler=Sm%C3%B8rre%20br%C3%B8d&cid=bar", url );
   }
 
   @Test
