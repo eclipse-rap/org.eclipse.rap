@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,11 +68,11 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
     setThumb : function( value ) {
       this.base( arguments, value );
       this._checkValue();
+      this._updatePageIncrement();
     },
 
     setIncrement : function( value ) {
       this._setIncrement( value );
-      this._updatePageIncrement();
     },
 
     setHasSelectionListener : function( value ) {
@@ -104,7 +104,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ScrollBar", {
     },
 
     _updatePageIncrement : function() {
-      this._setPageIncrement( this._getSliderSize() - this._increment );
+      this._setPageIncrement( this.getThumb() );
     },
 
     _stopEvent : function( event ) {

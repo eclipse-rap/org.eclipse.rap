@@ -308,10 +308,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     testPageIncrement : function() {
       var bar = this._createScrollBar( false, false );
-      bar.setIncrement( 30 );
-      assertEquals( 70, bar._pageIncrement );
-      bar.setHeight( 200 );
-      assertEquals( 170, bar._pageIncrement );
+
+      bar.setThumb( 30 );
+
+      assertEquals( 30, bar._pageIncrement );
       bar.destroy();
     },
 
