@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -335,6 +335,7 @@
   };
 
   var addGridListeners = function() {
+    this._.grid.addEventListener( "create", onCreate, this );
     this._.grid.addEventListener( "selectionChanged", onSelection, this );
     this._.grid.addEventListener( "keypress", onKeyEvent, this );
     this._.grid.addEventListener( "mousedown", onMouseDown, this );
@@ -548,6 +549,13 @@
     {
       this._.inMouseSelection = false;
       fireEvent.call( this, "DefaultSelection" );
+    }
+  };
+
+  var onCreate = function() {
+    var selectedItem = this._.grid.getSelection()[ 0 ];
+    if( selectedItem ) {
+      this._.grid.scrollItemIntoView( selectedItem );
     }
   };
 

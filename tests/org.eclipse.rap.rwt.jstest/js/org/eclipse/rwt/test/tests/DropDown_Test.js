@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1036,7 +1036,7 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 1, dropdown.getSelectionIndex() );
     },
 
-    testSetSelectionIndex_ScrollToSelection : function() {
+    testSetSelectionIndex_scrollsToSelection : function() {
       dropdown.setVisibleItemCount( 3 );
       showDropDown();
       dropdown.setItems( [ "a", "b", "c", "d", "e", "f" ] );
@@ -1046,6 +1046,16 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertEquals( 3, grid.getTopItemIndex() );
     },
 
+    testSetSelectionIndex_scrollsToSelection_beforeCreate : function() {
+      dropdown.setVisibleItemCount( 3 );
+      dropdown.setItems( [ "a", "b", "c", "d", "e", "f", "1", "2", "3", "4", "5", "6" ] );
+
+      dropdown.setSelectionIndex( 5 );
+      dropdown.show();
+      TestUtil.flush();
+
+      assertEquals( 5, grid.getTopItemIndex() );
+    },
 
     testSetSelectionIndex_DoesNotFireEventIfValueIsUnchanged : function() {
       dropdown.setItems( [ "a", "b", "c" ] );
