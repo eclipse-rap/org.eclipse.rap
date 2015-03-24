@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -695,8 +695,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._resizeLine._renderRuntimeTop( top );
       var left = x - 2 - this._horzScrollBar.getValue();
       this._resizeLine._renderRuntimeLeft( left );
-      var height = this._rowContainer.getHeight();
-      this._resizeLine._renderRuntimeHeight( height );
+      this._resizeLine._renderRuntimeHeight( this._rowContainer.getHeight() );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
 
@@ -738,7 +737,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _handleKeyPageUp : function( event ) {
       var oldOffset = this._focusItem.getOffset();
-      var diff = this._rowContainer.getHeight();
+      var diff = this._getClientAreaHeight();
       var newOffset = Math.max( 0, oldOffset - diff );
       var item = this._rootItem.findItemByOffset( newOffset );
       if( newOffset !== 0 ) {
@@ -750,7 +749,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _handleKeyPageDown : function( event ) {
       var oldOffset = this._focusItem.getOffset();
-      var diff = this._rowContainer.getHeight();
+      var diff = this._getClientAreaHeight();
       var max = this.getRootItem().getOffsetHeight() - 1;
       var newOffset = Math.min( max, oldOffset + diff );
       var item = this._rootItem.findItemByOffset( newOffset );
@@ -922,7 +921,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _getLastPageRowCount : function() {
-      var availableHeight = this._rowContainer.getHeight();
+      var availableHeight = this._getClientAreaHeight();
       var item = this.getRootItem().getLastChild();
       var result = 0;
       while( item && availableHeight > 0 ) {
@@ -937,7 +936,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _updateScrollThumbHeight : function() {
       if( !this._altScrollingEnabled ) {
-        var value = Math.max( 1, this._rowContainer.getRowCount() - 1 );
+        var value = Math.max( 1, Math.floor( this._getClientAreaHeight() / this._itemHeight ) );
         this._vertScrollBar.setThumb( value );
       }
     },
@@ -979,7 +978,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         var topItem = this._getTopItem();
         var topItemOffset = topItem.getOffset();
         var itemOffset = item.getOffset();
-        var pageSize = this._rowContainer.getHeight() - item.getOwnHeight();
+        var pageSize = this._getClientAreaHeight() - item.getOwnHeight();
         if( itemOffset > topItemOffset + pageSize ) {
           var newTopOffset = itemOffset - pageSize - 1;
           var newTopItem = this.getRootItem().findItemByOffset( newTopOffset );
@@ -1309,6 +1308,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getVerticalBarWidth : function() {
       return this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
+    },
+
+    _getClientAreaHeight : function() {
+      var height = this._rowContainer.getHeight();
+      return this._footer ? height : height - this._getHorizontalBarHeight();
     },
 
     ////////////////////////
