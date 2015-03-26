@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1614,6 +1614,9 @@ public class TreeItem extends Item {
         selectedItems.add( this );
       }
       parent.setSelection( selectedItems.toArray( new TreeItem[ 0 ] ) );
+      Event event = new Event();
+      event.item = this;
+      parent.notifyListeners( SWT.Selection, event );
     }
   }
 
