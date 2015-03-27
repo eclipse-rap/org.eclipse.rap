@@ -19,6 +19,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -103,6 +104,22 @@ public class TestContext implements TestRule {
    */
   public ApplicationContext getApplicationContext() {
     return applicationContext;
+  }
+
+  /**
+   * Replaces the client implementation of the current UISession. Can be used to return mocked
+   * ClientServices. Example:
+   * <pre>
+   * context.replaceClient( new Client() {
+   *   public &lt;T extends ClientService&gt; T getService( Class&lt;T&gt; type ) {
+   *     return mockedClientService;
+   *   }
+   * } );
+   * </pre>
+   * @param client a new Client implementation
+   */
+  public void replaceClient( Client client ) {
+    uiSession.setAttribute( ClientSelector.SELECTED_CLIENT, client );
   }
 
   /**

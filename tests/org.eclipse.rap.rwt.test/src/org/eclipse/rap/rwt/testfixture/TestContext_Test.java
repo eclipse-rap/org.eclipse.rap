@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.remote.Connection;
@@ -154,6 +155,15 @@ public class TestContext_Test {
     context.replaceConnection( connection );
 
     assertSame( connection, context.getUISession().getConnection() );
+  }
+
+  @Test
+  public void testReplaceClient() {
+    Client client = mock( Client.class );
+
+    context.replaceClient( client );
+
+    assertSame( client, context.getUISession().getClient() );
   }
 
 }
