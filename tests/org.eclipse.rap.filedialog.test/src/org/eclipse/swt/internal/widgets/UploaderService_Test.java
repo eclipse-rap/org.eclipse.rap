@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,24 +20,15 @@ import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.rap.rwt.testfixture.TestContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 @SuppressWarnings( "restriction" )
 public class UploaderService_Test {
 
-  @Before
-  public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
-  }
+  @Rule public TestContext context = new TestContext();
 
   @Test
   public void testSubmit_callsClientFileUploaderService() {
@@ -50,11 +41,11 @@ public class UploaderService_Test {
     verify( clientService ).submit( eq( "foo" ), same( clientFiles ) );
   }
 
-  private static ClientFileUploader mockClientFileUploaderService() {
+  private ClientFileUploader mockClientFileUploaderService() {
     ClientFileUploader service = mock( ClientFileUploader.class );
     Client client = mock( Client.class );
     when( client.getService( ClientFileUploader.class ) ).thenReturn( service );
-    Fixture.fakeClient( client );
+    context.replaceClient( client );
     return service;
   }
 

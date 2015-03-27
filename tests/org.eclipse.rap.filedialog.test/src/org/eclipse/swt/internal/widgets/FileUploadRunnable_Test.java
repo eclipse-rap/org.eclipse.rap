@@ -29,19 +29,15 @@ import org.eclipse.rap.fileupload.FileDetails;
 import org.eclipse.rap.fileupload.FileUploadEvent;
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.FileUploadListener;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable.State;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-@SuppressWarnings( {
-  "deprecation", "restriction"
-} )
 public class FileUploadRunnable_Test {
 
   private Display display;
@@ -52,10 +48,10 @@ public class FileUploadRunnable_Test {
   private Uploader uploader;
   private FileUploadHandler handler;
 
+  @Rule public TestContext context = new TestContext();
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     uploadPanel = mock( UploadPanel.class );
@@ -66,11 +62,6 @@ public class FileUploadRunnable_Test {
     uploader = mock( Uploader.class );
     handler = spy( new FileUploadHandler( diskFileUploadReceiver ) );
     runnable = new FileUploadRunnable( uploadPanel, progressCollector, uploader, handler );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test

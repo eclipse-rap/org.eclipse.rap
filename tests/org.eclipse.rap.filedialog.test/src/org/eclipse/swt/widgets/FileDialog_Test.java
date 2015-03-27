@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
@@ -41,14 +40,11 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.internal.dnd.DNDEvent;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable;
 import org.eclipse.swt.layout.GridData;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-@SuppressWarnings( {
-  "restriction", "deprecation"
-} )
 public class FileDialog_Test {
 
   private Display display;
@@ -57,21 +53,16 @@ public class FileDialog_Test {
   private DialogCallback callback;
   private ThreadPoolExecutor singleThreadExecutor;
 
+  @Rule public TestContext context = new TestContext();
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     singleThreadExecutor = mock( ThreadPoolExecutor.class );
     dialog = new TestFileDialog( shell, SWT.MULTI );
     callback = mock( DialogCallback.class );
     DialogUtil.open( dialog, callback );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
