@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertTrue;
@@ -92,7 +92,7 @@ public class ImageSerialzation_Test {
     Fixture.createServiceContext();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( device );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setParameter( PARAM_CONNECTION_ID, uiSession.getConnectionId() );
+    request.setParameter( CONNECTION_ID, uiSession.getConnectionId() );
     TestHttpSession session = ( TestHttpSession )request.getSession();
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();

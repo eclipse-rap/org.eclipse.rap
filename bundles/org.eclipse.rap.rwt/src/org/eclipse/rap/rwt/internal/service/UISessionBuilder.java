@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 
 import java.util.UUID;
 
@@ -72,7 +72,7 @@ public class UISessionBuilder {
 
   private void renderConnectionId() {
     String connectionId = uiSession.getConnectionId();
-    serviceContext.getProtocolWriter().appendHead( PARAM_CONNECTION_ID, connectionId );
+    serviceContext.getProtocolWriter().appendHead( CONNECTION_ID, connectionId );
   }
 
 }

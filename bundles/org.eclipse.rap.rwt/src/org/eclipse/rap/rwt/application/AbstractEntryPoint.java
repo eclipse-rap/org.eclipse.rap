@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
+import static org.eclipse.rap.rwt.RWT.getClient;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,7 +41,7 @@ import org.eclipse.swt.widgets.Shell;
  *
  * @since 2.0
  */
-public abstract class AbstractEntryPoint implements EntryPoint {
+public abstract class AbstractEntryPoint implements EntryPoint, StartupParameters {
 
   private Display display;
   private Shell shell;
@@ -66,6 +72,48 @@ public abstract class AbstractEntryPoint implements EntryPoint {
       display.dispose();
     }
     return 0;
+  }
+
+  /**
+   * Returns the names of the entrypoint startup parameters.
+   *
+   * @return a (possibly empty) collection of parameter names
+   * @since 3.0
+   */
+  public Collection<String> getParameterNames() {
+    StartupParameters service = getClient().getService( StartupParameters.class );
+    return service == null ? new ArrayList<String>() : service.getParameterNames();
+  }
+
+  /**
+   * Returns the value of a named entrypoint startup parameter. You should only use this method
+   * when you are sure the parameter has only one value. If the parameter might have more than one
+   * value, use {@link #getParameterValues}.
+   *
+   * If you use this method with a multivalued parameter, the value returned is equal to the first
+   * value in the list returned by <code>getParameterValues</code>.
+   *
+   * @param name the name of the parameter
+   * @return the value of the parameter, or <code>null</code> if the parameter does not exist
+   * @since 3.0
+   */
+  public String getParameter( String name ) {
+    StartupParameters service = getClient().getService( StartupParameters.class );
+    return service == null ? null : service.getParameter( name );
+  }
+
+  /**
+   * Returns a list with values of a named entrypoint startup parameter.
+   *
+   * If the parameter has a single value, the list has a size of 1.
+   *
+   * @param name the name of the parameter
+   * @return the values of the parameter, or <code>null</code> if the parameter does not exist
+   * @since 3.0
+   */
+  public List<String> getParameterValues( String name ) {
+    StartupParameters service = getClient().getService( StartupParameters.class );
+    return service == null ? null : service.getParameterValues( name );
   }
 
   /**

@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
-import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.swt.dnd.Transfer;
 
 
@@ -32,6 +31,7 @@ public class RWTClient {
   // Keep "text" in sync with TextTransfer#TYPE_NAME
   private static final String TEXT_TRANSFER_DATA_TYPE
     = String.valueOf( Transfer.registerType( "text" ) );
+  private static final String CONNECTION_ID = "cid";
 
   private IServletEngine servletEngine;
   private final IConnectionProvider connectionProvider;
@@ -141,7 +141,7 @@ public class RWTClient {
   public Response sendServerPushRequest( int timeout ) throws IOException {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put( ServiceManagerImpl.REQUEST_PARAM, ServerPushServiceHandler.HANDLER_ID );
-    parameters.put( UrlParameters.PARAM_CONNECTION_ID, connectionId );
+    parameters.put( CONNECTION_ID, connectionId );
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createGetConnection( url, timeout );
     return new Response( connection );
@@ -153,7 +153,7 @@ public class RWTClient {
     }
     HashMap<String, String> parameters = new HashMap<String, String>();
     if( connectionId != null ) {
-      parameters.put( UrlParameters.PARAM_CONNECTION_ID, connectionId );
+      parameters.put( CONNECTION_ID, connectionId );
     }
     URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createPostConnection( url, message.toString(), 0 );

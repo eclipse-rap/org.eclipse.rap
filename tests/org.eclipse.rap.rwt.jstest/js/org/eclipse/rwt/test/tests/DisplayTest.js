@@ -140,6 +140,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertEquals( expected, actual );
     },
 
+    testSendStartupParameters : function() {
+      var system = rwt.runtime.System.getInstance();
+      var oldGetStartupParameters = system.getStartupParameters;
+      system.getStartupParameters = function() {
+        return { param1 : [ "foo" ], param2 : [ "bar" ] };
+      };
+
+      display._appendStartupParameters();
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      var expected = { param1 : [ "foo" ], param2 : [ "bar" ] };
+      var actual = message.findSetProperty( "rwt.client.StartupParameters", "parameters" );
+      assertEquals( expected, actual );
+      system.getStartupParameters = oldGetStartupParameters;
+    },
+
     testSendColorDepth : function() {
       display._appendColorDepth();
       rwt.remote.Connection.getInstance().send();

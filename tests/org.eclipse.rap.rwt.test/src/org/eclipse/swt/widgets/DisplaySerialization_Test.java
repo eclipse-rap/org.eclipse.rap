@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -268,7 +268,7 @@ public class DisplaySerialization_Test {
     Fixture.createServiceContext();
     UISessionImpl uiSession = ( UISessionImpl )getUISession( display );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.setParameter( PARAM_CONNECTION_ID, uiSession.getConnectionId() );
+    request.setParameter( CONNECTION_ID, uiSession.getConnectionId() );
     TestHttpSession session = ( TestHttpSession )request.getSession();
     uiSession.setHttpSession( session );
     uiSession.attachToHttpSession();

@@ -44,12 +44,12 @@ rwt.widgets.Display.prototype = {
   },
 
   init : function() {
-    this._appendQueryString();
     this._appendWindowSize();
     this._appendSystemDPI();
     this._appendColorDepth();
     this._appendInitialHistoryEvent();
     this._appendTimezoneOffset();
+    this._appendStartupParameters();
     this._attachListener();
     this._server.send();
     this._initialized = true;
@@ -215,10 +215,11 @@ rwt.widgets.Display.prototype = {
     remoteObject.set( "timezoneOffset", clientObject.getTimezoneOffset() );
   },
 
-  _appendQueryString : function() {
-    var queryString = window.location.search;
-    if( queryString !== "" ) {
-      this._server.getMessageWriter().appendHead( "queryString", queryString.substr( 1 ) );
+  _appendStartupParameters : function() {
+    var parameters = rwt.runtime.System.getInstance().getStartupParameters();
+    if( parameters ) {
+      var writer = rwt.remote.Connection.getInstance().getMessageWriter();
+      writer.appendSet( "rwt.client.StartupParameters", "parameters", parameters );
     }
   }
 

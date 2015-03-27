@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,6 +61,29 @@ rwt.qx.Class.define( "rwt.runtime.System", {
 
     getStartupTime : function() {
       return this._startupTime;
+    },
+
+    getStartupParameters : function() {
+      var queryString = window.location.search;
+      if( queryString !== "" ) {
+        return this._parseQueryString( queryString.substr( 1 ) );
+      }
+      return null;
+    },
+
+    _parseQueryString : function( queryString ) {
+      var parameters = {};
+      queryString.split( "&" ).forEach( function( pair ) {
+        var parts = pair.split( "=" );
+        var name = decodeURIComponent( parts[ 0 ] );
+        var value = parts.length === 1 ? "" : decodeURIComponent( parts[ 1 ] );
+        if( parameters[ name ] ) {
+          parameters[ name ].push( value );
+        } else {
+          parameters[ name ] = [ value ];
+        }
+      } );
+      return parameters;
     },
 
     _onload : function() {

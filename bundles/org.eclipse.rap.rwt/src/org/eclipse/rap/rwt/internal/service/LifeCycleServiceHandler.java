@@ -103,7 +103,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         reinitializeUISession( request );
         reinitializeServiceStore();
       }
-      UrlParameters.merge( requestMessage );
       ResponseMessage responseMessage = processMessage( requestMessage );
       writeResponseMessage( responseMessage, response );
       RequestCounter.getInstance().nextRequestId();

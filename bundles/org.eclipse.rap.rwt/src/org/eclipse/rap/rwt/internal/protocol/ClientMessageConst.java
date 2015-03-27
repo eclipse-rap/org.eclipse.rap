@@ -17,9 +17,9 @@ package org.eclipse.rap.rwt.internal.protocol;
 public final class ClientMessageConst {
 
   // Head parameters
+  public static final String CONNECTION_ID = "cid";
   public static final String REQUEST_COUNTER = "requestCounter";
   public static final String SHUTDOWN = "shutdown";
-  public static final String QUERY_STRING = "queryString";
 
   // SWT keys used to identify which kind of SWT-Event is requested
   public static final String EVENT_SELECTION = "Selection";

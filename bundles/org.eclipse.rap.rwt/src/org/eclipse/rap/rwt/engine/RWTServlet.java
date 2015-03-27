@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.engine;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 import static org.eclipse.rap.rwt.internal.util.HTTP.CONTENT_TYPE_JSON;
 import static org.eclipse.rap.rwt.internal.util.HTTP.METHOD_POST;
 
@@ -195,7 +195,7 @@ public class RWTServlet extends HttpServlet {
   private static UISession getUISession( HttpServletRequest request ) {
     synchronized( RWTServlet.class ) {
       HttpSession httpSession = request.getSession( true );
-      String connectionId = request.getParameter( PARAM_CONNECTION_ID );
+      String connectionId = request.getParameter( CONNECTION_ID );
       return UISessionImpl.getInstanceFromSession( httpSession, connectionId );
     }
   }

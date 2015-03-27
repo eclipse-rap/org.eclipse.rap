@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
-import org.eclipse.rap.rwt.internal.service.UrlParameters;
 import org.eclipse.rap.rwt.service.UISession;
 
 
@@ -95,7 +95,7 @@ public class RWTClusterSupport implements Filter {
   }
 
   private static String getConnectionId( ServletRequest request ) {
-    return request.getParameter( UrlParameters.PARAM_CONNECTION_ID );
+    return request.getParameter( ClientMessageConst.CONNECTION_ID );
   }
 
 }

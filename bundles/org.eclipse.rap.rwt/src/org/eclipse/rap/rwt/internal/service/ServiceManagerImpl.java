@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.eclipse.rap.rwt.internal.service.UrlParameters.PARAM_CONNECTION_ID;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -66,7 +66,7 @@ public class ServiceManagerImpl implements ServiceManager {
     String connectionId = getConnectionId();
     if( connectionId != null ) {
       url.append( '&' )
-        .append( PARAM_CONNECTION_ID )
+        .append( CONNECTION_ID )
         .append( '=' )
         .append( connectionId );
     }
