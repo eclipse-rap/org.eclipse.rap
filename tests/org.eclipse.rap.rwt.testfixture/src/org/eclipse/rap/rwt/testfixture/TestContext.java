@@ -143,6 +143,7 @@ public class TestContext implements TestRule {
     applicationContext = createApplicationContext( config );
     uiSession = new UISessionImpl( applicationContext, new TestHttpSession() );
     ContextProvider.setContext( createServiceContext( applicationContext, uiSession ) );
+    SingletonManager.install( applicationContext );
     SingletonManager.install( uiSession );
     MeasurementUtil.installMeasurementOperator( uiSession );
     ThemeUtil.setCurrentThemeId( uiSession, RWT.DEFAULT_THEME_ID );

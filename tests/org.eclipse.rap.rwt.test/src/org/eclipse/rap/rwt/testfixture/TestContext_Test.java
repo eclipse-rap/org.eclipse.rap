@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
+import static org.eclipse.rap.rwt.SingletonUtil.getUniqueInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -71,6 +72,12 @@ public class TestContext_Test {
   public void testStoresAreAccessible() {
     assertEquals( "bar", context.getApplicationContext().getAttribute( "foo" ) );
     assertEquals( "bar", context.getUISession().getAttribute( "foo" ) );
+  }
+
+  @Test
+  public void testSingletonsAreEnabled() {
+    assertNotNull( getUniqueInstance( Object.class, context.getUISession() ) );
+    assertNotNull( getUniqueInstance( Object.class, context.getApplicationContext() ) );
   }
 
   @Test
