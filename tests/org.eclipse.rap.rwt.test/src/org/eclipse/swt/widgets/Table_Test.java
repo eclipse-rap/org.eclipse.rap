@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,10 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.template.Template;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -55,12 +55,15 @@ import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.layout.FillLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Table_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -68,16 +71,9 @@ public class Table_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -454,8 +450,7 @@ public class Table_Test {
 
   @Test
   public void testGetAdapterWithTableAdapter() {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    assertNotNull( adapter );
+    assertNotNull( getTableAdapter( table ) );
   }
 
   @Test
@@ -529,8 +524,7 @@ public class Table_Test {
     TableItem item0 = new TableItem( table, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    ITableAdapter tableAdapter = getTableAdapter( table );
 
     // Test initial value
     assertEquals( -1, tableAdapter.getFocusIndex() );
@@ -586,11 +580,20 @@ public class Table_Test {
   }
 
   @Test
+  public void testFocusIndex_ignoresInvalidIndex() {
+    createTableItems( table, 3 );
+    getTableAdapter( table ).setFocusIndex( 1 );
+
+    table.setSelection( new int[] { 10 } );
+
+    assertEquals( 1, getTableAdapter( table ).getFocusIndex() );
+  }
+
+  @Test
   public void testFocusIndexVirtual() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 500, 500 );
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    ITableAdapter tableAdapter = getTableAdapter( table );
 
     table.setItemCount( 100 );
     table.setSelection( 99 );
@@ -1219,18 +1222,15 @@ public class Table_Test {
     table.setSelection( 0 );
     assertTrue( table.isSelected( 0 ) );
     // ensure that calling isSelected does not resolve a virtual item
-    ITableAdapter tableAdapter
-      = table.getAdapter( ITableAdapter.class );
     boolean selected = table.isSelected( 900 );
     assertFalse( selected );
-    assertTrue( tableAdapter.isItemVirtual( 900 ) );
+    assertTrue( getTableAdapter( table ).isItemVirtual( 900 ) );
   }
 
   @Test
   public void testClearNonVirtual() throws IOException {
     Table table = createTable( SWT.CHECK, 1 );
     TableItem item = new TableItem( table, SWT.NONE );
-    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     table.setSelection( item );
     item.setText( "abc" );
     item.setImage( createImage50x100() );
@@ -1243,7 +1243,7 @@ public class Table_Test {
     assertEquals( null, item.getImage() );
     assertFalse( item.getChecked() );
     assertFalse( item.getGrayed() );
-    assertFalse( tableAdapter.isItemVirtual( table.indexOf( item ) ) );
+    assertFalse( getTableAdapter( table ).isItemVirtual( table.indexOf( item ) ) );
     assertSame( item, table.getSelection()[ 0 ] );
 
   }
@@ -1265,12 +1265,11 @@ public class Table_Test {
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
 
     table.getItem( 0 ).getText();
     table.select( 0 );
     table.clear( 0 );
-    assertTrue( tableAdapter.isItemVirtual( 0 ) );
+    assertTrue( getTableAdapter( table ).isItemVirtual( 0 ) );
     assertEquals( 0, table.getSelectionIndex() );
   }
 
@@ -1935,7 +1934,7 @@ public class Table_Test {
   public void testCheckDataWithInvalidIndex() {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
-    table.getAdapter( ITableAdapter.class ).checkData( 99 );
+    getTableAdapter( table ).checkData( 99 );
     // No assert - the purpose of this test is to ensure that no
     // ArrayIndexOutOfBoundsException is thrown
   }
@@ -2374,7 +2373,7 @@ public class Table_Test {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );
     }
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = getTableAdapter( table );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 8 ) );
     assertEquals( 175, adapter.getLeftOffset() );
@@ -2402,7 +2401,7 @@ public class Table_Test {
     table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
     table.showColumn( table.getColumn( 8 ) );
 
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = getTableAdapter( table );
     assertEquals( 0, adapter.getLeftOffset() );
 
     table.showColumn( table.getColumn( 5 ) );
@@ -2439,8 +2438,7 @@ public class Table_Test {
 
     table.showColumn( otherColumn );
 
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    assertEquals( initialLeftOffset, adapter.getLeftOffset() );
+    assertEquals( initialLeftOffset, getTableAdapter( table ).getLeftOffset() );
   }
 
   @Test
@@ -2453,7 +2451,7 @@ public class Table_Test {
       column.setWidth( 50 );
     }
     createTableItems( table, 10 );
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = getTableAdapter( table );
 
     adapter.setLeftOffset( 100 );
     table.showColumn( table.getColumn( 0 ) );
@@ -2467,8 +2465,7 @@ public class Table_Test {
 
     table.setData( RWT.ROW_TEMPLATE, new Template() );
 
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    assertEquals( -1, adapter.getFixedColumns() );
+    assertEquals( -1, getTableAdapter( table ).getFixedColumns() );
   }
 
   @Test
@@ -2481,7 +2478,7 @@ public class Table_Test {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( columnWidth );
     }
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = getTableAdapter( table );
     adapter.setLeftOffset( 100 );
 
     table.showColumn( table.getColumn( 2 ) );
@@ -2502,8 +2499,7 @@ public class Table_Test {
 
     table.showColumn( table.getColumn( 3 ) );
 
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    assertEquals( 100, adapter.getLeftOffset() );
+    assertEquals( 100, getTableAdapter( table ).getLeftOffset() );
   }
 
   @Test
@@ -2903,7 +2899,7 @@ public class Table_Test {
   }
 
   private static int countResolvedItems( Table table ) {
-    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = getTableAdapter( table );
     int result = 0;
     TableItem[] createdItems = tableAdapter.getCreatedItems();
     for( int i = 0; i < createdItems.length; i++ ) {
@@ -2922,7 +2918,7 @@ public class Table_Test {
   }
 
   private static void redrawTable( Table table ) {
-    table.getAdapter( ITableAdapter.class ).checkData();
+    getTableAdapter( table ).checkData();
   }
 
   private Table createFixedColumnsTable() {
@@ -2945,6 +2941,10 @@ public class Table_Test {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     String key = "org.eclipse.rap.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
     serviceStore.setAttribute( key, Boolean.TRUE );
+  }
+
+  private static ITableAdapter getTableAdapter( Table table ) {
+    return table.getAdapter( ITableAdapter.class );
   }
 
 }

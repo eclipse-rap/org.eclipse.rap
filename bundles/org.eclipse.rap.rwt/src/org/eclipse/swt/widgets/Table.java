@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1071,9 +1071,7 @@ public class Table extends Composite {
     checkWidget();
     deselectAll();
     select( index );
-    if( index < itemCount ) {
-      setFocusIndex( index );
-    }
+    setFocusIndex( index );
     showSelection();
   }
 
@@ -1118,12 +1116,7 @@ public class Table extends Composite {
     checkWidget();
     deselectAll();
     select( start, end );
-    if(    end >= 0
-        && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end )
-        && itemCount != 0
-        && start < itemCount )
-    {
+    if( end >= 0 && start <= end && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) {
       setFocusIndex( Math.max( 0, start ) );
     }
     showSelection();
@@ -2553,9 +2546,9 @@ public class Table extends Composite {
     return result;
   }
 
-  private void setFocusIndex( int focusIndex ) {
-    if( focusIndex >= 0 ) {
-      this.focusIndex = focusIndex;
+  private void setFocusIndex( int index ) {
+    if( index >= 0 && index < itemCount ) {
+      focusIndex = index;
     }
   }
 
