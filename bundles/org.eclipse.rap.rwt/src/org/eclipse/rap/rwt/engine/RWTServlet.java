@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 /**
@@ -130,7 +131,9 @@ public class RWTServlet extends HttpServlet {
     ContextProvider.setContext( serviceContext );
     try {
       ServiceHandler serviceHandler = getServiceHandler();
-      if( isCustomServiceHandler( serviceHandler ) || isUIRequest( request ) ) {
+      if( isCustomServiceHandler( serviceHandler ) ) {
+        serviceHandler.service( request, response );
+      } else if( isUIRequest( request ) ) {
         ensureUISession( serviceContext );
         serviceHandler.service( request, response );
       } else {
@@ -146,6 +149,7 @@ public class RWTServlet extends HttpServlet {
   {
     ServiceContext context = new ServiceContext( request, response, applicationContext );
     context.setServiceStore( new ServiceStore() );
+    context.setUISession( getUISession( request ) );
     return context;
   }
 
@@ -180,14 +184,19 @@ public class RWTServlet extends HttpServlet {
   static void ensureUISession( ServiceContext serviceContext ) {
     // Ensure that there is exactly one UISession per connection created
     synchronized( RWTServlet.class ) {
-      HttpServletRequest request = serviceContext.getRequest();
-      HttpSession httpSession = request.getSession( true );
-      String connectionId = request.getParameter( PARAM_CONNECTION_ID );
-      UISessionImpl uiSession = UISessionImpl.getInstanceFromSession( httpSession, connectionId );
+      UISession uiSession = serviceContext.getUISession();
       if( uiSession == null ) {
         uiSession = new UISessionBuilder( serviceContext ).buildUISession();
       }
       serviceContext.setUISession( uiSession );
+    }
+  }
+
+  private static UISession getUISession( HttpServletRequest request ) {
+    synchronized( RWTServlet.class ) {
+      HttpSession httpSession = request.getSession( true );
+      String connectionId = request.getParameter( PARAM_CONNECTION_ID );
+      return UISessionImpl.getInstanceFromSession( httpSession, connectionId );
     }
   }
 
