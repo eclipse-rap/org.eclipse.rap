@@ -368,13 +368,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( "Smalltalk", items[ 5 ] );
     },
 
-    testItems_recalculatesMinWidthOnVisibleList : function() {
+    testSetItems_recalculatesMinWidthOnVisibleList : function() {
       combo.setListVisible( true );
       var oldMinWidth = combo._listMinWidth;
 
       combo.setItems( [ "a very very long item" ] );
 
       assertTrue( combo._listMinWidth > oldMinWidth );
+    },
+
+    testSetItems_doesNotFocusCombo : function() {
+      combo.select( 2 );
+      combo.setFocused( false );
+
+      combo.setItems( [ "foo", "bar" ] );
+
+      assertFalse( combo.getFocused() );
     },
 
     testSetVisibleItemCount : function() {

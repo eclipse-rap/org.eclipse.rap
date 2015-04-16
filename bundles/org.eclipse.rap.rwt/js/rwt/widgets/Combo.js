@@ -42,7 +42,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     setItems : function( items ) {
       this._listMinWidth = -1;
+      this._userSelection = false;
       this._list.setItems( items );
+      this._userSelection = true;
       this.dispatchSimpleEvent( "itemsChanged" );
       if( this._list.getVisible() ) {
         this._list.setMinWidth( this._getListMinWidth() );
