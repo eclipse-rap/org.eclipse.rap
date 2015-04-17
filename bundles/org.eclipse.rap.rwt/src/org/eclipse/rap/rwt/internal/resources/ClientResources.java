@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.resources;
 
 import static org.eclipse.rap.rwt.internal.resources.ClientFilesReader.getInputFiles;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +31,6 @@ public final class ClientResources {
 
   private static final String CLIENT_FILES = "client.files";
   private static final String CLIENT_JS = "client.js";
-  private static final String JSON_MIN_JS = "json2.min.js";
 
   private static final List<String> JAVASCRIPT_FILES = getInputFiles( CLIENT_FILES );
 
@@ -92,8 +90,6 @@ public final class ClientResources {
     } else {
       append( contentBuffer, CLIENT_JS );
     }
-    String json2Code = readResourceContent( JSON_MIN_JS );
-    contentBuffer.append( json2Code.getBytes( HTTP.CHARSET_UTF_8 ) );
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
     registerJavascriptResource( contentBuffer, "rap-client.js" );
   }
@@ -149,22 +145,6 @@ public final class ClientResources {
     }
     String location = resourceManager.getLocation( name );
     applicationContext.getStartupPage().setClientJsLibrary( location );
-  }
-
-  private String readResourceContent( String location ) throws IOException {
-    byte[] buffer = new byte[ 40960 ];
-    InputStream inputStream = openResourceStream( location );
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    try {
-      int read = inputStream.read( buffer );
-      while( read != -1 ) {
-        outputStream.write( buffer, 0, read );
-        read = inputStream.read( buffer );
-      }
-    } finally {
-      inputStream.close();
-    }
-    return outputStream.toString( HTTP.CHARSET_UTF_8 );
   }
 
   private InputStream openResourceStream( String name ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,6 @@ public class ClientResources_Test {
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
     assertFalse( clientJs.contains( "/****" ) );
     assertFalse( clientJs.contains( "Copyright" ) );
-    assertTrue( clientJs.contains( "{this.JSON={}}" ) );
   }
 
   @Test
@@ -104,7 +103,6 @@ public class ClientResources_Test {
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
-    assertTrue( clientJs.contains( "this.JSON={}" ) );
   }
 
   private String getRegisteredContent( String name ) throws IOException {
