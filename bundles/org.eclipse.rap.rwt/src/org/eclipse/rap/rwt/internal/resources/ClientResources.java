@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
+import org.eclipse.rap.rwt.internal.theme.AppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
@@ -81,7 +81,7 @@ public final class ClientResources {
     throws IOException
   {
     ContentBuffer contentBuffer = new ContentBuffer();
-    String appearanceCode = getQxAppearanceThemeCode();
+    String appearanceCode = createAppearanceCode();
     if( RWTProperties.isDevelopmentMode() ) {
       append( contentBuffer, "debug-settings.js" );
       for( String javascriptFile : JAVASCRIPT_FILES ) {
@@ -94,9 +94,9 @@ public final class ClientResources {
     registerJavascriptResource( contentBuffer, "rap-client.js" );
   }
 
-  private String getQxAppearanceThemeCode() {
+  private String createAppearanceCode() {
     List<String> customAppearances = themeManager.getAppearances();
-    return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
+    return AppearanceWriter.createAppearanceTheme( customAppearances );
   }
 
   private void append( ContentBuffer contentBuffer, String location ) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,12 @@ import java.util.List;
 import org.junit.Test;
 
 
-public class QxAppearanceWriter_Test {
+public class AppearanceWriter_Test {
 
   @Test
   public void testNoValues() {
     List<String> appearances = Collections.<String>emptyList();
-    String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
+    String code = AppearanceWriter.createAppearanceTheme( appearances );
 
     assertTrue( code.startsWith( "rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );
@@ -36,7 +36,7 @@ public class QxAppearanceWriter_Test {
     List<String> appearances = new ArrayList<String>();
     appearances.add( "foo\nfoo" );
     appearances.add( "bar\nbar" );
-    String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
+    String code = AppearanceWriter.createAppearanceTheme( appearances );
 
     assertTrue( code.startsWith( "rwt.theme.AppearanceManager.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );

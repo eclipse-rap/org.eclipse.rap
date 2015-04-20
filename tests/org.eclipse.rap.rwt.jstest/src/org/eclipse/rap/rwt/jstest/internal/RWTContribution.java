@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.resources.ClientResourcesAdapter;
-import org.eclipse.rap.rwt.internal.theme.QxAppearanceWriter;
+import org.eclipse.rap.rwt.internal.theme.AppearanceWriter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
@@ -60,7 +60,7 @@ public class RWTContribution implements TestContribution {
   private String getAppearanceCode() {
     ThemeManager themeManager = getApplicationContext().getThemeManager();
     List<String> customAppearances = themeManager.getAppearances();
-    return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
+    return AppearanceWriter.createAppearanceTheme( customAppearances );
   }
 
   private static String[] toArray( List<String> list ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.List;
 
 
-public final class QxAppearanceWriter {
+public final class AppearanceWriter {
 
-  private QxAppearanceWriter() {
+  private AppearanceWriter() {
   }
 
-  public static String createQxAppearanceTheme( List<String> appearances ) {
+  public static String createAppearanceTheme( List<String> appearances ) {
     StringBuilder code = new StringBuilder();
     appendHead( code );
     appendAppearances( code, appearances );
