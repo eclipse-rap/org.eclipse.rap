@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,6 +149,62 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.HandlerUtilTest", {
       assertIdentical( parent, child.getParent() );
       assertEquals( [ child ], rwt.remote.HandlerUtil.getDestroyableChildren( parent ) );
       parent.destroy();
+    },
+
+    testParentHandler_setsParent : function() {
+      var parent1 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p1", parent1 );
+      var parent2 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p2", parent2 );
+      var child = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "c", child );
+      rwt.remote.HandlerUtil.setParent( child, "p1" );
+
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "parent" );
+      handler( child, "p2" );
+
+      assertIdentical( parent2, child.getParent() );
+      assertIdentical( parent2, child.getUserData( "protocolParent" ) );
+      parent1.destroy();
+      parent2.destroy();
+    },
+
+    testParentHandler_clearsParentSpecificUserData : function() {
+      var parent1 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p1", parent1 );
+      var parent2 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p2", parent2 );
+      var child = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "c", child );
+      rwt.remote.HandlerUtil.setParent( child, "p1" );
+      child.setUserData( "scrolledComposite", "foo" );
+      child.setUserData( "tabFolder", "bar" );
+
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "parent" );
+      handler( child, "p2" );
+
+      assertNull( child.getUserData( "scrolledComposite" ) );
+      assertNull( child.getUserData( "tabFolder" ) );
+      parent1.destroy();
+      parent2.destroy();
+    },
+
+    testParentHandler_removesWidgetFromDestroyableChildList : function() {
+      var parent1 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p1", parent1 );
+      var parent2 = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "p2", parent2 );
+      var child = new rwt.widgets.Composite();
+      rwt.remote.ObjectRegistry.add( "c", child );
+      rwt.remote.HandlerUtil.setParent( child, "p1" );
+
+      var handler = rwt.remote.HandlerUtil.getControlPropertyHandler( "parent" );
+      handler( child, "p2" );
+
+      var destroyableChildren = rwt.remote.HandlerUtil.getDestroyableChildren( parent1 );
+      assertFalse( rwt.util.Arrays.contains( destroyableChildren, child ) );
+      parent1.destroy();
+      parent2.destroy();
     },
 
     testDestructor : function() {

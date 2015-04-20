@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
@@ -58,6 +59,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.layout.FillLayout;
 import org.junit.After;
@@ -1469,6 +1471,109 @@ public class Control_Test {
 
     Rectangle expected = new Rectangle( 1, 3, 2, 4 );
     assertEquals( expected, composite.getBorder() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetParent_nullParent() {
+    Control control = new Button( shell, SWT.NONE );
+
+    control.setParent( null );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetParent_disposedParent() {
+    Control control = new Button( shell, SWT.NONE );
+    Composite parent = new Composite( shell, SWT.NONE );
+    parent.dispose();
+
+    control.setParent( parent );
+  }
+
+  @Test
+  public void testSetParent() {
+    Control control = new Button( shell, SWT.NONE );
+    Composite parent = new Composite( shell, SWT.NONE );
+
+    boolean success = control.setParent( parent );
+
+    assertTrue( success );
+    assertSame( parent, control.getParent() );
+    assertFalse( Arrays.asList( shell.getChildren() ).contains( control ) );
+    assertTrue( Arrays.asList( parent.getChildren() ).contains( control ) );
+  }
+
+  @Test
+  public void testSetParent_withDisabledReparenting() {
+    Control control = new Button( shell, SWT.NONE ) {
+      @Override
+      public boolean isReparentable() {
+        return false;
+      }
+    };
+    Composite parent = new Composite( shell, SWT.NONE );
+
+    boolean success = control.setParent( parent );
+
+    assertFalse( success );
+    assertSame( shell, control.getParent() );
+    assertTrue( Arrays.asList( shell.getChildren() ).contains( control ) );
+    assertFalse( Arrays.asList( parent.getChildren() ).contains( control ) );
+  }
+
+  @Test
+  public void testSetParent_fixesActiveControl() {
+    Control control = new Button( shell, SWT.NONE );
+    shell.open();
+    control.setFocus();
+    Shell parent = new Shell( display );
+
+    control.setParent( parent );
+
+    assertNull( shell.getAdapter( IShellAdapter.class ).getActiveControl() );
+  }
+
+  @Test
+  public void testSetParent_fixesDefaultButton() {
+    Button button = new Button( shell, SWT.NONE );
+    shell.setDefaultButton( button );
+    shell.open();
+    Shell parent = new Shell( display );
+
+    button.setParent( parent );
+
+    assertNull( shell.getDefaultButton() );
+  }
+
+  @Test
+  public void testSetParent_fixesSavedDefaultButton() {
+    Button button = new Button( shell, SWT.NONE );
+    shell.setDefaultButton( button, true );
+    shell.open();
+    Shell parent = new Shell( display );
+
+    button.setParent( parent );
+    shell.setDefaultButton( null, true );
+
+    assertNull( shell.getDefaultButton() );
+  }
+
+  @Test
+  public void testSetParent_fixesSavedFocus() {
+    Control control = new Button( shell, SWT.NONE );
+    shell.open();
+    control.setFocus();
+    Shell parent = new Shell( display );
+
+    control.setParent( parent );
+
+    assertNull( shell.getSavedFocus() );
+  }
+
+  @Test
+  public void testIsReparentable() {
+    Control control = new Button( shell, SWT.NONE );
+
+    assertTrue( control.isReparentable() );
   }
 
   private static class RedrawLogginShell extends Shell {

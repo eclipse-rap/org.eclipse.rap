@@ -33,6 +33,7 @@ rwt.remote.HandlerUtil = {
   },
 
   _controlProperties : [
+    "parent",
     "children",
     "tabIndex",
     "toolTipMarkupEnabled",
@@ -118,6 +119,18 @@ rwt.remote.HandlerUtil = {
   ],
 
   _controlPropertyHandler : {
+    "parent" : function( widget, value ) {
+      var oldParent = widget.getParent();
+      var oldParentId = oldParent == null ? null : rwt.remote.ObjectRegistry.getId( oldParent );
+      if( oldParentId !== value ) {
+        widget.setUserData( "scrolledComposite", null );
+        widget.setUserData( "tabFolder", null );
+        if( oldParent != null ) {
+          rwt.remote.HandlerUtil.removeDestroyableChild( oldParent, widget );
+        }
+        rwt.remote.HandlerUtil.setParent( widget, value );
+      }
+    },
     "data" : function( target, value ) {
       var map = rwt.remote.HandlerUtil.getServerData( target );
       rwt.util.Objects.mergeWith( map, value );

@@ -297,6 +297,37 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testRenderInitialParent() {
+    ControlLCAUtil.renderParent( control );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "parent" ) );
+  }
+
+  @Test
+  public void testRenderParent() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.renderParent( control );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    String actual = message.findSetProperty( control, "parent" ).asString();
+    assertEquals( getId( control.getParent() ), actual );
+  }
+
+  @Test
+  public void testRenderParentUnchanged() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderParent( control );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "parent" ) );
+  }
+
+  @Test
   public void testRenderIntialChildren() {
     ControlLCAUtil.renderChildren( shell );
 

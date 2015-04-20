@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -275,6 +275,12 @@ public class Decorations extends Canvas {
     return menuBar;
   }
 
+  @Override
+  public boolean isReparentable() {
+    checkWidget();
+    return false;
+  }
+
   /**
    * If the argument is not null, sets the receiver's default
    * button to the argument, and if the argument is null, sets
@@ -441,6 +447,25 @@ public class Decorations extends Canvas {
   final void releaseWidget() {
     removeMenuBarDisposeListener();
     super.releaseWidget();
+  }
+
+  @Override
+  Decorations menuShell() {
+    return this;
+  }
+
+  void fixDecorations( Decorations newDecorations, Control control ) {
+    if( newDecorations != this ) {
+      if( control == savedFocus ) {
+        savedFocus = null;
+      }
+      if( control == defaultButton ) {
+        defaultButton = null;
+      }
+      if( control == saveDefault ) {
+        saveDefault = null;
+      }
+    }
   }
 
   private void addMenuBarDisposeListener() {

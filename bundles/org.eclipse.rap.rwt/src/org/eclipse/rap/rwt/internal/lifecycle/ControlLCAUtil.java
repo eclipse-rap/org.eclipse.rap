@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
@@ -50,6 +51,7 @@ public class ControlLCAUtil {
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_CHILDREN = "children";
+  private static final String PROP_PARENT = "parent";
 
   private static final String CURSOR_UPARROW
     = "rwt-resources/resource/widget/rap/cursors/up_arrow.cur";
@@ -60,6 +62,7 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    preserveParent( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     adapter.preserve( PROP_CHILDREN, getChildren( control ) );
     adapter.preserve( PROP_TAB_INDEX, Integer.valueOf( getTabIndex( control ) ) );
@@ -95,6 +98,14 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveData( control );
   }
 
+  private static void preserveParent( Control control ) {
+    Composite parent = control.getParent();
+    if( parent != null ) {
+      WidgetLCAUtil.preserveProperty( control, PROP_PARENT, getId( control.getParent() ) );
+
+    }
+  }
+
   public static void preserveBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
@@ -103,6 +114,7 @@ public class ControlLCAUtil {
   }
 
   public static void renderChanges( Control control ) {
+    renderParent( control );
     renderBounds( control );
     renderChildren( control );
     renderTabIndex( control );
@@ -126,6 +138,14 @@ public class ControlLCAUtil {
     renderListenTraverse( control );
     renderListenMenuDetect( control );
     WidgetLCAUtil.renderListenHelp( control );
+  }
+
+  static void renderParent( Control control ) {
+    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    Composite parent = control.getParent();
+    if( adapter.isInitialized() && parent != null ) {
+      WidgetLCAUtil.renderProperty( control, PROP_PARENT, getId( parent ), null );
+    }
   }
 
   public static void renderBounds( Control control ) {
@@ -256,7 +276,7 @@ public class ControlLCAUtil {
       Control[] children = controlHolder.getControls();
       result = new String[ children.length ];
       for( int i = 0; i < result.length; i++ ) {
-        result[ i ] = WidgetUtil.getId( children[ i ] );
+        result[ i ] = getId( children[ i ] );
       }
     }
     return result;

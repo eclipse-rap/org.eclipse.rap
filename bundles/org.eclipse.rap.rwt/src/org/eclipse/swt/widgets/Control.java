@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   private transient IControlAdapter controlAdapter;
-  final Composite parent;
+  Composite parent;
   private int tabIndex;
   Rectangle bounds;
   private Object layoutData;
@@ -2107,7 +2107,28 @@ public abstract class Control extends Widget implements Drawable {
    */
   public boolean setParent( Composite parent ) {
     checkWidget();
-    return false;
+    if( parent == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( parent.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( !isReparentable() ) {
+      return false;
+    }
+    if( this.parent != parent ) {
+      releaseParent();
+      Shell newShell = parent.getShell();
+      Shell oldShell = getShell();
+      Decorations newDecorations = parent.menuShell();
+      Decorations oldDecorations = menuShell();
+      if( oldShell != newShell || oldDecorations != newDecorations ) {
+        fixChildren( newShell, oldShell, newDecorations, oldDecorations );
+      }
+      this.parent = parent;
+      ControlHolder.addControl( parent, this );
+    }
+    return true;
   }
 
   /**
@@ -2125,7 +2146,7 @@ public abstract class Control extends Widget implements Drawable {
    */
   public boolean isReparentable() {
     checkWidget();
-    return false;
+    return true;
   }
 
   /**
@@ -2525,6 +2546,19 @@ public abstract class Control extends Widget implements Drawable {
       }
     }
     return result;
+  }
+
+  Decorations menuShell() {
+    return parent.menuShell();
+  }
+
+  void fixChildren( Shell newShell,
+                    Shell oldShell,
+                    Decorations newDecorations,
+                    Decorations oldDecorations )
+  {
+    oldShell.fixShell( newShell, this );
+    oldDecorations.fixDecorations( newDecorations, this );
   }
 
   ///////////////////////////////////////////////////////
