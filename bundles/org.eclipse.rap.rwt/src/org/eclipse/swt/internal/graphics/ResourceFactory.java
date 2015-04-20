@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,14 +23,14 @@ import org.eclipse.swt.graphics.FontData;
 
 public class ResourceFactory {
 
-  private final SharedInstanceBuffer<Integer,Color> colors;
-  private final SharedInstanceBuffer<Integer,Font> fonts;
-  private final SharedInstanceBuffer<Integer,Cursor> cursors;
+  private final SharedInstanceBuffer<Integer, Color> colors;
+  private final SharedInstanceBuffer<FontData, Font> fonts;
+  private final SharedInstanceBuffer<Integer, Cursor> cursors;
 
   public ResourceFactory() {
-    colors = new SharedInstanceBuffer<Integer,Color>();
-    fonts = new SharedInstanceBuffer<Integer,Font>();
-    cursors = new SharedInstanceBuffer<Integer,Cursor>();
+    colors = new SharedInstanceBuffer<Integer, Color>();
+    fonts = new SharedInstanceBuffer<FontData, Font>();
+    cursors = new SharedInstanceBuffer<Integer, Cursor>();
   }
 
   public Color getColor( int red, int green, int blue ) {
@@ -41,6 +41,7 @@ public class ResourceFactory {
   private Color getColor( final int value ) {
     Integer key = new Integer( value );
     return colors.get( key, new IInstanceCreator<Color>() {
+
       public Color createInstance() {
         return createColorInstance( value );
       }
@@ -48,8 +49,8 @@ public class ResourceFactory {
   }
 
   public Font getFont( final FontData fontData ) {
-    Integer key = new Integer( fontData.hashCode() );
-    return fonts.get( key, new IInstanceCreator<Font>() {
+    return fonts.get( fontData, new IInstanceCreator<Font>() {
+
       public Font createInstance() {
         return createFontInstance( fontData );
       }
@@ -59,10 +60,10 @@ public class ResourceFactory {
   public Cursor getCursor( final int style ) {
     Integer key = new Integer( style );
     return cursors.get( key, new IInstanceCreator<Cursor>() {
-        public Cursor createInstance() {
-          return createCursorInstance( style );
-        }
-      } );
+      public Cursor createInstance() {
+        return createCursorInstance( style );
+      }
+    } );
   }
 
   private static Color createColorInstance( int colorNr ) {
@@ -82,4 +83,5 @@ public class ResourceFactory {
     Object[] paramValues = new Object[] { new Integer( style ) };
     return ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
   }
+
 }
