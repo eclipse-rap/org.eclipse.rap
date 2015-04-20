@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -47,7 +47,7 @@ public final class StyleSheet {
     for( SelectorWrapper selectorWrapper : selectorWrappers ) {
       String selectorElement = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
-        CssType value = selectorWrapper.propertyMap.getValue( propertyName );
+        CssValue value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
           String[] constraints = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
           Arrays.sort( constraints );

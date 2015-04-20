@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,12 +54,12 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   // Delegator methods
 
   protected Color getCssColor( String cssElement, String cssProperty, Widget widget ) {
-    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return CssColor.createColor( ( CssColor )cssValue );
   }
 
   protected Font getCssFont( String cssElement, String cssProperty, Widget widget ) {
-    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return CssFont.createFont( ( CssFont )cssValue );
   }
 
@@ -72,17 +72,17 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   }
 
   protected int getCssBorderWidth( String cssElement, String cssProperty, Widget widget ) {
-    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return ( ( CssBorder )cssValue ).width;
   }
 
   protected int getCssDimension( String cssElement, String cssProperty, Widget widget ) {
-    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return ( ( CssDimension )cssValue ).value;
   }
 
   protected Rectangle getCssBoxDimensions( String cssElement, String cssProperty, Widget widget ) {
-    CssType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 

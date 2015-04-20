@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import java.util.zip.CRC32;
 import org.eclipse.swt.graphics.Rectangle;
 
 
-public class CssBoxDimensions implements CssType {
+public class CssBoxDimensions implements CssValue {
 
   public static final CssBoxDimensions ZERO = new CssBoxDimensions( 0, 0, 0, 0 );
 

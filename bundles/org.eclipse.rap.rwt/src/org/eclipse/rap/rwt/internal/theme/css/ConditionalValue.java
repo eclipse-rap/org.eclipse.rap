@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme.css;
 
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 
 
 /**
  * A value that can only be applied to a widget that meets certain constraints.
  */
 public class ConditionalValue {
-  public final String[] constraints;
-  public final CssType value;
 
-  public ConditionalValue( String[] constraints, CssType value ) {
+  public final String[] constraints;
+  public final CssValue value;
+
+  public ConditionalValue( String[] constraints, CssValue value ) {
     this.constraints = constraints;
     this.value = value;
   }
@@ -41,4 +42,5 @@ public class ConditionalValue {
     buffer.append( " }" );
     return buffer.toString();
   }
+
 }

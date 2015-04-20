@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ public final class WidgetMatcher implements ValueSelector {
     constraintMap.put( ":" + string, constraint );
   }
 
-  public CssType select( ConditionalValue[] values, Widget widget ) {
-    CssType result = null;
+  public CssValue select( ConditionalValue[] values, Widget widget ) {
+    CssValue result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];
       String[] constraints = condValue.constraints;
@@ -80,4 +80,5 @@ public final class WidgetMatcher implements ValueSelector {
     String actualVariant = WidgetUtil.getVariant( widget );
     return actualVariant != null && actualVariant.equals( variant );
   }
+
 }

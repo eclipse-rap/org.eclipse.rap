@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,62 +31,62 @@ public final class ThemePropertyAdapterRegistry {
      * The slot in the client's theme store to write the value into or <code>null</code> if no value
      * needs to be written.
      */
-    String getSlot( CssType value );
+    String getSlot( CssValue value );
 
     /**
      * The id that references the property in the client's theme store of the value itself if no
      * translation is needed.
      */
-    String getKey( CssType value );
+    String getKey( CssValue value );
 
     /**
      * The value to write into the client's theme store or <code>null</code> if no value needs to be
      * written.
      */
-    JsonValue getValue( CssType value );
+    JsonValue getValue( CssValue value );
   }
 
   public static class DirectPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return value.toDefaultString();
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return null;
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       return null;
     }
   }
 
   public static class DimensionPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "dimensions";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       return JsonValue.valueOf( ( ( CssDimension )value ).value );
     }
   }
 
   public static class BoxDimensionsPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "boxdims";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssBoxDimensions boxdim = ( CssBoxDimensions )value;
       JsonArray result = new JsonArray();
       result.add( boxdim.top );
@@ -99,15 +99,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class FontPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "fonts";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssFont font = ( CssFont )value;
       JsonObject result = new JsonObject();
       result.add( "family", JsonUtil.createJsonArray( font.family ) );
@@ -120,11 +120,11 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ImagePropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return createKey( value );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       String result;
       CssImage image = ( CssImage )value;
       if( image.isGradient() ) {
@@ -135,7 +135,7 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssImage image = ( CssImage )value;
       JsonValue result = null;
       if( image.isGradient() ) {
@@ -156,7 +156,7 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String createKey( CssType value ) {
+    private String createKey( CssValue value ) {
       String result = Integer.toHexString( value.hashCode() );
       CssImage image = ( CssImage )value;
       if( image.path != null ) {
@@ -171,15 +171,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ColorPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "colors";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssColor color = ( CssColor )value;
       JsonValue result;
       if( color.isTransparent() ) {
@@ -198,15 +198,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class BorderPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "borders";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssBorder border = ( CssBorder )value;
       JsonObject result = new JsonObject();
       result.add( "width", border.width );
@@ -218,15 +218,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class CursorPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return createKey( value );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "cursors";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssCursor cursor = ( CssCursor )value;
       JsonValue result;
       if( cursor.isCustomCursor() ) {
@@ -237,7 +237,7 @@ public final class ThemePropertyAdapterRegistry {
       return result;
     }
 
-    private String createKey( CssType value ) {
+    private String createKey( CssValue value ) {
       String result = Integer.toHexString( value.hashCode() );
       CssCursor cursor = ( CssCursor )value;
       if( cursor.isCustomCursor() ) {
@@ -252,15 +252,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class AnimationPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "animations";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssAnimation animation = ( CssAnimation )value;
       JsonObject result = new JsonObject();
       for( int j = 0; j < animation.animations.length; j++ ) {
@@ -277,15 +277,15 @@ public final class ThemePropertyAdapterRegistry {
 
   public static class ShadowPropertyAdapter implements ThemePropertyAdapter {
 
-    public String getKey( CssType value ) {
+    public String getKey( CssValue value ) {
       return Integer.toHexString( value.hashCode() );
     }
 
-    public String getSlot( CssType value ) {
+    public String getSlot( CssValue value ) {
       return "shadows";
     }
 
-    public JsonValue getValue( CssType value ) {
+    public JsonValue getValue( CssValue value ) {
       CssShadow shadow = ( CssShadow )value;
       JsonValue result;
       if( shadow.equals( CssShadow.NONE ) ) {
@@ -322,10 +322,10 @@ public final class ThemePropertyAdapterRegistry {
     return result;
   }
 
-  private final Map<Class<? extends CssType>,ThemePropertyAdapter> map;
+  private final Map<Class<? extends CssValue>,ThemePropertyAdapter> map;
 
   private ThemePropertyAdapterRegistry() {
-    map = new HashMap<Class<? extends CssType>,ThemePropertyAdapter>();
+    map = new HashMap<Class<? extends CssValue>,ThemePropertyAdapter>();
     map.put( CssAnimation.class, new AnimationPropertyAdapter() );
     map.put( CssBoolean.class, new DirectPropertyAdapter() );
     map.put( CssBorder.class, new BorderPropertyAdapter() );

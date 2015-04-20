@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 
-public class CssFloat implements CssType {
+public class CssFloat implements CssValue {
 
   private static final CssFloat ZERO = new CssFloat( 0 );
   private static final CssFloat ONE = new CssFloat( 1 );

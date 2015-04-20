@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public final class ThemeStoreWriter {
   }
 
   public String createJson() {
-    CssType[] allValues = theme.getValuesMap().getAllValues();
+    CssValue[] allValues = theme.getValuesMap().getAllValues();
     Map valuesMap = createValuesMap( allValues );
     JsonObject json = new JsonObject();
     json.add( "values", createJsonFromValuesMap( valuesMap ) );
@@ -74,7 +74,7 @@ public final class ThemeStoreWriter {
       for( ConditionalValue conditionalValue : valuesMap.getValues( elementName, propertyName ) ) {
         JsonArray array = new JsonArray();
         array.add( createJsonArray( conditionalValue.constraints ) );
-        CssType value = conditionalValue.value;
+        CssValue value = conditionalValue.value;
         ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
         String cssKey = adapter.getKey( value );
         array.add( cssKey );
@@ -85,7 +85,7 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private Map createValuesMap( CssType[] values ) {
+  private Map createValuesMap( CssValue[] values ) {
     Map<String,JsonObject> result = new LinkedHashMap<String,JsonObject>();
     for( int i = 0; i < values.length; i++ ) {
       appendValueToMap( values[ i ], result );
@@ -93,7 +93,7 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private void appendValueToMap( CssType propertyValue, Map<String,JsonObject> valuesMap ) {
+  private void appendValueToMap( CssValue propertyValue, Map<String,JsonObject> valuesMap ) {
     ThemePropertyAdapterRegistry registry
       = ThemePropertyAdapterRegistry.getInstance( applicationContext );
     ThemePropertyAdapter adapter = registry.getPropertyAdapter( propertyValue.getClass() );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,19 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 
 
 public class StylePropertyMap {
 
-  private final Map<String,CssType> properties;
+  private final Map<String, CssValue> properties;
 
   public StylePropertyMap() {
-    properties = new HashMap<String,CssType>();
+    properties = new HashMap<String, CssValue>();
   }
 
-  public void setProperty( String key, CssType value ) {
+  public void setProperty( String key, CssValue value ) {
     ParamCheck.notNull( key, "key" );
     ParamCheck.notNull( value, "value" );
     properties.put( key, value );
@@ -38,7 +38,7 @@ public class StylePropertyMap {
     return keySet.toArray( new String[ keySet.size() ] );
   }
 
-  public CssType getValue( String propertyName ) {
+  public CssValue getValue( String propertyName ) {
     return properties.get( propertyName );
   }
 
@@ -49,7 +49,7 @@ public class StylePropertyMap {
     String[] properties = getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
-      CssType value = getValue( property );
+      CssValue value = getValue( property );
       result.append( "  " );
       result.append( property );
       result.append( ": " );

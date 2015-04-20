@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServletLog;
 import org.eclipse.rap.rwt.internal.theme.CssColor;
 import org.eclipse.rap.rwt.internal.theme.CssImage;
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ServerPushSession;
@@ -1404,7 +1404,7 @@ public class Display extends Device implements Adaptable {
   public Color getSystemColor( int id ) {
     checkDevice();
     Color result = null;
-    CssType value = null;
+    CssValue value = null;
     switch( id ) {
       case SWT.COLOR_WIDGET_DARK_SHADOW:
         value = ThemeUtil.getCssValue( "Display",
@@ -1561,7 +1561,7 @@ public class Display extends Device implements Adaptable {
 
   private static Image createSystemImage( String cssProperty ) {
     Image result = null;
-    CssType cssValue = ThemeUtil.getCssValue( "Display", cssProperty, SimpleSelector.DEFAULT );
+    CssValue cssValue = ThemeUtil.getCssValue( "Display", cssProperty, SimpleSelector.DEFAULT );
     if( cssValue != null ) {
       try {
         result = CssImage.createSwtImage( ( CssImage )cssValue );

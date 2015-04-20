@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.theme.CssBorder;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -42,12 +42,12 @@ public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
   }
 
   public Rectangle getItemPadding( TabItem item ) {
-    CssType cssValue = getCssValue( "TabItem", "padding", createSelector( item ) );
+    CssValue cssValue = getCssValue( "TabItem", "padding", createSelector( item ) );
     return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 
   public Rectangle getItemMargin( TabItem item ) {
-    CssType cssValue = getCssValue( "TabItem", "margin", createSelector( item ) );
+    CssValue cssValue = getCssValue( "TabItem", "margin", createSelector( item ) );
     return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
   }
 

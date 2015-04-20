@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
-public class CssColor implements CssType {
+public class CssColor implements CssValue {
 
   private static final String TRANSPARENT_STR = "transparent";
   private static final Map<String,int[]> NAMED_COLORS = new HashMap<String,int[]>();

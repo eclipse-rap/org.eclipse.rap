@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -117,8 +117,8 @@ public class Theme {
   }
 
   private void registerThemeResources( ApplicationContext applicationContext ) throws IOException {
-    CssType[] values = valuesMap.getAllValues();
-    for( CssType value : values ) {
+    CssValue[] values = valuesMap.getAllValues();
+    for( CssValue value : values ) {
       if( value instanceof ThemeResource ) {
         registerResource( applicationContext, ( ThemeResource )value );
       }
@@ -177,4 +177,5 @@ public class Theme {
     }
     return result;
   }
+
 }

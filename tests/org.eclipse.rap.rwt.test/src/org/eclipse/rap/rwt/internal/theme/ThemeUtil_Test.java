@@ -108,7 +108,7 @@ public class ThemeUtil_Test {
     String themeId = RWT.DEFAULT_THEME_ID;
     SimpleSelector selector = SimpleSelector.DEFAULT;
 
-    CssType cssValue = ThemeUtil.getCssValue( themeId, "Button", "color", selector, null );
+    CssValue cssValue = ThemeUtil.getCssValue( themeId, "Button", "color", selector, null );
 
     assertEquals( "#4a4a4a", cssValue.toDefaultString() );
   }
@@ -119,7 +119,7 @@ public class ThemeUtil_Test {
     SimpleSelector selector = SimpleSelector.DEFAULT;
     ThemeTestUtil.registerTheme( createTheme( themeId ) );
 
-    CssType cssValue = ThemeUtil.getCssValue( themeId, "Button", "color", selector, null );
+    CssValue cssValue = ThemeUtil.getCssValue( themeId, "Button", "color", selector, null );
 
     assertEquals( "#705e42", cssValue.toDefaultString() );
   }

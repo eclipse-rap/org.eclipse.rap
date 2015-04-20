@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,8 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CssDimension implements CssType {
+
+public class CssDimension implements CssValue {
 
   public static final CssDimension ZERO = new CssDimension( 0 );
 

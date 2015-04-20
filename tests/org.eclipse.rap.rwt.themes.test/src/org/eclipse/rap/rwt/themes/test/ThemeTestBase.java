@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2014 EclipseSource and others.
+* Copyright (c) 2010, 2015 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
@@ -68,7 +68,7 @@ public abstract class ThemeTestBase {
     String[] properties = expectedValues.getProperties();
     for( int i = 0; i < properties.length; i++ ) {
       String property = properties[ i ];
-      CssType expected = expectedValues.getValue( property );
+      CssValue expected = expectedValues.getValue( property );
       if( property.equals( "border" ) ) {
         checkProperty( selector, "border-top", expected );
         checkProperty( selector, "border-right", expected );
@@ -80,9 +80,9 @@ public abstract class ThemeTestBase {
     }
   }
 
-  private static void checkProperty( SelectorExt selector, String property, CssType expected ) {
+  private static void checkProperty( SelectorExt selector, String property, CssValue expected ) {
     SimpleSelector config = new SimpleSelector( selector.getConstraints() );
-    CssType actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
+    CssValue actual = ThemeUtil.getCssValue( selector.getElementName(), property, config );
     if( !actual.equals( expected ) ) {
       String message =   "Css test failed for "
                        + createSelectorString( selector )

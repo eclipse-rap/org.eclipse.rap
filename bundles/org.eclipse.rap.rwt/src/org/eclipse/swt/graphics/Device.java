@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ package org.eclipse.swt.graphics;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import org.eclipse.rap.rwt.internal.theme.CssFont;
-import org.eclipse.rap.rwt.internal.theme.CssType;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.util.SerializableLock;
@@ -145,7 +145,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    */
   public Font getSystemFont() {
     checkDevice();
-    CssType font = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
+    CssValue font = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
     return CssFont.createFont( ( CssFont )font );
   }
 
@@ -363,4 +363,5 @@ public abstract class Device implements Drawable, SerializableCompatibility {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
   }
+
 }

@@ -122,14 +122,14 @@ public final class ThemeUtil {
   //////////////////////////////////////
   // Methods for accessing themed values
 
-  public static CssType getCssValue( String cssElement,
+  public static CssValue getCssValue( String cssElement,
                                      String cssProperty,
                                      SimpleSelector selector )
   {
     return getCssValue( cssElement, cssProperty, selector, null );
   }
 
-  public static CssType getCssValue( String cssElement,
+  public static CssValue getCssValue( String cssElement,
                                      String cssProperty,
                                      ValueSelector selector,
                                      Widget widget )
@@ -137,7 +137,7 @@ public final class ThemeUtil {
     return getCssValue( getCurrentThemeId(), cssElement, cssProperty, selector, widget );
   }
 
-  public static CssType getCssValue( String themeId,
+  public static CssValue getCssValue( String themeId,
                                      String cssElement,
                                      String cssProperty,
                                      ValueSelector selector,
@@ -146,7 +146,7 @@ public final class ThemeUtil {
     Theme theme =  getApplicationContext().getThemeManager().getTheme( themeId );
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
-    CssType result = selector.select( values, widget );
+    CssValue result = selector.select( values, widget );
     if( result == null ) {
       // resort to fallback theme
       theme = getFallbackTheme();
