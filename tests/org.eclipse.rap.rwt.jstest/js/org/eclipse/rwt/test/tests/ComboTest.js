@@ -450,8 +450,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.select( 1 );
 
       assertEquals( "Java", field.getValue() );
-      assertEquals( [ 4, 4 ], field.getSelection() );
       assertEquals( 1, list.getSelectionIndex() );
+      // checks if text is not selected
+      var selection = field.getSelection();
+      assertEquals( selection[ 0 ], selection[ 1 ] );
     },
 
     testScroll_Down : function() {
