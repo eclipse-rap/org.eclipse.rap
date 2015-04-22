@@ -218,6 +218,15 @@ public class ServiceManagerImpl_Test {
     }
   }
 
+  @Test
+  public void testGetServiceHandlerUrl_withoutUISession() {
+    getContext().setUISession( null );
+
+    String url = serviceManager.getServiceHandlerUrl( "foo" );
+
+    assertEquals( "/fooapp/rap?servicehandler=foo", url );
+  }
+
   private static UISessionImpl mockUISessionWithConnectionId( String connectionId ) {
     UISessionImpl uiSession = mock( UISessionImpl.class );
     when( Boolean.valueOf( uiSession.isBound() ) ).thenReturn( Boolean.TRUE );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
+import org.eclipse.rap.rwt.service.UISession;
 
 
 public class ServiceManagerImpl implements ServiceManager {
@@ -100,7 +101,8 @@ public class ServiceManagerImpl implements ServiceManager {
   }
 
   private static String getConnectionId() {
-    return ( ( UISessionImpl )ContextProvider.getUISession() ).getConnectionId();
+    UISession uiSession = ContextProvider.getUISession();
+    return uiSession == null ? null : ( ( UISessionImpl )uiSession ).getConnectionId();
   }
 
   private static String encodeParameter( String id ) {
