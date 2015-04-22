@@ -19,7 +19,7 @@ import java.net.URLConnection;
 
 
 public class Response {
-  private static final String HTML_PROLOGUE = "<!DOCTYPE HTML";
+  private static final String HTML_PROLOGUE = "<!DOCTYPE html";
 
   private final int responseCode;
   private final String contentType;

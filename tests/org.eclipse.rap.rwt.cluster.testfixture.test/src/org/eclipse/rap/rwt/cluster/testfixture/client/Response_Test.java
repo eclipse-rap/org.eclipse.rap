@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,7 @@ public class Response_Test {
 
   private static final String TYPE_HTML = "text/html;charset=UTF-8";
   private static final String TYPE_JSON = "application/json;charset=UTF-8";
-  private static final String VALID_HTML
-    = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
+  private static final String VALID_HTML = "<!DOCTYPE html>";
   private static final String VALID_JSON = "{}";
 
   @Test
