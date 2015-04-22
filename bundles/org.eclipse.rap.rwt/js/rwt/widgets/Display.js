@@ -209,10 +209,9 @@ rwt.widgets.Display.prototype = {
   },
 
   _appendTimezoneOffset : function() {
-    // NOTE : using ObjectRegistry implicitly registers the ClientInfo service
-    var clientObject = rwt.remote.ObjectRegistry.getObject( "rwt.client.ClientInfo" );
-    var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( clientObject );
-    remoteObject.set( "timezoneOffset", clientObject.getTimezoneOffset() );
+    var timezoneOffset = rwt.client.Client.getTimezoneOffset();
+    var writer = rwt.remote.Connection.getInstance().getMessageWriter();
+    writer.appendSet( "rwt.client.ClientInfo", "timezoneOffset", timezoneOffset );
   },
 
   _appendStartupParameters : function() {

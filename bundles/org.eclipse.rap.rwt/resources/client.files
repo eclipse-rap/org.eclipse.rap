@@ -248,7 +248,6 @@ rwt/remote/handler/UrlLauncherHandler.js
 rwt/client/JavaScriptLoader.js
 rwt/remote/handler/JavaScriptLoaderHandler.js
 rwt/runtime/System.js
-rwt/remote/handler/ClientInfoHandler.js
 rwt/widgets/util/MnemonicHandler.js
 rap.js
 SWT.js
