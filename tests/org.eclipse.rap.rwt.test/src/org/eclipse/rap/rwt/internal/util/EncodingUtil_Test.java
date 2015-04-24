@@ -10,46 +10,31 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
+import static org.eclipse.rap.rwt.internal.util.EncodingUtil.replaceNewLines;
+import static org.eclipse.rap.rwt.internal.util.EncodingUtil.splitNewLines;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-
-import org.eclipse.rap.rwt.internal.util.EncodingUtil;
 import org.junit.Test;
 
 
 public class EncodingUtil_Test {
 
   @Test
-  public void testEscapeDoubleQuoted() {
-    String stringToEscape = "First line.\nSecond \"middle\" line.\nThird line.";
-    String expected = "First line.\nSecond \\\"middle\\\" line.\nThird line.";
-    String result = EncodingUtil.escapeDoubleQuoted( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "First line.\nSecond \\middle\\ line.\nThird line.";
-    expected = "First line.\nSecond \\\\middle\\\\ line.\nThird line.";
-    result = EncodingUtil.escapeDoubleQuoted( stringToEscape );
-    assertEquals( expected, result );
-  }
-
-  @Test
   public void testReplaceNewLines_emptyString() {
-    assertSame( "", EncodingUtil.replaceNewLines( "" ) );
+    assertSame( "", replaceNewLines( "" ) );
   }
 
   @Test
-  public void testReplaceNewLines_withoutNewlines() {
-    assertSame( "foo bar", EncodingUtil.replaceNewLines( "foo bar" ) );
+  public void testReplaceNewLines_withoutLineBreaks() {
+    assertSame( "foo bar", replaceNewLines( "foo bar" ) );
   }
 
   @Test
   public void testReplaceNewLines_unixLineBreaks() {
     String stringToReplace = "First line.\nSecond line.\nThird line.";
     String expected = "First line.\\nSecond line.\\nThird line.";
-    String result = EncodingUtil.replaceNewLines( stringToReplace );
+    String result = replaceNewLines( stringToReplace );
 
     assertEquals( expected, result );
   }
@@ -58,7 +43,7 @@ public class EncodingUtil_Test {
   public void testReplaceNewLines_windowsLineBreaks() {
     String stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
     String expected = "First line.\\nSecond line.\\nThird line.";
-    String result = EncodingUtil.replaceNewLines( stringToReplace );
+    String result = replaceNewLines( stringToReplace );
 
     assertEquals( expected, result );
   }
@@ -67,137 +52,72 @@ public class EncodingUtil_Test {
   public void testReplaceNewLines_oldMacLineBreaks() {
     String stringToReplace = "First line.\rSecond line.\rThird line.";
     String expected = "First line.\\nSecond line.\\nThird line.";
-    String result = EncodingUtil.replaceNewLines( stringToReplace );
+    String result = replaceNewLines( stringToReplace );
 
     assertEquals( expected, result );
   }
 
   @Test
   public void testReplaceNewLines_edgeCases() {
-    assertEquals( "\\nfoo", EncodingUtil.replaceNewLines( "\nfoo" ) );
-    assertEquals( "\\nfoo", EncodingUtil.replaceNewLines( "\r\nfoo" ) );
-    assertEquals( "foo\\n", EncodingUtil.replaceNewLines( "foo\n" ) );
-    assertEquals( "foo\\n", EncodingUtil.replaceNewLines( "foo\r\n" ) );
-    assertEquals( "\\n", EncodingUtil.replaceNewLines( "\n" ) );
-    assertEquals( "\\n", EncodingUtil.replaceNewLines( "\r\n" ) );
+    assertEquals( "\\nfoo", replaceNewLines( "\nfoo" ) );
+    assertEquals( "\\nfoo", replaceNewLines( "\r\nfoo" ) );
+    assertEquals( "foo\\n", replaceNewLines( "foo\n" ) );
+    assertEquals( "foo\\n", replaceNewLines( "foo\r\n" ) );
+    assertEquals( "\\n", replaceNewLines( "\n" ) );
+    assertEquals( "\\n", replaceNewLines( "\r\n" ) );
   }
 
   @Test
   public void testReplaceNewLines_withReplacement() {
     String stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
     String expected = "First line. Second line. Third line.";
-    String result = EncodingUtil.replaceNewLines( stringToReplace, " " );
+    String result = replaceNewLines( stringToReplace, " " );
 
     assertEquals( expected, result );
   }
 
   @Test
-  public void testSplitNewlines() {
-    String input = "";
-    String[] expected = new String[] { "" };
-    String[] result = EncodingUtil.splitNewLines( input );
-    assertTrue( Arrays.equals( expected, result ) );
-
-    input = "First line.\nSecond line.\nThird line.";
-    expected = new String[] { "First line.", "Second line.", "Third line." };
-    result = EncodingUtil.splitNewLines( input );
-    assertTrue( Arrays.equals( expected, result ) );
-
-    input = "First line.\rSecond line.\rThird line.";
-    result = EncodingUtil.splitNewLines( input );
-    assertTrue( Arrays.equals( expected, result ) );
-
-    input = "First line.\r\nSecond line.\r\nThird line.";
-    result = EncodingUtil.splitNewLines( input );
-    assertTrue( Arrays.equals( expected, result ) );
-
-    input = "First line.\r\nSecond line.\r\nThird line.\r\n";
-    expected = new String[] { "First line.", "Second line.", "Third line.", "" };
-    result = EncodingUtil.splitNewLines( input );
-    assertTrue( Arrays.equals( expected, result ) );
+  public void testSplitNewlines_emptyString() {
+    assertArrayEquals( new String[] { "" }, splitNewLines( "" ) );
   }
 
   @Test
-  public void testEscapeLeadingTrailingSpaces() {
-    String stringToEscape = "  All rights reserved.   ";
-    String expected = "&nbsp;&nbsp;All rights reserved.&nbsp;&nbsp;&nbsp;";
-    String result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "All rights reserved. ";
-    expected = "All rights reserved.&nbsp;";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "  All rights reserved.";
-    expected = "&nbsp;&nbsp;All rights reserved.";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "All rights reserved.";
-    expected = "All rights reserved.";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = " \n  All rights reserved. \n ";
-    expected = "&nbsp;\n  All rights reserved. \n&nbsp;";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "  ";
-    expected = "&nbsp;&nbsp;";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "";
-    expected = "";
-    result = EncodingUtil.escapeLeadingTrailingSpaces( stringToEscape );
-    assertEquals( expected, result );
+  public void testSplitNewlines_withoutLineBreaks() {
+    assertArrayEquals( new String[] { "foo bar" }, splitNewLines( "foo bar" ) );
   }
 
   @Test
-  public void testReplaceWhiteSpaces() {
-    String stringToEscape = "test1 test2";
-    String expected = "test1 test2";
-    String result = EncodingUtil.replaceWhiteSpaces( stringToEscape );
-    assertEquals( expected, result );
+  public void testSplitNewlines_unixLineBreaks() {
+    String input = "First line.\nSecond line.\nThird line.";
+    String[] expected = { "First line.", "Second line.", "Third line." };
 
-    stringToEscape = "test1  test2";
-    expected = "test1&nbsp; test2";
-    result = EncodingUtil.replaceWhiteSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "test1   test2";
-    expected = "test1&nbsp;&nbsp; test2";
-    result = EncodingUtil.replaceWhiteSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = " test";
-    expected = "&nbsp;test";
-    result = EncodingUtil.replaceWhiteSpaces( stringToEscape );
-    assertEquals( expected, result );
-
-    stringToEscape = "  test  ";
-    expected = "&nbsp; test&nbsp;&nbsp;";
-    result = EncodingUtil.replaceWhiteSpaces( stringToEscape );
-    assertEquals( expected, result );
+    assertArrayEquals( expected, splitNewLines( input ) );
   }
 
   @Test
-  public void testEscapeSpecialCharacters() {
-    String stringToEscape = "abc\u2028abc\u2029abc";
-    String expected = "abcabcabc";
-    String result = EncodingUtil.removeNonDisplayableChars( stringToEscape );
-    assertEquals( expected, result );
+  public void testSplitNewlines_windowsLineBreaks() {
+    String input = "First line.\r\nSecond line.\r\nThird line.";
+    String[] expected = { "First line.", "Second line.", "Third line." };
+
+    assertArrayEquals( expected, splitNewLines( input ) );
   }
 
   @Test
-  public void testTruncateAtZero() {
-    char[] stringToTruncate = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
-    String expected = "hel";
-    String result
-      = EncodingUtil.truncateAtZero( String.valueOf( stringToTruncate ) );
-    assertEquals( expected, result );
+  public void testSplitNewlines_oldMacLineBreaks() {
+    String input = "First line.\rSecond line.\rThird line.";
+    String[] expected = { "First line.", "Second line.", "Third line." };
+
+    assertArrayEquals( expected, splitNewLines( input ) );
+  }
+
+  @Test
+  public void testSplitNewlines_edgeCases() {
+    assertArrayEquals( new String[] { "", "foo" }, splitNewLines( "\nfoo" ) );
+    assertArrayEquals( new String[] { "", "foo" }, splitNewLines( "\r\nfoo" ) );
+    assertArrayEquals( new String[] { "foo", "" }, splitNewLines( "foo\n" ) );
+    assertArrayEquals( new String[] { "foo", "" }, splitNewLines( "foo\r\n" ) );
+    assertArrayEquals( new String[] { "", "" }, splitNewLines( "\n" ) );
+    assertArrayEquals( new String[] { "", "" }, splitNewLines( "\r\n" ) );
   }
 
 }
