@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import java.io.InputStream;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.rap.rwt.internal.util.StreamUtil;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
@@ -51,16 +51,16 @@ public class ImageFactory {
   }
 
   public Image findImage( final String path, final ClassLoader imageLoader ) {
-    return cache.get( path, new IInstanceCreator<Image>() {
-      public Image createInstance() {
+    return cache.get( path, new InstanceCreator<String, Image>() {
+      public Image createInstance( String path ) {
         return createImage( path, imageLoader );
       }
     } );
   }
 
   public Image findImage( final String path, final InputStream inputStream ) {
-    return cache.get( path, new IInstanceCreator<Image>() {
-      public Image createInstance() {
+    return cache.get( path, new InstanceCreator<String, Image>() {
+      public Image createInstance( String path ) {
         return createImage( null, path, inputStream );
       }
     } );

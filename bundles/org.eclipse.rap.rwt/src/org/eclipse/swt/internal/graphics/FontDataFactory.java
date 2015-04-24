@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,30 +12,26 @@
 package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.swt.graphics.FontData;
 
 
 public class FontDataFactory {
 
   private final SharedInstanceBuffer<FontData, FontData> cache;
+  private final InstanceCreator<FontData, FontData> instanceCreator;
 
   public FontDataFactory() {
     cache = new SharedInstanceBuffer<FontData, FontData>();
-  }
-
-  public FontData findFontData( final FontData fontData ) {
-    // Note [rst]: We don't need to synchronize get and put here. Since the
-    //             creation of FontData is deterministic, concurrent access
-    //             can at worst lead to one FontData instance overwriting the
-    //             other. In this rare case, two equal internal FontData
-    //             instances would be in use in the system, which is harmless.
-    FontData result = cache.get( fontData, new IInstanceCreator<FontData>() {
-      public FontData createInstance() {
+    instanceCreator = new InstanceCreator<FontData, FontData>() {
+      public FontData createInstance( FontData fontData ) {
         return cloneFontData( fontData );
       }
-    } );
-    return result;
+    };
+  }
+
+  public FontData findFontData( FontData fontData ) {
+    return cache.get( fontData, instanceCreator );
   }
 
   private static FontData cloneFontData( FontData fontData ) {

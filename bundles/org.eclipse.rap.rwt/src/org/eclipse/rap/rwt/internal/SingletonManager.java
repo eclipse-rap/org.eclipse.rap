@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -26,9 +26,15 @@ public class SingletonManager implements SerializableCompatibility {
     = SingletonManager.class.getName() + "#instance";
 
   private final SharedInstanceBuffer<Class<?>, AtomicReference<Object>> singletonHolders;
+  private InstanceCreator<Class<?>, AtomicReference<Object>> instanceCreator;
 
   SingletonManager() {
     singletonHolders = new SharedInstanceBuffer<Class<?>, AtomicReference<Object>>();
+    instanceCreator = new InstanceCreator<Class<?>, AtomicReference<Object>>() {
+      public AtomicReference<Object> createInstance( Class<?> key ) {
+        return new AtomicReference<Object>();
+      }
+    };
   }
 
   public <T> T getSingleton( Class<T> type ) {
@@ -45,11 +51,7 @@ public class SingletonManager implements SerializableCompatibility {
 
   @SuppressWarnings( "unchecked" )
   private <T> AtomicReference<T> getSingletonHolder( Class<T> type ) {
-    Object result = singletonHolders.get( type, new IInstanceCreator<AtomicReference<Object>>() {
-      public AtomicReference<Object> createInstance() {
-        return new AtomicReference<Object>();
-      }
-    } );
+    Object result = singletonHolders.get( type, instanceCreator );
     return ( AtomicReference<T> )result;
   }
 

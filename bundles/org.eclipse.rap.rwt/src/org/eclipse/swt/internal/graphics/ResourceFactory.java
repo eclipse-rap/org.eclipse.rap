@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.rap.rwt.internal.util.ClassUtil;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -26,44 +26,42 @@ public class ResourceFactory {
   private final SharedInstanceBuffer<Integer, Color> colors;
   private final SharedInstanceBuffer<FontData, Font> fonts;
   private final SharedInstanceBuffer<Integer, Cursor> cursors;
+  private InstanceCreator<Integer, Color> colorCreator;
+  private InstanceCreator<Integer, Cursor> cursorCreator;
+  private InstanceCreator<FontData, Font> fontCreator;
 
   public ResourceFactory() {
     colors = new SharedInstanceBuffer<Integer, Color>();
     fonts = new SharedInstanceBuffer<FontData, Font>();
     cursors = new SharedInstanceBuffer<Integer, Cursor>();
+    colorCreator = new InstanceCreator<Integer, Color>() {
+      public Color createInstance( Integer value ) {
+        return createColorInstance( value.intValue() );
+      }
+    };
+    cursorCreator = new InstanceCreator<Integer, Cursor>() {
+      public Cursor createInstance( Integer style ) {
+        return createCursorInstance( style.intValue() );
+      }
+    };
+    fontCreator = new InstanceCreator<FontData, Font>() {
+      public Font createInstance( FontData fontData ) {
+        return createFontInstance( fontData );
+      }
+    };
   }
 
   public Color getColor( int red, int green, int blue ) {
     int colorNr = ColorUtil.computeColorNr( red, green, blue );
-    return getColor( colorNr );
+    return colors.get( Integer.valueOf( colorNr ), colorCreator );
   }
 
-  private Color getColor( final int value ) {
-    Integer key = Integer.valueOf( value );
-    return colors.get( key, new IInstanceCreator<Color>() {
-
-      public Color createInstance() {
-        return createColorInstance( value );
-      }
-    } );
+  public Font getFont( FontData fontData ) {
+    return fonts.get( fontData, fontCreator );
   }
 
-  public Font getFont( final FontData fontData ) {
-    return fonts.get( fontData, new IInstanceCreator<Font>() {
-
-      public Font createInstance() {
-        return createFontInstance( fontData );
-      }
-    } );
-  }
-
-  public Cursor getCursor( final int style ) {
-    Integer key = Integer.valueOf( style );
-    return cursors.get( key, new IInstanceCreator<Cursor>() {
-      public Cursor createInstance() {
-        return createCursorInstance( style );
-      }
-    } );
+  public Cursor getCursor( int style ) {
+    return cursors.get( Integer.valueOf( style ), cursorCreator );
   }
 
   private static Color createColorInstance( int colorNr ) {

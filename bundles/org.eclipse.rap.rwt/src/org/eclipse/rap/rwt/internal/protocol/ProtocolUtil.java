@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 
 
@@ -38,6 +38,12 @@ public final class ProtocolUtil {
   //                improves performance - still under investigation.
   private final static SharedInstanceBuffer<String,String[]> parsedFonts
     = new SharedInstanceBuffer<String,String[]>();
+  private final static InstanceCreator<String, String[]> parsedFontsCreator
+    = new InstanceCreator<String, String[]>() {
+    public String[] createInstance( String name ) {
+      return parseFontNameInternal( name );
+    }
+  };
   //////////////////////////////////////////////////////////////////////////////
 
   private ProtocolUtil() {
@@ -90,11 +96,7 @@ public final class ProtocolUtil {
   }
 
   public static String[] parseFontName( final String name ) {
-    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
-      public String[] createInstance() {
-        return parseFontNameInternal( name );
-      }
-    } );
+    return parsedFonts.get( name, parsedFontsCreator );
   }
 
   public static boolean isInitialRequest( RequestMessage message ) {

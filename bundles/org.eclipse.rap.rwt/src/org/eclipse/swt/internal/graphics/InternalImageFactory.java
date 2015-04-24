@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import java.util.zip.CRC32;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer;
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;
@@ -31,29 +31,26 @@ import org.eclipse.swt.graphics.RGB;
 
 public class InternalImageFactory {
 
-  private final SharedInstanceBuffer<String,InternalImage> cache;
+  private final SharedInstanceBuffer<String, InternalImage> cache;
 
   public InternalImageFactory() {
-    cache = new SharedInstanceBuffer<String,InternalImage>();
+    cache = new SharedInstanceBuffer<String, InternalImage>();
   }
 
-  // TODO [rst] If we do not rely on the fact that there is only one
-  //            InternalImage instance, we could loose synchronization as in
-  //            ImageDataFactory.
   public InternalImage findInternalImage( final String fileName ) {
-    return cache.get( fileName, new IInstanceCreator<InternalImage>() {
-        public InternalImage createInstance() {
-          return createInternalImage( fileName );
-        }
-      } );
+    return cache.get( fileName, new InstanceCreator<String, InternalImage>() {
+      public InternalImage createInstance( String fileName ) {
+        return createInternalImage( fileName );
+      }
+    } );
   }
 
   public InternalImage findInternalImage( InputStream stream ) {
     final BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     final ImageData imageData = readImageData( bufferedStream );
     final String path = createGeneratedImagePath( imageData );
-    return cache.get( path, new IInstanceCreator<InternalImage>() {
-      public InternalImage createInstance() {
+    return cache.get( path, new InstanceCreator<String, InternalImage>() {
+      public InternalImage createInstance( String path ) {
         return createInternalImage( path, bufferedStream, imageData );
       }
     } );
@@ -61,8 +58,8 @@ public class InternalImageFactory {
 
   public InternalImage findInternalImage( final ImageData imageData ) {
     final String path = createGeneratedImagePath( imageData );
-    return cache.get( path, new IInstanceCreator<InternalImage>() {
-      public InternalImage createInstance() {
+    return cache.get( path, new InstanceCreator<String, InternalImage>() {
+      public InternalImage createInstance( String path ) {
         InputStream stream = createInputStream( imageData );
         return createInternalImage( path, stream, imageData );
       }
@@ -70,8 +67,8 @@ public class InternalImageFactory {
   }
 
   InternalImage findInternalImage( String key, final InputStream inputStream ) {
-    return cache.get( key, new IInstanceCreator<InternalImage>() {
-      public InternalImage createInstance() {
+    return cache.get( key, new InstanceCreator<String, InternalImage>() {
+      public InternalImage createInstance( String key ) {
         BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
         ImageData imageData = readImageData( bufferedStream );
         String path = createGeneratedImagePath( imageData );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
+import org.eclipse.rap.rwt.internal.util.SharedInstanceBuffer.InstanceCreator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,92 +26,71 @@ import org.junit.Test;
 public class SharedInstanceBuffer_Test {
 
   private SharedInstanceBuffer<Object,Object> keyValueStore;
+  private Object key;
+  private Object value;
 
   @Before
   public void setUp() {
+    key = new Object();
+    value = new Object();
     keyValueStore = new SharedInstanceBuffer<Object,Object>();
   }
 
   @Test
-  public void testGetAndCreate() {
-    Object key = new Object();
-    final Object value = new Object();
+  public void testGet_callsInstanceCreator() {
+    InstanceCreator<Object, Object> instanceCreator = mockInstanceCreator( value );
 
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
-      public Object createInstance() {
-        return value;
-      }
-    } );
+    Object returnedValue = keyValueStore.get( key, instanceCreator );
 
+    verify( instanceCreator ).createInstance( key );
     assertSame( returnedValue, value );
   }
 
   @Test
-  public void testGetAndCreateWithExistingKey() {
-    final boolean[] createValueWasInvoked = { false };
-    Object key = new Object();
-    final Object value = new Object();
-    keyValueStore.get( key, new TestInstanceCreator( value ) );
+  public void testGet_cachesValue() {
+    InstanceCreator<Object, Object> instanceCreator = mockInstanceCreator( value );
 
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
-      public Object createInstance() {
-        createValueWasInvoked[ 0 ] = true;
-        return null;
-      }
-    } );
+    Object returned1 = keyValueStore.get( key, instanceCreator );
+    Object returned2 = keyValueStore.get( key, instanceCreator );
 
-    assertSame( returnedValue, value );
-    assertFalse( createValueWasInvoked[ 0 ] );
+    verify( instanceCreator, times( 1 ) ).createInstance( key );
+    assertSame( returned1, returned2 );
   }
 
   @Test
-  public void testGetAndCreateWithNullKey() {
-    IInstanceCreator<Object> valueCreator = new TestInstanceCreator( null );
-    try {
-      keyValueStore.get( null, valueCreator );
-    } catch( NullPointerException expected ) {
-    }
+  public void testGet_acceptsNullKey() {
+    Object returnedValue = keyValueStore.get( null, mockInstanceCreator( value ) );
+
+    assertSame( value, returnedValue );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testGet_rejectsNullValueCreator() {
+    keyValueStore.get( new Object(), null );
   }
 
   @Test
-  public void testGetAndCreateWithNullValueCreator() {
-    try {
-      keyValueStore.get( new Object(), null );
-    } catch( NullPointerException expected ) {
-    }
-  }
-
-  @Test
-  public void testGetAndCreateAfterRemove() {
-    final boolean[] createValueWasInvoked = { false };
-    Object key = new Object();
-    final Object value = new Object();
-    keyValueStore.get( key, new TestInstanceCreator( value ) );
+  public void testGet_acceptsRemovedKey() {
+    InstanceCreator<Object, Object> instanceCreator = mockInstanceCreator( value );
+    keyValueStore.get( key, instanceCreator );
     keyValueStore.remove( key );
 
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
-      public Object createInstance() {
-        createValueWasInvoked[ 0 ] = true;
-        return value;
-      }
-    } );
+    Object returnedValue = keyValueStore.get( key, instanceCreator );
 
+    verify( instanceCreator, times( 2 ) ).createInstance( key );
     assertSame( returnedValue, value );
-    assertTrue( createValueWasInvoked[ 0 ] );
   }
 
   @Test
-  public void testRemoveNonExistingKey() {
+  public void testRemove_acceptsNonExistingKey() {
     Object removedValue = keyValueStore.remove( new Object() );
 
     assertNull( removedValue );
   }
 
   @Test
-  public void testRemoveExistingKey() {
-    Object key = new Object();
-    Object value = new Object();
-    keyValueStore.get( key, new TestInstanceCreator( value ) );
+  public void testRemove_removesExistingKey() {
+    keyValueStore.get( key, mockInstanceCreator( value ) );
 
     Object removed = keyValueStore.remove( key );
 
@@ -116,23 +98,19 @@ public class SharedInstanceBuffer_Test {
   }
 
   @Test
-  public void testRemoveWithNullKey() {
-    try {
-      keyValueStore.remove( null );
-    } catch( NullPointerException expected ) {
-    }
+  public void testRemove_acceptsNullKey() {
+    keyValueStore.get( null, mockInstanceCreator( value ) );
+
+    Object removed = keyValueStore.remove( null );
+
+    assertSame( value, removed );
   }
 
-  private static class TestInstanceCreator implements IInstanceCreator<Object> {
-    private final Object value;
-
-    TestInstanceCreator( Object value ) {
-      this.value = value;
-    }
-
-    public Object createInstance() {
-      return value;
-    }
+  @SuppressWarnings( "unchecked" )
+  private static InstanceCreator<Object, Object> mockInstanceCreator( Object value ) {
+    InstanceCreator mock = mock( InstanceCreator.class );
+    when( mock.createInstance( any() ) ).thenReturn( value );
+    return mock;
   }
 
 }

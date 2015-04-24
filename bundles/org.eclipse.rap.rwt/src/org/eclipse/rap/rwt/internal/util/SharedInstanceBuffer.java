@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,11 @@ public class SharedInstanceBuffer<K, I> implements Serializable {
     store = new HashMap<K, I>();
   }
 
-  public I get( K key, IInstanceCreator<I> instanceCreator ) {
-    ParamCheck.notNull( instanceCreator, "instanceCreator" );
+  public I get( K key, InstanceCreator<K, I> instanceCreator ) {
     synchronized( lock ) {
       I result = store.get( key );
       if( result == null ) {
-        result = instanceCreator.createInstance();
+        result = instanceCreator.createInstance( key );
         store.put( key, result );
       }
       return result;
@@ -43,8 +42,8 @@ public class SharedInstanceBuffer<K, I> implements Serializable {
     }
   }
 
-  public interface IInstanceCreator<T> {
-    T createInstance();
+  public interface InstanceCreator<K, T> extends Serializable {
+    T createInstance( K key );
   }
 
 }
