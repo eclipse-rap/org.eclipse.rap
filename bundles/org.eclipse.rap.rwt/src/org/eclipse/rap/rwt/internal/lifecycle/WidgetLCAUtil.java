@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -325,8 +325,8 @@ public final class WidgetLCAUtil {
     return
          hasChanged( widget,
                      PROP_ROUNDED_BORDER_WIDTH,
-                     new Integer( width ),
-                     new Integer( 0 ) )
+                     Integer.valueOf( width ),
+                     Integer.valueOf( 0 ) )
       || hasChanged( widget,
                      PROP_ROUNDED_BORDER_COLOR,
                      color,
@@ -357,7 +357,7 @@ public final class WidgetLCAUtil {
 
   public static void preserveListener( Widget widget, String listener, boolean value ) {
     WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( LISTENER_PREFIX + listener, new Boolean( value ) );
+    adapter.preserve( LISTENER_PREFIX + listener, Boolean.valueOf( value ) );
   }
 
   public static void renderProperty( Widget widget,

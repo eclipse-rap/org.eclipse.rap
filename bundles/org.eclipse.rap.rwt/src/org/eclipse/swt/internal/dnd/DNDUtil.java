@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public final class DNDUtil {
 
   public static void setDetailChanged( Control control, int detail ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( DETAIL_CHANGED_VALUE, new Integer( detail ) );
+    serviceStore.setAttribute( DETAIL_CHANGED_VALUE, Integer.valueOf( detail ) );
     serviceStore.setAttribute( DETAIL_CHANGED_CONTROL, control );
   }
 
@@ -73,7 +73,7 @@ public final class DNDUtil {
 
   public static void setFeedbackChanged( Control control, int feedback ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
+    serviceStore.setAttribute( FEEDBACK_CHANGED_VALUE, Integer.valueOf( feedback ) );
     serviceStore.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
   }
 

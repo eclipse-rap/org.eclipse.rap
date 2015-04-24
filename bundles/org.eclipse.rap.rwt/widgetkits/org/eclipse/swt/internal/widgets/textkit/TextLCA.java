@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,7 +142,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     Integer result = null;
     int textLimit = text.getTextLimit();
     if( textLimit > 0 && textLimit != Text.LIMIT ) {
-      result = new Integer( textLimit );
+      result = Integer.valueOf( textLimit );
     }
     return result;
   }

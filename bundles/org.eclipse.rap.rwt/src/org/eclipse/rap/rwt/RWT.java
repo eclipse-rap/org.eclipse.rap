@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -273,7 +273,7 @@ public final class RWT {
    * <code>setData()</code> with this constant as the key.
    * <p>
    * For example:
-   * <code>table.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 45 ) );</code>
+   * <code>table.setData( RWT.CUSTOM_ITEM_HEIGHT, Integer.valueOf( 45 ) );</code>
    * </p>
    * <p><b>Used By:</b><ul>
    * <li><code>Table</code></li>
@@ -290,7 +290,7 @@ public final class RWT {
    * <code>Tree</code> or <code>Table</code>. The preloaded items must be specified as an
    * <code>Integer</code> and passed to <code>setData()</code> with this constant as the key.
    * <p>
-   * For example: <code>table.setData( RWT.PRELOADED_ITEMS, new Integer( 10 ) );</code>
+   * For example: <code>table.setData( RWT.PRELOADED_ITEMS, Integer.valueOf( 10 ) );</code>
    * </p>
    * <p>
    * <b>Used By:</b>
@@ -411,7 +411,7 @@ public final class RWT {
    * For example:
    * <code><pre>
    *   Table table = new Table( parent, SWT.NONE );
-   *   table.setData( RWT.FIXED_COLUMNS, new Integer( 2 ) );
+   *   table.setData( RWT.FIXED_COLUMNS, Integer.valueOf( 2 ) );
    * </pre></code>
    * </p>
    * <b>Used By:</b>

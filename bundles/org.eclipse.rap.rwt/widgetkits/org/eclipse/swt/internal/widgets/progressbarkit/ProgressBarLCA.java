@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,9 +53,9 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.preserveValues( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
-    preserveProperty( progressBar, PROP_MINIMUM, new Integer( progressBar.getMinimum() ) );
-    preserveProperty( progressBar, PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
-    preserveProperty( progressBar, PROP_SELECTION, new Integer( progressBar.getSelection() ) );
+    preserveProperty( progressBar, PROP_MINIMUM, Integer.valueOf( progressBar.getMinimum() ) );
+    preserveProperty( progressBar, PROP_MAXIMUM, Integer.valueOf( progressBar.getMaximum() ) );
+    preserveProperty( progressBar, PROP_SELECTION, Integer.valueOf( progressBar.getSelection() ) );
     preserveProperty( progressBar, PROP_STATE, getState( progressBar ) );
   }
 

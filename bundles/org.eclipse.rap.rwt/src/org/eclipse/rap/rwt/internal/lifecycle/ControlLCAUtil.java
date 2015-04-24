@@ -62,7 +62,7 @@ public class ControlLCAUtil {
     WidgetAdapter adapter = WidgetUtil.getAdapter( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     adapter.preserve( PROP_CHILDREN, getChildren( control ) );
-    adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
+    adapter.preserve( PROP_TAB_INDEX, Integer.valueOf( getTabIndex( control ) ) );
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( getVisible( control ) ) );
@@ -146,7 +146,7 @@ public class ControlLCAUtil {
       computeTabIndices( ( Shell )control, 1 );
     }
     int tabIndex = getTabIndex( control );
-    Integer newValue = new Integer( tabIndex );
+    Integer newValue = Integer.valueOf( tabIndex );
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
       getRemoteObject( control ).set( "tabIndex", tabIndex );

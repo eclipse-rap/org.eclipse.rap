@@ -365,7 +365,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         case LexicalUnits.IMPORT_SYMBOL:
             return true;
         default:
-            reportError("token", new Object[] { new Integer(current) });
+            reportError("token", new Object[] { Integer.valueOf(current) });
             return false;
         }
     }
@@ -895,7 +895,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
                         throw createCSSParseException
-                            ("token", new Object[] { new Integer(current) });
+                            ("token", new Object[] { Integer.valueOf(current) });
                     }
                     return result;
                 }
@@ -908,7 +908,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 case LexicalUnits.EOF:
                     if (op) {
                         throw createCSSParseException
-                            ("token", new Object[] { new Integer(current) });
+                            ("token", new Object[] { Integer.valueOf(current) });
                     }
                     return result;
                 default:
@@ -998,7 +998,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             if (sgn) {
                 throw createCSSParseException
                     ("token",
-                     new Object[] { new Integer(current) });
+                     new Object[] { Integer.valueOf(current) });
             }
         }
         switch (current) {
@@ -1027,7 +1027,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         default:
             throw createCSSParseException
                 ("token",
-                 new Object[] { new Integer(current) });
+                 new Object[] { Integer.valueOf(current) });
         }
     }
 
@@ -1043,7 +1043,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         if (current != LexicalUnits.RIGHT_BRACE) {
             throw createCSSParseException
                 ("token",
-                 new Object[] { new Integer(current) });
+                 new Object[] { Integer.valueOf(current) });
         }
         nextIgnoreSpaces();
 

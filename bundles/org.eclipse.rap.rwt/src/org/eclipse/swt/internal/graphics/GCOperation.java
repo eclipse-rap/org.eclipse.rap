@@ -43,7 +43,7 @@ public abstract class GCOperation {
 
     public SetProperty( int id, int value ) {
       this.id = id;
-      this.value = new Integer( value );
+      this.value = Integer.valueOf( value );
     }
   }
 

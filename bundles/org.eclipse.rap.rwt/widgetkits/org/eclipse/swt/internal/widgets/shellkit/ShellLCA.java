@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     preserveProperty( shell, PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
     preserveProperty( shell, PROP_TEXT, shell.getText() );
     preserveProperty( shell, PROP_IMAGE, shell.getImage() );
-    preserveProperty( shell, PROP_ALPHA, new Integer( shell.getAlpha() ) );
+    preserveProperty( shell, PROP_ALPHA, Integer.valueOf( shell.getAlpha() ) );
     preserveProperty( shell, PROP_MODE, getMode( shell ) );
     preserveProperty( shell, PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
     preserveProperty( shell, PROP_MINIMUM_SIZE, shell.getMinimumSize() );

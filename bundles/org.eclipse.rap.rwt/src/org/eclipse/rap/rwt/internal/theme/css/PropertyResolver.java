@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -659,11 +659,11 @@ public final class PropertyResolver {
       {
         String function = nextUnit.getFunctionName();
         if( "from".equals( function ) ) {
-          percent = new Float( 0f );
+          percent = Float.valueOf( 0f );
           LexicalUnit colorUnit = nextUnit.getParameters();
           color = readGradientColor( colorUnit );
         } else if( "to".equals( function ) ) {
-          percent = new Float( 100f );
+          percent = Float.valueOf( 100f );
           LexicalUnit colorUnit = nextUnit.getParameters();
           color = readGradientColor( colorUnit );
         } else if( "color-stop".equals( function ) ) {
@@ -693,9 +693,9 @@ public final class PropertyResolver {
     Float result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_PERCENTAGE ) {
-      result = new Float( normalizePercentValue( unit.getFloatValue() ) );
+      result = Float.valueOf( normalizePercentValue( unit.getFloatValue() ) );
     } else if( type == LexicalUnit.SAC_REAL ) {
-      result = new Float( normalizePercentValue( unit.getFloatValue() * 100 ) );
+      result = Float.valueOf( normalizePercentValue( unit.getFloatValue() * 100 ) );
     }
     return result;
   }
@@ -1019,10 +1019,10 @@ public final class PropertyResolver {
     if( type == LexicalUnit.SAC_INTEGER ) {
       int value = unit.getIntegerValue();
       if( value == 0 ) {
-        result = new Integer( 0 );
+        result = Integer.valueOf( 0 );
       }
     } else if( type == LexicalUnit.SAC_PIXEL ) {
-      result = new Integer( ( int )unit.getFloatValue() );
+      result = Integer.valueOf( ( int )unit.getFloatValue() );
     }
     return result;
   }
@@ -1060,8 +1060,8 @@ public final class PropertyResolver {
   private static TreeMap<Float, String> normalizeGradientValue( TreeMap<Float, String> gradient ) {
     TreeMap<Float, String> result = gradient;
     if( gradient.size() > 0 ) {
-      Float zero = new Float( 0f );
-      Float hundred = new Float( 100f );
+      Float zero = Float.valueOf( 0f );
+      Float hundred = Float.valueOf( 100f );
       if( gradient.get( zero ) == null ) {
         String firstColor = gradient.get( gradient.firstKey() );
         result.put( zero, firstColor );

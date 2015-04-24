@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   // Default values
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
-  private static final Integer DEFAULT_SELECTION_INDEX = new Integer( -1 );
+  private static final Integer DEFAULT_SELECTION_INDEX = Integer.valueOf( -1 );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
   private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 

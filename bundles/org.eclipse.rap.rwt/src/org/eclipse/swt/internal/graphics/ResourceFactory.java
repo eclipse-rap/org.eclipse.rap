@@ -39,7 +39,7 @@ public class ResourceFactory {
   }
 
   private Color getColor( final int value ) {
-    Integer key = new Integer( value );
+    Integer key = Integer.valueOf( value );
     return colors.get( key, new IInstanceCreator<Color>() {
 
       public Color createInstance() {
@@ -58,7 +58,7 @@ public class ResourceFactory {
   }
 
   public Cursor getCursor( final int style ) {
-    Integer key = new Integer( style );
+    Integer key = Integer.valueOf( style );
     return cursors.get( key, new IInstanceCreator<Cursor>() {
       public Cursor createInstance() {
         return createCursorInstance( style );
@@ -68,7 +68,7 @@ public class ResourceFactory {
 
   private static Color createColorInstance( int colorNr ) {
     Class[] paramTypes = new Class[] { int.class };
-    Object[] paramValues = new Object[] { new Integer( colorNr ) };
+    Object[] paramValues = new Object[] { Integer.valueOf( colorNr ) };
     return ClassUtil.newInstance( Color.class, paramTypes, paramValues );
   }
 
@@ -80,7 +80,7 @@ public class ResourceFactory {
 
   private static Cursor createCursorInstance( int style ) {
     Class[] paramTypes = new Class[] { int.class };
-    Object[] paramValues = new Object[] { new Integer( style ) };
+    Object[] paramValues = new Object[] { Integer.valueOf( style ) };
     return ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
   }
 
