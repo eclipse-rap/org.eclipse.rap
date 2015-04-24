@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -35,25 +36,58 @@ public class EncodingUtil_Test {
   }
 
   @Test
-  public void testReplaceNewLines() {
+  public void testReplaceNewLines_emptyString() {
+    assertSame( "", EncodingUtil.replaceNewLines( "" ) );
+  }
+
+  @Test
+  public void testReplaceNewLines_withoutNewlines() {
+    assertSame( "foo bar", EncodingUtil.replaceNewLines( "foo bar" ) );
+  }
+
+  @Test
+  public void testReplaceNewLines_unixLineBreaks() {
     String stringToReplace = "First line.\nSecond line.\nThird line.";
     String expected = "First line.\\nSecond line.\\nThird line.";
     String result = EncodingUtil.replaceNewLines( stringToReplace );
-    assertEquals( expected, result );
 
-    stringToReplace = "First line.\rSecond line.\rThird line.";
-    expected = "First line.\\nSecond line.\\nThird line.";
-    result = EncodingUtil.replaceNewLines( stringToReplace );
     assertEquals( expected, result );
+  }
 
-    stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
-    expected = "First line.\\nSecond line.\\nThird line.";
-    result = EncodingUtil.replaceNewLines( stringToReplace );
+  @Test
+  public void testReplaceNewLines_windowsLineBreaks() {
+    String stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
+    String expected = "First line.\\nSecond line.\\nThird line.";
+    String result = EncodingUtil.replaceNewLines( stringToReplace );
+
     assertEquals( expected, result );
+  }
 
-    stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
-    expected = "First line. Second line. Third line.";
-    result = EncodingUtil.replaceNewLines( stringToReplace, " " );
+  @Test
+  public void testReplaceNewLines_oldMacLineBreaks() {
+    String stringToReplace = "First line.\rSecond line.\rThird line.";
+    String expected = "First line.\\nSecond line.\\nThird line.";
+    String result = EncodingUtil.replaceNewLines( stringToReplace );
+
+    assertEquals( expected, result );
+  }
+
+  @Test
+  public void testReplaceNewLines_edgeCases() {
+    assertEquals( "\\nfoo", EncodingUtil.replaceNewLines( "\nfoo" ) );
+    assertEquals( "\\nfoo", EncodingUtil.replaceNewLines( "\r\nfoo" ) );
+    assertEquals( "foo\\n", EncodingUtil.replaceNewLines( "foo\n" ) );
+    assertEquals( "foo\\n", EncodingUtil.replaceNewLines( "foo\r\n" ) );
+    assertEquals( "\\n", EncodingUtil.replaceNewLines( "\n" ) );
+    assertEquals( "\\n", EncodingUtil.replaceNewLines( "\r\n" ) );
+  }
+
+  @Test
+  public void testReplaceNewLines_withReplacement() {
+    String stringToReplace = "First line.\r\nSecond line.\r\nThird line.";
+    String expected = "First line. Second line. Third line.";
+    String result = EncodingUtil.replaceNewLines( stringToReplace, " " );
+
     assertEquals( expected, result );
   }
 

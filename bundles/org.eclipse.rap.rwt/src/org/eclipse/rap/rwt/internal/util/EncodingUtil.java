@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,27 +95,30 @@ public final class EncodingUtil {
    * @return a copy of the input string with all newline characters replaced
    */
   public static String replaceNewLines( String input, String replacement ) {
-    StringBuilder resultBuffer = new StringBuilder();
+    StringBuilder resultBuffer = null;
     int length = input.length();
+    int start = 0;
     int i = 0;
     while( i < length ) {
       char ch = input.charAt( i );
-      if( ch == '\n' ) {
-        resultBuffer.append( replacement );
-      } else if( ch == '\r' ) {
-        if( i + 1 < length ) {
-          char next = input.charAt( i + 1 );
-          if( ch == '\r' && next == '\n' ) {
-            i++;
-          }
+      if( ch == '\n' || ch == '\r' ) {
+        if (resultBuffer == null) {
+          resultBuffer = new StringBuilder();
         }
+        resultBuffer.append( input, start, i );
         resultBuffer.append( replacement );
-      } else {
-        resultBuffer.append( ch );
+        if( ch == '\r' && i + 1 < length && input.charAt( i + 1 ) == '\n' ) {
+          i++;
+        }
+        start = i + 1;
       }
       i++;
     }
-    return resultBuffer.toString();
+    if (resultBuffer != null) {
+      resultBuffer.append( input, start, i );
+      return resultBuffer.toString();
+    }
+    return input;
   }
 
   /**
