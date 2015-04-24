@@ -50,28 +50,26 @@ public final class EncodingUtil {
     return input;
   }
 
-  public static String[] splitNewLines( String input ) {
+  public static List<String> splitNewLines( String input ) {
+    List<String> lines = new ArrayList<String>();
     int length = input.length();
-    List<String> resultList = new ArrayList<String>();
     int start = 0;
     char last = 0;
     for( int i = 0; i < length; i++ ) {
       char ch = input.charAt( i );
       if( ch == '\n' ) {
         if( last != '\r' ) {
-          resultList.add( input.substring( start, i ) );
+          lines.add( input.substring( start, i ) );
         }
         start = i + 1;
       } else if( ch == '\r' ) {
-        resultList.add( input.substring( start, i ) );
+        lines.add( input.substring( start, i ) );
         start = i + 1;
       }
       last = ch;
     }
-    resultList.add( input.substring( start, length ) );
-    String[] result = new String[ resultList.size() ];
-    resultList.toArray( result );
-    return result;
+    lines.add( input.substring( start, length ) );
+    return lines;
   }
 
   private EncodingUtil() {

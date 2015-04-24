@@ -10,11 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
+import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.internal.util.EncodingUtil.replaceNewLines;
 import static org.eclipse.rap.rwt.internal.util.EncodingUtil.splitNewLines;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+
+import java.util.List;
+
 import org.junit.Test;
 
 
@@ -78,46 +81,46 @@ public class EncodingUtil_Test {
 
   @Test
   public void testSplitNewlines_emptyString() {
-    assertArrayEquals( new String[] { "" }, splitNewLines( "" ) );
+    assertEquals( asList( "" ), splitNewLines( "" ) );
   }
 
   @Test
   public void testSplitNewlines_withoutLineBreaks() {
-    assertArrayEquals( new String[] { "foo bar" }, splitNewLines( "foo bar" ) );
+    assertEquals( asList( "foo bar" ), splitNewLines( "foo bar" ) );
   }
 
   @Test
   public void testSplitNewlines_unixLineBreaks() {
     String input = "First line.\nSecond line.\nThird line.";
-    String[] expected = { "First line.", "Second line.", "Third line." };
+    List<String> expected = asList( "First line.", "Second line.", "Third line." );
 
-    assertArrayEquals( expected, splitNewLines( input ) );
+    assertEquals( expected, splitNewLines( input ) );
   }
 
   @Test
   public void testSplitNewlines_windowsLineBreaks() {
     String input = "First line.\r\nSecond line.\r\nThird line.";
-    String[] expected = { "First line.", "Second line.", "Third line." };
+    List<String> expected = asList( "First line.", "Second line.", "Third line." );
 
-    assertArrayEquals( expected, splitNewLines( input ) );
+    assertEquals( expected, splitNewLines( input ) );
   }
 
   @Test
   public void testSplitNewlines_oldMacLineBreaks() {
     String input = "First line.\rSecond line.\rThird line.";
-    String[] expected = { "First line.", "Second line.", "Third line." };
+    List<String> expected = asList( "First line.", "Second line.", "Third line." );
 
-    assertArrayEquals( expected, splitNewLines( input ) );
+    assertEquals( expected, splitNewLines( input ) );
   }
 
   @Test
   public void testSplitNewlines_edgeCases() {
-    assertArrayEquals( new String[] { "", "foo" }, splitNewLines( "\nfoo" ) );
-    assertArrayEquals( new String[] { "", "foo" }, splitNewLines( "\r\nfoo" ) );
-    assertArrayEquals( new String[] { "foo", "" }, splitNewLines( "foo\n" ) );
-    assertArrayEquals( new String[] { "foo", "" }, splitNewLines( "foo\r\n" ) );
-    assertArrayEquals( new String[] { "", "" }, splitNewLines( "\n" ) );
-    assertArrayEquals( new String[] { "", "" }, splitNewLines( "\r\n" ) );
+    assertEquals( asList( "", "foo" ), splitNewLines( "\nfoo" ) );
+    assertEquals( asList( "", "foo" ), splitNewLines( "\r\nfoo" ) );
+    assertEquals( asList( "foo", "" ), splitNewLines( "foo\n" ) );
+    assertEquals( asList( "foo", "" ), splitNewLines( "foo\r\n" ) );
+    assertEquals( asList( "", "" ), splitNewLines( "\n" ) );
+    assertEquals( asList( "", "" ), splitNewLines( "\r\n" ) );
   }
 
 }

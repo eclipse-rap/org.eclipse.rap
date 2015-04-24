@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import org.eclipse.rap.rwt.internal.util.EncodingUtil;
+import static org.eclipse.rap.rwt.internal.util.EncodingUtil.splitNewLines;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.FontUtil;
+
 
 public final class TextSizeEstimation {
 
@@ -44,9 +46,7 @@ public final class TextSizeEstimation {
   static Point textExtent( Font font, String string, int wrapWidth ) {
     int lineCount = 0;
     int maxWidth = 0;
-    String[] lines = EncodingUtil.splitNewLines( string );
-    for( int i = 0; i < lines.length; i++ ) {
-      String line = lines[ i ];
+    for( String line : splitNewLines( string ) ) {
       lineCount++;
       int width = getLineWidth( line, font );
       if( wrapWidth > 0 ) {
@@ -190,4 +190,5 @@ public final class TextSizeEstimation {
   private static int getLineWidth( String line, Font font ) {
     return Math.round( getAvgCharWidth( font ) * line.length() );
   }
+
 }
