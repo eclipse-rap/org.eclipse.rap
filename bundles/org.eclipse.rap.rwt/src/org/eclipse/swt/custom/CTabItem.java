@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -451,7 +451,7 @@ public class CTabItem extends Item {
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
     h = Math.max( h, TextSizeUtil.textExtent( getFont(), text, 0 ).y );
-    return h + parent.getItemPadding( isSelected ).height;
+    return h + parent.getItemPadding( isSelected ).getHeight();
   }
 
   int preferredWidth( boolean isSelected, boolean minimum ) {
@@ -507,7 +507,7 @@ public class CTabItem extends Item {
         w += CTabFolder.BUTTON_SIZE;
       }
     }
-    return w + parent.getItemPadding( isSelected ).width;
+    return w + parent.getItemPadding( isSelected ).getWidth();
   }
 
   /*

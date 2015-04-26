@@ -59,10 +59,9 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
     return CssColor.createColor( ( CssColor )cssValue );
   }
 
-  public Rectangle getItemPadding( boolean selected ) {
+  public CssBoxDimensions getItemPadding( boolean selected ) {
     SimpleSelector selector = selected ? SimpleSelector.SELECTED : SimpleSelector.DEFAULT;
-    CssValue cssValue = ThemeUtil.getCssValue( "CTabItem", "padding", selector );
-    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
+    return ( CssBoxDimensions )ThemeUtil.getCssValue( "CTabItem", "padding", selector );
   }
 
   public int getItemSpacing( boolean selected ) {

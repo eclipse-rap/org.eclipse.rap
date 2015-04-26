@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -232,16 +233,16 @@ public class TabItem extends Item {
         result.height = Math.max( result.height, imageSize.height );
       }
       TabFolderThemeAdapter themeAdapter = parent.getThemeAdapter();
-      Rectangle padding = themeAdapter.getItemPadding( this );
-      Rectangle margin = themeAdapter.getItemMargin( this );
+      CssBoxDimensions padding = themeAdapter.getItemPadding( this );
+      CssBoxDimensions margin = themeAdapter.getItemMargin( this );
       Rectangle border = themeAdapter.getItemBorder( this );
-      result.width += border.width + padding.width;
-      result.height += border.height + padding.height;
+      result.width += border.width + padding.getWidth();
+      result.height += border.height + padding.getHeight();
       if( isBarTop() ) {
-        result.y = margin.y;
+        result.y = margin.top;
       } else {
         result.y = parent.getBounds().height - parent.getBorder().height - result.height;
-        result.y -= ( margin.height - margin.y );
+        result.y -= margin.bottom;
       }
       if( index > 0 ) {
         TabItem leftItem = parent.getItem( index - 1 );
@@ -344,4 +345,5 @@ public class TabItem extends Item {
     }
     return result;
   }
+
 }

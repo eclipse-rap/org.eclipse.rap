@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.theme.CssBorder;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -41,14 +40,12 @@ public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
     return new Rectangle( left, top, left + right, top + bottom );
   }
 
-  public Rectangle getItemPadding( TabItem item ) {
-    CssValue cssValue = getCssValue( "TabItem", "padding", createSelector( item ) );
-    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
+  public CssBoxDimensions getItemPadding( TabItem item ) {
+    return ( CssBoxDimensions )getCssValue( "TabItem", "padding", createSelector( item ) );
   }
 
-  public Rectangle getItemMargin( TabItem item ) {
-    CssValue cssValue = getCssValue( "TabItem", "margin", createSelector( item ) );
-    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
+  public CssBoxDimensions getItemMargin( TabItem item ) {
+    return ( CssBoxDimensions )getCssValue( "TabItem", "margin", createSelector( item ) );
   }
 
   private static int getBorderEdgeWidth( String edge, SimpleSelector selector, TabItem item ) {

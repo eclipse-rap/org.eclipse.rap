@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -588,8 +588,8 @@ public class TabFolder extends Composite {
     for( TabItem item : getItems() ) {
       Image image = item.getImage();
       int imageHeight = image == null ? 0 : image.getBounds().height;
-      int padding = themeAdapter.getItemPadding( item ) .height;
-      int margin = themeAdapter.getItemMargin( item ).height;
+      int padding = themeAdapter.getItemPadding( item ).getHeight();
+      int margin = themeAdapter.getItemMargin( item ).getHeight();
       int border = themeAdapter.getItemBorder( item ).height;
       int itemHeight = Math.max( textHeight, imageHeight ) + padding + margin + border;
       result = Math.max( result, itemHeight );

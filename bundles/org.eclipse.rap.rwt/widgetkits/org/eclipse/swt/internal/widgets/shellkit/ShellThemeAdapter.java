@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.shellkit;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
@@ -68,16 +67,15 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
     if( shell.getMenuBar() != null ) {
       Font font = getCssFont( "Shell", "font", shell );
       int fontHeight = TextSizeUtil.getCharHeight( font );
-      Rectangle padding = getMenuBarItemPadding();
-      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight + padding.height );
+      CssBoxDimensions padding = getMenuBarItemPadding();
+      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight + padding.getHeight() );
     }
     return result;
   }
 
-  private static Rectangle getMenuBarItemPadding() {
+  private static CssBoxDimensions getMenuBarItemPadding() {
     SimpleSelector selector = new SimpleSelector( new String[] { ":onMenuBar" } );
-    CssValue cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
-    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
+    return ( CssBoxDimensions )ThemeUtil.getCssValue( "MenuItem", "padding", selector );
   }
 
 }

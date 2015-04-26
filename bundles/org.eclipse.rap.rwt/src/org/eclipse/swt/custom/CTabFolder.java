@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1987,7 +1988,7 @@ CTabItem[] items = itemHolder.getItems();
       if (items.length == 0) {
 //        tempHeight = gc.textExtent("Default", CTabItem.FLAGS).y + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN; //$NON-NLS-1$
         tempHeight =   TextSizeUtil.getCharHeight( getFont() )
-                     + getItemPadding( false ).height;
+                     + getItemPadding( false ).getHeight();
       } else {
         for (int i=0; i < items.length; i++) {
 //          tempHeight = Math.max(tempHeight, items[i].preferredHeight(gc));
@@ -2315,15 +2316,14 @@ CTabItem[] items = itemHolder.getItems();
   // Theming related
 
   int getItemPaddingLeft( boolean selected ) {
-    return getItemPadding( selected ).x;
+    return getItemPadding( selected ).left;
   }
 
   int getItemPaddingRight( boolean selected ) {
-    Rectangle padding = getItemPadding( selected );
-    return padding.width - padding.x;
+    return getItemPadding( selected ).right;
   }
 
-  Rectangle getItemPadding( boolean selected ) {
+  CssBoxDimensions getItemPadding( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
       = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getItemPadding( selected );
