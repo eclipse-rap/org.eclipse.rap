@@ -45,7 +45,7 @@ public class ServiceManagerImpl implements ServiceManager {
     ParamCheck.notNullOrEmpty( id, "id" );
     ParamCheck.notNull( handler, "handler" );
     if( !customHandlers.put( id, handler ) ) {
-      String message = "Already a service handler already registered with this id: " + id;
+      String message = "A service handler is already registered with this id: " + id;
       throw new IllegalArgumentException( message );
     }
   }
