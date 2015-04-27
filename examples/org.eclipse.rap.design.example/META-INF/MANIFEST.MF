@@ -4,7 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.design.example;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.rap.ui;bundle-version="[3.0.0,4.0.0)"
 Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.internal.design.example;version="3.0.0";x-internal:=true,

@@ -7,5 +7,5 @@ Bundle-Version: 2.3.0.qualifier
 Require-Bundle: org.junit;bundle-version="[3.8.2,5.0.0)";visibility:=reexport,
  org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"
 Export-Package: org.eclipse.rap.junit;version="2.3.0"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Localization: plugin

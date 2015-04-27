@@ -4,7 +4,7 @@ Bundle-Name: RWT-OSGi Integration
 Bundle-SymbolicName: org.eclipse.rap.rwt.osgi
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.servlet;version="[2.5.0,3.2.0)",
  javax.servlet.descriptor;version="[2.6.0,3.2.0)";resolution:=optional,
  javax.servlet.http;version="[2.5.0,3.2.0)",
