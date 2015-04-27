@@ -4,6 +4,9 @@
 # All values are retrieved trough system variables set by Hudson.
 # See Job -> Configure... -> This build is parameterized
 
+######################################################################
+# set up environment
+
 SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 . $SCRIPTS_DIR/build-environment.sh
 
@@ -15,24 +18,28 @@ else
   SIGNPROFILE=""
 fi
 
+tempdirectory="$WORKSPACE/tmp"
+
 ######################################################################
-# Cleanup left-overs from previous run
+# cleanup left-overs from previous run
 test -d "$WORKSPACE" || exit 1
-rm -rf "$WORKSPACE"/runtimeRepo "$WORKSPACE"/*.zip
+rm -rf "$WORKSPACE"/runtimeRepo "$WORKSPACE"/*.zip "$tempdirectory"
 
 ######################################################################
 # clean up local Maven repository to circumvent p2 cache problems
+
 for II in .cache .meta p2 ; do
   echo "Remove directory ${MAVEN_LOCAL_REPO_PATH}/${II}" 
   rm -r ${MAVEN_LOCAL_REPO_PATH}/${II}
 done
 
 ######################################################################
-# Build RAP Runtime
+# build RAP Runtime
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.build"
 echo "Running maven on $PWD, $SIGNPROFILE"
-${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH}
+mkdir -p "$tempdirectory"
+${MVN} -e clean package $SIGNPROFILE -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Djava.io.tmpdir="$tempdirectory"
 exitcode=$?
 if [ "$exitcode" != "0" ]; then
   echo "Maven exited with error code " + $exitcode
@@ -56,7 +63,7 @@ test -n "$TIMESTAMP" || exit 1
 
 cd "$WORKSPACE/org.eclipse.rap/releng/org.eclipse.rap.target.build"
 echo "Running maven on $PWD, sign=$sign"
-$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Dsign=$sign || exit 1
+$MVN -e clean package -DruntimeRepo="file://$WORKSPACE/runtimeRepo" -Dmaven.repo.local=${MAVEN_LOCAL_REPO_PATH} -Djava.io.tmpdir="$tempdirectory" -Dsign=$sign || exit 1
 
 # Example: rap-1.5.0-N-20110814-2110.zip
 zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
@@ -68,7 +75,7 @@ else
 fi
 
 ######################################################################
-# Include legal files in zip files
+# include legal files in zip files
 
 cd "$WORKSPACE"
 cp -f org.eclipse.rap/releng/org.eclipse.rap.build/legal/notice.html .
