@@ -75,7 +75,7 @@ import org.junit.Test;
 
 public class ButtonLCA_Test {
 
-  private static final String PROP_SELECTION_LISTENER = "listener_Selection";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private Display display;
   private Shell shell;

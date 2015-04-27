@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
@@ -67,8 +68,6 @@ public final class WidgetLCAUtil {
   private static final String PROP_DATA = "data";
   private static final String PROP_HELP_LISTENER = "Help";
 
-  private static final String LISTENER_PREFIX = "listener_";
-
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
 
   private WidgetLCAUtil() {
@@ -76,29 +75,24 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveBounds( Widget widget, Rectangle bounds ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.BOUNDS, bounds );
+    getAdapter( widget ).preserve( Props.BOUNDS, bounds );
   }
 
   public static void preserveEnabled( Widget widget, boolean enabled ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
+    getAdapter( widget ).preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
   }
 
   public static void preserveToolTipText( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_TOOLTIP, text );
+    getAdapter( widget ).preserve( PROP_TOOLTIP, text );
   }
 
   public static void preserveFont( Widget widget, Font font ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_FONT, font );
+    getAdapter( widget ).preserve( PROP_FONT, font );
   }
 
   public static void preserveForeground( Widget widget, Color foreground ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_FOREGROUND, foreground );
+    getAdapter( widget ).preserve( PROP_FOREGROUND, foreground );
   }
 
   public static void preserveBackground( Widget widget, Color background ) {
@@ -106,7 +100,7 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveBackground( Widget widget, Color background, boolean transparency ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    WidgetAdapter adapter = getAdapter( widget );
     adapter.preserve( PROP_BACKGROUND, background );
     adapter.preserve( PROP_BACKGROUND_TRANSPARENCY, Boolean.valueOf( transparency ) );
   }
@@ -118,7 +112,7 @@ public final class WidgetLCAUtil {
       Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
       int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
       boolean bgGradientVertical = gfxAdapter.isBackgroundGradientVertical();
-      WidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      WidgetAdapter widgetAdapter = getAdapter( widget );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_VERTICAL,
@@ -133,7 +127,7 @@ public final class WidgetLCAUtil {
       int width = gfxAdapter.getRoundedBorderWidth();
       Color color = gfxAdapter.getRoundedBorderColor();
       Rectangle radius = gfxAdapter.getRoundedBorderRadius();
-      WidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
+      WidgetAdapter widgetAdapter = getAdapter( widget );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, Integer.valueOf( width ) );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
@@ -142,8 +136,7 @@ public final class WidgetLCAUtil {
 
   public static void preserveCustomVariant( Widget widget ) {
     String variant = WidgetUtil.getVariant( widget );
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_VARIANT, variant );
+    getAdapter( widget ).preserve( PROP_VARIANT, variant );
   }
 
   public static void preserveData( Widget widget ) {
@@ -217,7 +210,7 @@ public final class WidgetLCAUtil {
   }
 
   private static void renderToolTipMarkupEnabled( Widget widget ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    WidgetAdapter adapter = getAdapter( widget );
     if( !adapter.isInitialized() && isToolTipMarkupEnabledFor( widget ) ) {
       getRemoteObject( widget ).set( PROP_TOOLTIP_MARKUP_ENABLED, true );
     }
@@ -343,8 +336,7 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveProperty( Widget widget, String property, Object value ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( property, value );
+    getAdapter( widget ).preserve( property, value );
   }
 
   public static void preserveProperty( Widget widget, String property, int value ) {
@@ -356,8 +348,7 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveListener( Widget widget, String listener, boolean value ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( LISTENER_PREFIX + listener, Boolean.valueOf( value ) );
+    getAdapter( widget ).preserve( listener, Boolean.valueOf( value ) );
   }
 
   public static void renderProperty( Widget widget,
@@ -536,10 +527,9 @@ public final class WidgetLCAUtil {
                                      boolean newValue,
                                      boolean defaultValue )
   {
-    String property = LISTENER_PREFIX + listener;
     Boolean newValueObject = Boolean.valueOf( newValue );
     Boolean defaultValueObject = Boolean.valueOf( defaultValue );
-    if( hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
+    if( hasChanged( widget, listener, newValueObject, defaultValueObject ) ) {
       getRemoteObject( widget ).listen( listener, newValue );
     }
   }
@@ -562,8 +552,7 @@ public final class WidgetLCAUtil {
   }
 
   public static boolean hasChanged( Widget widget, String property, Object newValue ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    Object oldValue = adapter.getPreserved( property );
+    Object oldValue = getAdapter( widget ).getPreserved( property );
     return !equals( oldValue, newValue );
   }
 
@@ -573,8 +562,7 @@ public final class WidgetLCAUtil {
                                     Object defaultValue )
   {
     boolean result;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    if( adapter.isInitialized() ) {
+    if( getAdapter( widget ).isInitialized() ) {
       result = hasChanged( widget, property, newValue );
     } else {
       result = !equals( newValue, defaultValue );
