@@ -135,7 +135,9 @@ rap = {
    off : function( type, handler ) {
      if( this._.events[ type ] ) {
        var index = this._.events[ type ].indexOf( handler );
-       rwt.util.Arrays.removeAt( this._.events[ type ], index );
+       if( index !== -1 ) {
+         rwt.util.Arrays.removeAt( this._.events[ type ], index );
+       }
      }
    },
 
