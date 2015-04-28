@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -500,10 +501,10 @@ public class ToolItem extends Item {
         top += upperSiblingBounds.y + upperSiblingBounds.height;
         top += getToolBarSpacing();
       } else {
-        top += parent.getToolBarPadding().y;
+        top += parent.getToolBarPadding().top;
       }
-      int innerParentWidth = parent.getSize().x - parent.getToolBarPadding().width;
-      left += parent.getToolBarPadding().x + innerParentWidth / 2 - width / 2;
+      int innerParentWidth = parent.getSize().x - parent.getToolBarPadding().getWidth();
+      left += parent.getToolBarPadding().left + innerParentWidth / 2 - width / 2;
       left = Math.max( left, 0 );
     } else {
       if( index > 0 ) {
@@ -511,12 +512,12 @@ public class ToolItem extends Item {
         left += leftSiblingBounds.x + leftSiblingBounds.width;
         left += getToolBarSpacing();
       } else {
-        left += parent.getToolBarPadding().x;
+        left += parent.getToolBarPadding().left;
       }
       int innerParentHeight = parent.getSize().y
-                            - parent.getToolBarPadding().height
+                            - parent.getToolBarPadding().getHeight()
                             - parent.getBorder().height;
-      top += parent.getToolBarPadding().y + innerParentHeight / 2 - height / 2;
+      top += parent.getToolBarPadding().top + innerParentHeight / 2 - height / 2;
       top = Math.max( top, 0 );
     }
     return new Rectangle( left, top, width, height );
@@ -576,7 +577,7 @@ public class ToolItem extends Item {
   int getPreferredHeight() {
     int height = DEFAULT_HEIGHT;
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      int frameHeight = getPadding().height + getBorder().height;
+      int frameHeight = getPadding().getHeight() + getBorder().height;
       if( !"".equals( getText() ) ) {
         int charHeight = TextSizeUtil.getCharHeight( parent.getFont() );
         height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
@@ -603,7 +604,7 @@ public class ToolItem extends Item {
     if( hasText && hasImage ) {
       result += getSpacing();
     }
-    int paddingWidth = getPadding().width;
+    int paddingWidth = getPadding().getWidth();
     int borderWidth = getBorder().width;
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       result += getSpacing() * 2;
@@ -622,7 +623,7 @@ public class ToolItem extends Item {
     return getToolBarThemeAdapter().getDropDownImageDimension( parent );
   }
 
-  private Rectangle getPadding() {
+  private CssBoxDimensions getPadding() {
     return getToolBarThemeAdapter().getItemPadding( parent );
   }
 

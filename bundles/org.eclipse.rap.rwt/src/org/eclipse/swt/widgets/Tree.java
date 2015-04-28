@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.swt.SWT;
@@ -1802,7 +1803,7 @@ public class Tree extends Composite {
 
   int getImageOffset( int index ) {
     // Note: The left cell-padding is visually ignored for the tree-column
-    int result = isTreeColumn( index ) ? 0 : getCellPadding().x;
+    int result = isTreeColumn( index ) ? 0 : getCellPadding().left;
     if( hasCheckBoxes( index ) ) {
       result += getCheckImageOuterSize().x;
     }
@@ -1819,9 +1820,8 @@ public class Tree extends Composite {
   }
 
   int getTextWidth( int index ) {
-    Rectangle padding = getCellPadding();
-    int rightPadding = padding.width - padding.x;
-    int result = getCellWidth( index ) - getTextOffset( index ) - rightPadding;
+    CssBoxDimensions padding = getCellPadding();
+    int result = getCellWidth( index ) - getTextOffset( index ) - padding.right;
     if( isTreeColumn( index ) ) {
       result -= ( TEXT_MARGIN.width - TEXT_MARGIN.x );
     }
@@ -1833,7 +1833,9 @@ public class Tree extends Composite {
   }
 
   int getVisualTextLeft( TreeItem item, int index ) {
-    return getVisualCellLeft( item, index ) + getCellPadding().x + getItemImageOuterWidth( index );
+    return   getVisualCellLeft( item, index )
+           + getCellPadding().left
+           + getItemImageOuterWidth( index );
   }
 
   int getVisualCellLeft( TreeItem item, int index ) {
@@ -1861,9 +1863,9 @@ public class Tree extends Composite {
   int getVisualCellWidth( TreeItem item, int index ) {
     int result;
     if( getColumnCount() == 0 && index == 0 ) {
-      Rectangle padding = getCellPadding();
+      CssBoxDimensions padding = getCellPadding();
       int textWidth = getStringExtent( item.getFont(), item.getText( 0 ) ).x;
-      result = padding.width + getItemImageOuterWidth( index ) + textWidth + TEXT_MARGIN.width;
+      result = padding.getWidth() + getItemImageOuterWidth( index ) + textWidth + TEXT_MARGIN.width;
     } else {
       result = getColumn( index ).getWidth();
       if( isTreeColumn( index ) ) {
@@ -1880,10 +1882,10 @@ public class Tree extends Composite {
   int getPreferredCellWidth( TreeItem item, int index, boolean checkData ) {
     int result = item.getPreferredWidthBuffer( index );
     if( !item.hasPreferredWidthBuffer( index ) ) {
-      Rectangle padding = getCellPadding();
+      CssBoxDimensions padding = getCellPadding();
       result = getTextOffset( index ) ;
       result += getStringExtent( item.getFont(), item.getTextWithoutMaterialize( index ) ).x;
-      result += padding.width - padding.x;
+      result += padding.right;
       if( isTreeColumn( index ) ) {
         result += TEXT_MARGIN.width - TEXT_MARGIN.x;
       }
@@ -1976,7 +1978,7 @@ public class Tree extends Composite {
       result = getItemImageSize();
       if( getColumnCount() > 0 ) {
         int availWidth = getColumn( index ).getWidth();
-        availWidth -= getCellPadding().x;
+        availWidth -= getCellPadding().left;
         availWidth = Math.max( 0, availWidth );
         result.x = Math.min( result.x, availWidth );
       }
@@ -2014,13 +2016,13 @@ public class Tree extends Composite {
 
   private Point getCheckImageOuterSize() {
     Point result = getCheckImageSize();
-    Rectangle margin = getCheckBoxMargin();
-    result.x += margin.width;
-    result.y += margin.height;
+    CssBoxDimensions margin = getCheckBoxMargin();
+    result.x += margin.getWidth();
+    result.y += margin.getHeight();
     return result;
   }
 
-  private Rectangle getCheckBoxMargin() {
+  private CssBoxDimensions getCheckBoxMargin() {
     if( !layoutCache.hasCheckBoxMargin() ) {
       layoutCache.checkBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
     }
@@ -2052,7 +2054,7 @@ public class Tree extends Composite {
       result = Math.max( textHeight, imageHeight );
       TreeThemeAdapter themeAdapter = getThemeAdapter();
       result += themeAdapter.getHeaderBorderBottomWidth( this );
-      result += themeAdapter.getHeaderPadding( this ).height;
+      result += themeAdapter.getHeaderPadding( this ).getHeight();
     }
     return result;
   }
@@ -2067,10 +2069,10 @@ public class Tree extends Composite {
   }
 
   private int computeItemHeight() {
-    Rectangle padding = getCellPadding();
+    CssBoxDimensions padding = getCellPadding();
     int textHeight = TextSizeUtil.getCharHeight( getFont() );
-    textHeight += TEXT_MARGIN.height + padding.height;
-    int itemImageHeight = getItemImageSize().y + padding.height;
+    textHeight += TEXT_MARGIN.height + padding.getHeight();
+    int itemImageHeight = getItemImageSize().y + padding.getHeight();
     int result = Math.max( itemImageHeight, textHeight );
     if( hasCheckBoxes( 0 ) ) {
       result = Math.max( getCheckImageOuterSize().y, result );
@@ -2213,7 +2215,7 @@ public class Tree extends Composite {
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
   }
 
-  Rectangle getCellPadding() {
+  CssBoxDimensions getCellPadding() {
     if( !layoutCache.hasCellPadding() ) {
       layoutCache.cellPadding = getThemeAdapter().getCellPadding( this );
     }
@@ -2468,7 +2470,7 @@ public class Tree extends Composite {
     }
 
     public int getCheckLeft() {
-      return getCheckBoxMargin().x;
+      return getCheckBoxMargin().left;
     }
 
     public Rectangle getTextMargin() {
@@ -2526,8 +2528,8 @@ public class Tree extends Composite {
     int headerHeight = UNKNOWN;
     int itemHeight = UNKNOWN;
     int cellSpacing = UNKNOWN;
-    Rectangle cellPadding;
-    Rectangle checkBoxMargin;
+    CssBoxDimensions cellPadding;
+    CssBoxDimensions checkBoxMargin;
 
     public boolean hasHeaderHeight() {
       return headerHeight != UNKNOWN;

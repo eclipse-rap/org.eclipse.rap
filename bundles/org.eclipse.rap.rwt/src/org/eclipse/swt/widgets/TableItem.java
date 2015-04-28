@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -920,7 +921,7 @@ public class TableItem extends Item {
       if( index == 0 && columnCount == 0 ) {
         Rectangle imageBounds = getImageBounds( index );
         int spacing = getSpacing( index );
-        int paddingWidth = parent.getCellPadding().width;
+        int paddingWidth = parent.getCellPadding().getWidth();
         width = imageBounds.width + spacing + textBounds.width + paddingWidth;
       } else if( index >= 0 && index < columnCount ) {
         width = parent.getColumn( index ).getWidth() - getCheckWidth( index );
@@ -951,8 +952,8 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     int itemIndex = parent.indexOf( this );
-    Rectangle cellPadding = parent.getCellPadding();
-    int left = getLeft( index ) + cellPadding.x;
+    CssBoxDimensions cellPadding = parent.getCellPadding();
+    int left = getLeft( index ) + cellPadding.left;
     int top = getTop( itemIndex );
     int width = getImageWidth( index );
     int height = getHeight( index );
@@ -1002,7 +1003,7 @@ public class TableItem extends Item {
     int left = 0;
     int top = 0;
     int width = 0;
-    Rectangle cellPadding = parent.getCellPadding();
+    CssBoxDimensions cellPadding = parent.getCellPadding();
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
       int spacing = 0;
@@ -1010,7 +1011,7 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
         spacing = getSpacing( 0 );
       }
-      left = getLeft( 0 ) + cellPadding.x + imageWidth + spacing;
+      left = getLeft( 0 ) + cellPadding.left + imageWidth + spacing;
       top = getTop( itemIndex );
       width = getTextWidth( 0, getFont() );
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
@@ -1019,9 +1020,9 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
       }
       int spacing = getSpacing( index );
-      left = getLeft( index ) + cellPadding.x + imageWidth + spacing;
+      left = getLeft( index ) + cellPadding.left + imageWidth + spacing;
       top = getTop( itemIndex );
-      width = getColumnWidth( index ) - cellPadding.width - imageWidth - spacing;
+      width = getColumnWidth( index ) - cellPadding.getWidth() - imageWidth - spacing;
       if( width < 0 ) {
         width = 0;
       }
@@ -1071,7 +1072,7 @@ public class TableItem extends Item {
         getImageWidth( index )
       + getSpacing( index )
       + getTextWidth( index, parent.getFont() )
-      + parent.getCellPadding().width;
+      + parent.getCellPadding().getWidth();
   }
 
   final int getCheckWidth( int index ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -33,7 +34,8 @@ public class ControlThemeAdapterImpl extends AbstractThemeAdapter implements Con
   }
 
   public Rectangle getPadding( Control control ) {
-    return getCssBoxDimensions( getPrimaryElement( control ), "padding", control );
+    CssBoxDimensions value = getCssBoxDimensions( getPrimaryElement( control ), "padding", control );
+    return CssBoxDimensions.createRectangle( value );
   }
 
   public Color getForeground( Control control ) {

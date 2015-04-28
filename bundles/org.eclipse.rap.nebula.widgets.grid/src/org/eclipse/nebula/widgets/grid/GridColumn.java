@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1137,7 +1137,7 @@ public class GridColumn extends Item {
   }
 
   int getHeaderWrapWidth() {
-    int result = width - parent.getHeaderPadding().width;
+    int result = width - parent.getHeaderPadding().getWidth();
     Image headerImage = getImage();
     if( headerImage != null ) {
       result -= headerImage.getBounds().width;
@@ -1151,7 +1151,7 @@ public class GridColumn extends Item {
   }
 
   int getFooterWrapWidth() {
-    int result = getFooterWidth() - parent.getHeaderPadding().width;
+    int result = getFooterWidth() - parent.getHeaderPadding().getWidth();
     if( footerImage != null ) {
       result -= footerImage.getBounds().width;
       result -= MARGIN_IMAGE;
@@ -1206,7 +1206,7 @@ public class GridColumn extends Item {
         contentWidth += MARGIN_IMAGE;
       }
     }
-    contentWidth += parent.getHeaderPadding().width;
+    contentWidth += parent.getHeaderPadding().getWidth();
     return contentWidth;
   }
 

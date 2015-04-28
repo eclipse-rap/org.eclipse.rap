@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.DateTime;
 
@@ -27,7 +27,7 @@ public class DateTimeThemeAdapter extends ControlThemeAdapterImpl {
     return getCssDimension( "DateTime-DropDownButton", "width", dateTime );
   }
 
-  public Rectangle getFieldPadding( DateTime dateTime ) {
+  public CssBoxDimensions getFieldPadding( DateTime dateTime ) {
     return getCssBoxDimensions( "DateTime-Field", "padding", dateTime );
   }
 

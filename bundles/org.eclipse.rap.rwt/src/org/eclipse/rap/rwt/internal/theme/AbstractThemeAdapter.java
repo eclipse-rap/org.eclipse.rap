@@ -81,9 +81,11 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
     return ( ( CssDimension )cssValue ).value;
   }
 
-  protected Rectangle getCssBoxDimensions( String cssElement, String cssProperty, Widget widget ) {
-    CssValue cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return CssBoxDimensions.createRectangle( ( CssBoxDimensions )cssValue );
+  protected CssBoxDimensions getCssBoxDimensions( String cssElement,
+                                                  String cssProperty,
+                                                  Widget widget )
+  {
+    return ( CssBoxDimensions )ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
   }
 
   protected Point getCssImageDimension( String cssElement, String cssProperty, Widget widget ) {

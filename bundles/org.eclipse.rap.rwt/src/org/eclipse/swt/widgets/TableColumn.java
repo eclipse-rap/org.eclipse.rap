@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -533,7 +533,7 @@ public class TableColumn extends Item {
       result += SORT_INDICATOR_WIDTH + SPACING;
     }
     TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-    result += adapter.getHeaderPadding( parent ).width;
+    result += adapter.getHeaderPadding( parent ).getWidth();
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {
       parent.checkData( parent.getItem( 0 ), 0 );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -584,7 +585,7 @@ public class CCombo extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    return TextSizeUtil.getCharHeight( getFont() ) + getListItemPadding().height;
+    return TextSizeUtil.getCharHeight( getFont() ) + getListItemPadding().getHeight();
   }
 
   /**
@@ -832,13 +833,13 @@ public class CCombo extends Composite {
         }
       }
     }
-    Rectangle fieldPadding = getFieldPadding();
+    CssBoxDimensions fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += fieldPadding.width + buttonWidth;
+      width += fieldPadding.getWidth() + buttonWidth;
     }
     if( height != 0 ) {
-      height += fieldPadding.height;
+      height += fieldPadding.getHeight();
       // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
       height += 2;
     }
@@ -1140,11 +1141,11 @@ public class CCombo extends Composite {
     selection.y = Math.min( selection.y, text.length() );
   }
 
-  private Rectangle getFieldPadding() {
+  private CssBoxDimensions getFieldPadding() {
     return getThemeAdapter().getFieldPadding( this );
   }
 
-  private Rectangle getListItemPadding() {
+  private CssBoxDimensions getListItemPadding() {
     return getThemeAdapter().getListItemPadding( this );
   }
 

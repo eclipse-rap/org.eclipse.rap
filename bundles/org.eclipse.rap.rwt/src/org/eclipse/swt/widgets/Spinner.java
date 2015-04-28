@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.text.NumberFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -484,10 +485,10 @@ public class Spinner extends Composite {
         string += "-";
       }
       Point textSize = TextSizeUtil.stringExtent( getFont(), string );
-      Rectangle padding = getFieldPadding();
+      CssBoxDimensions padding = getFieldPadding();
       int buttonWidth = getButtonWidth();
-      width = textSize.x + buttonWidth + padding.width;
-      height = textSize.y + padding.height;
+      width = textSize.x + buttonWidth + padding.getWidth();
+      height = textSize.y + padding.getHeight();
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -648,7 +649,7 @@ public class Spinner extends Composite {
   //////////////////
   // Helping methods
 
-  private Rectangle getFieldPadding() {
+  private CssBoxDimensions getFieldPadding() {
     SpinnerThemeAdapter themeAdapter = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getFieldPadding( this );
   }

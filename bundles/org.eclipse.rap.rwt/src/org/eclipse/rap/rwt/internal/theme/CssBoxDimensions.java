@@ -11,12 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import java.io.Serializable;
 import java.util.zip.CRC32;
 
 import org.eclipse.swt.graphics.Rectangle;
 
 
-public class CssBoxDimensions implements CssValue {
+public class CssBoxDimensions implements CssValue, Serializable {
 
   public static final CssBoxDimensions ZERO = new CssBoxDimensions( 0, 0, 0, 0 );
 

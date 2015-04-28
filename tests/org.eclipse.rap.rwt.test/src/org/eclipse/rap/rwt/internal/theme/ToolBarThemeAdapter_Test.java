@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,16 @@ import org.junit.Test;
 
 public class ToolBarThemeAdapter_Test {
 
+  private static CssBoxDimensions EIGHT = CssBoxDimensions.create( 8, 8, 8, 8 );
+
+  private Display display;
+  private Shell shell;
+
   @Before
   public void setUp() {
     Fixture.setUp();
-    Fixture.fakeNewRequest();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   @After
@@ -39,16 +45,19 @@ public class ToolBarThemeAdapter_Test {
 
   @Test
   public void testGetItemPaddingAndBorderWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
-    ToolBarThemeAdapter themeAdapter
-      = ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
+    ToolBarThemeAdapter themeAdapter = getThemeAdapter( toolBar );
+
     assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getItemBorder( toolBar ) );
-    assertEquals( new Rectangle( 8, 8, 16, 16 ), themeAdapter.getItemPadding( toolBar ) );
+    assertEquals( EIGHT, themeAdapter.getItemPadding( toolBar ) );
+
     ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getItemBorder( flatToolBar ) );
-    assertEquals( new Rectangle( 8, 8, 16, 16 ), themeAdapter.getItemPadding( flatToolBar ) );
+    assertEquals( EIGHT, themeAdapter.getItemPadding( flatToolBar ) );
+  }
+
+  private static ToolBarThemeAdapter getThemeAdapter( ToolBar toolBar ) {
+    return ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
   }
 
 }

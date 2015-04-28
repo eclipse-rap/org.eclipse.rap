@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,8 @@ public class ShellThemeAdapter_Test {
     setCustomTheme( "Shell-Titlebar.special { margin: 1px 2px 3px 4px }" );
     shell.setData( RWT.CUSTOM_VARIANT, "special" );
 
-    assertEquals( new Rectangle( 4, 1, 6, 4 ), shellThemeAdapter.getTitleBarMargin( shell ) );
+    CssBoxDimensions expected = CssBoxDimensions.create( 1, 2, 3, 4 );
+    assertEquals( expected, shellThemeAdapter.getTitleBarMargin( shell ) );
   }
 
   @Test

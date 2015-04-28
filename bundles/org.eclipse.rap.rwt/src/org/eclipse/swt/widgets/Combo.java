@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -859,13 +860,13 @@ public class Combo extends Composite {
         }
       }
     }
-    Rectangle fieldPadding = getFieldPadding();
+    CssBoxDimensions fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += fieldPadding.width + buttonWidth;
+      width += fieldPadding.getWidth() + buttonWidth;
     }
     if( height != 0 ) {
-      height += fieldPadding.height;
+      height += fieldPadding.getHeight();
       // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
       height += 2;
     }
@@ -1150,7 +1151,7 @@ public class Combo extends Composite {
     selection.y = Math.min( selection.y, text.length() );
   }
 
-  private Rectangle getFieldPadding() {
+  private CssBoxDimensions getFieldPadding() {
     ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return adapter.getFieldPadding( this );
   }

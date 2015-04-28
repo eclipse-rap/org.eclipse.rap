@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Group;
@@ -19,11 +20,11 @@ import org.eclipse.swt.widgets.Group;
 
 public class GroupThemeAdapter extends ControlThemeAdapterImpl {
 
-  public Rectangle getFramePadding( Group group ) {
+  public CssBoxDimensions getFramePadding( Group group ) {
     return getCssBoxDimensions( "Group-Frame", "padding", group );
   }
 
-  public Rectangle getFrameMargin( Group group ) {
+  public CssBoxDimensions getFrameMargin( Group group ) {
     return getCssBoxDimensions( "Group-Frame", "margin", group );
   }
 
@@ -32,24 +33,24 @@ public class GroupThemeAdapter extends ControlThemeAdapterImpl {
    * the control's border size.
    */
   public Rectangle getTrimmingSize( Group group ) {
-    Rectangle margin = getFrameMargin( group );
-    Rectangle padding = getFramePadding( group );
+    CssBoxDimensions margin = getFrameMargin( group );
+    CssBoxDimensions padding = getFramePadding( group );
     Rectangle frameWidth = getCssBorder( "Group-Frame", group );
-    int left = margin.x + padding.x + frameWidth.x;
-    int top = margin.y + padding.y + frameWidth.y;
+    int left = margin.left + padding.left + frameWidth.x;
+    int top = margin.top + padding.top + frameWidth.y;
     top = Math.max( top, TextSizeUtil.getCharHeight( group.getFont() ) );
-    int width = margin.width + padding.width + frameWidth.width;
-    int height = margin.height + padding.height + frameWidth.height;
+    int width = margin.getWidth() + padding.getWidth() + frameWidth.width;
+    int height = margin.getHeight() + padding.getHeight() + frameWidth.height;
     return new Rectangle( left, top, width, height );
   }
 
   public Rectangle getHeaderTrimmingSize( Group group ) {
-    Rectangle margin = getCssBoxDimensions( "Group-Label", "margin", group );
-    Rectangle padding = getCssBoxDimensions( "Group-Label", "padding", group );
-    int left = margin.x + padding.x;
-    int top = margin.y + padding.y;
-    int width = margin.width + padding.width;
-    int height = margin.height + padding.height;
+    CssBoxDimensions margin = getCssBoxDimensions( "Group-Label", "margin", group );
+    CssBoxDimensions padding = getCssBoxDimensions( "Group-Label", "padding", group );
+    int left = margin.left + padding.left;
+    int top = margin.top + padding.top;
+    int width = margin.getWidth() + padding.getWidth();
+    int height = margin.getHeight() + padding.getHeight();
     return new Rectangle( left, top, width, height );
   }
 

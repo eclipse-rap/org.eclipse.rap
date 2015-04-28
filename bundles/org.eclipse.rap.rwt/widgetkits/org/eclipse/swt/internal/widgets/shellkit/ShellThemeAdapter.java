@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
@@ -44,14 +43,11 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
     } );
   }
 
-  public Rectangle getTitleBarMargin( Shell shell ) {
-    Rectangle result;
+  public CssBoxDimensions getTitleBarMargin( Shell shell ) {
     if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
-      result = getCssBoxDimensions( "Shell-Titlebar", "margin", shell );
-    } else {
-      result = new Rectangle( 0, 0, 0, 0 );
+      return getCssBoxDimensions( "Shell-Titlebar", "margin", shell );
     }
-    return result;
+    return CssBoxDimensions.ZERO;
   }
 
   public int getTitleBarHeight( Shell shell ) {

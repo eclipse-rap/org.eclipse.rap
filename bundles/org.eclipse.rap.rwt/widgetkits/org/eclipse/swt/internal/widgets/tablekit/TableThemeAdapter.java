@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
 public class TableThemeAdapter extends ControlThemeAdapterImpl {
 
-  public Rectangle getCheckBoxMargin( Control control ) {
+  public CssBoxDimensions getCheckBoxMargin( Control control ) {
     return getCssBoxDimensions( "Table-Checkbox", "margin", control );
   }
 
@@ -32,7 +32,7 @@ public class TableThemeAdapter extends ControlThemeAdapterImpl {
     return getCssImageDimension( "Table-Checkbox", "background-image", control );
   }
 
-  public Rectangle getCellPadding( Control control ) {
+  public CssBoxDimensions getCellPadding( Control control ) {
     return getCssBoxDimensions( "Table-Cell", "padding", control );
   }
 
@@ -44,7 +44,7 @@ public class TableThemeAdapter extends ControlThemeAdapterImpl {
     return getCssBorderWidth( "TableColumn", "border-bottom", control );
   }
 
-  public Rectangle getHeaderPadding( Control control ) {
+  public CssBoxDimensions getHeaderPadding( Control control ) {
     return getCssBoxDimensions( "TableColumn", "padding", control );
   }
 

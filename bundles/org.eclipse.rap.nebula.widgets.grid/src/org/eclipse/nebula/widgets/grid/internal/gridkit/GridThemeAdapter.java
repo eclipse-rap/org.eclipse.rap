@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridkit;
 
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
@@ -25,7 +25,7 @@ public class GridThemeAdapter extends ControlThemeAdapterImpl {
     return getCssFont( "Tree", "font", control );
   }
 
-  public Rectangle getCheckBoxMargin( Control control ) {
+  public CssBoxDimensions getCheckBoxMargin( Control control ) {
     return getCssBoxDimensions( "Tree-Checkbox", "margin", control );
   }
 
@@ -33,7 +33,7 @@ public class GridThemeAdapter extends ControlThemeAdapterImpl {
     return getCssImageDimension( "Tree-Checkbox", "background-image", control );
   }
 
-  public Rectangle getCellPadding( Control control ) {
+  public CssBoxDimensions getCellPadding( Control control ) {
     return getCssBoxDimensions( "Tree-Cell", "padding", control );
   }
 
@@ -41,7 +41,7 @@ public class GridThemeAdapter extends ControlThemeAdapterImpl {
     return Math.max( 0, getCssDimension( "Tree-Cell", "spacing", control ) );
   }
 
-  public Rectangle getHeaderPadding( Control control ) {
+  public CssBoxDimensions getHeaderPadding( Control control ) {
     return getCssBoxDimensions( "TreeColumn", "padding", control );
   }
 

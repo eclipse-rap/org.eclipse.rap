@@ -1059,7 +1059,7 @@ public class TreeItem extends Item {
       result.x = parent.getVisualCellLeft( this, index );
       // Note: The left cell-padding is visually ignored for the tree-column
       if( !parent.isTreeColumn( index ) ) {
-        result.x += parent.getCellPadding().x;
+        result.x += parent.getCellPadding().left;
       }
       // SWT behavior on windows gives the correct y value
       // On Gtk the y value is always the same (eg. 1)

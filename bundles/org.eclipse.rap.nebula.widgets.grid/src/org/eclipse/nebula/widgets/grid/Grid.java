@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
 import org.eclipse.nebula.widgets.grid.internal.gridkit.GridThemeAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -2719,7 +2720,7 @@ public class Grid extends Composite {
     if( hasCheckBoxes() ) {
       result = Math.max( getCheckBoxImageOuterSize().y, result );
     }
-    result += getCellPadding().height;
+    result += getCellPadding().getHeight();
     result += GRID_WIDTH;
     result = Math.max( result, MIN_ITEM_HEIGHT );
     return result;
@@ -2788,7 +2789,7 @@ public class Grid extends Composite {
     result = Math.max( result, textHeight );
     int imageHeight = image == null ? 0 : image.getBounds().height;
     result = Math.max( result, imageHeight );
-    result += getHeaderPadding().height;
+    result += getHeaderPadding().getHeight();
     result += getThemeAdapter().getHeaderBorderBottomWidth( this );
     return result;
   }
@@ -2818,19 +2819,19 @@ public class Grid extends Composite {
 
   private int getCheckBoxOffset( int index ) {
     int result = -1;
-    Rectangle padding = getCellPadding();
+    CssBoxDimensions padding = getCellPadding();
     if(    isColumnCentered( index )
         && !isTreeColumn( index )
         && !hasColumnImages( index )
         && !hasColumnTexts( index ) )
     {
       result = ( getCellWidth( index ) - getCheckBoxImageSize().x ) / 2;
-      result = Math.max( result, padding.x );
+      result = Math.max( result, padding.left );
     }
     if( result == -1 ) {
-      result = getCheckBoxMargin().x;
+      result = getCheckBoxMargin().left;
       if( !isTreeColumn( index ) ) {
-        result += padding.x;
+        result += padding.left;
       }
     }
     return result;
@@ -2843,7 +2844,7 @@ public class Grid extends Composite {
   private int getImageOffset( int index ) {
     int result = 0;
     if( !isTreeColumn( index ) ) {
-      result += getCellPadding().x;
+      result += getCellPadding().left;
     }
     if( getColumn( index ).isCheck() ) {
       result += getCheckBoxImageOuterSize().x;
@@ -2855,7 +2856,7 @@ public class Grid extends Composite {
     if( hasColumnImages( index ) ) {
       int availableWidth = getCellWidth( index );
       if( !isTreeColumn( index ) ) {
-        availableWidth -= getCellPadding().x;
+        availableWidth -= getCellPadding().left;
       }
       availableWidth = Math.max( 0, availableWidth );
       return Math.min( getItemImageSize().x, availableWidth );
@@ -2873,9 +2874,7 @@ public class Grid extends Composite {
   }
 
   private int getTextWidth( int index ) {
-    Rectangle padding = getCellPadding();
-    int rightPadding = padding.width - padding.x;
-    return Math.max( 0, getCellWidth( index ) - getTextOffset( index ) - rightPadding );
+    return Math.max( 0, getCellWidth( index ) - getTextOffset( index ) - getCellPadding().right );
   }
 
   Point getItemImageSize() {
@@ -2908,8 +2907,8 @@ public class Grid extends Composite {
 
   Point getCheckBoxImageOuterSize() {
     Point imageSize = getCheckBoxImageSize();
-    Rectangle margin = getCheckBoxMargin();
-    return new Point( imageSize.x + margin.width, imageSize.y + margin.height );
+    CssBoxDimensions margin = getCheckBoxMargin();
+    return new Point( imageSize.x + margin.getWidth(), imageSize.y + margin.getHeight() );
   }
 
   boolean isTreeColumn( int index ) {
@@ -2932,21 +2931,21 @@ public class Grid extends Composite {
     return layoutCache.checkBoxImageSize;
   }
 
-  private Rectangle getCheckBoxMargin() {
+  private CssBoxDimensions getCheckBoxMargin() {
     if( !layoutCache.hasCheckBoxMargin() ) {
       layoutCache.checkBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
     }
     return layoutCache.checkBoxMargin;
   }
 
-  Rectangle getCellPadding() {
+  CssBoxDimensions getCellPadding() {
     if( !layoutCache.hasCellPadding() ) {
       layoutCache.cellPadding = getThemeAdapter().getCellPadding( this );
     }
     return layoutCache.cellPadding;
   }
 
-  Rectangle getHeaderPadding() {
+  CssBoxDimensions getHeaderPadding() {
     if( !layoutCache.hasHeaderPadding() ) {
       layoutCache.headerPadding = getThemeAdapter().getHeaderPadding( this );
     }
@@ -3219,10 +3218,10 @@ public class Grid extends Composite {
     int itemHeight = UNKNOWN;
     int cellSpacing = UNKNOWN;
     int indentationWidth = UNKNOWN;
-    Rectangle cellPadding;
-    Rectangle checkBoxMargin;
+    CssBoxDimensions cellPadding;
+    CssBoxDimensions checkBoxMargin;
     Point checkBoxImageSize;
-    Rectangle headerPadding;
+    CssBoxDimensions headerPadding;
 
     public boolean hasHeaderPadding() {
       return headerPadding != null;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -67,7 +68,7 @@ public class List extends Scrollable {
   private int topIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
-  private Rectangle bufferedItemPadding;
+  private CssBoxDimensions bufferedItemPadding;
   private int customItemHeight;
 
   /**
@@ -993,7 +994,7 @@ public class List extends Scrollable {
     checkWidget();
     int result = customItemHeight;
     if( result == -1 ) {
-      result = TextSizeUtil.getCharHeight( getFont() ) + getItemPadding().height;
+      result = TextSizeUtil.getCharHeight( getFont() ) + getItemPadding().getHeight();
     }
     return result;
   }
@@ -1151,7 +1152,8 @@ public class List extends Scrollable {
   }
 
   private int getItemWidth( String item ) {
-    return stringExtent( getFont(), item, isMarkupEnabledFor( this ) ).x + getItemPadding().width;
+    Point extent = stringExtent( getFont(), item, isMarkupEnabledFor( this ) );
+    return extent.x + getItemPadding().getWidth();
   }
 
   private int getMaxItemWidth() {
@@ -1201,7 +1203,7 @@ public class List extends Scrollable {
     return new Point( width, height );
   }
 
-  private Rectangle getItemPadding() {
+  private CssBoxDimensions getItemPadding() {
     if( bufferedItemPadding == null ) {
       ListThemeAdapter themeAdapter = ( ListThemeAdapter )getAdapter( IThemeAdapter.class );
       bufferedItemPadding = themeAdapter.getItemPadding( this );

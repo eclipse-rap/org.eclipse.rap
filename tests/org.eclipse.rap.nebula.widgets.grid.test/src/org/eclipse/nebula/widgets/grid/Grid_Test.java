@@ -35,6 +35,7 @@ import org.eclipse.nebula.widgets.grid.internal.NullScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -44,7 +45,6 @@ import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -1760,7 +1760,7 @@ public class Grid_Test {
   @Test
   public void testGetItemHeight_MinHeight() {
     Font font = new Font( display, "Arial", 8, SWT.NORMAL );
-    fakeCellPadding( grid, new Rectangle( 0, 0, 0, 0 ) );
+    fakeCellPadding( grid, 0, 0, 0, 0 );
     grid.setFont( font );
 
     assertEquals( 16, grid.getItemHeight() );
@@ -2946,7 +2946,7 @@ public class Grid_Test {
 
   @Test
   public void testGetImageWidth_withoutCellPadding() {
-    fakeCellPadding( grid, new Rectangle( 0, 0, 0, 0 ) );
+    fakeCellPadding( grid, 0, 0, 0, 0 );
     GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
     columns[ 1 ].setWidth( 100 );
     GridItem item = new GridItem( grid, SWT.NONE );
@@ -2959,7 +2959,7 @@ public class Grid_Test {
 
   @Test
   public void testGetImageWidth_withCellPadding() {
-    fakeCellPadding( grid, new Rectangle( 5, 0, 0, 0 ) );
+    fakeCellPadding( grid, 0, 0, 0, 5 );
     GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
     columns[ 1 ].setWidth( 100 );
     GridItem item = new GridItem( grid, SWT.NONE );
@@ -2988,8 +2988,8 @@ public class Grid_Test {
     grid.getAdapter( IGridAdapter.class ).doRedraw();
   }
 
-  private void fakeCellPadding( Grid grid, Rectangle padding ) {
-    grid.layoutCache.cellPadding = padding;
+  private void fakeCellPadding( Grid grid, int top, int right, int bottom, int left ) {
+    grid.layoutCache.cellPadding = CssBoxDimensions.create( top, right, bottom, left );
   }
 
   private int getCheckBoxOffset( int index ) {

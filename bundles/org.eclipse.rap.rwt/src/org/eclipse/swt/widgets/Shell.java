@@ -13,6 +13,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -501,7 +502,7 @@ public class Shell extends Decorations {
     Rectangle bounds = getBounds();
     Rectangle padding = getPadding();
     int hTopTrim;
-    hTopTrim = getTitleBarMargin().height;
+    hTopTrim = getTitleBarMargin().getHeight();
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
     Rectangle border = getBorder();
@@ -532,7 +533,7 @@ public class Shell extends Decorations {
   }
 
   private int getMinHeightLimit() {
-    return getTitleBarMargin().height + getTitleBarHeight() + getBorder().height;
+    return getTitleBarMargin().getHeight() + getTitleBarHeight() + getBorder().height;
   }
 
   private Rectangle getMenuBounds() {
@@ -564,7 +565,7 @@ public class Shell extends Decorations {
   }
 
   private int getTopTrim() {
-    return getTitleBarMargin().height + getTitleBarHeight() + getMenuBarHeight();
+    return getTitleBarMargin().getHeight() + getTitleBarHeight() + getMenuBarHeight();
   }
 
   private int getTitleBarHeight() {
@@ -576,13 +577,12 @@ public class Shell extends Decorations {
     return result;
   }
 
-  private Rectangle getTitleBarMargin() {
-    Rectangle result = new Rectangle( 0, 0, 0, 0 );
+  private CssBoxDimensions getTitleBarMargin() {
     if( !getFullScreen() ) {
       ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
-      result = themeAdapter.getTitleBarMargin( this );
+      return themeAdapter.getTitleBarMargin( this );
     }
-    return result;
+    return CssBoxDimensions.ZERO;
   }
 
   private int getMenuBarHeight() {
