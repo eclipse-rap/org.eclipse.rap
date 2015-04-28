@@ -510,7 +510,9 @@ public class PageLayout implements IPageLayout {
         // Create the folder.
         ContainerPlaceholder folder = new ContainerPlaceholder(null);
         folder.setContainer(rootLayoutContainer);
-        folder.setRealContainer(new ViewStack(rootLayoutContainer.page));
+        ViewStack viewStack = new ViewStack(rootLayoutContainer.page);
+        viewStack.setID(folderId);
+        folder.setRealContainer(viewStack);
         folder.setID(folderId);
         addPart(folder, folderId, relationship, ratio, refId);
 
