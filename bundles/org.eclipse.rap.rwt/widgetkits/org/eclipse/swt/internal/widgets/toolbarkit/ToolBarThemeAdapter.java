@@ -12,10 +12,14 @@ package org.eclipse.swt.internal.widgets.toolbarkit;
 
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
@@ -24,14 +28,16 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
   protected void configureMatcher( WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
     matcher.addStyle( "FLAT", SWT.FLAT );
+    matcher.addState( "first", createFirstItemMatcher() );
+    matcher.addState( "last", createLastItemMatcher() );
   }
 
-  public BoxDimensions getItemBorder( Control control ) {
-    return getCssBorder( "ToolItem", control );
+  public BoxDimensions getItemBorder( ToolItem item ) {
+    return getCssBorder( "ToolItem", item );
   }
 
-  public BoxDimensions getItemPadding( Control control ) {
-    return getCssBoxDimensions( "ToolItem", "padding", control ).dimensions;
+  public BoxDimensions getItemPadding( ToolItem item ) {
+    return getCssBoxDimensions( "ToolItem", "padding", item ).dimensions;
   }
 
   public BoxDimensions getToolBarPadding( Control control ) {
@@ -42,8 +48,8 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
     return getCssDimension( "ToolBar", "spacing", control );
   }
 
-  public int getItemSpacing( Control control ) {
-    return getCssDimension( "ToolItem", "spacing", control );
+  public int getItemSpacing( ToolItem item ) {
+    return getCssDimension( "ToolItem", "spacing", item );
   }
 
   public int getSeparatorWidth( Control control ) {
@@ -52,6 +58,34 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
 
   public Size getDropDownImageSize( Control control ) {
     return getCssImageSize( "ToolItem-DropDownIcon", "background-image", control );
+  }
+
+  private static Constraint createFirstItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof ToolItem ) {
+          ToolItem item = ( ToolItem )widget;
+          ToolBar toolBar = item.getParent();
+          return toolBar.getItem( 0 ) == item;
+        }
+        return false;
+      }
+    };
+  }
+
+  private static Constraint createLastItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof ToolItem ) {
+          ToolItem item = ( ToolItem )widget;
+          ToolBar toolBar = item.getParent();
+          return toolBar.getItem( toolBar.getItemCount() - 1 ) == item;
+        }
+        return false;
+      }
+    };
   }
 
 }

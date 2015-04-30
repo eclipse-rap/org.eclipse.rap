@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -119,6 +119,12 @@
 
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent ToolBar." />
+
+      <state name="first"
+          description="Applies to the first tool item." />
+
+      <state name="last"
+          description="Applies to the last tool item." />
 
       <state name="hover"
           description="Applies on mouse over." />

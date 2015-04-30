@@ -33,6 +33,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     this.setAppearance( "toolbar-button" );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keyup", this._onKeyUp );
+    this.addEventListener( "changeParent", this._onChangeParent, this );
   },
 
   destruct : function() {
@@ -222,6 +223,35 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     // overwritten:
     _notifySelected : function() {
       rwt.remote.EventUtil.notifySelected( this );
+    },
+
+    _onChangeParent : function( event ) {
+      var oldParent = event.getOldValue();
+      var newParent = event.getValue();
+      if( oldParent ) {
+        this._toggleFirstLastState( oldParent );
+      } else {
+        this._toggleFirstLastState( newParent );
+      }
+    },
+
+    _toggleFirstLastState : function( parent ) {
+      var first;
+      var last;
+      parent.forEachVisibleChild( function() {
+        if( this instanceof rwt.widgets.ToolItem ) {
+          this.toggleState( "first", false );
+          this.toggleState( "last", false );
+          if( !first ) {
+            first = this;
+          }
+          last = this;
+        }
+      } );
+      if( first ) {
+        first.toggleState( "first", true );
+        last.toggleState( "last", true );
+      }
     }
 
   }

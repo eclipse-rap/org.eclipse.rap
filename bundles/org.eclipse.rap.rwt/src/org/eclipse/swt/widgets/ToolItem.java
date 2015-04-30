@@ -620,7 +620,7 @@ public class ToolItem extends Item {
   }
 
   private BoxDimensions getBorder() {
-    return getToolBarThemeAdapter().getItemBorder( parent );
+    return getToolBarThemeAdapter().getItemBorder( this );
   }
 
   private Size getDropDownImageSize() {
@@ -628,7 +628,7 @@ public class ToolItem extends Item {
   }
 
   private BoxDimensions getPadding() {
-    return getToolBarThemeAdapter().getItemPadding( parent );
+    return getToolBarThemeAdapter().getItemPadding( this );
   }
 
   private int getToolBarSpacing() {
@@ -636,7 +636,7 @@ public class ToolItem extends Item {
   }
 
   private int getSpacing() {
-    return getToolBarThemeAdapter().getItemSpacing( parent );
+    return getToolBarThemeAdapter().getItemSpacing( this );
   }
 
   int getSeparatorWidth() {

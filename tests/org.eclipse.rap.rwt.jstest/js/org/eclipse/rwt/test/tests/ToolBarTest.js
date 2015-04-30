@@ -713,6 +713,73 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       shell.destroy();
     },
 
+    testToggleFirstLastState_onSingleItem : function() {
+      var shell = createActiveShell();
+      var item = new rwt.widgets.ToolItem( "push" );
+
+      shell.add( item );
+
+      assertTrue( item.hasState( "first" ) );
+      assertTrue( item.hasState( "last" ) );
+      shell.destroy();
+    },
+
+    testToggleFirstLastState_onMultipleItems : function() {
+      var shell = createActiveShell();
+      var item1 = new rwt.widgets.ToolItem( "push" );
+      var item2 = new rwt.widgets.ToolItem( "push" );
+      var item3 = new rwt.widgets.ToolItem( "push" );
+
+      shell.add( item1 );
+      shell.add( item2 );
+      shell.add( item3 );
+
+      assertTrue( item1.hasState( "first" ) );
+      assertFalse( item1.hasState( "last" ) );
+      assertFalse( item2.hasState( "first" ) );
+      assertFalse( item2.hasState( "last" ) );
+      assertFalse( item3.hasState( "first" ) );
+      assertTrue( item3.hasState( "last" ) );
+      shell.destroy();
+    },
+
+    testToggleFirstLastState_onItemRemoval : function() {
+      var shell = createActiveShell();
+      var item1 = new rwt.widgets.ToolItem( "push" );
+      var item2 = new rwt.widgets.ToolItem( "push" );
+      var item3 = new rwt.widgets.ToolItem( "push" );
+      shell.add( item1 );
+      shell.add( item2 );
+      shell.add( item3 );
+
+      shell.remove( item3 );
+
+      assertTrue( item1.hasState( "first" ) );
+      assertFalse( item1.hasState( "last" ) );
+      assertFalse( item2.hasState( "first" ) );
+      assertTrue( item2.hasState( "last" ) );
+      shell.destroy();
+    },
+
+    testToggleFirstLastState_onAddingItemAtFirstPosition : function() {
+      var shell = createActiveShell();
+      var item1 = new rwt.widgets.ToolItem( "push" );
+      var item2 = new rwt.widgets.ToolItem( "push" );
+      var item3 = new rwt.widgets.ToolItem( "push" );
+      shell.add( item1 );
+      shell.add( item2 );
+
+      shell.addAt( item3, 0 );
+
+      assertFalse( item1.hasState( "first" ) );
+      assertFalse( item1.hasState( "last" ) );
+      assertFalse( item2.hasState( "first" ) );
+      assertTrue( item2.hasState( "last" ) );
+      assertTrue( item3.hasState( "first" ) );
+      assertFalse( item3.hasState( "last" ) );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 

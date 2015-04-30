@@ -12,48 +12,99 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
-import org.junit.After;
+import org.eclipse.swt.widgets.ToolItem;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ToolBarThemeAdapter_Test {
 
-  private static BoxDimensions EIGHT = new BoxDimensions( 8, 8, 8, 8 );
+  @Rule
+  public TestContext context = new TestContext();
 
-  private Display display;
   private Shell shell;
+  private ToolBar toolBar;
+  private ToolItem firstItem;
+  private ToolItem item;
+  private ToolItem lastItem;
 
   @Before
-  public void setUp() {
-    Fixture.setUp();
-    display = new Display();
+  public void setUp() throws Exception {
+    Display display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    toolBar = new ToolBar( shell, SWT.NONE );
+    firstItem = new ToolItem( toolBar, SWT.NONE );
+    item = new ToolItem( toolBar, SWT.NONE );
+    lastItem = new ToolItem( toolBar, SWT.NONE );
+    setCustomTheme();
   }
 
   @Test
-  public void testGetItemPaddingAndBorderWidth() {
-    ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
-    ToolBarThemeAdapter themeAdapter = getThemeAdapter( toolBar );
+  public void testGetItemPadding() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemPadding( item );
+    assertEquals( new BoxDimensions( 1, 1, 1, 1 ), actual );
+  }
 
-    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), themeAdapter.getItemBorder( toolBar ) );
-    assertEquals( EIGHT, themeAdapter.getItemPadding( toolBar ) );
+  @Test
+  public void testGetItemPadding_onFirst() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemPadding( firstItem );
+    assertEquals( new BoxDimensions( 2, 2, 2, 2 ), actual );
+  }
 
-    ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
-    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), themeAdapter.getItemBorder( flatToolBar ) );
-    assertEquals( EIGHT, themeAdapter.getItemPadding( flatToolBar ) );
+  @Test
+  public void testGetItemPadding_onLast() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemPadding( lastItem );
+    assertEquals( new BoxDimensions( 3, 3, 3, 3 ), actual );
+  }
+
+  @Test
+  public void testGetItemSpacing() {
+    assertEquals( 1, getThemeAdapter( toolBar ).getItemSpacing( item ) );
+  }
+
+  @Test
+  public void testGetItemSpacing_onFirst() {
+    assertEquals( 2, getThemeAdapter( toolBar ).getItemSpacing( firstItem ) );
+  }
+
+  @Test
+  public void testGetItemSpacing_onLast() {
+    assertEquals( 3, getThemeAdapter( toolBar ).getItemSpacing( lastItem ) );
+  }
+
+  @Test
+  public void testGetItemBorder() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemBorder( item );
+    assertEquals( new BoxDimensions( 1, 1, 1, 1 ), actual );
+  }
+
+  @Test
+  public void testGetItemBorder_onFirst() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemBorder( firstItem );
+    assertEquals( new BoxDimensions( 2, 2, 2, 2 ), actual );
+  }
+
+  @Test
+  public void testGetItemBorder_onLast() {
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemBorder( lastItem );
+    assertEquals( new BoxDimensions( 3, 3, 3, 3 ), actual );
+  }
+
+  private static void setCustomTheme() throws Exception {
+    StringBuilder css = new StringBuilder()
+      .append( "ToolItem { padding: 1px; spacing: 1px; border: 1px solid black }" )
+      .append( "ToolItem:first { padding: 2px; spacing: 2px; border: 2px solid black }" )
+      .append( "ToolItem:last { padding: 3px; spacing: 3px; border: 3px solid black }" );
+    ThemeTestUtil.registerTheme( "custom", css.toString(), null );
+    ThemeTestUtil.setCurrentThemeId( "custom" );
   }
 
   private static ToolBarThemeAdapter getThemeAdapter( ToolBar toolBar ) {
