@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     showErrorBox : function( errorType, freeze ) {
       if( freeze ) {
         this._freezeApplication();
+      }
+      if( errorType !== "connection error" ) {
+        this._unloadAllIframes();
       }
       this._overlay = this._createOverlay();
       this._box = this._createErrorBoxArea( 450, 150 );
@@ -268,6 +271,13 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
         } catch( exTwo ) {
           // ignore
         }
+      }
+    },
+
+    _unloadAllIframes : function() {
+      var iframes = document.getElementsByTagName( "iframe" );
+      for( var i = 0; i < iframes.length; i++ ) {
+        iframes[ i ].src = rwt.remote.Connection.RESOURCE_PATH + "static/html/blank.html";
       }
     },
 
