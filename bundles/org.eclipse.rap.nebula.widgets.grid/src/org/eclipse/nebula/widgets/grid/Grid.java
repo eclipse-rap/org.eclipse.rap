@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.grid.internal.gridkit.GridThemeAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeListener;
@@ -2967,7 +2967,7 @@ public class Grid extends Composite {
   }
 
   private GridThemeAdapter getThemeAdapter() {
-    return ( GridThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( GridThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private static int checkStyle( int style ) {

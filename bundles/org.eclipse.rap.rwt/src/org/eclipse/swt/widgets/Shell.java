@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ShellListener;
@@ -571,7 +571,7 @@ public class Shell extends Decorations {
   private int getTitleBarHeight() {
     int result = 0;
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
       result = themeAdapter.getTitleBarHeight( this );
     }
     return result;
@@ -579,14 +579,14 @@ public class Shell extends Decorations {
 
   private CssBoxDimensions getTitleBarMargin() {
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
       return themeAdapter.getTitleBarMargin( this );
     }
     return CssBoxDimensions.ZERO;
   }
 
   private int getMenuBarHeight() {
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getMenuBarHeight( this );
   }
 

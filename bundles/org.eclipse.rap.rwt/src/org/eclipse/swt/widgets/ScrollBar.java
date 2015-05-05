@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -546,7 +546,7 @@ public class ScrollBar extends Widget {
   }
 
   private int getScrollBarWidth() {
-    ScrollBarThemeAdapter themeAdapter = ( ScrollBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    ScrollBarThemeAdapter themeAdapter = ( ScrollBarThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getScrollBarWidth( this );
   }
 }

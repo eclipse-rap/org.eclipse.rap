@@ -13,7 +13,7 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
@@ -1070,7 +1070,7 @@ public class CTabFolder extends Composite {
     Color result = selectionBackground;
     if( result == null ) {
       CTabFolderThemeAdapter themeAdapter
-        = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+        = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
       result = themeAdapter.getSelectedBackground( this );
     }
     if( result == null ) {
@@ -1238,7 +1238,7 @@ public class CTabFolder extends Composite {
     Color result = selectionForeground;
     if( result == null ) {
       CTabFolderThemeAdapter themeAdapter
-        = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+        = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
       result = themeAdapter.getSelectedForeground( this );
     }
     if( result == null ) {
@@ -2325,19 +2325,19 @@ CTabItem[] items = itemHolder.getItems();
 
   CssBoxDimensions getItemPadding( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getItemPadding( selected );
   }
 
   int getItemSpacing( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getItemSpacing( selected );
   }
 
   Font getItemFont( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getItemFont( selected );
   }
 

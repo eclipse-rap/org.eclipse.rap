@@ -12,7 +12,7 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyListener;
@@ -1154,7 +1154,7 @@ public class CCombo extends Composite {
   }
 
   private CComboThemeAdapter getThemeAdapter() {
-    return ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( CComboThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private static int checkStyle( int style ) {

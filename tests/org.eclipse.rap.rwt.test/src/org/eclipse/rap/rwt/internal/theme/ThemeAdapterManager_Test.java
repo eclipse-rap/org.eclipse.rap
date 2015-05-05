@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class ThemeAdapterManager_Test {
   public void testGetThemeAdapterForWidgetWithThemeAdapter() {
     ThemeAdapterManager themeAdapterManager = new ThemeAdapterManager();
 
-    IThemeAdapter themeAdapter = themeAdapterManager.getThemeAdapter( shell );
+    ThemeAdapter themeAdapter = themeAdapterManager.getThemeAdapter( shell );
     assertNotNull( themeAdapter );
   }
 
@@ -64,8 +64,8 @@ public class ThemeAdapterManager_Test {
   public void testGetThemeAdapterReturnsSameAdapterForSameWidget() {
     ThemeAdapterManager themeAdapterManager = new ThemeAdapterManager();
 
-    IThemeAdapter themeAdapter1 = themeAdapterManager.getThemeAdapter( shell );
-    IThemeAdapter themeAdapter2 = themeAdapterManager.getThemeAdapter( shell );
+    ThemeAdapter themeAdapter1 = themeAdapterManager.getThemeAdapter( shell );
+    ThemeAdapter themeAdapter2 = themeAdapterManager.getThemeAdapter( shell );
     assertSame( themeAdapter1, themeAdapter2 );
   }
 

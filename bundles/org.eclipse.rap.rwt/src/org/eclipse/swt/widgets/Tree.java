@@ -23,7 +23,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -2011,7 +2011,7 @@ public class Tree extends Composite {
   }
 
   private TreeThemeAdapter getThemeAdapter() {
-    return ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( TreeThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private Point getCheckImageOuterSize() {

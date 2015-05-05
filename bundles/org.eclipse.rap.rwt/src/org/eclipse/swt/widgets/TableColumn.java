@@ -16,7 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlListener;
@@ -532,7 +532,7 @@ public class TableColumn extends Item {
     if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
       result += SORT_INDICATOR_WIDTH + SPACING;
     }
-    TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( ThemeAdapter.class );
     result += adapter.getHeaderPadding( parent ).getWidth();
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {

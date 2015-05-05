@@ -57,7 +57,7 @@ public class ToolBarThemeAdapter_Test {
   }
 
   private static ToolBarThemeAdapter getThemeAdapter( ToolBar toolBar ) {
-    return ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
+    return ( ToolBarThemeAdapter )toolBar.getAdapter( ThemeAdapter.class );
   }
 
 }

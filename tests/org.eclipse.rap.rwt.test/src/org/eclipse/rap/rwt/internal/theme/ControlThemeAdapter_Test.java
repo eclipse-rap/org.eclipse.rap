@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ public class ControlThemeAdapter_Test {
   }
 
   private ControlThemeAdapter getControlThemeAdapter( Control control ) {
-    return ( ControlThemeAdapterImpl )control.getAdapter( IThemeAdapter.class );
+    return ( ControlThemeAdapterImpl )control.getAdapter( ThemeAdapter.class );
   }
 
 }

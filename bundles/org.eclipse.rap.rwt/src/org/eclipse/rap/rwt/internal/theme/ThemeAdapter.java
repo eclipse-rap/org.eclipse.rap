@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * Base class for theme adapters.
  */
-public abstract class AbstractThemeAdapter implements IThemeAdapter {
+public abstract class ThemeAdapter {
 
   private final WidgetMatcher matcher;
 
-  public AbstractThemeAdapter() {
+  public ThemeAdapter() {
     matcher = new WidgetMatcher();
     configureMatcher( matcher );
   }

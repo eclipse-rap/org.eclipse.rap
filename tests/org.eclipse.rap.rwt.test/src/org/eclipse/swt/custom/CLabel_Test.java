@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -112,7 +112,7 @@ public class CLabel_Test {
 
   @Test
   public void testSetMargins() {
-    CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
+    CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( ThemeAdapter.class );
     Rectangle padding = themeAdapter.getPadding( label );
     assertEquals( padding.x, label.getLeftMargin() );
     assertEquals( padding.y, label.getTopMargin() );

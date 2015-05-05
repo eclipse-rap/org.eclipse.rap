@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
@@ -43,7 +43,7 @@ public class ThemeAdapter_Test {
   public void testAdapterForShell() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    Object adapter = shell.getAdapter( IThemeAdapter.class );
+    Object adapter = shell.getAdapter( ThemeAdapter.class );
     assertNotNull( adapter );
     assertTrue( adapter instanceof ShellThemeAdapter );
   }
@@ -53,7 +53,7 @@ public class ThemeAdapter_Test {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
-    Object adapter = composite.getAdapter( IThemeAdapter.class );
+    Object adapter = composite.getAdapter( ThemeAdapter.class );
     assertNotNull( adapter );
     assertTrue( adapter instanceof ControlThemeAdapterImpl );
   }
@@ -63,7 +63,7 @@ public class ThemeAdapter_Test {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     CustomWidget customWidget = new CustomWidget( shell, SWT.NONE );
-    Object adapter = customWidget.getAdapter( IThemeAdapter.class );
+    Object adapter = customWidget.getAdapter( ThemeAdapter.class );
     assertNotNull( adapter );
     assertTrue( adapter instanceof ControlThemeAdapterImpl );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -364,7 +364,7 @@ public class FileUpload extends Canvas {
   }
 
   private FileUploadThemeAdapter getThemeAdapter() {
-    return ( FileUploadThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( FileUploadThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   ////////////////

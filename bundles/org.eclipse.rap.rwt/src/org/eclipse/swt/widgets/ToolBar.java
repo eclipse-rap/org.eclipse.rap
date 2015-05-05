@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -288,7 +288,7 @@ public class ToolBar extends Composite {
   }
 
   CssBoxDimensions getToolBarPadding() {
-    ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getToolBarPadding( this );
   }
 

@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyListener;
@@ -1152,12 +1152,12 @@ public class Combo extends Composite {
   }
 
   private CssBoxDimensions getFieldPadding() {
-    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( ThemeAdapter.class );
     return adapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( ThemeAdapter.class );
     return adapter.getButtonWidth( this );
   }
 

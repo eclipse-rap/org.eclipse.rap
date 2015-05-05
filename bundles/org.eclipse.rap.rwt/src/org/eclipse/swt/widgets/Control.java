@@ -15,7 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1482,7 +1482,7 @@ public abstract class Control extends Widget implements Drawable {
       }
       result = ( T )controlAdapter;
     } else if( adapter == ControlThemeAdapter.class ) {
-      result = ( T )super.getAdapter( IThemeAdapter.class );
+      result = ( T )super.getAdapter( ThemeAdapter.class );
     } else {
       result = super.getAdapter( adapter );
     }

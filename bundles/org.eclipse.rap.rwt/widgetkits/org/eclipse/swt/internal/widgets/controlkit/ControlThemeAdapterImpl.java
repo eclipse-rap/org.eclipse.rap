@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 
-public class ControlThemeAdapterImpl extends AbstractThemeAdapter implements ControlThemeAdapter {
+public class ControlThemeAdapterImpl extends ThemeAdapter implements ControlThemeAdapter {
 
   @Override
   protected void configureMatcher( WidgetMatcher matcher ) {

@@ -35,7 +35,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
@@ -97,7 +97,7 @@ public class Control_Test {
   public void testGetAdapterWithControlThemeAdapter() {
     Control control = new Button( shell, SWT.NONE );
     Object controlThemeAdapter = control.getAdapter( ControlThemeAdapter.class );
-    Object themeAdapter = control.getAdapter( IThemeAdapter.class );
+    Object themeAdapter = control.getAdapter( ThemeAdapter.class );
     assertNotNull( controlThemeAdapter );
     assertSame( controlThemeAdapter, themeAdapter );
   }
@@ -1237,7 +1237,7 @@ public class Control_Test {
   }
 
   private static ControlThemeAdapter getThemeAdapter( Control control ) {
-    return ( ControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
+    return ( ControlThemeAdapter )control.getAdapter( ThemeAdapter.class );
   }
 
   @Test

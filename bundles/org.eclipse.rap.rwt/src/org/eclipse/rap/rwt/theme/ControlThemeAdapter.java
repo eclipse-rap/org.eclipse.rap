@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.theme;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -25,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
  *
  * @since 2.0
  */
-public interface ControlThemeAdapter extends IThemeAdapter {
+public interface ControlThemeAdapter {
 
   /**
    * Returns the border of the specified control.

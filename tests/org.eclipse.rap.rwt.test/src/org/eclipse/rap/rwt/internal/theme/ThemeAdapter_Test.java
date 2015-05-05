@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AbstractThemeAdapter_Test {
+public class ThemeAdapter_Test {
 
   private Shell shell;
 
@@ -55,19 +55,19 @@ public class AbstractThemeAdapter_Test {
   @Test
   public void testGetPrimaryElementForLabel() {
     Label label = new Label( shell, SWT.NONE );
-    assertEquals( "Label", AbstractThemeAdapter.getPrimaryElement( label ) );
+    assertEquals( "Label", ThemeAdapter.getPrimaryElement( label ) );
   }
 
   @Test
   public void testGetPrimaryElementForButton() {
     Button button = new Button( shell, SWT.BORDER );
-    assertEquals( "Button", AbstractThemeAdapter.getPrimaryElement( button ) );
+    assertEquals( "Button", ThemeAdapter.getPrimaryElement( button ) );
   }
 
   @Test
   public void testGetPrimaryElementForTree() {
     Tree tree = new Tree( shell, SWT.BORDER );
-    assertEquals( "Tree", AbstractThemeAdapter.getPrimaryElement( tree ) );
+    assertEquals( "Tree", ThemeAdapter.getPrimaryElement( tree ) );
   }
 
   @Test
@@ -75,7 +75,7 @@ public class AbstractThemeAdapter_Test {
     Composite customComposite = new Composite( shell, SWT.BORDER ) {
       // empty subclass
     };
-    assertEquals( "Composite", AbstractThemeAdapter.getPrimaryElement( customComposite ) );
+    assertEquals( "Composite", ThemeAdapter.getPrimaryElement( customComposite ) );
   }
 
   @Test
@@ -88,7 +88,7 @@ public class AbstractThemeAdapter_Test {
     themeManager.initialize();
     themeManager.registerTheme( theme );
     themeManager.activate();
-    AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
+    ThemeAdapter adapter = new ThemeAdapter() {
       @Override
       protected void configureMatcher( WidgetMatcher matcher ) {
       }

@@ -17,7 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -561,7 +561,7 @@ public class Button extends Control {
   }
 
   private ButtonThemeAdapter getThemeAdapter() {
-    return ( ButtonThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( ButtonThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
 }

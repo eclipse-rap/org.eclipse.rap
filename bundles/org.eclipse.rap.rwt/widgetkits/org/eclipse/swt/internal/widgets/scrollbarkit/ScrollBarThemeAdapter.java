@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.scrollbarkit;
 
-import org.eclipse.rap.rwt.internal.theme.AbstractThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ScrollBar;
 
 
-public class ScrollBarThemeAdapter extends AbstractThemeAdapter {
+public class ScrollBarThemeAdapter extends ThemeAdapter {
 
   protected void configureMatcher( WidgetMatcher matcher ) {
     matcher.addStyle( "HORIZONTAL", SWT.HORIZONTAL );

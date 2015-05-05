@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -954,7 +954,7 @@ public class DateTime extends Composite {
   }
 
   private DateTimeThemeAdapter getDateTimeThemeAdapter() {
-    return ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( DateTimeThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private int getDropDownButtonWidth() {

@@ -16,7 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlListener;
@@ -361,7 +361,7 @@ public class TreeColumn extends Item {
         result += MARGIN_IMAGE;
       }
     }
-    TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( ThemeAdapter.class );
     result += themeAdapter.getHeaderPadding( parent ).getWidth();
     return result;
   }

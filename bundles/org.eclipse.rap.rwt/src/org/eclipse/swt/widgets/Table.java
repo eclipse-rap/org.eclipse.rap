@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -140,7 +140,7 @@ public class Table extends Composite {
     }
 
     public int getCheckWidth() {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       return themeAdapter.getCheckBoxImageSize( Table.this ).x;
     }
 
@@ -1900,7 +1900,7 @@ public class Table extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       result += themeAdapter.getHeaderBorderBottomWidth( this );
       result += themeAdapter.getHeaderPadding( this ).getHeight();
     }
@@ -2388,7 +2388,7 @@ public class Table extends Composite {
 
   CssBoxDimensions getCellPadding() {
     if( bufferedCellPadding == null ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       bufferedCellPadding = themeAdapter.getCellPadding( this );
     }
     return bufferedCellPadding;
@@ -2396,7 +2396,7 @@ public class Table extends Composite {
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       bufferedCellSpacing = themeAdapter.getCellSpacing( parent );
     }
     return bufferedCellSpacing;
@@ -2476,7 +2476,7 @@ public class Table extends Composite {
   final Point getCheckSize() {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.CHECK ) != 0 ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       Point checkImageSize = themeAdapter.getCheckBoxImageSize( this );
       CssBoxDimensions margin = getCheckBoxMargin();
       result.x = checkImageSize.x + margin.getWidth();
@@ -2486,7 +2486,7 @@ public class Table extends Composite {
   }
 
   final CssBoxDimensions getCheckBoxMargin() {
-    TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+    TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
     CssBoxDimensions margin = themeAdapter.getCheckBoxMargin( this );
     if( !margin.equals( CssBoxDimensions.ZERO ) ) {
       return margin;
@@ -2644,7 +2644,7 @@ public class Table extends Composite {
     IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
     Font result = controlAdapter.getUserFont();
     if( result == null ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
       result = themeAdapter.getHeaderFont( this );
     }
     return result;

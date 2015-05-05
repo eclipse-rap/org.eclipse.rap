@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -598,7 +598,7 @@ public class TabFolder extends Composite {
   }
 
   TabFolderThemeAdapter getThemeAdapter() {
-    return ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+    return ( TabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   @Override

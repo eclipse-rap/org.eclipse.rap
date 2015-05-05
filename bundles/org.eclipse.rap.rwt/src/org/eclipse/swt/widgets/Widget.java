@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
@@ -180,7 +180,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         widgetAdapter = createWidgetAdapter( widgetAdapter.getParent() );
       }
       result = ( T )widgetAdapter;
-    } else if( adapter == IThemeAdapter.class ) {
+    } else if( adapter == ThemeAdapter.class ) {
       ApplicationContextImpl applicationContext = getApplicationContext();
       ThemeManager themeManager = applicationContext.getThemeManager();
       result = ( T )themeManager.getThemeAdapterManager().getThemeAdapter( this );

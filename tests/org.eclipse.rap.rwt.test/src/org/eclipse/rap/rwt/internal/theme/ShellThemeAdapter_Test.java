@@ -133,7 +133,7 @@ public class ShellThemeAdapter_Test {
   }
 
   private static ShellThemeAdapter getShellThemeAdapter( Shell shell ) {
-    return ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    return ( ShellThemeAdapter )shell.getAdapter( ThemeAdapter.class );
   }
 
 }

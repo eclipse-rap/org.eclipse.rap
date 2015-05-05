@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,23 +23,23 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ThemeAdapterManager {
-  private final Map<Class,IThemeAdapter> themeAdapters;
+  private final Map<Class,ThemeAdapter> themeAdapters;
 
   public ThemeAdapterManager() {
-    themeAdapters = new HashMap<Class, IThemeAdapter>();
+    themeAdapters = new HashMap<Class, ThemeAdapter>();
   }
 
   public void reset() {
     themeAdapters.clear();
   }
 
-  public IThemeAdapter getThemeAdapter( Widget widget ) {
+  public ThemeAdapter getThemeAdapter( Widget widget ) {
     Class widgetClass = widget.getClass();
-    IThemeAdapter result;
+    ThemeAdapter result;
     synchronized( themeAdapters ) {
       result = themeAdapters.get( widgetClass );
       if( result == null ) {
-        IThemeAdapter adapter = findThemeAdapter( widgetClass );
+        ThemeAdapter adapter = findThemeAdapter( widgetClass );
         themeAdapters.put( widgetClass, adapter );
         result = adapter;
       }
@@ -48,8 +48,8 @@ public final class ThemeAdapterManager {
     return result;
   }
 
-  private static IThemeAdapter findThemeAdapter( Class widgetClass ) {
-    IThemeAdapter result = null;
+  private static ThemeAdapter findThemeAdapter( Class widgetClass ) {
+    ThemeAdapter result = null;
     Class superClass = widgetClass;
     while( !Object.class.equals( superClass ) && result == null ) {
       result = loadThemeAdapter( superClass );
@@ -60,8 +60,8 @@ public final class ThemeAdapterManager {
     return result;
   }
 
-  private static IThemeAdapter loadThemeAdapter( Class clazz ) {
-    IThemeAdapter result = null;
+  private static ThemeAdapter loadThemeAdapter( Class clazz ) {
+    ThemeAdapter result = null;
     if( clazz == Control.class ) {
       result = new ControlThemeAdapterImpl();
     } else {
@@ -81,17 +81,17 @@ public final class ThemeAdapterManager {
     return result;
   }
 
-  private static IThemeAdapter loadThemeAdapter( String className, ClassLoader classLoader ) {
-    IThemeAdapter result = null;
+  private static ThemeAdapter loadThemeAdapter( String className, ClassLoader classLoader ) {
+    ThemeAdapter result = null;
     try {
-      result = ( IThemeAdapter )ClassUtil.newInstance( classLoader, className );
+      result = ( ThemeAdapter )ClassUtil.newInstance( classLoader, className );
     } catch( ClassInstantiationException cie ) {
       // ignore, try to load from next package name variant
     }
     return result;
   }
 
-  private static void ensureThemeAdapterWasFound( Class widgetClass, IThemeAdapter result ) {
+  private static void ensureThemeAdapterWasFound( Class widgetClass, ThemeAdapter result ) {
     if( result == null ) {
       String msg = "Failed to obtain theme adapter for class: " + widgetClass.getName();
       throw new ThemeManagerException( msg );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -141,7 +141,7 @@ public class Group extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+    GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
     Rectangle border = getBorder();
     int width = Math.max( 0, bounds.width - trimmings.width - border.width );
@@ -152,7 +152,7 @@ public class Group extends Composite {
   @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     GroupThemeAdapter themeAdapter
-      = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+      = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
     Rectangle border = getBorder();
     return super.computeTrim( x - trimmings.x - border.x,
@@ -169,7 +169,7 @@ public class Group extends Composite {
     if( length != 0 ) {
       Font font = getFont();
       Point stringExtent = TextSizeUtil.stringExtent( font, text );
-      GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+      GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
       Rectangle headTrimmings = themeAdapter.getHeaderTrimmingSize( this );
       int headerWidth = stringExtent.x + headTrimmings.width;
       result.x = Math.max( result.x, headerWidth );
