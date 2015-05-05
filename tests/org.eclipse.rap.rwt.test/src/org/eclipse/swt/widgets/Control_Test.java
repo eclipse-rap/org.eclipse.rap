@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
@@ -1469,7 +1470,7 @@ public class Control_Test {
 
     Composite composite = new Composite( shell, SWT.BORDER );
 
-    Rectangle expected = new Rectangle( 1, 3, 2, 4 );
+    BoxDimensions expected = new BoxDimensions( 3, 1, 1, 1 );
     assertEquals( expected, composite.getBorder() );
   }
 

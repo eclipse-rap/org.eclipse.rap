@@ -17,10 +17,10 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -55,7 +55,7 @@ public class ControlThemeAdapter_Test {
     Label label = new Label( shell, SWT.BORDER );
     ControlThemeAdapter cta = getControlThemeAdapter( label );
 
-    assertEquals( new Rectangle( 1, 1, 2, 2 ), cta.getBorder( label ) );
+    assertEquals( new BoxDimensions( 1, 1, 1, 1 ), cta.getBorder( label ) );
     assertEquals( new Color( display, 74, 74, 74 ), cta.getForeground( label ) );
     assertEquals( new Color( display, 255, 255, 255 ), cta.getBackground( label ) );
   }
@@ -92,7 +92,7 @@ public class ControlThemeAdapter_Test {
 
     Composite composite = new Composite( shell, SWT.BORDER );
 
-    Rectangle expected = new Rectangle( 1, 3, 2, 4 );
+    BoxDimensions expected = new BoxDimensions( 3, 1, 1, 1 );
     assertEquals( expected , getControlThemeAdapter( composite ).getBorder( composite ) );
   }
 

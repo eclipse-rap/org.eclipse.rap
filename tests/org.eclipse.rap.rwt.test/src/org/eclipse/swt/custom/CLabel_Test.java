@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,11 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -113,11 +113,11 @@ public class CLabel_Test {
   @Test
   public void testSetMargins() {
     CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( ThemeAdapter.class );
-    Rectangle padding = themeAdapter.getPadding( label );
-    assertEquals( padding.x, label.getLeftMargin() );
-    assertEquals( padding.y, label.getTopMargin() );
-    assertEquals( padding.width - padding.x, label.getRightMargin() );
-    assertEquals( padding.height - padding.y, label.getBottomMargin() );
+    BoxDimensions padding = themeAdapter.getPadding( label );
+    assertEquals( padding.left, label.getLeftMargin() );
+    assertEquals( padding.top, label.getTopMargin() );
+    assertEquals( padding.right, label.getRightMargin() );
+    assertEquals( padding.bottom, label.getBottomMargin() );
     label.setMargins( 1, 2, 3, 4 );
     assertEquals( 1, label.getLeftMargin() );
     assertEquals( 2, label.getTopMargin() );

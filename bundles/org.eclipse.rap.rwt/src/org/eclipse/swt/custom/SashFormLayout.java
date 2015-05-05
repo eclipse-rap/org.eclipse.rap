@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -21,18 +22,23 @@ import org.eclipse.swt.widgets.Sash;
 
 /**
  * This class provides the layout for SashForm
- * 
+ *
  * @see SashForm
  */
 class SashFormLayout extends Layout {
+@Override
 protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
   SashForm sashForm = (SashForm)composite;
   Control[] cArray = sashForm.getControls(true);
   int width = 0;
   int height = 0;
-  if (cArray.length == 0) {   
-    if (wHint != SWT.DEFAULT) width = wHint;
-    if (hHint != SWT.DEFAULT) height = hHint;
+  if (cArray.length == 0) {
+    if (wHint != SWT.DEFAULT) {
+      width = wHint;
+    }
+    if (hHint != SWT.DEFAULT) {
+      height = hHint;
+    }
     return new Point(width, height);
   }
   // determine control sizes
@@ -67,7 +73,7 @@ protected Point computeSize(Composite composite, int wHint, int hHint, boolean f
       data = new SashFormData();
       cArray[i].setLayoutData(data);
       ((SashFormData)data).weight = ratios[i] = ((200 << 16) + 999) / 1000;
-      
+
     }
     total += ratios[i];
   }
@@ -75,8 +81,8 @@ protected Point computeSize(Composite composite, int wHint, int hHint, boolean f
     int sashwidth = sashForm.SASH_WIDTH;
     if( sashForm.sashes.length > 0 ) {
       Sash first = sashForm.sashes[ 0 ];
-      Rectangle border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
-      sashwidth += border.width;
+      BoxDimensions border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
+      sashwidth += border.left + border.right;
     }
     if (vertical) {
       height += (int)(total * maxValue / ratios[maxIndex]) + (cArray.length - 1) * sashwidth;
@@ -84,29 +90,39 @@ protected Point computeSize(Composite composite, int wHint, int hHint, boolean f
       width += (int)(total * maxValue / ratios[maxIndex]) + (cArray.length - 1) * sashwidth;
     }
   }
-  Rectangle border = sashForm.getAdapter( ControlThemeAdapter.class ).getBorder( sashForm );
-  width += border.width;
-  height += border.height;
-  if (wHint != SWT.DEFAULT) width = wHint;
-  if (hHint != SWT.DEFAULT) height = hHint;
+  BoxDimensions border = sashForm.getAdapter( ControlThemeAdapter.class ).getBorder( sashForm );
+  width += border.left + border.right;
+  height += border.top + border.bottom;
+  if (wHint != SWT.DEFAULT) {
+    width = wHint;
+  }
+  if (hHint != SWT.DEFAULT) {
+    height = hHint;
+  }
   return new Point(width, height);
 }
 
+@Override
 protected boolean flushCache(Control control) {
   return true;
 }
 
+@Override
 protected void layout(Composite composite, boolean flushCache) {
   SashForm sashForm = (SashForm)composite;
   Rectangle area = sashForm.getClientArea();
-  if (area.width <= 1 || area.height <= 1) return;
-  
+  if (area.width <= 1 || area.height <= 1) {
+    return;
+  }
+
   Control[] newControls = sashForm.getControls(true);
-  if (sashForm.controls.length == 0 && newControls.length == 0) return;
+  if (sashForm.controls.length == 0 && newControls.length == 0) {
+    return;
+  }
   sashForm.controls = newControls;
-  
+
   Control[] controls = sashForm.controls;
-  
+
   if (sashForm.maxControl != null && !sashForm.maxControl.isDisposed()) {
     for (int i= 0; i < controls.length; i++){
       if (controls[i] != sashForm.maxControl) {
@@ -117,7 +133,7 @@ protected void layout(Composite composite, boolean flushCache) {
     }
     return;
   }
-  
+
   // keep just the right number of sashes
   if (sashForm.sashes.length < controls.length - 1) {
     Sash[] newSashes = new Sash[controls.length - 1];
@@ -145,7 +161,9 @@ protected void layout(Composite composite, boolean flushCache) {
       sashForm.sashes = newSashes;
     }
   }
-  if (controls.length == 0) return;
+  if (controls.length == 0) {
+    return;
+  }
   Sash[] sashes = sashForm.sashes;
   // get the ratios
   long[] ratios = new long[controls.length];
@@ -158,15 +176,15 @@ protected void layout(Composite composite, boolean flushCache) {
       data = new SashFormData();
       controls[i].setLayoutData(data);
       ((SashFormData)data).weight = ratios[i] = ((200 << 16) + 999) / 1000;
-      
+
     }
     total += ratios[i];
   }
   int sashwidth = sashForm.SASH_WIDTH;
   if( sashes.length > 0 ) {
     Sash first = sashes[ 0 ];
-    Rectangle border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
-    sashwidth += border.width;
+    BoxDimensions border = first.getAdapter( ControlThemeAdapter.class ).getBorder( first );
+    sashwidth += border.left + border.right;
   }
   if (sashForm.getOrientation() == SWT.HORIZONTAL) {
     int width = (int)(ratios[0] * (area.width - sashes.length * sashwidth) / total);

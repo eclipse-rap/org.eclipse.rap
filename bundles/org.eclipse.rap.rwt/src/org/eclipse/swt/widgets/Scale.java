@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 
 
 /**
@@ -143,9 +143,9 @@ public class Scale extends Control {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    Rectangle border = getBorder();
-    int width = border.width;
-    int height = border.height;
+    BoxDimensions border = getBorder();
+    int width = border.left + border.right;
+    int height = border.top + border.bottom;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width += PREFERRED_SIZE.x;
       height += PREFERRED_SIZE.y;
@@ -154,10 +154,10 @@ public class Scale extends Control {
       height += PREFERRED_SIZE.x;
     }
     if( wHint != SWT.DEFAULT ) {
-      width = wHint + border.width;
+      width = wHint + border.left + border.right;
     }
     if( hHint != SWT.DEFAULT ) {
-      height = hHint + border.height;
+      height = hHint + border.top + border.bottom;
     }
     return new Point( width, height );
   }
@@ -298,7 +298,7 @@ public class Scale extends Control {
    */
   public void setMinimum( int minimum ) {
     checkWidget();
-    if( 0 <= minimum && minimum < this.maximum ) {
+    if( 0 <= minimum && minimum < maximum ) {
       this.minimum = minimum;
       if( selection < this.minimum ) {
         selection = this.minimum;

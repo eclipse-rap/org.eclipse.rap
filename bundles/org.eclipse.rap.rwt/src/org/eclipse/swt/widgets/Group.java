@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -143,9 +144,9 @@ public class Group extends Composite {
     Rectangle bounds = getBounds();
     GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
-    Rectangle border = getBorder();
-    int width = Math.max( 0, bounds.width - trimmings.width - border.width );
-    int height = Math.max( 0, bounds.height - trimmings.height - border.height );
+    BoxDimensions border = getBorder();
+    int width = Math.max( 0, bounds.width - trimmings.width - ( border.left + border.right ) );
+    int height = Math.max( 0, bounds.height - trimmings.height - ( border.top + border.bottom ) );
     return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
 
@@ -154,11 +155,11 @@ public class Group extends Composite {
     GroupThemeAdapter themeAdapter
       = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
-    Rectangle border = getBorder();
-    return super.computeTrim( x - trimmings.x - border.x,
-                              y - trimmings.y - border.y,
-                              width + trimmings.width + border.width,
-                              height + trimmings.height + border.height );
+    BoxDimensions border = getBorder();
+    return super.computeTrim( x - trimmings.x - border.left,
+                              y - trimmings.y - border.top,
+                              width + trimmings.width + border.left + border.right,
+                              height + trimmings.height + border.top + border.bottom );
   }
 
   @Override

@@ -17,6 +17,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyListener;
@@ -504,7 +505,8 @@ public class Spinner extends Composite {
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
     if( hHint == SWT.DEFAULT ) {
-      int upDownHeight = UP_DOWN_MIN_HEIGHT + getBorder().height;
+      BoxDimensions border = getBorder();
+      int upDownHeight = UP_DOWN_MIN_HEIGHT + border.top + border.bottom;
       trim.height = Math.max( trim.height, upDownHeight );
     }
     return new Point( trim.width, trim.height );
@@ -515,11 +517,11 @@ public class Spinner extends Composite {
     checkWidget();
     Rectangle result = new Rectangle( x, y, width, height );
     if( ( style & SWT.BORDER ) != 0 ) {
-      Rectangle border = getBorder();
-      result.x -= border.x;
-      result.y -= border.y;
-      result.width += border.width;
-      result.height += border.height;
+      BoxDimensions border = getBorder();
+      result.x -= border.left;
+      result.y -= border.top;
+      result.width += border.left + border.right;
+      result.height += border.top + border.bottom;
     }
     int buttonWidth = getButtonWidth();
     result.width += buttonWidth;

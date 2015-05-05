@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 
 
 /**
@@ -87,9 +87,9 @@ public class Sash extends Control {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    Rectangle border = getBorder();
-    int width = border.width;
-    int height = border.height;
+    BoxDimensions border = getBorder();
+    int width = border.left + border.right;
+    int height = border.top + border.bottom;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width += DEFAULT_WIDTH;
       height += 3;
@@ -98,10 +98,10 @@ public class Sash extends Control {
       height += DEFAULT_HEIGHT;
     }
     if( wHint != SWT.DEFAULT ) {
-      width = wHint + border.width;
+      width = wHint + border.left + border.right;
     }
     if( hHint != SWT.DEFAULT ) {
-      height = hHint + border.height;
+      height = hHint + border.top + border.bottom;
     }
     return new Point( width, height );
   }

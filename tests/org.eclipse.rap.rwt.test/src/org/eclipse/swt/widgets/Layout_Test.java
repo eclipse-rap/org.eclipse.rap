@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.rwt.testfixture.TestContext;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -85,7 +86,7 @@ public class Layout_Test {
   @Test
   public void testClientArea_withDifferentBorderWidths() {
     Composite composite = spy( new Composite( shell, SWT.BORDER ) );
-    when( composite.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+    when( composite.getBorder() ).thenReturn( new BoxDimensions( 2, 3, 4, 1 ) );
     composite.setBounds( 0, 0, 50, 100 );
 
     assertEquals( new Rectangle( 0, 0, 46, 94 ), composite.getClientArea() );
@@ -94,7 +95,7 @@ public class Layout_Test {
   @Test
   public void testComputeTrim_withDifferentBorderWidths() {
     Composite composite = spy( new Composite( shell, SWT.BORDER ) );
-    when( composite.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+    when( composite.getBorder() ).thenReturn( new BoxDimensions( 2, 3, 4, 1 ) );
 
     assertEquals( new Rectangle( -1, -2, 54, 106 ), composite.computeTrim( 0, 0, 50, 100 ) );
   }
@@ -112,7 +113,7 @@ public class Layout_Test {
   @Test
   public void testComputeSize_withDifferentBorderWidths() {
     Button button = spy( new Button( shell, SWT.PUSH | SWT.BORDER ) );
-    when( button.getBorder() ).thenReturn( new Rectangle( 1, 2, 4, 6 ) );
+    when( button.getBorder() ).thenReturn( new BoxDimensions( 2, 3, 4, 1 ) );
 
     assertEquals( new Point( 54, 106 ), button.computeSize( 50, 100 ) );
   }

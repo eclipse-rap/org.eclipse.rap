@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,7 +56,7 @@ public class TabFolder extends Composite {
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
   private final ItemHolder<TabItem> itemHolder;
   private int selectionIndex;
-  private boolean onBottom;
+  private final boolean onBottom;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -87,9 +88,9 @@ public class TabFolder extends Composite {
    */
   public TabFolder( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    this.itemHolder = new ItemHolder<TabItem>( TabItem.class );
-    this.selectionIndex = -1;
-    this.onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
+    itemHolder = new ItemHolder<TabItem>( TabItem.class );
+    selectionIndex = -1;
+    onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
   }
 
   @Override
@@ -371,26 +372,26 @@ public class TabFolder extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     Rectangle containerBorder = getContentContainerBorder();
     int tabBarHeight = getTabBarHeight();
-    int x = border.x + containerBorder.x;
-    int y = border.y + containerBorder.y + ( onBottom ? 0 : tabBarHeight );
-    int width = bounds.width - border.width - containerBorder.width;
-    int height = bounds.height - tabBarHeight - border.height - containerBorder.height;
+    int x = border.left + containerBorder.x;
+    int y = border.top + containerBorder.y + ( onBottom ? 0 : tabBarHeight );
+    int width = bounds.width - ( border.left + border.right ) - containerBorder.width;
+    int height = bounds.height - tabBarHeight - ( border.top + border.bottom ) - containerBorder.height;
     return new Rectangle( x, y, width, height );
   }
 
   @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     Rectangle containerBorder = getContentContainerBorder();
     int tabBarHeight = getTabBarHeight();
-    int trimX = x - border.x - containerBorder.x;
-    int trimY = y - border.y - containerBorder.y - ( onBottom ? 0 : tabBarHeight );
-    int trimWidth = width + border.width + containerBorder.width;
-    int trimHeight = height + border.height + containerBorder.height + tabBarHeight;
+    int trimX = x - border.left - containerBorder.x;
+    int trimY = y - border.top - containerBorder.y - ( onBottom ? 0 : tabBarHeight );
+    int trimWidth = width + border.left + border.right + containerBorder.width;
+    int trimHeight = height + border.top + border.bottom + containerBorder.height + tabBarHeight;
     return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
@@ -426,9 +427,9 @@ public class TabFolder extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     return new Point( width, height );
   }
 

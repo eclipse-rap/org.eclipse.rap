@@ -15,6 +15,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ShellListener;
@@ -122,6 +123,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  */
 public class Shell extends Decorations {
 
+  private static final BoxDimensions ZERO = new BoxDimensions( 0, 0, 0, 0 );
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
@@ -132,7 +134,7 @@ public class Shell extends Decorations {
 
   private class ShellAdapter implements IShellAdapter {
     public Control getActiveControl() {
-      return Shell.this.lastActive;
+      return lastActive;
     }
 
     public void setActiveControl( Control control ) {
@@ -500,16 +502,20 @@ public class Shell extends Decorations {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    Rectangle padding = getPadding();
+    BoxDimensions padding = getPadding();
     int hTopTrim;
     hTopTrim = getTitleBarMargin().getHeight();
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
-    Rectangle border = getBorder();
-    return new Rectangle( padding.x,
-                          hTopTrim + padding.y,
-                          bounds.width - padding.width - border.width,
-                          bounds.height - hTopTrim - padding.height - border.height );
+    BoxDimensions border = getBorder();
+    int padingWidth = padding.left + padding.right;
+    int paddingHeight = padding.top + padding.bottom;
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    return new Rectangle( padding.left,
+                          hTopTrim + padding.top,
+                          bounds.width - padingWidth - borderWidth,
+                          bounds.height - hTopTrim - paddingHeight - borderHeight );
   }
 
   // TODO [rst] Move to class Decorations, as soon as it exists
@@ -517,13 +523,16 @@ public class Shell extends Decorations {
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int hTopTrim = getTopTrim();
-    Rectangle padding = getPadding();
-    Rectangle border = getBorder();
-    Rectangle rect = new Rectangle( x - padding.x - border.x,
-                                    y - hTopTrim - padding.y - border.y,
-                                    width + padding.width + border.width,
-                                    height + hTopTrim + padding.height + border.height );
-    return rect;
+    BoxDimensions padding = getPadding();
+    BoxDimensions border = getBorder();
+    int paddingWidth = padding.left + padding.right;
+    int paddingHeight = padding.top + padding.bottom;
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    return new Rectangle( x - padding.left - border.left,
+                          y - hTopTrim - padding.top - border.top,
+                          width + paddingWidth + borderWidth,
+                          height + hTopTrim + paddingHeight + borderHeight );
   }
 
   private void setInitialSize() {
@@ -533,7 +542,8 @@ public class Shell extends Decorations {
   }
 
   private int getMinHeightLimit() {
-    return getTitleBarMargin().getHeight() + getTitleBarHeight() + getBorder().height;
+    BoxDimensions border = getBorder();
+    return getTitleBarMargin().getHeight() + getTitleBarHeight() + border.top + border.bottom;
   }
 
   private Rectangle getMenuBounds() {
@@ -544,11 +554,13 @@ public class Shell extends Decorations {
       Rectangle bounds = getBounds();
       int hTop = ( style & SWT.TITLE ) != 0 ? 1 : 0;
       hTop += getTitleBarHeight();
-      Rectangle padding = getPadding();
-      Rectangle border = getBorder();
-      result = new Rectangle( padding.x,
-                              hTop + padding.y,
-                              bounds.width - padding.width - border.width,
+      BoxDimensions padding = getPadding();
+      BoxDimensions border = getBorder();
+      int paddingWidth = padding.left + padding.right;
+      int borderWidth = border.left + border.right;
+      result = new Rectangle( padding.left,
+                              hTop + padding.top,
+                              bounds.width - paddingWidth - borderWidth,
                               getMenuBarHeight() );
     }
     return result;
@@ -560,8 +572,8 @@ public class Shell extends Decorations {
   }
 
   @Override
-  Rectangle getBorder() {
-    return getFullScreen() ? new Rectangle( 0, 0, 0, 0 ) : super.getBorder();
+  BoxDimensions getBorder() {
+    return getFullScreen() ? ZERO : super.getBorder();
   }
 
   private int getTopTrim() {

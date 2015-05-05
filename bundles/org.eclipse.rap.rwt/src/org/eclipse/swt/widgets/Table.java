@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -136,7 +137,7 @@ public class Table extends Composite {
     }
 
     public int getCheckLeft() {
-      return Table.this.getCheckBoxMargin().left;
+      return getCheckBoxMargin().left;
     }
 
     public int getCheckWidth() {
@@ -146,14 +147,14 @@ public class Table extends Composite {
 
     public int getItemImageWidth( int columnIndex ) {
       int result = 0;
-      if( Table.this.hasColumnImages( columnIndex ) ) {
-        result = Table.this.getItemImageSize().x;
+      if( hasColumnImages( columnIndex ) ) {
+        result = getItemImageSize().x;
       }
       return result;
     }
 
     public int getFocusIndex() {
-      return Table.this.focusIndex;
+      return focusIndex;
     }
 
     public void setFocusIndex( int focusIndex ) {
@@ -166,11 +167,11 @@ public class Table extends Composite {
 
     public int getColumnLeft( TableColumn column ) {
       int index = Table.this.indexOf( column );
-      return Table.this.columnHolder.getItem( index ).getLeft();
+      return columnHolder.getItem( index ).getLeft();
     }
 
     public int getLeftOffset() {
-      return Table.this.leftOffset;
+      return leftOffset;
     }
 
     public void setLeftOffset( int leftOffset ) {
@@ -185,8 +186,8 @@ public class Table extends Composite {
       if( ( Table.this.style & SWT.VIRTUAL ) != 0  ) {
         ProcessActionRunner.add( new Runnable() {
           public void run() {
-            if( index >= 0 && index < Table.this.itemCount ) {
-              TableItem item = Table.this._getItem( index );
+            if( index >= 0 && index < itemCount ) {
+              TableItem item = _getItem( index );
               if( !item.isDisposed() ) {
                 Table.this.checkData( item, index );
               }
@@ -2024,9 +2025,9 @@ public class Table extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
       width += getVerticalBar().getSize().x;
     }
@@ -2245,8 +2246,8 @@ public class Table extends Composite {
 
   @Override
   void releaseChildren() {
-    Item[] tableItems = new TableItem[ this.items.length ];
-    System.arraycopy( this.items, 0, tableItems, 0, this.items.length );
+    Item[] tableItems = new TableItem[ items.length ];
+    System.arraycopy( items, 0, tableItems, 0, items.length );
     for( int i = 0; i < tableItems.length; i++ ) {
       if( tableItems[ i ] != null ) {
         tableItems[ i ].dispose();

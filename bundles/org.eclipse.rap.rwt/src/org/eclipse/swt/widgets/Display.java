@@ -51,6 +51,7 @@ import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -570,9 +571,9 @@ public class Display extends Device implements Adaptable {
     // Since only composites can contain child widgets, only they need this
     // correction. This implementation seems to be a good fit with SWT.
     if( control instanceof Composite ) {
-      Rectangle borderWidth = control.getBorder();
-      result.x += borderWidth.x;
-      result.y += borderWidth.y;
+      BoxDimensions borderWidth = control.getBorder();
+      result.x += borderWidth.left;
+      result.y += borderWidth.top;
     }
     return result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.layout;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -308,7 +309,8 @@ Point layout (Composite composite, boolean move, int x, int y, int width, int he
           Rectangle rect = ((Scrollable) child).computeTrim (0, 0, 0, 0);
           trim = rect.width;
         } else {
-          trim = child.getAdapter( ControlThemeAdapter.class ).getBorder( child ).width;
+          BoxDimensions border = child.getAdapter( ControlThemeAdapter.class ).getBorder( child );
+          trim = border.left + border.right;
         }
         data.cacheWidth = data.cacheHeight = -1;
         int currentWidth = Math.max (0, x2 - x1 - trim);

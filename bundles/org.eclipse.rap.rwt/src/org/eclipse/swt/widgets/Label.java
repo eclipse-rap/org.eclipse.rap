@@ -18,6 +18,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -302,9 +303,9 @@ public class Label extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     return new Point( width, height );
   }
 

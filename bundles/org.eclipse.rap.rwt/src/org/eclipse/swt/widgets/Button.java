@@ -18,6 +18,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -388,7 +389,7 @@ public class Button extends Control {
     int width = 0;
     int height = 0;
     ButtonThemeAdapter themeAdapter = getThemeAdapter();
-    Rectangle padding = themeAdapter.getPadding( this );
+    BoxDimensions padding = themeAdapter.getPadding( this );
     if( ( style & SWT.ARROW ) != 0 ) {
       width = themeAdapter.getArrowSize( this ).x;
       height = themeAdapter.getArrowSize( this ).y;
@@ -417,7 +418,7 @@ public class Button extends Control {
         boolean markupEnabled = isMarkupEnabledFor( this );
         int wrapWidth = SWT.DEFAULT;
         if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
-          wrapWidth = wHint - width - padding.width;
+          wrapWidth = wHint - width - ( padding.left + padding.right );
         }
         extent = textExtent( font, text, wrapWidth, markupEnabled );
         width += extent.x;
@@ -427,17 +428,17 @@ public class Button extends Control {
         height = getCharHeight( font );
       }
     }
-    width += padding.width;
-    height += padding.height;
+    width += padding.left + padding.right;
+    height += padding.top + padding.bottom;
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
     }
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     return new Point( width, height );
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -629,8 +630,8 @@ public class ScrolledComposite extends Composite {
       return false;
     }
     Rectangle hostRect = getBounds();
-    Rectangle border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
-    hostRect.width -= border.width;
+    BoxDimensions border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
+    hostRect.width -= border.left + border.right;
     ScrollBar vBar = getVerticalBar();
     if( vVisible && vBar != null ) {
       hostRect.width -= vBar.getSize().x;
@@ -650,8 +651,8 @@ public class ScrolledComposite extends Composite {
       return false;
     }
     Rectangle hostRect = getBounds();
-    Rectangle border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
-    hostRect.height -= border.height;
+    BoxDimensions border = getAdapter( ControlThemeAdapter.class ).getBorder( this );
+    hostRect.height -= border.top + border.bottom;
     ScrollBar hBar = getHorizontalBar();
     if( hVisible && hBar != null ) {
       hostRect.height -= hBar.getSize().y;

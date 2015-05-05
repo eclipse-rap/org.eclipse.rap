@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyListener;
@@ -22,7 +23,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
@@ -882,9 +882,9 @@ public class Combo extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    height += border.height;
-    width += border.width;
+    BoxDimensions border = getBorder();
+    height += border.top + border.bottom;
+    width += border.left + border.right;
     return new Point( width, height );
   }
 

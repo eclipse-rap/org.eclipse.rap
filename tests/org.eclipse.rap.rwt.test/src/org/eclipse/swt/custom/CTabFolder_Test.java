@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -861,8 +862,8 @@ public class CTabFolder_Test {
   public void testGetBorder_returnsZeroRectangle() {
     CTabFolder tabFolder = new CTabFolder( shell, SWT.BORDER );
 
-    Rectangle border = tabFolder.getAdapter( ControlThemeAdapter.class ).getBorder( tabFolder );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), border );
+    BoxDimensions border = tabFolder.getAdapter( ControlThemeAdapter.class ).getBorder( tabFolder );
+    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), border );
   }
 
   private static Rectangle getChevronRect( CTabFolder folder ) {

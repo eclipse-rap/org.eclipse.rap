@@ -13,6 +13,7 @@ package org.eclipse.swt.custom;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyListener;
@@ -21,7 +22,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -855,9 +855,9 @@ public class CCombo extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getThemeAdapter().getBorder( this );
-    height += border.width;
-    width += border.height;
+    BoxDimensions border = getThemeAdapter().getBorder( this );
+    height += border.left + border.right;
+    width += border.top + border.bottom;
     return new Point( width, height );
   }
 

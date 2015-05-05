@@ -18,15 +18,17 @@ import org.eclipse.rap.rwt.internal.theme.CssFont;
 import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
 public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
+
+  private static final BoxDimensions ZERO = new BoxDimensions( 0, 0, 0, 0 );
 
   /*
    * [if] CTabFolder border is not themeable. It overrides getBorderWidth to return 0.
@@ -35,8 +37,8 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=445620
    */
   @Override
-  public Rectangle getBorder( Control control ) {
-    return new Rectangle( 0, 0, 0, 0 );
+  public BoxDimensions getBorder( Control control ) {
+    return ZERO;
   }
 
   public Color getBackground( CTabFolder folder ) {

@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -514,9 +515,10 @@ public class ToolItem extends Item {
       } else {
         left += parent.getToolBarPadding().left;
       }
+      BoxDimensions border = parent.getBorder();
       int innerParentHeight = parent.getSize().y
                             - parent.getToolBarPadding().getHeight()
-                            - parent.getBorder().height;
+                            - ( border.top + border.bottom );
       top += parent.getToolBarPadding().top + innerParentHeight / 2 - height / 2;
       top = Math.max( top, 0 );
     }

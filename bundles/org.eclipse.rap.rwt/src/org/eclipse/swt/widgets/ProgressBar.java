@@ -12,10 +12,10 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarThemeAdapter;
 
 /**
@@ -89,10 +89,10 @@ public class ProgressBar extends Control {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     int barWidth = getProgressBarWidth();
-    int width = border.width;
-    int height = border.height;
+    int width = border.left + border.right;
+    int height = border.top + border.bottom;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width += barWidth * 10;
       height += barWidth;
@@ -101,10 +101,10 @@ public class ProgressBar extends Control {
       height += barWidth * 10;
     }
      if( wHint != SWT.DEFAULT ) {
-       width = wHint + border.width;
+       width = wHint + border.left + border.right;
      }
      if( hHint != SWT.DEFAULT ) {
-       height = hHint + border.height;
+       height = hHint + border.top + border.bottom;
      }
     return new Point( width, height );
   }
@@ -179,7 +179,7 @@ public class ProgressBar extends Control {
   public void setMaximum( int value ) {
     checkWidget();
     if( value > getMinimum() ) {
-      this.maximum = value;
+      maximum = value;
       if( selection > maximum ) {
         selection = maximum;
       }
@@ -205,7 +205,7 @@ public class ProgressBar extends Control {
   public void setMinimum( int value ) {
     checkWidget();
     if( value > 0 && value < getMaximum() ) {
-      this.minimum = value;
+      minimum = value;
       if( minimum > selection ) {
         selection = minimum;
       }
@@ -232,7 +232,7 @@ public class ProgressBar extends Control {
     } else if( value > maximum ) {
       selection = maximum;
     } else {
-      this.selection = value;
+      selection = value;
     }
   }
 
@@ -277,7 +277,7 @@ public class ProgressBar extends Control {
    */
   public int getState() {
     checkWidget();
-    return this.state;
+    return state;
   }
 
   private int getProgressBarWidth() {

@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.theme;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -30,18 +29,19 @@ public interface ControlThemeAdapter {
    * Returns the border of the specified control.
    *
    * @param control the control whose border is requested
-   * @return the border ( left, top, left + right, top + bottom )
+   * @return the border
    * @since 3.0
    */
-  Rectangle getBorder( Control control );
+  BoxDimensions getBorder( Control control );
 
   /**
    * Returns the padding of the specified control.
    *
    * @param control the control whose padding is requested
-   * @return the padding ( left, top, left + right, top + bottom )
+   * @return the padding
+   * @since 3.0
    */
-  Rectangle getPadding( Control control );
+  BoxDimensions getPadding( Control control );
 
   /**
    * Returns the default foreground color that the specified control will use to

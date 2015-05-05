@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
@@ -27,7 +28,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -57,7 +57,7 @@ public class List extends Scrollable {
   private final class ResizeListener extends ControlAdapter {
     @Override
     public void controlResized( ControlEvent event ) {
-      List.this.updateScrollBars();
+      updateScrollBars();
     }
   }
 
@@ -1103,9 +1103,9 @@ public class List extends Scrollable {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
       width += getVerticalBar().getSize().x;
     }

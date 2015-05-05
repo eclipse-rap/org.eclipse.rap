@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,12 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 
@@ -206,7 +206,7 @@ public class Link extends Control {
     checkWidget();
     int width = 0;
     int height = 0;
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     if( ( displayText.length() > 0 ) ) {
       // Replace '&' with '&&' to ensure proper size calculation with one '&',
       // because the other will be escaped in
@@ -222,8 +222,8 @@ public class Link extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    width += border.width + PADDING * 2;
-    height += border.height + PADDING * 2;
+    width += border.left + border.right + PADDING * 2;
+    height += border.top + border.bottom + PADDING * 2;
     return new Point( width, height );
   }
 
@@ -296,7 +296,9 @@ public class Link extends Control {
           }
           break;
         case 1:
-          if (c == 'a') state++;
+          if (c == 'a') {
+            state++;
+          }
           break;
         case 2:
           switch (c) {
@@ -308,8 +310,11 @@ public class Link extends Control {
               state++;
               break;
             default:
-              if (Character.isWhitespace(c)) break;
-              else state = 13;
+              if (Character.isWhitespace(c)) {
+                break;
+              } else {
+                state = 13;
+              }
           }
           break;
         case 3:
@@ -377,7 +382,9 @@ public class Link extends Control {
           state = c == '"' ? state + 1 : 0;
           break;
         case 15:
-          if (c == '"') state = 2;
+          if (c == '"') {
+            state = 2;
+          }
           break;
         default:
           state = 0;
@@ -388,7 +395,9 @@ public class Link extends Control {
     if (start < length) {
       int tmp = parseMnemonics (buffer, start, tagStart, result);
       int mnemonic = parseMnemonics (buffer, Math.max (tagStart, linkStart), length, result);
-      if (mnemonic == -1) mnemonic = tmp;
+      if (mnemonic == -1) {
+        mnemonic = tmp;
+      }
       mnemonics [linkIndex] = mnemonic;
     } else {
       mnemonics [linkIndex] = -1;

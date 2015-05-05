@@ -11,27 +11,27 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
-import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -98,13 +98,11 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   // Helping methods to render the changed properties
 
   private static void renderMargins( CLabel clabel ) {
-    Rectangle padding = getThemeAdapter( clabel ).getPadding( clabel );
-    renderProperty( clabel, PROP_LEFT_MARGIN, clabel.getLeftMargin(), padding.x );
-    renderProperty( clabel, PROP_TOP_MARGIN, clabel.getTopMargin(), padding.y );
-    int defRightMargin = padding.width - padding.x;
-    renderProperty( clabel, PROP_RIGHT_MARGIN, clabel.getRightMargin(), defRightMargin );
-    int defBottomMargin = padding.height - padding.y;
-    renderProperty( clabel, PROP_BOTTOM_MARGIN, clabel.getBottomMargin(), defBottomMargin );
+    BoxDimensions padding = getThemeAdapter( clabel ).getPadding( clabel );
+    renderProperty( clabel, PROP_LEFT_MARGIN, clabel.getLeftMargin(), padding.left );
+    renderProperty( clabel, PROP_TOP_MARGIN, clabel.getTopMargin(), padding.top );
+    renderProperty( clabel, PROP_RIGHT_MARGIN, clabel.getRightMargin(), padding.right );
+    renderProperty( clabel, PROP_BOTTOM_MARGIN, clabel.getBottomMargin(), padding.bottom );
   }
 
   //////////////////

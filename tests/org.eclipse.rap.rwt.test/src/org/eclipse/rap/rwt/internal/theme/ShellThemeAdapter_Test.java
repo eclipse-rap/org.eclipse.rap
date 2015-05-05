@@ -18,9 +18,9 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -55,7 +55,7 @@ public class ShellThemeAdapter_Test {
     setCustomTheme(   " * { color: blue; }"
                     + "Shell { border: 3px solid blue; background-color: yellow; }" );
 
-    assertEquals( new Rectangle( 3, 3, 6, 6 ), themeAdapter.getBorder( shell ) );
+    assertEquals( new BoxDimensions( 3, 3, 3, 3 ), themeAdapter.getBorder( shell ) );
     assertEquals( blue, themeAdapter.getForeground( shell ) );
     assertEquals( yellow, themeAdapter.getBackground( shell ) );
   }
@@ -64,9 +64,9 @@ public class ShellThemeAdapter_Test {
   public void testShellWithBorder() {
     Shell shell = new Shell( display, SWT.BORDER );
     ShellThemeAdapter themeAdapter = getShellThemeAdapter( shell );
-    assertEquals( new Rectangle( 1, 1, 2, 2 ), themeAdapter.getBorder( shell ) );
+    assertEquals( new BoxDimensions( 1, 1, 1, 1 ), themeAdapter.getBorder( shell ) );
     shell.setMaximized( true );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getBorder( shell ) );
+    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), themeAdapter.getBorder( shell ) );
   }
 
   @Test
@@ -99,7 +99,7 @@ public class ShellThemeAdapter_Test {
 
     setCustomTheme( "Shell[APPLICATION_MODAL] { padding: 23px 57px }" );
 
-    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+    assertEquals( new BoxDimensions( 23, 57, 23, 57 ), shellThemeAdapter.getPadding( shell ) );
   }
 
   @Test
@@ -109,7 +109,7 @@ public class ShellThemeAdapter_Test {
 
     setCustomTheme( "Shell[TOOL] { padding: 23px 57px }" );
 
-    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+    assertEquals( new BoxDimensions( 23, 57, 23, 57 ), shellThemeAdapter.getPadding( shell ) );
   }
 
   @Test
@@ -119,7 +119,7 @@ public class ShellThemeAdapter_Test {
 
     setCustomTheme( "Shell[TITLE] { padding: 23px 57px }" );
 
-    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+    assertEquals( new BoxDimensions( 23, 57, 23, 57 ), shellThemeAdapter.getPadding( shell ) );
   }
 
   @Test
@@ -129,7 +129,7 @@ public class ShellThemeAdapter_Test {
 
     setCustomTheme( "Shell[SHEET] { padding: 23px 57px }" );
 
-    assertEquals( new Rectangle( 57, 23, 114, 46 ), shellThemeAdapter.getPadding( shell ) );
+    assertEquals( new BoxDimensions( 23, 57, 23, 57 ), shellThemeAdapter.getPadding( shell ) );
   }
 
   private static ShellThemeAdapter getShellThemeAdapter( Shell shell ) {

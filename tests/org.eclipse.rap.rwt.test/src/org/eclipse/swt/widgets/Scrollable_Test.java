@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.junit.After;
@@ -54,17 +55,17 @@ public class Scrollable_Test {
 
   @Test
   public void testComputeTrimWithPadding() {
-    final Rectangle padding = new Rectangle( 1, 2, 3, 4 );
+    final BoxDimensions padding = new BoxDimensions( 2, 2, 2, 1 );
     Composite scrollable = new Composite( shell, SWT.BORDER ) {
       @Override
-      Rectangle getPadding() {
+      BoxDimensions getPadding() {
         return padding;
       }
     };
     int borderWidth = scrollable.getBorderWidth();
     Rectangle trim = scrollable.computeTrim( 20, 30, 200, 300 );
-    assertEquals( 20 - padding.x - borderWidth, trim.x );
-    assertEquals( 30 - padding.y - borderWidth, trim.y );
+    assertEquals( 20 - padding.left - borderWidth, trim.x );
+    assertEquals( 30 - padding.top - borderWidth, trim.y );
     assertEquals( 205, trim.width );
     assertEquals( 306, trim.height );
   }
@@ -110,8 +111,8 @@ public class Scrollable_Test {
         return 20;
       }
       @Override
-      Rectangle getPadding() {
-        return new Rectangle( 10, 10, 10, 10 );
+      BoxDimensions getPadding() {
+        return new BoxDimensions( 10, 0, 0, 10 );
       }
     };
     scrollable.setSize( 100, 100 );
@@ -140,8 +141,8 @@ public class Scrollable_Test {
         return 20;
       }
       @Override
-      Rectangle getPadding() {
-        return new Rectangle( 10, 10, 10, 10 );
+      BoxDimensions getPadding() {
+        return new BoxDimensions( 10, 0, 0, 10 );
       }
     };
     scrollable.setSize( 25, 25 );

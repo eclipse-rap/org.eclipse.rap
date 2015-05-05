@@ -18,6 +18,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
@@ -157,17 +158,17 @@ public class CLabel extends Canvas {
   @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    Rectangle border = getCLabelThemeAdapter().getBorder( this );
+    BoxDimensions border = getCLabelThemeAdapter().getBorder( this );
     Point e = getTotalSize( image, text );
     if ( wHint == SWT.DEFAULT ) {
       e.x += leftMargin + rightMargin;
-      e.x += border.width;
+      e.x += border.left + border.right;
     } else {
       e.x = wHint;
     }
     if ( hHint == SWT.DEFAULT ) {
       e.y += topMargin + bottomMargin;
-      e.y += border.height;
+      e.y += border.top + border.bottom;
     } else {
       e.y = hHint;
     }
@@ -685,11 +686,11 @@ public class CLabel extends Canvas {
   }
 
   private void initMargins() {
-    Rectangle padding = getCLabelThemeAdapter().getPadding( this );
-    leftMargin = padding.x;
-    topMargin = padding.y;
-    rightMargin = padding.width - padding.x;
-    bottomMargin = padding.height - padding.y;
+    BoxDimensions padding = getCLabelThemeAdapter().getPadding( this );
+    leftMargin = padding.left;
+    topMargin = padding.top;
+    rightMargin = padding.right;
+    bottomMargin = padding.bottom;
   }
 
   private CLabelThemeAdapter getCLabelThemeAdapter() {

@@ -17,6 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -235,13 +236,14 @@ public class TabItem extends Item {
       TabFolderThemeAdapter themeAdapter = parent.getThemeAdapter();
       CssBoxDimensions padding = themeAdapter.getItemPadding( this );
       CssBoxDimensions margin = themeAdapter.getItemMargin( this );
-      Rectangle border = themeAdapter.getItemBorder( this );
-      result.width += border.width + padding.getWidth();
-      result.height += border.height + padding.getHeight();
+      Rectangle itemBorder = themeAdapter.getItemBorder( this );
+      result.width += itemBorder.width + padding.getWidth();
+      result.height += itemBorder.height + padding.getHeight();
       if( isBarTop() ) {
         result.y = margin.top;
       } else {
-        result.y = parent.getBounds().height - parent.getBorder().height - result.height;
+        BoxDimensions border = parent.getBorder();
+        result.y = parent.getBounds().height - ( border.top + border.bottom ) - result.height;
         result.y -= margin.bottom;
       }
       if( index > 0 ) {

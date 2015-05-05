@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -120,7 +121,7 @@ public abstract class Control extends Widget implements Drawable {
   private boolean backgroundTransparency;
   private Font font;
   private Cursor cursor;
-  private Rectangle bufferedPadding;
+  private BoxDimensions bufferedPadding;
   private transient Accessible accessible;
   private boolean packed;
 
@@ -1074,9 +1075,9 @@ public abstract class Control extends Widget implements Drawable {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = getBorder();
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = getBorder();
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     return new Point( width, height );
   }
 
@@ -1138,17 +1139,17 @@ public abstract class Control extends Widget implements Drawable {
    */
   public int getBorderWidth() {
     checkWidget();
-    Rectangle border = getBorder();
-    int max1 = Math.max( border.x, border.width - border.x );
-    int max2 = Math.max( border.y, border.height - border.y );
+    BoxDimensions border = getBorder();
+    int max1 = Math.max( border.left, border.right );
+    int max2 = Math.max( border.top, border.bottom );
     return Math.max( max1, max2 );
   }
 
-  Rectangle getBorder() {
+  BoxDimensions getBorder() {
     return getControlThemeAdapter().getBorder( this );
   }
 
-  Rectangle getPadding() {
+  BoxDimensions getPadding() {
     if( bufferedPadding == null ) {
       bufferedPadding = getControlThemeAdapter().getPadding( this );
     }

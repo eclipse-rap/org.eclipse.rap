@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.controlkit;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -29,13 +30,14 @@ public class ControlThemeAdapterImpl extends ThemeAdapter implements ControlThem
     matcher.addStyle( "BORDER", SWT.BORDER );
   }
 
-  public Rectangle getBorder( Control control ) {
-    return getCssBorder( getPrimaryElement( control ), control );
+  public BoxDimensions getBorder( Control control ) {
+    Rectangle value = getCssBorder( getPrimaryElement( control ), control );
+    return new BoxDimensions( value.y, value.width - value.x, value.height - value.y, value.x );
   }
 
-  public Rectangle getPadding( Control control ) {
+  public BoxDimensions getPadding( Control control ) {
     CssBoxDimensions value = getCssBoxDimensions( getPrimaryElement( control ), "padding", control );
-    return CssBoxDimensions.createRectangle( value );
+    return new BoxDimensions( value.top, value.right, value.bottom, value.left );
   }
 
   public Color getForeground( Control control ) {

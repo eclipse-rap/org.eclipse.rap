@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -122,7 +123,8 @@ class ViewFormLayout extends Layout {
       Rectangle rect = ( ( Scrollable )c ).computeTrim( 0, 0, 0, 0 );
       return rect.width;
     }
-    return c.getAdapter( ControlThemeAdapter.class ).getBorder( c ).width;
+    BoxDimensions border = c.getAdapter( ControlThemeAdapter.class ).getBorder( c );
+    return border.left + border.right;
   }
 
   protected boolean flushCache( Control control ) {

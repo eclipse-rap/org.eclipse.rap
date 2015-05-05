@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -141,14 +142,14 @@ public class DateTime extends Composite {
   private static final int MIN_CELL_HEIGHT = 16;
   private static final int CELL_PADDING = 2;
 
-  private String[] monthNames;
-  private String[] weekdayNames;
-  private String[] weekdayShortNames;
-  private String dateSeparator;
-  private String datePattern;
-  private Point cellSize;
+  private final String[] monthNames;
+  private final String[] weekdayNames;
+  private final String[] weekdayShortNames;
+  private final String dateSeparator;
+  private final String datePattern;
+  private final Point cellSize;
   private transient IDateTimeAdapter dateTimeAdapter;
-  private Calendar rightNow;
+  private final Calendar rightNow;
   // Date fields
   private Rectangle weekdayTextFieldBounds;
   private Rectangle dayTextFieldBounds;
@@ -653,10 +654,10 @@ public class DateTime extends Composite {
     Font font = getFont();
     int width = 0, height = 0;
     CssBoxDimensions padding = getFieldPadding();
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     if( ( style & SWT.CALENDAR ) != 0 ) {
-      width = cellSize.x * 8 + border.width;
-      height = cellSize.y * 7 + CALENDAR_HEADER_HEIGHT + border.height;
+      width = cellSize.x * 8 + border.left + border.right;
+      height = cellSize.y * 7 + CALENDAR_HEADER_HEIGHT + border.top + border.bottom;
     } else if( ( style & SWT.DATE ) != 0 ) {
       Point prefSize = new Point( 0, 0 );
       if( datePattern.equals( "MDY" ) ) {
@@ -671,8 +672,8 @@ public class DateTime extends Composite {
         }
       }
       // Overall default widget size
-      width = prefSize.x + border.width;
-      height = prefSize.y + border.height;
+      width = prefSize.x + border.left + border.right;
+      height = prefSize.y + border.top + border.bottom;
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( padding.left, padding.top, 0, 0 );
@@ -707,8 +708,8 @@ public class DateTime extends Composite {
       spinnerBounds.width = getSpinnerButtonWidth();
       spinnerBounds.height = hoursTextFieldBounds.height + padding.getHeight();
       // Overall default widget size
-      width = spinnerBounds.x + spinnerBounds.width + border.width;
-      height = spinnerBounds.height + border.height;
+      width = spinnerBounds.x + spinnerBounds.width + border.left + border.right;
+      height = spinnerBounds.height + border.top + border.bottom;
     }
     adjustButtonsBounds();
     return new Point( width, height );
@@ -939,13 +940,13 @@ public class DateTime extends Composite {
 
   private void adjustButtonsBounds() {
     Point size = getSize();
-    Rectangle border = getBorder();
+    BoxDimensions border = getBorder();
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
-      dropDownButtonBounds.x = size.x - border.width - dropDownButtonBounds.width;
-      dropDownButtonBounds.height = size.y - border.height;
+      dropDownButtonBounds.x = size.x - ( border.left + border.right ) - dropDownButtonBounds.width;
+      dropDownButtonBounds.height = size.y - ( border.top + border.bottom );
     } else if( ( style & SWT.DATE ) != 0 || ( style & SWT.TIME ) != 0 ) {
-      spinnerBounds.x = size.x - border.width - spinnerBounds.width;
-      spinnerBounds.height = size.y - border.height;
+      spinnerBounds.x = size.x - ( border.left + border.right ) - spinnerBounds.width;
+      spinnerBounds.height = size.y - ( border.top + border.bottom );
     }
   }
 

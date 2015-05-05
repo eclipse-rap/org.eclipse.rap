@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 // import org.eclipse.swt.*;
 // import org.eclipse.swt.graphics.*;
 // import org.eclipse.swt.widgets.*;
@@ -25,11 +26,12 @@ import org.eclipse.swt.widgets.Scrollable;
 
 /**
  * This class provides the layout for CBanner
- * 
+ *
  * @see CBanner
  */
 class CBannerLayout extends Layout {
 
+  @Override
   protected Point computeSize( Composite composite,
                                int wHint,
                                int hHint,
@@ -105,10 +107,12 @@ class CBannerLayout extends Layout {
                 + 2
                 * CBanner.BORDER_STRIPE;
     }
-    if( wHint != SWT.DEFAULT )
+    if( wHint != SWT.DEFAULT ) {
       width = wHint;
-    if( hHint != SWT.DEFAULT )
+    }
+    if( hHint != SWT.DEFAULT ) {
       height = hHint;
+    }
     return new Point( width, height );
   }
 
@@ -133,16 +137,20 @@ class CBannerLayout extends Layout {
       Rectangle rect = ( ( Scrollable )c ).computeTrim( 0, 0, 0, 0 );
       return rect.width;
     }
-    return c.getAdapter( ControlThemeAdapter.class ).getBorder( c ).width;
+    BoxDimensions border = c.getAdapter( ControlThemeAdapter.class ).getBorder( c );
+    return border.left + border.right;
   }
 
+  @Override
   protected boolean flushCache( Control control ) {
     Object data = control.getLayoutData();
-    if( data != null && data instanceof CLayoutData )
+    if( data != null && data instanceof CLayoutData ) {
       ( ( CLayoutData )data ).flushCache();
+    }
     return true;
   }
 
+  @Override
   @SuppressWarnings("unused")
   protected void layout( Composite composite, boolean flushCache ) {
     CBanner banner = ( CBanner )composite;
@@ -152,9 +160,9 @@ class CBannerLayout extends Layout {
     Sash separator = banner.separator;
     Point size = banner.getSize();
     boolean showCurve = left != null && right != null;
-    Rectangle border = banner.getAdapter( ControlThemeAdapter.class ).getBorder( banner );
-    int width = size.x - border.width;
-    int height = size.y - border.height;
+    BoxDimensions border = banner.getAdapter( ControlThemeAdapter.class ).getBorder( banner );
+    int width = size.x - ( border.left + border.right );
+    int height = size.y - ( border.top + border.bottom );
     Point bottomSize = new Point( 0, 0 );
     if( bottom != null ) {
       int trim = computeTrim( bottom );
@@ -162,11 +170,12 @@ class CBannerLayout extends Layout {
       bottomSize = computeChildSize( bottom, w, SWT.DEFAULT, flushCache );
       height -= bottomSize.y + CBanner.BORDER_STRIPE + 2;
     }
-    if( showCurve )
+    if( showCurve ) {
       height -= CBanner.BORDER_TOP
                 + CBanner.BORDER_BOTTOM
                 + 2
                 * CBanner.BORDER_STRIPE;
+    }
     height = Math.max( 0, height );
     Point rightSize = new Point( 0, 0 );
     if( right != null ) {
@@ -207,8 +216,9 @@ class CBannerLayout extends Layout {
                                   bottomSize.x,
                                   bottomSize.y );
     }
-    if( showCurve )
+    if( showCurve ) {
       y += CBanner.BORDER_TOP + CBanner.BORDER_STRIPE;
+    }
     if( left != null ) {
       leftRect = new Rectangle( x, y, leftSize.x, leftSize.y );
       banner.curveStart = x + leftSize.x - banner.curve_indent;
@@ -261,12 +271,15 @@ class CBannerLayout extends Layout {
                                       0,
                                       banner.curve_width,
                                       size.y );
-    if( bottomRect != null )
+    if( bottomRect != null ) {
       bottom.setBounds( bottomRect );
-    if( rightRect != null )
+    }
+    if( rightRect != null ) {
       right.setBounds( rightRect );
-    if( leftRect != null )
+    }
+    if( leftRect != null ) {
       left.setBounds( leftRect );
+    }
     if( curveRect != null ) {
       separator.setBounds( curveRect );
     }

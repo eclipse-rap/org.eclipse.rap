@@ -14,6 +14,7 @@ import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -319,18 +320,18 @@ public class FileUpload extends Canvas {
       int spacing = themeAdapter.getSpacing( this );
       width += spacing;
     }
-    Rectangle padding = themeAdapter.getPadding( this );
-    width += padding.width;
-    height += padding.height;
+    BoxDimensions padding = themeAdapter.getPadding( this );
+    width += padding.left + padding.right;
+    height += padding.top + padding.bottom;
     if( wHint != SWT.DEFAULT ) {
       width = wHint;
     }
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    Rectangle border = themeAdapter.getBorder( this );
-    width += border.width;
-    height += border.height;
+    BoxDimensions border = themeAdapter.getBorder( this );
+    width += border.left + border.right;
+    height += border.top + border.bottom;
     return new Point( width, height );
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Rectangle;
@@ -102,11 +103,17 @@ public abstract class Scrollable extends Control {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    Rectangle borderWidth = getBorder();
-    Rectangle padding = getPadding();
-    int width = bounds.width - borderWidth.width - padding.width - getVScrollBarWidth();
-    int height = bounds.height - borderWidth.height - padding.height - getHScrollBarHeight();
-    return new Rectangle( padding.x, padding.y, Math.max( 0, width ), Math.max( 0, height ) );
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
+    int width = bounds.width
+                - ( border.left + border.right )
+                - ( padding.left + padding.right )
+                - getVScrollBarWidth();
+    int height = bounds.height
+                 - ( border.top + border.bottom )
+                 - ( padding.top + padding.bottom )
+                 - getHScrollBarHeight();
+    return new Rectangle( padding.left, padding.top, Math.max( 0, width ), Math.max( 0, height ) );
   }
 
   /**
@@ -138,18 +145,18 @@ public abstract class Scrollable extends Control {
    */
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
-    Rectangle borderWidth = getBorder();
-    Rectangle padding = getPadding();
-    int newWidth = width + borderWidth.width + padding.width;
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
+    int newWidth = width + border.left + border.right + padding.left + padding.right;
     if( verticalBar != null ) {
       newWidth += verticalBar.getSize().x;
     }
-    int newHeight = height + borderWidth.height + padding.height;
+    int newHeight = height + border.top + border.bottom + padding.top + padding.bottom;
     if( horizontalBar != null ) {
       newHeight += horizontalBar.getSize().y;
     }
-    int newX = x - borderWidth.x - padding.x;
-    int newY = y - borderWidth.y - padding.y;
+    int newX = x - border.left - padding.left;
+    int newY = y - border.top - padding.top;
     return new Rectangle( newX, newY, newWidth, newHeight );
   }
 
