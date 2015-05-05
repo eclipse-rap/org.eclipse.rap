@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -142,7 +143,7 @@ public class Table extends Composite {
 
     public int getCheckWidth() {
       TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      return themeAdapter.getCheckBoxImageSize( Table.this ).x;
+      return themeAdapter.getCheckBoxImageSize( Table.this ).width;
     }
 
     public int getItemImageWidth( int columnIndex ) {
@@ -2478,10 +2479,10 @@ public class Table extends Composite {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.CHECK ) != 0 ) {
       TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      Point checkImageSize = themeAdapter.getCheckBoxImageSize( this );
+      Size checkImageSize = themeAdapter.getCheckBoxImageSize( this );
       CssBoxDimensions margin = getCheckBoxMargin();
-      result.x = checkImageSize.x + margin.getWidth();
-      result.y = checkImageSize.y + margin.getHeight();
+      result.x = checkImageSize.width + margin.getWidth();
+      result.y = checkImageSize.height + margin.getHeight();
     }
     return result;
   }
@@ -2493,7 +2494,7 @@ public class Table extends Composite {
       return margin;
     }
     int checkBoxWidth = themeAdapter.getCheckBoxWidth( this );
-    int imageWidth = themeAdapter.getCheckBoxImageSize( this ).x;
+    int imageWidth = themeAdapter.getCheckBoxImageSize( this ).width;
     int marginWidth = Math.max( 0, checkBoxWidth - imageWidth );
     int marginLeft = Math.round( marginWidth / 2 );
     return CssBoxDimensions.create( 0, marginLeft, 0, marginLeft );

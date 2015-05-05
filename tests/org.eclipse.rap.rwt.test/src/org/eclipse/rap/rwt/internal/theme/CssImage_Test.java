@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,8 +86,7 @@ public class CssImage_Test {
     assertNull( CssImage.NONE.gradientColors );
     assertNull( CssImage.NONE.gradientPercents );
     assertTrue( CssImage.NONE.vertical );
-    assertEquals( 0, CssImage.NONE.width );
-    assertEquals( 0, CssImage.NONE.height );
+    assertEquals( new Size( 0, 0), CssImage.NONE.getSize() );
   }
 
   @Test
@@ -99,8 +98,7 @@ public class CssImage_Test {
     assertNull( qxImage.gradientColors );
     assertNull( qxImage.gradientPercents );
     assertTrue( qxImage.vertical );
-    assertEquals( 50, qxImage.width );
-    assertEquals( 100, qxImage.height );
+    assertEquals( new Size( 50, 100), qxImage.getSize() );
     assertFalse( qxImage.isGradient() );
   }
 
@@ -115,8 +113,7 @@ public class CssImage_Test {
     assertTrue( qxImage.none );
     assertNull( qxImage.path );
     assertNull( qxImage.loader );
-    assertEquals( 0, qxImage.width );
-    assertEquals( 0, qxImage.height );
+    assertEquals( new Size( 0, 0 ), qxImage.getSize() );
     assertTrue( qxImage.isGradient() );
   }
 
@@ -131,8 +128,7 @@ public class CssImage_Test {
     assertTrue( qxImage.none );
     assertNull( qxImage.path );
     assertNull( qxImage.loader );
-    assertEquals( 0, qxImage.width );
-    assertEquals( 0, qxImage.height );
+    assertEquals( new Size( 0, 0 ), qxImage.getSize() );
     assertTrue( qxImage.isGradient() );
   }
 

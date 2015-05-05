@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
 
 
 public class CssImage implements CssValue, ThemeResource {
@@ -35,14 +34,15 @@ public class CssImage implements CssValue, ThemeResource {
 
   public static final CssImage NONE = new CssImage( true, null, null, null, null, true );
 
+  private final Size size;
+
   public final boolean none;
   public final String path;
   public final ResourceLoader loader;
   public final String[] gradientColors;
   public final float[] gradientPercents;
   public final boolean vertical;
-  public final int width;
-  public final int height;
+
 
   /**
    * Creates a new image from the given value.
@@ -70,16 +70,13 @@ public class CssImage implements CssValue, ThemeResource {
     this.gradientPercents = gradientPercents;
     this.vertical = vertical;
     if( none ) {
-      width = 0;
-      height = 0;
+      size = new Size( 0, 0 );
     } else {
       try {
-        Point size = readImageSize( path, loader );
+        size = readImageSize( path, loader );
         if( size == null ) {
           throw new IllegalArgumentException( "Failed to read image: " + path );
         }
-        width = size.x;
-        height = size.y;
       } catch( IOException e ) {
         throw new IllegalArgumentException( "Failed to read image: " + path, e );
       }
@@ -115,6 +112,10 @@ public class CssImage implements CssValue, ThemeResource {
 
   public boolean isGradient() {
     return gradientColors != null && gradientPercents != null;
+  }
+
+  public Size getSize() {
+    return size;
   }
 
   public String getResourcePath( ApplicationContext applicationContext ) {
@@ -223,18 +224,17 @@ public class CssImage implements CssValue, ThemeResource {
     return result;
   }
 
-  private static Point readImageSize( String path, ResourceLoader loader ) throws IOException {
-    Point result = null;
+  private static Size readImageSize( String path, ResourceLoader loader ) throws IOException {
     InputStream inputStream = loader.getResourceAsStream( path );
     if( inputStream != null ) {
       try {
         ImageData data = new ImageData( inputStream );
-        result = new Point( data.width, data.height );
+        return new Size( data.width, data.height );
       } finally {
         inputStream.close();
       }
     }
-    return result;
+    return null;
   }
 
 }

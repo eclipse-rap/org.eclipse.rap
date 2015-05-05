@@ -17,6 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -142,7 +142,7 @@ public class ToolItem extends Item {
   public ToolItem( ToolBar parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    this.visible = true;
+    visible = true;
     computedWidth = true;
     parent.createItem( this, index );
     computeInitialWidth();
@@ -611,7 +611,7 @@ public class ToolItem extends Item {
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       result += getSpacing() * 2;
       result += 1; // the separator-line
-      result += getDropDownImageDimension().x;
+      result += getDropDownImageSize().width;
     }
     result += paddingWidth + borderWidth;
     return result;
@@ -621,8 +621,8 @@ public class ToolItem extends Item {
     return getToolBarThemeAdapter().getItemBorder( parent );
   }
 
-  private Point getDropDownImageDimension() {
-    return getToolBarThemeAdapter().getDropDownImageDimension( parent );
+  private Size getDropDownImageSize() {
+    return getToolBarThemeAdapter().getDropDownImageSize( parent );
   }
 
   private CssBoxDimensions getPadding() {
@@ -799,7 +799,7 @@ public class ToolItem extends Item {
       if( toolItemAdapter == null ) {
         toolItemAdapter = new IToolItemAdapter() {
           public boolean getVisible() {
-            return ToolItem.this.visible;
+            return visible;
           }
         };
       }
@@ -822,7 +822,7 @@ public class ToolItem extends Item {
     } else {
       width = DEFAULT_WIDTH;
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
-        width += getDropDownImageDimension().x;
+        width += getDropDownImageSize().width;
       }
     }
   }

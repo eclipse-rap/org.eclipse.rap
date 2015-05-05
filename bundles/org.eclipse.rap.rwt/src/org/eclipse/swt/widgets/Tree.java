@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.template.Template;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -1806,7 +1807,7 @@ public class Tree extends Composite {
     // Note: The left cell-padding is visually ignored for the tree-column
     int result = isTreeColumn( index ) ? 0 : getCellPadding().left;
     if( hasCheckBoxes( index ) ) {
-      result += getCheckImageOuterSize().x;
+      result += getCheckImageOuterSize().width;
     }
     return result;
   }
@@ -1845,7 +1846,7 @@ public class Tree extends Composite {
       result += getIndentionOffset( item );
     }
     if( hasCheckBoxes( index ) ) {
-      result += getCheckImageOuterSize().x;
+      result += getCheckImageOuterSize().width;
     }
     return result;
   }
@@ -1873,7 +1874,7 @@ public class Tree extends Composite {
         result -= getIndentionOffset( item );
       }
       if( hasCheckBoxes( index ) ) {
-        result -= getCheckImageOuterSize().x;
+        result -= getCheckImageOuterSize().width;
       }
       result = Math.max( 0, result );
     }
@@ -2007,7 +2008,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private Point getCheckImageSize() {
+  private Size getCheckImageSize() {
     return getThemeAdapter().getCheckBoxImageSize( this );
   }
 
@@ -2015,12 +2016,10 @@ public class Tree extends Composite {
     return ( TreeThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
-  private Point getCheckImageOuterSize() {
-    Point result = getCheckImageSize();
+  private Size getCheckImageOuterSize() {
+    Size result = getCheckImageSize();
     CssBoxDimensions margin = getCheckBoxMargin();
-    result.x += margin.getWidth();
-    result.y += margin.getHeight();
-    return result;
+    return new Size( result.width + margin.getWidth(), result.height + margin.getHeight() );
   }
 
   private CssBoxDimensions getCheckBoxMargin() {
@@ -2076,7 +2075,7 @@ public class Tree extends Composite {
     int itemImageHeight = getItemImageSize().y + padding.getHeight();
     int result = Math.max( itemImageHeight, textHeight );
     if( hasCheckBoxes( 0 ) ) {
-      result = Math.max( getCheckImageOuterSize().y, result );
+      result = Math.max( getCheckImageOuterSize().height, result );
     }
     result += 1; // The space needed for horizontal gridline is always added, even if not visible
     result = Math.max( result, MIN_ITEM_HEIGHT );
@@ -2459,7 +2458,7 @@ public class Tree extends Composite {
     }
 
     public int getCheckWidth() {
-      return getCheckImageSize().x;
+      return getCheckImageSize().width;
     }
 
     public int getImageOffset( int index ) {

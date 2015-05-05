@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -56,6 +57,8 @@ import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
  * @since 1.0
  */
 public class Text extends Scrollable {
+
+  private static final Size ZERO = new Size( 0, 0 );
 
   // This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;
@@ -577,8 +580,8 @@ public class Text extends Scrollable {
    */
   public void setSelection( int start, int end ) {
     checkWidget();
-    int validatedStart = this.selection.x;
-    int validatedEnd = this.selection.y;
+    int validatedStart = selection.x;
+    int validatedEnd = selection.y;
     if( start >= 0 && end >= start ) {
       validatedStart = Math.min( start, text.length() );
       validatedEnd = Math.min( end, text.length() );
@@ -586,8 +589,8 @@ public class Text extends Scrollable {
       validatedStart = Math.min( end, text.length() );
       validatedEnd = Math.min( start, text.length() );
     }
-    this.selection.x = validatedStart;
-    this.selection.y = validatedEnd;
+    selection.x = validatedStart;
+    selection.y = validatedEnd;
   }
 
   /**
@@ -816,11 +819,11 @@ public class Text extends Scrollable {
       if( extent.y != 0 ) {
         height = extent.y;
       }
-      Point searchIconSize = getSearchIconOuterSize();
-      Point cancelIconSize = getCancelIconOuterSize();
-      width += searchIconSize.x + cancelIconSize.x;
-      height = Math.max( height, searchIconSize.y );
-      height = Math.max( height, cancelIconSize.y );
+      Size searchIconSize = getSearchIconOuterSize();
+      Size cancelIconSize = getCancelIconOuterSize();
+      width += searchIconSize.width + cancelIconSize.width;
+      height = Math.max( height, searchIconSize.height );
+      height = Math.max( height, cancelIconSize.height );
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -1123,22 +1126,22 @@ public class Text extends Scrollable {
     return result | SWT.SINGLE;
   }
 
-  private Point getSearchIconOuterSize() {
-    Point result = new Point( 0, 0 );
+  private Size getSearchIconOuterSize() {
     if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_SEARCH ) != 0 ) {
-      result = getThemeAdapter().getSearchIconImageSize( this );
-      result.x += getThemeAdapter().getSearchIconSpacing( this );
+      Size imageSize = getThemeAdapter().getSearchIconImageSize( this );
+      int spacing = getThemeAdapter().getSearchIconSpacing( this );
+      return new Size( imageSize.width + spacing, imageSize.height );
     }
-    return result;
+    return ZERO;
   }
 
-  private Point getCancelIconOuterSize() {
-    Point result = new Point( 0, 0 );
+  private Size getCancelIconOuterSize() {
     if( ( style & SWT.SEARCH ) != 0 && ( style & SWT.ICON_CANCEL ) != 0 ) {
-      result = getThemeAdapter().getCancelIconImageSize( this );
-      result.x += getThemeAdapter().getCancelIconSpacing( this );
+      Size imageSize = getThemeAdapter().getCancelIconImageSize( this );
+      int spacing = getThemeAdapter().getCancelIconSpacing( this );
+      return new Size( imageSize.width + spacing, imageSize.height );
     }
-    return result;
+    return ZERO;
   }
 
   private TextThemeAdapter getThemeAdapter() {

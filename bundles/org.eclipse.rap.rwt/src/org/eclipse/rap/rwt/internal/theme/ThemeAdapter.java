@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicatio
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Widget;
 
@@ -88,9 +87,9 @@ public abstract class ThemeAdapter {
     return ( CssBoxDimensions )ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
   }
 
-  protected Point getCssImageDimension( String cssElement, String cssProperty, Widget widget ) {
+  protected Size getCssImageSize( String cssElement, String cssProperty, Widget widget ) {
     CssImage image = ( CssImage ) ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
-    return new Point( image.width, image.height );
+    return image.getSize();
   }
 
   private static ThemeableWidget findThemeableWidget( Widget widget ) {

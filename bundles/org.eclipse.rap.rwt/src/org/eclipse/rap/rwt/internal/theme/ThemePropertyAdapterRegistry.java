@@ -148,10 +148,8 @@ public final class ThemePropertyAdapterRegistry {
         gradientObject.add( "vertical", image.vertical );
         result = gradientObject;
       } else if( !image.none ) {
-        JsonArray imageArray = new JsonArray();
-        imageArray.add( image.width );
-        imageArray.add( image.height );
-        result = imageArray;
+        Size imageSize = image.getSize();
+        result = new JsonArray().add( imageSize.width ).add( imageSize.height );
       }
       return result;
     }

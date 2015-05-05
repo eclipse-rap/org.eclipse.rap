@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.grid.internal.gridkit.GridThemeAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -2825,7 +2826,7 @@ public class Grid extends Composite {
         && !hasColumnImages( index )
         && !hasColumnTexts( index ) )
     {
-      result = ( getCellWidth( index ) - getCheckBoxImageSize().x ) / 2;
+      result = ( getCellWidth( index ) - getCheckBoxImageSize().width ) / 2;
       result = Math.max( result, padding.left );
     }
     if( result == -1 ) {
@@ -2838,7 +2839,7 @@ public class Grid extends Composite {
   }
 
   private int getCheckBoxWidth( int index ) {
-    return getColumn( index ).isCheck() ? getCheckBoxImageSize().x : 0;
+    return getColumn( index ).isCheck() ? getCheckBoxImageSize().width : 0;
   }
 
   private int getImageOffset( int index ) {
@@ -2906,9 +2907,9 @@ public class Grid extends Composite {
   }
 
   Point getCheckBoxImageOuterSize() {
-    Point imageSize = getCheckBoxImageSize();
+    Size imageSize = getCheckBoxImageSize();
     CssBoxDimensions margin = getCheckBoxMargin();
-    return new Point( imageSize.x + margin.getWidth(), imageSize.y + margin.getHeight() );
+    return new Point( imageSize.width + margin.getWidth(), imageSize.height + margin.getHeight() );
   }
 
   boolean isTreeColumn( int index ) {
@@ -2924,7 +2925,7 @@ public class Grid extends Composite {
     return getColumn( index ).getAlignment() == SWT.CENTER;
   }
 
-  private Point getCheckBoxImageSize() {
+  private Size getCheckBoxImageSize() {
     if( !layoutCache.hasCheckBoxImageSize() ) {
       layoutCache.checkBoxImageSize = getThemeAdapter().getCheckBoxImageSize( this );
     }
@@ -3220,7 +3221,7 @@ public class Grid extends Composite {
     int indentationWidth = UNKNOWN;
     CssBoxDimensions cellPadding;
     CssBoxDimensions checkBoxMargin;
-    Point checkBoxImageSize;
+    Size checkBoxImageSize;
     CssBoxDimensions headerPadding;
 
     public boolean hasHeaderPadding() {

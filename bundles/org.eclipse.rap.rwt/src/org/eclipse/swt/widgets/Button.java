@@ -17,6 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -391,19 +392,20 @@ public class Button extends Control {
     ButtonThemeAdapter themeAdapter = getThemeAdapter();
     BoxDimensions padding = themeAdapter.getPadding( this );
     if( ( style & SWT.ARROW ) != 0 ) {
-      width = themeAdapter.getArrowSize( this ).x;
-      height = themeAdapter.getArrowSize( this ).y;
+      Size arrowSize = themeAdapter.getArrowSize( this );
+      width = arrowSize.width;
+      height = arrowSize.height;
     } else {
       boolean hasImage = image != null;
       boolean hasText = text.length() > 0;
       Font font = getFont();
       if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-        Point checkSize = themeAdapter.getCheckSize( this );
-        width += checkSize.x;
+        Size checkSize = themeAdapter.getCheckSize( this );
+        width += checkSize.width;
         if( hasText || hasImage ) {
           width += themeAdapter.getCheckSpacing( this );
         }
-        height = Math.max( height, checkSize.y );
+        height = Math.max( height, checkSize.height );
       }
       if( hasImage ) {
         Rectangle imageBounds = image.getBounds();

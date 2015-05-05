@@ -12,8 +12,8 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
@@ -28,8 +28,8 @@ public class TableThemeAdapter extends ControlThemeAdapterImpl {
     return getCssDimension( "Table-Checkbox", "width", control );
   }
 
-  public Point getCheckBoxImageSize( Control control ) {
-    return getCssImageDimension( "Table-Checkbox", "background-image", control );
+  public Size getCheckBoxImageSize( Control control ) {
+    return getCssImageSize( "Table-Checkbox", "background-image", control );
   }
 
   public CssBoxDimensions getCellPadding( Control control ) {

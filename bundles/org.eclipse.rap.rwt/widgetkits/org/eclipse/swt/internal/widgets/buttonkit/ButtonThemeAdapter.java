@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Button;
 
 
 public class ButtonThemeAdapter extends ControlThemeAdapterImpl {
+
+  private static final Size ZERO = new Size( 0, 0 );
 
   @Override
   protected void configureMatcher( WidgetMatcher matcher ) {
@@ -43,22 +45,21 @@ public class ButtonThemeAdapter extends ControlThemeAdapterImpl {
     return getCssDimension( "Button", "spacing", button );
   }
 
-  public Point getCheckSize( Button button ) {
-    Point result = null;
+  public Size getCheckSize( Button button ) {
     if( ( button.getStyle() & SWT.RADIO ) != 0) {
-      result = getCssImageDimension( "Button-RadioIcon", "background-image", button );
-    } else if( ( button.getStyle() & SWT.CHECK ) != 0) {
-      result = getCssImageDimension( "Button-CheckIcon", "background-image", button );
+      return getCssImageSize( "Button-RadioIcon", "background-image", button );
     }
-    return result;
+    if( ( button.getStyle() & SWT.CHECK ) != 0) {
+      return getCssImageSize( "Button-CheckIcon", "background-image", button );
+    }
+    return ZERO;
   }
 
-  public Point getArrowSize( Button button ) {
-    Point result = new Point( 0, 0 );
+  public Size getArrowSize( Button button ) {
     if( ( button.getStyle() & SWT.ARROW ) != 0) {
-      result = getCssImageDimension( "Button-ArrowIcon", "background-image", button );
+      return getCssImageSize( "Button-ArrowIcon", "background-image", button );
     }
-    return result;
+    return ZERO;
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
+import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -37,16 +37,16 @@ public class TextThemeAdapter extends ControlThemeAdapterImpl {
     });
   }
 
-  public Point getSearchIconImageSize( Control control ) {
-    return getCssImageDimension( "Text-Search-Icon", "background-image", control );
+  public Size getSearchIconImageSize( Control control ) {
+    return getCssImageSize( "Text-Search-Icon", "background-image", control );
   }
 
   public int getSearchIconSpacing( Control control ) {
     return Math.max( 0, getCssDimension( "Text-Search-Icon", "spacing", control ) );
   }
 
-  public Point getCancelIconImageSize( Control control ) {
-    return getCssImageDimension( "Text-Cancel-Icon", "background-image", control );
+  public Size getCancelIconImageSize( Control control ) {
+    return getCssImageSize( "Text-Cancel-Icon", "background-image", control );
   }
 
   public int getCancelIconSpacing( Control control ) {
