@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,11 +26,13 @@ public final class WidgetMatcher implements ValueSelector {
     boolean matches( Widget widget );
   }
 
-  // TODO [rst] Optimize, linear search might be faster than hashmap overhead
-  private final Map<String,Constraint> constraintMap;
+  private final Map<String, Constraint> constraintMap;
 
   public WidgetMatcher() {
-    constraintMap = new HashMap<String,Constraint>();
+    // This map is accessed by all UI sessions simultaneously. However, We don't need to
+    // synchronize get and put since constraints are deterministic, i.e. in case of concurrent
+    // insertions one constraint overwriting the other is not critical.
+    constraintMap = Collections.synchronizedMap( new HashMap<String, Constraint>() );
   }
 
   public void addStyle( String string, int style ) {
@@ -52,28 +55,39 @@ public final class WidgetMatcher implements ValueSelector {
     return result;
   }
 
-  public static Constraint createStyleConstraint( final int style ) {
-    Constraint matcher = new Constraint() {
+  private boolean matches( Widget widget, String[] constraints ) {
+    for( String string : constraints ) {
+      Constraint constraint = getConstraint( string );
+      if( constraint == null || !constraint.matches( widget ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private Constraint getConstraint( String string ) {
+    Constraint constraint = constraintMap.get( string );
+    if( constraint == null && string.startsWith( "." ) ) {
+      constraint = createVariantConstraint( string.substring( 1 ) );
+      constraintMap.put( string, constraint );
+    }
+    return constraint;
+  }
+
+  private static Constraint createStyleConstraint( final int style ) {
+    return new Constraint() {
       public boolean matches( Widget widget ) {
         return ( widget.getStyle() & style ) != 0;
       }
     };
-    return matcher;
   }
 
-  private boolean matches( Widget widget, String[] constraints ) {
-    boolean result = true;
-    for( int i = 0; i < constraints.length && result; i++ ) {
-      String string = constraints[ i ];
-      if( string.startsWith( "." ) ) {
-        String variant = string.substring( 1 );
-        result &= hasVariant( widget, variant );
-      } else {
-        Constraint constraint = constraintMap.get( string );
-        result &= constraint != null && constraint.matches( widget );
+  private static Constraint createVariantConstraint( final String variant ) {
+    return new Constraint() {
+      public boolean matches( Widget widget ) {
+        return hasVariant( widget, variant );
       }
-    }
-    return result;
+    };
   }
 
   private static boolean hasVariant( Widget widget, String variant ) {

@@ -13,94 +13,159 @@ package org.eclipse.rap.rwt.internal.theme.css;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.theme.CssColor;
 import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class WidgetMatcher_Test {
 
-  private static final CssColor GREEN = CssColor.valueOf( "green" );
-  private static final CssColor BLUE = CssColor.valueOf( "blue" );
   private static final CssColor RED = CssColor.valueOf( "red" );
+  private static final CssColor BLUE = CssColor.valueOf( "blue" );
+  private static final CssColor GREEN = CssColor.valueOf( "green" );
+
+  private static final Constraint ALWAYS_TRUE = new Constraint() {
+    @Override
+    public boolean matches( Widget widget ) {
+      return true;
+    }
+  };
+  private static final Constraint ALWAYS_FALSE = new Constraint() {
+    @Override
+    public boolean matches( Widget widget ) {
+      return false;
+    }
+  };
+
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Shell shell;
+  private WidgetMatcher matcher;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    Display display = new Display();
+    shell = new Shell( display );
+    matcher = new WidgetMatcher();
   }
 
   @Test
-  public void testWidgetMatcher() {
-    // Create matcher for a certain widget instance
-    WidgetMatcher matcher = new WidgetMatcher();
+  public void testSelect_withoutValues() {
+    Widget widget = new Button( shell, SWT.PUSH );
+
+    CssValue result = matcher.select( widget );
+
+    assertNull( result );
+  }
+
+  @Test
+  public void testSelect_withStyle_match() {
+    Widget widget = new Button( shell, SWT.PUSH );
+    matcher.addStyle( "PUSH", SWT.PUSH );
+    ConditionalValue[] values = { new ConditionalValue( RED, "[PUSH" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertSame( RED, result );
+  }
+
+  @Test
+  public void testSelect_withStyle_mismatch() {
+    Widget widget = new Button( shell, SWT.CHECK );
+    matcher.addStyle( "PUSH", SWT.PUSH );
+    ConditionalValue[] values = { new ConditionalValue( RED, "[PUSH" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertNull( result );
+  }
+
+  @Test
+  public void testSelect_withState_callsConstraintWithWidget() {
+    Constraint constraint = mock( Constraint.class );
+    Widget widget = new Button( shell, SWT.PUSH );
+    matcher.addState( "selected", constraint );
+    ConditionalValue[] values = { new ConditionalValue( RED, ":selected" ) };
+
+    matcher.select( widget, values );
+
+    verify( constraint ).matches( widget );
+  }
+
+  @Test
+  public void testSelect_withState_match() {
+    Widget widget = new Button( shell, SWT.PUSH );
+    matcher.addState( "selected", ALWAYS_TRUE );
+    ConditionalValue[] values = { new ConditionalValue( RED, ":selected" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertSame( RED, result );
+  }
+
+  @Test
+  public void testSelect_withState_mismatch() {
+    Widget widget = new Button( shell, SWT.PUSH );
+    matcher.addState( "selected", ALWAYS_FALSE );
+    ConditionalValue[] values = { new ConditionalValue( RED, ":selected" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertNull( result );
+  }
+
+  @Test
+  public void testSelect_withVariant_match() {
+    Widget widget = new Button( shell, SWT.PUSH );
+    widget.setData( RWT.CUSTOM_VARIANT, "special" );
+    ConditionalValue[] values = { new ConditionalValue( RED, ".special" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertSame( RED, result );
+  }
+
+  @Test
+  public void testSelect_withVariant_mismatch() {
+    Widget widget = new Button( shell, SWT.PUSH );
+    ConditionalValue[] values = { new ConditionalValue( RED, ".special" ) };
+
+    CssValue result = matcher.select( widget, values );
+
+    assertNull( result );
+  }
+
+  @Test
+  public void testSelect_withCombinations_returnsFirstMatch() {
     matcher.addStyle( "BORDER", SWT.BORDER );
     matcher.addStyle( "PUSH", SWT.PUSH );
-    matcher.addStyle( "TOGGLE", SWT.TOGGLE );
-    matcher.addState( "selected", new Constraint() {
+    matcher.addState( "selected", ALWAYS_FALSE );
+    ConditionalValue[] values = {
+      new ConditionalValue( RED, "[BORDER", "[PUSH", ":selected" ),
+      new ConditionalValue( BLUE, "[BORDER", "[PUSH" ),
+      new ConditionalValue( GREEN, "[BORDER" )
+    };
+    Widget widget = new Button( shell, SWT.PUSH | SWT.BORDER );
 
-      public boolean matches( Widget widget ) {
-        Button button = ( Button )widget;
-        return button.getSelection();
-      }
-    } );
+    CssValue result = matcher.select( widget, values );
 
-    // Get set of conditional results
-    ConditionalValue value1 = new ConditionalValue( RED, "[BORDER", "[TOGGLE", ":selected" );
-    ConditionalValue value2 = new ConditionalValue( BLUE, "[BORDER", "[TOGGLE" );
-    ConditionalValue value3 = new ConditionalValue( GREEN, ".special" );
-    ConditionalValue[] values = new ConditionalValue[] { value1, value2, value3 };
-
-    // Test matcher with example widgets
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
-    // A button that matches none of the rules
-    Widget button1 = new Button( shell, SWT.TOGGLE );
-    CssValue result = matcher.select( button1, values );
-    assertNull( result );
-
-    // A button that matches rule 2
-    Button button2 = new Button( shell, SWT.TOGGLE | SWT.BORDER );
-    result = matcher.select( button2, values );
-    assertEquals( value2.value, result );
-
-    // now matches rule 1 and rule 2, but 1 takes precedence
-    button2.setSelection( true );
-    result = matcher.select( button2, values );
-    assertEquals( value1.value, result );
-
-    // now matches all three rules, still 1 takes precedence
-    button2.setData( RWT.CUSTOM_VARIANT, "special" );
-    result = matcher.select( button2, values );
-    assertEquals( value1.value, result );
-
-    // A button that only matches rule 3
-    Button button3 = new Button( shell, SWT.TOGGLE );
-    button3.setData( RWT.CUSTOM_VARIANT, "special" );
-    result = matcher.select( button3, values );
-    assertEquals( value3.value, result );
-
-    // After this change it does not match anymore
-    button3.setData( RWT.CUSTOM_VARIANT, "other" );
-    result = matcher.select( button3, values );
-    assertNull( result );
+    assertEquals( BLUE, result );
   }
 
 }
