@@ -21,20 +21,15 @@ public final class SimpleSelector implements ValueSelector {
 
   private final String[] requiredConstraints;
 
-  public static final SimpleSelector DEFAULT
-    = new SimpleSelector( new String[ 0 ] );
+  public static final SimpleSelector DEFAULT = new SimpleSelector();
+  public static final SimpleSelector SELECTED = new SimpleSelector( ":selected" );
+  public static final SimpleSelector INACTIVE = new SimpleSelector( ":inactive" );
 
-  public static final SimpleSelector SELECTED
-    = new SimpleSelector( new String[] { ":selected" } );
-
-  public static final SimpleSelector INACTIVE
-    = new SimpleSelector( new String[] { ":inactive" } );
-
-  public SimpleSelector( String[] constraints ) {
-    this.requiredConstraints = constraints;
+  public SimpleSelector( String... constraints ) {
+    requiredConstraints = constraints;
   }
 
-  public CssValue select( ConditionalValue[] values, Widget widget ) {
+  public CssValue select( Widget widget, ConditionalValue... values ) {
     CssValue result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];

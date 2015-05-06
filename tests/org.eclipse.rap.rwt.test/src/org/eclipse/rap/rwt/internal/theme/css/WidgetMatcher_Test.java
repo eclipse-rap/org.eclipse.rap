@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.theme.CssBorder;
 import org.eclipse.rap.rwt.internal.theme.CssColor;
 import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
@@ -32,6 +31,10 @@ import org.junit.Test;
 
 
 public class WidgetMatcher_Test {
+
+  private static final CssColor GREEN = CssColor.valueOf( "green" );
+  private static final CssColor BLUE = CssColor.valueOf( "blue" );
+  private static final CssColor RED = CssColor.valueOf( "red" );
 
   @Before
   public void setUp() {
@@ -59,18 +62,9 @@ public class WidgetMatcher_Test {
     } );
 
     // Get set of conditional results
-    // rule 1
-    ConditionalValue value1 = new ConditionalValue(
-      new String[] { "[BORDER", "[TOGGLE", ":selected" },
-      CssBorder.create( 2, "solid", CssColor.valueOf( "red" ) ) );
-    // rule 2
-    ConditionalValue value2 = new ConditionalValue(
-      new String[] { "[BORDER", "[TOGGLE" },
-      CssBorder.create( 2, "dotted", CssColor.valueOf( "blue" ) ) );
-    // rule 3
-    ConditionalValue value3 = new ConditionalValue(
-      new String[] { ".special" },
-      CssBorder.create( 1, "solid", CssColor.valueOf( "green" ) ) );
+    ConditionalValue value1 = new ConditionalValue( RED, "[BORDER", "[TOGGLE", ":selected" );
+    ConditionalValue value2 = new ConditionalValue( BLUE, "[BORDER", "[TOGGLE" );
+    ConditionalValue value3 = new ConditionalValue( GREEN, ".special" );
     ConditionalValue[] values = new ConditionalValue[] { value1, value2, value3 };
 
     // Test matcher with example widgets
@@ -79,33 +73,33 @@ public class WidgetMatcher_Test {
 
     // A button that matches none of the rules
     Widget button1 = new Button( shell, SWT.TOGGLE );
-    CssValue result = matcher.select( values, button1 );
+    CssValue result = matcher.select( button1, values );
     assertNull( result );
 
     // A button that matches rule 2
     Button button2 = new Button( shell, SWT.TOGGLE | SWT.BORDER );
-    result = matcher.select( values, button2 );
+    result = matcher.select( button2, values );
     assertEquals( value2.value, result );
 
     // now matches rule 1 and rule 2, but 1 takes precedence
     button2.setSelection( true );
-    result = matcher.select( values, button2 );
+    result = matcher.select( button2, values );
     assertEquals( value1.value, result );
 
     // now matches all three rules, still 1 takes precedence
     button2.setData( RWT.CUSTOM_VARIANT, "special" );
-    result = matcher.select( values, button2 );
+    result = matcher.select( button2, values );
     assertEquals( value1.value, result );
 
     // A button that only matches rule 3
     Button button3 = new Button( shell, SWT.TOGGLE );
     button3.setData( RWT.CUSTOM_VARIANT, "special" );
-    result = matcher.select( values, button3 );
+    result = matcher.select( button3, values );
     assertEquals( value3.value, result );
 
     // After this change it does not match anymore
     button3.setData( RWT.CUSTOM_VARIANT, "other" );
-    result = matcher.select( values, button3 );
+    result = matcher.select( button3, values );
     assertNull( result );
   }
 

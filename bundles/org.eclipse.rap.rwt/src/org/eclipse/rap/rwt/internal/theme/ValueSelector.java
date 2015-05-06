@@ -20,6 +20,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public interface ValueSelector {
 
-  CssValue select( ConditionalValue[] values, Widget widget );
+  CssValue select( Widget widget, ConditionalValue... values );
 
 }

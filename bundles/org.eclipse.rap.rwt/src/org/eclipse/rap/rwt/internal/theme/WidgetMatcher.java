@@ -40,7 +40,7 @@ public final class WidgetMatcher implements ValueSelector {
     constraintMap.put( ":" + string, constraint );
   }
 
-  public CssValue select( ConditionalValue[] values, Widget widget ) {
+  public CssValue select( Widget widget, ConditionalValue... values ) {
     CssValue result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];

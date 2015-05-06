@@ -19,26 +19,26 @@ import org.eclipse.rap.rwt.internal.theme.CssValue;
  */
 public class ConditionalValue {
 
-  public final String[] constraints;
   public final CssValue value;
+  public final String[] constraints;
 
-  public ConditionalValue( String[] constraints, CssValue value ) {
-    this.constraints = constraints;
+  public ConditionalValue( CssValue value, String... constraints ) {
     this.value = value;
+    this.constraints = constraints;
   }
 
   @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
-    buffer.append( "ConditionalValue{ constraints=(" );
-    for( int j = 0; j < constraints.length; j++ ) {
-      if( j > 0 ) {
+    buffer.append( "ConditionalValue{ value: " );
+    buffer.append( value );
+    buffer.append( ", constraints: " );
+    for( int i = 0; i < constraints.length; i++ ) {
+      if( i > 0 ) {
         buffer.append( ", " );
       }
-      buffer.append( constraints[ j ] );
+      buffer.append( constraints[ i ] );
     }
-    buffer.append( ") value=" );
-    buffer.append( value );
     buffer.append( " }" );
     return buffer.toString();
   }

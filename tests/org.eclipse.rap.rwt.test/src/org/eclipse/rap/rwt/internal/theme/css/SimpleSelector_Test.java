@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,25 +19,32 @@ import org.junit.Test;
 
 public class SimpleSelector_Test {
 
+  private static final CssColor RED = CssColor.create( 255, 0, 0 );
+  private static final CssColor GREEN = CssColor.create( 0, 255, 0 );
+  private static final CssColor BLUE = CssColor.create( 0, 0, 255 );
+
   @Test
-  public void testDummyMatcher() {
-    // Get set of conditional results
-    ConditionalValue value1
-      = new ConditionalValue( new String[] { "[BORDER", ":selected" },
-                              CssColor.create( 255, 0, 0 ) );
-    ConditionalValue value2
-      = new ConditionalValue( new String[] { ".special" },
-                              CssColor.create( 0, 0, 255 ) );
-    ConditionalValue value3
-      = new ConditionalValue( new String[] {},
-                              CssColor.create( 0, 255, 0 ) );
-    ConditionalValue[] values
-      = new ConditionalValue[] { value1, value2, value3 };
+  public void testDefault() {
+    ConditionalValue value1 = new ConditionalValue( RED, "[BORDER", ":selected" );
+    ConditionalValue value2 = new ConditionalValue( BLUE, ".special" );
+    ConditionalValue value3 = new ConditionalValue( GREEN );
+    ConditionalValue[] values = { value1, value2, value3 };
 
     SimpleSelector selector = SimpleSelector.DEFAULT;
-    assertEquals( CssColor.create( 0, 255, 0 ), selector.select( values, null ) );
-    selector = new SimpleSelector( new String[] { "[BORDER", ":selected" } );
-    assertEquals( CssColor.create( 255, 0, 0 ), selector.select( values, null ) );
+
+    assertEquals( GREEN, selector.select( null, values ) );
+  }
+
+  @Test
+  public void testSelect() {
+    ConditionalValue value1 = new ConditionalValue( RED, "[BORDER", ":selected" );
+    ConditionalValue value2 = new ConditionalValue( BLUE, ".special" );
+    ConditionalValue value3 = new ConditionalValue( GREEN );
+    ConditionalValue[] values = { value1, value2, value3 };
+
+    SimpleSelector selector = new SimpleSelector( "[BORDER", ":selected" );
+
+    assertEquals( RED, selector.select( null, values ) );
   }
 
 }

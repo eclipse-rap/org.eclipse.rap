@@ -146,13 +146,13 @@ public final class ThemeUtil {
     Theme theme =  getApplicationContext().getThemeManager().getTheme( themeId );
     ThemeCssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
-    CssValue result = selector.select( values, widget );
+    CssValue result = selector.select( widget, values );
     if( result == null ) {
       // resort to fallback theme
       theme = getFallbackTheme();
       valuesMap = theme.getValuesMap();
       values = valuesMap.getValues( cssElement, cssProperty );
-      result = selector.select( values, widget );
+      result = selector.select( widget, values );
     }
     return result;
   }

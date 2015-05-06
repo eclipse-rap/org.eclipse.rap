@@ -52,7 +52,7 @@ public final class StyleSheet {
           String[] constraints = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
           Arrays.sort( constraints );
           if( !containsConstraintsAlready( buffer, constraints ) ) {
-            buffer.add( new ConditionalValue( constraints, value ) );
+            buffer.add( new ConditionalValue( value, constraints ) );
           }
         }
       }
