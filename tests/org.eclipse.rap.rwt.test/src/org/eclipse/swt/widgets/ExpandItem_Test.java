@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -127,7 +128,8 @@ public class ExpandItem_Test {
     item.setText( "What is your favorite button?" );
     item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
     item.setControl( composite );
-    assertEquals( composite.getSize().y + item.getItemBorder().height, item.getHeight() );
+    BoxDimensions itemBorder = item.getItemBorder();
+    assertEquals( composite.getSize().y + itemBorder.top + itemBorder.bottom, item.getHeight() );
   }
 
   @Test
@@ -141,4 +143,5 @@ public class ExpandItem_Test {
     expandBar.setFont( font );
     assertEquals( 34, item.getHeaderHeight() );
   }
+
 }

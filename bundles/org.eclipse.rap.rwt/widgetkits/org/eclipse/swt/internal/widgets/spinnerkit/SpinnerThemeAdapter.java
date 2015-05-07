@@ -11,15 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Spinner;
 
 
 public class SpinnerThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getFieldPadding( Spinner spinner ) {
-    return getCssBoxDimensions( "Spinner-Field", "padding", spinner );
+  public BoxDimensions getFieldPadding( Spinner spinner ) {
+    return getCssBoxDimensions( "Spinner-Field", "padding", spinner ).dimensions;
   }
 
   public int getButtonWidth( Spinner spinner ) {

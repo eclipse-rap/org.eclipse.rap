@@ -142,24 +142,29 @@ public class Group extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
-    Rectangle trimmings = themeAdapter.getTrimmingSize( this );
+    BoxDimensions trimmings = getThemeAdapter().getTrimmingSize( this );
+    int trimmingsWidth = trimmings.left + trimmings.right;
+    int trimmingsHeight = trimmings.top + trimmings.bottom;
     BoxDimensions border = getBorder();
-    int width = Math.max( 0, bounds.width - trimmings.width - ( border.left + border.right ) );
-    int height = Math.max( 0, bounds.height - trimmings.height - ( border.top + border.bottom ) );
-    return new Rectangle( trimmings.x, trimmings.y, width, height );
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    int width = Math.max( 0, bounds.width - trimmingsWidth - borderWidth );
+    int height = Math.max( 0, bounds.height - trimmingsHeight - borderHeight );
+    return new Rectangle( trimmings.left, trimmings.top, width, height );
   }
 
   @Override
   public Rectangle computeTrim( int x, int y, int width, int height ) {
-    GroupThemeAdapter themeAdapter
-      = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
-    Rectangle trimmings = themeAdapter.getTrimmingSize( this );
+    BoxDimensions trimmings = getThemeAdapter().getTrimmingSize( this );
+    int trimmingsWidth = trimmings.left + trimmings.right;
+    int trimmingsHeight = trimmings.top + trimmings.bottom;
     BoxDimensions border = getBorder();
-    return super.computeTrim( x - trimmings.x - border.left,
-                              y - trimmings.y - border.top,
-                              width + trimmings.width + border.left + border.right,
-                              height + trimmings.height + border.top + border.bottom );
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    return super.computeTrim( x - trimmings.left - border.left,
+                              y - trimmings.top - border.top,
+                              width + trimmingsWidth + borderWidth,
+                              height + trimmingsHeight + borderHeight );
   }
 
   @Override
@@ -170,12 +175,15 @@ public class Group extends Composite {
     if( length != 0 ) {
       Font font = getFont();
       Point stringExtent = TextSizeUtil.stringExtent( font, text );
-      GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
-      Rectangle headTrimmings = themeAdapter.getHeaderTrimmingSize( this );
-      int headerWidth = stringExtent.x + headTrimmings.width;
+      BoxDimensions headTrimmings = getThemeAdapter().getHeaderTrimmingSize( this );
+      int headerWidth = stringExtent.x + headTrimmings.left + headTrimmings.right;
       result.x = Math.max( result.x, headerWidth );
     }
     return result;
+  }
+
+  private GroupThemeAdapter getThemeAdapter() {
+    return ( GroupThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   //////////////////

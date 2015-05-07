@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.theme;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class ToolBarThemeAdapter_Test {
 
-  private static CssBoxDimensions EIGHT = CssBoxDimensions.create( 8, 8, 8, 8 );
+  private static BoxDimensions EIGHT = new BoxDimensions( 8, 8, 8, 8 );
 
   private Display display;
   private Shell shell;
@@ -48,11 +48,11 @@ public class ToolBarThemeAdapter_Test {
     ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
     ToolBarThemeAdapter themeAdapter = getThemeAdapter( toolBar );
 
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getItemBorder( toolBar ) );
+    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), themeAdapter.getItemBorder( toolBar ) );
     assertEquals( EIGHT, themeAdapter.getItemPadding( toolBar ) );
 
     ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ), themeAdapter.getItemBorder( flatToolBar ) );
+    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), themeAdapter.getItemBorder( flatToolBar ) );
     assertEquals( EIGHT, themeAdapter.getItemPadding( flatToolBar ) );
   }
 

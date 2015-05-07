@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -921,8 +921,8 @@ public class TableItem extends Item {
       if( index == 0 && columnCount == 0 ) {
         Rectangle imageBounds = getImageBounds( index );
         int spacing = getSpacing( index );
-        int paddingWidth = parent.getCellPadding().getWidth();
-        width = imageBounds.width + spacing + textBounds.width + paddingWidth;
+        BoxDimensions padding = parent.getCellPadding();
+        width = imageBounds.width + spacing + textBounds.width + padding.left + padding.right;
       } else if( index >= 0 && index < columnCount ) {
         width = parent.getColumn( index ).getWidth() - getCheckWidth( index );
       }
@@ -952,7 +952,7 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     int itemIndex = parent.indexOf( this );
-    CssBoxDimensions cellPadding = parent.getCellPadding();
+    BoxDimensions cellPadding = parent.getCellPadding();
     int left = getLeft( index ) + cellPadding.left;
     int top = getTop( itemIndex );
     int width = getImageWidth( index );
@@ -1003,7 +1003,7 @@ public class TableItem extends Item {
     int left = 0;
     int top = 0;
     int width = 0;
-    CssBoxDimensions cellPadding = parent.getCellPadding();
+    BoxDimensions cellPadding = parent.getCellPadding();
     if( index == 0 && parent.getColumnCount() == 0 ) {
       int imageWidth = 0;
       int spacing = 0;
@@ -1022,7 +1022,7 @@ public class TableItem extends Item {
       int spacing = getSpacing( index );
       left = getLeft( index ) + cellPadding.left + imageWidth + spacing;
       top = getTop( itemIndex );
-      width = getColumnWidth( index ) - cellPadding.getWidth() - imageWidth - spacing;
+      width = getColumnWidth( index ) - cellPadding.left - cellPadding.right - imageWidth - spacing;
       if( width < 0 ) {
         width = 0;
       }
@@ -1068,11 +1068,13 @@ public class TableItem extends Item {
   }
 
   final int getPackWidth( int index ) {
+    BoxDimensions cellPadding = parent.getCellPadding();
     return
         getImageWidth( index )
       + getSpacing( index )
       + getTextWidth( index, parent.getFont() )
-      + parent.getCellPadding().getWidth();
+      + cellPadding.left
+      + cellPadding.right;
   }
 
   final int getCheckWidth( int index ) {

@@ -12,8 +12,8 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlAdapter;
@@ -280,8 +280,9 @@ public class CTabFolder extends Composite {
       for( int i = 0; result == null && i < priority.length; i++ ) {
         CTabItem item = items[ priority[ i ] ];
         Rectangle rect = item.getBounds();
-        if( rect.contains( pt ) )
+        if( rect.contains( pt ) ) {
           result = item;
+        }
       }
     }
     return result ;
@@ -1050,8 +1051,9 @@ public class CTabFolder extends Composite {
    */
   public void setSelectionBackground( Color color ) {
     checkWidget();
-    if( null != color && color.isDisposed() )
+    if( null != color && color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     selectionBackground = color;
   }
 
@@ -1069,9 +1071,7 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionBackground;
     if( result == null ) {
-      CTabFolderThemeAdapter themeAdapter
-        = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
-      result = themeAdapter.getSelectedBackground( this );
+      result = getThemeAdapter().getSelectedBackground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -1237,9 +1237,7 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionForeground;
     if( result == null ) {
-      CTabFolderThemeAdapter themeAdapter
-        = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
-      result = themeAdapter.getSelectedForeground( this );
+      result = getThemeAdapter().getSelectedForeground( this );
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -1546,15 +1544,21 @@ public class CTabFolder extends Composite {
 //          widths[i] = items[i].preferredWidth(gc, i == selectedIndex, true);
           widths[i] = items[i].preferredWidth(i == selectedIndex, true);
           width += widths[i];
-          if (width > maxWidth) break;
+          if (width > maxWidth) {
+            break;
+          }
         }
         if (width > maxWidth) {
           width = 0;
           for (int i = showIndex; i >= 0; i--) {
 //            if (widths[i] == 0) widths[i] = items[i].preferredWidth(gc, i == selectedIndex, true);
-            if (widths[i] == 0) widths[i] = items[i].preferredWidth(i == selectedIndex, true);
+            if (widths[i] == 0) {
+              widths[i] = items[i].preferredWidth(i == selectedIndex, true);
+            }
             width += widths[i];
-            if (width > maxWidth) break;
+            if (width > maxWidth) {
+              break;
+            }
             firstIndex = i;
           }
         } else {
@@ -1563,14 +1567,20 @@ public class CTabFolder extends Composite {
 //            widths[i] = items[i].preferredWidth(gc, i == selectedIndex, true);
             widths[i] = items[i].preferredWidth(i == selectedIndex, true);
             width += widths[i];
-            if (width >= maxWidth) break;
+            if (width >= maxWidth) {
+              break;
+            }
           }
           if (width < maxWidth) {
             for (int i = priority[0] - 1; i >= 0; i--) {
 //              if (widths[i] == 0) widths[i] = items[i].preferredWidth(gc, i == selectedIndex, true);
-              if (widths[i] == 0) widths[i] = items[i].preferredWidth(i == selectedIndex, true);
+              if (widths[i] == 0) {
+                widths[i] = items[i].preferredWidth(i == selectedIndex, true);
+              }
               width += widths[i];
-              if (width > maxWidth) break;
+              if (width > maxWidth) {
+                break;
+              }
               firstIndex = i;
             }
           }
@@ -1731,13 +1741,19 @@ public class CTabFolder extends Composite {
       return changed;
     }
 
-    if (items.length == 0) return changed;
+    if (items.length == 0) {
+      return changed;
+    }
 
     int[] widths;
 //    GC gc = new GC(this);
     int tabAreaWidth = size.x - borderLeft - borderRight - 3;
-    if (showMin) tabAreaWidth -= BUTTON_SIZE;
-    if (showMax) tabAreaWidth -= BUTTON_SIZE;
+    if (showMin) {
+      tabAreaWidth -= BUTTON_SIZE;
+    }
+    if (showMax) {
+      tabAreaWidth -= BUTTON_SIZE;
+    }
     if (topRightAlignment == SWT.RIGHT && topRight != null) {
       Point rightSize = topRight.computeSize(SWT.DEFAULT, SWT.DEFAULT, false);
       tabAreaWidth -= rightSize.x + 3;
@@ -1753,12 +1769,16 @@ public class CTabFolder extends Composite {
 //      minWidths[index] = items[index].preferredWidth(gc, index == selectedIndex, true);
       minWidths[index] = items[index].preferredWidth(index == selectedIndex, true);
       minWidth += minWidths[index];
-      if (minWidth > tabAreaWidth) break;
+      if (minWidth > tabAreaWidth) {
+        break;
+      }
     }
     if (minWidth > tabAreaWidth) {
       // full compression required and a chevron
       showChevron = items.length > 1;
-      if (showChevron) tabAreaWidth -= 3*BUTTON_SIZE/2;
+      if (showChevron) {
+        tabAreaWidth -= 3*BUTTON_SIZE/2;
+      }
       widths = minWidths;
       int index = selectedIndex != -1 ? selectedIndex : 0;
       if (tabAreaWidth < widths[index]) {
@@ -1792,7 +1812,9 @@ public class CTabFolder extends Composite {
             extra--;
             break;
           }
-          if (large == 0 || tabAreaWidth - totalWidth < large) break;
+          if (large == 0 || tabAreaWidth - totalWidth < large) {
+            break;
+          }
           extra++;
         }
         widths = new int[items.length];
@@ -1837,7 +1859,9 @@ CTabItem[] items = itemHolder.getItems();
     maxRect.x = maxRect.y = maxRect.width = maxRect.height = 0;
     if (showMax) {
       maxRect.x = size.x - borderRight - BUTTON_SIZE - 3;
-      if (borderRight > 0) maxRect.x += 1;
+      if (borderRight > 0) {
+        maxRect.x += 1;
+      }
       maxRect.y = onBottom ? size.y - borderBottom - tabHeight + (tabHeight - BUTTON_SIZE)/2: borderTop + (tabHeight - BUTTON_SIZE)/2;
       maxRect.width = BUTTON_SIZE;
       maxRect.height = BUTTON_SIZE;
@@ -1858,7 +1882,9 @@ CTabItem[] items = itemHolder.getItems();
     minRect.x = minRect.y = minRect.width = minRect.height = 0;
     if (showMin) {
       minRect.x = size.x - borderRight - maxRect.width - BUTTON_SIZE - 3;
-      if (borderRight > 0) minRect.x += 1;
+      if (borderRight > 0) {
+        minRect.x += 1;
+      }
       minRect.y = onBottom ? size.y - borderBottom - tabHeight + (tabHeight - BUTTON_SIZE)/2: borderTop + (tabHeight - BUTTON_SIZE)/2;
       minRect.width = BUTTON_SIZE;
       minRect.height = BUTTON_SIZE;
@@ -1881,7 +1907,9 @@ CTabItem[] items = itemHolder.getItems();
       switch (topRightAlignment) {
         case SWT.FILL: {
           int rightEdge = size.x - borderRight - 3 - maxRect.width - minRect.width;
-          if (!simple && borderRight > 0 && !showMax && !showMin) rightEdge -= 2;
+          if (!simple && borderRight > 0 && !showMax && !showMin) {
+            rightEdge -= 2;
+          }
           if (single) {
             if (items.length == 0 || selectedIndex == -1) {
               topRightRect.x = borderLeft + 3;
@@ -1889,13 +1917,17 @@ CTabItem[] items = itemHolder.getItems();
             } else {
               // fill size is 0 if item compressed
               CTabItem item = items[selectedIndex];
-              if (item.x + item.width + 7 + 3*BUTTON_SIZE/2 >= rightEdge) break;
+              if (item.x + item.width + 7 + 3*BUTTON_SIZE/2 >= rightEdge) {
+                break;
+              }
               topRightRect.x = item.x + item.width + 7 + 3*BUTTON_SIZE/2;
               topRightRect.width = rightEdge - topRightRect.x;
             }
           } else {
             // fill size is 0 if chevron showing
-            if (showChevron) break;
+            if (showChevron) {
+              break;
+            }
             if (items.length == 0) {
               topRightRect.x = borderLeft + 3;
             } else {
@@ -1912,7 +1944,9 @@ CTabItem[] items = itemHolder.getItems();
         case SWT.RIGHT: {
           Point topRightSize = topRight.computeSize(SWT.DEFAULT, tabHeight, false);
           int rightEdge = size.x - borderRight - 3 - maxRect.width - minRect.width;
-          if (!simple && borderRight > 0 && !showMax && !showMin) rightEdge -= 2;
+          if (!simple && borderRight > 0 && !showMax && !showMin) {
+            rightEdge -= 2;
+          }
           topRightRect.x = rightEdge - topRightSize.x;
           topRightRect.width = topRightSize.x;
           topRightRect.y = onBottom ? size.y - borderBottom - tabHeight: borderTop + 1;
@@ -1945,10 +1979,14 @@ CTabItem[] items = itemHolder.getItems();
         } else {
           CTabItem item = items[selectedIndex];
           int w = size.x - borderRight - 3 - minRect.width - maxRect.width - chevronRect.width;
-          if (topRightRect.width > 0) w -= topRightRect.width + 3;
+          if (topRightRect.width > 0) {
+            w -= topRightRect.width + 3;
+          }
           chevronRect.x = Math.min(item.x + item.width + 3, w);
         }
-        if (borderRight > 0) chevronRect.x += 1;
+        if (borderRight > 0) {
+          chevronRect.x += 1;
+        }
       }
     } else {
       if (showChevron) {
@@ -1958,7 +1996,9 @@ CTabItem[] items = itemHolder.getItems();
         while (i < priority.length && items[priority[i]].showing) {
           lastIndex = Math.max(lastIndex, priority[i++]);
         }
-        if (lastIndex == -1) lastIndex = firstIndex;
+        if (lastIndex == -1) {
+          lastIndex = firstIndex;
+        }
         CTabItem lastItem = items[lastIndex];
         int w = lastItem.x + lastItem.width + 3;
 //        if (!simple && lastIndex == selectedIndex) w += curveWidth - 2*curveIndent;
@@ -1978,7 +2018,9 @@ CTabItem[] items = itemHolder.getItems();
   boolean updateTabHeight(boolean force){
     CTabItem[] items = itemHolder.getItems();
     int style = getStyle();
-    if (fixedTabHeight == 0 && (style & SWT.FLAT) != 0 && (style & SWT.BORDER) == 0) highlight_header = 0;
+    if (fixedTabHeight == 0 && (style & SWT.FLAT) != 0 && (style & SWT.BORDER) == 0) {
+      highlight_header = 0;
+    }
     int oldHeight = tabHeight;
     if (fixedTabHeight != SWT.DEFAULT) {
       tabHeight = fixedTabHeight == 0 ? 0 : fixedTabHeight + 1; // +1 for line drawn across top of tab
@@ -1987,8 +2029,8 @@ CTabItem[] items = itemHolder.getItems();
 //      GC gc = new GC(this);
       if (items.length == 0) {
 //        tempHeight = gc.textExtent("Default", CTabItem.FLAGS).y + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN; //$NON-NLS-1$
-        tempHeight =   TextSizeUtil.getCharHeight( getFont() )
-                     + getItemPadding( false ).getHeight();
+        BoxDimensions padding = getItemPadding( false );
+        tempHeight = TextSizeUtil.getCharHeight( getFont() ) + padding.top + padding.bottom;
       } else {
         for (int i=0; i < items.length; i++) {
 //          tempHeight = Math.max(tempHeight, items[i].preferredHeight(gc));
@@ -1998,7 +2040,9 @@ CTabItem[] items = itemHolder.getItems();
 //      gc.dispose();
       tabHeight =  tempHeight;
     }
-    if (!force && tabHeight == oldHeight) return false;
+    if (!force && tabHeight == oldHeight) {
+      return false;
+    }
 
 //    oldSize = null;
 //    if (onBottom) {
@@ -2042,9 +2086,15 @@ CTabItem[] items = itemHolder.getItems();
 
   int getRightItemEdge (){
     int x = getSize().x - borderRight - 3;
-    if (showMin) x -= BUTTON_SIZE;
-    if (showMax) x -= BUTTON_SIZE;
-    if (showChevron) x -= 3*BUTTON_SIZE/2;
+    if (showMin) {
+      x -= BUTTON_SIZE;
+    }
+    if (showMax) {
+      x -= BUTTON_SIZE;
+    }
+    if (showChevron) {
+      x -= 3*BUTTON_SIZE/2;
+    }
     if (topRight != null && topRightAlignment != SWT.FILL) {
       Point rightSize = topRight.computeSize(SWT.DEFAULT, SWT.DEFAULT);
       x -= rightSize.x + 3;
@@ -2254,7 +2304,9 @@ CTabItem[] items = itemHolder.getItems();
     updateItems();
     if (getItemCount() == 1) {
       registerFocusListener(); // RWT specific
-      if (!updateTabHeight(false)) updateItems();
+      if (!updateTabHeight(false)) {
+        updateItems();
+      }
       redraw();
     } else {
       updateItems();
@@ -2323,22 +2375,20 @@ CTabItem[] items = itemHolder.getItems();
     return getItemPadding( selected ).right;
   }
 
-  CssBoxDimensions getItemPadding( boolean selected ) {
-    CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getItemPadding( selected );
+  BoxDimensions getItemPadding( boolean selected ) {
+    return getThemeAdapter().getItemPadding( selected );
   }
 
   int getItemSpacing( boolean selected ) {
-    CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getItemSpacing( selected );
+    return getThemeAdapter().getItemSpacing( selected );
   }
 
   Font getItemFont( boolean selected ) {
-    CTabFolderThemeAdapter themeAdapter
-      = ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getItemFont( selected );
+    return getThemeAdapter().getItemFont( selected );
+  }
+
+  private CTabFolderThemeAdapter getThemeAdapter() {
+    return ( CTabFolderThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   ///////////////////

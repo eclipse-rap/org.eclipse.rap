@@ -10,19 +10,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
 public class CComboThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getFieldPadding( Control control ) {
-    return getCssBoxDimensions( "CCombo-Field", "padding", control );
+  public BoxDimensions getFieldPadding( Control control ) {
+    return getCssBoxDimensions( "CCombo-Field", "padding", control ).dimensions;
   }
 
-  public CssBoxDimensions getListItemPadding( Control control ) {
-    return getCssBoxDimensions( "CCombo-List-Item", "padding", control );
+  public BoxDimensions getListItemPadding( Control control ) {
+    return getCssBoxDimensions( "CCombo-List-Item", "padding", control ).dimensions;
   }
 
   public int getButtonWidth( Control control ) {

@@ -16,7 +16,6 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -496,16 +495,17 @@ public class ToolItem extends Item {
     int width = getWidth();
     int height = getHeight();
     int index = parent.indexOf( this );
+    BoxDimensions toolBarPadding = parent.getToolBarPadding();
     if( ( parent.style & SWT.VERTICAL ) != 0 ) {
       if( index > 0 ) {
         Rectangle upperSiblingBounds = parent.getItem( index - 1 ).getBounds();
         top += upperSiblingBounds.y + upperSiblingBounds.height;
         top += getToolBarSpacing();
       } else {
-        top += parent.getToolBarPadding().top;
+        top += toolBarPadding.top;
       }
-      int innerParentWidth = parent.getSize().x - parent.getToolBarPadding().getWidth();
-      left += parent.getToolBarPadding().left + innerParentWidth / 2 - width / 2;
+      int innerParentWidth = parent.getSize().x - toolBarPadding.left - toolBarPadding.right;
+      left += toolBarPadding.left + innerParentWidth / 2 - width / 2;
       left = Math.max( left, 0 );
     } else {
       if( index > 0 ) {
@@ -513,13 +513,13 @@ public class ToolItem extends Item {
         left += leftSiblingBounds.x + leftSiblingBounds.width;
         left += getToolBarSpacing();
       } else {
-        left += parent.getToolBarPadding().left;
+        left += toolBarPadding.left;
       }
       BoxDimensions border = parent.getBorder();
       int innerParentHeight = parent.getSize().y
-                            - parent.getToolBarPadding().getHeight()
+                            - ( toolBarPadding.top + toolBarPadding.bottom )
                             - ( border.top + border.bottom );
-      top += parent.getToolBarPadding().top + innerParentHeight / 2 - height / 2;
+      top += toolBarPadding.top + innerParentHeight / 2 - height / 2;
       top = Math.max( top, 0 );
     }
     return new Rectangle( left, top, width, height );
@@ -579,7 +579,9 @@ public class ToolItem extends Item {
   int getPreferredHeight() {
     int height = DEFAULT_HEIGHT;
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      int frameHeight = getPadding().getHeight() + getBorder().height;
+      BoxDimensions border = getBorder();
+      BoxDimensions padding = getPadding();
+      int frameHeight = padding.top + padding.bottom + border.top + border.bottom;
       if( !"".equals( getText() ) ) {
         int charHeight = TextSizeUtil.getCharHeight( parent.getFont() );
         height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
@@ -606,18 +608,18 @@ public class ToolItem extends Item {
     if( hasText && hasImage ) {
       result += getSpacing();
     }
-    int paddingWidth = getPadding().getWidth();
-    int borderWidth = getBorder().width;
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       result += getSpacing() * 2;
       result += 1; // the separator-line
       result += getDropDownImageSize().width;
     }
-    result += paddingWidth + borderWidth;
+    result += padding.left + padding.right + border.left + border.right;
     return result;
   }
 
-  private Rectangle getBorder() {
+  private BoxDimensions getBorder() {
     return getToolBarThemeAdapter().getItemBorder( parent );
   }
 
@@ -625,7 +627,7 @@ public class ToolItem extends Item {
     return getToolBarThemeAdapter().getDropDownImageSize( parent );
   }
 
-  private CssBoxDimensions getPadding() {
+  private BoxDimensions getPadding() {
     return getToolBarThemeAdapter().getItemPadding( parent );
   }
 

@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Control;
 
 public class TableThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getCheckBoxMargin( Control control ) {
-    return getCssBoxDimensions( "Table-Checkbox", "margin", control );
+  public BoxDimensions getCheckBoxMargin( Control control ) {
+    return getCssBoxDimensions( "Table-Checkbox", "margin", control ).dimensions;
   }
 
   public int getCheckBoxWidth( Control control ) {
@@ -32,8 +32,8 @@ public class TableThemeAdapter extends ControlThemeAdapterImpl {
     return getCssImageSize( "Table-Checkbox", "background-image", control );
   }
 
-  public CssBoxDimensions getCellPadding( Control control ) {
-    return getCssBoxDimensions( "Table-Cell", "padding", control );
+  public BoxDimensions getCellPadding( Control control ) {
+    return getCssBoxDimensions( "Table-Cell", "padding", control ).dimensions;
   }
 
   public int getCellSpacing( Control control ) {
@@ -44,8 +44,8 @@ public class TableThemeAdapter extends ControlThemeAdapterImpl {
     return getCssBorderWidth( "TableColumn", "border-bottom", control );
   }
 
-  public CssBoxDimensions getHeaderPadding( Control control ) {
-    return getCssBoxDimensions( "TableColumn", "padding", control );
+  public BoxDimensions getHeaderPadding( Control control ) {
+    return getCssBoxDimensions( "TableColumn", "padding", control ).dimensions;
   }
 
   public Font getHeaderFont( Control control ) {

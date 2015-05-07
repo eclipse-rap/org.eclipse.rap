@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
@@ -1137,7 +1138,8 @@ public class GridColumn extends Item {
   }
 
   int getHeaderWrapWidth() {
-    int result = width - parent.getHeaderPadding().getWidth();
+    BoxDimensions headerPadding = parent.getHeaderPadding();
+    int result = width - headerPadding.left - headerPadding.right;
     Image headerImage = getImage();
     if( headerImage != null ) {
       result -= headerImage.getBounds().width;
@@ -1151,7 +1153,8 @@ public class GridColumn extends Item {
   }
 
   int getFooterWrapWidth() {
-    int result = getFooterWidth() - parent.getHeaderPadding().getWidth();
+    BoxDimensions headerPadding = parent.getHeaderPadding();
+    int result = getFooterWidth() - headerPadding.left - headerPadding.right;
     if( footerImage != null ) {
       result -= footerImage.getBounds().width;
       result -= MARGIN_IMAGE;
@@ -1206,7 +1209,8 @@ public class GridColumn extends Item {
         contentWidth += MARGIN_IMAGE;
       }
     }
-    contentWidth += parent.getHeaderPadding().getWidth();
+    BoxDimensions headerPadding = parent.getHeaderPadding();
+    contentWidth += headerPadding.left + headerPadding.right;
     return contentWidth;
   }
 

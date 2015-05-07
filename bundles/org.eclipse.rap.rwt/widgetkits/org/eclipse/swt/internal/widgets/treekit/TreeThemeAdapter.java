@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -19,16 +19,16 @@ import org.eclipse.swt.widgets.Control;
 
 public class TreeThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getCheckBoxMargin( Control control ) {
-    return getCssBoxDimensions( "Tree-Checkbox", "margin", control );
+  public BoxDimensions getCheckBoxMargin( Control control ) {
+    return getCssBoxDimensions( "Tree-Checkbox", "margin", control ).dimensions;
   }
 
   public Size getCheckBoxImageSize( Control control ) {
     return getCssImageSize( "Tree-Checkbox", "background-image", control );
   }
 
-  public CssBoxDimensions getCellPadding( Control control ) {
-    return getCssBoxDimensions( "Tree-Cell", "padding", control );
+  public BoxDimensions getCellPadding( Control control ) {
+    return getCssBoxDimensions( "Tree-Cell", "padding", control ).dimensions;
   }
 
   public int getCellSpacing( Control control ) {
@@ -39,8 +39,8 @@ public class TreeThemeAdapter extends ControlThemeAdapterImpl {
     return getCssBorderWidth( "TreeColumn", "border-bottom", control );
   }
 
-  public CssBoxDimensions getHeaderPadding( Control control ) {
-    return getCssBoxDimensions( "TreeColumn", "padding", control );
+  public BoxDimensions getHeaderPadding( Control control ) {
+    return getCssBoxDimensions( "TreeColumn", "padding", control ).dimensions;
   }
 
   public Font getHeaderFont( Control control ) {

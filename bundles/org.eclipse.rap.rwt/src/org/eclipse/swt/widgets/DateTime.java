@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -653,7 +652,7 @@ public class DateTime extends Composite {
   private Point computeSubWidgetsBounds() {
     Font font = getFont();
     int width = 0, height = 0;
-    CssBoxDimensions padding = getFieldPadding();
+    BoxDimensions padding = getFieldPadding();
     BoxDimensions border = getBorder();
     if( ( style & SWT.CALENDAR ) != 0 ) {
       width = cellSize.x * 8 + border.left + border.right;
@@ -706,7 +705,7 @@ public class DateTime extends Composite {
         spinnerBounds.x = secondsTextFieldBounds.x + secondsTextFieldBounds.width + padding.left;
       }
       spinnerBounds.width = getSpinnerButtonWidth();
-      spinnerBounds.height = hoursTextFieldBounds.height + padding.getHeight();
+      spinnerBounds.height = hoursTextFieldBounds.height + padding.top + padding.bottom;
       // Overall default widget size
       width = spinnerBounds.x + spinnerBounds.width + border.left + border.right;
       height = spinnerBounds.height + border.top + border.bottom;
@@ -717,7 +716,7 @@ public class DateTime extends Composite {
 
   private Point computeMDYBounds() {
     Font font = getFont();
-    CssBoxDimensions padding = getFieldPadding();
+    BoxDimensions padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.left, padding.top, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -772,7 +771,7 @@ public class DateTime extends Composite {
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width + padding.left;
     spinnerBounds.width = getSpinnerButtonWidth();
-    spinnerBounds.height = weekdayTextFieldBounds.height + padding.getHeight();
+    spinnerBounds.height = weekdayTextFieldBounds.height + padding.top + padding.bottom;
     // The drop-down button bounds
     dropDownButtonBounds = new Rectangle( spinnerBounds.x,
                                           spinnerBounds.y,
@@ -791,7 +790,7 @@ public class DateTime extends Composite {
 
   private Point computeDMYBounds() {
     Font font = getFont();
-    CssBoxDimensions padding = getFieldPadding();
+    BoxDimensions padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.left, padding.top, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -846,7 +845,7 @@ public class DateTime extends Composite {
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width + padding.left;
     spinnerBounds.width = getSpinnerButtonWidth();
-    spinnerBounds.height = weekdayTextFieldBounds.height + padding.getHeight();
+    spinnerBounds.height = weekdayTextFieldBounds.height + padding.top + padding.bottom;
     // The drop-down button bounds
     dropDownButtonBounds = new Rectangle( spinnerBounds.x,
                                           spinnerBounds.y,
@@ -865,7 +864,7 @@ public class DateTime extends Composite {
 
   private Point computeYMDBounds() {
     Font font = getFont();
-    CssBoxDimensions padding = getFieldPadding();
+    BoxDimensions padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.left, padding.top, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -921,7 +920,7 @@ public class DateTime extends Composite {
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
     spinnerBounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width + padding.left;
     spinnerBounds.width = getSpinnerButtonWidth();
-    spinnerBounds.height = weekdayTextFieldBounds.height + padding.getHeight();
+    spinnerBounds.height = weekdayTextFieldBounds.height + padding.top + padding.bottom;
     // The drop-down button bounds
     dropDownButtonBounds = new Rectangle( spinnerBounds.x,
                                           spinnerBounds.y,
@@ -962,7 +961,7 @@ public class DateTime extends Composite {
     return getDateTimeThemeAdapter().getDropDownButtonWidth( this );
   }
 
-  private CssBoxDimensions getFieldPadding() {
+  private BoxDimensions getFieldPadding() {
     return getDateTimeThemeAdapter().getFieldPadding( this );
   }
 

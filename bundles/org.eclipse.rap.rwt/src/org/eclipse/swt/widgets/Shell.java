@@ -503,8 +503,9 @@ public class Shell extends Decorations {
     checkWidget();
     Rectangle bounds = getBounds();
     BoxDimensions padding = getPadding();
+    BoxDimensions titleBarMargin = getTitleBarMargin();
     int hTopTrim;
-    hTopTrim = getTitleBarMargin().getHeight();
+    hTopTrim = titleBarMargin.top + titleBarMargin.bottom;
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
     BoxDimensions border = getBorder();
@@ -543,7 +544,9 @@ public class Shell extends Decorations {
 
   private int getMinHeightLimit() {
     BoxDimensions border = getBorder();
-    return getTitleBarMargin().getHeight() + getTitleBarHeight() + border.top + border.bottom;
+    BoxDimensions titleBarMargin = getTitleBarMargin();
+    int titleBarHeight = getTitleBarHeight();
+    return titleBarMargin.top + titleBarMargin.bottom + titleBarHeight + border.top + border.bottom;
   }
 
   private Rectangle getMenuBounds() {
@@ -577,29 +580,31 @@ public class Shell extends Decorations {
   }
 
   private int getTopTrim() {
-    return getTitleBarMargin().getHeight() + getTitleBarHeight() + getMenuBarHeight();
+    BoxDimensions titleBarMargin = getTitleBarMargin();
+    return titleBarMargin.top + titleBarMargin.bottom + getTitleBarHeight() + getMenuBarHeight();
   }
 
   private int getTitleBarHeight() {
     int result = 0;
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
-      result = themeAdapter.getTitleBarHeight( this );
+      result = getThemeAdapter().getTitleBarHeight( this );
     }
     return result;
   }
 
-  private CssBoxDimensions getTitleBarMargin() {
+  private BoxDimensions getTitleBarMargin() {
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
-      return themeAdapter.getTitleBarMargin( this );
+      return getThemeAdapter().getTitleBarMargin( this );
     }
-    return CssBoxDimensions.ZERO;
+    return CssBoxDimensions.ZERO.dimensions;
   }
 
   private int getMenuBarHeight() {
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getMenuBarHeight( this );
+    return getThemeAdapter().getMenuBarHeight( this );
+  }
+
+  private ShellThemeAdapter getThemeAdapter() {
+    return ( ShellThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   @Override

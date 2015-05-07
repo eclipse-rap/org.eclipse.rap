@@ -13,6 +13,7 @@ package org.eclipse.nebula.widgets.grid;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Font;
@@ -317,7 +318,8 @@ public class GridColumnGroup extends Item {
   }
 
   int getHeaderWrapWidth() {
-    int result = getGroupWidth() - parent.getHeaderPadding().getWidth();
+    BoxDimensions headerPadding = parent.getHeaderPadding();
+    int result = getGroupWidth() - headerPadding.left - headerPadding.right;
     Image headerImage = getImage();
     if( headerImage != null ) {
       result -= headerImage.getBounds().width;

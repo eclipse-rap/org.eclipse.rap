@@ -21,6 +21,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.theme.CssAnimation.Animation;
 import org.eclipse.rap.rwt.service.ApplicationContext;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 
 
 public final class ThemePropertyAdapterRegistry {
@@ -87,7 +88,7 @@ public final class ThemePropertyAdapterRegistry {
     }
 
     public JsonValue getValue( CssValue value ) {
-      CssBoxDimensions boxdim = ( CssBoxDimensions )value;
+      BoxDimensions boxdim = ( ( CssBoxDimensions )value ).dimensions;
       JsonArray result = new JsonArray();
       result.add( boxdim.top );
       result.add( boxdim.right );

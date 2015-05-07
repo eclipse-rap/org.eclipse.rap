@@ -142,8 +142,7 @@ public class Table extends Composite {
     }
 
     public int getCheckWidth() {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      return themeAdapter.getCheckBoxImageSize( Table.this ).width;
+      return getThemeAdapter().getCheckBoxImageSize( Table.this ).width;
     }
 
     public int getItemImageWidth( int columnIndex ) {
@@ -289,7 +288,7 @@ public class Table extends Composite {
   private TableColumn sortColumn;
   private int sortDirection;
   private Point itemImageSize;
-  private CssBoxDimensions bufferedCellPadding;
+  private BoxDimensions bufferedCellPadding;
   private int bufferedCellSpacing;
   private int preloadedItems;
 
@@ -1864,7 +1863,8 @@ public class Table extends Composite {
     if( result == -1 ) {
       int textHeight = TextSizeUtil.getCharHeight( getFont() );
       int imageHeight = getItemImageSize().y;
-      result = Math.max( imageHeight, textHeight ) + getCellPadding().getHeight();
+      BoxDimensions cellPadding = getCellPadding();
+      result = Math.max( imageHeight, textHeight ) + cellPadding.top + cellPadding.bottom;
       if( ( style & SWT.CHECK ) != 0 ) {
         result = Math.max( getCheckSize().y, result );
       }
@@ -1902,9 +1902,10 @@ public class Table extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
+      TableThemeAdapter themeAdapter = getThemeAdapter();
+      BoxDimensions headerPadding = themeAdapter.getHeaderPadding( this );
       result += themeAdapter.getHeaderBorderBottomWidth( this );
-      result += themeAdapter.getHeaderPadding( this ).getHeight();
+      result += headerPadding.top + headerPadding.bottom;
     }
     return result;
   }
@@ -2388,18 +2389,16 @@ public class Table extends Composite {
     itemImageSize = null;
   }
 
-  CssBoxDimensions getCellPadding() {
+  BoxDimensions getCellPadding() {
     if( bufferedCellPadding == null ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      bufferedCellPadding = themeAdapter.getCellPadding( this );
+      bufferedCellPadding = getThemeAdapter().getCellPadding( this );
     }
     return bufferedCellPadding;
   }
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      bufferedCellSpacing = themeAdapter.getCellSpacing( parent );
+      bufferedCellSpacing = getThemeAdapter().getCellSpacing( parent );
     }
     return bufferedCellSpacing;
   }
@@ -2478,26 +2477,25 @@ public class Table extends Composite {
   final Point getCheckSize() {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.CHECK ) != 0 ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      Size checkImageSize = themeAdapter.getCheckBoxImageSize( this );
-      CssBoxDimensions margin = getCheckBoxMargin();
-      result.x = checkImageSize.width + margin.getWidth();
-      result.y = checkImageSize.height + margin.getHeight();
+      Size checkImageSize = getThemeAdapter().getCheckBoxImageSize( this );
+      BoxDimensions margin = getCheckBoxMargin();
+      result.x = checkImageSize.width + margin.left + margin.right;
+      result.y = checkImageSize.height + margin.top + margin.bottom;
     }
     return result;
   }
 
-  final CssBoxDimensions getCheckBoxMargin() {
-    TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-    CssBoxDimensions margin = themeAdapter.getCheckBoxMargin( this );
-    if( !margin.equals( CssBoxDimensions.ZERO ) ) {
+  final BoxDimensions getCheckBoxMargin() {
+    TableThemeAdapter themeAdapter = getThemeAdapter();
+    BoxDimensions margin = themeAdapter.getCheckBoxMargin( this );
+    if( !margin.equals( CssBoxDimensions.ZERO.dimensions ) ) {
       return margin;
     }
     int checkBoxWidth = themeAdapter.getCheckBoxWidth( this );
     int imageWidth = themeAdapter.getCheckBoxImageSize( this ).width;
     int marginWidth = Math.max( 0, checkBoxWidth - imageWidth );
     int marginLeft = Math.round( marginWidth / 2 );
-    return CssBoxDimensions.create( 0, marginLeft, 0, marginLeft );
+    return new BoxDimensions( 0, marginLeft, 0, marginLeft );
   }
 
   /**
@@ -2646,8 +2644,7 @@ public class Table extends Composite {
     IControlAdapter controlAdapter = getAdapter( IControlAdapter.class );
     Font result = controlAdapter.getUserFont();
     if( result == null ) {
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
-      result = themeAdapter.getHeaderFont( this );
+      result = getThemeAdapter().getHeaderFont( this );
     }
     return result;
   }
@@ -2724,6 +2721,10 @@ public class Table extends Composite {
 
   Point getStringExtent( Font font, String text ) {
     return stringExtent( font, text, isMarkupEnabledFor( this ) );
+  }
+
+  TableThemeAdapter getThemeAdapter() {
+    return ( TableThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   ///////////////////

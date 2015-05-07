@@ -373,12 +373,16 @@ public class TabFolder extends Composite {
     checkWidget();
     Rectangle bounds = getBounds();
     BoxDimensions border = getBorder();
-    Rectangle containerBorder = getContentContainerBorder();
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    BoxDimensions containerBorder = getContentContainerBorder();
+    int containerBorderWidth = containerBorder.left + containerBorder.right;
+    int containerBorderHeight = containerBorder.top + containerBorder.bottom;
     int tabBarHeight = getTabBarHeight();
-    int x = border.left + containerBorder.x;
-    int y = border.top + containerBorder.y + ( onBottom ? 0 : tabBarHeight );
-    int width = bounds.width - ( border.left + border.right ) - containerBorder.width;
-    int height = bounds.height - tabBarHeight - ( border.top + border.bottom ) - containerBorder.height;
+    int x = border.left + containerBorder.left;
+    int y = border.top + containerBorder.top + ( onBottom ? 0 : tabBarHeight );
+    int width = bounds.width - borderWidth - containerBorderWidth;
+    int height = bounds.height - tabBarHeight - borderHeight - containerBorderHeight;
     return new Rectangle( x, y, width, height );
   }
 
@@ -386,12 +390,16 @@ public class TabFolder extends Composite {
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     BoxDimensions border = getBorder();
-    Rectangle containerBorder = getContentContainerBorder();
+    int borderWidth = border.left + border.right;
+    int borderHeight = border.top + border.bottom;
+    BoxDimensions containerBorder = getContentContainerBorder();
+    int containerBorderWidth = containerBorder.left + containerBorder.right;
+    int containerBorderHeight = containerBorder.top + containerBorder.bottom;
     int tabBarHeight = getTabBarHeight();
-    int trimX = x - border.left - containerBorder.x;
-    int trimY = y - border.top - containerBorder.y - ( onBottom ? 0 : tabBarHeight );
-    int trimWidth = width + border.left + border.right + containerBorder.width;
-    int trimHeight = height + border.top + border.bottom + containerBorder.height + tabBarHeight;
+    int trimX = x - border.left - containerBorder.left;
+    int trimY = y - border.top - containerBorder.top - ( onBottom ? 0 : tabBarHeight );
+    int trimWidth = width + borderWidth + containerBorderWidth;
+    int trimHeight = height + borderHeight + containerBorderHeight + tabBarHeight;
     return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
@@ -578,7 +586,7 @@ public class TabFolder extends Composite {
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
-  private Rectangle getContentContainerBorder() {
+  private BoxDimensions getContentContainerBorder() {
     return getThemeAdapter().getContentContainerBorder( this );
   }
 
@@ -589,10 +597,16 @@ public class TabFolder extends Composite {
     for( TabItem item : getItems() ) {
       Image image = item.getImage();
       int imageHeight = image == null ? 0 : image.getBounds().height;
-      int padding = themeAdapter.getItemPadding( item ).getHeight();
-      int margin = themeAdapter.getItemMargin( item ).getHeight();
-      int border = themeAdapter.getItemBorder( item ).height;
-      int itemHeight = Math.max( textHeight, imageHeight ) + padding + margin + border;
+      BoxDimensions itemPadding = themeAdapter.getItemPadding( item );
+      int paddingHeight = itemPadding.top + itemPadding.bottom;
+      BoxDimensions itemMargin = themeAdapter.getItemMargin( item );
+      int marginHeight = itemMargin.top + itemMargin.bottom;
+      BoxDimensions itemBorder = themeAdapter.getItemBorder( item );
+      int borderHeight = itemBorder.top + itemBorder.bottom;
+      int itemHeight = Math.max( textHeight, imageHeight )
+                     + paddingHeight
+                     + marginHeight
+                     + borderHeight;
       result = Math.max( result, itemHeight );
     }
     return result;

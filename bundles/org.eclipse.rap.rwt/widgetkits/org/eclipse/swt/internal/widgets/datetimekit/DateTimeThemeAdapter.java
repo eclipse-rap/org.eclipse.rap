@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.DateTime;
 
@@ -27,8 +27,8 @@ public class DateTimeThemeAdapter extends ControlThemeAdapterImpl {
     return getCssDimension( "DateTime-DropDownButton", "width", dateTime );
   }
 
-  public CssBoxDimensions getFieldPadding( DateTime dateTime ) {
-    return getCssBoxDimensions( "DateTime-Field", "padding", dateTime );
+  public BoxDimensions getFieldPadding( DateTime dateTime ) {
+    return getCssBoxDimensions( "DateTime-Field", "padding", dateTime ).dimensions;
   }
 
 }

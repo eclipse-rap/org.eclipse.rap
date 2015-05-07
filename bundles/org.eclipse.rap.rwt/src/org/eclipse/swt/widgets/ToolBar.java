@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -263,8 +263,9 @@ public class ToolBar extends Composite {
 
       }
     }
-    width += getToolBarPadding().getWidth();
-    height += getToolBarPadding().getHeight();
+    BoxDimensions toolBarPadding = getToolBarPadding();
+    width += toolBarPadding.left + toolBarPadding.right;
+    height += toolBarPadding.top + toolBarPadding.bottom;
     if( width == 0 ) {
       width = DEFAULT_TOOLBAR_WIDTH;
     }
@@ -287,7 +288,7 @@ public class ToolBar extends Composite {
     return new Point( width, height );
   }
 
-  CssBoxDimensions getToolBarPadding() {
+  BoxDimensions getToolBarPadding() {
     ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( ThemeAdapter.class );
     return themeAdapter.getToolBarPadding( this );
   }

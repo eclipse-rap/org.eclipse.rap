@@ -17,9 +17,10 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.theme.CssBorder;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -27,25 +28,27 @@ import org.eclipse.swt.widgets.TabItem;
 
 public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
 
-  public Rectangle getContentContainerBorder( TabFolder folder ) {
+  public BoxDimensions getContentContainerBorder( TabFolder folder ) {
     return getCssBorder( "TabFolder-ContentContainer", folder );
   }
 
-  public Rectangle getItemBorder( TabItem item ) {
+  public BoxDimensions getItemBorder( TabItem item ) {
     SimpleSelector selector = createSelector( item );
     int top = getBorderEdgeWidth( "border-top", selector, item );
     int right = getBorderEdgeWidth( "border-right", selector, item );
     int bottom = getBorderEdgeWidth( "border-bottom", selector, item );
     int left = getBorderEdgeWidth( "border-left", selector, item );
-    return new Rectangle( left, top, left + right, top + bottom );
+    return new BoxDimensions( top, right, bottom, left );
   }
 
-  public CssBoxDimensions getItemPadding( TabItem item ) {
-    return ( CssBoxDimensions )getCssValue( "TabItem", "padding", createSelector( item ) );
+  public BoxDimensions getItemPadding( TabItem item ) {
+    CssValue cssValue = getCssValue( "TabItem", "padding", createSelector( item ) );
+    return ( ( CssBoxDimensions )cssValue ).dimensions;
   }
 
-  public CssBoxDimensions getItemMargin( TabItem item ) {
-    return ( CssBoxDimensions )getCssValue( "TabItem", "margin", createSelector( item ) );
+  public BoxDimensions getItemMargin( TabItem item ) {
+    CssValue cssValue = getCssValue( "TabItem", "margin", createSelector( item ) );
+    return ( ( CssBoxDimensions )cssValue ).dimensions;
   }
 
   private static int getBorderEdgeWidth( String edge, SimpleSelector selector, TabItem item ) {

@@ -15,7 +15,6 @@ import java.text.NumberFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -486,10 +485,10 @@ public class Spinner extends Composite {
         string += "-";
       }
       Point textSize = TextSizeUtil.stringExtent( getFont(), string );
-      CssBoxDimensions padding = getFieldPadding();
+      BoxDimensions padding = getFieldPadding();
       int buttonWidth = getButtonWidth();
-      width = textSize.x + buttonWidth + padding.getWidth();
-      height = textSize.y + padding.getHeight();
+      width = textSize.x + buttonWidth + padding.left + padding.right;
+      height = textSize.y + padding.top + padding.bottom;
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -651,14 +650,16 @@ public class Spinner extends Composite {
   //////////////////
   // Helping methods
 
-  private CssBoxDimensions getFieldPadding() {
-    SpinnerThemeAdapter themeAdapter = ( SpinnerThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getFieldPadding( this );
+  private BoxDimensions getFieldPadding() {
+    return getThemeAdapter().getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    SpinnerThemeAdapter themeAdapter = ( SpinnerThemeAdapter )getAdapter( ThemeAdapter.class );
-    return themeAdapter.getButtonWidth( this );
+    return getThemeAdapter().getButtonWidth( this );
+  }
+
+  private SpinnerThemeAdapter getThemeAdapter() {
+    return ( SpinnerThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private static int checkStyle( int style ) {

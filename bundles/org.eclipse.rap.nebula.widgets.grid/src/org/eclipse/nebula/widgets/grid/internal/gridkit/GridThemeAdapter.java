@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridkit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
@@ -25,24 +25,24 @@ public class GridThemeAdapter extends ControlThemeAdapterImpl {
     return getCssFont( "Tree", "font", control );
   }
 
-  public CssBoxDimensions getCheckBoxMargin( Control control ) {
-    return getCssBoxDimensions( "Tree-Checkbox", "margin", control );
+  public BoxDimensions getCheckBoxMargin( Control control ) {
+    return getCssBoxDimensions( "Tree-Checkbox", "margin", control ).dimensions;
   }
 
   public Size getCheckBoxImageSize( Control control ) {
     return getCssImageSize( "Tree-Checkbox", "background-image", control );
   }
 
-  public CssBoxDimensions getCellPadding( Control control ) {
-    return getCssBoxDimensions( "Tree-Cell", "padding", control );
+  public BoxDimensions getCellPadding( Control control ) {
+    return getCssBoxDimensions( "Tree-Cell", "padding", control ).dimensions;
   }
 
   public int getCellSpacing( Control control ) {
     return Math.max( 0, getCssDimension( "Tree-Cell", "spacing", control ) );
   }
 
-  public CssBoxDimensions getHeaderPadding( Control control ) {
-    return getCssBoxDimensions( "TreeColumn", "padding", control );
+  public BoxDimensions getHeaderPadding( Control control ) {
+    return getCssBoxDimensions( "TreeColumn", "padding", control ).dimensions;
   }
 
   public int getHeaderBorderBottomWidth( Control control ) {

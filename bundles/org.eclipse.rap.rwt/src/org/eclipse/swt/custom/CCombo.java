@@ -11,7 +11,6 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -585,7 +584,8 @@ public class CCombo extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    return TextSizeUtil.getCharHeight( getFont() ) + getListItemPadding().getHeight();
+    BoxDimensions listItemPadding = getListItemPadding();
+    return TextSizeUtil.getCharHeight( getFont() ) + listItemPadding.top + listItemPadding.bottom;
   }
 
   /**
@@ -833,13 +833,13 @@ public class CCombo extends Composite {
         }
       }
     }
-    CssBoxDimensions fieldPadding = getFieldPadding();
+    BoxDimensions fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += fieldPadding.getWidth() + buttonWidth;
+      width += fieldPadding.left + fieldPadding.right + buttonWidth;
     }
     if( height != 0 ) {
-      height += fieldPadding.getHeight();
+      height += fieldPadding.top + fieldPadding.bottom;
       // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
       height += 2;
     }
@@ -1141,11 +1141,11 @@ public class CCombo extends Composite {
     selection.y = Math.min( selection.y, text.length() );
   }
 
-  private CssBoxDimensions getFieldPadding() {
+  private BoxDimensions getFieldPadding() {
     return getThemeAdapter().getFieldPadding( this );
   }
 
-  private CssBoxDimensions getListItemPadding() {
+  private BoxDimensions getListItemPadding() {
     return getThemeAdapter().getListItemPadding( this );
   }
 

@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -860,13 +859,13 @@ public class Combo extends Composite {
         }
       }
     }
-    CssBoxDimensions fieldPadding = getFieldPadding();
+    BoxDimensions fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += fieldPadding.getWidth() + buttonWidth;
+      width += fieldPadding.left + fieldPadding.right + buttonWidth;
     }
     if( height != 0 ) {
-      height += fieldPadding.getHeight();
+      height += fieldPadding.top + fieldPadding.bottom;
       // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
       height += 2;
     }
@@ -1151,14 +1150,16 @@ public class Combo extends Composite {
     selection.y = Math.min( selection.y, text.length() );
   }
 
-  private CssBoxDimensions getFieldPadding() {
-    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( ThemeAdapter.class );
-    return adapter.getFieldPadding( this );
+  private BoxDimensions getFieldPadding() {
+    return getThemeAdapter().getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    ComboThemeAdapter adapter = ( ComboThemeAdapter )getAdapter( ThemeAdapter.class );
-    return adapter.getButtonWidth( this );
+    return getThemeAdapter().getButtonWidth( this );
+  }
+
+  private ComboThemeAdapter getThemeAdapter() {
+    return ( ComboThemeAdapter )getAdapter( ThemeAdapter.class );
   }
 
   private static int checkStyle( int style ) {

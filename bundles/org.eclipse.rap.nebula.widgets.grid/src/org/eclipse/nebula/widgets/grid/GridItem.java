@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.nebula.widgets.grid.internal.GridItemData;
 import org.eclipse.nebula.widgets.grid.internal.GridItemData.CellData;
 import org.eclipse.nebula.widgets.grid.internal.IGridItemAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -1413,7 +1414,8 @@ public class GridItem extends Item {
   }
 
   private int getPaddingWidth( int index ) {
-    int result = parent.getCellPadding().getWidth();
+    BoxDimensions cellPadding = parent.getCellPadding();
+    int result = cellPadding.left + cellPadding.right;
     if( parent.isTreeColumn( index ) ) {
       result -= parent.getCellPadding().left;
     }
@@ -1421,7 +1423,7 @@ public class GridItem extends Item {
   }
 
   private int getCheckBoxWidth( int index ) {
-    return parent.getColumn( index ).isCheck() ? parent.getCheckBoxImageOuterSize().x : 0;
+    return parent.getColumn( index ).isCheck() ? parent.getCheckBoxImageOuterSize().width : 0;
   }
 
   private int getImageWidth( int index ) {

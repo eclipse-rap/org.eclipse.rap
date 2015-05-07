@@ -10,11 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolbarkit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
@@ -27,16 +26,16 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
     matcher.addStyle( "FLAT", SWT.FLAT );
   }
 
-  public Rectangle getItemBorder( Control control ) {
+  public BoxDimensions getItemBorder( Control control ) {
     return getCssBorder( "ToolItem", control );
   }
 
-  public CssBoxDimensions getItemPadding( Control control ) {
-    return getCssBoxDimensions( "ToolItem", "padding", control );
+  public BoxDimensions getItemPadding( Control control ) {
+    return getCssBoxDimensions( "ToolItem", "padding", control ).dimensions;
   }
 
-  public CssBoxDimensions getToolBarPadding( Control control ) {
-    return getCssBoxDimensions( "ToolBar", "padding", control );
+  public BoxDimensions getToolBarPadding( Control control ) {
+    return getCssBoxDimensions( "ToolBar", "padding", control ).dimensions;
   }
 
   public int getToolBarSpacing( Control control ) {

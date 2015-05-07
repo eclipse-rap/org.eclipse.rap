@@ -12,14 +12,12 @@
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -31,13 +29,11 @@ public class ControlThemeAdapterImpl extends ThemeAdapter implements ControlThem
   }
 
   public BoxDimensions getBorder( Control control ) {
-    Rectangle value = getCssBorder( getPrimaryElement( control ), control );
-    return new BoxDimensions( value.y, value.width - value.x, value.height - value.y, value.x );
+    return getCssBorder( getPrimaryElement( control ), control );
   }
 
   public BoxDimensions getPadding( Control control ) {
-    CssBoxDimensions value = getCssBoxDimensions( getPrimaryElement( control ), "padding", control );
-    return new BoxDimensions( value.top, value.right, value.bottom, value.left );
+    return getCssBoxDimensions( getPrimaryElement( control ), "padding", control ).dimensions;
   }
 
   public Color getForeground( Control control ) {

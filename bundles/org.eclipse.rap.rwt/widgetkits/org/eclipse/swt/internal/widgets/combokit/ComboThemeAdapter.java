@@ -11,19 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
 public class ComboThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getFieldPadding( Control control ) {
-    return getCssBoxDimensions( "Combo-Field", "padding", control );
+  public BoxDimensions getFieldPadding( Control control ) {
+    return getCssBoxDimensions( "Combo-Field", "padding", control ).dimensions;
   }
 
-  public CssBoxDimensions getListItemPadding( Control control ) {
-    return getCssBoxDimensions( "Combo-List-Item", "padding", control );
+  public BoxDimensions getListItemPadding( Control control ) {
+    return getCssBoxDimensions( "Combo-List-Item", "padding", control ).dimensions;
   }
 
   public int getButtonWidth( Control control ) {

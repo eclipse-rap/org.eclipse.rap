@@ -23,9 +23,9 @@ import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
 import org.eclipse.nebula.widgets.grid.internal.gridkit.GridThemeAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TreeListener;
@@ -2719,9 +2719,10 @@ public class Grid extends Composite {
   private int computeItemHeight() {
     int result = Math.max( getItemImageSize().y, TextSizeUtil.getCharHeight( getFont() ) );
     if( hasCheckBoxes() ) {
-      result = Math.max( getCheckBoxImageOuterSize().y, result );
+      result = Math.max( getCheckBoxImageOuterSize().height, result );
     }
-    result += getCellPadding().getHeight();
+    BoxDimensions cellPadding = getCellPadding();
+    result += cellPadding.top + cellPadding.bottom;
     result += GRID_WIDTH;
     result = Math.max( result, MIN_ITEM_HEIGHT );
     return result;
@@ -2790,7 +2791,8 @@ public class Grid extends Composite {
     result = Math.max( result, textHeight );
     int imageHeight = image == null ? 0 : image.getBounds().height;
     result = Math.max( result, imageHeight );
-    result += getHeaderPadding().getHeight();
+    BoxDimensions headerPadding = getHeaderPadding();
+    result += headerPadding.top + headerPadding.bottom;
     result += getThemeAdapter().getHeaderBorderBottomWidth( this );
     return result;
   }
@@ -2820,7 +2822,7 @@ public class Grid extends Composite {
 
   private int getCheckBoxOffset( int index ) {
     int result = -1;
-    CssBoxDimensions padding = getCellPadding();
+    BoxDimensions padding = getCellPadding();
     if(    isColumnCentered( index )
         && !isTreeColumn( index )
         && !hasColumnImages( index )
@@ -2848,7 +2850,7 @@ public class Grid extends Composite {
       result += getCellPadding().left;
     }
     if( getColumn( index ).isCheck() ) {
-      result += getCheckBoxImageOuterSize().x;
+      result += getCheckBoxImageOuterSize().width;
     }
     return result;
   }
@@ -2906,10 +2908,12 @@ public class Grid extends Composite {
     return result;
   }
 
-  Point getCheckBoxImageOuterSize() {
+  Size getCheckBoxImageOuterSize() {
     Size imageSize = getCheckBoxImageSize();
-    CssBoxDimensions margin = getCheckBoxMargin();
-    return new Point( imageSize.width + margin.getWidth(), imageSize.height + margin.getHeight() );
+    BoxDimensions margin = getCheckBoxMargin();
+    int width = imageSize.width + margin.left + margin.right;
+    int height = imageSize.height + margin.top + margin.bottom;
+    return new Size( width, height );
   }
 
   boolean isTreeColumn( int index ) {
@@ -2932,21 +2936,21 @@ public class Grid extends Composite {
     return layoutCache.checkBoxImageSize;
   }
 
-  private CssBoxDimensions getCheckBoxMargin() {
+  private BoxDimensions getCheckBoxMargin() {
     if( !layoutCache.hasCheckBoxMargin() ) {
       layoutCache.checkBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
     }
     return layoutCache.checkBoxMargin;
   }
 
-  CssBoxDimensions getCellPadding() {
+  BoxDimensions getCellPadding() {
     if( !layoutCache.hasCellPadding() ) {
       layoutCache.cellPadding = getThemeAdapter().getCellPadding( this );
     }
     return layoutCache.cellPadding;
   }
 
-  CssBoxDimensions getHeaderPadding() {
+  BoxDimensions getHeaderPadding() {
     if( !layoutCache.hasHeaderPadding() ) {
       layoutCache.headerPadding = getThemeAdapter().getHeaderPadding( this );
     }
@@ -3219,10 +3223,10 @@ public class Grid extends Composite {
     int itemHeight = UNKNOWN;
     int cellSpacing = UNKNOWN;
     int indentationWidth = UNKNOWN;
-    CssBoxDimensions cellPadding;
-    CssBoxDimensions checkBoxMargin;
+    BoxDimensions cellPadding;
+    BoxDimensions headerPadding;
+    BoxDimensions checkBoxMargin;
     Size checkBoxImageSize;
-    CssBoxDimensions headerPadding;
 
     public boolean hasHeaderPadding() {
       return headerPadding != null;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying material
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.ExpandBar;
 
 
 public class ExpandBarThemeAdapter extends ControlThemeAdapterImpl {
 
-  public Rectangle getItemBorder( ExpandBar bar ) {
+  public BoxDimensions getItemBorder( ExpandBar bar ) {
     return getCssBorder( "ExpandItem", bar );
   }
 
-  public Rectangle getItemHeaderBorder( ExpandBar bar ) {
+  public BoxDimensions getItemHeaderBorder( ExpandBar bar ) {
     return getCssBorder( "ExpandItem-Header", bar );
   }
 

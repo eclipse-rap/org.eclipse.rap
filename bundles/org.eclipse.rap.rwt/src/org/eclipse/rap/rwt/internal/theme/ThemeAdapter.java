@@ -13,9 +13,9 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -62,12 +62,12 @@ public abstract class ThemeAdapter {
     return CssFont.createFont( ( CssFont )cssValue );
   }
 
-  protected Rectangle getCssBorder( String cssElement, Widget widget ) {
+  protected BoxDimensions getCssBorder( String cssElement, Widget widget ) {
     int top = getCssBorderWidth( cssElement, "border-top", widget );
     int right = getCssBorderWidth( cssElement, "border-right", widget );
     int bottom = getCssBorderWidth( cssElement, "border-bottom", widget );
     int left = getCssBorderWidth( cssElement, "border-left", widget );
-    return new Rectangle( left, top, left + right, top + bottom );
+    return new BoxDimensions( top, right, bottom, left );
   }
 
   protected int getCssBorderWidth( String cssElement, String cssProperty, Widget widget ) {

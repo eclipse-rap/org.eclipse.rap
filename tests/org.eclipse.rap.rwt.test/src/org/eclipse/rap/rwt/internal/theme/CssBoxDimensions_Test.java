@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.junit.Test;
 
 
@@ -44,51 +45,33 @@ public class CssBoxDimensions_Test {
   public void testZero() {
     assertSame( CssBoxDimensions.ZERO, CssBoxDimensions.valueOf( "0" ) );
     assertSame( CssBoxDimensions.ZERO, CssBoxDimensions.valueOf( "0 0" ) );
-    assertEquals( 0, CssBoxDimensions.ZERO.top );
-    assertEquals( 0, CssBoxDimensions.ZERO.right );
-    assertEquals( 0, CssBoxDimensions.ZERO.bottom );
-    assertEquals( 0, CssBoxDimensions.ZERO.left );
+    assertEquals( new BoxDimensions( 0, 0, 0, 0 ), CssBoxDimensions.ZERO.dimensions );
   }
 
   @Test
   public void test1Value() {
     CssBoxDimensions dim23px = CssBoxDimensions.valueOf( "23px" );
-    assertEquals( 23, dim23px.top );
-    assertEquals( 23, dim23px.right );
-    assertEquals( 23, dim23px.bottom );
-    assertEquals( 23, dim23px.left );
+    assertEquals( new BoxDimensions( 23, 23, 23, 23 ), dim23px.dimensions );
     CssBoxDimensions dimNeg1 = CssBoxDimensions.valueOf( "-1" );
-    assertEquals( -1, dimNeg1.top );
-    assertEquals( -1, dimNeg1.right );
-    assertEquals( -1, dimNeg1.bottom );
-    assertEquals( -1, dimNeg1.left );
+    assertEquals( new BoxDimensions( -1, -1, -1, -1 ), dimNeg1.dimensions );
   }
 
   @Test
   public void test2Values() {
-    CssBoxDimensions dimensions = CssBoxDimensions.valueOf( "0 2" );
-    assertEquals( 0, dimensions.top );
-    assertEquals( 2, dimensions.right );
-    assertEquals( 0, dimensions.bottom );
-    assertEquals( 2, dimensions.left );
+    CssBoxDimensions boxDim = CssBoxDimensions.valueOf( "0 2" );
+    assertEquals( new BoxDimensions( 0, 2, 0, 2 ), boxDim.dimensions );
   }
 
   @Test
   public void test3Values() {
-    CssBoxDimensions dimensions = CssBoxDimensions.valueOf( "1 2 3px" );
-    assertEquals( 1, dimensions.top );
-    assertEquals( 2, dimensions.right );
-    assertEquals( 3, dimensions.bottom );
-    assertEquals( 2, dimensions.left );
+    CssBoxDimensions boxDim = CssBoxDimensions.valueOf( "1 2 3px" );
+    assertEquals( new BoxDimensions( 1, 2, 3, 2 ), boxDim.dimensions );
   }
 
   @Test
   public void test4Values() {
-    CssBoxDimensions dimensions = CssBoxDimensions.valueOf( "0px 1px 2px 3px" );
-    assertEquals( 0, dimensions.top );
-    assertEquals( 1, dimensions.right );
-    assertEquals( 2, dimensions.bottom );
-    assertEquals( 3, dimensions.left );
+    CssBoxDimensions boxDim = CssBoxDimensions.valueOf( "0px 1px 2px 3px" );
+    assertEquals( new BoxDimensions( 0, 1, 2, 3 ), boxDim.dimensions );
   }
 
   @Test

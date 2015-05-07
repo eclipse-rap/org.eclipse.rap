@@ -17,7 +17,6 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -68,7 +67,7 @@ public class List extends Scrollable {
   private int topIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
-  private CssBoxDimensions bufferedItemPadding;
+  private BoxDimensions bufferedItemPadding;
   private int customItemHeight;
 
   /**
@@ -994,7 +993,8 @@ public class List extends Scrollable {
     checkWidget();
     int result = customItemHeight;
     if( result == -1 ) {
-      result = TextSizeUtil.getCharHeight( getFont() ) + getItemPadding().getHeight();
+      BoxDimensions itemPadding = getItemPadding();
+      result = TextSizeUtil.getCharHeight( getFont() ) + itemPadding.top + itemPadding.bottom;
     }
     return result;
   }
@@ -1153,7 +1153,8 @@ public class List extends Scrollable {
 
   private int getItemWidth( String item ) {
     Point extent = stringExtent( getFont(), item, isMarkupEnabledFor( this ) );
-    return extent.x + getItemPadding().getWidth();
+    BoxDimensions itemPadding = getItemPadding();
+    return extent.x + itemPadding.left + itemPadding.right;
   }
 
   private int getMaxItemWidth() {
@@ -1203,7 +1204,7 @@ public class List extends Scrollable {
     return new Point( width, height );
   }
 
-  private CssBoxDimensions getItemPadding() {
+  private BoxDimensions getItemPadding() {
     if( bufferedItemPadding == null ) {
       ListThemeAdapter themeAdapter = ( ListThemeAdapter )getAdapter( ThemeAdapter.class );
       bufferedItemPadding = themeAdapter.getItemPadding( this );

@@ -13,10 +13,12 @@ package org.eclipse.swt.internal.widgets.shellkit;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.internal.theme.CssValue;
 import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
@@ -43,11 +45,11 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
     } );
   }
 
-  public CssBoxDimensions getTitleBarMargin( Shell shell ) {
+  public BoxDimensions getTitleBarMargin( Shell shell ) {
     if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
-      return getCssBoxDimensions( "Shell-Titlebar", "margin", shell );
+      return getCssBoxDimensions( "Shell-Titlebar", "margin", shell ).dimensions;
     }
-    return CssBoxDimensions.ZERO;
+    return CssBoxDimensions.ZERO.dimensions;
   }
 
   public int getTitleBarHeight( Shell shell ) {
@@ -63,15 +65,16 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
     if( shell.getMenuBar() != null ) {
       Font font = getCssFont( "Shell", "font", shell );
       int fontHeight = TextSizeUtil.getCharHeight( font );
-      CssBoxDimensions padding = getMenuBarItemPadding();
-      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight + padding.getHeight() );
+      BoxDimensions padding = getMenuBarItemPadding();
+      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight + padding.top + padding.bottom );
     }
     return result;
   }
 
-  private static CssBoxDimensions getMenuBarItemPadding() {
+  private static BoxDimensions getMenuBarItemPadding() {
     SimpleSelector selector = new SimpleSelector( new String[] { ":onMenuBar" } );
-    return ( CssBoxDimensions )ThemeUtil.getCssValue( "MenuItem", "padding", selector );
+    CssValue cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
+    return ( ( CssBoxDimensions )cssValue ).dimensions;
   }
 
 }

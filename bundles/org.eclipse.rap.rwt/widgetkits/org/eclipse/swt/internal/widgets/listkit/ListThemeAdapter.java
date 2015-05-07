@@ -10,15 +10,15 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.Control;
 
 
 public class ListThemeAdapter extends ControlThemeAdapterImpl {
 
-  public CssBoxDimensions getItemPadding( Control control ) {
-    return getCssBoxDimensions( "List-Item", "padding", control );
+  public BoxDimensions getItemPadding( Control control ) {
+    return getCssBoxDimensions( "List-Item", "padding", control ).dimensions;
   }
 
 }

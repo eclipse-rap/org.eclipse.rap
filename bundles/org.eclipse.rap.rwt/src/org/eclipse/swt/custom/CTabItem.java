@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -448,10 +449,11 @@ public class CTabItem extends Item {
 
   int preferredHeight( boolean isSelected ) {
     Image image = getImage();
-    int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
-    h = Math.max( h, TextSizeUtil.textExtent( getFont(), text, 0 ).y );
-    return h + parent.getItemPadding( isSelected ).getHeight();
+    BoxDimensions padding = parent.getItemPadding( isSelected );
+    int height = ( image == null ) ? 0 : image.getBounds().height;
+    height = Math.max( height, TextSizeUtil.textExtent( getFont(), text, 0 ).y );
+    return height + padding.top + padding.bottom;
   }
 
   int preferredWidth( boolean isSelected, boolean minimum ) {
@@ -460,10 +462,10 @@ public class CTabItem extends Item {
     if (isDisposed()) {
       return 0;
     }
-    int w = 0;
+    int width = 0;
     Image image = getImage();
     if (image != null && (isSelected || parent.showUnselectedImage)) {
-      w += image.getBounds().width;
+      width += image.getBounds().width;
     }
     String text = null;
     if (minimum) {
@@ -485,29 +487,30 @@ public class CTabItem extends Item {
       text = getText();
     }
     if (text != null) {
-      if (w > 0) {
-        w += parent.getItemSpacing( isSelected );
+      if (width > 0) {
+        width += parent.getItemSpacing( isSelected );
       }
       if (font == null) {
 //        w += gc.textExtent(text, FLAGS).x;
-        w += TextSizeUtil.stringExtent( getFont(), text ).x;
+        width += TextSizeUtil.stringExtent( getFont(), text ).x;
       } else {
 //        Font gcFont = gc.getFont();
 //        gc.setFont(font);
 //        w += gc.textExtent(text, FLAGS).x;
 //        gc.setFont(gcFont);
-        w += TextSizeUtil.stringExtent( getFont(), text ).x;
+        width += TextSizeUtil.stringExtent( getFont(), text ).x;
       }
     }
     if (parent.showClose || showClose) {
       if (isSelected || parent.showUnselectedClose) {
-        if (w > 0) {
-          w += parent.getItemSpacing( isSelected );
+        if (width > 0) {
+          width += parent.getItemSpacing( isSelected );
         }
-        w += CTabFolder.BUTTON_SIZE;
+        width += CTabFolder.BUTTON_SIZE;
       }
     }
-    return w + parent.getItemPadding( isSelected ).getWidth();
+    BoxDimensions padding = parent.getItemPadding( isSelected );
+    return width + padding.left + padding.right;
   }
 
   /*

@@ -184,7 +184,8 @@ public class ExpandBar extends Composite {
         height += spacing;
         for( int i = 0; i < itemCount; i++ ) {
           ExpandItem item = getItem( i );
-          height += item.getHeaderHeight() + item.getItemBorder().height;
+          BoxDimensions itemBorder = item.getItemBorder();
+          height += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom;
           if( item.expanded ) {
             height += item.height;
           }
@@ -377,7 +378,8 @@ public class ExpandBar extends Composite {
         if( item.expanded ) {
           y += item.height;
         }
-        y += item.getHeaderHeight() + item.getItemBorder().height + spacing;
+        BoxDimensions itemBorder = item.getItemBorder();
+        y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
       }
       for( int i = index; i < itemCount; i++ ) {
         ExpandItem item = getItem( i );
@@ -385,7 +387,8 @@ public class ExpandBar extends Composite {
         if( item.expanded ) {
           y += item.height;
         }
-        y += item.getHeaderHeight() + item.getItemBorder().height + spacing;
+        BoxDimensions itemBorder = item.getItemBorder();
+        y += item.getHeaderHeight() + itemBorder.top + itemBorder.bottom + spacing;
       }
     }
     // Calculate all items size

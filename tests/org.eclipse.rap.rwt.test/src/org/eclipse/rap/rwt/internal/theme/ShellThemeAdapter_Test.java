@@ -88,7 +88,7 @@ public class ShellThemeAdapter_Test {
     setCustomTheme( "Shell-Titlebar.special { margin: 1px 2px 3px 4px }" );
     shell.setData( RWT.CUSTOM_VARIANT, "special" );
 
-    CssBoxDimensions expected = CssBoxDimensions.create( 1, 2, 3, 4 );
+    BoxDimensions expected = new BoxDimensions( 1, 2, 3, 4 );
     assertEquals( expected, shellThemeAdapter.getTitleBarMargin( shell ) );
   }
 

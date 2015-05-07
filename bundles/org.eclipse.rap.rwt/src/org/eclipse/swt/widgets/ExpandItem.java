@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -195,7 +196,9 @@ public class ExpandItem extends Item {
    */
   public int getHeaderHeight() {
     checkWidget();
-    return Math.max( parent.getBandHeight(), imageHeight ) + getItemHeaderBorder().height;
+    BoxDimensions itemHeaderBorder = getItemHeaderBorder();
+    int borderHeight = itemHeaderBorder.top + itemHeaderBorder.bottom;
+    return Math.max( parent.getBandHeight(), imageHeight ) + borderHeight;
   }
 
   /**
@@ -253,7 +256,8 @@ public class ExpandItem extends Item {
   Rectangle getBounds() {
     Rectangle result;
     int headerHeight = getHeaderHeight();
-    int itemBorderHeight = getItemBorder().height;
+    BoxDimensions itemBorder = getItemBorder();
+    int itemBorderHeight = itemBorder.top + itemBorder.bottom;
     if( expanded ) {
       result = new Rectangle( x, y, width, headerHeight + itemBorderHeight + height );
     } else {
@@ -281,11 +285,11 @@ public class ExpandItem extends Item {
     }
     if( control != null && !control.isDisposed() ) {
       if( !parent.isAppThemed() ) {
-        Rectangle border = getItemBorder();
-        aX += border.x;
-        aY += border.y;
-        aWidth = Math.max( 0, aWidth - border.width );
-        aHeight = Math.max( 0, aHeight - border.height );
+        BoxDimensions border = getItemBorder();
+        aX += border.left;
+        aY += border.top;
+        aWidth = Math.max( 0, aWidth - border.left - border.right );
+        aHeight = Math.max( 0, aHeight - border.top - border.bottom );
       }
       if( move && size ) {
         control.setBounds( aX, aY + headerHeight, aWidth, aHeight );
@@ -331,10 +335,10 @@ public class ExpandItem extends Item {
       int headerHeight = getHeaderHeight();
       control.setVisible( expanded );
       if( !parent.isAppThemed() ) {
-        Rectangle border = getItemBorder();
-        int width = Math.max( 0, this.width - border.width );
-        int height = Math.max( 0, this.height - border.height );
-        control.setBounds( x + border.x, y + border.y + headerHeight, width, height );
+        BoxDimensions border = getItemBorder();
+        int width = Math.max( 0, this.width - border.left - border.right );
+        int height = Math.max( 0, this.height - border.top - border.bottom );
+        control.setBounds( x + border.left, y + border.top + headerHeight, width, height );
       } else {
         control.setBounds( x, y + headerHeight, width, height );
       }
@@ -423,11 +427,11 @@ public class ExpandItem extends Item {
   ////////////////////////////
   // Helping methods - various
 
-  Rectangle getItemBorder() {
+  BoxDimensions getItemBorder() {
     return getExpandBarThemeAdapter().getItemBorder( parent );
   }
 
-  Rectangle getItemHeaderBorder() {
+  BoxDimensions getItemHeaderBorder() {
     return getExpandBarThemeAdapter().getItemHeaderBorder( parent );
   }
 

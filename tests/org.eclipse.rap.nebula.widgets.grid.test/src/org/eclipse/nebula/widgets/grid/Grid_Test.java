@@ -35,8 +35,8 @@ import org.eclipse.nebula.widgets.grid.internal.NullScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -2989,7 +2989,7 @@ public class Grid_Test {
   }
 
   private void fakeCellPadding( Grid grid, int top, int right, int bottom, int left ) {
-    grid.layoutCache.cellPadding = CssBoxDimensions.create( top, right, bottom, left );
+    grid.layoutCache.cellPadding = new BoxDimensions( top, right, bottom, left );
   }
 
   private int getCheckBoxOffset( int index ) {
@@ -3005,4 +3005,5 @@ public class Grid_Test {
       eventLog.add( event );
     }
   }
+
 }

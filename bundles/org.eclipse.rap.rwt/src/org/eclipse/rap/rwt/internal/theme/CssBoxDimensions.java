@@ -14,23 +14,17 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.io.Serializable;
 import java.util.zip.CRC32;
 
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.rap.rwt.theme.BoxDimensions;
 
 
 public class CssBoxDimensions implements CssValue, Serializable {
 
   public static final CssBoxDimensions ZERO = new CssBoxDimensions( 0, 0, 0, 0 );
 
-  public final int top;
-  public final int right;
-  public final int bottom;
-  public final int left;
+  public final BoxDimensions dimensions;
 
   private CssBoxDimensions( int top, int right, int bottom, int left ) {
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
-    this.left = left;
+    dimensions = new BoxDimensions( top, right, bottom, left );
   }
 
   public static CssBoxDimensions create( int top, int right, int bottom, int left ) {
@@ -63,31 +57,20 @@ public class CssBoxDimensions implements CssValue, Serializable {
     return create( top, right, bottom, left );
   }
 
-  /**
-   * Returns <code>left + right</code> for convenience.
-   */
-  public int getWidth() {
-    return left + right;
-  }
-
-  /**
-   * Returns <code>top + bottom</code> for convenience.
-   */
-  public int getHeight() {
-    return top + bottom;
-  }
-
   public String toDefaultString() {
     StringBuilder buffer = new StringBuilder();
-    buffer.append( top + "px" );
-    if( right != top || bottom != top || left != top ) {
-      buffer.append( " " + right + "px" );
+    buffer.append( dimensions.top + "px" );
+    if(    dimensions.right != dimensions.top
+        || dimensions.bottom != dimensions.top
+        || dimensions.left != dimensions.top )
+    {
+      buffer.append( " " + dimensions.right + "px" );
     }
-    if( bottom != top || left != right ) {
-      buffer.append( " " + bottom + "px" );
+    if( dimensions.bottom != dimensions.top || dimensions.left != dimensions.right ) {
+      buffer.append( " " + dimensions.bottom + "px" );
     }
-    if( left != right ) {
-      buffer.append( " " + left + "px" );
+    if( dimensions.left != dimensions.right ) {
+      buffer.append( " " + dimensions.left + "px" );
     }
     return buffer.toString();
   }
@@ -99,10 +82,7 @@ public class CssBoxDimensions implements CssValue, Serializable {
     }
     if( object instanceof CssBoxDimensions ) {
       CssBoxDimensions other = ( CssBoxDimensions )object;
-      return    ( other.top == this.top )
-             && ( other.right == this.right )
-             && ( other.bottom == this.bottom )
-             && ( other.left == this.left );
+      return other.dimensions.equals( this.dimensions );
     }
     return false;
   }
@@ -110,16 +90,26 @@ public class CssBoxDimensions implements CssValue, Serializable {
   @Override
   public int hashCode() {
     CRC32 result = new CRC32();
-    result.update( top );
-    result.update( right );
-    result.update( bottom );
-    result.update( left );
+    result.update( dimensions.top );
+    result.update( dimensions.right );
+    result.update( dimensions.bottom );
+    result.update( dimensions.left );
     return ( int )result.getValue();
   }
 
   @Override
   public String toString() {
-    return "CssBoxDimensions{ " + top + ", " + right + ", " + bottom + ", " + left + " }";
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( "CssBoxDimensions{ " );
+    buffer.append( dimensions.top );
+    buffer.append( ", " );
+    buffer.append( dimensions.right );
+    buffer.append( ", " );
+    buffer.append( dimensions.bottom );
+    buffer.append( ", " );
+    buffer.append( dimensions.left );
+    buffer.append( " }" );
+    return buffer.toString();
   }
 
   private static int parsePxValue( String part ) {
@@ -128,13 +118,6 @@ public class CssBoxDimensions implements CssValue, Serializable {
       throw new IllegalArgumentException( "Illegal parameter: " + part );
     }
     return result.intValue();
-  }
-
-  public static Rectangle createRectangle( CssBoxDimensions boxdim ) {
-    return new Rectangle( boxdim.left,
-                          boxdim.top,
-                          boxdim.left + boxdim.right,
-                          boxdim.top + boxdim.bottom );
   }
 
 }
