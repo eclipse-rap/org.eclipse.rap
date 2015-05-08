@@ -30,8 +30,6 @@ public final class ProtocolUtil {
 
   private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
   private static final String CLIENT_MESSAGE = ProtocolUtil.class.getName() + "#clientMessage";
-  // TODO: only needed for tests, remove?
-  private static final String CLIENT_MESSAGE_READ = ProtocolUtil.class.getName() + "#clientMsgRead";
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -52,18 +50,12 @@ public final class ProtocolUtil {
 
   public static ClientMessage getClientMessage() {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
-    serviceStore.setAttribute( CLIENT_MESSAGE_READ, Boolean.TRUE );
     return ( ClientMessage )serviceStore.getAttribute( CLIENT_MESSAGE );
   }
 
   public static void setClientMessage( ClientMessage clientMessage ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     serviceStore.setAttribute( CLIENT_MESSAGE, clientMessage );
-  }
-
-  public static boolean isClientMessageProcessed() {
-    ServiceStore serviceStore = ContextProvider.getServiceStore();
-    return Boolean.TRUE.equals( serviceStore.getAttribute( CLIENT_MESSAGE_READ ) );
   }
 
   public static void handleOperation( OperationHandler handler, Operation operation ) {

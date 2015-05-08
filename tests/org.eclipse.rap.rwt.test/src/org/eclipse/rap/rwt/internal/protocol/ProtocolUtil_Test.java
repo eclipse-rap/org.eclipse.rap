@@ -39,18 +39,6 @@ public class ProtocolUtil_Test {
   }
 
   @Test
-  public void testIsClientMessageProcessed_No() {
-    assertFalse( ProtocolUtil.isClientMessageProcessed() );
-  }
-
-  @Test
-  public void testIsClientMessageProcessed_Yes() {
-    ProtocolUtil.getClientMessage();
-
-    assertTrue( ProtocolUtil.isClientMessageProcessed() );
-  }
-
-  @Test
   public void testGetClientMessage() {
     Fixture.fakeSetProperty( "w3", "prop", JsonValue.TRUE );
 

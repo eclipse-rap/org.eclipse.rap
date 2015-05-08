@@ -372,7 +372,6 @@ public final class Fixture {
   }
 
   public static void fakeHeadParameter( String key, JsonValue value ) {
-    checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
@@ -403,7 +402,6 @@ public final class Fixture {
   }
 
   public static void fakeSetOperation( String target, JsonObject properties ) {
-    checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
@@ -425,7 +423,6 @@ public final class Fixture {
                                           String eventName,
                                           JsonObject properties )
   {
-    checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
@@ -448,7 +445,6 @@ public final class Fixture {
                                         String methodName,
                                         JsonObject parameters )
   {
-    checkMessage();
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     String json = request.getBody();
     try {
@@ -464,12 +460,6 @@ public final class Fixture {
       ProtocolUtil.setClientMessage( new ClientMessage( message ) );
     } catch( Exception exception ) {
       throw new RuntimeException( "Failed to add call operation", exception );
-    }
-  }
-
-  private static void checkMessage() {
-    if( ProtocolUtil.isClientMessageProcessed() ) {
-      throw new IllegalStateException( "Client message is already processed" );
     }
   }
 
