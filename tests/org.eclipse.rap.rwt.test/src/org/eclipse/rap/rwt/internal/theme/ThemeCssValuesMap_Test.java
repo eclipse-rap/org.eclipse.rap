@@ -11,120 +11,192 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
+import org.eclipse.rap.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.eclipse.swt.widgets.Button;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class ThemeCssValuesMap_Test {
 
+  private Theme theme;
+  private ThemeableWidget[] themeableWidgets;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakeNewRequest();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
-  }
-
-  @Test
-  public void testGetValues_Font() throws Exception {
-    ThemeCssValuesMap map = getValuesMap();
-    ConditionalValue[] fontValues = map .getValues( "Button", "font" );
-    assertNotNull( fontValues );
-    // expected:
-    // [ [TOGGLE ] -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
-    // [ [PUSH ]   -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
-    // []          -> bold 12px Arial, Helvetica, sans-serif
-    CssFont font1 = CssFont.valueOf( "11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'" );
-    CssFont font2 = CssFont.valueOf( "bold 12px Arial, Helvetica, sans-serif" );
-    assertEquals( 3, fontValues.length );
-    // 1
-    assertEquals( 1, fontValues[ 0 ].constraints.length );
-    assertEquals( "[TOGGLE", fontValues[ 0 ].constraints[ 0 ] );
-    assertEquals( font1, fontValues[ 0 ].value );
-    // 2
-    assertEquals( 1, fontValues[ 1 ].constraints.length );
-    assertEquals( "[PUSH", fontValues[ 1 ].constraints[ 0 ] );
-    assertEquals( font1, fontValues[ 1 ].value );
-    // 3
-    assertEquals( 0, fontValues[ 2 ].constraints.length );
-    assertEquals( font2, fontValues[ 2 ].value );
+    theme = mock(Theme.class);
+    themeableWidgets = new ThemeableWidget[] {
+      themeableWidget(
+        cssElement( "Button" ).addProperty( "color" ).addStyle( "BORDER" ).addState( "disabled" ) ),
+      themeableWidget(
+        cssElement( "Label" ).addProperty( "color" ).addProperty( "font" ),
+        cssElement( "Label-Separator" ).addProperty( "background-color" ) )
+    };
   }
 
   @Test
-  public void testGetValues_Color() throws Exception {
-    ThemeCssValuesMap map = getValuesMap();
-    ConditionalValue[] colorValues = map.getValues( "Button", "color" );
-    assertNotNull( colorValues );
-    // expected:
-    // [ .special ] -> red
-    // .special-blue -> blue
-    // []           -> #705e42
-    assertEquals( 3, colorValues.length );
-    // first
-    assertEquals( 1, colorValues[ 0 ].constraints.length );
-    assertEquals( ".special", colorValues[ 0 ].constraints[ 0 ] );
-    assertEquals( CssColor.valueOf( "red" ), colorValues[ 0 ].value );
-    // last
-    assertEquals( 0, colorValues[ 2 ].constraints.length );
-    assertEquals( CssColor.valueOf( "#705e42" ), colorValues[ 2 ].value );
+  public void testGetValues() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
+
+    assertArrayEquals( new Object[] {
+      new ConditionalValue( CssColor.valueOf( "black" ) )
+    }, values );
   }
 
   @Test
-  public void testGetValues_Background() throws Exception {
-    ThemeCssValuesMap map = getValuesMap();
-    ConditionalValue[] backgroundValues = map.getValues( "Button",
-                                                         "background-color" );
-    // ([TOGGLE, :pressed) -> rgb( 227, 221, 158 )
-    // ([PUSH, :pressed)   -> rgb( 227, 221, 158 )
-    // (.special)          -> transparent
-    // ([TOGGLE)           -> #9dd0ea
-    // ([PUSH)             -> #9dd0ea
-    // ()                  -> #c0c0c0
-    assertEquals( 6, backgroundValues.length );
-    // 1
-    assertEquals( 2, backgroundValues[ 0 ].constraints.length );
-    assertEquals( ":pressed", backgroundValues[ 0 ].constraints[ 0 ] );
-    assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 1 ] );
-    assertEquals( CssColor.valueOf( "227, 221, 158" ), backgroundValues[ 0 ].value );
+  public void testGetValues_includesKnownStatesAndStyles() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Button[BORDER] { color: blue }",
+                                        "Button[BORDER]:disabled { color: gray }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
+
+    assertArrayEquals( new Object[] {
+      new ConditionalValue( CssColor.valueOf( "gray" ), ":disabled", "[BORDER" ),
+      new ConditionalValue( CssColor.valueOf( "blue" ), "[BORDER" ),
+      new ConditionalValue( CssColor.valueOf( "black" ) )
+    }, values );
+
   }
 
   @Test
-  public void testGetAllValues() throws Exception {
-    ThemeCssValuesMap map = getValuesMap();
-    CssValue[] values = map.getAllValues();
-    assertNotNull( values );
-    CssColor expected = CssColor.valueOf( "227, 221, 158" );
-    assertTrue( Arrays.asList( values ).contains( expected ) );
-    CssColor notExpected = CssColor.valueOf( "#123456" );
-    assertFalse( Arrays.asList( values ).contains( notExpected ) );
+  public void testGetValues_ignoresUnknownStatesAndStyles() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Button[UNKNOWN] { color: blue }",
+                                        "Button[BORDER]:unknown { color: gray }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
+
+    assertArrayEquals( new Object[] {
+      new ConditionalValue( CssColor.valueOf( "black" ) )
+    }, values );
   }
 
-  private static ThemeCssValuesMap getValuesMap() throws IOException {
-    ThemeManager manager = getApplicationContext().getThemeManager();
-    manager.initialize();
-    manager.activate();
-    ThemeableWidget buttonWidget = manager.getThemeableWidget( Button.class );
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    ThemeableWidget[] themeableWidgets = new ThemeableWidget[] { buttonWidget };
-    Theme theme = new Theme( "test.theme", "Test THeme", styleSheet );
-    return new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+  @Test
+  public void testGetValues_includesVariants() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Button.special { color: red }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
+
+    assertArrayEquals( new Object[] {
+      new ConditionalValue( CssColor.valueOf( "red" ), ".special" ),
+      new ConditionalValue( CssColor.valueOf( "black" ) )
+    }, values );
+  }
+
+  @Test
+  public void testGetValues_resortsToWildcardProperties() {
+    StyleSheet styleSheet = styleSheet( "* { color: black }",
+                                        "Button[BORDER] { color: blue }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
+
+    assertArrayEquals( new Object[] {
+      new ConditionalValue( CssColor.valueOf( "blue" ), "[BORDER" ),
+      new ConditionalValue( CssColor.valueOf( "black" ) )
+    }, values );
+  }
+
+  @Test
+  public void testGetAllValues_includesValuesForAllElements() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Label { color: blue }",
+                                        "Label-Separator { background-color: gray }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    CssValue[] values = valuesMap.getAllValues();
+
+    assertTrue( asList( values ).contains( CssColor.valueOf( "black" ) ) );
+    assertTrue( asList( values ).contains( CssColor.valueOf( "blue" ) ) );
+    assertTrue( asList( values ).contains( CssColor.valueOf( "gray" ) ) );
+  }
+
+  @Test
+  public void testGetAllValues_includesValuesForAllStatesAndStyles() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Button[BORDER] { color: blue }",
+                                        "Button[BORDER]:disabled { color: gray }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    CssValue[] values = valuesMap.getAllValues();
+
+    assertTrue( asList( values ).contains( CssColor.valueOf( "black" ) ) );
+    assertTrue( asList( values ).contains( CssColor.valueOf( "blue" ) ) );
+    assertTrue( asList( values ).contains( CssColor.valueOf( "gray" ) ) );
+  }
+
+  @Test
+  public void testGetAllValues_includesValuesForAllProperties() {
+    StyleSheet styleSheet = styleSheet( "Label { color: black; font: 12px Times }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    CssValue[] values = valuesMap.getAllValues();
+
+    assertTrue( asList( values ).contains( CssColor.valueOf( "black" ) ) );
+    assertTrue( asList( values ).contains( CssFont.valueOf( "12px Times" ) ) );
+  }
+
+  @Test
+  public void testGetAllValues_includesValuesForVariants() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "Button.special { color: red }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    CssValue[] values = valuesMap.getAllValues();
+
+    assertTrue( asList( values ).contains( CssColor.valueOf( "red" ) ) );
+  }
+
+  @Test
+  public void testGetAllValues_includesValuesForWildcard() {
+    StyleSheet styleSheet = styleSheet( "Button { color: black }",
+                                        "* { color: blue }" );
+    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+
+    CssValue[] values = valuesMap.getAllValues();
+
+    assertTrue( asList( values ).contains( CssColor.valueOf( "blue" ) ) );
+  }
+
+  private static ThemeableWidget themeableWidget( ThemeCssElement... elements ) {
+    ThemeableWidget themeableWidget = new ThemeableWidget( null, null );
+    themeableWidget.elements = elements;
+    return themeableWidget;
+  }
+
+  private static ThemeCssElement cssElement( String name ) {
+    return new ThemeCssElement( name );
+  }
+
+  private static StyleSheet styleSheet( String... lines ) {
+    StringBuilder builder = new StringBuilder();
+    for( String line : lines ) {
+      builder.append( line );
+      builder.append( '\n' );
+    }
+    String string = builder.toString();
+    try {
+      ByteArrayInputStream inputStream = new ByteArrayInputStream( string.getBytes( "UTF-8" ) );
+      return CssFileReader.readStyleSheet( inputStream, "string", null );
+    } catch( IOException exception ) {
+      throw new RuntimeException( "Failed to parse stylesheet", exception );
+    }
   }
 
 }

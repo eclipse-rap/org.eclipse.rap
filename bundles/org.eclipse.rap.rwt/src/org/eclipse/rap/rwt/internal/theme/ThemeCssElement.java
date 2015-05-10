@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,21 +12,21 @@
 package org.eclipse.rap.rwt.internal.theme;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 
 public class ThemeCssElement implements IThemeCssElement {
 
   private final String name;
-  private Collection<String> properties;
-  private Collection<String> styles;
-  private Collection<String> states;
+  private final List<String> properties;
+  private final List<String> styles;
+  private final List<String> states;
 
   public ThemeCssElement( String name ) {
     this.name = name;
-    this.properties = new ArrayList<String>();
-    this.styles = new ArrayList<String>();
-    this.states = new ArrayList<String>();
+    properties = new ArrayList<>();
+    styles = new ArrayList<>();
+    states = new ArrayList<>();
   }
 
   public String getName() {
@@ -45,15 +45,19 @@ public class ThemeCssElement implements IThemeCssElement {
     return states.toArray( new String[ states.size() ] );
   }
 
-  public void addProperty( String property ) {
+  public ThemeCssElement addProperty( String property ) {
     properties.add( property );
+    return this;
   }
 
-  public void addStyle( String style ) {
+  public ThemeCssElement addStyle( String style ) {
     styles.add( style );
+    return this;
   }
 
-  public void addState( String state ) {
+  public ThemeCssElement addState( String state ) {
     states.add( state );
+    return this;
   }
+
 }

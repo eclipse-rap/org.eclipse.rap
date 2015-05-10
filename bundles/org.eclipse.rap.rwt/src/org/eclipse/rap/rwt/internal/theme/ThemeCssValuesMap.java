@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.theme;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -30,34 +31,35 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
  */
 public final class ThemeCssValuesMap {
 
-  private final Map<PropertyKey,ConditionalValue[]> valuesMap;
+  private final Map<String, Map<String, ConditionalValue[]>> elementsMap;
   private final Theme theme;
 
   public ThemeCssValuesMap( Theme theme, StyleSheet styleSheet, ThemeableWidget[] themeableWidgets )
   {
     this.theme = theme;
-    valuesMap = new LinkedHashMap<PropertyKey,ConditionalValue[]>();
+    elementsMap = new HashMap<>();
     extractValues( styleSheet, themeableWidgets );
   }
 
   public ConditionalValue[] getValues( String elementName, String propertyName ) {
-    ConditionalValue[] result;
-    PropertyKey propertyKey = new PropertyKey( elementName, propertyName );
-    result = valuesMap.get( propertyKey );
-    // if element name is unknown, resort to * rules
+    ConditionalValue[] result = null;
+    Map<String, ConditionalValue[]> valuesMap = elementsMap.get( elementName );
+    if( valuesMap != null ) {
+      result = valuesMap.get( propertyName );
+    }
     if( result == null ) {
-      PropertyKey wildcardKey = new PropertyKey( "*", propertyName );
-      result = valuesMap.get( wildcardKey );
+      result = elementsMap.get( "*" ).get( propertyName );
     }
     return result;
   }
 
   public CssValue[] getAllValues() {
-    Set<CssValue> resultSet = new LinkedHashSet<CssValue>();
-    Collection<ConditionalValue[]> values = valuesMap.values();
-    for( ConditionalValue[] condValues : values ) {
-      for( ConditionalValue condValue : condValues ) {
-        resultSet.add( condValue.value );
+    Set<CssValue> resultSet = new LinkedHashSet<>();
+    for( Map<String, ConditionalValue[]> valuesMap : elementsMap.values() ) {
+      for( ConditionalValue[] condValues : valuesMap.values() ) {
+        for( ConditionalValue condValue : condValues ) {
+          resultSet.add( condValue.value );
+        }
       }
     }
     return resultSet.toArray( new CssValue[ resultSet.size() ] );
@@ -72,40 +74,42 @@ public final class ThemeCssValuesMap {
   private void extractValuesForWidget( StyleSheet styleSheet, ThemeableWidget themeableWidget ) {
     if( themeableWidget.elements != null ) {
       for( IThemeCssElement element : themeableWidget.elements ) {
-        String elementName = element.getName();
-        String[] properties = element.getProperties();
-        for( String propertyName : properties ) {
-          PropertyKey key = new PropertyKey( elementName, propertyName );
-          ConditionalValue[] values = styleSheet.getValues( elementName, propertyName );
-          if( values.length == 0 ) {
-            reportMissingProperty( elementName, propertyName );
-          }
-          ConditionalValue[] filteredValues = filterValues( values, element );
-          valuesMap.put( key, filteredValues );
-        }
+        extractValuesForElement( styleSheet, element );
       }
+    }
+  }
+
+  private void extractValuesForElement( StyleSheet styleSheet, IThemeCssElement element ) {
+    String elementName = element.getName();
+    String[] properties = element.getProperties();
+    Map<String, ConditionalValue[]> valuesMap = new LinkedHashMap<>();
+    elementsMap.put( elementName, valuesMap );
+    for( String propertyName : properties ) {
+      ConditionalValue[] values = styleSheet.getValues( elementName, propertyName );
+      if( values.length == 0 ) {
+        reportMissingProperty( elementName, propertyName );
+      }
+      valuesMap.put( propertyName, filterValues( values, element ) );
     }
   }
 
   private void reportMissingProperty( String elementName, String propertyName ) {
     if( RWTProperties.isDevelopmentMode() && RWTProperties.enableThemeDebugOutput() ) {
-      StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append( "Missing value for element: '" );
-      stringBuilder.append( elementName );
-      stringBuilder.append( "' property: '" );
-      stringBuilder.append( propertyName );
-      stringBuilder.append( "' in theme: '" );
-      stringBuilder.append( theme.getId() );
-      stringBuilder.append( "'" );
-      System.err.println( stringBuilder.toString() );
+      System.err.println( new StringBuilder()
+        .append( "Missing value for element: '" )
+        .append( elementName )
+        .append( "' property: '" )
+        .append( propertyName )
+        .append( "' in theme: '" )
+        .append( theme.getId() )
+        .append( "'" ) );
     }
   }
 
   private ConditionalValue[] filterValues( ConditionalValue[] values, IThemeCssElement element ) {
-    Collection<ConditionalValue> resultList = new ArrayList<ConditionalValue>();
+    Collection<ConditionalValue> resultList = new ArrayList<>();
     String[] latestConstraint = null;
-    for( int j = 0; j < values.length; j++ ) {
-      ConditionalValue value = values[ j ];
+    for( ConditionalValue value : values ) {
       if( !Arrays.equals( latestConstraint, value.constraints ) ) {
         if( matches( element, value.constraints ) ) {
           resultList.add( value );
@@ -133,48 +137,12 @@ public final class ThemeCssValuesMap {
   }
 
   private static boolean contains( String[] elements, String string ) {
-    boolean result = false;
-    for( int i = 0; i < elements.length && !result; i++ ) {
+    for( int i = 0; i < elements.length; i++ ) {
       if( string.equals( elements[ i ] ) ) {
-        result = true;
+        return true;
       }
     }
-    return result;
-  }
-
-  private static class PropertyKey {
-
-    private final String element;
-
-    private final String property;
-
-    private final int hashCode;
-
-    public PropertyKey( String element, String property ) {
-      this.element = element;
-      this.property = property;
-      hashCode = element.hashCode() ^ property.hashCode();
-    }
-
-    @Override
-    public boolean equals( Object obj ) {
-      boolean result;
-      if( obj == this ) {
-        result = true;
-      } else if( obj != null && obj.getClass() == getClass() ) {
-        PropertyKey other = ( PropertyKey )obj;
-        result = element.equals( other.element ) && property.equals( other.property );
-      } else {
-        result = false;
-      }
-      return result;
-    }
-
-    @Override
-    public int hashCode() {
-      return hashCode;
-    }
-
+    return false;
   }
 
 }
