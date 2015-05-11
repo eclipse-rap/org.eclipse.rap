@@ -10,70 +10,96 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import static org.eclipse.rap.rwt.internal.theme.ThemeUtil.getCssValue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.rap.rwt.internal.theme.CssBorder;
-import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
-import org.eclipse.rap.rwt.internal.theme.CssValue;
-import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher;
+import org.eclipse.rap.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapterImpl;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class TabFolderThemeAdapter extends ControlThemeAdapterImpl {
+
+  @Override
+  protected void configureMatcher( WidgetMatcher matcher ) {
+    super.configureMatcher( matcher );
+    matcher.addState( "bottom", createItemOnBottomMatcher() );
+    matcher.addState( "selected", createSelectedItemMatcher() );
+    matcher.addState( "first", createFirstItemMatcher() );
+    matcher.addState( "last", createLastItemMatcher() );
+  }
 
   public BoxDimensions getContentContainerBorder( TabFolder folder ) {
     return getCssBorder( "TabFolder-ContentContainer", folder );
   }
 
   public BoxDimensions getItemBorder( TabItem item ) {
-    SimpleSelector selector = createSelector( item );
-    int top = getBorderEdgeWidth( "border-top", selector, item );
-    int right = getBorderEdgeWidth( "border-right", selector, item );
-    int bottom = getBorderEdgeWidth( "border-bottom", selector, item );
-    int left = getBorderEdgeWidth( "border-left", selector, item );
-    return new BoxDimensions( top, right, bottom, left );
+    return getCssBorder( "TabItem", item );
   }
 
   public BoxDimensions getItemPadding( TabItem item ) {
-    CssValue cssValue = getCssValue( "TabItem", "padding", createSelector( item ) );
-    return ( ( CssBoxDimensions )cssValue ).dimensions;
+    return getCssBoxDimensions( "TabItem", "padding", item ).dimensions;
   }
 
   public BoxDimensions getItemMargin( TabItem item ) {
-    CssValue cssValue = getCssValue( "TabItem", "margin", createSelector( item ) );
-    return ( ( CssBoxDimensions )cssValue ).dimensions;
+    return getCssBoxDimensions( "TabItem", "margin", item ).dimensions;
   }
 
-  private static int getBorderEdgeWidth( String edge, SimpleSelector selector, TabItem item ) {
-    CssBorder borderEdge = ( CssBorder )getCssValue( "TabItem", edge, selector, item );
-    return borderEdge.width;
+  private static Constraint createItemOnBottomMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof TabItem ) {
+          TabItem item = ( TabItem )widget;
+          return ( item.getParent().getStyle() & SWT.BOTTOM ) != 0;
+        }
+        return false;
+      }
+    };
   }
 
-  private static SimpleSelector createSelector( TabItem item ) {
-    List<String> constraints = new ArrayList<String>();
-    if( isItemOnBottom( item ) ) {
-      constraints.add( ":bottom" );
-    }
-    if( isItemSelected( item ) ) {
-      constraints.add( ":selected" );
-    }
-    return new SimpleSelector( constraints.toArray( new String[ 0 ] ) );
+  private static Constraint createSelectedItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof TabItem ) {
+          TabItem item = ( TabItem )widget;
+          TabItem[] selection = item.getParent().getSelection();
+          return selection.length > 0 && selection[ 0 ] == item;
+        }
+        return false;
+      }
+    };
   }
 
-  private static boolean isItemOnBottom( TabItem item ) {
-    return ( item.getParent().getStyle() & SWT.BOTTOM ) != 0;
+  private static Constraint createFirstItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof TabItem ) {
+          TabItem item = ( TabItem )widget;
+          TabFolder folder = item.getParent();
+          return folder.getItem( 0 ) == item;
+        }
+        return false;
+      }
+    };
   }
 
-  private static boolean isItemSelected( TabItem item ) {
-    TabFolder folder = item.getParent();
-    return folder.indexOf( item ) == folder.getSelectionIndex();
+  private static Constraint createLastItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof TabItem ) {
+          TabItem item = ( TabItem )widget;
+          TabFolder folder = item.getParent();
+          return folder.getItem( folder.getItemCount() - 1 ) == item;
+        }
+        return false;
+      }
+    };
   }
 
 }
