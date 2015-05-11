@@ -557,6 +557,7 @@ Label-SeparatorLine {
   background-image: none;
   background-color: #d2d2d2;
   border: none;
+  border-radius: 0;
   width: 2px;
 }
 
