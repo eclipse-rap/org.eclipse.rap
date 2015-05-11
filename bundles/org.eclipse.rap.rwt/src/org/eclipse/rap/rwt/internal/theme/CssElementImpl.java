@@ -15,47 +15,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ThemeCssElement implements IThemeCssElement {
+public class CssElementImpl implements CssElement {
 
   private final String name;
   private final List<String> properties;
   private final List<String> styles;
   private final List<String> states;
 
-  public ThemeCssElement( String name ) {
+  public CssElementImpl( String name ) {
     this.name = name;
     properties = new ArrayList<>();
     styles = new ArrayList<>();
     states = new ArrayList<>();
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public String[] getProperties() {
     return properties.toArray( new String[ properties.size() ]);
   }
 
+  @Override
   public String[] getStyles() {
     return styles.toArray( new String[ styles.size() ] );
   }
 
+  @Override
   public String[] getStates() {
     return states.toArray( new String[ states.size() ] );
   }
 
-  public ThemeCssElement addProperty( String property ) {
+  public CssElementImpl addProperty( String property ) {
     properties.add( property );
     return this;
   }
 
-  public ThemeCssElement addStyle( String style ) {
+  public CssElementImpl addStyle( String style ) {
     styles.add( style );
     return this;
   }
 
-  public ThemeCssElement addState( String state ) {
+  public CssElementImpl addState( String state ) {
     states.add( state );
     return this;
   }

@@ -79,16 +79,12 @@ public class Theme_Test {
     assertEquals( "#aaaaaa", values[ 1 ].value.toDefaultString() );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void test_Uninitialized() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
-    try {
-      theme.getValuesMap();
-      fail();
-    } catch( IllegalStateException e ) {
-      // expected
-    }
+
+    theme.getValuesMap();
   }
 
   @Test
@@ -99,17 +95,13 @@ public class Theme_Test {
     assertNotNull( theme.getValuesMap() );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void testInitializeTwice() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
     Theme theme = new Theme( "some.id", "Test", styleSheet );
     theme.initialize( new ThemeableWidget[ 0 ] );
-    try {
-      theme.initialize( new ThemeableWidget[ 0 ] );
-      fail();
-    } catch( IllegalStateException e ) {
-      // expected
-    }
+
+    theme.initialize( new ThemeableWidget[ 0 ] );
   }
 
   @Test
@@ -155,12 +147,12 @@ public class Theme_Test {
 
   private static ThemeableWidget createSimpleButtonWidget() {
     ThemeableWidget buttonWidget = new ThemeableWidget( Button.class, null );
-    ThemeCssElement buttonElement = new ThemeCssElement( "Button" );
-    buttonElement.addProperty( "color" );
-    buttonElement.addProperty( "cursor" );
-    buttonElement.addProperty( "background-color" );
-    buttonElement.addProperty( "background-image" );
-    buttonWidget.elements = new IThemeCssElement[] { buttonElement };
+    CssElement buttonElement = new CssElementImpl( "Button" )
+      .addProperty( "color" )
+      .addProperty( "cursor" )
+      .addProperty( "background-color" )
+      .addProperty( "background-image" );
+    buttonWidget.elements = new CssElement[] { buttonElement };
     return buttonWidget;
   }
 

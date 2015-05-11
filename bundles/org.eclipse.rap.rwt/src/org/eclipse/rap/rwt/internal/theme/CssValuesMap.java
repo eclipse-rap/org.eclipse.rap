@@ -72,13 +72,13 @@ public final class CssValuesMap {
 
   private void extractValuesForWidget( StyleSheet styleSheet, ThemeableWidget themeableWidget ) {
     if( themeableWidget.elements != null ) {
-      for( IThemeCssElement element : themeableWidget.elements ) {
+      for( CssElement element : themeableWidget.elements ) {
         extractValuesForElement( styleSheet, element );
       }
     }
   }
 
-  private void extractValuesForElement( StyleSheet styleSheet, IThemeCssElement element ) {
+  private void extractValuesForElement( StyleSheet styleSheet, CssElement element ) {
     String elementName = element.getName();
     String[] properties = element.getProperties();
     Map<String, ConditionalValue[]> valuesMap = new LinkedHashMap<>();
@@ -105,7 +105,7 @@ public final class CssValuesMap {
     }
   }
 
-  private ConditionalValue[] filterValues( ConditionalValue[] values, IThemeCssElement element ) {
+  private ConditionalValue[] filterValues( ConditionalValue[] values, CssElement element ) {
     Collection<ConditionalValue> resultList = new ArrayList<>();
     String[] latestConstraint = null;
     for( ConditionalValue value : values ) {
@@ -119,7 +119,7 @@ public final class CssValuesMap {
     return resultList.toArray( new ConditionalValue[ resultList.size() ] );
   }
 
-  private static boolean matches( IThemeCssElement element, String[] constraints ) {
+  private static boolean matches( CssElement element, String[] constraints ) {
     boolean passed = true;
     // TODO [rst] Revise: no restrictions for * rules
     if( !"*".equals( element.getName() ) ) {

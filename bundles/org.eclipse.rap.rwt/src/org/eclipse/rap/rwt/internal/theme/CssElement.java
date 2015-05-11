@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,17 @@ package org.eclipse.rap.rwt.internal.theme;
 
 
 /**
- * A DOM element that represents a themeable widget or a sub-widget and can be
- * referred to in CSS style sheets.
+ * A DOM element that represents a themeable widget or a sub-widget and can be referred to in CSS
+ * style sheets.
  */
-public interface IThemeCssElement {
+public interface CssElement {
 
-  public abstract String getName();
+  String getName();
 
-  public abstract String[] getProperties();
+  String[] getProperties();
 
-  public abstract String[] getStyles();
+  String[] getStyles();
 
-  public abstract String[] getStates();
+  String[] getStates();
+
 }

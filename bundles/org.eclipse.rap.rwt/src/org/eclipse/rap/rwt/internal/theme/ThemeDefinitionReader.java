@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,12 +57,11 @@ public final class ThemeDefinitionReader {
   private static final String JAXP_SCHEMA_LANGUAGE
     = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
-  private static final String W3C_XML_SCHEMA
-    = "http://www.w3.org/2001/XMLSchema";
+  private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 
   private final InputStream inputStream;
   private final String fileName;
-  private final Collection<IThemeCssElement> cssElements;
+  private final Collection<CssElement> cssElements;
 
   /**
    * An instance of this class reads theme definitions from an XML resource.
@@ -74,12 +73,11 @@ public final class ThemeDefinitionReader {
     ParamCheck.notNull( inputStream, "inputStream" );
     this.inputStream = inputStream;
     this.fileName = fileName;
-    this.cssElements = new ArrayList<IThemeCssElement>();
+    cssElements = new ArrayList<>();
   }
 
   /**
-   * Reads a theme definition from the specified stream. The stream is kept open
-   * after reading.
+   * Reads a theme definition from the specified stream. The stream is kept open after reading.
    *
    * @throws IOException if a I/O error occurs
    * @throws SAXException if a parse error occurs
@@ -102,15 +100,15 @@ public final class ThemeDefinitionReader {
   /**
    * Returns the CSS element names in the definition.
    */
-  public IThemeCssElement[] getThemeCssElements() {
-    IThemeCssElement[] result = new IThemeCssElement[ cssElements.size() ];
+  public CssElement[] getThemeCssElements() {
+    CssElement[] result = new CssElement[ cssElements.size() ];
     cssElements.toArray( result );
     return result;
   }
 
   private void readElement( Node node ) {
     String name = getAttributeValue( node, ATTR_NAME );
-    ThemeCssElement themeElement = new ThemeCssElement( name );
+    CssElementImpl themeElement = new CssElementImpl( name );
     cssElements.add( themeElement );
     NodeList childNodes = node.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
@@ -155,20 +153,6 @@ public final class ThemeDefinitionReader {
       String message = "Failed to initialize parser for theme definition files";
       throw new RuntimeException( message, e );
     }
-//    builder.setEntityResolver( new EntityResolver() {
-//      public InputSource resolveEntity( String publicID,
-//                                        final String systemID )
-//        throws IOException, SAXException
-//      {
-//        InputSource result = null;
-//        if( schema != null && systemID.endsWith( THEME_DEF_SCHEMA ) ) {
-//          URLConnection connection = schema.openConnection();
-//          connection.setUseCaches( false );
-//          result = new InputSource( connection.getInputStream() );
-//        }
-//        return result;
-//      }
-//    } );
     builder.setErrorHandler( new ThemeDefinitionErrorHandler() );
     return builder.parse( is );
   }
@@ -186,36 +170,38 @@ public final class ThemeDefinitionReader {
   }
 
   private class ThemeDefinitionErrorHandler implements ErrorHandler {
+
+    @Override
     public void error( SAXParseException spe ) throws SAXException {
-      String msg
-        = "Error parsing theme definition " + getPosition( spe ) + ":";
+      String msg = "Error parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
+    @Override
     public void fatalError( SAXParseException spe ) throws SAXException {
-      String
-        msg = "Fatal error parsing theme definition " + getPosition( spe ) + ":";
+      String msg = "Fatal error parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
+    @Override
     public void warning( SAXParseException spe ) throws SAXException {
-      String msg
-        = "Warning parsing theme definition " + getPosition( spe ) + ":";
+      String msg = "Warning parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
     private String getPosition( SAXParseException spe ) {
-      String result
-        = "in file '"
-        + fileName
-        + "' at line "
-        + spe.getLineNumber()
-        + ", col "
-        + spe.getColumnNumber();
-      return result;
+      return new StringBuilder()
+        .append( "in file '" )
+        .append( fileName )
+        .append( "' at line " )
+        .append( spe.getLineNumber() )
+        .append( ", col " )
+        .append( spe.getColumnNumber() ).toString();
     }
+
   }
+
 }

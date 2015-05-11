@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,21 +16,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rap.rwt.internal.theme.IThemeCssElement;
+import org.eclipse.rap.rwt.internal.theme.CssElement;
 
 
 /**
- * Holds all registered {@link IThemeCssElement}s.
+ * Holds all registered {@link CssElement}s.
  */
 public class CssElementHolder {
 
-  private final Map<String, IThemeCssElement> elements;
+  private final Map<String, CssElement> elements;
 
   public CssElementHolder() {
-    elements = new HashMap<String,IThemeCssElement>();
+    elements = new HashMap<>();
   }
 
-  public void addElement( IThemeCssElement element ) {
+  public void addElement( CssElement element ) {
     if( elements.containsKey( element.getName() ) ) {
       String message = "An element with this name is already defined: " + element.getName();
       throw new IllegalArgumentException( message );
@@ -38,9 +38,9 @@ public class CssElementHolder {
     elements.put( element.getName(), element );
   }
 
-  public IThemeCssElement[] getAllElements() {
-    Collection<IThemeCssElement> values = elements.values();
-    return values.toArray( new IThemeCssElement[ values.size() ] );
+  public CssElement[] getAllElements() {
+    Collection<CssElement> values = elements.values();
+    return values.toArray( new CssElement[ values.size() ] );
   }
 
   public void clear() {

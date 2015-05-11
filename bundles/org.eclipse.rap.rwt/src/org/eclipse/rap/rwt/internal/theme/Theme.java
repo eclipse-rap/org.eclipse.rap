@@ -35,7 +35,7 @@ public class Theme {
 
   private String registeredLocation;
 
-  private IThemeCssElement[] elements;
+  private CssElement[] elements;
 
   public Theme( String id, String name, StyleSheet styleSheet ) {
     if( id == null ) {
@@ -80,11 +80,11 @@ public class Theme {
     styleSheetBuilder = null;
   }
 
-  private IThemeCssElement[] extractElements( ThemeableWidget[] themeableWidgets ) {
+  private CssElement[] extractElements( ThemeableWidget[] themeableWidgets ) {
     CssElementHolder elements = new CssElementHolder();
     for( ThemeableWidget themeableWidget : themeableWidgets ) {
       if( themeableWidget.elements != null ) {
-        for( IThemeCssElement element : themeableWidget.elements ) {
+        for( CssElement element : themeableWidget.elements ) {
           elements.addElement( element );
         }
       }

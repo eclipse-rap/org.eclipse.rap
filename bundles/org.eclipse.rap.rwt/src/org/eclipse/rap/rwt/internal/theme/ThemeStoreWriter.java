@@ -28,13 +28,13 @@ import org.eclipse.rap.rwt.service.ApplicationContext;
 
 public final class ThemeStoreWriter {
 
-  private final IThemeCssElement[] allThemeableWidgetElements;
+  private final CssElement[] allThemeableWidgetElements;
   private final Theme theme;
   private final ApplicationContext applicationContext;
 
   public ThemeStoreWriter( ApplicationContext applicationContext,
                            Theme theme,
-                           IThemeCssElement[] elements )
+                           CssElement[] elements )
   {
     this.applicationContext = applicationContext;
     this.theme = theme;
@@ -54,7 +54,7 @@ public final class ThemeStoreWriter {
     JsonObject result = new JsonObject();
     CssValuesMap valuesMap = theme.getValuesMap();
     for( int i = 0; i < allThemeableWidgetElements.length; i++ ) {
-      IThemeCssElement element = allThemeableWidgetElements[ i ];
+      CssElement element = allThemeableWidgetElements[ i ];
       String elementName = element.getName();
       JsonObject elementObj = createThemeJsonForElement( valuesMap, element );
       result.add( elementName, elementObj );
@@ -62,7 +62,7 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private JsonObject createThemeJsonForElement( CssValuesMap valuesMap, IThemeCssElement element ) {
+  private JsonObject createThemeJsonForElement( CssValuesMap valuesMap, CssElement element ) {
     JsonObject result = new JsonObject();
     ThemePropertyAdapterRegistry registry
       = ThemePropertyAdapterRegistry.getInstance( applicationContext );

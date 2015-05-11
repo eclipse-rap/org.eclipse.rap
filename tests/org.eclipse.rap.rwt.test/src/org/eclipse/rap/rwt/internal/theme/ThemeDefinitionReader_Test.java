@@ -41,7 +41,7 @@ public class ThemeDefinitionReader_Test {
     } finally {
       is.close();
     }
-    IThemeCssElement[] elements = reader.getThemeCssElements();
+    CssElement[] elements = reader.getThemeCssElements();
     assertNotNull( elements );
     assertTrue( elements.length > 0 );
     assertEquals( "Button", elements[ 0 ].getName() );
@@ -69,7 +69,7 @@ public class ThemeDefinitionReader_Test {
     } finally {
       is.close();
     }
-    IThemeCssElement[] elements = reader.getThemeCssElements();
+    CssElement[] elements = reader.getThemeCssElements();
     assertNotNull( elements );
     assertTrue( elements.length > 0 );
     assertEquals( "Button", elements[ 0 ].getName() );
@@ -86,7 +86,7 @@ public class ThemeDefinitionReader_Test {
     } finally {
       is.close();
     }
-    IThemeCssElement[] elements = reader.getThemeCssElements();
+    CssElement[] elements = reader.getThemeCssElements();
     assertNotNull( elements );
     assertTrue( elements.length > 1 );
     assertEquals( "Shell", elements[ 0 ].getName() );

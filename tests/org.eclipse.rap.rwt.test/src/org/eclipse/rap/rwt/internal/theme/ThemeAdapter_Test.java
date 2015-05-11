@@ -95,8 +95,8 @@ public class ThemeAdapter_Test {
     };
     // create theme adapter
     ThemeableWidget widget = new ThemeableWidget( CustomWidget.class, null );
-    IThemeCssElement element = new ThemeCssElement( "CustomWidget" );
-    widget.elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "CustomWidget" );
+    widget.elements = new CssElement[] { element };
     // check default values
     Color defaultColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertNotNull( defaultColor );

@@ -174,14 +174,14 @@ public class CssValuesMap_Test {
     assertTrue( asList( values ).contains( CssColor.valueOf( "blue" ) ) );
   }
 
-  private static ThemeableWidget themeableWidget( ThemeCssElement... elements ) {
+  private static ThemeableWidget themeableWidget( CssElementImpl... elements ) {
     ThemeableWidget themeableWidget = new ThemeableWidget( null, null );
     themeableWidget.elements = elements;
     return themeableWidget;
   }
 
-  private static ThemeCssElement cssElement( String name ) {
-    return new ThemeCssElement( name );
+  private static CssElementImpl cssElement( String name ) {
+    return new CssElementImpl( name );
   }
 
   private static StyleSheet styleSheet( String... lines ) {

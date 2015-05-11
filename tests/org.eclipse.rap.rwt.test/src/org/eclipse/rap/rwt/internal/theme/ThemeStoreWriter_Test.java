@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,11 +52,11 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testSetCurrentThemeId() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "color" );
-    element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_SET_CURRENT_THEME_ID );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" )
+      .addProperty( "color" )
+      .addProperty( "background-image" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     // register colors
@@ -78,10 +78,9 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteAnimations() {
-    ThemeCssElement element = new ThemeCssElement( "Menu" );
-    element.addProperty( "animation" );
     Theme theme = getTheme( THEME_ANIMATIONS );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Menu" ).addProperty( "animation" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"animations\":{"
@@ -99,10 +98,9 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteVerticalGradient() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_VERTICAL_GRADIENT );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" ).addProperty( "background-image" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
@@ -121,10 +119,9 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteHorizontalGradient() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_HORIZONTAL_GRADIENT );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" ).addProperty( "background-image" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"gradients\":{"
@@ -143,10 +140,9 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteShadow() {
-    ThemeCssElement element = new ThemeCssElement( "Shell" );
-    element.addProperty( "box-shadow" );
     Theme theme = getTheme( THEME_WRITE_SHADOW );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Shell" ).addProperty( "box-shadow" );
+    CssElement[] elements = new CssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"shadows\":{"
@@ -161,11 +157,11 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteColors() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "color" );
-    element.addProperty( "background-color" );
     Theme theme = getTheme( THEME_WRITE_COLORS );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" )
+      .addProperty( "color" )
+      .addProperty( "background-color" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =   "\"colors\":{"
@@ -184,10 +180,9 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteImages() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "background-image" );
     Theme theme = getTheme( THEME_WRITE_IMAGES );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" ).addProperty( "background-image" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expectedImages =   "\"images\":{"
@@ -210,12 +205,12 @@ public class ThemeStoreWriter_Test {
 
   @Test
   public void testWriteImages_BackgroundRepeatAndPosition() {
-    ThemeCssElement element = new ThemeCssElement( "Button" );
-    element.addProperty( "background-image" );
-    element.addProperty( "background-repeat" );
-    element.addProperty( "background-position" );
     Theme theme = getTheme( THEME_WRITE_IMAGES );
-    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    CssElement element = new CssElementImpl( "Button" )
+      .addProperty( "background-image" )
+      .addProperty( "background-repeat" )
+      .addProperty( "background-position" );
+    CssElement[] elements = { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( applicationContext, theme, elements );
     String output = storeWriter.createJson();
     String expected =
