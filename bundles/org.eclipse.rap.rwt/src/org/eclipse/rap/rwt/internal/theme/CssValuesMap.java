@@ -20,7 +20,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 
@@ -32,10 +31,8 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
 public final class CssValuesMap {
 
   private final Map<String, Map<String, ConditionalValue[]>> elementsMap;
-  private final Theme theme;
 
-  public CssValuesMap( Theme theme, StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
-    this.theme = theme;
+  public CssValuesMap( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
     elementsMap = new HashMap<>();
     extractValues( styleSheet, themeableWidgets );
   }
@@ -85,23 +82,7 @@ public final class CssValuesMap {
     elementsMap.put( elementName, valuesMap );
     for( String propertyName : properties ) {
       ConditionalValue[] values = styleSheet.getValues( elementName, propertyName );
-      if( values.length == 0 ) {
-        reportMissingProperty( elementName, propertyName );
-      }
       valuesMap.put( propertyName, filterValues( values, element ) );
-    }
-  }
-
-  private void reportMissingProperty( String elementName, String propertyName ) {
-    if( RWTProperties.isDevelopmentMode() && RWTProperties.enableThemeDebugOutput() ) {
-      System.err.println( new StringBuilder()
-        .append( "Missing value for element: '" )
-        .append( elementName )
-        .append( "' property: '" )
-        .append( propertyName )
-        .append( "' in theme: '" )
-        .append( theme.getId() )
-        .append( "'" ) );
     }
   }
 

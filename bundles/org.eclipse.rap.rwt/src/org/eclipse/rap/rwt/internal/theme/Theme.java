@@ -76,7 +76,7 @@ public class Theme {
       throw new IllegalStateException( "Theme is already initialized" );
     }
     StyleSheet styleSheet = styleSheetBuilder.getStyleSheet();
-    valuesMap = new CssValuesMap( this, styleSheet, themeableWidgets );
+    valuesMap = new CssValuesMap( styleSheet, themeableWidgets );
     styleSheetBuilder = null;
   }
 
