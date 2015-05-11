@@ -144,7 +144,7 @@ public final class ThemeUtil {
                                      Widget widget )
   {
     Theme theme =  getApplicationContext().getThemeManager().getTheme( themeId );
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    CssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
     CssValue result = selector.select( widget, values );
     if( result == null ) {

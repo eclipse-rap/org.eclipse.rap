@@ -29,13 +29,12 @@ import org.eclipse.rap.rwt.internal.theme.css.StyleSheet;
  * Contains the values defined in a CSS style sheet in an optimized structure
  * for providing quick access to the values for a given element and property.
  */
-public final class ThemeCssValuesMap {
+public final class CssValuesMap {
 
   private final Map<String, Map<String, ConditionalValue[]>> elementsMap;
   private final Theme theme;
 
-  public ThemeCssValuesMap( Theme theme, StyleSheet styleSheet, ThemeableWidget[] themeableWidgets )
-  {
+  public CssValuesMap( Theme theme, StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
     this.theme = theme;
     elementsMap = new HashMap<>();
     extractValues( styleSheet, themeableWidgets );

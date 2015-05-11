@@ -52,7 +52,7 @@ public final class ThemeStoreWriter {
 
   private JsonObject createThemeJson() {
     JsonObject result = new JsonObject();
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    CssValuesMap valuesMap = theme.getValuesMap();
     for( int i = 0; i < allThemeableWidgetElements.length; i++ ) {
       IThemeCssElement element = allThemeableWidgetElements[ i ];
       String elementName = element.getName();
@@ -62,9 +62,7 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private JsonObject createThemeJsonForElement( ThemeCssValuesMap valuesMap,
-                                                IThemeCssElement element )
-  {
+  private JsonObject createThemeJsonForElement( CssValuesMap valuesMap, IThemeCssElement element ) {
     JsonObject result = new JsonObject();
     ThemePropertyAdapterRegistry registry
       = ThemePropertyAdapterRegistry.getInstance( applicationContext );
@@ -86,9 +84,9 @@ public final class ThemeStoreWriter {
   }
 
   private Map createValuesMap( CssValue[] values ) {
-    Map<String,JsonObject> result = new LinkedHashMap<String,JsonObject>();
-    for( int i = 0; i < values.length; i++ ) {
-      appendValueToMap( values[ i ], result );
+    Map<String,JsonObject> result = new LinkedHashMap<>();
+    for( CssValue value : values ) {
+      appendValueToMap( value, result );
     }
     return result;
   }

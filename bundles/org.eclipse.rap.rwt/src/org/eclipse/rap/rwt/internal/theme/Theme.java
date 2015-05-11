@@ -31,7 +31,7 @@ public class Theme {
   private final String jsId;
   private final String name;
   private StyleSheetBuilder styleSheetBuilder;
-  private ThemeCssValuesMap valuesMap;
+  private CssValuesMap valuesMap;
 
   private String registeredLocation;
 
@@ -76,7 +76,7 @@ public class Theme {
       throw new IllegalStateException( "Theme is already initialized" );
     }
     StyleSheet styleSheet = styleSheetBuilder.getStyleSheet();
-    valuesMap = new ThemeCssValuesMap( this, styleSheet, themeableWidgets );
+    valuesMap = new CssValuesMap( this, styleSheet, themeableWidgets );
     styleSheetBuilder = null;
   }
 
@@ -96,7 +96,7 @@ public class Theme {
     return styleSheetBuilder.getStyleSheet();
   }
 
-  public ThemeCssValuesMap getValuesMap() {
+  public CssValuesMap getValuesMap() {
     if( valuesMap == null ) {
       throw new IllegalStateException( "Theme is not initialized" );
     }

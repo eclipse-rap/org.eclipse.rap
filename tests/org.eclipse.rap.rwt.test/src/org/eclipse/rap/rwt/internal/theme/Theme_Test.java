@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ public class Theme_Test {
     assertEquals( "Test", theme.getName() );
     ThemeableWidget buttonWidget = createSimpleButtonWidget();
     theme.initialize( new ThemeableWidget[] { buttonWidget } );
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    CssValuesMap valuesMap = theme.getValuesMap();
     assertEquals( 0, valuesMap.getAllValues().length );
   }
 
@@ -72,7 +72,7 @@ public class Theme_Test {
     theme.addStyleSheet( addedStyleSheet );
     ThemeableWidget buttonWidget = createSimpleButtonWidget();
     theme.initialize( new ThemeableWidget[] { buttonWidget } );
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    CssValuesMap valuesMap = theme.getValuesMap();
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
     assertEquals( 2, values.length );
     assertEquals( "#bbbbbb", values[ 0 ].value.toDefaultString() );

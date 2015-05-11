@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class ThemeCssValuesMap_Test {
+public class CssValuesMap_Test {
 
   private Theme theme;
   private ThemeableWidget[] themeableWidgets;
@@ -45,7 +45,7 @@ public class ThemeCssValuesMap_Test {
   @Test
   public void testGetValues() {
     StyleSheet styleSheet = styleSheet( "Button { color: black }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
 
@@ -59,7 +59,7 @@ public class ThemeCssValuesMap_Test {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Button[BORDER] { color: blue }",
                                         "Button[BORDER]:disabled { color: gray }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
 
@@ -76,7 +76,7 @@ public class ThemeCssValuesMap_Test {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Button[UNKNOWN] { color: blue }",
                                         "Button[BORDER]:unknown { color: gray }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
 
@@ -89,7 +89,7 @@ public class ThemeCssValuesMap_Test {
   public void testGetValues_includesVariants() {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Button.special { color: red }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
 
@@ -103,7 +103,7 @@ public class ThemeCssValuesMap_Test {
   public void testGetValues_resortsToWildcardProperties() {
     StyleSheet styleSheet = styleSheet( "* { color: black }",
                                         "Button[BORDER] { color: blue }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     ConditionalValue[] values = valuesMap.getValues( "Button", "color" );
 
@@ -118,7 +118,7 @@ public class ThemeCssValuesMap_Test {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Label { color: blue }",
                                         "Label-Separator { background-color: gray }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     CssValue[] values = valuesMap.getAllValues();
 
@@ -132,7 +132,7 @@ public class ThemeCssValuesMap_Test {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Button[BORDER] { color: blue }",
                                         "Button[BORDER]:disabled { color: gray }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     CssValue[] values = valuesMap.getAllValues();
 
@@ -144,7 +144,7 @@ public class ThemeCssValuesMap_Test {
   @Test
   public void testGetAllValues_includesValuesForAllProperties() {
     StyleSheet styleSheet = styleSheet( "Label { color: black; font: 12px Times }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     CssValue[] values = valuesMap.getAllValues();
 
@@ -156,7 +156,7 @@ public class ThemeCssValuesMap_Test {
   public void testGetAllValues_includesValuesForVariants() {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "Button.special { color: red }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     CssValue[] values = valuesMap.getAllValues();
 
@@ -167,7 +167,7 @@ public class ThemeCssValuesMap_Test {
   public void testGetAllValues_includesValuesForWildcard() {
     StyleSheet styleSheet = styleSheet( "Button { color: black }",
                                         "* { color: blue }" );
-    ThemeCssValuesMap valuesMap = new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
+    CssValuesMap valuesMap = new CssValuesMap( theme, styleSheet, themeableWidgets );
 
     CssValue[] values = valuesMap.getAllValues();
 
