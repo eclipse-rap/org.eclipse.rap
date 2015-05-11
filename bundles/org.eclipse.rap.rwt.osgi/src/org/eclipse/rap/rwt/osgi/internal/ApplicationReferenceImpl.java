@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
@@ -81,7 +82,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   }
 
   private void registerServlets() {
-    Collection<String> aliases = applicationRunner.getServletPaths();
+    Collection<String> aliases = getServletPaths();
     if( aliases.isEmpty() ) {
       registerServlet( DEFAULT_ALIAS, new RWTServlet() );
     }
@@ -119,7 +120,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     // We unregister servlets at the end, because the servlet bridge blocks while unregistering
     // servlets with standing requests. Stopping the application releases standing push requests.
     // See bug 407371: Tomcat hangs during shutdown
-    Collection<String> aliases = applicationRunner.getServletPaths();
+    Collection<String> aliases = getServletPaths();
     serviceRegistration.unregister();
     applicationRunner.stop();
     unregisterServlets( aliases );
@@ -133,6 +134,14 @@ class ApplicationReferenceImpl implements ApplicationReference {
     for( String alias : aliases ) {
       unregisterServlet( alias );
     }
+  }
+
+  @SuppressWarnings( "restriction" )
+  private Collection<String> getServletPaths() {
+    ApplicationContext applicationContext = applicationRunner.getApplicationContext();
+    org.eclipse.rap.rwt.internal.application.ApplicationContextImpl applicationContextImpl
+      = ( org.eclipse.rap.rwt.internal.application.ApplicationContextImpl ) applicationContext;
+    return applicationContextImpl.getEntryPointManager().getServletPaths();
   }
 
   boolean belongsTo( Object service ) {

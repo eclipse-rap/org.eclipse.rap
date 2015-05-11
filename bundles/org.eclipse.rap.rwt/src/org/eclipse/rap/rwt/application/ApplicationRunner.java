@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.resources.ResourceDirectory;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 
 
 /**
@@ -67,7 +65,6 @@ public class ApplicationRunner {
   {
     ParamCheck.notNull( configuration, "configuration" );
     ParamCheck.notNull( servletContext, "servletContext" );
-
     applicationContext = new ApplicationContextImpl( configuration, servletContext );
   }
 
@@ -99,13 +96,16 @@ public class ApplicationRunner {
   }
 
   /**
-   * @deprecated This method is not part of the RAP API. It will be removed in future versions.
-   * @noreference This method is not intended to be referenced by clients.
+   * Returns the <code>ApplicationContext</code> of the running application that is controlled by
+   * this application runner. If the application is not running, this method will return
+   * <code>null</code>.
+   *
+   * @return the {@link ApplicationContext} of the running application or <code>null</code> if the
+   *         application is not running
+   * @since 3.0
    */
-  @Deprecated
-  public Collection<String> getServletPaths() {
-    Collection<String> servletPaths = applicationContext.getEntryPointManager().getServletPaths();
-    return Collections.unmodifiableCollection( new HashSet<String>( servletPaths ) );
+  public ApplicationContext getApplicationContext() {
+    return applicationContext.isActive() ? applicationContext : null;
   }
 
 }

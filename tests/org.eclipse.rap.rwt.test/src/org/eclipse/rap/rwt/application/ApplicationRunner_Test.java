@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,32 +11,26 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.application;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collection;
-
 import javax.servlet.ServletContext;
 
 import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
+import org.eclipse.rap.rwt.service.ApplicationContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 
 public class ApplicationRunner_Test {
@@ -139,36 +133,29 @@ public class ApplicationRunner_Test {
   }
 
   @Test
-  @SuppressWarnings( "deprecation" )
-  public void testGetServletPaths() {
-    applicationRunner.start();
+  public void testGetApplicationContext_beforeStart() {
+    ApplicationContext result = applicationRunner.getApplicationContext();
 
-    Collection<String> servletPaths = applicationRunner.getServletPaths();
-
-    assertTrue( servletPaths.isEmpty() );
+    assertNull( result );
   }
 
   @Test
-  @SuppressWarnings( "deprecation" )
-  public void testGetServletPaths_withEntryPoint() {
-    simulateEntryPointInConfiguration( "/foo" );
+  public void testGetApplicationContext_afterStart() {
     applicationRunner.start();
 
-    Collection<String> servletPaths = applicationRunner.getServletPaths();
+    ApplicationContext result = applicationRunner.getApplicationContext();
 
-    assertEquals( 1, servletPaths.size() );
-    assertTrue( servletPaths.contains( "/foo" ) );
+    assertNotNull( result );
   }
 
-  private void simulateEntryPointInConfiguration( final String servletPath ) {
-    Answer answer = new Answer<Object>() {
-      public Object answer( InvocationOnMock invocation ) throws Throwable {
-        Application application = ( Application )invocation.getArguments()[ 0 ];
-        application.addEntryPoint( servletPath, TestEntryPoint.class, null );
-        return null;
-      }
-    };
-    doAnswer( answer ).when( configuration ).configure( any( Application.class ) );
+  @Test
+  public void testGetApplicationContext_afterStop() {
+    applicationRunner.start();
+    applicationRunner.stop();
+
+    ApplicationContext result = applicationRunner.getApplicationContext();
+
+    assertNull( result );
   }
 
   private void simulateExceptionInConfiguration( Exception exception ) {
