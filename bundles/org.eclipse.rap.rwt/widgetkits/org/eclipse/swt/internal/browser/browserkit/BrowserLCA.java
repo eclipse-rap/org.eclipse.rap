@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -98,6 +98,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     renderUrl( browser );
     createBrowserFunctions( browser );
     renderAfterAll( browser.getDisplay(), new Runnable() {
+      @Override
       public void run() {
         renderEvaluate( browser );
       }
@@ -136,7 +137,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     // [if] Put the execution to the end of the rendered message. This is very
     // important when Browser#execute is called from within a BrowserFunction,
     // because then we have a synchronous requests.
-    ( ( WidgetAdapterImpl )getAdapter( display ) ).addRenderRunnable( runnable );
+    ( ( WidgetRemoteAdapter )getAdapter( display ) ).addRenderRunnable( runnable );
   }
 
   private static void renderEvaluate( Browser browser ) {

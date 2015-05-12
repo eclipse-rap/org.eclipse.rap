@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
@@ -31,7 +31,7 @@ import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
@@ -94,6 +94,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       renderClear( item );
     } else if( isCached( item ) ) {
       preservingInitialized( item, new Runnable() {
+        @Override
         public void run() {
           // items that were uncached and are now cached (materialized) are handled as if they were
           // just created (initialized = false)
@@ -171,7 +172,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean wasCached( TreeItem item ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     if( adapter.isInitialized() ) {
       return Boolean.TRUE.equals( adapter.getPreserved( PROP_CACHED ) );
     }
@@ -245,7 +246,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void setInitialized( TreeItem item, boolean initialized ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( item );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( item );
     adapter.setInitialized( initialized );
   }
 

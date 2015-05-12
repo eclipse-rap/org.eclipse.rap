@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
@@ -171,6 +171,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     renderProperty( table, PROP_LINES_VISIBLE, table.getLinesVisible(), false );
     renderProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ), DEFAULT_SORT_DIRECTION );
     renderAfterItems( table, new Runnable() {
+      @Override
       public void run() {
         renderProperty( table, PROP_TOP_ITEM_INDEX, table.getTopIndex(), ZERO );
         renderProperty( table, PROP_SCROLL_LEFT, getScrollLeft( table ), ZERO );
@@ -267,7 +268,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     Item[] items = ItemHolder.<Item>getItemHolder( table ).getItems();
     if( items.length > 0 ) {
       Item lastItem = items[ items.length - 1 ];
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
+      WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( lastItem );
       adapter.addRenderRunnable( runnable );
     } else {
       runnable.run();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,12 +43,12 @@ public class WidgetSerialization_Test {
   }
 
   @Test
-  public void testWidgetAdapterIsSerializable() throws Exception {
-    WidgetAdapterImpl adapter = getWidgetAdapter( widget );
+  public void testRemoteAdapterIsSerializable() throws Exception {
+    WidgetRemoteAdapter adapter = getWidgetRemoteAdapter( widget );
     adapter.setInitialized( true );
 
     Widget deserializedWidget = serializeAndDeserialize( widget );
-    WidgetAdapter deserializedAdapter = getWidgetAdapter( deserializedWidget );
+    RemoteAdapter deserializedAdapter = getWidgetRemoteAdapter( deserializedWidget );
 
     assertNotNull( deserializedAdapter );
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
@@ -102,17 +102,17 @@ public class WidgetSerialization_Test {
   @Test
   public void testPreservedValuesAreNotSerialized() throws Exception {
     String propertyName = "foo";
-    WidgetAdapterImpl adapter = getWidgetAdapter( widget );
+    WidgetRemoteAdapter adapter = getWidgetRemoteAdapter( widget );
     adapter.preserve( propertyName, "bar" );
 
     Widget deserializedWidget = serializeAndDeserialize( widget );
-    WidgetAdapter deserializedAdapter = getWidgetAdapter( deserializedWidget );
+    RemoteAdapter deserializedAdapter = getWidgetRemoteAdapter( deserializedWidget );
 
     assertNull( deserializedAdapter.getPreserved( propertyName ) );
   }
 
-  private static WidgetAdapterImpl getWidgetAdapter( Widget widget ) {
-    return ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
+  private static WidgetRemoteAdapter getWidgetRemoteAdapter( Widget widget ) {
+    return ( WidgetRemoteAdapter )WidgetUtil.getAdapter( widget );
   }
 
   private static class TestListener implements Listener {

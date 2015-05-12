@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.IGridItemAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -98,6 +98,7 @@ public class GridItemLCA extends AbstractWidgetLCA {
       renderClear( item );
     } else if( isCached( item ) ) {
       preservingInitialized( item, new Runnable() {
+        @Override
         public void run() {
           // items that were uncached and are now cached (materialized) are handled as if they were
           // just created (initialized = false)
@@ -176,7 +177,7 @@ public class GridItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean wasCached( GridItem item ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     if( adapter.isInitialized() ) {
       return Boolean.TRUE.equals( adapter.getPreserved( PROP_CACHED ) );
     }
@@ -299,7 +300,7 @@ public class GridItemLCA extends AbstractWidgetLCA {
   }
 
   private static void setInitialized( GridItem item, boolean initialized ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( item );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( item );
     adapter.setInitialized( initialized );
   }
 

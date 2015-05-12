@@ -42,7 +42,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,12 +89,12 @@ public class DisplaySerialization_Test {
   }
 
   @Test
-  public void testWidgetAdapterIsSerializable() throws Exception {
-    WidgetAdapterImpl adapter = getWidgetAdapter( display );
+  public void testRemoteAdapterIsSerializable() throws Exception {
+    WidgetRemoteAdapter adapter = getWidgetRemoteAdapter( display );
     adapter.setInitialized( true );
 
     Display deserializedDisplay = serializeAndDeserialize( display );
-    WidgetAdapterImpl deserializedAdapter = getWidgetAdapter( deserializedDisplay );
+    WidgetRemoteAdapter deserializedAdapter = getWidgetRemoteAdapter( deserializedDisplay );
 
     assertNotNull( deserializedAdapter );
     assertTrue( adapter.isInitialized() == deserializedAdapter.isInitialized() );
@@ -283,8 +283,8 @@ public class DisplaySerialization_Test {
     return display.getAdapter( IDisplayAdapter.class );
   }
 
-  private static WidgetAdapterImpl getWidgetAdapter( Display display ) {
-    return ( WidgetAdapterImpl )DisplayUtil.getAdapter( display );
+  private static WidgetRemoteAdapter getWidgetRemoteAdapter( Display display ) {
+    return ( WidgetRemoteAdapter )DisplayUtil.getAdapter( display );
   }
 
   private static class BackgroundRunnable implements Runnable {

@@ -39,7 +39,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -65,7 +65,7 @@ import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IdGenerator;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
@@ -164,6 +164,7 @@ public class Display extends Device implements Adaptable {
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
 
   private static final ExceptionHandler DEFAULT_EXCEPTION_HANDLER = new ExceptionHandler() {
+    @Override
     public void handleException( Throwable throwable ) {
       if( throwable instanceof RuntimeException ) {
         throw ( RuntimeException )throwable;
@@ -234,7 +235,7 @@ public class Display extends Device implements Adaptable {
   private EventTable eventTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
-  private WidgetAdapterImpl widgetAdapter;
+  private WidgetRemoteAdapter widgetAdapter;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
@@ -276,7 +277,7 @@ public class Display extends Device implements Adaptable {
     LifeCycleUtil.setSessionDisplay( this );
     attachThread();
     uiSession = ContextProvider.getUISession();
-    shells = new ArrayList<Shell>();
+    shells = new ArrayList<>();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
@@ -662,6 +663,7 @@ public class Display extends Device implements Adaptable {
 
   private void notifyListeners( final int eventType, final Event event ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         sendEvent( eventType, event );
       }
@@ -782,6 +784,7 @@ public class Display extends Device implements Adaptable {
   /////////////////////
   // Adaptable override
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
@@ -790,10 +793,10 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter();
       }
       result = ( T )displayAdapter;
-    } else if( adapter == WidgetAdapter.class ) {
+    } else if( adapter == RemoteAdapter.class ) {
       if( widgetAdapter == null ) {
         String id = IdGenerator.getInstance( uiSession ).createId( this );
-        widgetAdapter = new WidgetAdapterImpl( id );
+        widgetAdapter = new WidgetRemoteAdapter( id );
       }
       result = ( T )widgetAdapter;
     } else if( adapter == DisplayLifeCycleAdapter.class ) {
@@ -1275,6 +1278,7 @@ public class Display extends Device implements Adaptable {
       }
       if( thread != Thread.currentThread() ) {
         uiSession.exec( new Runnable() {
+          @Override
           public void run() {
             synchronizer.asyncExec( new WakeRunnable() );
           }
@@ -1285,6 +1289,7 @@ public class Display extends Device implements Adaptable {
 
   protected void wakeThread() {
     uiSession.exec( new Runnable() {
+      @Override
       public void run() {
         ServerPushManager.getInstance().wakeClient();
       }
@@ -1301,7 +1306,7 @@ public class Display extends Device implements Adaptable {
   void redrawControl( Control control, boolean redraw ) {
     if( redraw ) {
       if( redrawControls == null ) {
-        redrawControls = new LinkedList<Control>();
+        redrawControls = new LinkedList<>();
       }
       if( !redrawControls.contains( control ) ) {
         redrawControls.add( control );
@@ -2219,14 +2224,14 @@ public class Display extends Device implements Adaptable {
       WeakReference[] displays = getDisplays();
       for( int i = 0; !registered && i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
-          displays[ i ] = new WeakReference<Display>( this );
+          displays[ i ] = new WeakReference<>( this );
           registered = true;
         }
       }
       if( !registered ) {
         WeakReference<Display>[] newDisplays = new WeakReference[ displays.length + 4 ];
         System.arraycopy( displays, 0, newDisplays, 0, displays.length );
-        newDisplays[ displays.length ] = new WeakReference<Display>( this );
+        newDisplays[ displays.length ] = new WeakReference<>( this );
         setDisplays( newDisplays );
       }
     }
@@ -2322,6 +2327,7 @@ public class Display extends Device implements Adaptable {
   // Inner classes
 
   private static class WakeRunnable implements Runnable, SerializableCompatibility {
+    @Override
     public void run() {
     }
   }
@@ -2336,7 +2342,7 @@ public class Display extends Device implements Adaptable {
     ControlFinder( Display display, Point location ) {
       this.display = display;
       this.location = new Point( location.x, location.y );
-      foundComponentInParent = new HashSet<Control>();
+      foundComponentInParent = new HashSet<>();
       find();
     }
 
@@ -2385,6 +2391,7 @@ public class Display extends Device implements Adaptable {
 
   private final class DisplayAdapter implements IDisplayAdapter {
 
+    @Override
     public void setBounds( Rectangle bounds ) {
       Display.this.bounds.x = bounds.x;
       Display.this.bounds.y = bounds.y;
@@ -2392,62 +2399,76 @@ public class Display extends Device implements Adaptable {
       Display.this.bounds.height = bounds.height;
     }
 
+    @Override
     public void setCursorLocation( int x, int y ) {
       cursorLocation.x = x;
       cursorLocation.y = y;
     }
 
+    @Override
     public void setActiveShell( Shell activeShell ) {
       Display.this.setActiveShell( activeShell );
     }
 
+    @Override
     public void setFocusControl( Control focusControl, boolean fireEvents ) {
       Display.this.setFocusControl( focusControl, fireEvents );
     }
 
+    @Override
     public void invalidateFocus() {
       ContextProvider.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
 
+    @Override
     public boolean isFocusInvalidated() {
       Object value = ContextProvider.getServiceStore().getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
     }
 
+    @Override
     public Shell[] getShells() {
       Shell[] result = new Shell[ shells.size() ];
       shells.toArray( result );
       return result;
     }
 
+    @Override
     public UISession getUISession() {
       return uiSession;
     }
 
+    @Override
     public void attachThread() {
       Display.this.attachThread();
     }
 
+    @Override
     public void detachThread() {
       Display.this.detachThread();
     }
 
+    @Override
     public boolean isValidThread() {
       return Display.this.isValidThread();
     }
 
+    @Override
     public boolean isBeepCalled() {
       return beep;
     }
 
+    @Override
     public void resetBeep() {
       beep = false;
     }
 
+    @Override
     public void notifyListeners( int eventType, Event event ) {
       Display.this.notifyListeners( eventType, event );
     }
 
+    @Override
     public boolean isListening( int eventType ) {
       return Display.this.isListening( eventType );
     }

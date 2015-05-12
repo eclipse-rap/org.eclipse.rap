@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,15 +25,16 @@ import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
 public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
+  @Override
   public void render( Widget widget ) throws IOException {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
       renderInitialization( widget );
     }
@@ -41,6 +42,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
     adapter.setInitialized( true );
   }
 
+  @Override
   public void readData( Widget widget ) {
     ClientMessage clientMessage = ProtocolUtil.getClientMessage();
     String id = getId( widget );
@@ -53,6 +55,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
     }
   }
 
+  @Override
   public abstract void preserveValues( Widget widget );
 
   public abstract void renderInitialization( Widget widget ) throws IOException;
@@ -61,7 +64,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
 
   @SuppressWarnings( "unused" )
   public void renderDispose( Widget widget ) throws IOException {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( widget );
     RemoteObject remoteObject = getRemoteObject( widget );
     if( adapter.getParent() == null || !adapter.getParent().isDisposed() ) {
       remoteObject.destroy();

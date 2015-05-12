@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
@@ -93,32 +93,32 @@ public class Display_Test {
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter() {
+  public void testGetAdapter_forRemoteAdapter() {
     Display display = new Display();
 
-    Object adapter = display.getAdapter( WidgetAdapter.class );
+    Object adapter = display.getAdapter( RemoteAdapter.class );
 
-    assertTrue( adapter instanceof WidgetAdapter );
+    assertTrue( adapter instanceof RemoteAdapter );
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter_returnsSameInstance() {
+  public void testGetAdapter_forRemoteAdapter_returnsSameInstance() {
     Display display = new Display();
 
-    Object adapter1 = display.getAdapter( WidgetAdapter.class );
-    Object adapter2 = display.getAdapter( WidgetAdapter.class );
+    Object adapter1 = display.getAdapter( RemoteAdapter.class );
+    Object adapter2 = display.getAdapter( RemoteAdapter.class );
 
     assertSame( adapter1, adapter2 );
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter_returnsDifferentInstanceForNewDisplay() {
+  public void testGetAdapter_forRemoteAdapter_returnsDifferentInstanceForNewDisplay() {
     Display display = new Display();
-    WidgetAdapter adapter1 = display.getAdapter( WidgetAdapter.class );
+    RemoteAdapter adapter1 = display.getAdapter( RemoteAdapter.class );
     display.dispose();
     display = new Display();
 
-    WidgetAdapter adapter2 = display.getAdapter( WidgetAdapter.class );
+    RemoteAdapter adapter2 = display.getAdapter( RemoteAdapter.class );
 
     assertNotSame( adapter1, adapter2 );
   }

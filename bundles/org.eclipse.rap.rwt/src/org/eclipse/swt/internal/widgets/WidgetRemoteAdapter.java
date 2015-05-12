@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompatibility {
+public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibility {
 
   private final static Runnable[] EMPTY = new Runnable[ 0 ];
 
@@ -31,15 +31,16 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
   private transient String cachedVariant;
   private Widget parent;
 
-  public WidgetAdapterImpl( String id ) {
+  public WidgetRemoteAdapter( String id ) {
     this.id = id;
     initialize();
   }
 
   private void initialize() {
-    preservedValues = new HashMap<String,Object>();
+    preservedValues = new HashMap<>();
   }
 
+  @Override
   public String getId() {
     return id;
   }
@@ -48,10 +49,12 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
     this.parent = parent;
   }
 
+  @Override
   public Widget getParent() {
     return parent;
   }
 
+  @Override
   public boolean isInitialized() {
     return initialized;
   }
@@ -60,10 +63,12 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
     this.initialized = initialized;
   }
 
+  @Override
   public void preserve( String propertyName, Object value ) {
     preservedValues.put( propertyName, value );
   }
 
+  @Override
   public Object getPreserved( String propertyName ) {
     return preservedValues.get( propertyName );
   }
@@ -99,6 +104,7 @@ public final class WidgetAdapterImpl implements WidgetAdapter, SerializableCompa
     this.cachedVariant = cachedVariant;
   }
 
+  @Override
   public void markDisposed( Widget widget ) {
     if( initialized ) {
       DisposedWidgets.add( widget );

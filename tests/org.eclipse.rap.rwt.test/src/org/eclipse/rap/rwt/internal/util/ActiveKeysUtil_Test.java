@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -51,7 +51,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testPreserveActiveKeys_emptyList() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     Fixture.preserveWidgets();
 
@@ -61,7 +61,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testPreserveActiveKeys_onDisplay() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] activeKeys = new String[] { "CTRL+A" };
     display.setData( RWT.ACTIVE_KEYS, activeKeys );
@@ -76,7 +76,7 @@ public class ActiveKeysUtil_Test {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
-    WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( shell );
 
     String[] activeKeys = new String[] { "CTRL+A" };
     shell.setData( RWT.ACTIVE_KEYS, activeKeys );
@@ -89,7 +89,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testActiveKeysSafeCopy() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] activeKeys = new String[] { "CTRL+A" };
     display.setData( RWT.ACTIVE_KEYS, activeKeys );
@@ -103,7 +103,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testPreserveCancelKeys_emptyList() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     Fixture.preserveWidgets();
 
@@ -113,7 +113,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testPreserveCancelKeys_onDisplay() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] cancelKeys = new String[] { "CTRL+A" };
     display.setData( RWT.CANCEL_KEYS, cancelKeys );
@@ -128,7 +128,7 @@ public class ActiveKeysUtil_Test {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
-    WidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( shell );
 
     String[] cancelKeys = new String[] { "CTRL+A" };
     shell.setData( RWT.CANCEL_KEYS, cancelKeys );
@@ -141,7 +141,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testCancelKeySafeCopy() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     String[] cancelKeys = new String[] { "CTRL+A" };
     display.setData( RWT.CANCEL_KEYS, cancelKeys );
@@ -155,7 +155,7 @@ public class ActiveKeysUtil_Test {
   @Test
   public void testPreserveMnemonicActivator() {
     Fixture.markInitialized( display );
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
     display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
     Fixture.preserveWidgets();

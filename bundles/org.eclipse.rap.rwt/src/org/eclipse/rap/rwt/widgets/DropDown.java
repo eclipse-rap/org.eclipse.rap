@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
 import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
@@ -27,7 +27,7 @@ import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -96,10 +96,11 @@ public class DropDown extends Widget {
   public DropDown( Control parent ) {
     super( parent, SWT.NONE );
     this.parent = parent;
-    items = new ArrayList<String>();
+    items = new ArrayList<>();
     getRemoteObject().set( "parent", WidgetUtil.getId( parent ) );
     getRemoteObject().setHandler( new InternalOperationHandler() );
     disposeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         DropDown.this.dispose();
       }
@@ -345,12 +346,12 @@ public class DropDown extends Widget {
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
-    if( adapter == WidgetAdapter.class ) {
+    if( adapter == RemoteAdapter.class ) {
       // TODO [tb] : This way of getting the right id into the WidgetAdapter is obviously
       //             not ideal. Revise once Bug 397602 (Render operations in the order of their
       //             occurrence) is fixed.
       if( widgetAdapter == null ) {
-        widgetAdapter = new WidgetAdapterImpl( getProtocolId() );
+        widgetAdapter = new WidgetRemoteAdapter( getProtocolId() );
       }
       result = ( T )widgetAdapter;
     } else {

@@ -65,7 +65,7 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -264,11 +264,11 @@ public final class Fixture {
   }
 
   public static void markInitialized( Widget widget ) {
-    ( ( WidgetAdapterImpl )getAdapter( widget ) ).setInitialized( true );
+    ( ( WidgetRemoteAdapter )getAdapter( widget ) ).setInitialized( true );
   }
 
   public static void markInitialized( Display display ) {
-    ( ( WidgetAdapterImpl )getAdapter( display ) ).setInitialized( true );
+    ( ( WidgetRemoteAdapter )getAdapter( display ) ).setInitialized( true );
   }
 
   public static void preserveWidgets() {

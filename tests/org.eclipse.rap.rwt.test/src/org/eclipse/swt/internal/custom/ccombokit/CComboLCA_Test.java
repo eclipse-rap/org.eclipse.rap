@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
@@ -102,7 +102,7 @@ public class CComboLCA_Test {
     Fixture.markInitialized( display );
     // Test preserving a CCombo with no items and (naturally) no selection
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( ccombo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
@@ -169,7 +169,7 @@ public class CComboLCA_Test {
   public void testEditablePreserveValues() {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
   }
 

@@ -100,7 +100,7 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveBackground( Widget widget, Color background, boolean transparency ) {
-    WidgetAdapter adapter = getAdapter( widget );
+    RemoteAdapter adapter = getAdapter( widget );
     adapter.preserve( PROP_BACKGROUND, background );
     adapter.preserve( PROP_BACKGROUND_TRANSPARENCY, Boolean.valueOf( transparency ) );
   }
@@ -112,7 +112,7 @@ public final class WidgetLCAUtil {
       Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
       int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
       boolean bgGradientVertical = gfxAdapter.isBackgroundGradientVertical();
-      WidgetAdapter widgetAdapter = getAdapter( widget );
+      RemoteAdapter widgetAdapter = getAdapter( widget );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_VERTICAL,
@@ -127,7 +127,7 @@ public final class WidgetLCAUtil {
       int width = gfxAdapter.getRoundedBorderWidth();
       Color color = gfxAdapter.getRoundedBorderColor();
       Rectangle radius = gfxAdapter.getRoundedBorderRadius();
-      WidgetAdapter widgetAdapter = getAdapter( widget );
+      RemoteAdapter widgetAdapter = getAdapter( widget );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, Integer.valueOf( width ) );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
@@ -179,7 +179,7 @@ public final class WidgetLCAUtil {
   }
 
   private static Object[] getDataAsArray( Widget widget ) {
-    List<Object> result = new ArrayList<Object>();
+    List<Object> result = new ArrayList<>();
     for( String key : WidgetDataUtil.getDataKeys() ) {
       Object value = widget.getData( key );
       if( value != null ) {
@@ -210,7 +210,7 @@ public final class WidgetLCAUtil {
   }
 
   private static void renderToolTipMarkupEnabled( Widget widget ) {
-    WidgetAdapter adapter = getAdapter( widget );
+    RemoteAdapter adapter = getAdapter( widget );
     if( !adapter.isInitialized() && isToolTipMarkupEnabledFor( widget ) ) {
       getRemoteObject( widget ).set( PROP_TOOLTIP_MARKUP_ENABLED, true );
     }

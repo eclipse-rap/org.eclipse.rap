@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -124,7 +124,7 @@ public class CTabFolderLCA_Test {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = getAdapter( folder );
+    RemoteAdapter adapter = getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // menu
@@ -837,7 +837,7 @@ public class CTabFolderLCA_Test {
           @Override
           public void preserveValues( Widget widget ) {
             Control control = ( Control )widget;
-            WidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+            RemoteAdapter adapter = WidgetUtil.getAdapter( widget );
             Boolean visible = Boolean.valueOf( control.isVisible() );
             adapter.preserve( "visible", visible );
           }

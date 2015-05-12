@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,8 @@ public final class DisplayUtil {
     return getAdapter( display ).getId();
   }
 
-  public static WidgetAdapter getAdapter( Display display ) {
-    WidgetAdapter result = display.getAdapter( WidgetAdapter.class );
+  public static RemoteAdapter getAdapter( Display display ) {
+    RemoteAdapter result = display.getAdapter( RemoteAdapter.class );
     if( result == null ) {
       throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }

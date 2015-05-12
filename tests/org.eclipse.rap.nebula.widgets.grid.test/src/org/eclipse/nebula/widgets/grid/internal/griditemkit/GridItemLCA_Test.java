@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
@@ -815,7 +815,7 @@ public class GridItemLCA_Test {
     Fixture.markInitialized( item );
     // Ensure that nothing else than the 'index' and 'cached' property gets preserved
     lca.preserveValues( item );
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
 
     assertEquals( Boolean.FALSE, adapter.getPreserved( "cached" ) );
     assertEquals( Integer.valueOf( 0 ), adapter.getPreserved( "index" ) );

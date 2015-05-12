@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Display;
 
 public final class ActiveKeysUtil {
 
-  private static final Map<String,Integer> KEY_MAP = new HashMap<String,Integer>();
+  private static final Map<String,Integer> KEY_MAP = new HashMap<>();
   static {
     KEY_MAP.put( "BACKSPACE", Integer.valueOf( 8 ) );
     KEY_MAP.put( "BS", Integer.valueOf( 8 ) );
@@ -97,33 +97,33 @@ public final class ActiveKeysUtil {
   }
 
   public static void preserveActiveKeys( Display display ) {
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( display ) );
   }
 
   public static void preserveActiveKeys( Control control ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( control ) );
   }
 
   public static void preserveCancelKeys( Display display ) {
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( display ) );
   }
 
   public static void preserveCancelKeys( Control control ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( control ) );
   }
 
   public static void preserveMnemonicActivator( Display display ) {
-    WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_MNEMONIC_ACTIVATOR, getMnemonicActivator( display ) );
   }
 
   public static void renderActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
-      WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      RemoteAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getActiveKeys( display );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -135,7 +135,7 @@ public final class ActiveKeysUtil {
 
   public static void renderActiveKeys( Control control ) {
     if( !control.isDisposed() ) {
-      WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      RemoteAdapter adapter = WidgetUtil.getAdapter( control );
       String[] newValue = getActiveKeys( control );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -147,7 +147,7 @@ public final class ActiveKeysUtil {
 
   public static void renderCancelKeys( Display display ) {
     if( !display.isDisposed() ) {
-      WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      RemoteAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getCancelKeys( display );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -159,7 +159,7 @@ public final class ActiveKeysUtil {
 
   public static void renderCancelKeys( Control control ) {
     if( !control.isDisposed() ) {
-      WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      RemoteAdapter adapter = WidgetUtil.getAdapter( control );
       String[] newValue = getCancelKeys( control );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
@@ -171,7 +171,7 @@ public final class ActiveKeysUtil {
 
   public static void renderMnemonicActivator( Display display ) {
     if( !display.isDisposed() ) {
-      WidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      RemoteAdapter adapter = DisplayUtil.getAdapter( display );
       String newValue = getMnemonicActivator( display );
       String oldValue = ( String )adapter.getPreserved( PROP_MNEMONIC_ACTIVATOR );
       if( !equals( oldValue, newValue ) ) {

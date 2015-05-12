@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -82,7 +82,7 @@ public class ScaleLCA_Test {
     // Test preserved minimum, maximum,
     // selection, increment and ageIncrement
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( scale );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( scale );
     Integer minimum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MINIMUM );
     assertEquals( 0, minimum.intValue() );
     Integer maximum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MAXIMUM );
@@ -103,7 +103,7 @@ public class ScaleLCA_Test {
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     scale.setBounds( rectangle );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( scale );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( scale );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // enabled

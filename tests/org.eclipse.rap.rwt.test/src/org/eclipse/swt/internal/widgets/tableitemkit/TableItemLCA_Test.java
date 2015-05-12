@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -87,7 +87,7 @@ public class TableItemLCA_Test {
     new TableColumn( table, SWT.CENTER );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     Image[] images1 = TableItemLCA.getImages( item );
     Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
@@ -170,7 +170,7 @@ public class TableItemLCA_Test {
     item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     Object checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
     assertEquals( Boolean.FALSE, checked );
     Object grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
@@ -273,7 +273,7 @@ public class TableItemLCA_Test {
     Fixture.markInitialized( item );
     // Ensure that nothing else than the 'index' and 'cached' property gets preserved
     lca.preserveValues( item );
-    WidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter itemAdapter = WidgetUtil.getAdapter( item );
 
     assertEquals( Boolean.FALSE, itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
     assertEquals( Integer.valueOf( 0 ), itemAdapter.getPreserved( TableItemLCA.PROP_INDEX ) );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
@@ -179,6 +179,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
     renderAfterItems( tree, new Runnable() {
+      @Override
       public void run() {
         renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
         renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
@@ -293,7 +294,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     Item[] items = ItemHolder.<Item>getItemHolder( tree ).getItems();
     if( items.length > 0 ) {
       Item lastItem = items[ items.length - 1 ];
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( lastItem );
+      WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( lastItem );
       adapter.addRenderRunnable( runnable );
     } else {
       runnable.run();

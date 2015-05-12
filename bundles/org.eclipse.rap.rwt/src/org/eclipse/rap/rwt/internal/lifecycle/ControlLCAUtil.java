@@ -61,7 +61,7 @@ public class ControlLCAUtil {
   }
 
   public static void preserveValues( Control control ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     preserveParent( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     adapter.preserve( PROP_CHILDREN, getChildren( control ) );
@@ -109,7 +109,7 @@ public class ControlLCAUtil {
   public static void preserveBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_BACKGROUND_IMAGE, image );
   }
 
@@ -141,7 +141,7 @@ public class ControlLCAUtil {
   }
 
   static void renderParent( Control control ) {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     Composite parent = control.getParent();
     if( adapter.isInitialized() && parent != null ) {
       WidgetLCAUtil.renderProperty( control, PROP_PARENT, getId( parent ), null );

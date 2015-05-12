@@ -12,44 +12,45 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-public class WidgetAdapterImpl_Test {
+public class WidgetRemoteAdapter_Test {
 
   private Display display;
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private WidgetRemoteAdapter adapter;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
+    adapter = new WidgetRemoteAdapter( "id" );
   }
 
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+  @Test
+  public void testGetId() {
+    String id = adapter.getId();
+
+    assertEquals( "id", id );
   }
 
   @Test
   public void testIsInitialized_isFalseByDefault() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
     boolean initialized = adapter.isInitialized();
 
     assertFalse( initialized );
@@ -57,8 +58,6 @@ public class WidgetAdapterImpl_Test {
 
   @Test
   public void testSetInitialized() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
     adapter.setInitialized( true );
     boolean initialized = adapter.isInitialized();
 
@@ -66,24 +65,38 @@ public class WidgetAdapterImpl_Test {
   }
 
   @Test
-  public void testGetId() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
+  public void testPreserve() {
+    Object value = new Object();
 
-    String id = adapter.getId();
+    adapter.preserve( "prop", value );
 
-    assertEquals( "id", id );
+    assertSame( value, adapter.getPreserved( "prop" ) );
+  }
+
+  @Test
+  public void testClearPreserve() {
+    Object value = new Object();
+
+    adapter.preserve( "prop", value );
+    adapter.clearPreserved();
+
+    assertNull( adapter.getPreserved( "prop" ) );
+  }
+
+  @Test
+  public void testCachedVariant() {
+    adapter.setCachedVariant( "foo" );
+
+    assertEquals( "foo", adapter.getCachedVariant() );
   }
 
   @Test
   public void testGetRenderRunnables_initial() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
-
     assertEquals( 0, adapter.getRenderRunnables().length );
   }
 
   @Test
   public void testAddRenderRunnable_single() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     Runnable runnable = mock( Runnable.class );
 
     adapter.addRenderRunnable( runnable );
@@ -95,7 +108,6 @@ public class WidgetAdapterImpl_Test {
 
   @Test
   public void testAddRenderRunnable_multiple() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     Runnable runnable1 = mock( Runnable.class );
     Runnable runnable2 = mock( Runnable.class );
 
@@ -110,9 +122,6 @@ public class WidgetAdapterImpl_Test {
 
   @Test
   public void testMarkDisposed() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeResponseWriter();
-
     // dispose un-initialized widget: must not occur in list of disposed widgets
     Widget widget = new Shell( display );
     widget.dispose();
@@ -121,7 +130,7 @@ public class WidgetAdapterImpl_Test {
 
     // dispose initialized widget: must be present in list of disposed widgets
     widget = new Shell( display );
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( widget );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( widget );
     adapter.setInitialized( true );
     widget.dispose();
 
@@ -131,7 +140,6 @@ public class WidgetAdapterImpl_Test {
 
   @Test
   public void testSetParent() {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     Composite parent = mock( Composite.class );
 
     adapter.setParent( parent );
@@ -141,10 +149,9 @@ public class WidgetAdapterImpl_Test {
 
   @Test
   public void testSerializableFields() throws Exception {
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     adapter.setInitialized( true );
 
-    WidgetAdapterImpl deserializedAdapter = serializeAndDeserialize( adapter );
+    WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
 
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
     assertTrue( deserializedAdapter.isInitialized() );
@@ -153,12 +160,11 @@ public class WidgetAdapterImpl_Test {
   @Test
   public void testNonSerializableFields() throws Exception {
     String property = "foo";
-    WidgetAdapterImpl adapter = new WidgetAdapterImpl( "id" );
     adapter.setCachedVariant( "cachedVariant" );
     adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
 
-    WidgetAdapterImpl deserializedAdapter = serializeAndDeserialize( adapter );
+    WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
 
     assertNull( deserializedAdapter.getCachedVariant() );
     assertEquals( 0, deserializedAdapter.getRenderRunnables().length );

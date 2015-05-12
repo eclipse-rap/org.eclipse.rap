@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -77,26 +77,26 @@ public class Widget_Test {
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter() {
-    Object adapter = widget.getAdapter( WidgetAdapter.class );
+  public void testGetAdapter_forRemoteAdapter() {
+    Object adapter = widget.getAdapter( RemoteAdapter.class );
 
-    assertTrue( adapter instanceof WidgetAdapter );
+    assertTrue( adapter instanceof RemoteAdapter );
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter_returnsSameInstance() {
-    Object adapter1 = widget.getAdapter( WidgetAdapter.class );
-    Object adapter2 = widget.getAdapter( WidgetAdapter.class );
+  public void testGetAdapter_forRemoteAdapter_returnsSameInstance() {
+    Object adapter1 = widget.getAdapter( RemoteAdapter.class );
+    Object adapter2 = widget.getAdapter( RemoteAdapter.class );
 
     assertSame( adapter1, adapter2 );
   }
 
   @Test
-  public void testGetAdapter_forWidgetAdapter_returnsDifferentInstances() {
-    Object adapter1 = widget.getAdapter( WidgetAdapter.class );
+  public void testGetAdapter_forRemoteAdapter_returnsDifferentInstances() {
+    Object adapter1 = widget.getAdapter( RemoteAdapter.class );
     Widget anotherWidget = new Widget( shell, SWT.NONE ) {};
 
-    Object adapter2 = anotherWidget.getAdapter( WidgetAdapter.class );
+    Object adapter2 = anotherWidget.getAdapter( RemoteAdapter.class );
 
     assertNotSame( adapter1, adapter2 );
   }
@@ -105,14 +105,14 @@ public class Widget_Test {
   public void testGetAdapter_succeedsForDisposedWidget() {
     widget.dispose();
 
-    Object adapter = widget.getAdapter( WidgetAdapter.class );
+    Object adapter = widget.getAdapter( RemoteAdapter.class );
 
     assertNotNull( adapter );
   }
 
   @Test
   public void testSetsParentOnAdapter() {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+    RemoteAdapter adapter = widget.getAdapter( RemoteAdapter.class );
 
     assertSame( shell, adapter.getParent() );
   }

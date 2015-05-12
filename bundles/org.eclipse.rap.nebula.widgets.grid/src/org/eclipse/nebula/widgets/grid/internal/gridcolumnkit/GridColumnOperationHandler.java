@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.WidgetOperationHandler;
 import org.eclipse.swt.SWT;
@@ -67,6 +67,7 @@ public class GridColumnOperationHandler extends WidgetOperationHandler<GridColum
   public void handleCallMove( final GridColumn column, JsonObject properties ) {
     final int newLeft = properties.get( PROP_LEFT ).asInt();
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         moveColumn( column, newLeft );
       }
@@ -81,6 +82,7 @@ public class GridColumnOperationHandler extends WidgetOperationHandler<GridColum
   public void handleCallResize( final GridColumn column, JsonObject properties ) {
     final int width = properties.get( PROP_WIDTH ).asInt();
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         column.setWidth( width );
       }
@@ -125,7 +127,7 @@ public class GridColumnOperationHandler extends WidgetOperationHandler<GridColum
     if( Arrays.equals( columnOrder, grid.getColumnOrder() ) ) {
       GridColumn[] columns = grid.getColumns();
       for( int i = 0; i < columns.length; i++ ) {
-        WidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
+        RemoteAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
         adapter.preserve( PROP_LEFT, null );
       }
     } else {
@@ -134,7 +136,7 @@ public class GridColumnOperationHandler extends WidgetOperationHandler<GridColum
       } catch( IllegalArgumentException exception ) {
         // move the column in/out of a group is invalid
       } finally {
-        WidgetAdapter adapter = WidgetUtil.getAdapter( column );
+        RemoteAdapter adapter = WidgetUtil.getAdapter( column );
         adapter.preserve( PROP_LEFT, null );
       }
     }

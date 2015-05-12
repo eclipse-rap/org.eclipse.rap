@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -100,7 +100,7 @@ public class ScrolledCompositeLCA_Test {
 
   @Test
   public void testPreserveValues() {
-    WidgetAdapter adapter = WidgetUtil.getAdapter( sc );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( sc );
     assertEquals( null, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     hScroll.setSelection( 23 );
     vScroll.setSelection( 42 );

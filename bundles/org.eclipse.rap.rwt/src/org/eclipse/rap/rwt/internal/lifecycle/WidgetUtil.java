@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -28,8 +28,8 @@ public final class WidgetUtil {
     // prevent instantiation
   }
 
-  public static WidgetAdapter getAdapter( Widget widget ) {
-    WidgetAdapter adapter = widget.getAdapter( WidgetAdapter.class );
+  public static RemoteAdapter getAdapter( Widget widget ) {
+    RemoteAdapter adapter = widget.getAdapter( RemoteAdapter.class );
     if( adapter == null ) {
       throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
     }
@@ -42,7 +42,7 @@ public final class WidgetUtil {
 
   public static String getVariant( Widget widget ) {
     String result = null;
-    WidgetAdapterImpl widgetAdapter = ( WidgetAdapterImpl )getAdapter( widget );
+    WidgetRemoteAdapter widgetAdapter = ( WidgetRemoteAdapter )getAdapter( widget );
     Object data = widget.getData( RWT.CUSTOM_VARIANT );
     if( data instanceof String ) {
       result = ( String )data;

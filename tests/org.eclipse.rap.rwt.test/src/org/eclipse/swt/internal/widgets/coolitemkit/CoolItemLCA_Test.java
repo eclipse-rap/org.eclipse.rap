@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
@@ -80,7 +80,7 @@ public class CoolItemLCA_Test {
     item.setSize( 30, 20 );
     Rectangle rectangle = new Rectangle( 0, 0, item.getSize().x, item.getSize().y );
     lca.preserveValues( item );
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( button, adapter.getPreserved( CoolItemLCA.PROP_CONTROL ) );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     item.setControl( null );

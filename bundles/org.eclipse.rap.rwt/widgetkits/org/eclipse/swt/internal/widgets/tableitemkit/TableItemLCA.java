@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -30,7 +30,7 @@ import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
@@ -93,6 +93,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     } else {
       if( isCached( item ) ) {
         preservingInitialized( item, new IRenderRunnable() {
+          @Override
           public void run() throws IOException {
             // items that were uncached and are now cached (materialized) are
             // handled as if they were just created (initialized = false)
@@ -218,7 +219,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static boolean wasCached( TableItem item ) {
     boolean wasCached;
-    WidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( item );
     if( adapter.isInitialized() ) {
       Boolean preserved = ( Boolean )adapter.getPreserved( PROP_CACHED );
       wasCached = Boolean.TRUE.equals( preserved );
@@ -237,7 +238,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static void setInitialized( TableItem item, boolean initialized ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( item );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( item );
     adapter.setInitialized( initialized );
   }
 

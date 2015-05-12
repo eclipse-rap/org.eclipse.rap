@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -35,8 +35,8 @@ import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.IdGenerator;
-import org.eclipse.swt.internal.widgets.ParentHolderAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.ParentHolderRemoteAdapter;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
 
@@ -112,7 +112,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   private Object data;
   private EventTable eventTable;
   private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
-  private WidgetAdapter widgetAdapter;
+  private RemoteAdapter remoteAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
   Widget() {
@@ -156,7 +156,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     this.style = style;
     display = parent.display;
     reskinWidget();
-    widgetAdapter = new ParentHolderAdapter( parent );
+    remoteAdapter = new ParentHolderRemoteAdapter( parent );
   }
 
   /**
@@ -168,18 +168,19 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * </p>
    * @noreference This method is not intended to be referenced by clients.
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     T result = null;
-    if( adapter == WidgetAdapter.class ) {
-      if( widgetAdapter == null ) {
-        widgetAdapter = createWidgetAdapter( null );
-      } else if( widgetAdapter instanceof ParentHolderAdapter ) {
-        widgetAdapter = createWidgetAdapter( widgetAdapter.getParent() );
+    if( adapter == RemoteAdapter.class ) {
+      if( remoteAdapter == null ) {
+        remoteAdapter = createRemoteAdapter( null );
+      } else if( remoteAdapter instanceof ParentHolderRemoteAdapter ) {
+        remoteAdapter = createRemoteAdapter( remoteAdapter.getParent() );
       }
-      result = ( T )widgetAdapter;
+      result = ( T )remoteAdapter;
     } else if( adapter == ThemeAdapter.class ) {
       ApplicationContextImpl applicationContext = getApplicationContext();
       ThemeManager themeManager = applicationContext.getThemeManager();
@@ -198,9 +199,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     return result;
   }
 
-  private WidgetAdapter createWidgetAdapter( Widget parent ) {
+  private RemoteAdapter createRemoteAdapter( Widget parent ) {
     String id = IdGenerator.getInstance( RWT.getUISession( display ) ).createId( this );
-    WidgetAdapterImpl widgetAdapter = new WidgetAdapterImpl( id );
+    WidgetRemoteAdapter widgetAdapter = new WidgetRemoteAdapter( id );
     widgetAdapter.setParent( parent );
     return widgetAdapter;
   }
@@ -859,7 +860,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         state |= RELEASED;
         releaseParent();
         releaseWidget();
-        getAdapter( WidgetAdapter.class ).markDisposed( this );
+        getAdapter( RemoteAdapter.class ).markDisposed( this );
       }
     }
   }

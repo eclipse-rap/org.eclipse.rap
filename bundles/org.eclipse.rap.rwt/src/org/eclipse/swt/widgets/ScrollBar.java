@@ -22,7 +22,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
@@ -529,7 +529,7 @@ public class ScrollBar extends Widget {
     // FIXME: [if] ScrollBar has no LCA. Quick fix that prevents Scrollbars to be added to
     // DisposedWidgets list. See DisplayLCA#disposeWidgets().
     // For the same reason the remote object is marked as destroyed here too.
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )WidgetUtil.getAdapter( this );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( this );
     adapter.setInitialized( false );
     RemoteObject remoteObject = getRemoteObject( this );
     if( remoteObject != null ) {

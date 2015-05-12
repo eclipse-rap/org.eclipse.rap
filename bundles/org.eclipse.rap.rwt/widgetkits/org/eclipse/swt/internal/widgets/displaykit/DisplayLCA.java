@@ -28,7 +28,7 @@ import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -39,7 +39,7 @@ import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapterImpl;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
@@ -55,6 +55,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static final String METHOD_BEEP = "beep";
   private static final String PROP_RESIZE_LISTENER = "listener_Resize";
 
+  @Override
   public void readData( Display display ) {
     handleOperations( display );
     visitWidgets( display );
@@ -62,8 +63,9 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     RemoteObjectLifeCycleAdapter.readData( ProtocolUtil.getClientMessage() );
   }
 
+  @Override
   public void preserveValues( Display display ) {
-    WidgetAdapter adapter = getAdapter( display );
+    RemoteAdapter adapter = getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     adapter.preserve( PROP_RESIZE_LISTENER, Boolean.valueOf( hasResizeListener( display ) ) );
@@ -83,6 +85,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
   }
 
+  @Override
   public void render( Display display ) throws IOException {
     disposeWidgets();
     renderExitConfirmation( display );
@@ -101,13 +104,14 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     markInitialized( display );
   }
 
+  @Override
   public void clearPreserved( Display display ) {
-    ( ( WidgetAdapterImpl )getAdapter( display ) ).clearPreserved();
+    ( ( WidgetRemoteAdapter )getAdapter( display ) ).clearPreserved();
     for( Shell shell : getShells( display ) ) {
       WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
         @Override
         public boolean doVisit( Widget widget ) {
-          ( ( WidgetAdapterImpl )getAdapter( widget ) ).clearPreserved();
+          ( ( WidgetRemoteAdapter )getAdapter( widget ) ).clearPreserved();
           return true;
         }
       } );
@@ -148,7 +152,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   private static void renderExitConfirmation( Display display ) {
     String exitConfirmation = getExitConfirmation();
-    WidgetAdapter adapter = getAdapter( display );
+    RemoteAdapter adapter = getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
     boolean hasChanged = exitConfirmation == null
                        ? oldExitConfirmation != null
@@ -172,7 +176,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   private static void renderFocus( Display display ) {
     if( !display.isDisposed() ) {
       IDisplayAdapter displayAdapter = getDisplayAdapter( display );
-      WidgetAdapter widgetAdapter = getAdapter( display );
+      RemoteAdapter widgetAdapter = getAdapter( display );
       Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
       if(    !widgetAdapter.isInitialized()
           || oldValue != display.getFocusControl()
@@ -196,7 +200,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void renderResizeListener( Display display ) {
-    WidgetAdapter adapter = getAdapter( display );
+    RemoteAdapter adapter = getAdapter( display );
     Boolean oldValue = ( Boolean )adapter.getPreserved( PROP_RESIZE_LISTENER );
     if( oldValue == null ) {
       oldValue = Boolean.FALSE;
@@ -220,7 +224,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void runRenderRunnables( Display display ) {
-    WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( display );
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( display );
     for( Runnable runnable : adapter.getRenderRunnables() ) {
       runnable.run();
     }
@@ -228,7 +232,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
   }
 
   private static void markInitialized( Display display ) {
-    ( ( WidgetAdapterImpl )getAdapter( display ) ).setInitialized( true );
+    ( ( WidgetRemoteAdapter )getAdapter( display ) ).setInitialized( true );
   }
 
   private static boolean hasResizeListener( Display display ) {
@@ -272,7 +276,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
 
     private static void runRenderRunnables( Widget widget ) {
-      WidgetAdapterImpl adapter = ( WidgetAdapterImpl )getAdapter( widget );
+      WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
       for( Runnable runnable : adapter.getRenderRunnables() ) {
         runnable.run();
       }

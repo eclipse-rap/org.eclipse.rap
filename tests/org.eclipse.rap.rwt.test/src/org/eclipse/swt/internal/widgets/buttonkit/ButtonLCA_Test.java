@@ -35,7 +35,7 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
@@ -116,7 +116,7 @@ public class ButtonLCA_Test {
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
   }
 
@@ -128,7 +128,7 @@ public class ButtonLCA_Test {
     button.setSelection( true );
     button.setGrayed( true );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( "grayed" ) );
   }
@@ -140,14 +140,14 @@ public class ButtonLCA_Test {
     testPreserveValues( display, button );
     button.setSelection( true );
     Fixture.preserveWidgets();
-    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
   }
 
   private void testPreserveValues( Display display, Button button ) throws IOException {
     Boolean hasListeners;
     // Text,Image
-    WidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    RemoteAdapter adapter = WidgetUtil.getAdapter( button );
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       button.setText( "abc" );
       Fixture.preserveWidgets();
