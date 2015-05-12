@@ -49,7 +49,8 @@ public class JasmineTestsContribution implements TestContribution {
     "spec/ProgressBar.spec.js",
     "spec/Badges.spec.js",
     "spec/ScrollBarsActivator.spec.js",
-    "spec/System.spec.js"
+    "spec/System.spec.js",
+    "spec/MultiCellWidget.spec.js",
   };
 
   public String getName() {

@@ -41,7 +41,6 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     this.__cellData = null;
     this.$cells = null;
     this.__cellCount = null;
-    this.__computedTotalSpacing = null;
     this.__styleRegExp = /([a-z])([A-Z])/g;
     this.__createCellData( cells );
     this.__paddingCache = [ 0, 0, 0, 0 ];
@@ -74,6 +73,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       themeable : true,
       apply : "_applySpacing",
       event : "changeSpacing"
+    },
+
+    vertical : {
+      init : false,
+      apply : "_applyVertical"
     },
 
     horizontalChildrenAlign : {
@@ -161,7 +165,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     setCellContent : function( cell, value ) {
       this.__updateComputedCellDimension( cell );
       if( this._cellHasContent( cell ) != ( value != null ) ) {
-        this._invalidateTotalSpacing();
+        this._invalidatePreferredInnerWidth();
         this.addToQueue( "createContent" );
       } else {
         this.addToQueue( "updateContent" );
@@ -205,7 +209,6 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     setCellWidth : function( cell, width ) {
       if( this._getCellWidth( cell ) !== width ) {
         this._setCellWidth( cell, width );
-        this._invalidateTotalSpacing();
         this._invalidatePreferredInnerWidth();
         this._scheduleLayoutX();
       }
@@ -213,7 +216,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     setCellHeight : function( cell, height ) {
       this._setCellHeight( cell, height );
-      this._invalidateTotalSpacing();
+      this._invalidatePreferredInnerWidth();
       this._invalidatePreferredInnerHeight();
       this._scheduleLayoutY();
     },
@@ -327,8 +330,13 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     ---------------------------------------------------------------------------
     */
 
+    _applyVertical : function() {
+      this._scheduleLayoutX();
+      this._scheduleLayoutY();
+    },
+
     _applySpacing : function() {
-      this._invalidateTotalSpacing();
+      this._invalidatePreferredInnerWidth();
       this._scheduleLayoutX();
     },
 
@@ -497,65 +505,68 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
     _isHeightEssential : rwt.util.Functions.returnTrue,
 
     _computePreferredInnerWidth : function() {
-      return this._getContentWidth( "ignoreFlexible" );
+      if( this.getVertical() ) {
+        return this._getContentSizeOrthogonalDir();
+      }
+      return this._getContentSizeFlowDir( "ignoreFlexible" );
+    },
+
+    _computePreferredInnerHeight : function() {
+      if( this.getVertical() ) {
+        return this._getContentSizeFlowDir( "ignoreFlexible" );
+      }
+      return this._getContentSizeOrthogonalDir();
     },
 
     _adjustCellWidth : function( cell, preferredCellWidth ) {
       // NOTE: Will assume current width as valid, not to be used for widget size calculation
       var inner = this._getAvailableInnerWidth();
-      var contentWidth = this._getContentWidth( "skipFlexible" );
+      var contentWidth = this._getContentSizeFlowDir( "skipFlexible" );
       var maxCellWidth = Math.max( 0, inner - contentWidth );
       var result;
       if( preferredCellWidth > maxCellWidth || this._expandFlexCell ) {
         result = maxCellWidth;
-      }  else {
+      } else {
         result = preferredCellWidth;
       }
       return result;
     },
 
-    // TODO [tb] : refactor
-    _getContentWidth : function( hint ) {
-      this._beforeComputeInnerWidth();
+    _getContentSizeFlowDir : function( hint ) {
+      var vertical = this.getVertical();
+      if( vertical ) {
+        this._beforeComputeInnerHeight();
+      } else {
+        this._beforeComputeInnerWidth();
+      }
+      var ignoreFlexible = hint === "ignoreFlexible";
+      var skipFlexible = hint === "skipFlexible";
+      var visibleCells = 0;
       var result = 0;
-      if( hint === "ignoreFlexible" ) {
-        var space = this.getTotalSpacing();
-        var content = 0;
-        for( var i = 0; i < this.__cellCount; i++ ) {
-          content += this.getCellWidth( i, true );
-        }
-        result = space + content;
-      } else if( hint === "skipFlexible" ) {
-        var spacing = this.getSpacing();
-        for( var i = 0; i < this.__cellCount; i++ ) {
-          if( i !== this._flexibleCell ) {
-            var cellWidth = this.getCellWidth( i );
-            result += cellWidth;
-            if( cellWidth > 0 ) {
-              result += spacing;
-            }
+      for( var i = 0; i < this.__cellCount; i++ ) {
+        if( this.cellIsDisplayable( i ) ) {
+          visibleCells++;
+          if( !skipFlexible || ( i !== this._flexibleCell ) ) {
+            result += vertical ? this.getCellHeight( i, ignoreFlexible ) : this.getCellWidth( i, ignoreFlexible );
           }
         }
-      } else if( hint === "flexible" ) {
-        var space = this.getTotalSpacing();
-        var content = 0;
-        for( var i = 0; i < this.__cellCount; i++ ) {
-          content += this.getCellWidth( i );
-        }
-        result = space + content;
-      } else {
-        throw new Error( "unkown hint" );
       }
+      result += Math.max( 0, visibleCells - 1 ) * this.getSpacing();
       return result;
     },
 
-    _computePreferredInnerHeight : function() {
-      this._beforeComputeInnerHeight();
-      var maxHeight = 0;
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        maxHeight = Math.max( maxHeight, this.getCellHeight( i, true ) );
+    _getContentSizeOrthogonalDir : function() {
+      var vertical = this.getVertical();
+      if( vertical ) {
+        this._beforeComputeInnerWidth();
+      } else {
+        this._beforeComputeInnerHeight();
       }
-      return maxHeight;
+      var result = 0;
+      for( var i = 0; i < this.__cellCount; i++ ) {
+        result = Math.max( result, vertical ? this.getCellWidth( i, true ) : this.getCellHeight( i, true ) );
+      }
+      return result;
     },
 
     _adjustCellHeight : function( cell, preferredCellHeight ) {
@@ -569,35 +580,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       return result;
     },
 
-    getTotalSpacing : function() {
-      if( this.__computedTotalSpacing == null ) {
-        var spaces = Math.max( 0, ( this.getTotalVisibleCells() - 1 ) );
-        this.__computedTotalSpacing = spaces * this.getSpacing();
-      }
-      return this.__computedTotalSpacing;
-    },
-
-    getTotalVisibleCells : function() {
-      var ret = 0;
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this.cellIsDisplayable( i ) ) {
-          ret++;
-        }
-      }
-      return ret;
-    },
-
-    /**
-     * a cell is "displayable" ( i.e. counts for the layout) if
-     * it either has a content set, or at least one dimension
-     */
     cellIsDisplayable : function( cell ) {
-      return ( this.getCellWidth( cell, true ) > 0 );
-    },
-
-    _invalidateTotalSpacing : function() {
-      this.__computedTotalSpacing = null;
-      this._invalidatePreferredInnerWidth();
+      return this._flexibleCell === cell || ( this.getCellWidth( cell ) > 0 );
     },
 
     renderPadding : function() { },
@@ -617,78 +601,82 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
                         || changes.initial
                         || ( changes.layoutX && this._flexibleCell != -1 );
       this._beforeRenderLayout( changes );
-      if ( changes.layoutX ) {
-        this._renderLayoutX();
+      var vertical = this.getVertical();
+      if( ( changes.layoutY && vertical ) || ( changes.layoutX && !vertical ) ) {
+        this._renderLayoutFlowDir();
       }
-      if ( changes.layoutY ) {
-        this._renderLayoutY();
+      if( ( changes.layoutX && vertical ) || ( changes.layoutY && !vertical ) ) {
+        this._renderLayoutOrthDir();
       }
       this._afterRenderLayout( changes );
       this.base( arguments, changes );
     },
 
-    _renderLayoutX : function() {
+    // NOTE: Currently no support for top/bottom alignment or flex-cells in vertical mode (we don't need it)
+    _renderLayoutFlowDir : function() {
       var space = this.getSpacing();
-      var pad = this.__paddingCache;
-      var align = this.getHorizontalChildrenAlign();
-      var total = this._getContentWidth( "flexible" );
-      var inner = this._getAvailableInnerWidth();
-      var firstCellLeft  = null;
-      switch( align ) {
-        case "left":
-          firstCellLeft  = pad[ 3 ];
-        break;
-        case "center":
-          firstCellLeft  = Math.round( pad[ 3 ] + inner * 0.5 - total * 0.5 );
-        break;
-        case "right":
-          firstCellLeft  = pad[ 3 ] + inner - total;
-        break;
-        default:
-          firstCellLeft  = pad[ 3 ];
-        break;
-      }
-      var left = firstCellLeft ;
+      var vertical = this.getVertical();
+      var offset = this._getFirstCellOffset( vertical );
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this.cellIsDisplayable( i ) ) {
-          var width = this.getCellWidth( i );
+          var size = vertical ? this.getCellHeight( i ) : this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
-            this.$cells[ i ].css( { left: left, width: Math.max( 0, width ) } );
+            this.$cells[ i ].css( vertical ? "top" : "left", offset );
+            this.$cells[ i ].css( vertical ? "height" : "width", Math.max( 0, size ) );
           }
-          left += ( width + space );
+          offset += ( size + space );
         }
       }
     },
 
-    _renderLayoutY : function() {
+    _getFirstCellOffset : function( vertical ) {
+      var align = vertical ? this.getVerticalChildrenAlign() : this.getHorizontalChildrenAlign();
+      var content = this._getContentSizeFlowDir();
+      var inner = vertical ? this.getInnerHeight() : this._getAvailableInnerWidth();
+      switch( align ) {
+        case "left":
+          return this.__paddingCache[ 3 ];
+        case "center":
+          return Math.round( this.__paddingCache[ 3 ] + inner / 2 - content / 2 );
+        case "middle":
+          return Math.round( this.__paddingCache[ 0 ] + inner / 2 - content / 2 );
+        case "right":
+          return this.__paddingCache[ 3 ] + inner - content;
+      }
+    },
+
+    _renderLayoutOrthDir : function() {
+      var vertical = this.getVertical();
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._cellHasContent( i ) ) {
-          this._renderCellLayoutY( i );
+          this._renderCellLayoutOrthDir( i, vertical );
         }
       }
     },
 
-    _renderCellLayoutY : function( cell ) {
-      var align = this.getVerticalChildrenAlign();
+    // NOTE: Currently no support for left/right alignment in vertical mode (we don't need it)
+    _renderCellLayoutOrthDir : function( cell, vertical ) {
+      var align = vertical ? this.getHorizontalChildrenAlign() : this.getVerticalChildrenAlign();
       var pad = this.__paddingCache;
-      var inner = this.getInnerHeight();
-      var height = this.getCellHeight( cell );
-      var top = null;
+      var inner = vertical ? this._getAvailableInnerWidth() : this.getInnerHeight();
+      var cellSize = vertical ? this.getCellWidth( cell ) : this.getCellHeight( cell );
+      var offset = null;
       switch( align ) {
         case "top":
-          top = pad[ 0 ];
+          offset = pad[ 0 ];
         break;
         case "middle":
-          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );
+          offset = Math.round( pad[ 0 ] + inner * 0.5 - cellSize * 0.5 );
+        break;
+        case "center":
+          offset = Math.round( pad[ 3 ] + inner * 0.5 - cellSize * 0.5 );
         break;
         case "bottom":
-          top = pad[ 0 ] + inner - height;
-        break;
-        default:
-          top = pad[ 0 ];
+          offset = pad[ 0 ] + inner - cellSize;
         break;
       }
-      this.$cells[ cell ].css( { top: top, height: Math.max( 0, height ) } );
+      this.$cells[ cell ].css( vertical ? "left" : "top", offset );
+      this.$cells[ cell ].css( vertical ? "width" : "height", cellSize );
     },
 
     _getAvailableInnerWidth : function() {

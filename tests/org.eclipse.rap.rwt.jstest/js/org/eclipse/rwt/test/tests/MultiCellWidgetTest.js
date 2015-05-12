@@ -139,28 +139,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
-    testSpacing : function() {
-      var widget = new rwt.widgets.base.MultiCellWidget(
-        [ "image", "label", "image", "label", "image" ] );
-      this._currentWidget = widget;
-      widget.setSpacing( 10 );
-      assertEquals( 0 , widget.getTotalSpacing() );
-      widget.setCellContent( 0, "bla" );
-      widget.setCellContent( 1, "bla" );
-      widget.setCellContent( 3, "bla" );
-      widget.setCellContent( 4, "bla" );
-      // only labels ( 1 + 3 )are visible since their size is computed:
-      assertEquals( 10 , widget.getTotalSpacing() );
-      widget.setCellWidth( 0, 10 ); // visible
-      widget.setCellWidth( 1, 0 ); // not visible (but created)
-      widget.setCellWidth( 2, 10 ); // visible
-      widget.setCellContent( 3, "" ); //not visible (but created)
-      widget.setCellWidth( 4, 10 ); // visible
-      assertEquals( 20 , widget.getTotalSpacing() );
-
-      this.disposeWidget( widget );
-    },
-
     testPadding : function() {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );
@@ -364,21 +342,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var newTextBounds = TestUtil.getElementBounds( widget._getTargetNode().lastChild );
       assertTrue( originalTextBounds.width > newTextBounds.width );
       assertEquals( originalTextBounds.height, newTextBounds.height );
-    },
-
-    testInvalidateSpacing : function() {
-      var widget = this.createDefaultWidget();
-      this.initWidget( widget, true );
-      widget.setCellWidth( 0, 10 );
-      widget.setCellWidth( 0, 10 );
-      widget.setSpacing( 0 );
-      assertEquals( 0, widget.getTotalSpacing() );
-      widget.setSpacing( 12 );
-      assertEquals( 12 , widget.getTotalSpacing() );
-      widget.setCellWidth( 0, null ); // => self-compute results in width 0
-      widget.setCellWidth( 0, null );
-      assertEquals( 0 , widget.getTotalSpacing() );
-      this.disposeWidget( widget );
     },
 
     testSettingCellWidthTwice : function() {
