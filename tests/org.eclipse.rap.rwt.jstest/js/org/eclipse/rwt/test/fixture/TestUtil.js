@@ -25,27 +25,27 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       throw( "Could not get bounds: no parentNode!" );
     }
     var space = {};
-    space.width =   this._parseLength( ps.width )
+    space.width =   this._parseLength( node.parentNode.offsetWidth || ps.width )
                   - this._parseLength( ps.borderLeftWidth || 0 )
                   - this._parseLength( ps.borderRightWidth || 0 );
-    space.height =   this._parseLength( ps.height )
+    space.height =   this._parseLength( node.parentNode.offsetHeight || ps.height )
                    - this._parseLength( ps.borderTopWidth || 0 )
                    - this._parseLength( ps.borderBottomWidth || 0 );
     var result = {};
-    result.width = this._parseLength( style.width );
-    result.height = this._parseLength( style.height );
-    if( style.right && !style.left ) {
+    result.width = this._parseLength( node.offsetWidth || style.width );
+    result.height = this._parseLength( node.offsetHeight || style.height );
+    if( style.right && !node.offsetLeft && !style.left ) {
       result.right = this._parseLength( style.right );
       result.left = space.width - ( result.right + result.width );
     } else {
-      result.left = this._parseLength( style.left );
+      result.left = this._parseLength( node.offsetLeft || style.left );
       result.right = space.width - ( result.left + result.width );
     }
-    if( style.bottom && !style.top ) {
+    if( style.bottom && !node.offsetTop && !style.top ) {
       result.bottom = this._parseLength( style.bottom );
       result.top = space.height - ( result.bottom + result.height );
     } else {
-      result.top = this._parseLength( style.top );
+      result.top = this._parseLength( node.offsetTop || style.top );
       result.bottom = space.height - ( result.top + result.height );
     }
     return result;

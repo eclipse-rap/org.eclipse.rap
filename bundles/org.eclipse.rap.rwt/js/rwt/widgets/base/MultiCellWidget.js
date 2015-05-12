@@ -502,7 +502,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     _adjustCellWidth : function( cell, preferredCellWidth ) {
       // NOTE: Will assume current width as valid, not to be used for widget size calculation
-      var inner = this.getInnerWidth();
+      var inner = this._getAvailableInnerWidth();
       var contentWidth = this._getContentWidth( "skipFlexible" );
       var maxCellWidth = Math.max( 0, inner - contentWidth );
       var result;
@@ -632,7 +632,7 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
       var pad = this.__paddingCache;
       var align = this.getHorizontalChildrenAlign();
       var total = this._getContentWidth( "flexible" );
-      var inner = this.getInnerWidth();
+      var inner = this._getAvailableInnerWidth();
       var firstCellLeft  = null;
       switch( align ) {
         case "left":
@@ -689,6 +689,10 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         break;
       }
       this.$cells[ cell ].css( { top: top, height: Math.max( 0, height ) } );
+    },
+
+    _getAvailableInnerWidth : function() {
+      return this.getInnerWidth();
     },
 
     /*

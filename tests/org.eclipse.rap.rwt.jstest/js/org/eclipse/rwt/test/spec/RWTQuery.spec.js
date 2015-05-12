@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -344,7 +344,6 @@ describe( "RWTQuery", function() {
     afterEach( function() {
       element = null;
     } );
-
 
     describe( "prop", function() {
 
@@ -977,6 +976,19 @@ describe( "RWTQuery", function() {
       } );
 
     } );
+
+    describe( "offset", function() {
+
+      it( "delegates to Location.js", function() {
+        spyOn( rwt.html.Location, "get" ).andReturn( { left: 12, top: 34 } );
+
+        var result = $( element ).offset();
+
+        expect( result ).toEqual( { left: 12, top: 34 } );
+        expect( rwt.html.Location.get).toHaveBeenCalledWith( element );
+      });
+
+    })
 
   } );
 

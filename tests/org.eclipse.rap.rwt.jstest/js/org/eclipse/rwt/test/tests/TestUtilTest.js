@@ -57,6 +57,33 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     },
 
 
+    testGetElementBoundsWithPrecentage : function() {
+      var parent = document.createElement( "div" );
+      document.body.appendChild(parent);
+      var child = document.createElement( "div" );
+      parent.style.width = "300px";
+      parent.style.height = "200px";
+      parent.style.position = "absolute";
+      parent.appendChild( child );
+      child.style.top = "10%";
+      child.style.left = "20%";
+      child.style.width = "30%";
+      child.style.height = "40%";
+      child.style.position = "absolute";
+
+      var bounds = TestUtil.getElementBounds( child );
+
+      assertEquals( {
+        top: 20,
+        left: 60,
+        width: 90,
+        height: 80,
+        right: 150,
+        bottom: 100
+      }, bounds);
+      document.body.removeChild(parent);
+    },
+
     testGetElementBoundsNoLeftTop : function() {
       var parent = document.createElement( "div" );
       var child = document.createElement( "div" );

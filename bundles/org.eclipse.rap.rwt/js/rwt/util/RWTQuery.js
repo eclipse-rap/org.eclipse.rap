@@ -137,6 +137,10 @@ rwt.util._RWTQuery.prototype = $.prototype = {
 
   is : function() {
     return this.__access( arguments, null, is_element );
+  },
+
+  offset: function() {
+    return this.__access( arguments, null, offset_element );
   }
 
 };
@@ -429,6 +433,11 @@ var get_element = function( element, args ) {
 
 var is_element = function( element, args ) {
   return element === asElement( args[ 0 ] );
+};
+
+var offset_element = function( element, args ) {
+  var location = rwt.html.Location.get( element );
+  return {left: location.left, top: location.top};
 };
 
 var text_element = function( element, args ) {

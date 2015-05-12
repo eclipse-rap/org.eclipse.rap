@@ -1358,6 +1358,7 @@ ToolItem {
   opacity: 1;
   animation: none;
   text-shadow: none;
+  border: 1px solid transparent;
 }
 
 ToolItem:hover {

@@ -401,7 +401,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
-      var lineStyle = item.getCellNode( 3 ).style;
       rwt.remote.ObjectRegistry.add( "w11", item );
       TestUtil.clearRequestLog();
       TestUtil.fakeListener( item, "Selection", true );
@@ -411,7 +410,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertNotNull( message.findNotifyOperation( "w11", "Selection"   ) );
       assertEquals( undefined, message.findNotifyProperty( "w11", "Selection", "detail" ) );
       TestUtil.clearRequestLog();
-      TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left, 10 ), 103 );
+      TestUtil.fakeMouseClick( item, 103 + item.$separator.get( 0).offsetLeft, 103 );
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getMessageObject();
       assertEquals( "arrow", message.findNotifyProperty( "w11", "Selection", "detail" ) );
@@ -419,33 +418,77 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
     },
 
-    testDropDownLineHeight : function() {
+    testDropDownLineLayout : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
-      item.setText( "hallo" );
-      item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
-      item.setPaddingTop( 10 );
-      item.setPaddingBottom( 1 );
+      item.setPadding( 10, 5, 1, 5 );
+      item.setText( "foo" );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
       item.addToDocument();
-      rwt.widgets.base.Widget.flushGlobalQueues();
-      var lineNode = item.getCellNode( 3 );
-      var padding = item.getPaddingTop() + item.getPaddingBottom();
-      var inner = item.getInnerHeight();
-      var targetHeight = inner + padding;
-      assertTrue( targetHeight <= parseInt( lineNode.style.height, 10 ) );
-      assertTrue( 0 >= parseInt( lineNode.style.top, 10 ) );
+      TestUtil.flush();
+
+      var bounds = TestUtil.getElementBounds(item.$separator.get( 0 ));
+      assertEquals(0, bounds.top);
+      assertEquals(0, bounds.bottom);
+      assertEquals(21, bounds.right);
+      assertEquals(1, bounds.width);
       item.destroy();
     },
 
     testDropDownLineBorder : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
       var border = new rwt.html.Border( 1, "outset", "black");
-      item.setText( "hallo" );
+      item.setText( "foo" );
       item.setSeparatorBorder( border );
-      item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
-      var lineNode = item.getCellNode( 3 );
+      var lineNode = item.$separator.get( 0 );
       assertContains( "outset", lineNode.style.cssText );
+      item.destroy();
+    },
+
+    testDropDownArrowLayout : function() {
+      var item = new rwt.widgets.ToolItem( "dropDown" );
+      item.setPadding( 10, 5, 1, 5 );
+      item.setHeight( 80 );
+      item.setText( "foo" );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
+      item.addToDocument();
+      TestUtil.flush();
+
+      var bounds = TestUtil.getElementBounds( item.$dropDownArrow.get( 0 ) );
+      assertEquals( 38, bounds.top );
+      assertEquals( 29, bounds.bottom );
+      assertEquals( 4, bounds.right );
+      assertEquals( 13, bounds.width );
+      assertEquals( 13, bounds.height );
+      item.destroy();
+    },
+
+    testDropDownArrowImage : function() {
+      var item = new rwt.widgets.ToolItem( "dropDown" );
+      item.setText( "foo" );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
+      item.addToDocument();
+      TestUtil.flush();
+
+      var arrow = item.$dropDownArrow.get( 0 );
+      assertEquals( "bar.jpg", TestUtil.getCssBackgroundImage( arrow ).split( "/" ).pop() );
+      assertEquals( "absolute", arrow.style.position );
+      item.destroy();
+    },
+
+    testDropDownIconCellHorizontalPosition : function() {
+      var item = new rwt.widgets.ToolItem( "dropDown" );
+      item.setPadding( 10, 5, 1, 5 );
+      item.setWidth( 80 );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
+      item.setIcon( [ "foo.jpg", 20, 20 ] );
+      item.addToDocument();
+      TestUtil.flush();
+
+      var bounds = TestUtil.getElementBounds( item.getCellNode( 1 ) );
+      assertEquals(19, bounds.left);
       item.destroy();
     },
 
@@ -646,7 +689,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
       item.addToDocument();
       rwt.widgets.base.Widget.flushGlobalQueues();
-      var lineStyle = item.getCellNode( 3 ).style;
       rwt.remote.WidgetManager.getInstance().add( item, "w1" );
       TestUtil.clearRequestLog();
       TestUtil.fakeListener( item, "Selection", true );
@@ -655,7 +697,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
         log++;
       } );
 
-      TestUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left, 10 ), 103 );
+      TestUtil.fakeMouseClick( item, 103 + item.$separator.get( 0).offsetLeft, 103 );
 
       assertTrue( log > 0 );
       TestUtil.clearRequestLog();

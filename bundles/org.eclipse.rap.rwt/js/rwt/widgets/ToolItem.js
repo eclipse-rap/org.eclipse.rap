@@ -9,6 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function($){
+
 rwt.qx.Class.define( "rwt.widgets.ToolItem", {
 
   extend : rwt.widgets.base.BasicButton,
@@ -16,21 +18,29 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
   construct : function( itemType, vertical ) {
     this.base( arguments, itemType );
     this._isDropDown = false;
+    this.setAppearance( "toolbar-button" );
     if( itemType == "dropDown" ) {
       this._isDropDown = true;
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = true;
-      this.setCellDimension( 3, 1, 0 );
-      this.setCellContent( 3, "" );
+      this.$dropDownArrow = $( "<div>" ).css({
+        position: "absolute"
+      });
+      this.$separator = $( "<div>" ).css({
+        position: "absolute",
+        top: 0,
+        right: 0,
+        left: "auto",
+        width: 1,
+        height: "100%"
+      });
     }
     if( vertical ) {
       this.addState( "rwt_VERTICAL" );
     }
-    this._separatorBorder = null;
     this._rawText = null;
     this._mnemonicIndex = null;
-    this.setAppearance( "toolbar-button" );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keyup", this._onKeyUp );
     this.addEventListener( "changeParent", this._onChangeParent, this );
@@ -58,8 +68,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
   },
 
   members : {
-    // overwritten:
-    _CELLORDER : [ "image", "image", "label", "label", "image" ],
 
     // overwritten:
     _onKeyPress : function( event ) {
@@ -127,7 +135,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     _onMouseDown : function( event ) {
       if ( event.getTarget() == this && event.isLeftButtonPressed() ) {
         this.removeState( "abandoned" );
-        if( this._isDropdownClick( event ) ) {
+        if( this._isDropDownClick( event ) ) {
           this._onDropDownClick();
         } else {
           this.addState( "pressed" );
@@ -135,13 +143,10 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       }
     },
 
-    _isDropdownClick : function( event ) {
+    _isDropDownClick : function( event ) {
       var result = false;
-      var node = this.getCellNode( 3 );
-      if( node != null ) {
-        var nodeLeft = rwt.html.Location.getLeft( node );
-        var clickLeft = event.getClientX();
-        result = clickLeft > nodeLeft;
+      if( this.$separator ) {
+        result = event.getClientX() > this.$separator.offset().left;
       }
       return result;
     },
@@ -154,70 +159,55 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     _applyDropDownArrow : function( value ) {
-      var url = value ? value[ 0 ] : null;
-      var width = value ? value[ 1 ] : 0;
-      var height = value ? value[ 2 ] : 0;
-      this.setCellContent( 4, url );
-      this.setCellDimension( 4, width, height );
+      if( this._isDropDown ) {
+        var url = value ? value[ 0 ] : null;
+        var width = value ? value[ 1 ] : 0;
+        var height = value ? value[ 2 ] : 0;
+        this.$dropDownArrow.css({
+          backgroundImage: url,
+          width: width,
+          height: height,
+          right: this.getSpacing()
+        });
+        this.$separator.css("right", width + this.getSpacing() * 2 );
+      }
     },
 
     _applySeparatorBorder : function( value ) {
-      this._queueSeparatorBorder( value );
-    },
-
-    _queueSeparatorBorder : function( value ) {
-      this._separatorBorder = value;
-      this.addToQueue( "separatorBorder" );
-    },
-
-    // overwritten:
-    _beforeRenderLayout : function( changes ) {
-      // TODO [tb] : Is there a less error-prone and shabby way to layout the dropDown icon?
       if( this._isDropDown ) {
-        if( changes.layoutY ) {
-          // the cell used for the line needs to have 100% height
-          var padding = this.getPaddingTop() + this.getPaddingBottom();
-          this._setCellHeight( 3, this.getInnerHeight() + padding );
-        }
-        if( changes.layoutX ) {
-          // uses cell 0 (unused for tool-items) and 2 (text)
-          // to force the dropdown-area to the right
-          var inner = this.getInnerWidth();
-          this._setCellWidth( 0, 0 );
-          this._setCellWidth( 2, null );
-          var preferred = this.getPreferredInnerWidth();
-          var diff = inner - preferred;
-          if( diff > 0 ) {
-            var space = this.getSpacing();
-            if( ( diff > ( space * 2 ) ) && this.getHorizontalChildrenAlign() != "left" ) {
-              var spaceLeft = Math.round( diff * 0.5 ) - space;
-              var spaceRight = Math.round( diff * 0.5 );
-              this.setCellWidth( 0, spaceLeft );
-              this.setCellWidth( 2, this.getCellWidth( 2 ) + spaceRight );
-            } else {
-              this.setCellWidth( 2, this.getCellWidth( 2 ) + diff );
-            }
-          }
-        }
-        if( changes.separatorBorder ) {
-          // apply the separator-border (currently verly limited)
-          var style = this.getCellNode( 3 ).style;
-          var borderWidth = this._separatorBorder.getWidthLeft();
-          var borderStyle = this._separatorBorder.getStyleLeft();
-          var borderColor = this._separatorBorder.getColorLeft();
-          style.borderLeftWidth = ( borderWidth || 0 ) + "px";
-          style.borderLeftStyle = borderStyle || "none";
-          style.borderLeftColor = borderColor || "";
-        }
+        var border = this.getSeparatorBorder();
+        this.$separator.css({
+          borderLeftWidth: ( border.getWidthLeft() || 0 ) + "px",
+          borderLeftStyle: border.getStyleLeft() || "none",
+          borderLeftColor: border.getColorLeft() || ""
+        });
+      }
+    },
+
+    _createSubElements: function() {
+      this.base( arguments );
+      if( this._isDropDown ) {
+        this.$dropDownArrow.appendTo( this );
+        this.$separator.appendTo( this );
       }
     },
 
     // overwritten:
-    _renderCellLayoutY : function( cell ) {
-      this.base( arguments, cell );
-      if( this._isDropDown && cell == 3 ) {
-        this.getCellNode( cell ).style.top = 0;
+    _afterRenderLayout : function( changes ) {
+      if( this._isDropDown && changes.layoutY ) {
+        var innerHeight = this.getInnerHeight();
+        var imageHeight = ( this.getDropDownArrow() || [ null, 0, 0 ] )[ 2 ];
+        this.$dropDownArrow.css("top", Math.round( this.getPaddingTop() + innerHeight / 2 - imageHeight / 2) );
       }
+    },
+
+    // overwritten:
+    _getAvailableInnerWidth : function() {
+      if( !this._isDropDown ) {
+        return this.getInnerWidth();
+      }
+      var imageWidth = ( this.getDropDownArrow() || [ null, 0, 0 ] )[ 1 ];
+      return Math.max( 0, this.getInnerWidth() - imageWidth - 1 - this.getSpacing() * 2 );
     },
 
     // overwritten:
@@ -257,3 +247,5 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
   }
 
 } );
+
+}( rwt.util._RWTQuery ));
