@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
@@ -42,6 +43,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -70,41 +72,51 @@ public abstract class Control extends Widget implements Drawable {
 
   private final class ControlAdapter implements IControlAdapter {
 
+    @Override
     public Shell getShell() {
       return internalGetShell();
     }
 
+    @Override
     public int getTabIndex() {
       return tabIndex;
     }
 
+    @Override
     public void setTabIndex( int index ) {
       tabIndex = index;
     }
 
+    @Override
     public Font getUserFont() {
       return font;
     }
 
+    @Override
     public Color getUserForeground() {
       return foreground;
     }
 
+    @Override
     public Color getUserBackground() {
       return background;
     }
 
+    @Override
     public Image getUserBackgroundImage() {
       return backgroundImage;
     }
 
+    @Override
     public boolean getBackgroundTransparency() {
       return backgroundTransparency;
     }
 
+    @Override
     public boolean isPacked() {
       return packed;
     }
+
   }
 
   private transient IControlAdapter controlAdapter;
@@ -1490,6 +1502,13 @@ public abstract class Control extends Widget implements Drawable {
     return result;
   }
 
+  @Override
+  RemoteAdapter createRemoteAdapter( Widget parent, String id ) {
+    ControlRemoteAdapter remoteAdapter = new ControlRemoteAdapter( id );
+    remoteAdapter.setParent( parent );
+    return remoteAdapter;
+  }
+
   //////////////////////////////////
   // Methods to add/remove listener
 
@@ -2569,6 +2588,7 @@ public abstract class Control extends Widget implements Drawable {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
         menuDisposeListener = new DisposeListener() {
+          @Override
           public void widgetDisposed( DisposeEvent event ) {
             menu = null;
           }

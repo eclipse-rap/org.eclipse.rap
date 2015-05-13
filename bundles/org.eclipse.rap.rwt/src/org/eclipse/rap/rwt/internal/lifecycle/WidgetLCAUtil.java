@@ -209,7 +209,7 @@ public final class WidgetLCAUtil {
     }
   }
 
-  private static void renderToolTipMarkupEnabled( Widget widget ) {
+  static void renderToolTipMarkupEnabled( Widget widget ) {
     RemoteAdapter adapter = getAdapter( widget );
     if( !adapter.isInitialized() && isToolTipMarkupEnabledFor( widget ) ) {
       getRemoteObject( widget ).set( PROP_TOOLTIP_MARKUP_ENABLED, true );
@@ -331,8 +331,7 @@ public final class WidgetLCAUtil {
   }
 
   public static boolean wasEventSent( Widget widget, String eventName ) {
-    String widgetId = WidgetUtil.getId( widget );
-    return ProtocolUtil.wasEventSent( widgetId, eventName );
+    return ProtocolUtil.wasEventSent( getId( widget ), eventName );
   }
 
   public static void preserveProperty( Widget widget, String property, Object value ) {
@@ -551,23 +550,50 @@ public final class WidgetLCAUtil {
     ClientListenerUtil.clearClientListenerOperations( widget );
   }
 
-  public static boolean hasChanged( Widget widget, String property, Object newValue ) {
-    Object oldValue = getAdapter( widget ).getPreserved( property );
-    return !equals( oldValue, newValue );
+  public static boolean hasChanged( Widget widget, String property, Object actualValue ) {
+    return !equals( actualValue, getAdapter( widget ).getPreserved( property ) );
   }
 
   public static boolean hasChanged( Widget widget,
                                     String property,
-                                    Object newValue,
+                                    Object actualValue,
                                     Object defaultValue )
   {
-    boolean result;
+    Object preservedValue = getAdapter( widget ).getPreserved( property );
+    return changed( widget, actualValue, preservedValue, defaultValue );
+  }
+
+  static boolean changed( Widget widget,
+                          Object actualValue,
+                          Object preservedValue,
+                          Object defaultValue )
+  {
     if( getAdapter( widget ).isInitialized() ) {
-      result = hasChanged( widget, property, newValue );
-    } else {
-      result = !equals( newValue, defaultValue );
+      return !equals( actualValue, preservedValue );
     }
-    return result;
+    return !equals( actualValue, defaultValue );
+  }
+
+  static boolean changed( Widget widget,
+                          boolean actualValue,
+                          boolean preservedValue,
+                          boolean defaultValue )
+  {
+    if( getAdapter( widget ).isInitialized() ) {
+      return actualValue != preservedValue;
+    }
+    return actualValue != defaultValue;
+  }
+
+  static boolean changed( Widget widget,
+                          int actualValue,
+                          int preservedValue,
+                          int defaultValue )
+  {
+    if( getAdapter( widget ).isInitialized() ) {
+      return actualValue != preservedValue;
+    }
+    return actualValue != defaultValue;
   }
 
   public static String[] getStyles( Widget widget, String[] styles ) {

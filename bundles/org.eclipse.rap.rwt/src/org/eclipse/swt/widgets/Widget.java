@@ -201,9 +201,13 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   private RemoteAdapter createRemoteAdapter( Widget parent ) {
     String id = IdGenerator.getInstance( RWT.getUISession( display ) ).createId( this );
-    WidgetRemoteAdapter widgetAdapter = new WidgetRemoteAdapter( id );
-    widgetAdapter.setParent( parent );
-    return widgetAdapter;
+    return createRemoteAdapter( parent, id );
+  }
+
+  RemoteAdapter createRemoteAdapter( Widget parent, String id ) {
+    WidgetRemoteAdapter remoteAdapter = new WidgetRemoteAdapter( id );
+    remoteAdapter.setParent( parent );
+    return remoteAdapter;
   }
 
   private ApplicationContextImpl getApplicationContext() {

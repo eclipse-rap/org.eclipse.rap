@@ -25,18 +25,18 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   private final static Runnable[] EMPTY = new Runnable[ 0 ];
 
   private final String id;
+  private Widget parent;
   private boolean initialized;
   private transient Map<String,Object> preservedValues;
   private transient Runnable[] renderRunnables;
   private transient String cachedVariant;
-  private Widget parent;
 
   public WidgetRemoteAdapter( String id ) {
     this.id = id;
     initialize();
   }
 
-  private void initialize() {
+  void initialize() {
     preservedValues = new HashMap<>();
   }
 

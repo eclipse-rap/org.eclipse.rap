@@ -158,7 +158,7 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
-  public void testNonSerializableFields() throws Exception {
+  public void testTransientFields() throws Exception {
     String property = "foo";
     adapter.setCachedVariant( "cachedVariant" );
     adapter.addRenderRunnable( mock( Runnable.class ) );

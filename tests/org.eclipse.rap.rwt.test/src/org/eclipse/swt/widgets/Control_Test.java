@@ -12,14 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,6 +27,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
@@ -58,6 +52,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlHolder;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
@@ -1575,6 +1570,25 @@ public class Control_Test {
     Control control = new Button( shell, SWT.NONE );
 
     assertTrue( control.isReparentable() );
+  }
+
+  @Test
+  public void testRemoteAdapter_isAControlRemoteAdapter() {
+    Control control = new Control( shell, SWT.NONE ) {};
+
+    RemoteAdapter adapter = control.getAdapter( RemoteAdapter.class );
+
+    assertTrue( adapter instanceof ControlRemoteAdapter );
+  }
+
+  @Test
+  public void testRemoteAdapter_isOnlyCreatedOnce() {
+    Control control = new Control( shell, SWT.NONE ) {};
+
+    RemoteAdapter adapter1 = control.getAdapter( RemoteAdapter.class );
+    RemoteAdapter adapter2 = control.getAdapter( RemoteAdapter.class );
+
+    assertSame( adapter1, adapter2 );
   }
 
   private static class RedrawLogginShell extends Shell {

@@ -76,7 +76,7 @@ public class DNDEntryPoint implements EntryPoint {
   private static void assignWidgetId( Widget widget, String id ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
     try {
-      Field field = adapter.getClass().getDeclaredField( "id" );
+      Field field = WidgetRemoteAdapter.class.getDeclaredField( "id" );
       field.setAccessible( true );
       field.set( adapter, id );
     } catch( Exception exception ) {

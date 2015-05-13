@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ import org.eclipse.swt.SWTError;
  *
  * @since 1.2
  */
-public final class Cursor extends Resource {
+public class Cursor extends Resource {
 
   private final int value;
 
@@ -56,7 +56,7 @@ public final class Cursor extends Resource {
    * </p>
    * NOTE:
    * It is recommended to use {@link org.eclipse.swt.widgets.Display#getSystemCursor(int)}
-   * instead of using this constructor. This way you can avoid the 
+   * instead of using this constructor. This way you can avoid the
    * overhead of disposing the Cursor resource.
    *
    * @param device the device on which to allocate the cursor
@@ -111,6 +111,7 @@ public final class Cursor extends Resource {
    *
    * @see #hashCode
    */
+  @Override
   public boolean equals( Object object ) {
     boolean result;
     if( object == this ) {
@@ -134,6 +135,7 @@ public final class Cursor extends Resource {
    *
    * @see #equals
    */
+  @Override
   public int hashCode() {
     return 101 * value;
   }
@@ -144,6 +146,7 @@ public final class Cursor extends Resource {
    *
    * @return a string representation of the receiver
    */
+  @Override
   public String toString () {
     String result;
     if (isDisposed()) {

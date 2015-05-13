@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,13 +26,13 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil;
 import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
-import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
@@ -44,8 +44,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +61,7 @@ public class WidgetLCAUtil_Test {
   private static final JsonArray BLUE_JSON = JsonArray.readFrom( "[0, 16, 255, 255]" );
   private Display display;
   private Shell shell;
-  private Control widget;
+  private Widget widget;
   private Color blue;
 
   @Before
@@ -68,7 +71,7 @@ public class WidgetLCAUtil_Test {
     display = new Display();
     blue = new Color( display, 0, 16, 255 );
     shell = new Shell( display , SWT.NONE );
-    widget = new Button( shell, SWT.PUSH );
+    widget = new ToolItem( new ToolBar( shell, SWT.NONE ), SWT.NONE );
   }
 
   @After
@@ -104,7 +107,7 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testHasChangedWidthArrays() {
+  public void testHasChangedWithArrays() {
     List list = new List( shell, SWT.MULTI );
 
     boolean hasChanged;
@@ -323,6 +326,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderListenHelp() {
+    Control widget = new Button( shell, SWT.PUSH );
     widget.addHelpListener( mock( HelpListener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
 
@@ -332,6 +336,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderListenHelpUnchanged() {
+    Control widget = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.addHelpListener( mock( HelpListener.class ) );
@@ -345,6 +350,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderListenHelpRemoved() {
+    Control widget = new Button( shell, SWT.PUSH );
     HelpListener listener = mock( HelpListener.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -493,6 +499,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderInitialMenu() {
+    MenuItem widget = new MenuItem( new Menu( shell, SWT.NONE ), SWT.CASCADE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
 
@@ -504,6 +511,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderMenu() {
+    MenuItem widget = new MenuItem( new Menu( shell, SWT.NONE ), SWT.CASCADE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     Menu menu = new Menu( widget );
@@ -517,6 +525,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderMenuReset() {
+    MenuItem widget = new MenuItem( new Menu( shell, SWT.NONE ), SWT.CASCADE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     Menu menu = new Menu( widget );
@@ -652,6 +661,7 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderToolTipUnchanged() {
+    ToolItem widget = new ToolItem( new ToolBar( shell, SWT.NONE ), SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setToolTipText( "foo" );

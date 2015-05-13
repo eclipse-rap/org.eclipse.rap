@@ -267,6 +267,16 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testRenderToolTipText_unchanged_null() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "toolTip" ) );
+  }
+
+  @Test
   public void testRenderToolTipText_changed() {
     Fixture.markInitialized( control );
 
@@ -275,6 +285,18 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderChanges( control );
 
     assertEquals( "foo", getProtocolMessage().findSetProperty( control, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderToolTipText_reset() {
+    Fixture.markInitialized( control );
+    control.setToolTipText( "foo" );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setToolTipText( null );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( "", getProtocolMessage().findSetProperty( control, "toolTip" ).asString() );
   }
 
   @Test
