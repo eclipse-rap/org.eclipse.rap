@@ -77,7 +77,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
 
     vertical : {
       init : false,
-      apply : "_applyVertical"
+      apply : "_applyVertical",
+      themeable : true
     },
 
     horizontalChildrenAlign : {

@@ -223,6 +223,9 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       } else {
         this._toggleFirstLastState( newParent );
       }
+      if( newParent ) {
+        this.toggleState( "rwt_RIGHT", newParent.hasState( "rwt_RIGHT" ) );
+      }
     },
 
     _toggleFirstLastState : function( parent ) {

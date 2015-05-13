@@ -53,6 +53,7 @@ public class ToolBarTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
+    createStyleButton( "RIGHT", SWT.RIGHT );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
     createStyleButton( "NO_RADIO_GROUP", SWT.NO_RADIO_GROUP );

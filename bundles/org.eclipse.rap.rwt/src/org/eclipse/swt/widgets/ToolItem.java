@@ -23,7 +23,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
@@ -577,46 +576,60 @@ public class ToolItem extends Item {
    }
 
   int getPreferredHeight() {
-    int height = DEFAULT_HEIGHT;
+    int result = 0;
     if( ( style & SWT.SEPARATOR ) == 0 ) {
-      BoxDimensions border = getBorder();
-      BoxDimensions padding = getPadding();
-      int frameHeight = padding.top + padding.bottom + border.top + border.bottom;
-      if( !"".equals( getText() ) ) {
+      boolean styleRight = ( parent.style & SWT.RIGHT ) != 0;
+      boolean hasImage = image != null;
+      boolean hasText = !"".equals( text );
+      if( hasImage ) {
+        result += image.getBounds().height;
+      }
+      if( hasText ) {
         int charHeight = TextSizeUtil.getCharHeight( parent.getFont() );
-        height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
+        result = styleRight ? Math.max( result, charHeight ) : result + charHeight;
       }
-      if( getImage() != null ) {
-        int imageHeight = getImage().getBounds().height;
-        height = Math.max( height, imageHeight + frameHeight );
+      if( !styleRight && hasText && hasImage ) {
+        result += getSpacing();
       }
+      result += getFrameHeight();
     }
-    return height;
+    return Math.max( result, DEFAULT_HEIGHT );
   }
 
   int getPreferredWidth() {
     int result = 0;
+    boolean styleRight = ( parent.style & SWT.RIGHT ) != 0;
     boolean hasImage = image != null;
     boolean hasText = !"".equals( text );
     if( hasImage ) {
       result += image.getBounds().width;
     }
     if( hasText ) {
-      Font font = parent.getFont();
-      result += TextSizeUtil.stringExtent( font, text ).x;
+      int textWidth = TextSizeUtil.stringExtent( parent.getFont(), text ).x;
+      result = styleRight ? result + textWidth : Math.max( result, textWidth );
     }
-    if( hasText && hasImage ) {
+    if( styleRight && hasText && hasImage ) {
       result += getSpacing();
     }
-    BoxDimensions border = getBorder();
-    BoxDimensions padding = getPadding();
     if( ( style & SWT.DROP_DOWN ) != 0 ) {
       result += getSpacing() * 2;
       result += 1; // the separator-line
       result += getDropDownImageSize().width;
     }
-    result += padding.left + padding.right + border.left + border.right;
+    result += getFrameWidth();
     return result;
+  }
+
+  private int getFrameWidth() {
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
+    return padding.left + padding.right + border.left + border.right;
+  }
+
+  private int getFrameHeight() {
+    BoxDimensions border = getBorder();
+    BoxDimensions padding = getPadding();
+    return padding.top + padding.bottom + border.top + border.bottom;
   }
 
   private BoxDimensions getBorder() {

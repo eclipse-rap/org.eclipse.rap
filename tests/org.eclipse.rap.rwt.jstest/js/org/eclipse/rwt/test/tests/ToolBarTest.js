@@ -38,6 +38,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertFalse( widget.hasState( "rwt_FLAT" ) );
+      assertFalse( widget.hasState( "rwt_RIGHT" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -56,6 +57,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       var widget = ObjectRegistry.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget.hasState( "rwt_FLAT" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateTooBarWithRightByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ToolBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL", "RIGHT" ],
+          "parent" : "w2"
+        }
+      } );
+      var widget = ObjectRegistry.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget.hasState( "rwt_RIGHT" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -164,6 +183,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       widget.destroy();
     },
 
+    testCreateVerticallyOrientedToolItemByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      assertTrue( widget.getVertical() );
+      assertFalse( widget.hasState( "rwt_RIGHT" ) );
+      shell.destroy();
+    },
+
+    testCreateHorizontallyOrientedToolItemByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "RIGHT" ] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      assertFalse( widget.getVertical() );
+      assertTrue( widget.hasState( "rwt_RIGHT" ) );
+      shell.destroy();
+    },
+
     testCreateToolItemWithIndexByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
@@ -181,7 +222,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       checkToolItem.destroy();
     },
 
-    testCreateDestroyTooltemByProtocol : function() {
+    testCreateDestroyToolItemByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var toolbar = this._createToolBarByProtocol( "w3", "w2", [] );
       var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );

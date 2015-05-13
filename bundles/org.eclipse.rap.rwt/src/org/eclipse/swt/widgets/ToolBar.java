@@ -35,7 +35,7 @@ import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
  * </p><p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>FLAT, <!-- WRAP, RIGHT, --> HORIZONTAL, VERTICAL<!--, SHADOW_OUT--></dd>
+ * <dd>FLAT, <!-- WRAP, --> RIGHT, HORIZONTAL, VERTICAL<!--, SHADOW_OUT--></dd>
  * <dt><b>Events:</b></dt>
  * <dd>(none)</dd>
  * </dl>
