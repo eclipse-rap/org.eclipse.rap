@@ -45,6 +45,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
@@ -530,6 +531,20 @@ public final class WidgetLCAUtil {
     Boolean defaultValueObject = Boolean.valueOf( defaultValue );
     if( hasChanged( widget, listener, newValueObject, defaultValueObject ) ) {
       getRemoteObject( widget ).listen( listener, newValue );
+    }
+  }
+
+  public static void preserveListener( Widget widget, int eventType ) {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
+    adapter.preserveListener( eventType, isListening( widget, eventType ) );
+  }
+
+  public static void renderListener( Widget widget, int eventType, String eventName ) {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
+    boolean actualValue = isListening( widget, eventType );
+    boolean preservedValue = adapter.getPreservedListener( eventType );
+    if( changed( widget, actualValue, preservedValue, false ) ) {
+      getRemoteObject( widget ).listen( eventName, actualValue );
     }
   }
 

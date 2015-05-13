@@ -84,6 +84,37 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testGetPreservedListener_initiallyFalse() {
+    assertFalse( adapter.getPreservedListener( 1 ) );
+    assertFalse( adapter.getPreservedListener( 23 ) );
+    assertFalse( adapter.getPreservedListener( 64 ) );
+  }
+
+  @Test
+  public void testGetPreservedListener_setAfterPreserving() {
+    adapter.preserveListener( 1, true );
+    adapter.preserveListener( 23, false );
+    adapter.preserveListener( 42, true );
+    adapter.preserveListener( 64, false );
+
+    assertTrue( adapter.getPreservedListener( 1 ) );
+    assertFalse( adapter.getPreservedListener( 23 ) );
+    assertTrue( adapter.getPreservedListener( 42 ) );
+    assertFalse( adapter.getPreservedListener( 64 ) );
+  }
+
+  @Test
+  public void testGetPreservedListener_resetAfterClear() {
+    adapter.preserveListener( 23, true );
+    adapter.preserveListener( 42, false );
+
+    adapter.clearPreserved();
+
+    assertFalse( adapter.getPreservedListener( 23 ) );
+    assertFalse( adapter.getPreservedListener( 42 ) );
+  }
+
+  @Test
   public void testCachedVariant() {
     adapter.setCachedVariant( "foo" );
 
@@ -163,12 +194,14 @@ public class WidgetRemoteAdapter_Test {
     adapter.setCachedVariant( "cachedVariant" );
     adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
+    adapter.preserveListener( 23, true );
 
     WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
 
     assertNull( deserializedAdapter.getCachedVariant() );
     assertEquals( 0, deserializedAdapter.getRenderRunnables().length );
     assertNull( deserializedAdapter.getPreserved( property ) );
+    assertFalse( deserializedAdapter.getPreservedListener( 23 ) );
   }
 
 }

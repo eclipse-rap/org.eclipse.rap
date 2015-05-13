@@ -27,7 +27,8 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   private final String id;
   private Widget parent;
   private boolean initialized;
-  private transient Map<String,Object> preservedValues;
+  private transient Map<String, Object> preservedValues;
+  private transient long preservedListeners;
   private transient Runnable[] renderRunnables;
   private transient String cachedVariant;
 
@@ -73,8 +74,22 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
     return preservedValues.get( propertyName );
   }
 
+  public void preserveListener( int eventType, boolean value ) {
+    long eventMask = getEventMask( eventType );
+    if( value ) {
+      preservedListeners |= eventMask;
+    } else {
+      preservedListeners &= ~eventMask;
+    }
+  }
+
+  public boolean getPreservedListener( int eventType ) {
+    return ( preservedListeners & getEventMask( eventType ) ) != 0;
+  }
+
   public void clearPreserved() {
     preservedValues.clear();
+    preservedListeners = 0;
   }
 
   public void addRenderRunnable( Runnable renderRunnable ) {
@@ -114,6 +129,13 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   private Object readResolve() {
     initialize();
     return this;
+  }
+
+  private static long getEventMask( int eventType ) {
+    if( eventType <= 0 || eventType > 64 ) {
+      throw new IllegalArgumentException( "eventType not supported: " + eventType );
+    }
+    return 1L << (eventType - 1);
   }
 
 }
