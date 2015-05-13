@@ -43,15 +43,10 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -79,7 +74,6 @@ public class ScrolledCompositeLCA_Test {
     hScroll = sc.getHorizontalBar();
     vScroll = sc.getVerticalBar();
     lca = new ScrolledCompositeLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -88,14 +82,8 @@ public class ScrolledCompositeLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( sc );
-    ControlLCATestUtil.testFocusListener( sc );
-    ControlLCATestUtil.testMouseListener( sc );
-    ControlLCATestUtil.testKeyListener( sc );
-    ControlLCATestUtil.testTraverseListener( sc );
-    ControlLCATestUtil.testMenuDetectListener( sc );
-    ControlLCATestUtil.testHelpListener( sc );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( sc );
   }
 
   @Test
@@ -112,67 +100,6 @@ public class ScrolledCompositeLCA_Test {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
-    // bound
-    sc.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( sc );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    sc.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    // visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    sc.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    sc.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    sc.setEnabled( true );
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    sc.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    sc.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    sc.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( null, sc.getToolTipText() );
-    Fixture.clearPreserved();
-    sc.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    assertEquals( "some text", sc.getToolTipText() );
   }
 
   @Test

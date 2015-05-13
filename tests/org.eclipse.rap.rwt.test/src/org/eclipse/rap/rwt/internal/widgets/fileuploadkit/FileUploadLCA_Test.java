@@ -28,7 +28,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
@@ -43,9 +42,7 @@ import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -68,7 +65,6 @@ public class FileUploadLCA_Test {
     shell = new Shell( display );
     fileUpload = new FileUpload( shell, SWT.NONE );
     lca = new FileUploadLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -77,26 +73,8 @@ public class FileUploadLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( fileUpload );
-    ControlLCATestUtil.testFocusListener( fileUpload );
-    ControlLCATestUtil.testMouseListener( fileUpload );
-    ControlLCATestUtil.testKeyListener( fileUpload );
-    ControlLCATestUtil.testTraverseListener( fileUpload );
-    ControlLCATestUtil.testMenuDetectListener( fileUpload );
-    ControlLCATestUtil.testHelpListener( fileUpload );
-  }
-
-  @Test
-  public void testPreserveBounds() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = WidgetUtil.getAdapter( fileUpload );
-    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
-    fileUpload.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( fileUpload );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( fileUpload );
   }
 
   @Test

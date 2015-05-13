@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,6 @@ public class BrowserLCA_Test {
     shell = new Shell( display );
     browser = new Browser( shell, SWT.NONE );
     lca = new BrowserLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -73,14 +72,8 @@ public class BrowserLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( browser );
-    ControlLCATestUtil.testFocusListener( browser );
-    ControlLCATestUtil.testMouseListener( browser );
-    ControlLCATestUtil.testKeyListener( browser );
-    ControlLCATestUtil.testTraverseListener( browser );
-    ControlLCATestUtil.testMenuDetectListener( browser );
-    ControlLCATestUtil.testHelpListener( browser );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( browser );
   }
 
   @Test

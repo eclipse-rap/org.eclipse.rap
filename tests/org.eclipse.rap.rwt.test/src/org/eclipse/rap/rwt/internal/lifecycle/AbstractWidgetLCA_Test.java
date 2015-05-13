@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -164,6 +165,16 @@ public class AbstractWidgetLCA_Test {
     lca.renderDispose( widget );
 
     verify( remoteObject ).markDestroyed();
+  }
+
+  @Test
+  public void testRenderDispose_skippedWhenParentIsDisposed() throws IOException {
+    Fixture.markInitialized( widget );
+
+    shell.dispose();
+    lca.renderDispose( widget );
+
+    assertNull( Fixture.getProtocolMessage().findDestroyOperation( widget ) );
   }
 
   private static OperationHandler mockAndRegisterOperationHandler( String id ) {

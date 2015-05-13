@@ -43,7 +43,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
@@ -76,7 +75,6 @@ public class ComboLCA_Test {
     shell = new Shell( display, SWT.NONE );
     combo = new Combo( shell, SWT.NONE );
     lca = new ComboLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -85,14 +83,8 @@ public class ComboLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( combo );
-    ControlLCATestUtil.testFocusListener( combo );
-    ControlLCATestUtil.testMouseListener( combo );
-    ControlLCATestUtil.testKeyListener( combo );
-    ControlLCATestUtil.testTraverseListener( combo );
-    ControlLCATestUtil.testMenuDetectListener( combo );
-    ControlLCATestUtil.testHelpListener( combo );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( combo );
   }
 
   @Test
@@ -134,30 +126,6 @@ public class ComboLCA_Test {
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    Fixture.clearPreserved();
-    //foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    combo.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    combo.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    combo.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    assertEquals( null, combo.getToolTipText() );
-    Fixture.clearPreserved();
-    combo.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    assertEquals( "some text", combo.getToolTipText() );
-    Fixture.clearPreserved();
   }
 
   @Test

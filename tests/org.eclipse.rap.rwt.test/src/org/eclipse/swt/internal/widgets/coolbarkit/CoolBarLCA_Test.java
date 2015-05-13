@@ -33,15 +33,9 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -62,7 +56,6 @@ public final class CoolBarLCA_Test {
     shell = new Shell( display, SWT.NONE );
     bar = new CoolBar( shell, SWT.FLAT );
     lca = new CoolBarLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -71,13 +64,8 @@ public final class CoolBarLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( bar );
-    ControlLCATestUtil.testMouseListener( bar );
-    ControlLCATestUtil.testKeyListener( bar );
-    ControlLCATestUtil.testTraverseListener( bar );
-    ControlLCATestUtil.testMenuDetectListener( bar );
-    ControlLCATestUtil.testHelpListener( bar );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( bar );
   }
 
   @Test
@@ -92,71 +80,6 @@ public final class CoolBarLCA_Test {
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
-    Fixture.clearPreserved();
-    // control: enabled
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    bar.setEnabled( false );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    bar.setEnabled( true );
-    // visible
-    bar.setSize( 10, 10 );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    bar.setVisible( false );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( bar );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    bar.setMenu( menu );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    bar.setBounds( rectangle );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    bar.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    bar.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    bar.setFont( font );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( null, bar.getToolTipText() );
-    Fixture.clearPreserved();
-    bar.setToolTipText( "some text" );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( "some text", bar.getToolTipText() );
   }
 
   @Test

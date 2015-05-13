@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.scalekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
@@ -38,14 +39,8 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -67,12 +62,32 @@ public class ScaleLCA_Test {
     shell = new Shell( display, SWT.NONE );
     scale = new Scale( shell, SWT.NONE );
     lca = new ScaleLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testDoesNotRenderPreservedValues() throws IOException {
+    Fixture.markInitialized( scale );
+
+    lca.preserveValues( scale );
+    lca.renderChanges( scale );
+
+    assertEquals( 0, getProtocolMessage().getOperationCount() );
+  }
+
+  @Test
+  public void testRendersChangedControlProperties() throws IOException {
+    Fixture.markInitialized( scale );
+
+    lca.preserveValues( scale );
+    scale.setBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    lca.renderChanges( scale );
+
+    assertNotNull( getProtocolMessage().findSetOperation( scale, "background" ) );
   }
 
   @Test
@@ -93,66 +108,6 @@ public class ScaleLCA_Test {
     assertEquals( 1, increment.intValue() );
     Integer pageIncrement = ( Integer )adapter.getPreserved( ScaleLCA.PROP_PAGE_INCREMENT );
     assertEquals( 10, pageIncrement.intValue() );
-    Fixture.clearPreserved();
-    // Test preserved control properties
-    testPreserveControlProperties( scale );
-  }
-
-  private void testPreserveControlProperties( Scale scale ) {
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
-    scale.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    scale.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    scale.setEnabled( true );
-    // visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    scale.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( scale );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    scale.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    //foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    scale.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    scale.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    scale.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
   }
 
   @Test

@@ -41,17 +41,12 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -71,29 +66,22 @@ public class LabelLCA_Test {
     shell = new Shell( display );
     label = new Label( shell, SWT.NONE );
     lca = new LabelLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
   public void tearDown() {
-    display.dispose();
     Fixture.tearDown();
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( label );
-    ControlLCATestUtil.testMouseListener( label );
-    ControlLCATestUtil.testKeyListener( label );
-    ControlLCATestUtil.testTraverseListener( label );
-    ControlLCATestUtil.testMenuDetectListener( label );
-    ControlLCATestUtil.testHelpListener( label );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( new Label( shell, SWT.NONE ) );
+    ControlLCATestUtil.testCommonControlProperties( new Label( shell, SWT.SEPARATOR ) );
   }
 
   @Test
   public void testStandardPreserveValues() throws IOException {
     Fixture.markInitialized( display );
-    testPreserveValues( display, label );
     //Text
     Fixture.preserveWidgets();
     RemoteAdapter adapter = WidgetUtil.getAdapter( label );
@@ -134,78 +122,6 @@ public class LabelLCA_Test {
     adapter = WidgetUtil.getAdapter( label );
     alignment = ( String )adapter.getPreserved( "alignment" );
     assertEquals( "left", alignment );
-  }
-
-  private void testPreserveValues( Display display, Label label ) {
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
-    label.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( label );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( label );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    label.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    //visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    label.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    //enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    label.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    label.setEnabled( true );
-    //foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    label.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    label.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    label.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( null, label.getToolTipText() );
-    Fixture.clearPreserved();
-    label.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    assertEquals( "some text", label.getToolTipText() );
-  }
-
-  @Test
-  public void testSeparatorPreserveValues() {
-    label = new Label( shell, SWT.SEPARATOR | SWT.HORIZONTAL );
-    Fixture.markInitialized( display );
-    testPreserveValues( display, label );
   }
 
   @Test

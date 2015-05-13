@@ -39,13 +39,10 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
@@ -67,7 +64,6 @@ public class TextLCA_Test {
     display = new Display();
     shell = new Shell( display );
     text = new Text( shell, SWT.NONE );
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -76,14 +72,8 @@ public class TextLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( text );
-    ControlLCATestUtil.testFocusListener( text );
-    ControlLCATestUtil.testMouseListener( text );
-    ControlLCATestUtil.testKeyListener( text );
-    ControlLCATestUtil.testTraverseListener( text );
-    ControlLCATestUtil.testMenuDetectListener( text );
-    ControlLCATestUtil.testHelpListener( text );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( text );
   }
 
   @Test
@@ -122,45 +112,10 @@ public class TextLCA_Test {
   }
 
   private static void testPreserveValues( Text text ) {
-    //text
     text.setText( "some text" );
     Fixture.markInitialized( text.getDisplay() );
     Fixture.preserveWidgets();
     assertEquals( text.getText(), getPreserved( text, Props.TEXT ) );
-    Fixture.clearPreserved();
-    //Bounds
-    Rectangle rectangle = new Rectangle( 10, 10, 200, 100 );
-    text.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    assertEquals( rectangle, getPreserved( text, Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //enabled
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.TRUE, getPreserved( text, Props.ENABLED ) );
-    Fixture.clearPreserved();
-    text.setEnabled( false );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE, getPreserved( text, Props.ENABLED ) );
-    Fixture.clearPreserved();
-    //menu
-    Fixture.preserveWidgets();
-    assertEquals( null, getPreserved( text, Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( text );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    text.setMenu( menu );
-    Fixture.preserveWidgets();
-    assertEquals( menu, getPreserved( text, Props.MENU ) );
-    Fixture.clearPreserved();
-    //visible
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.TRUE, getPreserved( text, Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    text.setVisible( false );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE, getPreserved( text, Props.VISIBLE ) );
-    Fixture.clearPreserved();
   }
 
   @Test

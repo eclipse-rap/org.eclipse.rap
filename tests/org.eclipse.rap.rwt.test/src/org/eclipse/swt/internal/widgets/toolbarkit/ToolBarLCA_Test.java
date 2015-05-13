@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,6 @@ public class ToolBarLCA_Test {
     shell = new Shell( display, SWT.NONE );
     toolBar = new ToolBar( shell, SWT.NONE );
     lca = new ToolBarLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -64,14 +63,8 @@ public class ToolBarLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( toolBar );
-    ControlLCATestUtil.testFocusListener( toolBar );
-    ControlLCATestUtil.testMouseListener( toolBar );
-    ControlLCATestUtil.testKeyListener( toolBar );
-    ControlLCATestUtil.testTraverseListener( toolBar );
-    ControlLCATestUtil.testMenuDetectListener( toolBar );
-    ControlLCATestUtil.testHelpListener( toolBar );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( toolBar );
   }
 
   @Test

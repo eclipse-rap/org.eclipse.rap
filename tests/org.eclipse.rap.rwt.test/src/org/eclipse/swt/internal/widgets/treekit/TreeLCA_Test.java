@@ -35,7 +35,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
@@ -50,7 +49,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -58,7 +56,6 @@ import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
@@ -66,8 +63,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
@@ -92,7 +87,6 @@ public class TreeLCA_Test {
     shell = new Shell( display );
     tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     lca = new TreeLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -101,14 +95,8 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( tree );
-    ControlLCATestUtil.testFocusListener( tree );
-    ControlLCATestUtil.testMouseListener( tree );
-    ControlLCATestUtil.testKeyListener( tree );
-    ControlLCATestUtil.testTraverseListener( tree );
-    ControlLCATestUtil.testMenuDetectListener( tree );
-    ControlLCATestUtil.testHelpListener( tree );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( tree );
   }
 
   @Test
@@ -261,89 +249,6 @@ public class TreeLCA_Test {
     item1.setImage( image );
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
     assertEquals( 63, metrics[ 0 ].textWidth );
-  }
-
-  @Test
-  public void testPreserveValues() throws IOException {
-    Fixture.markInitialized( display );
-    TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
-    child1.setText( "child1" );
-    TreeColumn child2 = new TreeColumn( tree, SWT.NONE, 1 );
-    child2.setText( "child2" );
-    // item metrics
-    child1.setWidth( 150 );
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( tree );
-    // item height
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-    item.setImage( createImage( display, Fixture.IMAGE_100x50 ) );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    Fixture.clearPreserved();
-    // control: enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    tree.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    tree.setEnabled( true );
-    // visible
-    tree.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    tree.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( tree );
-    MenuItem menuItem = new MenuItem( menu, SWT.NONE );
-    menuItem.setText( "1 Item" );
-    tree.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    tree.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    tree.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    tree.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    tree.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( null, tree.getToolTipText() );
-    Fixture.clearPreserved();
-    tree.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( "some text", tree.getToolTipText() );
   }
 
   @Test

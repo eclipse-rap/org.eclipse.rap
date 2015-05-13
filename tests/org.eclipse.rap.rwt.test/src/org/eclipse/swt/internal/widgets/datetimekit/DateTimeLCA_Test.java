@@ -28,8 +28,6 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -37,15 +35,10 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -64,7 +57,6 @@ public class DateTimeLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     lca = new DateTimeLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -73,48 +65,10 @@ public class DateTimeLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    DateTime dateTime = new DateTime( shell, SWT.NONE );
-    ControlLCATestUtil.testActivateListener( dateTime );
-    ControlLCATestUtil.testFocusListener( dateTime );
-    ControlLCATestUtil.testMouseListener( dateTime );
-    ControlLCATestUtil.testKeyListener( dateTime );
-    ControlLCATestUtil.testTraverseListener( dateTime );
-    ControlLCATestUtil.testMenuDetectListener( dateTime );
-    ControlLCATestUtil.testHelpListener( dateTime );
-  }
-
-  @Test
-  public void testDateTimeDatePreserveValues() {
-    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
-    dateTime.setDay( 1 );
-    dateTime.setMonth( 1 );
-    dateTime.setYear( 2008 );
-    Fixture.markInitialized( display );
-    // Test preserved control properties
-    testPreserveControlProperties( dateTime );
-  }
-
-  @Test
-  public void testDateTimeTimePreserveValues() {
-    DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    dateTime.setHours( 1 );
-    dateTime.setMinutes( 2 );
-    dateTime.setSeconds( 3 );
-    Fixture.markInitialized( display );
-    // Test preserved control properties
-    testPreserveControlProperties( dateTime );
-  }
-
-  @Test
-  public void testDateTimeCalendarPreserveValues() {
-    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
-    dateTime.setDay( 1 );
-    dateTime.setMonth( 1 );
-    dateTime.setYear( 2008 );
-    Fixture.markInitialized( display );
-    // Test preserved control properties
-    testPreserveControlProperties( dateTime );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( new DateTime( shell, SWT.DATE ) );
+    ControlLCATestUtil.testCommonControlProperties( new DateTime( shell, SWT.TIME ) );
+    ControlLCATestUtil.testCommonControlProperties( new DateTime( shell, SWT.CALENDAR ) );
   }
 
   // 315950: [DateTime] method getDay() return wrong day in particular circumstances
@@ -135,57 +89,6 @@ public class DateTimeLCA_Test {
     assertEquals( 31, dateTime.getDay() );
     assertEquals( 4, dateTime.getMonth() );
     assertEquals( 2010, dateTime.getYear() );
-  }
-
-  private void testPreserveControlProperties( DateTime dateTime ) {
-    // control: enabled
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    dateTime.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    dateTime.setEnabled( true );
-    // visible
-    dateTime.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    dateTime.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( dateTime );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    dateTime.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    dateTime.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    dateTime.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    dateTime.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
   }
 
   @Test

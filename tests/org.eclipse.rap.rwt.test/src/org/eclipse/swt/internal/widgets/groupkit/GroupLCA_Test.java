@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,6 @@ public class GroupLCA_Test {
     shell = new Shell( display, SWT.NONE );
     group = new Group( shell, SWT.NONE );
     lca = new GroupLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -61,13 +60,8 @@ public class GroupLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( group );
-    ControlLCATestUtil.testMouseListener( group );
-    ControlLCATestUtil.testKeyListener( group );
-    ControlLCATestUtil.testTraverseListener( group );
-    ControlLCATestUtil.testMenuDetectListener( group );
-    ControlLCATestUtil.testHelpListener( group );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( group );
   }
 
   @Test

@@ -29,8 +29,6 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -38,18 +36,12 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IListAdapter;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -74,7 +66,6 @@ public class ListLCA_Test {
     hScroll = list.getHorizontalBar();
     vScroll = list.getVerticalBar();
     lca = new ListLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -83,84 +74,8 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( list );
-    ControlLCATestUtil.testFocusListener( list );
-    ControlLCATestUtil.testMouseListener( list );
-    ControlLCATestUtil.testKeyListener( list );
-    ControlLCATestUtil.testTraverseListener( list );
-    ControlLCATestUtil.testMenuDetectListener( list );
-    ControlLCATestUtil.testHelpListener( list );
-  }
-
-  @Test
-  public void testPreserveValues() {
-    Fixture.markInitialized( display );
-    // control: enabled
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( list );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    list.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    list.setEnabled( true );
-    // visible
-    list.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    list.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( list );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    list.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // bound
-    list.getFocusIndex();
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    list.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    list.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    list.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    list.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( null, list.getToolTipText() );
-    Fixture.clearPreserved();
-    list.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( list );
-    assertEquals( "some text", list.getToolTipText() );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( list );
   }
 
   @Test

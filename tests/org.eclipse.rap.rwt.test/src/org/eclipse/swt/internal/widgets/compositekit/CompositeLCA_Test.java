@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ public class CompositeLCA_Test {
     display = new Display();
     shell = new Shell( display );
     lca = new CompositeLCA();
-    Fixture.fakeNewRequest();
     composite = new Composite( shell, SWT.BORDER );
   }
 
@@ -64,14 +63,8 @@ public class CompositeLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( composite );
-    ControlLCATestUtil.testFocusListener( composite );
-    ControlLCATestUtil.testMouseListener( composite );
-    ControlLCATestUtil.testKeyListener( composite );
-    ControlLCATestUtil.testTraverseListener( composite );
-    ControlLCATestUtil.testMenuDetectListener( composite );
-    ControlLCATestUtil.testHelpListener( composite );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( composite );
   }
 
   @Test

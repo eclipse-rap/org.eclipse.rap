@@ -36,8 +36,6 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.internal.widgets.ControlUtil;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -56,15 +54,19 @@ import org.junit.Test;
 
 public class WidgetLCAUtil_Test {
 
+  private static final JsonArray TRANSPARENT_JSON = JsonArray.readFrom( "[0, 0, 0, 0]" );
+  private static final JsonArray BLUE_JSON = JsonArray.readFrom( "[0, 16, 255, 255]" );
   private Display display;
   private Shell shell;
   private Control widget;
+  private Color blue;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
+    blue = new Color( display, 0, 16, 255 );
     shell = new Shell( display , SWT.NONE );
     widget = new Button( shell, SWT.PUSH );
   }
@@ -201,7 +203,7 @@ public class WidgetLCAUtil_Test {
   // Tests for new render methods using protocol
 
   @Test
-  public void testRenderIntialBackgroundNull() {
+  public void testRenderBackground_initiallyNull() {
     WidgetLCAUtil.renderBackground( widget, null );
 
     TestMessage message = getProtocolMessage();
@@ -210,20 +212,17 @@ public class WidgetLCAUtil_Test {
 
   @Test
   public void testRenderBackground() {
-    WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
+    WidgetLCAUtil.renderBackground( widget, blue );
 
     TestMessage message = getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
-    assertEquals( expected, message.findSetProperty( widget, "background" ) );
+    assertEquals( BLUE_JSON, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
-  public void testRenderBackgroundNull() {
-    Fixture.markInitialized( display );
+  public void testRenderBackground_withNull() {
     Fixture.markInitialized( widget );
-    widget.setBackground( new Color( display, 0, 16, 255 ) );
+    WidgetLCAUtil.preserveBackground( widget, blue, false );
 
-    Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null, false );
 
     TestMessage message = getProtocolMessage();
@@ -231,69 +230,21 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderBackgroundUnchanged() {
-    Fixture.markInitialized( display );
+  public void testRenderBackground_unchanged() {
     Fixture.markInitialized( widget );
-    widget.setBackground( new Color( display, 0, 16, 255 ) );
+    WidgetLCAUtil.preserveBackground( widget, blue, false );
 
-    Fixture.preserveWidgets();
-    WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
+    WidgetLCAUtil.renderBackground( widget, blue );
 
     TestMessage message = getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
   @Test
-  public void testRenderIntialBackgroundTransparent() {
-    WidgetLCAUtil.renderBackground( widget, null, true );
-
-    TestMessage message = getProtocolMessage();
-
-    JsonArray expected = JsonArray.readFrom( "[0, 0, 0, 0]" );
-    assertEquals( expected, message.findSetProperty( widget, "background" ) );
-  }
-
-  @Test
-  public void testRenderBackgroundTransparencyUnchanged() {
-    widget = new Button( shell, SWT.CHECK );
-    shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
-    Fixture.markInitialized( display );
+  public void testRenderBackground_reset() {
     Fixture.markInitialized( widget );
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( widget );
-    assertTrue( controlAdapter.getBackgroundTransparency() );
 
-    Fixture.preserveWidgets();
-    WidgetLCAUtil.renderBackground( widget, null, true );
-
-    TestMessage message = getProtocolMessage();
-    assertNull( message.findSetOperation( widget, "background" ) );
-  }
-
-  @Test
-  public void testRenderBackgroundNoMoreTransparent() {
-    widget = new Button( shell, SWT.CHECK );
-    shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( widget );
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( widget );
-    assertTrue( controlAdapter.getBackgroundTransparency() );
-
-    Fixture.preserveWidgets();
-    WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ), false );
-
-    TestMessage message = getProtocolMessage();
-
-    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
-    assertEquals( expected, message.findSetProperty( widget, "background" ) );
-  }
-
-  @Test
-  public void testRenderBackgroundReset() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( widget );
-    widget.setBackground( new Color( display, 0, 16, 255 ) );
-
-    Fixture.preserveWidgets();
+    WidgetLCAUtil.preserveBackground( widget, blue );
     WidgetLCAUtil.renderBackground( widget, null );
 
     TestMessage message = getProtocolMessage();
@@ -301,36 +252,34 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderIntialForeground() {
-    ControlLCAUtil.renderForeground( widget );
+  public void testRenderBackgroundTransparency_initallyNull() {
+    WidgetLCAUtil.renderBackground( widget, null, true );
 
     TestMessage message = getProtocolMessage();
-
-    assertNull( message.findSetOperation( widget, "foreground" ) );
+    assertEquals( TRANSPARENT_JSON, message.findSetProperty( widget, "background" ) );
   }
 
   @Test
-  public void testRenderForeground() {
-    widget.setForeground( new Color( display, 0, 16, 255 ) );
-    ControlLCAUtil.renderForeground( widget );
-
-    TestMessage message = getProtocolMessage();
-
-    JsonArray expected = JsonArray.readFrom( "[0, 16, 255, 255]" );
-    assertEquals( expected, message.findSetProperty( widget, "foreground" ) );
-  }
-
-  @Test
-  public void testRenderForegroundUnchanged() {
-    Fixture.markInitialized( display );
+  public void testRenderBackgroundTransparency_unchanged() {
     Fixture.markInitialized( widget );
-    widget.setForeground( new Color( display, 0, 16, 255 ) );
 
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderForeground( widget );
+    WidgetLCAUtil.preserveBackground( widget, null, true );
+    WidgetLCAUtil.renderBackground( widget, null, true );
 
     TestMessage message = getProtocolMessage();
-    assertNull( message.findSetOperation( widget, "foreground" ) );
+    assertNull( message.findSetOperation( widget, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackgroundTransparency_changed() {
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.preserveBackground( widget, blue, true );
+    WidgetLCAUtil.renderBackground( widget, blue, false );
+
+    TestMessage message = getProtocolMessage();
+
+    assertEquals( BLUE_JSON, message.findSetProperty( widget, "background" ) );
   }
 
   @Test

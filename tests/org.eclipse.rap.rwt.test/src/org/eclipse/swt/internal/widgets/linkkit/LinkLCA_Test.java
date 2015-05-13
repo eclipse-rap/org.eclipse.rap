@@ -36,16 +36,10 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -66,7 +60,6 @@ public class LinkLCA_Test {
     shell = new Shell( display );
     link = new Link( shell, SWT.NONE );
     lca = new LinkLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -75,14 +68,8 @@ public class LinkLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( link );
-    ControlLCATestUtil.testFocusListener( link );
-    ControlLCATestUtil.testMouseListener( link );
-    ControlLCATestUtil.testKeyListener( link );
-    ControlLCATestUtil.testTraverseListener( link );
-    ControlLCATestUtil.testMenuDetectListener( link );
-    ControlLCATestUtil.testHelpListener( link );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( link );
   }
 
   @Test
@@ -97,71 +84,6 @@ public class LinkLCA_Test {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( "some text", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
-    Fixture.clearPreserved();
-    // control: enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    link.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    link.setEnabled( true );
-    // visible
-    link.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    link.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( link );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    link.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    link.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    link.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    link.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    link.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( null, link.getToolTipText() );
-    Fixture.clearPreserved();
-    link.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    assertEquals( "some text", link.getToolTipText() );
   }
 
   @Test

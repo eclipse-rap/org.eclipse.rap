@@ -36,13 +36,9 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Slider;
 import org.junit.After;
@@ -63,12 +59,16 @@ public class SliderLCA_Test {
     shell = new Shell( display, SWT.NONE );
     slider = new Slider( shell, SWT.NONE );
     lca = new SliderLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( slider );
   }
 
   @Test
@@ -90,59 +90,6 @@ public class SliderLCA_Test {
     assertEquals( 10, pageIncrement.intValue() );
     Integer thumb = ( Integer )adapter.getPreserved( SliderLCA.PROP_THUMB );
     assertEquals( 10, thumb.intValue() );
-    Fixture.clearPreserved();
-    // Test preserved control properties
-    testPreserveControlProperties( slider );
-  }
-
-  private void testPreserveControlProperties( Slider slider ) {
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
-    slider.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    slider.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    // visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    slider.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( slider );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    slider.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    //foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    slider.setBackground( background );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    Fixture.clearPreserved();
   }
 
   @Test

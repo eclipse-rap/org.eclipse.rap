@@ -49,10 +49,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -64,8 +61,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.junit.After;
@@ -89,7 +84,6 @@ public class ButtonLCA_Test {
     shell = new Shell( display );
     button = new Button( shell, SWT.PUSH );
     lca = new ButtonLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -98,15 +92,8 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    button = new Button( shell, SWT.NONE );
-    ControlLCATestUtil.testActivateListener( button );
-    ControlLCATestUtil.testFocusListener( button );
-    ControlLCATestUtil.testMouseListener( button );
-    ControlLCATestUtil.testKeyListener( button );
-    ControlLCATestUtil.testTraverseListener( button );
-    ControlLCATestUtil.testMenuDetectListener( button );
-    ControlLCATestUtil.testHelpListener( button );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( button );
   }
 
   @Test
@@ -175,69 +162,6 @@ public class ButtonLCA_Test {
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    //bound
-    Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
-    button.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( button );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    button.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    //visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    button.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    //enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    button.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    button.setEnabled( true );
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    button.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    button.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    button.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( null, button.getToolTipText() );
-    Fixture.clearPreserved();
-    button.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    assertEquals( "some text", button.getToolTipText() );
     Fixture.clearPreserved();
   }
 

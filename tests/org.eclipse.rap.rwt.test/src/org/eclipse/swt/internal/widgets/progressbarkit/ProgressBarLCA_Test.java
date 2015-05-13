@@ -58,7 +58,6 @@ public class ProgressBarLCA_Test {
     shell = new Shell( display );
     progressBar = new ProgressBar( shell, SWT.NONE );
     lca = new ProgressBarLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -67,13 +66,8 @@ public class ProgressBarLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( progressBar );
-    ControlLCATestUtil.testMouseListener( progressBar );
-    ControlLCATestUtil.testKeyListener( progressBar );
-    ControlLCATestUtil.testTraverseListener( progressBar );
-    ControlLCATestUtil.testMenuDetectListener( progressBar );
-    ControlLCATestUtil.testHelpListener( progressBar );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( progressBar );
   }
 
   @Test

@@ -28,7 +28,6 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
@@ -40,15 +39,10 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -70,7 +64,6 @@ public class ExpandBarLCA_Test {
     shell = new Shell( display );
     expandBar = new ExpandBar( shell, SWT.NONE );
     lca = new ExpandBarLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -79,66 +72,8 @@ public class ExpandBarLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( expandBar );
-    ControlLCATestUtil.testFocusListener( expandBar );
-    ControlLCATestUtil.testMouseListener( expandBar );
-    ControlLCATestUtil.testKeyListener( expandBar );
-    ControlLCATestUtil.testTraverseListener( expandBar );
-    ControlLCATestUtil.testMenuDetectListener( expandBar );
-    ControlLCATestUtil.testHelpListener( expandBar );
-  }
-
-  @Test
-  public void testPreserveValues() {
-    expandBar.setSize( expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    Fixture.markInitialized( display );
-    // control: enabled
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    expandBar.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    expandBar.setEnabled( true );
-    // visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    expandBar.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( expandBar );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    expandBar.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    expandBar.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    expandBar.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    expandBar.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( expandBar );
   }
 
   @Test

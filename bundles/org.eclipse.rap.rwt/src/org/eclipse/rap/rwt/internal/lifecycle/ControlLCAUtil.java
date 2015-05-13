@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
@@ -21,7 +22,6 @@ import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ControlUtil;
@@ -61,41 +61,55 @@ public class ControlLCAUtil {
   }
 
   public static void preserveValues( Control control ) {
-    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
     preserveParent( control );
-    WidgetLCAUtil.preserveBounds( control, control.getBounds() );
-    adapter.preserve( PROP_CHILDREN, getChildren( control ) );
-    adapter.preserve( PROP_TAB_INDEX, Integer.valueOf( getTabIndex( control ) ) );
-    WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
-    adapter.preserve( Props.MENU, control.getMenu() );
-    adapter.preserve( Props.VISIBLE, Boolean.valueOf( getVisible( control ) ) );
-    WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    WidgetLCAUtil.preserveForeground( control, controlAdapter.getUserForeground() );
-    WidgetLCAUtil.preserveBackground( control,
-                                      controlAdapter.getUserBackground(),
-                                      controlAdapter.getBackgroundTransparency() );
+    preserveChildren( control );
+    preserveBounds( control );
+    preserveTabIndex( control );
+    preserveToolTipText( control );
+    preserveMenu( control );
+    preserveVisible( control );
+    preserveEnabled( control );
+    preserveForeground( control );
+    preserveBackground( control );
     preserveBackgroundImage( control );
-    WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
-    adapter.preserve( PROP_CURSOR, control.getCursor() );
-    preserveActivateListeners( control );
-    preserveMouseListeners( control );
-    if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      preserveFocusListeners( control );
-    }
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_KEY_LISTENER,
-                                    hasKeyListener( control ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_TRAVERSE_LISTENER,
-                                    isListening( control, SWT.Traverse ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MENU_DETECT_LISTENER,
-                                    isListening( control, SWT.MenuDetect ) );
-    WidgetLCAUtil.preserveHelpListener( control );
+    preserveFont( control );
+    preserveCursor( control );
+    preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
-    WidgetLCAUtil.preserveData( control );
+    preserveListenActivate( control );
+    preserveListenMouse( control );
+    preserveListenFocus( control );
+    preserveListenKey( control );
+    preserveListenTraverse( control );
+    preserveListenMenuDetect( control );
+    preserveListenHelp( control );
+  }
+
+  public static void renderChanges( Control control ) {
+    renderParent( control );
+    renderChildren( control );
+    renderBounds( control );
+    renderTabIndex( control );
+    renderToolTipText( control );
+    renderMenu( control );
+    renderVisible( control );
+    renderEnabled( control );
+    renderForeground( control );
+    renderBackground( control );
+    renderBackgroundImage( control );
+    renderFont( control );
+    renderCursor( control );
+    renderData( control );
+    ActiveKeysUtil.renderActiveKeys( control );
+    ActiveKeysUtil.renderCancelKeys( control );
+    renderListenActivate( control );
+    renderListenMouse( control );
+    renderListenFocus( control );
+    renderListenKey( control );
+    renderListenTraverse( control );
+    renderListenMenuDetect( control );
+    renderListenHelp( control );
   }
 
   private static void preserveParent( Control control ) {
@@ -106,60 +120,38 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void preserveBackgroundImage( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Image image = controlAdapter.getUserBackgroundImage();
-    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.preserve( PROP_BACKGROUND_IMAGE, image );
-  }
-
-  public static void renderChanges( Control control ) {
-    renderParent( control );
-    renderBounds( control );
-    renderChildren( control );
-    renderTabIndex( control );
-    renderToolTip( control );
-    renderMenu( control );
-    renderVisible( control );
-    renderEnabled( control );
-    renderForeground( control );
-    renderBackground( control );
-    renderBackgroundImage( control );
-    renderFont( control );
-    renderCursor( control );
-    WidgetLCAUtil.renderData( control );
-    ActiveKeysUtil.renderActiveKeys( control );
-    ActiveKeysUtil.renderCancelKeys( control );
-//    TODO [rst] missing: writeControlListener( control );
-    renderListenActivate( control );
-    renderListenFocus( control );
-    renderListenMouse( control );
-    renderListenKey( control );
-    renderListenTraverse( control );
-    renderListenMenuDetect( control );
-    WidgetLCAUtil.renderListenHelp( control );
-  }
-
-  static void renderParent( Control control ) {
-    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
+  private static void renderParent( Control control ) {
+    RemoteAdapter adapter = getAdapter( control );
     Composite parent = control.getParent();
     if( adapter.isInitialized() && parent != null ) {
       WidgetLCAUtil.renderProperty( control, PROP_PARENT, getId( parent ), null );
     }
   }
 
-  public static void renderBounds( Control control ) {
-    WidgetLCAUtil.renderBounds( control, control.getBounds() );
+  private static void preserveChildren( Control control ) {
+    getAdapter( control ).preserve( PROP_CHILDREN, getChildren( control ) );
   }
 
-  static void renderChildren( Control control ) {
+  private static void renderChildren( Control control ) {
     if( control instanceof Composite ) {
       String[] newValue = getChildren( control );
       WidgetLCAUtil.renderProperty( control, PROP_CHILDREN, newValue, null );
     }
   }
 
-  static void renderTabIndex( Control control ) {
+  private static void preserveBounds( Control control ) {
+    WidgetLCAUtil.preserveBounds( control, control.getBounds() );
+  }
+
+  private static void renderBounds( Control control ) {
+    WidgetLCAUtil.renderBounds( control, control.getBounds() );
+  }
+
+  private static void preserveTabIndex( Control control ) {
+    getAdapter( control ).preserve( PROP_TAB_INDEX, Integer.valueOf( getTabIndex( control ) ) );
+  }
+
+  private static void renderTabIndex( Control control ) {
     if( control instanceof Shell ) {
       resetTabIndices( ( Shell )control );
       // tabIndex must be a positive value
@@ -173,15 +165,27 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void renderToolTip( Control control ) {
+  private static void preserveToolTipText( Control control ) {
+    WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
+  }
+
+  private static void renderToolTipText( Control control ) {
     WidgetLCAUtil.renderToolTip( control, control.getToolTipText() );
   }
 
-  public static void renderMenu( Control control ) {
+  private static void preserveMenu( Control control ) {
+    getAdapter( control ).preserve( Props.MENU, control.getMenu() );
+  }
+
+  private static void renderMenu( Control control ) {
     WidgetLCAUtil.renderMenu( control, control.getMenu() );
   }
 
-  public static void renderVisible( Control control ) {
+  private static void preserveVisible( Control control ) {
+    getAdapter( control ).preserve( Props.VISIBLE, Boolean.valueOf( getVisible( control ) ) );
+  }
+
+  private static void renderVisible( Control control ) {
     boolean visible = getVisible( control );
     Boolean newValue = Boolean.valueOf( visible );
     Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
@@ -191,77 +195,176 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void renderEnabled( Control control ) {
+  private static void preserveEnabled( Control control ) {
+    WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
+  }
+
+  private static void renderEnabled( Control control ) {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
     WidgetLCAUtil.renderEnabled( control, control.getEnabled() );
   }
 
-  public static void renderForeground( Control control ) {
+  private static void preserveForeground( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.preserveForeground( control, controlAdapter.getUserForeground() );
+  }
+
+  private static void renderForeground( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.renderForeground( control, controlAdapter.getUserForeground() );
   }
 
-  public static void renderBackground( Control control ) {
+  private static void preserveBackground( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.preserveBackground( control,
+                                      controlAdapter.getUserBackground(),
+                                      controlAdapter.getBackgroundTransparency() );
+  }
+
+  private static void renderBackground( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.renderBackground( control,
                                     controlAdapter.getUserBackground(),
                                     controlAdapter.getBackgroundTransparency() );
   }
 
-  public static void renderBackgroundImage( Control control ) {
+  private static void preserveBackgroundImage( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    Image image = controlAdapter.getUserBackgroundImage();
+    getAdapter( control ).preserve( PROP_BACKGROUND_IMAGE, image );
+  }
+
+  private static void renderBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
     WidgetLCAUtil.renderProperty( control, PROP_BACKGROUND_IMAGE, image, null );
   }
 
-  public static void renderFont( Control control ) {
+  private static void preserveFont( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Font newValue = controlAdapter.getUserFont();
-    WidgetLCAUtil.renderFont( control, newValue );
+    WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
   }
 
-  static void renderCursor( Control control ) {
+  private static void renderFont( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.renderFont( control, controlAdapter.getUserFont() );
+  }
+
+  private static void preserveCursor( Control control ) {
+    getAdapter( control ).preserve( PROP_CURSOR, control.getCursor() );
+  }
+
+  private static void renderCursor( Control control ) {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
       getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }
 
-  static void renderListenActivate( Control control ) {
+  private static void preserveData( Control control ) {
+    WidgetLCAUtil.preserveData( control );
+  }
+
+  private static void renderData( Control control ) {
+    WidgetLCAUtil.renderData( control );
+  }
+
+  private static void preserveListenActivate( Control control ) {
     // Note: Shell "Activate" event is handled by ShellLCA
-    if( !control.isDisposed() && !( control instanceof Shell ) ) {
+    if( !( control instanceof Shell ) ) {
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_ACTIVATE_LISTENER,
+                                      isListening( control, SWT.Activate ) );
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_DEACTIVATE_LISTENER,
+                                      isListening( control, SWT.Deactivate ) );
+    }
+  }
+
+  private static void renderListenActivate( Control control ) {
+    // Note: Shell "Activate" event is handled by ShellLCA
+    if( !( control instanceof Shell ) ) {
       renderListen( control, SWT.Activate, PROP_ACTIVATE_LISTENER );
       renderListen( control, SWT.Deactivate, PROP_DEACTIVATE_LISTENER );
     }
   }
 
-  static void renderListenFocus( Control control ) {
+  private static void preserveListenMouse( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_DOWN_LISTENER,
+                                    isListening( control, SWT.MouseDown ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_UP_LISTENER,
+                                    isListening( control, SWT.MouseUp ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_DOUBLE_CLICK_LISTENER,
+                                    isListening( control, SWT.MouseDoubleClick ) );
+  }
+
+  private static void renderListenMouse( Control control ) {
+    renderListen( control, SWT.MouseDown, PROP_MOUSE_DOWN_LISTENER );
+    renderListen( control, SWT.MouseUp, PROP_MOUSE_UP_LISTENER );
+    renderListen( control, SWT.MouseDoubleClick, PROP_MOUSE_DOUBLE_CLICK_LISTENER );
+  }
+
+  private static void preserveListenFocus( Control control ) {
+    if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_FOCUS_IN_LISTENER,
+                                      isListening( control, SWT.FocusIn ) );
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_FOCUS_OUT_LISTENER,
+                                      isListening( control, SWT.FocusOut ) );
+    }
+  }
+
+  private static void renderListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       renderListen( control, SWT.FocusIn, PROP_FOCUS_IN_LISTENER );
       renderListen( control, SWT.FocusOut, PROP_FOCUS_OUT_LISTENER );
     }
   }
 
-  static void renderListenMouse( Control control ) {
-    renderListen( control, SWT.MouseDown, PROP_MOUSE_DOWN_LISTENER );
-    renderListen( control, SWT.MouseUp, PROP_MOUSE_UP_LISTENER );
-    renderListen( control, SWT.MouseDoubleClick, PROP_MOUSE_DOUBLE_CLICK_LISTENER );
+  private static void preserveListenKey( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_KEY_LISTENER,
+                                    hasKeyListener( control ) );
   }
 
-  static void renderListenKey( Control control ) {
+  private static void renderListenKey( Control control ) {
     boolean newValue = hasKeyListener( control );
     WidgetLCAUtil.renderListener( control, PROP_KEY_LISTENER, newValue, false );
   }
 
-  static void renderListenTraverse( Control control ) {
+  private static void preserveListenTraverse( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_TRAVERSE_LISTENER,
+                                    isListening( control, SWT.Traverse ) );
+  }
+
+  private static void renderListenTraverse( Control control ) {
     boolean newValue = isListening( control, SWT.Traverse );
     WidgetLCAUtil.renderListener( control, PROP_TRAVERSE_LISTENER, newValue, false );
   }
 
-  static void renderListenMenuDetect( Control control ) {
+  private static void preserveListenMenuDetect( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MENU_DETECT_LISTENER,
+                                    isListening( control, SWT.MenuDetect ) );
+  }
+
+  private static void renderListenMenuDetect( Control control ) {
     boolean newValue = isListening( control, SWT.MenuDetect );
     WidgetLCAUtil.renderListener( control, PROP_MENU_DETECT_LISTENER, newValue, false );
+  }
+
+  private static void preserveListenHelp( Control control ) {
+    WidgetLCAUtil.preserveHelpListener( control );
+  }
+
+  private static void renderListenHelp( Control control ) {
+    WidgetLCAUtil.renderListenHelp( control );
   }
 
   private static void renderListen( Control control, int eventType, String eventName ) {
@@ -413,39 +516,6 @@ public class ControlLCAUtil {
 
   private static boolean hasKeyListener( Control control ) {
     return isListening( control, SWT.KeyUp ) || isListening( control, SWT.KeyDown );
-  }
-
-  private static void preserveMouseListeners( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_DOWN_LISTENER,
-                                    isListening( control, SWT.MouseDown ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_UP_LISTENER,
-                                    isListening( control, SWT.MouseUp ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_DOUBLE_CLICK_LISTENER,
-                                    isListening( control, SWT.MouseDoubleClick ) );
-  }
-
-  private static void preserveFocusListeners( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_FOCUS_IN_LISTENER,
-                                    isListening( control, SWT.FocusIn ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_FOCUS_OUT_LISTENER,
-                                    isListening( control, SWT.FocusOut ) );
-  }
-
-  private static void preserveActivateListeners( Control control ) {
-    // Note: Shell "Activate" event is handled by ShellLCA
-    if( !( control instanceof Shell ) ) {
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_ACTIVATE_LISTENER,
-                                      isListening( control, SWT.Activate ) );
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_DEACTIVATE_LISTENER,
-                                      isListening( control, SWT.Deactivate ) );
-    }
   }
 
 }

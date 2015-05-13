@@ -42,21 +42,17 @@ import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -72,19 +68,24 @@ import org.mockito.ArgumentCaptor;
 
 public class ControlLCAUtil_Test {
 
+  private static final JsonArray RED_JSON = JsonArray.readFrom( "[255, 0, 0, 255]" );
+  private static final JsonArray TRANSPARENT_JSON = JsonArray.readFrom( "[0, 0, 0, 0]" );
+
   private Display display;
   private Shell shell;
-  private Button control;
+  private Composite anotherParent;
+  private Control control;
+  private Color red;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
+    red = display.getSystemColor( SWT.COLOR_RED );
     shell = new Shell( display );
+    anotherParent = new Shell( display );
     getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     control = new Button( shell, SWT.PUSH );
-    control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
-    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
@@ -93,6 +94,979 @@ public class ControlLCAUtil_Test {
     display.dispose();
     Fixture.tearDown();
   }
+
+  @Test
+  public void testRenderParent_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "parent" ) );
+  }
+
+  @Test
+  public void testRenderParent_unchanged() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "parent" ) );
+  }
+
+  @Test
+  public void testRenderParent_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setParent( anotherParent );
+    ControlLCAUtil.renderChanges( control );
+
+    String actual = getProtocolMessage().findSetProperty( control, "parent" ).asString();
+    assertEquals( getId( control.getParent() ), actual );
+  }
+
+  @Test
+  public void testRenderChildren_initial() {
+    ControlLCAUtil.renderChanges( shell );
+
+    JsonArray expected = new JsonArray().add( getId( control ) );
+    assertEquals( expected, getProtocolMessage().findSetProperty( shell, "children" ) );
+  }
+
+  @Test
+  public void testRenderChildren_initialOnControl() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "children" ) );
+  }
+
+  @Test
+  public void testRenderChildren_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( shell );
+    Button button = new Button( shell, SWT.PUSH );
+    ControlLCAUtil.renderChanges( shell );
+
+    JsonArray expected = new JsonArray().add( getId( control ) ).add( getId( button ) );
+    assertEquals( expected, getProtocolMessage().findSetProperty( shell, "children" ) );
+  }
+
+  @Test
+  public void testRenderChildren_changedOrder() {
+    Fixture.markInitialized( control );
+    Button button = new Button( shell, SWT.PUSH );
+
+    ControlLCAUtil.preserveValues( shell );
+    control.moveBelow( button );
+    ControlLCAUtil.renderChanges( shell );
+
+    JsonArray expected = new JsonArray().add( getId( button ) ).add( getId( control ) );
+    assertEquals( expected, getProtocolMessage().findSetProperty( shell, "children" ) );
+  }
+
+  @Test
+  public void testRenderChildren_unchanged() {
+    Fixture.markInitialized( shell );
+    new Button( shell, SWT.PUSH );
+
+    ControlLCAUtil.preserveValues( shell );
+    ControlLCAUtil.renderChanges( shell );
+
+    assertNull( getProtocolMessage().findSetOperation( shell, "children" ) );
+  }
+
+  @Test
+  public void testRenderBounds_initial_withZeroBounds() {
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[ 0, 0, 0, 0 ]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "bounds" ) );
+  }
+
+  @Test
+  public void testRenderBounds_initial_withNotZeroBounds() {
+    control.setBounds( 10, 20, 100, 200 );
+
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[ 10, 20, 100, 200 ]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "bounds" ) );
+  }
+
+  @Test
+  public void testRenderBounds_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setBounds( 1, 2, 3, 4 );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[ 1, 2, 3, 4 ]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "bounds" ) );
+  }
+
+  @Test
+  public void testRenderBounds_unchanged() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( control, "bounds" ) );
+  }
+
+  @Test
+  public void testRenderTabIndex_initial() {
+    ControlLCAUtil.renderChanges( shell );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( 1, getProtocolMessage().findSetProperty( control, "tabIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderTabIndex_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    shell.setTabList( new Control[] { new Button( shell, SWT.PUSH ), control } );
+    ControlLCAUtil.renderChanges( shell ); // needed for tab index recomputation
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( 2, getProtocolMessage().findSetProperty( control, "tabIndex" ).asInt() );
+  }
+
+  @Test
+  public void testRenderTabIndex_unchanged() {
+    Fixture.markInitialized( control );
+    shell.setTabList( new Control[] { new Button( shell, SWT.PUSH ), control } );
+    ControlLCAUtil.renderChanges( shell ); // needed for tab index recomputation
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "tabIndex" ) );
+  }
+
+  @Test
+  public void testRenderToolTipText_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "toolTip" ) );
+  }
+
+  @Test
+  public void testRenderToolTipText_unchanged() {
+    Fixture.markInitialized( control );
+    control.setToolTipText( "foo" );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "toolTip" ) );
+  }
+
+  @Test
+  public void testRenderToolTipText_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setToolTipText( "foo" );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( "foo", getProtocolMessage().findSetProperty( control, "toolTip" ).asString() );
+  }
+
+  @Test
+  public void testRenderMenu_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "menu" ) );
+  }
+
+  @Test
+  public void testRenderMenu_unchanged() {
+    Fixture.markInitialized( control );
+    control.setMenu( new Menu( shell ) );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "menu" ) );
+  }
+
+  @Test
+  public void testRenderMenu_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setMenu( new Menu( shell ) );
+    ControlLCAUtil.renderChanges( control );
+
+    String expected = getId( control.getMenu() );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "menu" ).asString() );
+  }
+
+  @Test
+  public void testRenderVisible_initial() {
+    control.setSize( 16, 16 ); // needed to make the control visible
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "visibility" ) );
+  }
+
+  @Test
+  public void testRenderVisible_initialWithFalse() {
+    control.setSize( 16, 16 ); // needed to make the control visible
+    control.setVisible( false );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findSetProperty( control, "visibility" ) );
+  }
+
+  @Test
+  public void testRenderVisible_unchanged() {
+    control.setSize( 16, 16 ); // needed to make the control visible
+    Fixture.markInitialized( control );
+    control.setVisible( false );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "visibility" ) );
+  }
+
+  @Test
+  public void testRenderVisible_changed() {
+    control.setSize( 16, 16 ); // needed to make the control visible
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setVisible( false );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findSetProperty( control, "visibility" ) );
+  }
+
+  @Test
+  public void testRenderEnabled_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "enabled" ) );
+  }
+
+  @Test
+  public void testRenderEnabled_unchanged() {
+    Fixture.markInitialized( control );
+    control.setEnabled( false );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "enabled" ) );
+  }
+
+  @Test
+  public void testRenderEnabled_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setEnabled( false );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findSetProperty( control, "enabled" ) );
+  }
+
+  @Test
+  public void testRenderForeground_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "foreground" ) );
+  }
+
+  @Test
+  public void testRenderForeground_unchanged() {
+    Fixture.markInitialized( control );
+    control.setForeground( red );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "foreground" ) );
+  }
+
+  @Test
+  public void testRenderForeground_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setForeground( red );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( RED_JSON, getProtocolMessage().findSetProperty( control, "foreground" ) );
+  }
+
+  @Test
+  public void testRenderForeground_reset() {
+    Fixture.markInitialized( control );
+    control.setForeground( red );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setForeground( null );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.NULL, getProtocolMessage().findSetProperty( control, "foreground" ) );
+  }
+
+  @Test
+  public void testRenderBackground_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackground_unchanged() {
+    Fixture.markInitialized( control );
+    control.setBackground( red );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackground_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setBackground( red );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( RED_JSON, getProtocolMessage().findSetProperty( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackground_changedTransparency() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.getParent().setBackgroundMode( SWT.INHERIT_FORCE );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( TRANSPARENT_JSON, getProtocolMessage().findSetProperty( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackground_reset() {
+    Fixture.markInitialized( control );
+    control.setBackground( red );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setBackground( null );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.NULL, getProtocolMessage().findSetProperty( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackgroundImage_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "backgroundImage" ) );
+  }
+
+  @Test
+  public void testRenderBackgroundImage_unchanged() throws IOException {
+    Fixture.markInitialized( control );
+    control.setBackgroundImage( createImage( display, Fixture.IMAGE1 ) );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "backgroundImage" ) );
+  }
+
+  @Test
+  public void testRenderBackgroundImage_changed() throws IOException {
+    Fixture.markInitialized( control );
+    Image image = createImage( display, Fixture.IMAGE1 );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setBackgroundImage( image );
+    ControlLCAUtil.renderChanges( control );
+
+    String imageLocation = ImageFactory.getImagePath( image );
+    JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "backgroundImage" ) );
+  }
+
+  @Test
+  public void testRenderFont_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_changedNormal() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, false]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_changedBold() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, false]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_changedItalic() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, true]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_changedBoldItalic() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.BOLD | SWT.ITALIC ) );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, true]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_unchanged() {
+    Fixture.markInitialized( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderFont_reset() {
+    Fixture.markInitialized( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setFont( null );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonObject.NULL, getProtocolMessage().findSetProperty( control, "font" ) );
+  }
+
+  @Test
+  public void testRenderCursor_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "cursor" ) );
+  }
+
+  @Test
+  public void testRenderCursor_unchanged() {
+    Fixture.markInitialized( control );
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "cursor" ) );
+  }
+
+  @Test
+  public void testRenderCursor_changed() {
+    Fixture.markInitialized( control );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( "pointer", getProtocolMessage().findSetProperty( control, "cursor" ).asString() );
+  }
+
+  @Test
+  public void testRenderCursor_reset() {
+    Fixture.markInitialized( control );
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setCursor( null );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonObject.NULL, getProtocolMessage().findSetProperty( control, "cursor" ) );
+  }
+
+  @Test
+  public void testRenderData_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "data" ) );
+  }
+
+  @Test
+  public void testRenderData_unchanged() {
+    Fixture.markInitialized( control );
+    registerDataKeys( new String[]{ "foo" } );
+    control.setData( "foo", Boolean.TRUE );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "data" ) );
+  }
+
+  @Test
+  public void testRenderData_changed() {
+    Fixture.markInitialized( control );
+    registerDataKeys( new String[]{ "foo" } );
+
+    ControlLCAUtil.preserveValues( control );
+    control.setData( "foo", Boolean.TRUE );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonObject expected = new JsonObject().add( "foo", true );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "data" ) );
+  }
+
+  @Test
+  public void testRenderData_inSameOperationWithOtherProperties() {
+    registerDataKeys( new String[]{ "foo" } );
+    control.setData( "foo", "bar" );
+    control.setEnabled( false );
+    control.addListener( SWT.FocusIn, mock( Listener.class ) );
+
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    JsonObject properties = operation.getProperties();
+    assertNotNull( properties.get( "data" ) );
+    assertNotNull( properties.get( "enabled" ) );
+  }
+
+  @Test
+  public void testRenderListenActivate_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "Activate" ) );
+    assertNull( message.findListenOperation( control, "Deactivate" ) );
+  }
+
+  @Test
+  public void testRenderListenActivate_unchanged() {
+    Fixture.markInitialized( control );
+    control.addListener( SWT.Activate, mock( Listener.class ) );
+    control.addListener( SWT.Deactivate, mock( Listener.class ) );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "Activate" ) );
+    assertNull( message.findListenOperation( control, "Deactivate" ) );
+  }
+
+  @Test
+  public void testRenderListenActivate_activate() {
+    control.addListener( SWT.Activate, mock( Listener.class ) );
+
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "Activate" ) );
+  }
+
+  @Test
+  public void testRenderListenActivate_deactivate() {
+    control.addListener( SWT.Deactivate, mock( Listener.class ) );
+
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "Deactivate" ) );
+  }
+
+  @Test
+  public void testRenderListenActivate_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Activate, listener );
+    control.addListener( SWT.Deactivate, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.Activate, listener );
+    control.removeListener( SWT.Deactivate, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Activate" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Deactivate" ) );
+  }
+
+  @Test
+  public void testRenderListenMouse_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "MouseDown" ) );
+    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
+    assertNull( message.findListenOperation( control, "MouseUp" ) );
+  }
+
+  @Test
+  public void testRenderListenMouse_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.MouseDown, listener );
+    control.addListener( SWT.MouseDoubleClick, listener );
+    control.addListener( SWT.MouseUp, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "MouseDown" ) );
+    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
+    assertNull( message.findListenOperation( control, "MouseUp" ) );
+  }
+
+  @Test
+  public void testRenderListenMouse_changed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.MouseDown, listener );
+    control.addListener( SWT.MouseDoubleClick, listener );
+    control.addListener( SWT.MouseUp, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseUp" ) );
+  }
+
+  @Test
+  public void testRenderListenMouse_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.MouseDown, listener );
+    control.addListener( SWT.MouseDoubleClick, listener );
+    control.addListener( SWT.MouseUp, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.MouseDown, listener );
+    control.removeListener( SWT.MouseDoubleClick, listener );
+    control.removeListener( SWT.MouseUp, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDown" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDoubleClick" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseUp" ) );
+  }
+
+  @Test
+  public void testRenderListenFocus_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
+    assertNull( message.findListenOperation( control, "FocusOut" ) );
+  }
+
+  @Test
+  public void testRenderListenFocus_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.FocusIn, listener );
+    control.addListener( SWT.FocusOut, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
+    assertNull( message.findListenOperation( control, "FocusOut" ) );
+  }
+
+  @Test
+  public void testRenderListenFocus_changed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.FocusIn, listener );
+    control.addListener( SWT.FocusOut, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusOut" ) );
+  }
+
+  @Test
+  public void testRenderListenFocus_changed_onNotFocusableControl() {
+    control = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.FocusIn, listener );
+    control.addListener( SWT.FocusOut, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findListenOperation( control, "FocusIn" ) );
+    assertNull( message.findListenOperation( control, "FocusOut" ) );
+  }
+
+  @Test
+  public void testRenderListenFocus_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.FocusIn, listener );
+    control.addListener( SWT.FocusOut, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.FocusIn, listener );
+    control.removeListener( SWT.FocusOut, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusIn" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusOut" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.KeyDown, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_unchanged_keyUpDown() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.KeyDown, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.KeyDown, listener );
+    control.addListener( SWT.KeyUp, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_changed_keyDown() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.KeyDown, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_changed_keyUp() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.KeyUp, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.KeyDown, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.KeyDown, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( control, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenTraverse_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "Traverse" ) );
+  }
+
+  @Test
+  public void testRenderListenTraverse_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Traverse, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "Traverse" ) );
+  }
+
+  @Test
+  public void testRenderListenTraverse_changed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.Traverse, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "Traverse" ) );
+  }
+
+  @Test
+  public void testRenderListenTraverse_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Traverse, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.Traverse, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( control, "Traverse" ) );
+  }
+
+  @Test
+  public void testRenderListenMenuDetect_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "MenuDetect" ) );
+  }
+
+  @Test
+  public void testRenderListenMenuDetect_changed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.MenuDetect, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "MenuDetect" ) );
+  }
+
+  @Test
+  public void testRenderListenMenuDetect_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.MenuDetect, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "MenuDetect" ) );
+  }
+
+  @Test
+  public void testRenderListenMenuDetect_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.MenuDetect, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.MenuDetect, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( control, "MenuDetect" ) );
+  }
+
+  @Test
+  public void testRenderListenHelp_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "Help" ) );
+  }
+
+  @Test
+  public void testRenderListenHelp_changed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+
+    ControlLCAUtil.preserveValues( control );
+    control.addListener( SWT.Help, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( control, "Help" ) );
+  }
+
+  @Test
+  public void testRenderListenHelp_unchanged() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Help, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findListenOperation( control, "Help" ) );
+  }
+
+  @Test
+  public void testRenderListenHelp_removed() {
+    Fixture.markInitialized( control );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Help, listener );
+
+    ControlLCAUtil.preserveValues( control );
+    control.removeListener( SWT.Help, listener );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( control, "Help" ) );
+  }
+
+  // TODO [rst] These test are not releated to the class under test. Delete them or move them to
+  // a proper place
 
   @Test
   public void testProcessKeyEventWithDisplayFilter() {
@@ -211,767 +1185,6 @@ public class ControlLCAUtil_Test {
     Fixture.readDataAndProcessAction( shell );
 
     verify( listener, times( 1 ) ).helpRequested( any( HelpEvent.class) );
-  }
-
-  @Test
-  public void testRenderFocusListener_NotFocusableControl() {
-    Label control = new Label( shell, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.preserveValues( control );
-    Fixture.markInitialized( control );
-    Fixture.markInitialized( display );
-
-    control.addFocusListener( new FocusAdapter() {} );
-    ControlLCAUtil.renderChanges( control );
-
-    assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
-  }
-
-  //////////////////////////////////////////////
-  // Tests for new render methods using protocol
-
-  @Test
-  public void testRenderVisibilityIntiallyFalse() {
-    control.setVisible( false );
-    ControlLCAUtil.renderVisible( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findSetProperty( control, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderVisibilityInitiallyTrue() {
-    ControlLCAUtil.renderVisible( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderVisibilityUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setVisible( false );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderVisible( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "visibility" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderBoundsIntiallyZero() {
-    control = new Button( shell, SWT.PUSH );
-    ControlLCAUtil.renderBounds( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[ 0, 0, 0, 0 ]" );
-    assertEquals( expected, message.findSetProperty( control, "bounds" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderBoundsInitiallySet() {
-    control.setBounds( 10, 20, 100, 200 );
-    ControlLCAUtil.renderBounds( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[ 10, 20, 100, 200 ]" );
-    assertEquals( expected, message.findSetProperty( control, "bounds" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderBoundsUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setBounds( 10, 20, 100, 200 );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderBounds( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "bounds" ) );
-  }
-
-  @Test
-  public void testRenderInitialParent() {
-    ControlLCAUtil.renderParent( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "parent" ) );
-  }
-
-  @Test
-  public void testRenderParent() {
-    Fixture.markInitialized( control );
-
-    ControlLCAUtil.renderParent( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    String actual = message.findSetProperty( control, "parent" ).asString();
-    assertEquals( getId( control.getParent() ), actual );
-  }
-
-  @Test
-  public void testRenderParentUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderParent( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "parent" ) );
-  }
-
-  @Test
-  public void testRenderIntialChildren() {
-    ControlLCAUtil.renderChildren( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = new JsonArray().add( getId( control ) );
-    assertEquals( expected, message.findSetProperty( shell, "children" ) );
-  }
-
-  @Test
-  public void testRenderChildren() {
-    Button button = new Button( shell, SWT.PUSH );
-    control.moveBelow( button );
-    ControlLCAUtil.renderChildren( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = new JsonArray().add( getId( button ) ).add( getId( control ) );
-    assertEquals( expected, message.findSetProperty( shell, "children" ) );
-  }
-
-  @Test
-  public void testRenderChildrenOnNotComposite() {
-    ControlLCAUtil.renderChildren( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "children" ) );
-  }
-
-  @Test
-  public void testRenderChildrenUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    control.moveBelow( new Button( shell, SWT.PUSH ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderChildren( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( shell, "children" ) );
-  }
-
-  @Test
-  public void testRenderIntialTabIndex() throws IOException {
-    ShellLCA shellLCA = new ShellLCA();
-    shellLCA.renderChanges( shell );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.renderTabIndex( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 1, message.findSetProperty( control, "tabIndex" ).asInt() );
-  }
-
-  @Test
-  public void testRenderTabIndex() throws IOException {
-    shell.setTabList( new Control[]{ new Button( shell, SWT.PUSH ), control } );
-    ShellLCA shellLCA = new ShellLCA();
-    shellLCA.renderChanges( shell );
-    Fixture.fakeResponseWriter();
-    ControlLCAUtil.renderTabIndex( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( 2, message.findSetProperty( control, "tabIndex" ).asInt() );
-  }
-
-  @Test
-  public void testRenderTabIndexUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.moveBelow( new Button( shell, SWT.PUSH ) );
-    ShellLCA shellLCA = new ShellLCA();
-    shellLCA.renderChanges( shell );
-    Fixture.fakeResponseWriter();
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderTabIndex( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "tabIndex" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderIntialMenu() {
-    ControlLCAUtil.renderMenu( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "menu" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderMenu() {
-    control.setMenu( new Menu( shell ) );
-    ControlLCAUtil.renderMenu( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    String expected = getId( control.getMenu() );
-    assertEquals( expected, message.findSetProperty( control, "menu" ).asString() );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderMenuUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setMenu( new Menu( shell ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderMenu( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "menu" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderIntialEnabled() {
-    ControlLCAUtil.renderEnabled( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "enabled" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderEnabled() {
-    control.setEnabled( false );
-    ControlLCAUtil.renderEnabled( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findSetProperty( control, "enabled" ) );
-  }
-
-  // TODO [tb] : Move to WidgetLCAUtil_Test?
-  @Test
-  public void testRenderEnabledUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setEnabled( false );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderEnabled( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "enabled" ) );
-  }
-
-  @Test
-  public void testRenderIntialBackgroundImage() {
-    ControlLCAUtil.renderBackgroundImage( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "backgroundImage" ) );
-  }
-
-  @Test
-  public void testRenderBackgroundImage() throws IOException {
-    Image image = createImage( display, Fixture.IMAGE1 );
-
-    control.setBackgroundImage( image );
-    ControlLCAUtil.renderBackgroundImage( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    String imageLocation = ImageFactory.getImagePath( image );
-    JsonArray expected = new JsonArray().add( imageLocation ).add( 58 ).add( 12 );
-    assertEquals( expected, message.findSetProperty( control, "backgroundImage" ) );
-  }
-
-  @Test
-  public void testRenderBackgroundImageUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setBackgroundImage( createImage( display, Fixture.IMAGE1 ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderBackgroundImage( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "backgroundImage" ) );
-  }
-
-  @Test
-  public void testRenderInitialFont() {
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderFont() {
-    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, false]" );
-    assertEquals( expected, message.findSetProperty( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderFontBold() {
-    control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, false]" );
-    assertEquals( expected, message.findSetProperty( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderFontItalic() {
-    control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, false, true]" );
-    assertEquals( expected, message.findSetProperty( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderFontItalicAndBold() {
-    control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    JsonArray expected = JsonArray.readFrom( "[[\"Arial\"], 12, true, true]" );
-    assertEquals( expected, message.findSetProperty( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderFontUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "font" ) );
-  }
-
-  @Test
-  public void testResetFont() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
-
-    Fixture.preserveWidgets();
-    control.setFont( null );
-    ControlLCAUtil.renderFont( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonObject.NULL, message.findSetProperty( control, "font" ) );
-  }
-
-  @Test
-  public void testRenderInitialCursor() {
-    ControlLCAUtil.renderCursor( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "cursor" ) );
-  }
-
-  @Test
-  public void testRenderCursor() {
-    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
-    ControlLCAUtil.renderCursor( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( "pointer", message.findSetProperty( control, "cursor" ).asString() );
-  }
-
-  @Test
-  public void testRenderCursorUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderCursor( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "cursor" ) );
-  }
-
-  @Test
-  public void testResetCursor() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
-
-    Fixture.preserveWidgets();
-    control.setCursor( null );
-    ControlLCAUtil.renderCursor( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonObject.NULL, message.findSetProperty( control, "cursor" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenActivate() {
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "Activate" ) );
-    assertNull( message.findListenOperation( control, "Deactivate" ) );
-  }
-
-  @Test
-  public void testRenderListenActivate() {
-    control.addListener( SWT.Activate, mock( Listener.class ) );
-
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Activate" ) );
-  }
-
-  @Test
-  public void testRenderListenDeactivate() {
-    control.addListener( SWT.Deactivate, mock( Listener.class ) );
-
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Deactivate" ) );
-  }
-
-  @Test
-  public void testRenderListenActivateUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addListener( SWT.Activate, mock( Listener.class ) );
-    control.addListener( SWT.Deactivate, mock( Listener.class ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "Activate" ) );
-    assertNull( message.findListenOperation( control, "Deactivate" ) );
-  }
-
-  @Test
-  public void testRenderListenActivateRemoved() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    Listener listener = mock( Listener.class );
-    control.addListener( SWT.Activate, listener );
-    control.addListener( SWT.Deactivate, listener );
-    Fixture.preserveWidgets();
-
-    control.removeListener( SWT.Activate, listener );
-    control.removeListener( SWT.Deactivate, listener );
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Activate" ) );
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Deactivate" ) );
-  }
-
-  @Test
-  public void testRenderNoListenActivateOnDispose() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    Fixture.preserveWidgets();
-    control.addListener( SWT.Activate, mock( Listener.class ) );
-
-    control.dispose();
-    ControlLCAUtil.renderListenActivate( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "activate" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenFocus() {
-    ControlLCAUtil.renderListenFocus( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "FocusIn" ) );
-    assertNull( message.findListenOperation( control, "FocusIn" ) );
-  }
-
-  @Test
-  public void testRenderListenFocus() {
-    FocusAdapter listener = new FocusAdapter() {};
-
-    control.addFocusListener( listener );
-    ControlLCAUtil.renderListenFocus( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusIn" ) );
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "FocusOut" ) );
-  }
-
-  @Test
-  public void testRenderListenFocusUnchanged() {
-    FocusAdapter listener = new FocusAdapter() {};
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addFocusListener( listener );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenFocus( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "FocusIn" ) );
-    assertNull( message.findListenOperation( control, "FocusIn" ) );
-  }
-
-  @Test
-  public void testRenderListenFocusRemoved() {
-    FocusAdapter listener = new FocusAdapter() {};
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addFocusListener( listener );
-    Fixture.preserveWidgets();
-
-    control.removeFocusListener( listener );
-    ControlLCAUtil.renderListenFocus( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusIn" ) );
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "FocusOut" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenMouse() {
-    ControlLCAUtil.renderListenMouse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "MouseDown" ) );
-    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
-    assertNull( message.findListenOperation( control, "MouseUp" ) );
-  }
-
-  @Test
-  public void testRenderListenMouse() {
-    MouseAdapter listener = new MouseAdapter() {};
-
-    control.addMouseListener( listener );
-    ControlLCAUtil.renderListenMouse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDown" ) );
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseDoubleClick" ) );
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MouseUp" ) );
-  }
-
-  @Test
-  public void testRenderListenMouseUnchanged() {
-    MouseAdapter listener = new MouseAdapter() {};
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addMouseListener( listener );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenMouse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "MouseDown" ) );
-    assertNull( message.findListenOperation( control, "MouseDoubleClick" ) );
-    assertNull( message.findListenOperation( control, "MouseUp" ) );
-  }
-
-  @Test
-  public void testRenderListenMouseRemoved() {
-    MouseAdapter listener = new MouseAdapter() {
-    };
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addMouseListener( listener );
-    Fixture.preserveWidgets();
-
-    control.removeMouseListener( listener );
-    ControlLCAUtil.renderListenMouse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDown" ) );
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseDoubleClick" ) );
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MouseUp" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenKey() {
-    ControlLCAUtil.renderListenKey( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "KeyDown" ) );
-  }
-
-  @Test
-  public void testRenderListenKey() {
-    control.addKeyListener( mock( KeyListener.class ) );
-    ControlLCAUtil.renderListenKey( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "KeyDown" ) );
-  }
-
-  @Test
-  public void testRenderListenKeyUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addKeyListener( mock( KeyListener.class ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenKey( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "KeyDown" ) );
-  }
-
-  @Test
-  public void testRenderListenKeyRemoved() {
-    KeyListener listener = mock( KeyListener.class );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addKeyListener( listener );
-    Fixture.preserveWidgets();
-
-    control.removeKeyListener( listener );
-    ControlLCAUtil.renderListenKey( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "KeyDown" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenTraverse() {
-    ControlLCAUtil.renderListenTraverse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "Traverse" ) );
-  }
-
-  @Test
-  public void testRenderListenTraverse() {
-    control.addTraverseListener( mock( TraverseListener.class ) );
-    ControlLCAUtil.renderListenTraverse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "Traverse" ) );
-  }
-
-  @Test
-  public void testRenderListenTraverseUnchanged() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addTraverseListener( mock( TraverseListener.class ) );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenTraverse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "Traverse" ) );
-  }
-
-  @Test
-  public void testRenderListenTraverseRemoved() {
-    TraverseListener listener = mock( TraverseListener.class );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addTraverseListener( listener );
-    Fixture.preserveWidgets();
-
-    control.removeTraverseListener( listener );
-    ControlLCAUtil.renderListenTraverse( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "Traverse" ) );
-  }
-
-  @Test
-  public void testRenderInitialListenMenuDetect() {
-    ControlLCAUtil.renderListenMenuDetect( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "MenuDetect" ) );
-  }
-
-  @Test
-  public void testRenderListenMenuDetect() {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    control.addMenuDetectListener( listener );
-    ControlLCAUtil.renderListenMenuDetect( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( control, "MenuDetect" ) );
-  }
-
-  @Test
-  public void testRenderListenMenuDetectUnchanged() {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addMenuDetectListener( listener );
-
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderListenMenuDetect( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( control, "MenuDetect" ) );
-  }
-
-  @Test
-  public void testRenderListenMenuDetectRemoved() {
-    MenuDetectListener listener = new MenuDetectListener() {
-      public void menuDetected( MenuDetectEvent e ) {
-      }
-    };
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
-    control.addMenuDetectListener( listener );
-    Fixture.preserveWidgets();
-
-    control.removeMenuDetectListener( listener );
-    ControlLCAUtil.renderListenMenuDetect( control );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( control, "MenuDetect" ) );
-  }
-
-  @Test
-  public void testRenderData_inSameOperationWithOtherProperties() {
-    registerDataKeys( new String[]{ "foo" } );
-    control.setData( "foo", "bar" );
-    control.setEnabled( false );
-    control.addListener( SWT.FocusIn, mock( Listener.class ) );
-
-    ControlLCAUtil.renderChanges( control );
-
-    TestMessage message = getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    JsonObject properties = operation.getProperties();
-    assertNotNull( properties.get( "data" ) );
-    assertNotNull( properties.get( "enabled" ) );
   }
 
   private void fakeNotifyKeyDown( String target, int keyCode, int charCode, String modifier ) {

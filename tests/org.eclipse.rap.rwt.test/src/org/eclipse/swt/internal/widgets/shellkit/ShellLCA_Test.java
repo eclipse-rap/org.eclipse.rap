@@ -28,7 +28,6 @@ import java.io.IOException;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -39,11 +38,8 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -51,8 +47,6 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
@@ -73,26 +67,19 @@ public class ShellLCA_Test {
     display = new Display();
     shell = new Shell( display );
     lca = new ShellLCA();
-    Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     image = createImage( display, Fixture.IMAGE1 );
   }
 
   @After
   public void tearDown() {
-    display.dispose();
     Fixture.tearDown();
   }
 
   @Test
-  public void testControlListeners() throws IOException {
+  public void testCommonControlProperties() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
-    ControlLCATestUtil.testFocusListener( shell );
-    ControlLCATestUtil.testMouseListener( shell );
-    ControlLCATestUtil.testKeyListener( shell );
-    ControlLCATestUtil.testTraverseListener( shell );
-    ControlLCATestUtil.testMenuDetectListener( shell );
-    ControlLCATestUtil.testHelpListener( shell );
+    ControlLCATestUtil.testCommonControlProperties( shell );
   }
 
   @Test
@@ -127,70 +114,6 @@ public class ShellLCA_Test {
     assertEquals( shell, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( "maximized", adapter.getPreserved( ShellLCA.PROP_MODE ) );
     assertEquals( new Point( 100, 100 ), adapter.getPreserved( ShellLCA.PROP_MINIMUM_SIZE ) );
-    Fixture.clearPreserved();
-    //control: enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    shell.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    shell.setEnabled( true );
-    //visible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    shell.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    //menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( shell );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    shell.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    //bound
-    Rectangle rectangle = new Rectangle( 10, 10, 100, 150 );
-    shell.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background =new Color( display, 122, 33, 203 );
-    shell.setBackground( background );
-    Color foreground =new Color( display, 211, 178, 211 );
-    shell.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    shell.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( null, shell.getToolTipText() );
-    Fixture.clearPreserved();
-    shell.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( "some text", shell.getToolTipText() );
   }
 
   @Test
@@ -405,17 +328,6 @@ public class ShellLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonObject.NULL, message.findSetProperty( shell, "activeControl" ) );
-  }
-
-  @Test
-  public void testRenderInitialBounds() {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.preserveWidgets();
-    ControlLCAUtil.renderBounds( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( shell, "bounds" ) );
   }
 
   @Test

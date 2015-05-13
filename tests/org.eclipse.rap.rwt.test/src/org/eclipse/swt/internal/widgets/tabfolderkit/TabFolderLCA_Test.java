@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
@@ -26,7 +25,6 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
@@ -36,14 +34,8 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -66,7 +58,6 @@ public class TabFolderLCA_Test {
     shell = new Shell( display );
     folder = new TabFolder( shell, SWT.NONE );
     lca = new TabFolderLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -75,83 +66,8 @@ public class TabFolderLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( folder );
-    ControlLCATestUtil.testFocusListener( folder );
-    ControlLCATestUtil.testMouseListener( folder );
-    ControlLCATestUtil.testKeyListener( folder );
-    ControlLCATestUtil.testTraverseListener( folder );
-    ControlLCATestUtil.testMenuDetectListener( folder );
-    ControlLCATestUtil.testHelpListener( folder );
-  }
-
-  @Test
-  public void testPreserveValues() {
-    Fixture.markInitialized( display );
-    //control: enabled
-    Fixture.preserveWidgets();
-    RemoteAdapter adapter = getAdapter( folder );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    folder.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    folder.setEnabled( true );
-    //visible
-    folder.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    folder.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    //menu
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( folder );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    folder.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    //bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    folder.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    folder.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    folder.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    folder.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    //tooltiptext
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( null, folder.getToolTipText() );
-    Fixture.clearPreserved();
-    folder.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = getAdapter( folder );
-    assertEquals( "some text", folder.getToolTipText() );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( folder );
   }
 
   @Test

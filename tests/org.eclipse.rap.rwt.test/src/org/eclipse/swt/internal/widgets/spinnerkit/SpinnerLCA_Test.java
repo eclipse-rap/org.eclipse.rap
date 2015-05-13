@@ -43,15 +43,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -74,7 +68,6 @@ public class SpinnerLCA_Test {
     shell = new Shell( display, SWT.NONE );
     spinner = new Spinner( shell, SWT.NONE );
     lca = new SpinnerLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -83,14 +76,8 @@ public class SpinnerLCA_Test {
   }
 
   @Test
-  public void testControlListeners() throws IOException {
-    ControlLCATestUtil.testActivateListener( spinner );
-    ControlLCATestUtil.testFocusListener( spinner );
-    ControlLCATestUtil.testMouseListener( spinner );
-    ControlLCATestUtil.testKeyListener( spinner );
-    ControlLCATestUtil.testTraverseListener( spinner );
-    ControlLCATestUtil.testMenuDetectListener( spinner );
-    ControlLCATestUtil.testHelpListener( spinner );
+  public void testCommonControlProperties() throws IOException {
+    ControlLCATestUtil.testCommonControlProperties( spinner );
   }
 
   @Test
@@ -141,71 +128,6 @@ public class SpinnerLCA_Test {
     assertEquals( new Integer( 2 ), increment );
     assertEquals( new Integer( 9 ), pageIncrement );
     assertEquals( new Integer( 10 ), textLimit );
-    Fixture.clearPreserved();
-    // control: enabled
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    spinner.setEnabled( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();
-    spinner.setEnabled( true );
-    // visible
-    spinner.setSize( 10, 10 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    spinner.setVisible( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
-    Fixture.clearPreserved();
-    // menu
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( null, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    Menu menu = new Menu( spinner );
-    MenuItem item = new MenuItem( menu, SWT.NONE );
-    item.setText( "1 Item" );
-    spinner.setMenu( menu );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
-    Fixture.clearPreserved();
-    // bound
-    Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
-    spinner.setBounds( rectangle );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    // foreground background font
-    Color background = new Color( display, 122, 33, 203 );
-    spinner.setBackground( background );
-    Color foreground = new Color( display, 211, 178, 211 );
-    spinner.setForeground( foreground );
-    Font font = new Font( display, "font", 12, SWT.BOLD );
-    spinner.setFont( font );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
-    assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    // tooltiptext
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( null, spinner.getToolTipText() );
-    Fixture.clearPreserved();
-    spinner.setToolTipText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    assertEquals( "some text", spinner.getToolTipText() );
   }
 
   @Test
