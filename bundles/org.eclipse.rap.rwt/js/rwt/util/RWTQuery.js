@@ -435,7 +435,7 @@ var is_element = function( element, args ) {
   return element === asElement( args[ 0 ] );
 };
 
-var offset_element = function( element, args ) {
+var offset_element = function( element ) {
   var location = rwt.html.Location.get( element );
   return {left: location.left, top: location.top};
 };

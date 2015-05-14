@@ -173,7 +173,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       }
     },
 
-    _applySeparatorBorder : function( value ) {
+    _applySeparatorBorder : function() {
       if( this._isDropDown ) {
         var border = this.getSeparatorBorder();
         this.$separator.css({
