@@ -65,7 +65,7 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserve() {
+  public void testPreserveProperty() {
     Object value = new Object();
 
     adapter.preserve( "prop", value );
@@ -74,10 +74,10 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
-  public void testClearPreserve() {
+  public void testPreserveProperty_isCleared() {
     Object value = new Object();
-
     adapter.preserve( "prop", value );
+
     adapter.clearPreserved();
 
     assertNull( adapter.getPreserved( "prop" ) );
@@ -179,6 +179,24 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testPreserveData() {
+    Object[] data = { "foo" };
+
+    adapter.preserveData( data );
+
+    assertSame( data, adapter.getPreservedData() );
+  }
+
+  @Test
+  public void testPreserveData_isCleared() {
+    adapter.preserveData( new Object[] { "foo" } );
+
+    adapter.clearPreserved();
+
+    assertNull( adapter.getPreservedData() );
+  }
+
+  @Test
   public void testSerializableFields() throws Exception {
     adapter.setInitialized( true );
 
@@ -195,6 +213,7 @@ public class WidgetRemoteAdapter_Test {
     adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
     adapter.preserveListener( 23, true );
+    adapter.preserveData( new Object[] { "foo" } );
 
     WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
 
@@ -202,6 +221,7 @@ public class WidgetRemoteAdapter_Test {
     assertEquals( 0, deserializedAdapter.getRenderRunnables().length );
     assertNull( deserializedAdapter.getPreserved( property ) );
     assertFalse( deserializedAdapter.getPreservedListener( 23 ) );
+    assertNull( deserializedAdapter.getPreservedData() );
   }
 
 }

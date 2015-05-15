@@ -143,7 +143,15 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveData( Widget widget ) {
-    preserveProperty( widget, PROP_DATA, getDataAsArray( widget ) );
+    getRemoteAdapter( widget ).preserveData( getData( widget ) );
+  }
+
+  public static void renderData( Widget widget ) {
+    Object[] actual = getData( widget );
+    Object[] preserved = getRemoteAdapter( widget ).getPreservedData();
+    if( changed( widget, actual, preserved, null ) ) {
+      getRemoteObject( widget ).set( PROP_DATA, getJsonForData( actual ) );
+    }
   }
 
   public static void renderBounds( Widget widget, Rectangle bounds ) {
@@ -163,30 +171,6 @@ public final class WidgetLCAUtil {
       }
       getRemoteObject( widget ).set( "customVariant", value );
     }
-  }
-
-  @SuppressWarnings( "deprecation" )
-  public static void renderData( Widget widget ) {
-    Object[] newValue = getDataAsArray( widget );
-    if( hasChanged( widget, PROP_DATA, newValue, new Object[ 0 ] ) ) {
-      JsonObject data = new JsonObject();
-      for( int i = 0; i < newValue.length; i++ ) {
-        data.add( (String)newValue[ i ], createJsonValue( newValue[ ++i ] ) );
-      }
-      getRemoteObject( widget ).set( PROP_DATA, data );
-    }
-  }
-
-  private static Object[] getDataAsArray( Widget widget ) {
-    List<Object> result = new ArrayList<>();
-    for( String key : WidgetDataUtil.getDataKeys() ) {
-      Object value = widget.getData( key );
-      if( value != null ) {
-        result.add( key );
-        result.add( value );
-      }
-    }
-    return result.toArray();
   }
 
   public static void renderMenu( Widget widget, Menu menu ) {
@@ -667,6 +651,36 @@ public final class WidgetLCAUtil {
       result = object1.equals( object2 );
     }
     return result;
+  }
+
+  private static Object[] getData( Widget widget ) {
+    List<Object> result = null;
+    for( String key : WidgetDataUtil.getDataKeys() ) {
+      Object value = widget.getData( key );
+      if( value != null ) {
+        if( result == null ) {
+          result = new ArrayList<>();
+        }
+        result.add( key );
+        result.add( value );
+      }
+    }
+    return result == null ? null : result.toArray();
+  }
+
+  @SuppressWarnings( "deprecation" )
+  private static JsonObject getJsonForData( Object[] data ) {
+    JsonObject jsonObject = new JsonObject();
+    if( data != null ) {
+      for( int i = 0; i < data.length; i++ ) {
+        jsonObject.add( (String)data[ i ], createJsonValue( data[ ++i ] ) );
+      }
+    }
+    return jsonObject;
+  }
+
+  private static WidgetRemoteAdapter getRemoteAdapter( Widget widget ) {
+    return ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
   }
 
 }

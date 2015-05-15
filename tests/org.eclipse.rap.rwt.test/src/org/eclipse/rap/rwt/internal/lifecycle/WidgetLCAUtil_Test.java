@@ -540,69 +540,88 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderInitialData() {
+  public void testRenderData_initial() {
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
   }
 
   @Test
-  public void testRenderData() {
-    registerDataKeys( new String[]{ "foo", "bar" } );
+  public void testRenderData_set() {
+    registerDataKeys( "foo", "bar" );
     widget.setData( "foo", "string" );
     widget.setData( "bar", Integer.valueOf( 1 ) );
 
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    JsonObject data = ( JsonObject )message.findSetProperty( widget, "data" );
-    assertEquals( "string", data.get( "foo" ).asString() );
-    assertEquals( 1, data.get( "bar" ).asInt() );
+    JsonObject expected = new JsonObject().add( "foo", "string" ).add( "bar", 1 );
+    assertEquals( expected, getProtocolMessage().findSetProperty( widget, "data" ) );
   }
 
   @Test
-  public void testRenderDataWithoutDataWhiteListService() {
+  public void testRenderData_setWithoutDataWhiteListService() {
     widget.setData( "foo", "string" );
 
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
   }
 
   @Test
-  public void testRenderData_MissingData() {
-    registerDataKeys( new String[]{ "missing" } );
+  public void testRenderData_missingData() {
+    registerDataKeys( "missing" );
 
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
   }
 
   @Test
-  public void testRenderData_NullKey() {
-    registerDataKeys( new String[]{ null } );
+  public void testRenderData_withNullKey() {
+    registerDataKeys( ( String )null );
 
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
   }
 
   @Test
-  public void testRenderDataUnchanged() {
-    registerDataKeys( new String[]{ "foo" } );
+  public void testRenderData_changed() {
+    registerDataKeys( "foo" );
     widget.setData( "foo", "string" );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
 
-    Fixture.preserveWidgets();
+    WidgetLCAUtil.preserveData( widget );
+    widget.setData( "foo", "another string" );
     WidgetLCAUtil.renderData( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( 0, message.getOperationCount() );
+    JsonObject expected = new JsonObject().add( "foo", "another string" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( widget, "data" ) );
+  }
+
+  @Test
+  public void testRenderData_unchanged() {
+    registerDataKeys( "foo" );
+    widget.setData( "foo", "string" );
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.preserveData( widget );
+    WidgetLCAUtil.renderData( widget );
+
+    assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
+  }
+
+  @Test
+  public void testRenderData_reset() {
+    registerDataKeys( "foo" );
+    widget.setData( "foo", "string" );
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.preserveData( widget );
+    widget.setData( "foo", null );
+    WidgetLCAUtil.renderData( widget );
+
+    assertEquals( new JsonObject(), getProtocolMessage().findSetProperty( widget, "data" ) );
   }
 
   @Test
