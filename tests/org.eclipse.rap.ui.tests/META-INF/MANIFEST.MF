@@ -6,7 +6,6 @@ Bundle-Version: 3.3.0.qualifier
 Bundle-ClassPath: uitests.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: Eclipse.org
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.core.resources,
  org.eclipse.core.expressions,
@@ -20,7 +19,6 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans,
  org.eclipse.core.tests.harness;bundle-version="3.4.0",
- org.eclipse.rap.junit;bundle-version="1.2.0",
  org.eclipse.rap.rwt.testfixture
 Eclipse-AutoStart: true
 Plugin-Class: org.eclipse.ui.tests.TestPlugin

@@ -25,8 +25,6 @@
     <!-- Runtime projects -->
     <module>bundles/org.eclipse.rap.jface.databinding</module>
     <module>bundles/org.eclipse.rap.jface</module>
-    <module>bundles/org.eclipse.rap.junit</module>
-    <module>bundles/org.eclipse.rap.junit.runtime</module>
     <module>bundles/org.eclipse.rap.nebula.jface.gridviewer</module>
     <module>bundles/org.eclipse.rap.nebula.widgets.grid</module>
     <module>bundles/org.eclipse.rap.rwt</module>
