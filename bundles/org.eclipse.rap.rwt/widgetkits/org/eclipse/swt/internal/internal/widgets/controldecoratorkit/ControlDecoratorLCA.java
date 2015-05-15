@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,19 +14,16 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Widget;
 
@@ -42,8 +39,6 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
   private static final String PROP_IMAGE = "image";
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_SHOW_HOVER = "showHover";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -53,10 +48,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     preserveProperty( decorator, PROP_IMAGE, decorator.getImage() );
     preserveProperty( decorator, PROP_VISIBLE, decorator.isVisible() );
     preserveProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover() );
-    preserveListener( decorator, PROP_SELECTION_LISTENER, isListening( decorator, SWT.Selection ) );
-    preserveListener( decorator,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( decorator, SWT.DefaultSelection ) );
+    preserveListenSelection( decorator );
+    preserveListenDefaultSelection( decorator );
   }
 
   @Override
@@ -76,14 +69,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     renderProperty( decorator, PROP_IMAGE, decorator.getImage(), null );
     renderProperty( decorator, PROP_VISIBLE, decorator.isVisible(), false );
     renderProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover(), true );
-    renderListener( decorator,
-                    PROP_SELECTION_LISTENER,
-                    isListening( decorator, SWT.Selection ),
-                    false );
-    renderListener( decorator,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( decorator, SWT.DefaultSelection ),
-                    false );
+    WidgetLCAUtil.renderListenSelection( decorator );
+    WidgetLCAUtil.renderListenDefaultSelection( decorator );
   }
 
   @Override

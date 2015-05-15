@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,20 +11,17 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -43,7 +40,6 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
 
   private static final String PROP_IMAGES = "images"; //$NON-NLS-1$
   private static final String PROP_EXPANDED = "expanded"; //$NON-NLS-1$
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection"; //$NON-NLS-1$
 
   private static final String PREFIX = "resource/widget/rap/hyperlink/"; //$NON-NLS-1$
   private static final String MINUS_GIF = PREFIX + "minus.gif"; //$NON-NLS-1$
@@ -64,9 +60,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
-    preserveListener( hyperlink,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( hyperlink, SWT.DefaultSelection ) );
+    preserveListenDefaultSelection( hyperlink );
   }
 
   @Override
@@ -84,10 +78,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( hyperlink );
     WidgetLCAUtil.renderCustomVariant( hyperlink );
     renderProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded(), false );
-    renderListener( hyperlink,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( hyperlink, SWT.DefaultSelection ),
-                    false );
+    renderListenDefaultSelection( hyperlink );
   }
 
   //////////////////

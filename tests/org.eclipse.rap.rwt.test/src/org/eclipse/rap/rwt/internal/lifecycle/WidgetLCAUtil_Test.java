@@ -34,15 +34,14 @@ import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -325,43 +324,45 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderListenHelp() {
-    Control widget = new Button( shell, SWT.PUSH );
-    widget.addHelpListener( mock( HelpListener.class ) );
+  public void testRenderListenHelp_initial() {
     WidgetLCAUtil.renderListenHelp( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( widget, "Help" ) );
+    assertNull( getProtocolMessage().findListenOperation( widget, "Help" ) );
   }
 
   @Test
-  public void testRenderListenHelpUnchanged() {
-    Control widget = new Button( shell, SWT.PUSH );
-    Fixture.markInitialized( display );
+  public void testRenderListenHelp_added() {
     Fixture.markInitialized( widget );
-    widget.addHelpListener( mock( HelpListener.class ) );
 
-    Fixture.preserveWidgets();
+    WidgetLCAUtil.preserveListenHelp( widget );
+    widget.addListener( SWT.Help, mock( Listener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertNull( message.findListenOperation( widget, "Help" ) );
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( widget, "Help" ) );
   }
 
   @Test
-  public void testRenderListenHelpRemoved() {
-    Control widget = new Button( shell, SWT.PUSH );
-    HelpListener listener = mock( HelpListener.class );
-    Fixture.markInitialized( display );
+  public void testRenderListenHelp_unchanged() {
     Fixture.markInitialized( widget );
-    widget.addHelpListener( listener );
-    Fixture.preserveWidgets();
+    widget.addListener( SWT.Help, mock( Listener.class ) );
 
-    widget.removeHelpListener( listener );
+    WidgetLCAUtil.preserveListenHelp( widget );
     WidgetLCAUtil.renderListenHelp( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( widget, "Help" ) );
+    assertNull( getProtocolMessage().findListenOperation( widget, "Help" ) );
+  }
+
+  @Test
+  public void testRenderListenHelp_removed() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Help, listener );
+
+    WidgetLCAUtil.preserveListenHelp( widget );
+    widget.removeListener( SWT.Help, listener );
+    WidgetLCAUtil.renderListenHelp( widget );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( widget, "Help" ) );
   }
 
   @Test

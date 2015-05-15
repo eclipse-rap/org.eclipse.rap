@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,13 @@ package org.eclipse.swt.internal.widgets.listkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
@@ -28,7 +29,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
@@ -46,8 +46,6 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String PROP_TOP_INDEX = "topIndex";
   private static final String PROP_FOCUS_INDEX = "focusIndex";
   private static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
@@ -66,10 +64,8 @@ public class ListLCA extends AbstractWidgetLCA {
     preserveProperty( list, PROP_TOP_INDEX, list.getTopIndex() );
     preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
-    preserveListener( list, PROP_SELECTION_LISTENER, isListening( list, SWT.Selection ) );
-    preserveListener( list,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( list, SWT.DefaultSelection ) );
+    preserveListenSelection( list );
+    preserveListenDefaultSelection( list );
     ScrollBarLCAUtil.preserveValues( list );
   }
 
@@ -102,11 +98,8 @@ public class ListLCA extends AbstractWidgetLCA {
                     DEFAUT_SELECTION_INDICES );
     renderProperty( list, PROP_TOP_INDEX, list.getTopIndex(), DEFAULT_TOP_INDEX );
     renderProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex(), DEFAULT_FOCUS_INDEX );
-    renderListener( list, PROP_SELECTION_LISTENER, isListening( list, SWT.Selection ), false );
-    renderListener( list,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( list, SWT.DefaultSelection ),
-                    false );
+    renderListenSelection( list );
+    renderListenDefaultSelection( list );
     renderProperty( list,
                     PROP_ITEM_DIMENSIONS,
                     getItemDimensions( list ),

@@ -13,16 +13,14 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
@@ -53,7 +51,6 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
   private static final String PROP_CONTROL = "control";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_BADGE = "badge";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -71,7 +68,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
     preserveProperty( item, PROP_BADGE, getBadge( item ) );
     if( !isSeparator( item ) ) {
-      preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
+      preserveListenSelection( item );
     }
   }
 
@@ -109,10 +106,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     renderProperty( item, PROP_SELECTION, item.getSelection(), false );
     renderProperty( item, PROP_BADGE, getBadge( item ), null );
     if( !isSeparator( item ) ) {
-      renderListener( item,
-                      PROP_SELECTION_LISTENER,
-                      isListening( item, SWT.Selection ),
-                      false );
+      renderListenSelection( item );
     }
   }
 

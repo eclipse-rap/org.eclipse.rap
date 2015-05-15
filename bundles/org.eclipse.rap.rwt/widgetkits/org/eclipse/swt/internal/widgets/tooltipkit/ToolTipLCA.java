@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,11 @@ package org.eclipse.swt.internal.widgets.tooltipkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 import org.eclipse.swt.widgets.ToolTip;
@@ -46,7 +44,6 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   private static final String PROP_MESSAGE = "message";
   private static final String PROP_LOCATION = "location";
   private static final String PROP_VISIBLE = "visible";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
 
   private static final Point DEFAULT_LOCATION = new Point( 0, 0 );
@@ -62,7 +59,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
     preserveProperty( toolTip, PROP_LOCATION, getLocation( toolTip ) );
     preserveProperty( toolTip, PROP_VISIBLE, toolTip.isVisible() );
-    preserveListener( toolTip, PROP_SELECTION_LISTENER, isListening( toolTip, SWT.Selection ) );
+    preserveListenSelection( toolTip );
   }
 
   @Override
@@ -86,10 +83,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     renderProperty( toolTip, PROP_MESSAGE, toolTip.getMessage(), "" );
     renderProperty( toolTip, PROP_LOCATION, getLocation( toolTip ), DEFAULT_LOCATION );
     renderProperty( toolTip, PROP_VISIBLE, toolTip.isVisible(), false );
-    renderListener( toolTip,
-                    PROP_SELECTION_LISTENER,
-                    isListening( toolTip, SWT.Selection ),
-                    false );
+    renderListenSelection( toolTip );
   }
 
   private static Point getLocation( ToolTip toolTip ) {

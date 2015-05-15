@@ -11,16 +11,14 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -38,7 +36,6 @@ public class ScrollBarLCAUtil {
   };
 
   private static final String PROP_VISIBILITY = "visibility";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private ScrollBarLCAUtil() {
     // prevent instantiation
@@ -52,9 +49,7 @@ public class ScrollBarLCAUtil {
   private static void preserveValues( ScrollBar scrollBar ) {
     if( scrollBar != null ) {
       preserveProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible() );
-      preserveListener( scrollBar,
-                        PROP_SELECTION_LISTENER,
-                        isListening( scrollBar, SWT.Selection ) );
+      preserveListenSelection( scrollBar );
     }
   }
 
@@ -80,10 +75,7 @@ public class ScrollBarLCAUtil {
   private static void renderChanges( ScrollBar scrollBar ) {
     if( scrollBar != null ) {
       renderProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible(), false );
-      renderListener( scrollBar,
-                      PROP_SELECTION_LISTENER,
-                      isListening( scrollBar, SWT.Selection ),
-                      false );
+      renderListenSelection( scrollBar );
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenHelp;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenHelp;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
@@ -47,7 +47,6 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   private static final String PROP_MENU = "menu";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -59,8 +58,8 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
     preserveProperty( item, PROP_MENU, item.getMenu() );
     preserveProperty( item, PROP_ENABLED, item.getEnabled() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
-    preserveListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ) );
-    WidgetLCAUtil.preserveHelpListener( item );
+    preserveListenSelection( item );
+    preserveListenHelp( item );
   }
 
   @Override
@@ -85,8 +84,8 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderMenu( item, item.getMenu() );
     renderProperty( item, PROP_ENABLED, item.getEnabled(), true );
     renderProperty( item, PROP_SELECTION, item.getSelection(), false );
-    renderListener( item, PROP_SELECTION_LISTENER, isListening( item, SWT.Selection ), false );
-    WidgetLCAUtil.renderListenHelp( item );
+    renderListenSelection( item );
+    renderListenHelp( item );
   }
 
   private static void renderText( MenuItem item ) {

@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.expandbarkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -37,12 +39,11 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -272,48 +273,44 @@ public class ExpandBarLCA_Test {
   }
 
   @Test
-  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_added() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
     Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
+    lca.preserveValues( expandBar );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( expandBar );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_removed() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
-    SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
     Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
+    Listener listener = mock( Listener.class );
+    vScroll.addListener( SWT.Selection, listener );
 
-    vScroll.removeSelectionListener( listener );
+    lca.preserveValues( expandBar );
+    vScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( expandBar );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_unchanged() throws Exception {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
     ScrollBar vScroll = expandBar.getVerticalBar();
-    Fixture.markInitialized( display );
     Fixture.markInitialized( vScroll );
+    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
 
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
+    lca.preserveValues( expandBar );
     lca.renderChanges( expandBar );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
+    assertNull( getProtocolMessage().findListenOperation( vScroll, "Selection" ) );
   }
 
 }

@@ -13,8 +13,12 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
@@ -22,7 +26,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
@@ -80,9 +83,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SORT_DIRECTION = "sortDirection";
   private static final String PROP_SORT_COLUMN = "sortColumn";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_SETDATA_LISTENER = "SetData";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_ALWAYS_HIDE_SELECTION = "alwaysHideSelection";
   private static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
@@ -113,11 +114,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_SELECTION, getSelection( table ) );
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
-    preserveListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ) );
+    preserveListenSelection( table );
     preserveListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ) );
-    preserveListener( table,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( table, SWT.DefaultSelection ) );
+    preserveListenDefaultSelection( table );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
@@ -180,12 +179,9 @@ public final class TableLCA extends AbstractWidgetLCA {
         renderProperty( table, PROP_SORT_COLUMN, table.getSortColumn(), null );
       }
     } );
-    renderListener( table, PROP_SELECTION_LISTENER, isListening( table, SWT.Selection ), false );
+    renderListenSelection( table );
     renderListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ), false );
-    renderListener( table,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( table, SWT.DefaultSelection ),
-                    false );
+    renderListenDefaultSelection( table );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( table ), null );

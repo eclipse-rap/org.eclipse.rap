@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,10 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
@@ -30,7 +28,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Link;
@@ -43,7 +40,6 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
   static final String PROP_TEXT = "text";
-  static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -51,7 +47,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
-    preserveListener( link, PROP_SELECTION_LISTENER, isListening( link, SWT.Selection ) );
+    preserveListenSelection( link );
   }
 
   @Override
@@ -69,7 +65,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( link );
     WidgetLCAUtil.renderCustomVariant( link );
     renderText( link );
-    renderListener( link, PROP_SELECTION_LISTENER, isListening( link, SWT.Selection ), false );
+    renderListenSelection( link );
   }
 
   ///////////////////////////////////////////////////

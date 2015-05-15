@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,13 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridcolumnkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -54,7 +53,6 @@ public class GridColumnLCA extends AbstractWidgetLCA {
   private static final String PROP_FOOTER_SPAN = "footerSpan";
   private static final String PROP_WORD_WRAP = "wordWrap";
   private static final String PROP_HEADER_WORD_WRAP = "headerWordWrap";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
 
   private static final int ZERO = 0;
   private static final String DEFAULT_ALIGNMENT = "left";
@@ -92,7 +90,7 @@ public class GridColumnLCA extends AbstractWidgetLCA {
     preserveProperty( column, PROP_FOOTER_SPAN, getFooterSpan( column ) );
     preserveProperty( column, PROP_WORD_WRAP, column.getWordWrap() );
     preserveProperty( column, PROP_HEADER_WORD_WRAP, column.getHeaderWordWrap() );
-    preserveListener( column, PROP_SELECTION_LISTENER, isListening( column, SWT.Selection ) );
+    preserveListenSelection( column );
   }
 
   @Override
@@ -116,7 +114,7 @@ public class GridColumnLCA extends AbstractWidgetLCA {
     renderProperty( column, PROP_FOOTER_SPAN, getFooterSpan( column ), 1 );
     renderProperty( column, PROP_WORD_WRAP, column.getWordWrap(), false );
     renderProperty( column, PROP_HEADER_WORD_WRAP, column.getHeaderWordWrap(), false );
-    renderListener( column, PROP_SELECTION_LISTENER, isListening( column, SWT.Selection ), false );
+    renderListenSelection( column );
   }
 
   //////////////////////////////////////////////

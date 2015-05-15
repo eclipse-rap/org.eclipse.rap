@@ -70,8 +70,6 @@ import org.junit.Test;
 
 public class ButtonLCA_Test {
 
-  private static final String PROP_SELECTION_LISTENER = "Selection";
-
   private Display display;
   private Shell shell;
   private Button button;
@@ -132,7 +130,6 @@ public class ButtonLCA_Test {
   }
 
   private void testPreserveValues( Display display, Button button ) throws IOException {
-    Boolean hasListeners;
     // Text,Image
     RemoteAdapter adapter = WidgetUtil.getAdapter( button );
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
@@ -149,20 +146,6 @@ public class ButtonLCA_Test {
       assertSame( image, adapter.getPreserved( Props.IMAGE ) );
       Fixture.clearPreserved();
     }
-    //Selection_Listener
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {
-    };
-    button.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
   }
 
   @Test

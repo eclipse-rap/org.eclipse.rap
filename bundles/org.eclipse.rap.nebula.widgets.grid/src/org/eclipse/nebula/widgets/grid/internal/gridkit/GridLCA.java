@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,18 @@
 package org.eclipse.nebula.widgets.grid.internal.gridkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
@@ -76,8 +79,6 @@ public class GridLCA extends AbstractWidgetLCA {
   // possible on the client
   private static final String PROP_SORT_DIRECTION = "sortDirection";
   private static final String PROP_SORT_COLUMN = "sortColumn";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_SETDATA_LISTENER = "SetData";
   private static final String PROP_EXPAND_LISTENER = "Expand";
   private static final String PROP_COLLAPSE_LISTENER = "Collapse";
@@ -135,10 +136,8 @@ public class GridLCA extends AbstractWidgetLCA {
     preserveProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight() );
     preserveProperty( grid, PROP_SORT_DIRECTION, getSortDirection( grid ) );
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
-    preserveListener( grid, PROP_SELECTION_LISTENER, isListening( grid, SWT.Selection ) );
-    preserveListener( grid,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( grid, SWT.DefaultSelection ) );
+    preserveListenSelection( grid );
+    preserveListenDefaultSelection( grid );
     preserveListener( grid, PROP_SETDATA_LISTENER, listensToSetData( grid ) );
     preserveListener( grid, PROP_EXPAND_LISTENER, hasExpandListener( grid ) );
     preserveListener( grid, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ) );
@@ -170,11 +169,8 @@ public class GridLCA extends AbstractWidgetLCA {
     renderProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight(), false );
     renderProperty( grid, PROP_SORT_DIRECTION, getSortDirection( grid ), DEFAULT_SORT_DIRECTION );
     renderProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ), null );
-    renderListener( grid, PROP_SELECTION_LISTENER, isListening( grid, SWT.Selection ), false );
-    renderListener( grid,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( grid, SWT.DefaultSelection ),
-                    false );
+    renderListenSelection( grid );
+    renderListenDefaultSelection( grid );
     renderListener( grid, PROP_SETDATA_LISTENER, listensToSetData( grid ), false );
     renderListener( grid, PROP_EXPAND_LISTENER, hasExpandListener( grid ), false );
     renderListener( grid, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ), false );

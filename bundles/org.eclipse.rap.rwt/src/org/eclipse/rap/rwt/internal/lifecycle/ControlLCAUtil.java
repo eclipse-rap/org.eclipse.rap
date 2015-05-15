@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
@@ -69,6 +71,7 @@ public class ControlLCAUtil {
   private static final String PROP_KEY_LISTENER = "KeyDown";
   private static final String PROP_TRAVERSE_LISTENER = "Traverse";
   private static final String PROP_MENU_DETECT_LISTENER = "MenuDetect";
+  private static final String PROP_HELP_LISTENER = "Help";
 
   private static final String CURSOR_UPARROW
     = "rwt-resources/resource/widget/rap/cursors/up_arrow.cur";
@@ -345,102 +348,75 @@ public class ControlLCAUtil {
   private static void preserveListenActivate( Control control ) {
     // Note: Shell "Activate" event is handled by ShellLCA
     if( !( control instanceof Shell ) ) {
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_ACTIVATE_LISTENER,
-                                      isListening( control, SWT.Activate ) );
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_DEACTIVATE_LISTENER,
-                                      isListening( control, SWT.Deactivate ) );
+      preserveListener( control, SWT.Activate );
+      preserveListener( control, SWT.Deactivate );
     }
   }
 
   private static void renderListenActivate( Control control ) {
     // Note: Shell "Activate" event is handled by ShellLCA
     if( !( control instanceof Shell ) ) {
-      renderListen( control, SWT.Activate, PROP_ACTIVATE_LISTENER );
-      renderListen( control, SWT.Deactivate, PROP_DEACTIVATE_LISTENER );
+      renderListener( control, SWT.Activate, PROP_ACTIVATE_LISTENER );
+      renderListener( control, SWT.Deactivate, PROP_DEACTIVATE_LISTENER );
     }
   }
 
   private static void preserveListenMouse( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_DOWN_LISTENER,
-                                    isListening( control, SWT.MouseDown ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_UP_LISTENER,
-                                    isListening( control, SWT.MouseUp ) );
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MOUSE_DOUBLE_CLICK_LISTENER,
-                                    isListening( control, SWT.MouseDoubleClick ) );
+    preserveListener( control, SWT.MouseDown );
+    preserveListener( control, SWT.MouseUp );
+    preserveListener( control, SWT.MouseDoubleClick );
   }
 
   private static void renderListenMouse( Control control ) {
-    renderListen( control, SWT.MouseDown, PROP_MOUSE_DOWN_LISTENER );
-    renderListen( control, SWT.MouseUp, PROP_MOUSE_UP_LISTENER );
-    renderListen( control, SWT.MouseDoubleClick, PROP_MOUSE_DOUBLE_CLICK_LISTENER );
+    renderListener( control, SWT.MouseDown, PROP_MOUSE_DOWN_LISTENER );
+    renderListener( control, SWT.MouseUp, PROP_MOUSE_UP_LISTENER );
+    renderListener( control, SWT.MouseDoubleClick, PROP_MOUSE_DOUBLE_CLICK_LISTENER );
   }
 
   private static void preserveListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_FOCUS_IN_LISTENER,
-                                      isListening( control, SWT.FocusIn ) );
-      WidgetLCAUtil.preserveListener( control,
-                                      PROP_FOCUS_OUT_LISTENER,
-                                      isListening( control, SWT.FocusOut ) );
+      preserveListener( control, SWT.FocusIn );
+      preserveListener( control, SWT.FocusOut );
     }
   }
 
   private static void renderListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      renderListen( control, SWT.FocusIn, PROP_FOCUS_IN_LISTENER );
-      renderListen( control, SWT.FocusOut, PROP_FOCUS_OUT_LISTENER );
+      renderListener( control, SWT.FocusIn, PROP_FOCUS_IN_LISTENER );
+      renderListener( control, SWT.FocusOut, PROP_FOCUS_OUT_LISTENER );
     }
   }
 
   private static void preserveListenKey( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_KEY_LISTENER,
-                                    hasKeyListener( control ) );
+    preserveListener( control, SWT.KeyDown, hasKeyListener( control ) );
   }
 
   private static void renderListenKey( Control control ) {
-    boolean newValue = hasKeyListener( control );
-    WidgetLCAUtil.renderListener( control, PROP_KEY_LISTENER, newValue, false );
+    renderListener( control, SWT.KeyDown, PROP_KEY_LISTENER, hasKeyListener( control ) );
   }
 
   private static void preserveListenTraverse( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_TRAVERSE_LISTENER,
-                                    isListening( control, SWT.Traverse ) );
+    preserveListener( control, SWT.Traverse );
   }
 
   private static void renderListenTraverse( Control control ) {
-    boolean newValue = isListening( control, SWT.Traverse );
-    WidgetLCAUtil.renderListener( control, PROP_TRAVERSE_LISTENER, newValue, false );
+    renderListener( control, SWT.Traverse, PROP_TRAVERSE_LISTENER );
   }
 
   private static void preserveListenMenuDetect( Control control ) {
-    WidgetLCAUtil.preserveListener( control,
-                                    PROP_MENU_DETECT_LISTENER,
-                                    isListening( control, SWT.MenuDetect ) );
+    preserveListener( control, SWT.MenuDetect );
   }
 
   private static void renderListenMenuDetect( Control control ) {
-    boolean newValue = isListening( control, SWT.MenuDetect );
-    WidgetLCAUtil.renderListener( control, PROP_MENU_DETECT_LISTENER, newValue, false );
+    renderListener( control, SWT.MenuDetect, PROP_MENU_DETECT_LISTENER );
   }
 
   private static void preserveListenHelp( Control control ) {
-    WidgetLCAUtil.preserveHelpListener( control );
+    preserveListener( control, SWT.Help );
   }
 
   private static void renderListenHelp( Control control ) {
-    WidgetLCAUtil.renderListenHelp( control );
-  }
-
-  private static void renderListen( Control control, int eventType, String eventName ) {
-    WidgetLCAUtil.renderListener( control, eventName, isListening( control, eventType ), false );
+    renderListener( control, SWT.Help, PROP_HELP_LISTENER );
   }
 
   // [if] Fix for bug 263025, 297466, 223873 and more

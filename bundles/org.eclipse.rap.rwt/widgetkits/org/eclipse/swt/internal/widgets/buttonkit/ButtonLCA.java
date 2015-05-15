@@ -13,10 +13,10 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
@@ -24,7 +24,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.findMnemonicCharacterIndex;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
@@ -54,7 +53,6 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
   private static final String PROP_BADGE = "badge";
-  private static final String PROP_SELECTION_LISTENERS = "Selection";
 
   private static final String DEFAULT_ALIGNMENT = "center";
 
@@ -69,7 +67,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
     preserveProperty( button, PROP_BADGE, getBadge( button ) );
-    preserveListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ) );
+    preserveListenSelection( button );
   }
 
   @Override
@@ -94,7 +92,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     renderProperty( button, PROP_SELECTION, button.getSelection(), false );
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
     renderProperty( button, PROP_BADGE, getBadge( button ), null );
-    renderListener( button, PROP_SELECTION_LISTENERS, isListening( button, SWT.Selection ), false );
+    renderListenSelection( button );
     renderClientListeners( widget );
   }
 

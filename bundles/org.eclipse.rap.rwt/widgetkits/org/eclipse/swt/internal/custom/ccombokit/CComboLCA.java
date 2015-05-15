@@ -12,8 +12,12 @@ package org.eclipse.swt.internal.custom.ccombokit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -49,8 +53,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
-  static final String PROP_SELECTION_LISTENER = "Selection";
-  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   static final String PROP_MODIFY_LISTENER = "Modify";
 
   // Default values
@@ -72,10 +74,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
-    preserveListener( ccombo, PROP_SELECTION_LISTENER, isListening( ccombo, SWT.Selection ) );
-    preserveListener( ccombo,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( ccombo, SWT.DefaultSelection ) );
+    preserveListenSelection( ccombo );
+    preserveListenDefaultSelection( ccombo );
     preserveListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
   }
 
@@ -153,17 +153,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static void renderTextLimit( CCombo ccombo ) {
     renderProperty( ccombo, PROP_TEXT_LIMIT, getTextLimit( ccombo ), null );
-  }
-
-  private static void renderListenSelection( CCombo ccombo ) {
-    renderListener( ccombo, PROP_SELECTION_LISTENER, isListening( ccombo, SWT.Selection ), false );
-  }
-
-  private static void renderListenDefaultSelection( CCombo ccombo ) {
-    renderListener( ccombo,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( ccombo, SWT.DefaultSelection ),
-                    false );
   }
 
   private static void renderListenModify( CCombo ccombo ) {

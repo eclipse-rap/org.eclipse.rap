@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,13 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -51,8 +55,6 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
-  static final String PROP_SELECTION_LISTENER = "Selection";
-  static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   static final String PROP_MODIFY_LISTENER = "Modify";
 
   // Default values
@@ -74,10 +76,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveProperty( combo, PROP_TEXT, combo.getText() );
     preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
-    preserveListener( combo, PROP_SELECTION_LISTENER, isListening( combo, SWT.Selection ) );
-    preserveListener( combo,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( combo, SWT.DefaultSelection ) );
+    preserveListenSelection( combo );
+    preserveListenDefaultSelection( combo );
     preserveListener( combo, PROP_MODIFY_LISTENER, hasModifyListener( combo ) );
   }
 
@@ -157,17 +157,6 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   private static void renderTextLimit( Combo combo ) {
     renderProperty( combo, PROP_TEXT_LIMIT, getTextLimit( combo ), null );
-  }
-
-  private static void renderListenSelection( Combo combo ) {
-    renderListener( combo, PROP_SELECTION_LISTENER, isListening( combo, SWT.Selection ), false );
-  }
-
-  private static void renderListenDefaultSelection( Combo combo ) {
-    renderListener( combo,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( combo, SWT.DefaultSelection ),
-                    false );
   }
 
   private static void renderListenModify( Combo combo ) {

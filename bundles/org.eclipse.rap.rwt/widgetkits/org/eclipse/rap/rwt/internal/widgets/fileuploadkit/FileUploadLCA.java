@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,11 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
@@ -30,7 +28,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.widgets.FileUpload;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -41,7 +38,6 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
-  private static final String PROP_SELECTION_LISTENERS = "Selection";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -50,9 +46,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( fileUpload );
     preserveProperty( fileUpload, PROP_TEXT, fileUpload.getText() );
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );
-    preserveListener( fileUpload,
-                      PROP_SELECTION_LISTENERS,
-                      isListening( fileUpload, SWT.Selection ) );
+    preserveListenSelection( fileUpload );
   }
 
   @Override
@@ -71,10 +65,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( fileUpload );
     renderProperty( fileUpload, PROP_TEXT, fileUpload.getText(), "" );
     renderProperty( fileUpload, PROP_IMAGE, fileUpload.getImage(), null );
-    renderListener( fileUpload,
-                    PROP_SELECTION_LISTENERS,
-                    isListening( fileUpload, SWT.Selection ),
-                    false );
+    renderListenSelection( fileUpload );
     renderSubmit( fileUpload );
   }
 

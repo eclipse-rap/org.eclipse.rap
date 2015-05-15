@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,20 +14,17 @@ package org.eclipse.swt.internal.widgets.sliderkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Widget;
 
@@ -46,7 +43,6 @@ public class SliderLCA extends AbstractWidgetLCA {
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_THUMB = "thumb";
-  static final String PROP_SELECTION_LISTENER = "Selection";
 
   // Default values
   private static final int DEFAULT_MINIMUM = 0;
@@ -67,7 +63,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     preserveProperty( slider, PROP_INCREMENT, slider.getIncrement() );
     preserveProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement() );
     preserveProperty( slider, PROP_THUMB, slider.getThumb() );
-    preserveListener( slider, PROP_SELECTION_LISTENER, isListening( slider, SWT.Selection ) );
+    preserveListenSelection( slider );
   }
 
   @Override
@@ -90,7 +86,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     renderProperty( slider, PROP_INCREMENT, slider.getIncrement(), DEFAULT_INCREMENT );
     renderProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement(), DEFAULT_PINCREMENT );
     renderProperty( slider, PROP_THUMB, slider.getThumb(), DEFAULT_THUMB );
-    renderListener( slider, PROP_SELECTION_LISTENER, isListening( slider, SWT.Selection ), false );
+    renderListenSelection( slider );
   }
 
 }

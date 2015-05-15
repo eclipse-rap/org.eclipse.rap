@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,21 +13,20 @@ package org.eclipse.swt.internal.widgets.datetimekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
@@ -48,8 +47,6 @@ final class DateTimeLCAUtil {
   private static final String PROP_DATE_SEPARATOR = "dateSeparator";
   private static final String PROP_DATE_PATTERN = "datePattern";
   private static final String PROP_SUB_WIDGETS_BOUNDS = "subWidgetsBounds";
-  private static final String PROP_SELECTION_LISTENER = "Selection";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private DateTimeLCAUtil() {
     // prevent instantiation
@@ -58,10 +55,8 @@ final class DateTimeLCAUtil {
   static void preserveValues( DateTime dateTime ) {
     ControlLCAUtil.preserveValues( dateTime );
     WidgetLCAUtil.preserveCustomVariant( dateTime );
-    preserveListener( dateTime, PROP_SELECTION_LISTENER, isListening( dateTime, SWT.Selection ) );
-    preserveListener( dateTime,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( dateTime, SWT.DefaultSelection ) );
+    preserveListenSelection( dateTime );
+    preserveListenDefaultSelection( dateTime );
   }
 
   static void renderInitialization( DateTime dateTime ) {
@@ -74,14 +69,8 @@ final class DateTimeLCAUtil {
   static void renderChanges( DateTime dateTime ) {
     ControlLCAUtil.renderChanges( dateTime );
     WidgetLCAUtil.renderCustomVariant( dateTime );
-    renderListener( dateTime,
-                    PROP_SELECTION_LISTENER,
-                    isListening( dateTime, SWT.Selection ),
-                    false );
-    renderListener( dateTime,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( dateTime, SWT.DefaultSelection ),
-                    false );
+    renderListenSelection( dateTime );
+    renderListenDefaultSelection( dateTime );
   }
 
   static void renderCellSize( DateTime dateTime ) {

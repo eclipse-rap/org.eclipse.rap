@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,10 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.wasEventSent;
@@ -64,7 +66,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
     preserveListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ) );
     preserveListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ) );
     WidgetLCAUtil.preserveCustomVariant( menu );
-    WidgetLCAUtil.preserveHelpListener( menu );
+    preserveListenHelp( menu );
   }
 
   @Override
@@ -83,7 +85,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
     renderListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ), false );
     renderListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ), false );
     WidgetLCAUtil.renderCustomVariant( menu );
-    WidgetLCAUtil.renderListenHelp( menu );
+    renderListenHelp( menu );
     renderBounds( menu );
     renderShow( menu );
     renderUnhideItems( menu );

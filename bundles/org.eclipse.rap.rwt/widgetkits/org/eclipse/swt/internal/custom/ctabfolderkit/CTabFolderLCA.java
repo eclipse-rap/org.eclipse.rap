@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,13 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 
 import java.io.IOException;
 
@@ -74,7 +72,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
   private static final String PROP_FOLDER_LISTENER = "Folder";
   private static final String PROP_SELECTION_LISTENER = "Selection";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final String DEFAULT_TAB_POSITION = "top";
   private static final int DEFAULT_TAB_HEIGHT = 0;
@@ -104,9 +101,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       getSelectionBackgroundImage( folder ) );
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
-    preserveListener( folder,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( folder, SWT.DefaultSelection ) );
+    WidgetLCAUtil.preserveListenDefaultSelection( folder );
   }
 
   @Override
@@ -157,9 +152,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                     null);
     renderSelectionBackgroundGradient( folder );
     renderProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible(), false );
-    renderListener( folder, PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( folder, SWT.DefaultSelection ),
-                    false );
+    renderListenDefaultSelection( folder );
   }
 
   /////////////////////////////////////////

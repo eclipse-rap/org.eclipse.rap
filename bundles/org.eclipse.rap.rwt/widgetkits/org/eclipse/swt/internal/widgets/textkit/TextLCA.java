@@ -16,9 +16,11 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -70,7 +72,6 @@ public final class TextLCA extends AbstractWidgetLCA {
   private static final String PROP_ECHO_CHAR = "echoChar";
   private static final String PROP_MESSAGE = "message";
   private static final String PROP_MODIFY_LISTENER = "Modify";
-  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final Point ZERO_SELECTION = new Point( 0, 0 );
 
@@ -86,9 +87,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
     preserveListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
-    preserveListener( text,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( text, SWT.DefaultSelection ) );
+    preserveListenDefaultSelection( text );
   }
 
   @Override
@@ -112,10 +111,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
     renderListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ), false );
-    renderListener( text,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( text, SWT.DefaultSelection ),
-                    false );
+    renderListenDefaultSelection( text );
     renderClientListeners( text );
   }
 

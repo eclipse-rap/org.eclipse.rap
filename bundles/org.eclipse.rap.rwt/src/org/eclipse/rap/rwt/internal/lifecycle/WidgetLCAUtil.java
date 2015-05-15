@@ -68,6 +68,8 @@ public final class WidgetLCAUtil {
   private static final String PROP_VARIANT = "variant";
   private static final String PROP_DATA = "data";
   private static final String PROP_HELP_LISTENER = "Help";
+  private static final String PROP_SELECTION_LISTENER = "Selection";
+  private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
 
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
 
@@ -144,10 +146,6 @@ public final class WidgetLCAUtil {
     preserveProperty( widget, PROP_DATA, getDataAsArray( widget ) );
   }
 
-  public static void preserveHelpListener( Widget widget ) {
-    preserveListener( widget, PROP_HELP_LISTENER, isListening( widget, SWT.Help ) );
-  }
-
   public static void renderBounds( Widget widget, Rectangle bounds ) {
     renderProperty( widget, Props.BOUNDS, bounds, null );
   }
@@ -189,10 +187,6 @@ public final class WidgetLCAUtil {
       }
     }
     return result.toArray();
-  }
-
-  public static void renderListenHelp( Widget widget ) {
-    renderListener( widget, PROP_HELP_LISTENER, isListening( widget, SWT.Help ), false );
   }
 
   public static void renderMenu( Widget widget, Menu menu ) {
@@ -345,10 +339,6 @@ public final class WidgetLCAUtil {
 
   public static void preserveProperty( Widget widget, String property, boolean value ) {
     preserveProperty( widget, property, Boolean.valueOf( value ) );
-  }
-
-  public static void preserveListener( Widget widget, String listener, boolean value ) {
-    getAdapter( widget ).preserve( listener, Boolean.valueOf( value ) );
   }
 
   public static void renderProperty( Widget widget,
@@ -522,6 +512,34 @@ public final class WidgetLCAUtil {
     }
   }
 
+  public static void preserveListenHelp( Widget widget ) {
+    preserveListener( widget, SWT.Help );
+  }
+
+  public static void renderListenHelp( Widget widget ) {
+    renderListener( widget, SWT.Help, PROP_HELP_LISTENER );
+  }
+
+  public static void preserveListenSelection( Widget widget ) {
+    preserveListener( widget, SWT.Selection );
+  }
+
+  public static void renderListenSelection( Widget widget ) {
+    renderListener( widget, SWT.Selection, PROP_SELECTION_LISTENER );
+  }
+
+  public static void preserveListenDefaultSelection( Widget widget ) {
+    preserveListener( widget, SWT.DefaultSelection );
+  }
+
+  public static void renderListenDefaultSelection( Widget widget ) {
+    renderListener( widget, SWT.DefaultSelection, PROP_DEFAULT_SELECTION_LISTENER );
+  }
+
+  public static void preserveListener( Widget widget, String listener, boolean value ) {
+    getAdapter( widget ).preserve( listener, Boolean.valueOf( value ) );
+  }
+
   public static void renderListener( Widget widget,
                                      String listener,
                                      boolean newValue,
@@ -535,16 +553,28 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveListener( Widget widget, int eventType ) {
+    boolean listening = isListening( widget, eventType );
+    preserveListener( widget, eventType, listening );
+  }
+
+  public static void preserveListener( Widget widget, int eventType, boolean isListening ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    adapter.preserveListener( eventType, isListening( widget, eventType ) );
+    adapter.preserveListener( eventType, isListening );
   }
 
   public static void renderListener( Widget widget, int eventType, String eventName ) {
+    renderListener( widget, eventType, eventName, isListening( widget, eventType ) );
+  }
+
+  public static void renderListener( Widget widget,
+                                     int eventType,
+                                     String eventName,
+                                     boolean isListening )
+  {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    boolean actualValue = isListening( widget, eventType );
-    boolean preservedValue = adapter.getPreservedListener( eventType );
-    if( changed( widget, actualValue, preservedValue, false ) ) {
-      getRemoteObject( widget ).listen( eventName, actualValue );
+    boolean preserved = adapter.getPreservedListener( eventType );
+    if( changed( widget, isListening, preserved, false ) ) {
+      getRemoteObject( widget ).listen( eventName, isListening );
     }
   }
 

@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.tablekit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -1086,87 +1087,79 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
+  public void testRenderScrollBarsSelectionListener_horizontal_added() throws Exception {
     ScrollBar hScroll = table.getHorizontalBar();
-    lca.renderInitialization( table );
-    Fixture.preserveWidgets();
+    Fixture.markInitialized( hScroll );
 
+    lca.preserveValues( table );
     hScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
+  public void testRenderScrollBarsSelectionListener_horizontal_removed() throws Exception {
     ScrollBar hScroll = table.getHorizontalBar();
+    Fixture.markInitialized( hScroll );
     Listener listener = mock( Listener.class );
     hScroll.addListener( SWT.Selection, listener );
-    lca.render( table );
-    Fixture.preserveWidgets();
 
+    lca.preserveValues( table );
     hScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( hScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
+  public void testRenderScrollBarsSelectionListener_horizontal_unchanged() throws Exception {
     ScrollBar hScroll = table.getHorizontalBar();
-    Fixture.markInitialized( display );
-    lca.render( table );
-
+    Fixture.markInitialized( hScroll );
     hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
+
+    lca.preserveValues( table );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
+    assertNull( getProtocolMessage().findListenOperation( hScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_added() throws Exception {
     ScrollBar vScroll = table.getVerticalBar();
-    lca.renderInitialization( table );
-    Fixture.preserveWidgets();
+    Fixture.markInitialized( vScroll );
 
+    lca.preserveValues( table );
     vScroll.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_removed() throws Exception {
     ScrollBar vScroll = table.getVerticalBar();
+    Fixture.markInitialized( vScroll );
     Listener listener = mock( Listener.class );
     vScroll.addListener( SWT.Selection, listener );
-    lca.render( table );
-    Fixture.preserveWidgets();
 
+    lca.preserveValues( table );
     vScroll.removeListener( SWT.Selection, listener );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
   }
 
   @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
+  public void testRenderScrollBarsSelectionListener_vertical_unchanged() throws Exception {
     ScrollBar vScroll = table.getVerticalBar();
-    Fixture.markInitialized( display );
-    lca.render( table );
-
+    Fixture.markInitialized( vScroll );
     vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
+
+    lca.preserveValues( table );
     lca.renderChanges( table );
 
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
+    assertNull( getProtocolMessage().findListenOperation( vScroll, "Selection" ) );
   }
 
   @Test
