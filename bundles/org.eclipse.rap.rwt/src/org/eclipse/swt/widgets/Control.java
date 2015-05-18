@@ -117,6 +117,12 @@ public abstract class Control extends Widget implements Drawable {
       return packed;
     }
 
+    @Override
+    /* provides direct access to the internal property in order to speed up preserving */
+    public Rectangle getBounds() {
+      return bounds;
+    }
+
   }
 
   private transient IControlAdapter controlAdapter;

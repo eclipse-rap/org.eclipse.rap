@@ -1591,6 +1591,23 @@ public class Control_Test {
     assertSame( adapter1, adapter2 );
   }
 
+  @Test
+  public void testAdapterBounds() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setBounds( 1, 2, 3, 4 );
+
+    assertEquals( control.getBounds(), control.getAdapter( IControlAdapter.class ).getBounds() );
+  }
+
+  @Test
+  public void testAdapterBounds_returnsSameInstance() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setBounds( 1, 2, 3, 4 );
+
+    assertSame( control.getAdapter( IControlAdapter.class ).getBounds(),
+                control.getAdapter( IControlAdapter.class ).getBounds() );
+  }
+
   private static class RedrawLogginShell extends Shell {
     private final List<Widget> log;
 

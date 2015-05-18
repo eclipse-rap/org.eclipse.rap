@@ -169,11 +169,12 @@ public class ControlLCAUtil {
   }
 
   private static void preserveBounds( Control control ) {
-    getRemoteAdapter( control ).preserveBounds( control.getBounds() );
+    Rectangle bounds = control.getAdapter( IControlAdapter.class ).getBounds();
+    getRemoteAdapter( control ).preserveBounds( bounds );
   }
 
   private static void renderBounds( Control control ) {
-    Rectangle actual = control.getBounds();
+    Rectangle actual = control.getAdapter( IControlAdapter.class ).getBounds();
     Rectangle preserved = getRemoteAdapter( control ).getPreservedBounds();
     if( changed( control, actual, preserved, null ) ) {
       getRemoteObject( control ).set( PROP_BOUNDS, toJson( actual ) );
