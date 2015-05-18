@@ -10,164 +10,112 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.util;
 
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
+@RunWith( value = Parameterized.class )
 public class ActiveKeysUtil_Test {
 
   private Display display;
+  private Control control;
+  private final boolean useDisplay;
+  private final boolean useActiveKeys;
+  private final String property;
+
+  @Parameters( name = "{0} {1}" )
+  public static Collection<Object[]> getParameters() {
+    return Arrays.asList( new Object[][] {
+      { "control", "activeKeys" },
+      { "display", "activeKeys" },
+      { "display", "cancelKeys" },
+      { "control", "cancelKeys" } } );
+  }
+
+  public ActiveKeysUtil_Test( String target, String property ) {
+    useDisplay = "display".equals( target );
+    useActiveKeys = "activeKeys".equals( property );
+    this.property = property;
+  }
+
+  @Rule
+  public TestContext context = new TestContext();
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    control = new Shell( display );
   }
 
   @Test
-  public void testPreserveActiveKeys_emptyList() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
+  public void testRender_initial() {
+    render();
 
-    Fixture.preserveWidgets();
-
-    assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS ) );
+    assertNull( findSetProperty() );
   }
 
   @Test
-  public void testPreserveActiveKeys_onDisplay() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
+  public void testRender_unchanged() {
+    markInitialized();
+    setData( new String[] { "CTRL+A" } );
 
-    String[] activeKeys = new String[] { "CTRL+A" };
-    display.setData( RWT.ACTIVE_KEYS, activeKeys );
-    Fixture.preserveWidgets();
+    preserve();
+    render();
 
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
-    assertTrue( Arrays.equals( activeKeys, preserved ) );
+    assertNull( findSetProperty() );
   }
 
   @Test
-  public void testPreserveActiveKeys_onWidget() {
-    Shell shell = new Shell( display );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    RemoteAdapter adapter = WidgetUtil.getAdapter( shell );
+  public void testRender_changed() {
+    markInitialized();
 
-    String[] activeKeys = new String[] { "CTRL+A" };
-    shell.setData( RWT.ACTIVE_KEYS, activeKeys );
-    Fixture.preserveWidgets();
+    preserve();
+    setData( new String[] { "CTRL+A" } );
+    render();
 
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
-    assertTrue( Arrays.equals( activeKeys, preserved ) );
+    assertEquals( new JsonArray().add( "CTRL+#65" ), findSetProperty() );
   }
 
   @Test
-  public void testActiveKeysSafeCopy() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
+  public void testRender_detectsModifications() {
+    markInitialized();
+    String[] keys = new String[] { "CTRL+A" };
+    setData( keys );
 
-    String[] activeKeys = new String[] { "CTRL+A" };
-    display.setData( RWT.ACTIVE_KEYS, activeKeys );
-    Fixture.preserveWidgets();
-    activeKeys[ 0 ] = "CTRL+B";
+    preserve();
+    keys[ 0 ] = "CTRL+B";
+    render();
 
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
-    assertEquals( "CTRL+A", preserved[ 0 ] );
+    assertEquals( new JsonArray().add( "CTRL+#66" ), findSetProperty() );
   }
 
   @Test
-  public void testPreserveCancelKeys_emptyList() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-
-    Fixture.preserveWidgets();
-
-    assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS ) );
-  }
-
-  @Test
-  public void testPreserveCancelKeys_onDisplay() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-
-    String[] cancelKeys = new String[] { "CTRL+A" };
-    display.setData( RWT.CANCEL_KEYS, cancelKeys );
-    Fixture.preserveWidgets();
-
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
-    assertTrue( Arrays.equals( cancelKeys, preserved ) );
-  }
-
-  @Test
-  public void testPreserveCancelKeys_onWidget() {
-    Shell shell = new Shell( display );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    RemoteAdapter adapter = WidgetUtil.getAdapter( shell );
-
-    String[] cancelKeys = new String[] { "CTRL+A" };
-    shell.setData( RWT.CANCEL_KEYS, cancelKeys );
-    Fixture.preserveWidgets();
-
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
-    assertTrue( Arrays.equals( cancelKeys, preserved ) );
-  }
-
-  @Test
-  public void testCancelKeySafeCopy() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-
-    String[] cancelKeys = new String[] { "CTRL+A" };
-    display.setData( RWT.CANCEL_KEYS, cancelKeys );
-    Fixture.preserveWidgets();
-    cancelKeys[ 0 ] = "CTRL+B";
-
-    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
-    assertEquals( "CTRL+A", preserved[ 0 ] );
-  }
-
-  @Test
-  public void testPreserveMnemonicActivator() {
-    Fixture.markInitialized( display );
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-
-    display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
-    Fixture.preserveWidgets();
-
-    String preserved = ( String )adapter.getPreserved( ActiveKeysUtil.PROP_MNEMONIC_ACTIVATOR );
-    assertEquals( "ALT+CTRL+", preserved );
-  }
-
-  @Test
-  public void testRenderActiveKeys_onDisplay() {
-    Fixture.fakeNewRequest();
-    String[] activeKeys = new String[] {
+  public void testRender_translatesCorrectly() {
+    setData( new String[] {
       "x",
       "ALT+x",
       "E",
@@ -181,12 +129,11 @@ public class ActiveKeysUtil_Test {
       "CTRL+ALT+#",
       ".",
       ","
-    };
-    display.setData( RWT.ACTIVE_KEYS, activeKeys );
+    } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
 
-    JsonArray expected = new JsonArray()
+    assertEquals( new JsonArray()
       .add( "#88" )
       .add( "ALT+#88" )
       .add( "#69" )
@@ -199,117 +146,82 @@ public class ActiveKeysUtil_Test {
       .add( "SHIFT+~" )
       .add( "ALT+CTRL+#" )
       .add( "." )
-      .add( "," );
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    assertEquals( expected, operation.getProperties().get( "activeKeys" ) );
-  }
-
-  @Test
-  public void testRenderActiveKeys_onWidget() {
-    Fixture.fakeNewRequest();
-    Shell shell = new Shell( display );
-    shell.setData( RWT.ACTIVE_KEYS, new String[] { "x", "ALT+x", } );
-
-    ActiveKeysUtil.renderActiveKeys( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( shell, "activeKeys" );
-    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperties().get( "activeKeys" ) );
+      .add( "," ), findSetProperty() );
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testRenderActiveKeys_unrecognizedKey() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+ABC" } );
+  public void testRender_unrecognizedKey() {
+    setData( new String[] { "ALT+ABC" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testRenderActiveKeys_modifiersOnly() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+CTRL+" } );
+  public void testRender_modifiersOnly() {
+    setData( new String[] { "ALT+CTRL+" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testRenderActiveKeys_unrecognizedModifier() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+CONTROL+A" } );
+  public void testRender_unrecognizedModifier() {
+    setData( new String[] { "ALT+CONTROL+A" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testRenderActiveKeys_emptyKeyBinding() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+A", "", "ALT+INSERT" } );
+  public void testRender_emptyKeyBinding() {
+    setData( new String[] { "CTRL+A", "", "ALT+INSERT" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test( expected = NullPointerException.class )
-  public void testRenderActiveKeys_nullKey() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+A", null, "ALT+INSERT" } );
+  public void testRender_nullKey() {
+    setData( new String[] { "CTRL+A", null, "ALT+INSERT" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test( expected = IllegalArgumentException.class )
-  public void testRenderActiveKeys_invalidActiveKeysListClass() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new Integer( 123 ) );
+  public void testRender_invalidActiveKeysListClass() {
+    setData( new Integer( 123 ) );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
   }
 
   @Test
-  public void testRenderActiveKeys_nullActiveKeysList() {
-    Fixture.markInitialized( display );
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );
-    Fixture.preserveWidgets();
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, null );
+  public void testRender_afterReset() {
+    markInitialized();
+    setData( new String[] { "CTRL+E" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    preserve();
+    setData( null );
+    render();
 
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JsonArray activeKeys = ( JsonArray )operation.getProperties().get( "activeKeys" );
-    assertEquals( 0, activeKeys.size() );
+    assertEquals( new JsonArray(), findSetProperty() );
   }
 
   @Test
-  public void testRenderActiveKeys_emptyActiveKeysList() {
-    Fixture.markInitialized( display );
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );
-    Fixture.preserveWidgets();
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[ 0 ] );
+  public void testRender_changedToEmptyArray() {
+    markInitialized();
+    setData( new String[] { "CTRL+E" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    preserve();
+    setData( new String[ 0 ] );
+    render();
 
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    JsonArray activeKeys = ( JsonArray )operation.getProperties().get( "activeKeys" );
-    assertEquals( 0, activeKeys.size() );
+    assertEquals( new JsonArray(), findSetProperty() );
   }
 
   @Test
-  public void testRenderActiveKeys_plusKey() {
-    Fixture.markInitialized( display );
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "+" } );
+  public void testRender_plusKey() {
+    setData( new String[] { "+" } );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    render();
 
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    assertEquals( new JsonArray().add( "+" ), operation.getProperties().get( "activeKeys" ) );
+    assertEquals( new JsonArray().add( "+" ), findSetProperty() );
   }
 
   /*
@@ -317,48 +229,30 @@ public class ActiveKeysUtil_Test {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=438277
    */
   @Test
-  public void testRenderActiveKeys_plusKeyWithModifiers() {
+  public void testRender_plusKeyWithModifiers() {
+    setData( new String[] { "CTRL++" } );
+
+    render();
+
+    assertEquals( new JsonArray().add( "CTRL++" ), findSetProperty() );
+  }
+
+  @Test
+  public void testPreserveMnemonicActivator() {
+    assumeTrue( useDisplay && useActiveKeys ); // prevent running this test for every parameter
     Fixture.markInitialized( display );
-    Fixture.fakeNewRequest();
-    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL++" } );
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
 
-    ActiveKeysUtil.renderActiveKeys( display );
+    display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
+    Fixture.preserveWidgets();
 
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
-    assertEquals( new JsonArray().add( "CTRL++" ), operation.getProperties().get( "activeKeys" ) );
-  }
-
-  @Test
-  public void testRenderCancelKeys_onDisplay() {
-    Fixture.fakeNewRequest();
-    display.setData( RWT.CANCEL_KEYS, new String[] { "x", "ALT+x", } );
-
-    ActiveKeysUtil.renderCancelKeys( display );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( "w1", "cancelKeys" );
-    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperties().get( "cancelKeys" ) );
-  }
-
-  @Test
-  public void testRenderCancelKeys_onWidget() {
-    Fixture.fakeNewRequest();
-    Shell shell = new Shell( display );
-    shell.setData( RWT.CANCEL_KEYS, new String[] { "x", "ALT+x", } );
-
-    ActiveKeysUtil.renderCancelKeys( shell );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
-    JsonArray expected = new JsonArray().add( "#88" ).add( "ALT+#88" );
-    assertEquals( expected, operation.getProperties().get( "cancelKeys" ) );
+    String preserved = ( String )adapter.getPreserved( ActiveKeysUtil.PROP_MNEMONIC_ACTIVATOR );
+    assertEquals( "ALT+CTRL+", preserved );
   }
 
   @Test
   public void testRenderMnemonicActivator() {
-    Fixture.fakeNewRequest();
+    assumeTrue( useDisplay && useActiveKeys ); // prevent running this test for every parameter
     display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL" );
 
     ActiveKeysUtil.renderMnemonicActivator( display );
@@ -369,7 +263,7 @@ public class ActiveKeysUtil_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testRenderMnemonicActivator_notString() {
-    Fixture.fakeNewRequest();
+    assumeTrue( useDisplay && useActiveKeys ); // prevent running this test for every parameter
     display.setData( RWT.MNEMONIC_ACTIVATOR, Boolean.TRUE );
 
     ActiveKeysUtil.renderMnemonicActivator( display );
@@ -377,10 +271,66 @@ public class ActiveKeysUtil_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testRenderMnemonicActivator_notOnlyModifiers() {
-    Fixture.fakeNewRequest();
+    assumeTrue( useDisplay && useActiveKeys ); // prevent running this test for every parameter
     display.setData( RWT.MNEMONIC_ACTIVATOR, "ALT+CTRL+1" );
 
     ActiveKeysUtil.renderMnemonicActivator( display );
+  }
+
+  private void markInitialized() {
+    if( useDisplay ) {
+      Fixture.markInitialized( display );
+    } else {
+      Fixture.markInitialized( control );
+    }
+  }
+
+  private void setData( Object value ) {
+    String key = useActiveKeys ? RWT.ACTIVE_KEYS : RWT.CANCEL_KEYS;
+    if( useDisplay ) {
+      display.setData( key, value );
+    } else {
+      control.setData( key, value );
+    }
+  }
+
+  private JsonValue findSetProperty() {
+    TestMessage message = getProtocolMessage();
+    SetOperation operation = useDisplay ? message.findSetOperation( "w1", property )
+                                        : message.findSetOperation( control, property );
+    return operation == null ? null : operation.getProperties().get( property );
+  }
+
+  private void preserve() {
+    if( useDisplay ) {
+      if( useActiveKeys ) {
+        ActiveKeysUtil.preserveActiveKeys( display );
+      } else {
+        ActiveKeysUtil.preserveCancelKeys( display );
+      }
+    } else {
+      if( useActiveKeys ) {
+        ActiveKeysUtil.preserveActiveKeys( control );
+      } else {
+        ActiveKeysUtil.preserveCancelKeys( control );
+      }
+    }
+  }
+
+  private void render() {
+    if( useDisplay ) {
+      if( useActiveKeys ) {
+        ActiveKeysUtil.renderActiveKeys( display );
+      } else {
+        ActiveKeysUtil.renderCancelKeys( display );
+      }
+    } else {
+      if( useActiveKeys ) {
+        ActiveKeysUtil.renderActiveKeys( control );
+      } else {
+        ActiveKeysUtil.renderCancelKeys( control );
+      }
+    }
   }
 
 }

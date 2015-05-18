@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
@@ -102,8 +103,8 @@ public final class ActiveKeysUtil {
   }
 
   public static void preserveActiveKeys( Control control ) {
-    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( control ) );
+    ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
+    adapter.preserveActiveKeys( getActiveKeys( control ) );
   }
 
   public static void preserveCancelKeys( Display display ) {
@@ -112,35 +113,28 @@ public final class ActiveKeysUtil {
   }
 
   public static void preserveCancelKeys( Control control ) {
-    RemoteAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( control ) );
-  }
-
-  public static void preserveMnemonicActivator( Display display ) {
-    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-    adapter.preserve( PROP_MNEMONIC_ACTIVATOR, getMnemonicActivator( display ) );
+    ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
+    adapter.preserveCancelKeys( getCancelKeys( control ) );
   }
 
   public static void renderActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
       RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-      String[] newValue = getActiveKeys( display );
-      String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
-      boolean hasChanged = !Arrays.equals( oldValue, newValue );
-      if( hasChanged ) {
-        getRemoteObject( display ).set( "activeKeys", translateKeySequences( newValue ) );
+      String[] actual = getActiveKeys( display );
+      String[] preserved = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
+      if( !Arrays.equals( actual, preserved ) ) {
+        getRemoteObject( display ).set( PROP_ACTIVE_KEYS, translateKeySequences( actual ) );
       }
     }
   }
 
   public static void renderActiveKeys( Control control ) {
     if( !control.isDisposed() ) {
-      RemoteAdapter adapter = WidgetUtil.getAdapter( control );
-      String[] newValue = getActiveKeys( control );
-      String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
-      boolean hasChanged = !Arrays.equals( oldValue, newValue );
-      if( hasChanged ) {
-        getRemoteObject( control ).set( "activeKeys", translateKeySequences( newValue ) );
+      ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
+      String[] actual = getActiveKeys( control );
+      String[] preserved = adapter.getPreservedActiveKeys();
+      if( !Arrays.equals( actual, preserved ) ) {
+        getRemoteObject( control ).set( PROP_ACTIVE_KEYS, translateKeySequences( actual ) );
       }
     }
   }
@@ -148,34 +142,37 @@ public final class ActiveKeysUtil {
   public static void renderCancelKeys( Display display ) {
     if( !display.isDisposed() ) {
       RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-      String[] newValue = getCancelKeys( display );
-      String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
-      boolean hasChanged = !Arrays.equals( oldValue, newValue );
-      if( hasChanged ) {
-        getRemoteObject( display ).set( "cancelKeys", translateKeySequences( newValue ) );
+      String[] actual = getCancelKeys( display );
+      String[] preserved = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
+      if( !Arrays.equals( actual, preserved ) ) {
+        getRemoteObject( display ).set( PROP_CANCEL_KEYS, translateKeySequences( actual ) );
       }
     }
   }
 
   public static void renderCancelKeys( Control control ) {
     if( !control.isDisposed() ) {
-      RemoteAdapter adapter = WidgetUtil.getAdapter( control );
-      String[] newValue = getCancelKeys( control );
-      String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
-      boolean hasChanged = !Arrays.equals( oldValue, newValue );
-      if( hasChanged ) {
-        getRemoteObject( control ).set( "cancelKeys", translateKeySequences( newValue ) );
+      ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
+      String[] actual = getCancelKeys( control );
+      String[] preserved = adapter.getPreservedCancelKeys();
+      if( !Arrays.equals( actual, preserved ) ) {
+        getRemoteObject( control ).set( PROP_CANCEL_KEYS, translateKeySequences( actual ) );
       }
     }
+  }
+
+  public static void preserveMnemonicActivator( Display display ) {
+    RemoteAdapter adapter = DisplayUtil.getAdapter( display );
+    adapter.preserve( PROP_MNEMONIC_ACTIVATOR, getMnemonicActivator( display ) );
   }
 
   public static void renderMnemonicActivator( Display display ) {
     if( !display.isDisposed() ) {
       RemoteAdapter adapter = DisplayUtil.getAdapter( display );
-      String newValue = getMnemonicActivator( display );
-      String oldValue = ( String )adapter.getPreserved( PROP_MNEMONIC_ACTIVATOR );
-      if( !equals( oldValue, newValue ) ) {
-        getRemoteObject( display ).set( "mnemonicActivator", getModifierKeys( newValue ) );
+      String actual = getMnemonicActivator( display );
+      String preserved = ( String )adapter.getPreserved( PROP_MNEMONIC_ACTIVATOR );
+      if( !equals( actual, preserved ) ) {
+        getRemoteObject( display ).set( PROP_MNEMONIC_ACTIVATOR, getModifierKeys( actual ) );
       }
     }
   }

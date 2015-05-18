@@ -156,6 +156,60 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
+  public void testPreserveActiveKeys() {
+    String[] keys = new String[] { "foo" };
+
+    adapter.preserveActiveKeys( keys );
+
+    assertSame( keys, adapter.getPreservedActiveKeys() );
+  }
+
+  @Test
+  public void testPreserveActiveKeys_isCleared() {
+    adapter.preserveActiveKeys( new String[] { "foo" } );
+
+    adapter.clearPreserved();
+
+    assertNull( adapter.getPreservedActiveKeys() );
+  }
+
+  @Test
+  public void testPreserveActiveKeys_isTransient() throws Exception {
+    adapter.preserveActiveKeys( new String[] { "foo" } );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertNull( adapter.getPreservedActiveKeys() );
+  }
+
+  @Test
+  public void testPreserveCancelKeys() {
+    String[] keys = new String[] { "foo" };
+
+    adapter.preserveCancelKeys( keys );
+
+    assertSame( keys, adapter.getPreservedCancelKeys() );
+  }
+
+  @Test
+  public void testPreserveCancelKeys_isCleared() {
+    adapter.preserveCancelKeys( new String[] { "foo" } );
+
+    adapter.clearPreserved();
+
+    assertNull( adapter.getPreservedCancelKeys() );
+  }
+
+  @Test
+  public void testPreserveCancelKeys_isTransient() throws Exception {
+    adapter.preserveCancelKeys( new String[] { "foo" } );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertNull( adapter.getPreservedCancelKeys() );
+  }
+
+  @Test
   public void testClearPreserved() {
     Color color = mock( Color.class );
     adapter.preserveParent( mock( Composite.class ) );

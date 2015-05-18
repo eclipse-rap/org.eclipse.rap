@@ -35,6 +35,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private transient Image backgroundImage;
   private transient Font font;
   private transient Cursor cursor;
+  private transient String[] activeKeys;
+  private transient String[] cancelKeys;
 
   public ControlRemoteAdapter( String id ) {
     super( id );
@@ -152,6 +154,22 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     return cursor;
   }
 
+  public void preserveActiveKeys( String[] activeKeys ) {
+    this.activeKeys = activeKeys;
+  }
+
+  public String[] getPreservedActiveKeys() {
+    return activeKeys;
+  }
+
+  public void preserveCancelKeys( String[] cancelKeys ) {
+    this.cancelKeys = cancelKeys;
+  }
+
+  public String[] getPreservedCancelKeys() {
+    return cancelKeys;
+  }
+
   @Override
   public void clearPreserved() {
     super.clearPreserved();
@@ -169,6 +187,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     backgroundImage = null;
     font = null;
     cursor = null;
+    activeKeys = null;
+    cancelKeys = null;
   }
 
   private Object readResolve() {
