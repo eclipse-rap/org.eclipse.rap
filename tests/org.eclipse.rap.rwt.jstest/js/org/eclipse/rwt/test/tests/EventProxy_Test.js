@@ -564,7 +564,8 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
         "type" : "rwt.widgets.Canvas",
         "properties" : {
           "style" : [ ],
-          "parent" : "w2"
+          "parent" : "w2",
+          "bounds" : [10, 10, 10, 10] // The context object is buggy when no bounds are set (blink version 41+)
         }
       } );
       var canvas = ObjectRegistry.getObject( "w4" );
