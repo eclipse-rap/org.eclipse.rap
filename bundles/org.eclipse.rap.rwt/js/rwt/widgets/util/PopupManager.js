@@ -42,7 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.util.PopupManager", {
      * Updates all registered popups
      *
      * @type member
-     * @param vTarget {rwt.widgets.base.Popup | rwt.widgets.base.ToolTip} current widget
+     * @param vTarget {rwt.widgets.base.Popup} current widget
      * @return {void}
      */
     update : function(vTarget)
@@ -60,10 +60,6 @@ rwt.qx.Class.define( "rwt.widgets.util.PopupManager", {
         vPopup = vAll[vHashCode];
 
         if (!vPopup.getAutoHide() || vTarget == vPopup || vPopup.contains(vTarget)) {
-          continue;
-        }
-
-        if (rwt.qx.Class.isDefined("rwt.widgets.base.ToolTip") && vTarget instanceof rwt.widgets.base.ToolTip && !(vPopup instanceof rwt.widgets.base.ToolTip)) {
           continue;
         }
 

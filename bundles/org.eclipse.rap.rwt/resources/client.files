@@ -99,7 +99,6 @@ rwt/widgets/base/ScrollBar.js
 rwt/html/ImagePreloaderSystem.js
 rwt/html/Iframes.js
 rwt/remote/Request.js
-rwt/widgets/base/ToolTip.js
 rwt/widgets/util/ToolTipManager.js
 rwt/client/FileUploader.js
 rwt/remote/handler/FileUploaderHandler.js
