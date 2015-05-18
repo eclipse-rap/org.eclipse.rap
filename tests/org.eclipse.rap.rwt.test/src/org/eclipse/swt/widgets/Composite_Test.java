@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -33,8 +35,8 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -42,66 +44,77 @@ public class Composite_Test {
 
   private Display display;
   private Shell shell;
+  private Composite composite;
+
+  @Rule
+  public TestContext context = new TestContext();
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    composite = new Composite( shell, SWT.NONE );
   }
 
   @Test
   public void testStyle() {
-    Composite composite = new Composite( shell, SWT.NONE );
     assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
   }
 
   @Test
-  public void testTabList() {
-    // add different controls to the shell
-    Control button = new Button( shell, SWT.PUSH );
-    Control link = new Link( shell, SWT.NONE );
-    new Label( shell, SWT.NONE );
-    new Sash( shell, SWT.HORIZONTAL );
-    Combo combo = new Combo( shell, SWT.DROP_DOWN );
-    Composite composite = new Composite( shell, SWT.NONE );
-    List list = new List( shell, SWT.NONE );
-    Text text = new Text( shell, SWT.NONE );
-    Control[] controls = shell.getTabList();
-    // check that the right ones are in the list
-    assertEquals( 6, controls.length );
-    assertEquals( button, controls[ 0 ] );
-    assertEquals( link, controls[ 1 ] );
-    assertEquals( combo, controls[ 2 ] );
-    assertEquals( composite, controls[ 3 ] );
-    assertEquals( list, controls[ 4 ] );
-    assertEquals( text, controls[ 5 ] );
-    // A once manually set tabList doesn't change when new controls are created
-    Composite group = new Composite( shell, SWT.NONE );
-    Text text1 = new Text( group, SWT.NONE );
-    Text text2 = new Text( group, SWT.NONE );
-    Control[] tabList = new Control[] { text2, text1 };
-    group.setTabList( tabList );
-    new Text( group, SWT.NONE );
-    assertEquals( 2, group.getTabList().length );
-    assertSame( text2, group.getTabList()[ 0 ] );
-    assertSame( text1, group.getTabList()[ 1 ] );
+  public void testGetTabList_containsChildrenInCorrectOrder() {
+    Control child1 = new Button( composite, SWT.PUSH );
+    Control child2 = new Button( composite, SWT.PUSH );
+    Control child3 = new Button( composite, SWT.PUSH );
+
+    Control[] controls = composite.getTabList();
+
+    assertArrayEquals( new Control[] { child1, child2, child3 }, controls );
+  }
+
+  @Test
+  public void testGetTabList_containsOnlyTabGroups() {
+    Control child1 = new Button( composite, SWT.PUSH );
+    Control child2 = new Button( composite, SWT.PUSH );
+    new Label( composite, SWT.PUSH );
+    new Label( composite, SWT.PUSH );
+
+    Control[] controls = composite.getTabList();
+
+    // See Button.isTabGroup()
+    assertArrayEquals( new Control[] { child1, child2 }, controls );
+  }
+
+  @Test
+  public void testSetTabList_overridesDefaultTabList() {
+    new Label( composite, SWT.NONE );
+    Control child2 = new Button( composite, SWT.NONE );
+    Control child3 = new Label( composite, SWT.NONE );
+
+    composite.setTabList( new Control[] { child2, child3 } );
+
+    assertArrayEquals( new Control[] { child2, child3 }, composite.getTabList() );
+  }
+
+  @Test
+  public void testSetTabList_isNotChangedByAddingControls() {
+    Text text1 = new Text( composite, SWT.NONE );
+    Text text2 = new Text( composite, SWT.NONE );
+    composite.setTabList( new Control[] { text2, text1 } );
+
+    new Text( composite, SWT.NONE );
+
+    assertArrayEquals( new Control[] { text2, text1 }, composite.getTabList() );
   }
 
   @Test
   public void testLayout() {
     GridLayout gridLayout = new GridLayout();
-    shell.setLayout( gridLayout );
-    assertSame( gridLayout, shell.getLayout() );
+    composite.setLayout( gridLayout );
+    assertSame( gridLayout, composite.getLayout() );
     RowLayout rowLayout = new RowLayout();
-    shell.setLayout( rowLayout );
-    assertSame( rowLayout, shell.getLayout() );
+    composite.setLayout( rowLayout );
+    assertSame( rowLayout, composite.getLayout() );
   }
 
   @Test
@@ -135,8 +148,6 @@ public class Composite_Test {
 
   @Test
   public void testComputeSize_returnsDefaultSizeIfLayoutManagerIsNotSet() {
-    Composite composite = new Composite( shell, SWT.NONE );
-
     Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
 
     assertEquals( 64, preferredSize.x );
@@ -145,7 +156,6 @@ public class Composite_Test {
 
   @Test
   public void testComputeSize_returnsZeroIfLayoutManagerIsSet() {
-    Composite composite = new Composite( shell, SWT.NONE );
     composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
 
     Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
@@ -185,7 +195,6 @@ public class Composite_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    Composite composite = new Composite( shell, SWT.NONE );
     new Label( composite, SWT.NONE );
 
     Composite deserializedComposite = serializeAndDeserialize( composite );

@@ -2439,16 +2439,15 @@ public abstract class Control extends Widget implements Drawable {
   // Tab order
 
   boolean isTabGroup() {
-    boolean result = false;
     Control[] tabList = parent._getTabList();
     if( tabList != null ) {
       for( int i = 0; i < tabList.length; i++ ) {
         if( tabList[ i ] == this ) {
-          result = true;
+          return true;
         }
       }
     }
-    return result;
+    return false;
   }
 
   ////////////////////////////////
