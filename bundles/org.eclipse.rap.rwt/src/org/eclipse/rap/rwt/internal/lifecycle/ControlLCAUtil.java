@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
@@ -169,12 +168,12 @@ public class ControlLCAUtil {
   }
 
   private static void preserveBounds( Control control ) {
-    Rectangle bounds = control.getAdapter( IControlAdapter.class ).getBounds();
+    Rectangle bounds = ControlUtil.getControlAdapter( control ).getBounds();
     getRemoteAdapter( control ).preserveBounds( bounds );
   }
 
   private static void renderBounds( Control control ) {
-    Rectangle actual = control.getAdapter( IControlAdapter.class ).getBounds();
+    Rectangle actual = ControlUtil.getControlAdapter( control ).getBounds();
     Rectangle preserved = getRemoteAdapter( control ).getPreservedBounds();
     if( changed( control, actual, preserved, null ) ) {
       getRemoteObject( control ).set( PROP_BOUNDS, toJson( actual ) );
@@ -423,8 +422,8 @@ public class ControlLCAUtil {
   // [if] Fix for bug 263025, 297466, 223873 and more
   // some qooxdoo widgets with size (0,0) are not invisible
   private static boolean getVisible( Control control ) {
-    Point size = control.getSize();
-    return control.getVisible() && size.x > 0 && size.y > 0;
+    Rectangle bounds = ControlUtil.getControlAdapter( control ).getBounds();
+    return control.getVisible() && bounds.width > 0 && bounds.height > 0;
   }
 
   // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
