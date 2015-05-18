@@ -285,34 +285,55 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() {
+  public void testRenderCustomVariant_initial() {
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertNull( message.findSetOperation( widget, "customVariant" ) );
+    assertNull( getProtocolMessage().findSetOperation( widget, "customVariant" ) );
   }
 
   @Test
-  public void testRenderCustomVariant() {
-    widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
+  public void testRenderCustomVariant_initiallySet() {
+    widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertEquals( "variant_my_variant",
-                  message.findSetProperty( widget, "customVariant" ).asString() );
+    assertEquals( "variant_foo",
+                  getProtocolMessage().findSetProperty( widget, "customVariant" ).asString() );
   }
 
   @Test
-  public void testRenderCustomVariantUnchanged() {
-    Fixture.markInitialized( display );
+  public void testRenderCustomVariant_changed() {
     Fixture.markInitialized( widget );
-    widget.setData( RWT.CUSTOM_VARIANT, "my_variant" );
 
-    Fixture.preserveWidgets();
+    WidgetLCAUtil.preserveCustomVariant( widget );
+    widget.setData( RWT.CUSTOM_VARIANT, "foo" );
     WidgetLCAUtil.renderCustomVariant( widget );
 
-    TestMessage message = getProtocolMessage();
-    assertNull( message.findSetOperation( widget, "customVariant" ) );
+    assertEquals( "variant_foo",
+                  getProtocolMessage().findSetProperty( widget, "customVariant" ).asString() );
+  }
+
+  @Test
+  public void testRenderCustomVariant_reset() {
+    Fixture.markInitialized( widget );
+    widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    WidgetLCAUtil.preserveCustomVariant( widget );
+    widget.setData( RWT.CUSTOM_VARIANT, null );
+    WidgetLCAUtil.renderCustomVariant( widget );
+
+    assertEquals( JsonValue.NULL, getProtocolMessage().findSetProperty( widget, "customVariant" ) );
+  }
+
+  @Test
+  public void testRenderCustomVariant_unchanged() {
+    Fixture.markInitialized( widget );
+    widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    WidgetLCAUtil.preserveCustomVariant( widget );
+    WidgetLCAUtil.renderCustomVariant( widget );
+
+    assertNull( getProtocolMessage().findSetOperation( widget, "customVariant" ) );
   }
 
   @Test

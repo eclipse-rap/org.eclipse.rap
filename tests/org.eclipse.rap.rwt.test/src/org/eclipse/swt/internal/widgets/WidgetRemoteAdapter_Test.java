@@ -50,6 +50,15 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testSetParent() {
+    Composite parent = mock( Composite.class );
+
+    adapter.setParent( parent );
+
+    assertSame( parent, adapter.getParent() );
+  }
+
+  @Test
   public void testIsInitialized_isFalseByDefault() {
     boolean initialized = adapter.isInitialized();
 
@@ -75,10 +84,18 @@ public class WidgetRemoteAdapter_Test {
 
   @Test
   public void testPreserveProperty_isCleared() {
-    Object value = new Object();
-    adapter.preserve( "prop", value );
+    adapter.preserve( "prop", new Object() );
 
     adapter.clearPreserved();
+
+    assertNull( adapter.getPreserved( "prop" ) );
+  }
+
+  @Test
+  public void testPreserveProperty_isTransient() throws Exception {
+    adapter.preserve( "prop", new Object() );
+
+    adapter = serializeAndDeserialize( adapter );
 
     assertNull( adapter.getPreserved( "prop" ) );
   }
@@ -115,6 +132,15 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testPreserveListener_isTransient() throws Exception {
+    adapter.preserveListener( 23, true );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertFalse( adapter.getPreservedListener( 23 ) );
+  }
+
+  @Test
   public void testGetRenderRunnables_initial() {
     assertEquals( 0, adapter.getRenderRunnables().length );
   }
@@ -145,6 +171,15 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testRenderRunnable_isTransient() throws Exception {
+    adapter.addRenderRunnable( mock( Runnable.class ) );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertEquals( 0, adapter.getRenderRunnables().length );
+  }
+
+  @Test
   public void testMarkDisposed() {
     // dispose un-initialized widget: must not occur in list of disposed widgets
     Widget widget = new Shell( display );
@@ -160,15 +195,6 @@ public class WidgetRemoteAdapter_Test {
 
     assertTrue( widget.isDisposed() );
     assertEquals( 1, DisposedWidgets.getAll().length );
-  }
-
-  @Test
-  public void testSetParent() {
-    Composite parent = mock( Composite.class );
-
-    adapter.setParent( parent );
-
-    assertSame( parent, adapter.getParent() );
   }
 
   @Test
@@ -190,6 +216,40 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testPreserveData_isTransient() throws Exception {
+    adapter.preserveData( new Object[] { "foo" } );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertNull( adapter.getPreservedData() );
+  }
+
+  @Test
+  public void testPreserveVariant() {
+    adapter.preserveVariant( "foo" );
+
+    assertEquals( "foo", adapter.getPreservedVariant() );
+  }
+
+  @Test
+  public void testPreserveVariant_isCleared() {
+    adapter.preserveVariant( "foo" );
+
+    adapter.clearPreserved();
+
+    assertNull( adapter.getPreservedVariant() );
+  }
+
+  @Test
+  public void testPreserveVariant_isTransient() throws Exception {
+    adapter.preserveVariant( "foo" );
+
+    adapter = serializeAndDeserialize( adapter );
+
+    assertNull( adapter.getPreservedVariant() );
+  }
+
+  @Test
   public void testSerializableFields() throws Exception {
     adapter.setInitialized( true );
 
@@ -197,22 +257,6 @@ public class WidgetRemoteAdapter_Test {
 
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
     assertTrue( deserializedAdapter.isInitialized() );
-  }
-
-  @Test
-  public void testTransientFields() throws Exception {
-    String property = "foo";
-    adapter.addRenderRunnable( mock( Runnable.class ) );
-    adapter.preserve( property, "bar" );
-    adapter.preserveListener( 23, true );
-    adapter.preserveData( new Object[] { "foo" } );
-
-    WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
-
-    assertEquals( 0, deserializedAdapter.getRenderRunnables().length );
-    assertNull( deserializedAdapter.getPreserved( property ) );
-    assertFalse( deserializedAdapter.getPreservedListener( 23 ) );
-    assertNull( deserializedAdapter.getPreservedData() );
   }
 
 }

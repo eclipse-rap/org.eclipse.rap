@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getVariant;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonValue;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
@@ -65,8 +66,8 @@ public final class WidgetLCAUtil {
   private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
   private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
-  private static final String PROP_VARIANT = "variant";
   private static final String PROP_DATA = "data";
+  private static final String PROP_VARIANT = "customVariant";
   private static final String PROP_HELP_LISTENER = "Help";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
@@ -137,11 +138,6 @@ public final class WidgetLCAUtil {
     }
   }
 
-  public static void preserveCustomVariant( Widget widget ) {
-    String variant = WidgetUtil.getVariant( widget );
-    getAdapter( widget ).preserve( PROP_VARIANT, variant );
-  }
-
   public static void preserveData( Widget widget ) {
     getRemoteAdapter( widget ).preserveData( getData( widget ) );
   }
@@ -154,23 +150,24 @@ public final class WidgetLCAUtil {
     }
   }
 
+  public static void preserveCustomVariant( Widget widget ) {
+    getRemoteAdapter( widget ).preserveVariant( getVariant( widget ) );
+  }
+
+  public static void renderCustomVariant( Widget widget ) {
+    String actual = getVariant( widget );
+    String preserved = getRemoteAdapter( widget ).getPreservedVariant();
+    if( changed( widget, actual, preserved, null ) ) {
+      getRemoteObject( widget ).set( PROP_VARIANT, actual == null ? null : "variant_" + actual );
+    }
+  }
+
   public static void renderBounds( Widget widget, Rectangle bounds ) {
     renderProperty( widget, Props.BOUNDS, bounds, null );
   }
 
   public static void renderEnabled( Widget widget, boolean enabled ) {
     renderProperty( widget, Props.ENABLED, enabled, true );
-  }
-
-  public static void renderCustomVariant( Widget widget ) {
-    String newValue = WidgetUtil.getVariant( widget );
-    if( hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
-      String value = null;
-      if( newValue != null ) {
-        value = "variant_" + newValue;
-      }
-      getRemoteObject( widget ).set( "customVariant", value );
-    }
   }
 
   public static void renderMenu( Widget widget, Menu menu ) {
