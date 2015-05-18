@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -542,6 +542,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       assertFalse( toolTip._disappearAnimation.isStarted() );
       assertFalse( toolTip.isSeeable() );
       assertTrue( toolTip._disappearAnimation.getDefaultRenderer().isActive() );
+      toolTip.setAnimation( {} );
+    },
+
+    testHideOnMouseOverWhileAnimating : function() {
+      config = { "disappearOn" : "move" };
+      WidgetToolTip.setToolTipText( widget, "test1" );
+      toolTip.setAnimation( { "fadeOut" : [ 400, "linear" ] } );
+      TestUtil.hoverFromTo( document.body, widget.getElement() );
+      showToolTip();
+      TestUtil.mouseMove( widget );
+      TestUtil.forceInterval( toolTip._hideTimer );
+      rwt.animation.Animation._mainLoop();
+
+      TestUtil.hoverFromTo( widget.getElement(), toolTip.getElement() );
+
+      assertFalse( toolTip._disappearAnimation.isStarted() );
+      assertFalse( toolTip.isSeeable() );
       toolTip.setAnimation( {} );
     },
 
