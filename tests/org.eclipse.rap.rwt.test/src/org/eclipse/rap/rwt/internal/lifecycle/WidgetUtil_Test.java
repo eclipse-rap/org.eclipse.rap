@@ -15,8 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -65,42 +63,18 @@ public class WidgetUtil_Test {
 
   @Test
   public void testGetVariant() {
-    String valid = "Foo_Bar_23_42";
-    shell.setData( RWT.CUSTOM_VARIANT, valid );
-    assertEquals( valid, WidgetUtil.getVariant( shell ) );
-    String withDash = "Foo-Bar-23-42";
-    shell.setData( RWT.CUSTOM_VARIANT, withDash );
-    assertEquals( withDash, WidgetUtil.getVariant( shell ) );
-    String withLeadingDash = "-Foo-Bar-23-42";
-    shell.setData( RWT.CUSTOM_VARIANT, withLeadingDash );
-    assertEquals( withLeadingDash, WidgetUtil.getVariant( shell ) );
-    String withNonAscii = "Foo-üäöæ-23-42";
-    shell.setData( RWT.CUSTOM_VARIANT, withNonAscii );
-    assertEquals( withNonAscii, WidgetUtil.getVariant( shell ) );
-    String withSpaces = "Foo Bar 23 42 ";
-    shell.setData( RWT.CUSTOM_VARIANT, withSpaces );
-    try {
-      WidgetUtil.getVariant( shell );
-      fail( "IAE expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    String withColon = "Foo:Bar";
-    shell.setData( RWT.CUSTOM_VARIANT, withColon );
-    try {
-      WidgetUtil.getVariant( shell );
-      fail( "IAE expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    String withLeadingNumber = "1-Foo-Bar";
-    shell.setData( RWT.CUSTOM_VARIANT, withLeadingNumber );
-    try {
-      WidgetUtil.getVariant( shell );
-      fail( "IAE expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    shell.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    assertEquals( "foo", WidgetUtil.getVariant( shell ) );
+  }
+
+  @Test
+  public void testGetVariant_afterReset() {
+    shell.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    shell.setData( RWT.CUSTOM_VARIANT, null );
+
+    assertNull( WidgetUtil.getVariant( shell ) );
   }
 
   @Test

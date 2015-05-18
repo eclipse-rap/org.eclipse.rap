@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
@@ -235,6 +236,75 @@ public class Widget_Test {
     widget.dispose();
 
     widget.getData( "foo" );
+  }
+
+  @Test
+  public void testSetData_forVariant() {
+    shell.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    assertEquals( "foo", shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test
+  public void testSetData_forVariant_canBeReset() {
+    shell.setData( RWT.CUSTOM_VARIANT, "foo" );
+
+    shell.setData( RWT.CUSTOM_VARIANT, null );
+
+    assertNull( shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test
+  public void testSetData_forVariant_acceptsUnderscore() {
+    shell.setData( RWT.CUSTOM_VARIANT, "Foo_Bar_23_42" );
+
+    assertNotNull( shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test
+  public void testSetData_forVariant_acceptsDash() {
+    shell.setData( RWT.CUSTOM_VARIANT, "Foo-Bar-23-42" );
+
+    assertNotNull( shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test
+  public void testSetData_forVariant_acceptsLeadingDash() {
+    shell.setData( RWT.CUSTOM_VARIANT, "-Foo-Bar-23-42" );
+
+    assertNotNull( shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test
+  public void testSetData_forVariant_acceptsNonAscii() {
+    shell.setData( RWT.CUSTOM_VARIANT, "Foo-üäöæ-23-42" );
+
+    assertNotNull( shell.getData( RWT.CUSTOM_VARIANT ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forVariant_rejectsNonStringValue() {
+    shell.setData( RWT.CUSTOM_VARIANT, new Object() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forVariant_rejectsEmptyString() {
+    shell.setData( RWT.CUSTOM_VARIANT, "" );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forVariant_rejectsSpaces() {
+    shell.setData( RWT.CUSTOM_VARIANT, "Foo Bar 23 42 " );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forVariant_rejectsColon() {
+    shell.setData( RWT.CUSTOM_VARIANT, "Foo:Bar" );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forVariant_rejectsLeadingNumber() {
+    shell.setData( RWT.CUSTOM_VARIANT, "1-Foo-Bar" );
   }
 
   @Test

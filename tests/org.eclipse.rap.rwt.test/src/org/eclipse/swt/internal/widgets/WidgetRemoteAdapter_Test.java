@@ -115,13 +115,6 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
-  public void testCachedVariant() {
-    adapter.setCachedVariant( "foo" );
-
-    assertEquals( "foo", adapter.getCachedVariant() );
-  }
-
-  @Test
   public void testGetRenderRunnables_initial() {
     assertEquals( 0, adapter.getRenderRunnables().length );
   }
@@ -209,7 +202,6 @@ public class WidgetRemoteAdapter_Test {
   @Test
   public void testTransientFields() throws Exception {
     String property = "foo";
-    adapter.setCachedVariant( "cachedVariant" );
     adapter.addRenderRunnable( mock( Runnable.class ) );
     adapter.preserve( property, "bar" );
     adapter.preserveListener( 23, true );
@@ -217,7 +209,6 @@ public class WidgetRemoteAdapter_Test {
 
     WidgetRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
 
-    assertNull( deserializedAdapter.getCachedVariant() );
     assertEquals( 0, deserializedAdapter.getRenderRunnables().length );
     assertNull( deserializedAdapter.getPreserved( property ) );
     assertFalse( deserializedAdapter.getPreservedListener( 23 ) );

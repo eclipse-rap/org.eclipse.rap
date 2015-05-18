@@ -11,11 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import java.text.MessageFormat;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -41,23 +38,7 @@ public final class WidgetUtil {
   }
 
   public static String getVariant( Widget widget ) {
-    String result = null;
-    WidgetRemoteAdapter widgetAdapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    Object data = widget.getData( RWT.CUSTOM_VARIANT );
-    if( data instanceof String ) {
-      result = ( String )data;
-      if( !result.equals( widgetAdapter.getCachedVariant() ) ) {
-        if( validateVariantString( result ) ) {
-          widgetAdapter.setCachedVariant( result );
-        } else {
-          String pattern = "Illegal character in widget variant ''{0}''";
-          Object[] arguments = new Object[] { result };
-          String message = MessageFormat.format( pattern, arguments );
-          throw new IllegalArgumentException( message );
-        }
-      }
-    }
-    return result;
+    return ( String )widget.getData( RWT.CUSTOM_VARIANT );
   }
 
   public static AbstractWidgetLCA getLCA( Widget widget ) {
@@ -87,35 +68,6 @@ public final class WidgetUtil {
   public static void registerDataKeys( String... keys ) {
     ParamCheck.notNull( keys, "keys" );
     WidgetDataUtil.registerDataKeys( keys );
-  }
-
-  private static boolean validateVariantString( String variant ) {
-    boolean result = false;
-    String name = variant;
-    if( name.startsWith( "-" ) ) {
-      name = name.substring( 1 );
-    }
-    int length = name.length();
-    if( length > 0 ) {
-      result = isValidStart( name.charAt( 0 ) );
-      for( int i = 1; i < length && result; i++ ) {
-        result &= isValidPart( name.charAt( i ) );
-      }
-    }
-    return result;
-  }
-
-  private static boolean isValidStart( char ch ) {
-    return ch == '_'
-      || ( ch >= 'a' && ch <= 'z' )
-      || ( ch >= 'A' && ch <= 'Z' )
-      || ( ch >= 128 && ch <= 255 );
-  }
-
-  private static boolean isValidPart( char ch ) {
-    return isValidStart( ch )
-      || ( ch >= '0' && ch <= '9' )
-      || ch == '-';
   }
 
 }
