@@ -65,6 +65,12 @@
     <style name="BORDER"
         description="Applies when style BORDER is set" />
 
+    <style name="FLAT"
+        description="Applies when style FLAT is set" />
+
+    <style name="VERTICAL"
+        description="Applies when style VERTICAL is set" />
+
     <element name="ToolItem"
         description="Items of ToolBar controls">
 
@@ -119,6 +125,9 @@
 
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent ToolBar." />
+
+      <style name="VERTICAL"
+          description="Applies when style VERTICAL is set on the parent ToolBar." />
 
       <state name="first"
           description="Applies to the first tool item." />
