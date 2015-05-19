@@ -137,6 +137,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         if( this._inputType ) {
           this._inputElement.type = this._inputType;
         }
+        this._inputElement.style.position = "absolute";
         this._inputElement.autoComplete = "off";
         this._inputElement.setAttribute( "autoComplete", "off" );
       }
@@ -286,14 +287,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _textInit : function() {
-      // Emulate IE hard-coded margin
-      // Mozilla by default emulates this IE handling, but in a wrong
-      // way. IE adds the additional margin to the CSS margin where
-      // Mozilla replaces it. But this make it possible for the user
-      // to overwrite the margin, which is not possible in IE.
-      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
-      // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin:
-      this._inputElement.style.margin = "1px 0 1px -1px";
       this._inputElement.addEventListener( "input", this.__oninput, false );
       this._applyBrowserFixesOnCreate();
     },
@@ -318,8 +311,7 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _syncFieldHeight : function() {
       if( this._inputTag !== "input" ) {
-        // Reduce height by 2 pixels (the manual or IE margin)
-        this._inputElement.style.height = Math.max( 0, this.getInnerHeight() - 2 ) + "px";
+        this._inputElement.style.height = this.getInnerHeight() + "px";
       }
     },
 
@@ -468,15 +460,11 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         var innerHeight = this.getInnerHeight();
         var inputElementHeight = this._inputElement.offsetHeight;
         if( inputElementHeight !== 0 ) {
-          var top = ( innerHeight - inputElementHeight ) / 2 - 1;
+          var top = ( innerHeight - inputElementHeight ) / 2;
           if( top < 0 ) {
             top = 0;
           }
-          top = Math.floor( top );
-          // [if] Set padding instead of style.position of the _inputElement.
-          // style.position leads to problems with DOM events in FF 3.0.x
-          // see bug 292487 and bug 284356
-          this.setStyleProperty( "paddingTop", top + "px" );
+          this._inputElement.style.top = Math.floor( top ) + "px";
         }
       }
     },

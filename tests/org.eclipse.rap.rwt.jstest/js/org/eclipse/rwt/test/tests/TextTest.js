@@ -1413,9 +1413,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setHeight( 100 );
       TestUtil.flush();
 
-      var textHeight= text.getInputElement().offsetHeight;
-      var expected = Math.floor( 100 / 2 - textHeight / 2 - 1 );
-      assertEquals( expected, parseInt( text.getElement().style.paddingTop, 10 ) );
+      var textHeight = text.getInputElement().offsetHeight;
+      var expected = Math.floor( 100 / 2 - textHeight / 2 );
+      assertEquals( expected, parseInt( text.getInputElement().style.top, 10 ) );
       if( Client.isTrident() ) {
         assertEquals( "top", text._inputElement.style.verticalAlign );
       } else {

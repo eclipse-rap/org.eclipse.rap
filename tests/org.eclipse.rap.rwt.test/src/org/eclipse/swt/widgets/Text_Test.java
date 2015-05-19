@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -367,33 +367,33 @@ public class Text_Test {
 
   @Test
   public void testComputeSize_Empty() {
-    assertEquals( new Point( 85, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 85, 24 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_WithText() {
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 189, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 189, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_WithMessage() {
     text.setMessage( "This is a message that is longer than the text!" );
-    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 337, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_WithMessage_Multi() {
     text = new Text( shell, SWT.MULTI );
     text.setMessage( "This is a message that is longer than the text!" );
-    assertEquals( new Point( 337, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_WithTextAndMessage() {
     text.setText( "This is a long long text!" );
     text.setMessage( "This is a message that is longer than the text!" );
-    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 337, 26 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
@@ -401,55 +401,55 @@ public class Text_Test {
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!" );
     text.setMessage( "This is a message that is longer than the text!" );
-    assertEquals( new Point( 337, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 337, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_Multi() {
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
-    assertEquals( new Point( 189, 47 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 189, 45 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_MultiWithWrap() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
-    assertEquals( new Point( 71, 152 ), text.computeSize( 50, SWT.DEFAULT ) );
+    assertEquals( new Point( 71, 150 ), text.computeSize( 50, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_MultiWithWrapAndBorder() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
-    assertEquals( new Point( 73, 154 ), text.computeSize( 50, SWT.DEFAULT ) );
+    assertEquals( new Point( 73, 152 ), text.computeSize( 50, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_MultiWithHint() {
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
-    assertEquals(  new Point( 123, 114 ), text.computeSize( 100, 100 ) );
+    assertEquals(  new Point( 123, 112 ), text.computeSize( 100, 100 ) );
   }
 
   @Test
   public void testComputeSize_SearchWithoutIcons() {
     text = new Text( shell, SWT.SEARCH );
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 191, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 191, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_SearchWithOneIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH );
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 210, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 210, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
   public void testComputeSize_SearchWithTwoIcon() {
     text = new Text( shell, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     text.setText( "This is a long long text!" );
-    assertEquals( new Point( 229, 30 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 229, 28 ), text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   @Test
