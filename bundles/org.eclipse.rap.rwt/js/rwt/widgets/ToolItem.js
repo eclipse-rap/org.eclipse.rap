@@ -225,6 +225,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
       }
       if( newParent ) {
         this.toggleState( "rwt_RIGHT", newParent.hasState( "rwt_RIGHT" ) );
+        this.toggleState( "rwt_FLAT", newParent.hasState( "rwt_FLAT" ) );
       }
     },
 

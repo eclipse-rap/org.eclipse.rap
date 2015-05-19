@@ -104,6 +104,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( widget.hasState( "rwt_RADIO" ) );
       assertFalse( widget.hasState( "rwt_FLAT" ) );
       assertFalse( widget.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget.hasState( "rwt_FLAT" ) );
       shell.destroy();
       toolbar.destroy();
       widget.destroy();
@@ -202,6 +203,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
 
       assertFalse( widget.getVertical() );
       assertTrue( widget.hasState( "rwt_RIGHT" ) );
+      shell.destroy();
+    },
+
+    testCreateFlatToolItemByProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      var toolbar = this._createToolBarByProtocol( "w3", "w2", [ "FLAT" ] );
+      var widget = this._createToolItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      assertTrue( widget.hasState( "rwt_FLAT" ) );
       shell.destroy();
     },
 
