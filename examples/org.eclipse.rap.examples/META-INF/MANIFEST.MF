@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.examples
 Bundle-Version: 3.0.0.qualifier
-Bundle-Name: RAP Examples Demo
-Bundle-Vendor: Eclipse.org - RAP
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-Activator: org.eclipse.rap.examples.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Localization: plugin
 Import-Package: javax.servlet;version="[2.4.0,4.0.0)",
  javax.servlet.http;version="[2.4.0,4.0.0)",
  org.osgi.framework;version="[1.6.0,2.0.0)",

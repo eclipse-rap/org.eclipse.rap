@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.rap.design.example;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"
 Bundle-Vendor: %Bundle-Vendor
+Bundle-Localization: plugin
 Export-Package: org.eclipse.rap.rwt.themes.test;x-internal:=true,
  org.eclipse.rap.rwt.themes.test.business;x-internal:=true
 Import-Package: org.eclipse.rap.rwt.testfixture;version="[3.0.0,4.0.0)",

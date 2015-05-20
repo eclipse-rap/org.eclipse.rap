@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.examples.pages
 Bundle-Version: 3.0.0.qualifier
-Bundle-Name: Pages for RAP Examples Demo
-Bundle-Vendor: Eclipse.org - RAP
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.rap.jface;bundle-version="[3.0.0,4.0.0)",
