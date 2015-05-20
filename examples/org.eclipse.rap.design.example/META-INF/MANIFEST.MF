@@ -17,6 +17,4 @@ Export-Package: org.eclipse.rap.internal.design.example;version="3.0.0";x-intern
  org.eclipse.rap.internal.design.example.fancy.layoutsets;version="3.0.0";x-internal:=true,
  org.eclipse.rap.internal.design.example.managers;version="3.0.0";x-internal:=true,
  org.eclipse.rap.internal.design.example.stacks;version="3.0.0";x-internal:=true
-Bundle-ClassPath: patch.jar,
- .
-Eclipse-ExtensibleAPI: true
+Bundle-ClassPath: .

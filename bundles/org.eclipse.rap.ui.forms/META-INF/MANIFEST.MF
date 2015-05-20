@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Eclipse-ExtensibleAPI: true
 Bundle-ManifestVersion: 2
 Bundle-Name: %name
 Bundle-SymbolicName: org.eclipse.rap.ui.forms;singleton:=true
@@ -22,5 +21,4 @@ Import-Package: com.ibm.icu.text,
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: patch.jar,
- .
+Bundle-ClassPath: .
