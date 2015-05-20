@@ -391,7 +391,7 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this.base( arguments );
       this._syncFieldLeft();
       this._layoutAllIcons();
-      this._layoutMessage();
+      this._layoutMessageX();
     },
 
     _applyValue : function( newValue, oldValue ) {
@@ -460,11 +460,16 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
         this._updateMessageCursor();
         this._updateMessageVisibility();
         this._updateMessageFont();
-        this._layoutMessage();
+        this._layoutMessageX();
       }
     },
 
-    _layoutMessage : function() {
+    _centerFieldVertically : function() {
+      this.base( arguments );
+      this._layoutMessageY();
+    },
+
+    _layoutMessageX : function() {
       if( this._messageElement ) {
         var styleMap = this._getMessageStyle();
         var style = this._messageElement.style;
@@ -476,14 +481,21 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
                     - this._getIconOuterWidth( "search" )
                     - this._getIconOuterWidth( "cancel" );
         style.width = Math.max( 0, width ) + "px";
-        var messageHeight = parseInt( style.height, 10 );
         if( this._isTextArea() ) {
           // The text-area padding is hard codded in the appearances
-          style.top = "0px";
           style.left = "3px";
         } else {
-          style.top = Math.round( this.getInnerHeight() / 2 - messageHeight / 2 ) + "px";
           style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
+        }
+      }
+    },
+
+    _layoutMessageY : function() {
+      if( this._messageElement ) {
+        if( this._isTextArea() ) {
+          this._messageElement.style.top = "0px";
+        } else {
+          this._messageElement.style.top = this.getInputElement().style.top;
         }
       }
     },
@@ -502,10 +514,8 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     _updateMessageFont : function() {
       if( this._messageElement ) {
-        var style = this._messageElement.style;
         var font = this.getFont();
         font.renderElement( this._messageElement );
-        style.height = Math.round( font.getSize() * this._LINE_HEIGT_FACTOR ) + "px";
       }
     },
 

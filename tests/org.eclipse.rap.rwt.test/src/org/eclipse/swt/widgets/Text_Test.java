@@ -97,11 +97,11 @@ public class Text_Test {
   public void testGetLineHeight() {
     Text text = new Text( shell, SWT.MULTI );
     // default theme font is 14px
-    assertEquals( 16, text.getLineHeight() );
+    assertEquals( 19, text.getLineHeight() );
     text.setFont( new Font( display, "Helvetica", 12, SWT.NORMAL ) );
-    assertEquals( 14, text.getLineHeight() );
-    text.setFont( null );
     assertEquals( 16, text.getLineHeight() );
+    text.setFont( null );
+    assertEquals( 19, text.getLineHeight() );
   }
 
   @Test

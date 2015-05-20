@@ -65,8 +65,7 @@ public class CCombo extends Composite {
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
 
-  //This factor must be kept in sync with TextUtil.js#_updateLineHeight
-  private static final double LINE_HEIGHT_FACTOR = 1.2;
+  private static final double LINE_HEIGHT_FACTOR = 1.4;
 
   /**
    * The maximum number of characters that can be entered

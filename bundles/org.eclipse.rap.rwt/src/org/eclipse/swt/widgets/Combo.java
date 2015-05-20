@@ -76,8 +76,7 @@ public class Combo extends Composite {
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
 
-  // This factor must be kept in sync with TextUtil.js#_updateLineHeight
-  private static final double LINE_HEIGHT_FACTOR = 1.2;
+  private static final double LINE_HEIGHT_FACTOR = 1.4;
 
   private ITextAdapter textAdapter;
   private final ListModel model;

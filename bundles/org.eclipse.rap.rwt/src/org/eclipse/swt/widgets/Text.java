@@ -60,8 +60,7 @@ public class Text extends Scrollable {
 
   private static final Size ZERO = new Size( 0, 0 );
 
-  // This factor must be kept in sync with TextUtil.js#_updateLineHeight
-  private static final double LINE_HEIGHT_FACTOR = 1.2;
+  static final double LINE_HEIGHT_FACTOR = 1.4;
 
   /**
    * The maximum number of characters that can be entered

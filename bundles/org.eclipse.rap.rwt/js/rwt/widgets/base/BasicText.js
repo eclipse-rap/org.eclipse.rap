@@ -32,7 +32,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     this.addEventListener( "keyup", this._onkeyup, this );
     this.addEventListener( "mousedown", this._onMouseDownUp, this );
     this.addEventListener( "mouseup", this._onMouseDownUp, this );
-    this._updateLineHeight();
     this._typed = null;
     this._selectionNeedsUpdate = false;
     this._applyBrowserFixes();
@@ -97,7 +96,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
   },
 
   members : {
-    _LINE_HEIGT_FACTOR : 1.2,
     _inputTag : "input",
     _inputType : "text",
     _inputElement : null,
@@ -282,7 +280,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         this._renderTextShadow();
         this._textInit();
         this._getTargetNode().appendChild( this._inputElement );
-        this._updateLineHeight();
       }
     },
 
@@ -391,7 +388,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
 
     _applyFont : function( value ) {
       this._styleFont( value );
-      this._updateLineHeight();
     },
 
     _styleFont : function( value ) {
@@ -406,14 +402,6 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
         } else {
           rwt.html.Font.resetElement( this._inputElement );
         }
-      }
-    },
-
-    _updateLineHeight : function() {
-      if( this.isCreated() ) {
-        var font = this.getFont();
-        var height = Math.floor( font.getSize() * this._LINE_HEIGT_FACTOR );
-        this._inputElement.style.lineHeight = height + "px";
       }
     },
 
