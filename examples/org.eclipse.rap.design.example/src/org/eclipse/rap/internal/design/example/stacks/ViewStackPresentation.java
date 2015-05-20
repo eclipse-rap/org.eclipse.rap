@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 import org.eclipse.ui.presentations.StackDropResult;
 
 
+@SuppressWarnings( "restriction" )
 public class ViewStackPresentation extends ConfigurableStack {
 
   private static final String VARIANT_PART_INACTIVE = "partInactive"; //$NON-NLS-1$
@@ -1229,8 +1230,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( currentPart != null && tabBar != null && getPartPane( currentPart ) != null ) {
       int newHeight = bounds.height - 16;
       int partBoundsY = bounds.y + 8;
-      if( getTabBar().isVisible() ) {
-        newHeight -= ( tabBar.getBounds().height );
+      if( getTabBar().getVisible() ) {
+        newHeight -= tabBar.getBounds().height;
         partBoundsY += tabBar.getBounds().height;
       }
 
