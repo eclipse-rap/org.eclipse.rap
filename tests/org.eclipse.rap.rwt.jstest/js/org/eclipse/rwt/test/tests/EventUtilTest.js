@@ -150,6 +150,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       assertEquals( "foo", message.findNotifyProperty( "w11", "Selection", "detail" ) );
     },
 
+    testNotifySelected_onDisposedTarget : function() {
+      TestUtil.fakeListener( widget, "Selection", true );
+      rwt.remote.MessageProcessor.processOperationArray( [ "destroy", "w11" ] );
+      TestUtil.flush();
+
+      rwt.remote.EventUtil.notifySelected( widget, 1, 2, 3, 4, "foo" );
+
+      assertEquals( 0, TestUtil.getMessages().length );
+    },
+
     testNotifySelected_withSinglePropertiesObject : function() {
       TestUtil.fakeListener( widget, "Selection", true );
       rwt.remote.EventUtil._button = rwt.event.MouseEvent.C_BUTTON_MIDDLE;
@@ -184,6 +194,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventUtilTest", {
       assertEquals( 3, message.findNotifyProperty( "w11", "DefaultSelection", "width" ) );
       assertEquals( 4, message.findNotifyProperty( "w11", "DefaultSelection", "height" ) );
       assertEquals( "foo", message.findNotifyProperty( "w11", "DefaultSelection", "detail" ) );
+    },
+
+    testNotifyDefaultSelected_onDisposedTarget : function() {
+      TestUtil.fakeListener( widget, "Selection", true );
+      rwt.remote.MessageProcessor.processOperationArray( [ "destroy", "w11" ] );
+      TestUtil.flush();
+
+      rwt.remote.EventUtil.notifyDefaultSelected( widget, 1, 2, 3, 4, "foo" );
+
+      assertEquals( 0, TestUtil.getMessages().length );
     },
 
     testNotifyDefaultSelected_withSinglePropertiesObject : function() {

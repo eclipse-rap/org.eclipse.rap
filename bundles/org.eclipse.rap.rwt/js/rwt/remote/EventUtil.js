@@ -61,8 +61,8 @@ rwt.remote.EventUtil = {
     self.notifySelected( event.getTarget(), left, top, width, height );
   },
 
-  notifySelected : function( target) {
-    if( !self.getSuspended() ) {
+  notifySelected : function( target ) {
+    if( !self.getSuspended() && !target.isDisposed() ) {
       var connection = rwt.remote.Connection.getInstance();
       var properties = self._createSelectionProperties.apply( this, arguments );
       connection.getRemoteObject( target ).notify( "Selection", properties );
@@ -70,7 +70,7 @@ rwt.remote.EventUtil = {
   },
 
   notifyDefaultSelected : function( target ) {
-    if( !self.getSuspended() ) {
+    if( !self.getSuspended() && !target.isDisposed() ) {
       var connection = rwt.remote.Connection.getInstance();
       var properties = self._createSelectionProperties.apply( this, arguments );
       connection.getRemoteObject( target ).notify( "DefaultSelection", properties );
