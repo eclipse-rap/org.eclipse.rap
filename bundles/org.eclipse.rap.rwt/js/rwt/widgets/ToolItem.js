@@ -83,7 +83,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     computeBadgePosition : function() {
-      return [ 0, 0, "auto", "auto" ];
+      return [ 3, 3, "auto", "auto" ];
     },
 
     setMnemonicIndex : function( value ) {

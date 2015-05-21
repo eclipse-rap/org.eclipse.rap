@@ -442,7 +442,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     testComputeBadgePosition : function() {
       var item = new rwt.widgets.ToolItem( "push" );
 
-      assertEquals( [ 0, 0, "auto", "auto" ], item.computeBadgePosition() );
+      assertEquals( [ 3, 3, "auto", "auto" ], item.computeBadgePosition() );
     },
 
     testClickDropDown : function() {
