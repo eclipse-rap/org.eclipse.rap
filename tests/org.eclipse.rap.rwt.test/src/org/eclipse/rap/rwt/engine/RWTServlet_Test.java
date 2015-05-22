@@ -12,10 +12,6 @@ package org.eclipse.rap.rwt.engine;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -23,6 +19,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.CONNECTION_ID;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,8 +36,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
-import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.StartupPage;
@@ -102,28 +98,32 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_withValidUrl() throws Exception {
-    ServiceHandler serviceHandler = mock( ServiceHandler.class );
-    fakeServiceHandler( applicationContext, serviceHandler );
+    ServiceHandler lifeCycleServiceHandler = mock( ServiceHandler.class );
+    fakeServiceHandler( applicationContext, lifeCycleServiceHandler );
+    request.setMethod( HTTP.METHOD_POST );
+    request.setContentType( HTTP.CONTENT_TYPE_JSON );
     request.setServletPath( "/foo" );
     request.setPathInfo( null );
     request.setSession( mock( HttpSession.class ) );
 
     servlet.doGet( request, response );
 
-    verify( serviceHandler ).service( request, response );
+    verify( lifeCycleServiceHandler ).service( request, response );
   }
 
   @Test
   public void testHandleRequest_withRootServlet() throws Exception {
-    ServiceHandler serviceHandler = mock( ServiceHandler.class );
-    fakeServiceHandler( applicationContext, serviceHandler );
+    ServiceHandler lifeCycleServiceHandler = mock( ServiceHandler.class );
+    fakeServiceHandler( applicationContext, lifeCycleServiceHandler );
+    request.setMethod( HTTP.METHOD_POST );
+    request.setContentType( HTTP.CONTENT_TYPE_JSON );
     request.setServletPath( "" );
     request.setPathInfo( "/" );
     request.setSession( mock( HttpSession.class ) );
 
     servlet.doGet( request, response );
 
-    verify( serviceHandler ).service( request, response );
+    verify( lifeCycleServiceHandler ).service( request, response );
   }
 
   @Test
@@ -148,14 +148,16 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_toCustomServiceHandler_hasUISession() throws Exception {
-    UISessionImpl uiSession = new UISessionImpl( applicationContext, request.getSession() );
+    UISessionImpl uiSession = new UISessionImpl( applicationContext, request.getSession(), "cid" );
     uiSession.attachToHttpSession();
-    final AtomicReference<UISession> uiSessionRef = new AtomicReference<UISession>();
+    final AtomicReference<UISession> uiSessionRef = new AtomicReference<>();
     fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
         uiSessionRef.set( ContextProvider.getUISession() );
       }
     } );
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
+    request.setParameter( CONNECTION_ID, "cid" );
 
     servlet.doGet( request, response );
 
@@ -164,12 +166,13 @@ public class RWTServlet_Test {
 
   @Test
   public void testHandleRequest_toCustomServiceHandler_doesNotCreateNewUISession() throws Exception {
-    final AtomicReference<UISession> uiSessionRef = new AtomicReference<UISession>();
+    final AtomicReference<UISession> uiSessionRef = new AtomicReference<>();
     fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
         uiSessionRef.set( ContextProvider.getUISession() );
       }
     } );
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
 
     servlet.doGet( request, response );
 
@@ -178,12 +181,13 @@ public class RWTServlet_Test {
 
   @Test
   public void testServiceHandlerHasServiceStore() throws ServletException, IOException {
-    final AtomicReference<ServiceStore> serviceStoreRef = new AtomicReference<ServiceStore>();
+    final AtomicReference<ServiceStore> serviceStoreRef = new AtomicReference<>();
     fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
         serviceStoreRef.set( ContextProvider.getServiceStore() );
       }
     } );
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
     request.setSession( new TestHttpSession() );
 
     servlet.doPost( request, new TestResponse() );
@@ -193,12 +197,13 @@ public class RWTServlet_Test {
 
   @Test
   public void testSetApplicationContextInServiceContext() throws ServletException, IOException {
-    final AtomicReference<ApplicationContext> appContextRef = new AtomicReference<ApplicationContext>();
+    final AtomicReference<ApplicationContext> appContextRef = new AtomicReference<>();
     fakeServiceHandler( applicationContext, new ServiceHandler() {
       public void service( HttpServletRequest request, HttpServletResponse response) {
         appContextRef.set( ContextProvider.getContext().getApplicationContext() );
       }
     } );
+    request.setParameter( ServiceManagerImpl.REQUEST_PARAM, "foo" );
     request.setSession( new TestHttpSession() );
 
     servlet.doPost( request, new TestResponse() );
@@ -207,44 +212,7 @@ public class RWTServlet_Test {
   }
 
   @Test
-  public void testEnsureUISession() {
-    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
-    ContextProvider.setContext( serviceContext );
-
-    RWTServlet.ensureUISession( serviceContext );
-
-    assertNotNull( serviceContext.getUISession() );
-  }
-
-  @Test
-  public void testEnsureUISession_returnsExistingUISession() {
-    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
-    UISessionImpl uiSession = new UISessionImpl( applicationContext, request.getSession() );
-    serviceContext.setUISession( uiSession );
-    ContextProvider.setContext( serviceContext );
-
-    RWTServlet.ensureUISession( serviceContext );
-
-    assertSame( uiSession, serviceContext.getUISession() );
-  }
-
-  @Test
-  public void testEnsureUISession_returnsExistingUISession_withConnectionId() {
-    request.setParameter( "cid", "foo" );
-    ServiceContext serviceContext = new ServiceContext( request, response, applicationContext );
-    UISessionImpl uiSession = new UISessionImpl( applicationContext, request.getSession(), "foo" );
-    serviceContext.setUISession( uiSession );
-    ContextProvider.setContext( serviceContext );
-
-    RWTServlet.ensureUISession( serviceContext );
-
-    assertSame( uiSession, serviceContext.getUISession() );
-    ContextProvider.disposeContext();
-  }
-
-  @Test
   public void testStartupContent_withHtmlAcceptHeader() throws Exception {
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
     request.setMethod( HTTP.METHOD_GET );
     request.setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_HTML );
 
@@ -255,7 +223,6 @@ public class RWTServlet_Test {
 
   @Test
   public void testStartupContent_withJsonAcceptHeader() throws Exception {
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
     request.setMethod( HTTP.METHOD_GET );
     request.setHeader( HTTP.HEADER_ACCEPT, HTTP.CONTENT_TYPE_JSON );
 
@@ -267,7 +234,6 @@ public class RWTServlet_Test {
 
   @Test
   public void testStartupContent_withoutAcceptHeader() throws Exception {
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
     request.setMethod( HTTP.METHOD_GET );
 
     servlet.service( request, response );
@@ -277,7 +243,6 @@ public class RWTServlet_Test {
 
   @Test
   public void testStartupPage_forHeadRequest() throws Exception {
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
     request.setMethod( "HEAD" );
 
     servlet.service( request, response );
@@ -289,7 +254,7 @@ public class RWTServlet_Test {
   public void testHandlesInvalidRequestContentType() throws Exception {
     // SECURITY: Checking the content-type prevents CSRF attacks, see bug 413668
     // Also allows application to be started with POST request, see bug 416445
-    fakeServiceHandler( applicationContext, mock( LifeCycleServiceHandler.class ) );
+    request.setParameter( CONNECTION_ID, "cid" );
     request.setMethod( HTTP.METHOD_POST );
     request.setContentType( "text/plain" );
 

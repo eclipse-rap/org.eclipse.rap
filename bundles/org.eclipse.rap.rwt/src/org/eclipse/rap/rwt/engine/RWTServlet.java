@@ -30,15 +30,14 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
-import org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rap.rwt.internal.service.ServiceContext;
+import org.eclipse.rap.rwt.internal.service.ServiceManagerImpl;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.internal.service.StartupJson;
 import org.eclipse.rap.rwt.internal.service.UISessionBuilder;
 import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.eclipse.rap.rwt.service.UISession;
 
 
 /**
@@ -127,15 +126,13 @@ public class RWTServlet extends HttpServlet {
   private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
-    ServiceContext serviceContext = createServiceContext( request, response );
-    ContextProvider.setContext( serviceContext );
+    ServiceContext context = new ServiceContext( request, response, applicationContext );
+    context.setServiceStore( new ServiceStore() );
+    ContextProvider.setContext( context );
     try {
-      ServiceHandler serviceHandler = getServiceHandler();
-      if( isCustomServiceHandler( serviceHandler ) ) {
-        serviceHandler.service( request, response );
-      } else if( isUIRequest( request ) ) {
-        ensureUISession( serviceContext );
-        serviceHandler.service( request, response );
+      prepareUISession( context );
+      if( isUIRequest( request ) || isServiceHandlerRequest( request ) ) {
+        getServiceHandler().service( request, response );
       } else {
         sendStartupContent( request, response );
       }
@@ -144,25 +141,18 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private ServiceContext createServiceContext( HttpServletRequest request,
-                                               HttpServletResponse response )
-  {
-    ServiceContext context = new ServiceContext( request, response, applicationContext );
-    context.setServiceStore( new ServiceStore() );
-    context.setUISession( getUISession( request ) );
-    return context;
-  }
-
   private ServiceHandler getServiceHandler() {
     return applicationContext.getServiceManager().getHandler();
   }
 
-  private static boolean isCustomServiceHandler( ServiceHandler serviceHandler ) {
-    return !( serviceHandler instanceof LifeCycleServiceHandler );
+  private static boolean isUIRequest( HttpServletRequest request ) {
+    return    METHOD_POST.equals( request.getMethod() )
+           && isContentTypeValid( request )
+           && !isServiceHandlerRequest( request );
   }
 
-  private static boolean isUIRequest( HttpServletRequest request ) {
-    return METHOD_POST.equals( request.getMethod() ) && isContentTypeValid( request );
+  private static boolean isServiceHandlerRequest( HttpServletRequest request ) {
+    return request.getParameter( ServiceManagerImpl.REQUEST_PARAM ) != null;
   }
 
   private static boolean isContentTypeValid( ServletRequest request ) {
@@ -181,22 +171,14 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  static void ensureUISession( ServiceContext serviceContext ) {
-    // Ensure that there is exactly one UISession per connection created
-    synchronized( RWTServlet.class ) {
-      UISession uiSession = serviceContext.getUISession();
-      if( uiSession == null ) {
-        uiSession = new UISessionBuilder( serviceContext ).buildUISession();
-      }
-      serviceContext.setUISession( uiSession );
-    }
-  }
-
-  private static UISession getUISession( HttpServletRequest request ) {
-    synchronized( RWTServlet.class ) {
-      HttpSession httpSession = request.getSession( true );
-      String connectionId = request.getParameter( CONNECTION_ID );
-      return UISessionImpl.getInstanceFromSession( httpSession, connectionId );
+  private static void prepareUISession( ServiceContext context ) {
+    HttpServletRequest request = context.getRequest();
+    HttpSession httpSession = request.getSession( true );
+    String connectionId = request.getParameter( CONNECTION_ID );
+    if( connectionId != null ) {
+      context.setUISession( UISessionImpl.getInstanceFromSession( httpSession, connectionId ) );
+    } else if( isUIRequest( request ) ) {
+      context.setUISession( new UISessionBuilder( context ).buildUISession() );
     }
   }
 
