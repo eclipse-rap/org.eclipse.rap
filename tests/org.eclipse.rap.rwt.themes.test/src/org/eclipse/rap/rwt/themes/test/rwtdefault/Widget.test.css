@@ -24,10 +24,10 @@ Widget-ToolTip {
 }
 
 Widget-Badge {
-  background-color: #ff0000;
+  background-color: #dd0000;
   border: none;
   border-radius: 10px;
-  font: 10px Arial, sans-serif;
+  font: 10px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #ffffff;
 }
 
