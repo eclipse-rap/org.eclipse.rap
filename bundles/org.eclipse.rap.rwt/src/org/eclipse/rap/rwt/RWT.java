@@ -377,6 +377,7 @@ public final class RWT {
    * <ul>
    * <li><code>Table</code></li>
    * <li><code>Tree</code></li>
+   * <li><code>Grid</code></li>
    * <li><code>List</code></li>
    * <li><code>Label</code></li>
    * <li><code>CLabel</code></li>
@@ -417,6 +418,7 @@ public final class RWT {
    * <b>Used By:</b>
    * <ul>
    * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
    * </ul>
    * </p>
    *
