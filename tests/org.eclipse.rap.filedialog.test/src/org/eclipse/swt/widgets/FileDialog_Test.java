@@ -45,6 +45,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 
+@SuppressWarnings( "restriction" )
 public class FileDialog_Test {
 
   private Display display;
@@ -106,6 +107,11 @@ public class FileDialog_Test {
     getCancelButton().notifyListeners( SWT.Selection, null );
 
     verify( callback ).dialogClosed( SWT.CANCEL );
+  }
+
+  @Test( expected = UnsupportedOperationException.class )
+  public void testOpen_shouldThrowInJEEMode() {
+    dialog.open();
   }
 
   @Test

@@ -174,6 +174,7 @@ public class FileDialog extends Dialog {
    * </ul>
    */
   public String open() {
+    checkOperationMode();
     prepareOpen();
     runEventLoop( shell );
     return returnCode == SWT.OK ? getFileName() : null;
@@ -192,6 +193,7 @@ public class FileDialog extends Dialog {
     shell = new Shell( getParent(), getStyle() );
     shell.setText( getText() );
     shell.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         cleanup();
       }
@@ -313,12 +315,14 @@ public class FileDialog extends Dialog {
     parent.getShell().setDefaultButton( okButton );
     okButton.forceFocus();
     okButton.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         okPressed();
       }
     } );
     Button cancelButton = createButton( buttonsArea, SWT.getMessage( "SWT_Cancel" ) );
     cancelButton.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         cancelPressed();
       }
@@ -330,6 +334,7 @@ public class FileDialog extends Dialog {
     fileUpload.setText( text );
     fileUpload.setLayoutData( createButtonLayoutData( fileUpload ) );
     fileUpload.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         handleFileUploadSelection( ( FileUpload )event.widget );
       }
@@ -403,6 +408,7 @@ public class FileDialog extends Dialog {
   private void setButtonEnabled( final boolean enabled ) {
     if( !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
+        @Override
         public void run() {
           if( !okButton.isDisposed() ) {
             okButton.setEnabled( enabled );
