@@ -1968,7 +1968,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Text</code></li>
    * <li><code>List</code></li>
-   * <!-- <li><code>FileDialog</code></li> -->
+   * <li><code>FileDialog</code></li>
    * </ul></p>
    */
   public static final int MULTI = 1 << 1;
@@ -2695,10 +2695,6 @@ public class SWT {
   /**
    * The <code>FileDialog</code> style constant for open file dialog behavior
    * (value is 1&lt;&lt;12).
-   * <!-- RAP specific -->
-   * <p><strong>Note:</strong></p>This constant is meant to ease
-   * single-sourcing. in RAP, there is no <code>FileDialog</code> class (yet).
-   * @since 1.3
    */
   public static final int OPEN = 1 << 12;
 
@@ -2707,7 +2703,7 @@ public class SWT {
    * (value is 1&lt;&lt;13).
    * <!-- RAP specific -->
    * <p><strong>Note:</strong></p>This constant is meant to ease
-   * single-sourcing. in RAP, there is no <code>FileDialog</code> class (yet).
+   * single-sourcing. In RAP the <code>FileDialog</code> does not support this constant. 
    * @since 1.3
    */
   public static final int SAVE = 1 << 13;
