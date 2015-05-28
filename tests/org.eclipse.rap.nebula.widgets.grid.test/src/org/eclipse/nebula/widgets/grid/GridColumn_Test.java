@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -647,7 +647,7 @@ public class GridColumn_Test {
 
     nonTreeColumn.pack();
 
-    assertEquals( 16, nonTreeColumn.getWidth() );
+    assertEquals( 17, nonTreeColumn.getWidth() );
   }
 
   @Test
@@ -704,7 +704,7 @@ public class GridColumn_Test {
 
     columns[ 0 ].pack();
 
-    assertEquals( 353, columns[ 0 ].getWidth() );
+    assertEquals( 354, columns[ 0 ].getWidth() );
   }
 
   @Test
@@ -724,7 +724,7 @@ public class GridColumn_Test {
 
     columns[ 0 ].pack();
 
-    assertEquals( 353, columns[ 0 ].getWidth() );
+    assertEquals( 354, columns[ 0 ].getWidth() );
   }
 
   @Test

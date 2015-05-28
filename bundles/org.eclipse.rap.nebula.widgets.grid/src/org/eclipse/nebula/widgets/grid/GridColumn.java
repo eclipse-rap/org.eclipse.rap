@@ -1195,7 +1195,8 @@ public class GridColumn extends Item {
     if( parent.getFooterVisible() ) {
       footerWidth = getContentWidth( getFooterFont(), footerText, footerImage );
     }
-    return Math.max( headerWidth, footerWidth );
+    // Add 1px for the right column border
+    return Math.max( headerWidth, footerWidth ) + 1;
   }
 
   private int getContentWidth( Font font, String text, Image image ) {

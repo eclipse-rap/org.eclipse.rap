@@ -1977,13 +1977,13 @@ public class Table_Test {
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 279, 329 );
+    expected = new Point( 282, 329 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 87, col3.getWidth() );
-    expected = new Point( 119, 329 );
+    assertEquals( 88, col3.getWidth() );
+    expected = new Point( 120, 329 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table = new Table( shell, SWT.CHECK );
@@ -2032,13 +2032,13 @@ public class Table_Test {
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 205, 303 );
+    expected = new Point( 208, 303 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 87, col3.getWidth() );
-    expected = new Point( 119, 303 );
+    assertEquals( 88, col3.getWidth() );
+    expected = new Point( 120, 303 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 312, 312 );

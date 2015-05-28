@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1025,13 +1025,13 @@ public class Tree_Test {
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 330, 340 );
+    expected = new Point( 332, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 97, col3.getWidth() );
-    expected = new Point( 129, 340 );
+    assertEquals( 98, col3.getWidth() );
+    expected = new Point( 130, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree = new Tree( shell, SWT.CHECK );
@@ -1351,13 +1351,13 @@ public class Tree_Test {
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 229, 313 );
+    expected = new Point( 232, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 97, col3.getWidth() );
-    expected = new Point( 129, 313 );
+    assertEquals( 98, col3.getWidth() );
+    expected = new Point( 130, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     expected = new Point( 312, 312 );
     assertEquals( expected, tree.computeSize( 300, 300 ) );

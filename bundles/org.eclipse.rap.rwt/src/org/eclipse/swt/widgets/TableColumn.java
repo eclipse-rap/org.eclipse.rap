@@ -540,8 +540,8 @@ public class TableColumn extends Item {
     // Extend computed width if there are wider items
     int columnIndex = parent.indexOf( this );
     int itemsPreferredWidth = parent.getItemsPreferredWidth( columnIndex );
-    result = Math.max( result, itemsPreferredWidth );
-    return result;
+    // Add 1px for the right column border
+    return Math.max( result, itemsPreferredWidth ) + 1;
   }
 
   ////////////////////////////
@@ -609,6 +609,7 @@ public class TableColumn extends Item {
 
   private final class ColumnAdapter implements IColumnAdapter, SerializableCompatibility {
 
+    @Override
     public boolean isPacked() {
       return TableColumn.this.packed;
     }

@@ -361,8 +361,8 @@ public class TreeColumn extends Item {
       }
     }
     BoxDimensions headerPadding = parent.getThemeAdapter().getHeaderPadding( parent );
-    result += headerPadding.left + headerPadding.right;
-    return result;
+    // Add 1px for the right column border
+    return result + headerPadding.left + headerPadding.right + 1;
   }
 
   /**
@@ -634,6 +634,7 @@ public class TreeColumn extends Item {
 
   private final class ColumnAdapter implements IColumnAdapter, SerializableCompatibility {
 
+    @Override
     public boolean isPacked() {
       return packed;
     }
