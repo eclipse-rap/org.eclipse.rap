@@ -66,7 +66,7 @@ rap = {
    * @param {string[]} handler.events List of event types supported by this type.
    * The server may instruct the client object with "listen" operations to start or stop sending
    * notifications when events of he given event type occur. Notifications may and can only be
-   * sent for types that are given in this list and are listend to by the server. See also
+   * sent for types that are given in this list and are listened to by the server. See also
    * {@link RemoteObject#notify}.
    * <em>Optional.</em>
    */
@@ -77,13 +77,14 @@ rap = {
 
   /**
    * Returns the client object associated with the given id as returned
-   * by <code>org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId</code> and
+   * by <code>org.eclipse.rap.rwt.widget.WidgetUtil.getId</code> and
    * <code>org.eclipse.rap.rwt.remote.RemoteObject.getId</code>.
    * If there is no object registered for the given id, <code>null</code> is returned.
-   * For internal objects (e.g. RWT/SWT widgets) a wrapper is returned that approximates
-   * the API of its Java analoge. {@link Composite#append} and {@link Widget#$el} are special cases
-   * where additional scripting-only API is provided.
-   * @see Composite, Widget
+   * For custom widgets, that is the result of the type handler factory.
+   * For SWT/RWT widgets (any Control or Item) a wrapper (instance of {@link Widget}) is returned that approximates
+   * a subset of the API of its Java analog. Getting objects of other types is unsupported.
+   * @see Widget
+   * @see rap.registerTypeHandler   
    * @param {string} id The protocol id for a client object.
    * @returns {Object} The client object associated with the id.
    */
@@ -112,7 +113,7 @@ rap = {
   },
 
   /**
-   * @description Register the function as a listener of the given type. Registering unkown
+   * @description Register the function as a listener of the given type. Registering unknown
    * types throws an Error.
    * @param {string} type The type of the event (e.g. "send").
    * @param {Function} listener The callback function. It is executed in global context.
@@ -123,7 +124,7 @@ rap = {
          this._.events[ type ].push( handler );
        }
      } else {
-       throw new Error( "Unkown type " + type );
+       throw new Error( "Unknown type " + type );
      }
    },
 

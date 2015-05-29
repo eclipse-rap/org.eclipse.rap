@@ -506,7 +506,7 @@ rwt.remote.HandlerUtil = {
      * </p>
      * @param {string} property the name of the property
      * @param {*} value the new value for the property
-     * @see Control#getData
+     * @see Widget#getData
      */
     setData : function( property, value ) {
       if( arguments.length !== 2 ) {
@@ -527,7 +527,7 @@ rwt.remote.HandlerUtil = {
      * </p>
      * @param {string} property the name of the property
      * @return {*} the value
-     * @see Control#setData
+     * @see Widget#setData
      */
     getData : function( property ) {
       if( arguments.length !== 1 ) {
