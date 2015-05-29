@@ -57,14 +57,20 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     this.messageChainReference = messageChainReference;
   }
 
+  @Override
   public void service( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
-    // Do not use session store itself as a lock
-    // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
     UISessionImpl uiSession = ( UISessionImpl )getUISession();
-    synchronized( uiSession.getRequestLock() ) {
-      synchronizedService( request, response );
+    if( uiSession == null ) {
+      setJsonResponseHeaders( response );
+      writeSessionTimeoutError( response );
+    } else {
+      // Do not use uiSession itself as a lock
+      // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=372946
+      synchronized( uiSession.getRequestLock() ) {
+        synchronizedService( request, response );
+      }
     }
   }
 
@@ -90,8 +96,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     if( isSessionShutdown( requestMessage ) ) {
       shutdownUISession();
       writeEmptyMessage( response );
-    } else if( isSessionTimeout( requestMessage ) ) {
-      writeSessionTimeoutError( response );
     } else if( !isRequestCounterValid( requestMessage ) ) {
       if( isDuplicateRequest( requestMessage ) ) {
         writeBufferedResponse( response );
@@ -99,6 +103,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
         writeInvalidRequestCounterError( response );
       }
     } else {
+      // TODO: [if] Next if statement is a dead code. Check and remove.
       if( isSessionRestart( requestMessage ) ) {
         reinitializeUISession( request );
         reinitializeServiceStore();
@@ -195,11 +200,6 @@ public class LifeCycleServiceHandler implements ServiceHandler {
    */
   private static boolean isSessionRestart( RequestMessage requestMessage ) {
     return isSessionStarted() && isInitialRequest( requestMessage );
-  }
-
-  private static boolean isSessionTimeout( RequestMessage requestMessage ) {
-    // Session is not initialized because we got a new HTTPSession
-    return !isSessionStarted() && !isInitialRequest( requestMessage );
   }
 
   static void markSessionStarted() {

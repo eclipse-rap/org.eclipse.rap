@@ -349,8 +349,8 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHandlesSessionTimeout() throws IOException {
-    RequestCounter.getInstance().nextRequestId();
     simulateUiRequest();
+    ( ( UISessionImpl )getUISession() ).shutdown();
 
     service( serviceHandler );
 
