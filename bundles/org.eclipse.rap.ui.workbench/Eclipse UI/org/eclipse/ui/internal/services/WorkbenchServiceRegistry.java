@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -43,11 +44,11 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * This class will create a service from the matching factory. If the factory
  * doesn't exist, it will try and load it from the registry.
- * 
+ *
  */
 public class WorkbenchServiceRegistry implements IExtensionChangeHandler {
 	/**
-	 * 
+	 *
 	 */
 	private static final String WORKBENCH_LEVEL = "workbench"; //$NON-NLS-1$
 
@@ -61,7 +62,7 @@ public class WorkbenchServiceRegistry implements IExtensionChangeHandler {
 		}
 		return registry;
 	}
-	
+
 	private WorkbenchServiceRegistry() {
 		PlatformUI.getWorkbench().getExtensionTracker().registerHandler(
 				this,
@@ -83,10 +84,13 @@ public class WorkbenchServiceRegistry implements IExtensionChangeHandler {
 	};
 
 	private Map factories = new HashMap();
-	
+
 	static class ServiceFactoryHandle {
 		AbstractServiceFactory factory;
-		WeakHashMap serviceLocators = new WeakHashMap();
+// RAP [if]: WeakHashMap need to be synchronized when it's accessed from different threads to avoid
+//		endless loop in get/put methods. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=397439
+//		WeakHashMap serviceLocators = new WeakHashMap();
+		Map serviceLocators = Collections.synchronizedMap( new WeakHashMap() );
 		String[] serviceNames;
 		ServiceFactoryHandle(AbstractServiceFactory factory) {
 			this.factory = factory;
@@ -196,10 +200,10 @@ public class WorkbenchServiceRegistry implements IExtensionChangeHandler {
 	}
 
 	private static final String[] supportedLevels = { ISources.ACTIVE_CONTEXT_NAME,
-			ISources.ACTIVE_SHELL_NAME, 
-			ISources.ACTIVE_WORKBENCH_WINDOW_NAME, 
+			ISources.ACTIVE_SHELL_NAME,
+			ISources.ACTIVE_WORKBENCH_WINDOW_NAME,
 			ISources.ACTIVE_EDITOR_ID_NAME,
-			ISources.ACTIVE_PART_ID_NAME, 
+			ISources.ACTIVE_PART_ID_NAME,
 			ISources.ACTIVE_SITE_NAME
 	};
 
@@ -250,10 +254,10 @@ public class WorkbenchServiceRegistry implements IExtensionChangeHandler {
 						ServiceLocator loc2 = (ServiceLocator) o2;
 						int l1 = ((IWorkbenchLocationService) loc1
 								.getService(IWorkbenchLocationService.class))
-								.getServiceLevel();						
+								.getServiceLevel();
 						int l2 = ((IWorkbenchLocationService) loc2
 								.getService(IWorkbenchLocationService.class))
-								.getServiceLevel();						
+								.getServiceLevel();
 						return l1 < l2 ? -1 : (l1 > l2 ? 1 : 0);
 					}
 				});
