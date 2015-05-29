@@ -60,7 +60,7 @@ rwt.util._RWTQuery.prototype = $.prototype = {
    * @param {string|Object} attribute The name of the attribute to return or modify. Alternatively
    * a plain object with key-value pairs to set.
    * @param {string} [value] The value to set the attribute to.
-   * @return {string|$} The the value of the given attribute, if the function is called with a
+   * @return {string|$} The value of the given attribute, if the function is called with a
    * string only. Otherwise a reference to this object.
    */
   attr : function() {
@@ -103,6 +103,17 @@ rwt.util._RWTQuery.prototype = $.prototype = {
     return this.__access( arguments, null, insertBefore_element );
   },
 
+  /**
+   * @description A method to either set or get the value of a CSS property. Note that RAP may overwrite any changes 
+   * made to a widget's style properties, and that the changes are not applied to the Java-side widget instance. 
+   * Modifying properties not used by RAP is safe. Supports only elements of control widgets. 
+   * @param {string|Object} property The name of the property to return or modify. Alternatively
+   * a plain object with key-value pairs to set. 
+   * @param {string} [value] The value to set the property to.
+   * @return {string|$} The value of the given property, if the function is called with a
+   * string only. Otherwise a reference to this object.
+   * @since 3.0
+   */
   css : function() {
     return this.__access( arguments, css_widget, css_element );
   },
@@ -131,6 +142,13 @@ rwt.util._RWTQuery.prototype = $.prototype = {
     return this.__access( arguments, "getElement", clone_element );
   },
 
+  /**
+   * @name get
+   * @methodOf $#
+   * @description Retrieve the DOM element represented by this object. Supports only elements of control widgets.
+   * @return {[HTMLElement]} Array with exactly one HTML element.
+   * @since 3.0
+   */
   "get" : function() {
     return this.__access( arguments, "getElement", get_element );
   },
