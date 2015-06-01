@@ -104,11 +104,11 @@ rwt.util._RWTQuery.prototype = $.prototype = {
   },
 
   /**
-   * @description A method to either set or get the value of a CSS property. Note that RAP may overwrite any changes 
-   * made to a widget's style properties, and that the changes are not applied to the Java-side widget instance. 
-   * Modifying properties not used by RAP is safe. Supports only elements of control widgets. 
+   * @description A method to either set or get the value of a CSS property. Note that RAP may overwrite any changes
+   * made to a widget's style properties, and that the changes are not applied to the Java-side widget instance.
+   * Modifying properties not used by RAP is safe. Supports only elements of control widgets.
    * @param {string|Object} property The name of the property to return or modify. Alternatively
-   * a plain object with key-value pairs to set. 
+   * a plain object with key-value pairs to set.
    * @param {string} [value] The value to set the property to.
    * @return {string|$} The value of the given property, if the function is called with a
    * string only. Otherwise a reference to this object.
@@ -482,7 +482,14 @@ var empty_element = function( element ) {
 };
 
 var clone_element = function( element ) {
-  return $( element.cloneNode( true ) );
+  var clone = element.cloneNode( true );
+  for( var i = 0; i < cloneableProperties.length; i++ ) {
+    var property = cloneableProperties[ i ];
+    if( element[ property ] ) {
+      clone[ property ] = element[ property ];
+    }
+  }
+  return $( clone );
 };
 
 var restrictedAttributes = {
@@ -567,5 +574,13 @@ var asElement = function( target, widgetElementGetter ) {
   }
   return target instanceof $ ? target.get( 0 ) : target;
 };
+
+var cloneableProperties = [
+  "___rwtStyle__backgroundPosition",
+  "___rwtStyle__backgroundGradient",
+  "___rwtStyle__backgroundImage",
+  "___rwtStyle__backgroundRepeat",
+  "___rwtStyle__backgroundColor"
+];
 
 }());

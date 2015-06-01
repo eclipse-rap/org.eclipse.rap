@@ -988,7 +988,34 @@ describe( "RWTQuery", function() {
         expect( rwt.html.Location.get).toHaveBeenCalledWith( element );
       });
 
-    })
+    });
+
+    describe( "clone", function() {
+
+      it( "clones content", function() {
+        $( element ).html( "<b>foo</b>" );
+        expect( $( element ).clone().html()).toEqual( $( element ).html() );
+      });
+
+      it( "clones CSS background properties", function() {
+        $( element ).css( {
+          backgroundColor: "red",
+          backgroundRepeat: "no-repeat",
+          backgroundGradient: "linear-gradient( to bottom, #ff00ff 0%, #ff00ff 100% )",
+          backgroundImage: "url(foo.jpg)",
+          backgroundPosition: "3px 4px"
+        } );
+
+        var clone = $( element).clone();
+
+        expect( clone.css( "backgroundColor" ) ).toEqual( "red" );
+        expect( clone.css( "backgroundRepeat" ) ).toEqual( "no-repeat" );
+        expect( clone.css( "backgroundGradient" ) ).toEqual( "linear-gradient( to bottom, #ff00ff 0%, #ff00ff 100% )" );
+        expect( clone.css( "backgroundImage" ) ).toEqual( "url(foo.jpg)" );
+        expect( clone.css( "backgroundPosition" ) ).toEqual( "3px 4px" );
+      });
+
+    });
 
   } );
 
