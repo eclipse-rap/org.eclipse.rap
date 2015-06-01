@@ -34,10 +34,10 @@ rwt.client.Client = {
     this._defaultLocale = "en";
     // NOTE: Order is important!
     this._initKonqueror();
+    this._initTrident();
     this._initBlink();
     this._initWebkit();
     this._initGecko();
-    this._initTrident();
     this._initBoxSizing();
     this._initLocale();
     this._initPlatform();
@@ -315,13 +315,14 @@ rwt.client.Client = {
         this._parseVersion( RegExp.$1 );
         this._engineName = "trident";
         this._browserName = "explorer";
-      } else {
-        // IE11 does not have MSIE in his userAgent string - see bug 421529
-        if( userAgent.indexOf( "Trident" ) != -1 && /rv\:([^\);]+)(\)|;)/.test( userAgent ) ) {
-          this._parseVersion( RegExp.$1 );
-          this._engineName = "trident";
-          this._browserName = "explorer";
-        }
+      } else if( userAgent.indexOf( "Trident" ) != -1 && /rv\:([^\);]+)(\)|;)/.test( userAgent ) ) {
+        this._parseVersion( RegExp.$1 );
+        this._engineName = "trident";
+        this._browserName = "explorer";
+      } else if( /Edge\/([^ ]+)/.test( userAgent ) ) {
+        this._parseVersion( RegExp.$1 );
+        this._engineName = "trident";
+        this._browserName = "edge";
       }
     }
   },
