@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ public class UploaderWidget implements Uploader {
     this.fileUpload = fileUpload;
   }
 
+  @Override
   public void submit( String url ) {
     fileUpload.submit( url );
   }
 
+  @Override
   public void dispose() {
     if( !fileUpload.isDisposed() && ( fileUpload.getStyle() & SWT.MULTI ) != 0 ) {
       fileUpload.dispose();

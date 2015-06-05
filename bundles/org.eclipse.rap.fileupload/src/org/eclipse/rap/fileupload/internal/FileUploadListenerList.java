@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.rap.fileupload.internal;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.rap.fileupload.FileUploadEvent;
@@ -23,7 +22,7 @@ public final class FileUploadListenerList {
   private final Set<FileUploadListener> listeners;
 
   public FileUploadListenerList() {
-    listeners = new HashSet<FileUploadListener>();
+    listeners = new HashSet<>();
   }
 
   public void addUploadListener( FileUploadListener listener ) {
@@ -35,25 +34,19 @@ public final class FileUploadListenerList {
   }
 
   public void notifyUploadProgress( FileUploadEvent event ) {
-    Iterator iterator = listeners.iterator();
-    while( iterator.hasNext() ) {
-      FileUploadListener listener = ( FileUploadListener )iterator.next();
+    for( FileUploadListener listener : listeners ) {
       listener.uploadProgress( event );
     }
   }
 
   public void notifyUploadFinished( FileUploadEvent event ) {
-    Iterator iterator = listeners.iterator();
-    while( iterator.hasNext() ) {
-      FileUploadListener listener = ( FileUploadListener )iterator.next();
+    for( FileUploadListener listener : listeners ) {
       listener.uploadFinished( event );
     }
   }
 
   public void notifyUploadFailed( FileUploadEvent event ) {
-    Iterator iterator = listeners.iterator();
-    while( iterator.hasNext() ) {
-      FileUploadListener listener = ( FileUploadListener )iterator.next();
+    for( FileUploadListener listener : listeners ) {
       listener.uploadFailed( event );
     }
   }

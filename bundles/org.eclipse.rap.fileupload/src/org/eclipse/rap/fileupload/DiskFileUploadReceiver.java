@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,11 +32,11 @@ public class DiskFileUploadReceiver extends FileUploadReceiver {
   private static final String DEFAULT_TARGET_FILE_NAME = "upload.tmp";
   private static final String TEMP_DIRECTORY_PREFIX = "fileupload_";
 
-  private List<File> targetFiles;
+  private final List<File> targetFiles;
   private File contentTypeFile;
 
   public DiskFileUploadReceiver() {
-    targetFiles = new ArrayList<File>();
+    targetFiles = new ArrayList<>();
   }
 
   @Override

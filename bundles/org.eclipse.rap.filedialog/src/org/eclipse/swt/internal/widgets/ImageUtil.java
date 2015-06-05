@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,20 +21,14 @@ public class ImageUtil {
 
   public static Image getImage( Display display, String path ) {
     ClassLoader classLoader = ImageUtil.class.getClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream( "resources/" + path );
-    Image result = null;
-    if( inputStream != null ) {
-      try {
-        result = new Image( display, inputStream );
-      } finally {
-        try {
-          inputStream.close();
-        } catch( IOException e ) {
-          // ignore
-        }
+    try( InputStream inputStream = classLoader.getResourceAsStream( "resources/" + path ); ) {
+      if( inputStream != null ) {
+        return new Image( display, inputStream );
       }
+    } catch( @SuppressWarnings( "unused" ) IOException exception ) {
+      // ignore
     }
-    return result;
+    return null;
   }
 
   private ImageUtil() {

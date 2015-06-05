@@ -80,6 +80,7 @@ final class FileUploadProcessor {
   private ProgressListener createProgressListener() {
     ProgressListener result = new ProgressListener() {
       long prevTotalBytesRead = -1;
+      @Override
       public void update( long totalBytesRead, long contentLength, int item ) {
         // Depending on the servlet engine and other environmental factors,
         // this listener may be notified for every network packet, so don't notify unless there

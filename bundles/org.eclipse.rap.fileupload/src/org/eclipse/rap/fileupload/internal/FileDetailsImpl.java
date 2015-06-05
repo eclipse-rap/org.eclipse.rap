@@ -23,10 +23,12 @@ public final class FileDetailsImpl implements FileDetails {
     this.contentType = contentType;
   }
 
+  @Override
   public String getFileName() {
     return fileName;
   }
 
+  @Override
   public String getContentType() {
     return contentType;
   }

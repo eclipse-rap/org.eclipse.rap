@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,15 +47,17 @@ public class FileUploadRunnable implements Runnable {
     this.uploader = uploader;
     this.handler = handler;
     display = uploadPanel.getDisplay();
-    state = new AtomicReference<State>( State.WAITING );
+    state = new AtomicReference<>( State.WAITING );
     lock = new Object();
     listener = new UploadProgressListener();
     setupFileUploadHandler();
     uploadPanel.updateIcons( State.WAITING );
   }
 
+  @Override
   public void run() {
     asyncExec( new Runnable() {
+      @Override
       public void run() {
         uploader.submit( handler.getUploadUrl() );
       }
@@ -64,6 +66,7 @@ public class FileUploadRunnable implements Runnable {
       doWait();
     }
     asyncExec( new Runnable() {
+      @Override
       public void run() {
         uploader.dispose();
         handler.removeUploadListener( listener );
@@ -75,6 +78,7 @@ public class FileUploadRunnable implements Runnable {
   private void setupFileUploadHandler() {
     handler.addUploadListener( listener );
     uploadPanel.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         handler.removeUploadListener( listener );
         handler.dispose();
@@ -112,7 +116,7 @@ public class FileUploadRunnable implements Runnable {
     synchronized( lock ) {
       try {
         lock.wait();
-      } catch( InterruptedException exception ) {
+      } catch( @SuppressWarnings( "unused" ) InterruptedException exception ) {
         // allow executor to properly shutdown
       }
     }
@@ -132,19 +136,23 @@ public class FileUploadRunnable implements Runnable {
 
   private final class UploadProgressListener implements FileUploadListener {
 
+    @Override
     public void uploadProgress( final FileUploadEvent event ) {
       asyncExec( new Runnable() {
+        @Override
         public void run() {
           handleProgress( event.getBytesRead(), event.getContentLength() );
         }
       } );
     }
 
+    @Override
     public void uploadFinished( FileUploadEvent event ) {
       FileUploadHandler uploadHandler = ( FileUploadHandler )event.getSource();
       DiskFileUploadReceiver receiver = ( DiskFileUploadReceiver )uploadHandler.getReceiver();
       final List<String> targetFileNames = getTargetFileNames( receiver );
       asyncExec( new Runnable() {
+        @Override
         public void run() {
           handleFinished( targetFileNames );
         }
@@ -152,8 +160,10 @@ public class FileUploadRunnable implements Runnable {
       doNotify();
     }
 
+    @Override
     public void uploadFailed( FileUploadEvent event ) {
       asyncExec( new Runnable() {
+        @Override
         public void run() {
           handleFailed();
         }
@@ -162,7 +172,7 @@ public class FileUploadRunnable implements Runnable {
     }
 
     private List<String> getTargetFileNames( DiskFileUploadReceiver receiver ) {
-      List<String> result = new ArrayList<String>();
+      List<String> result = new ArrayList<>();
       for( File targetFile : receiver.getTargetFiles() ) {
         result.add( targetFile.getAbsolutePath() );
       }

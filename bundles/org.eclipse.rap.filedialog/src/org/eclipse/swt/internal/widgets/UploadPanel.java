@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class UploadPanel extends Composite {
     this.fileNames = fileNames;
     initImages();
     setLayout( createGridLayout( 1, 0, 5 ) );
-    icons = new ArrayList<Label>();
+    icons = new ArrayList<>();
     createChildren();
   }
 
