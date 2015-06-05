@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import com.yahoo.platform.yui.compressor.JavaScriptToken;
 
 public final class StringReplacer {
 
-  private final HashMap<String, Integer> stringMap = new HashMap<String, Integer>();
+  private final HashMap<String, Integer> stringMap = new HashMap<>();
   private List<String> strings;
 
   public void discoverStrings( TokenList tokens ) {
@@ -92,9 +92,9 @@ public final class StringReplacer {
 
   private void ensureStringListCreated() {
     if( strings == null ) {
-      strings = new ArrayList<String>( stringMap.keySet() );
+      strings = new ArrayList<>( stringMap.keySet() );
       Comparator<String> comparator = new Comparator<String>() {
-
+        @Override
         public int compare( String string1, String string2 ) {
           int freq1 = getFrequency( string1 );
           int freq2 = getFrequency( string2 );

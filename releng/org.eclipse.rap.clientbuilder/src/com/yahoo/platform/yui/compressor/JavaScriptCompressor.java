@@ -28,7 +28,7 @@ import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Token;
 
-@SuppressWarnings( { "unchecked", "rawtypes"} )
+@SuppressWarnings( { "all"} )
 public class JavaScriptCompressor {
 
     static final ArrayList ones;

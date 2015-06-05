@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ public class QxCodeCleaner {
 
   public QxCodeCleaner( TokenList tokens ) {
     this.tokens = tokens;
-    replacements = new ArrayList<Replacement>();
+    replacements = new ArrayList<>();
   }
 
   public void cleanupQxCode() {
@@ -141,6 +141,7 @@ public class QxCodeCleaner {
 
   private void doReplacements() {
     Collections.sort( replacements, new Comparator<Replacement>() {
+      @Override
       public int compare( Replacement repl1, Replacement repl2 ) {
         return repl1.end < repl2.end ? 1 : repl1.end == repl2.end ? 0 : -1;
       }
