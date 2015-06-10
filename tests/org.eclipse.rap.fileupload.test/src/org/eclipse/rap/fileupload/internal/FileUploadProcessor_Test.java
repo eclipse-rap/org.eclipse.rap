@@ -188,7 +188,8 @@ public class FileUploadProcessor_Test {
   }
 
   private static void stubReceiveMethod( FileUploadReceiver receiver ) throws IOException {
-    Answer answer = new Answer() {
+    Answer<?> answer = new Answer<Object>() {
+      @Override
       public Object answer( InvocationOnMock invocation ) throws Throwable {
         new TestFileUploadReceiver().receive( ( InputStream )invocation.getArguments()[0], null );
         return null;

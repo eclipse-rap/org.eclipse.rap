@@ -144,26 +144,14 @@ public final class FileUploadTestUtil {
   }
 
   public static String getFileContents( File testFile ) {
-    String result;
     // TODO [rst] Buffer can get very big with the wrong file
     byte[] buffer = new byte[ ( int )testFile.length() ];
-    BufferedInputStream bis = null;
-    try {
-      bis = new BufferedInputStream( new FileInputStream( testFile ) );
+    try (BufferedInputStream bis = new BufferedInputStream( new FileInputStream( testFile ) ) ) {
       bis.read( buffer );
-      result = new String( buffer );
-    } catch( Exception exception ) {
+      return new String( buffer );
+    } catch( IOException exception ) {
       throw new RuntimeException( exception );
-    } finally {
-      if( bis != null ) {
-        try {
-          bis.close();
-        } catch( Exception e ) {
-          // ignore
-        }
-      }
     }
-    return result;
   }
 
   public final static class FileData {

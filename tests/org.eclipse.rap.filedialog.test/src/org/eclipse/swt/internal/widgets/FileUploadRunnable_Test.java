@@ -178,7 +178,7 @@ public class FileUploadRunnable_Test {
 
   @Test
   public void testHandleFinished_updatesCompletedFiles() {
-    List<String> completedFiles = new ArrayList<String>();
+    List<String> completedFiles = new ArrayList<>();
     completedFiles.add( "foo" );
     completedFiles.add( "bar" );
 
@@ -189,7 +189,7 @@ public class FileUploadRunnable_Test {
 
   @Test
   public void testHandleFinished_resetsToolTip() {
-    List<String> completedFiles = new ArrayList<String>();
+    List<String> completedFiles = new ArrayList<>();
     completedFiles.add( "foo" );
     completedFiles.add( "bar" );
 
@@ -266,6 +266,7 @@ public class FileUploadRunnable_Test {
         try {
           Thread.sleep( 200 );
         } catch( InterruptedException e ) {
+          throw new RuntimeException( "Unexpected interrupt", e );
         }
         new TestFileUploadEvent( handler ).dispatchFinished();
       }

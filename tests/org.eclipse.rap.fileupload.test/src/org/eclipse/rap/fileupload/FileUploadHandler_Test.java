@@ -17,8 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -64,13 +62,9 @@ public class FileUploadHandler_Test {
     Fixture.tearDown();
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testCannotCreateWithNull() {
-    try {
-      new FileUploadHandler( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+    new FileUploadHandler( null );
   }
 
   @Test
@@ -94,13 +88,9 @@ public class FileUploadHandler_Test {
     assertSame( receiver, handler.getReceiver() );
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testAddListenerWithNull() {
-    try {
-      handler.addUploadListener( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+    handler.addUploadListener( null );
   }
 
   @Test
@@ -136,15 +126,11 @@ public class FileUploadHandler_Test {
     assertEquals( "progress.", anotherUploadListener.getLog() );
   }
 
-  @Test
+  @Test( expected = NullPointerException.class )
   public void testRemoveListenerWithNull() {
     handler.addUploadListener( uploadListener );
 
-    try {
-      handler.removeUploadListener( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+    handler.removeUploadListener( null );
   }
 
   @Test

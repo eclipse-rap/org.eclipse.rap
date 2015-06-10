@@ -19,16 +19,19 @@ public class TestFileUploadListener implements FileUploadListener {
   private FileUploadEvent lastEvent;
   protected StringBuffer log = new StringBuffer();
 
+  @Override
   public void uploadProgress( FileUploadEvent event ) {
     this.lastEvent = event;
     log.append( "progress." );
   }
 
+  @Override
   public void uploadFinished( FileUploadEvent event ) {
     this.lastEvent = event;
     log.append( "finished." );
   }
 
+  @Override
   public void uploadFailed( FileUploadEvent event ) {
     this.lastEvent = event;
     log.append( "failed." );

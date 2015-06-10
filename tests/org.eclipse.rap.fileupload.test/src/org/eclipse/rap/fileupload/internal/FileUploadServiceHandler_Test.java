@@ -232,13 +232,13 @@ public class FileUploadServiceHandler_Test {
     assertThat( getQueryParameters( url ), hasItem( startsWith( "servicehandler=" ) ) );
   }
 
-  private void fakeUploadRequest( String token ) {
-    FileUploadTestUtil.fakeUploadRequest( token, "TestContent", "text/plain", "test.txt" );
-  }
-
   private void fakeUploadRequest( String content, String contentType, String fileName ) {
     String token = TestAdapter.getTokenFor( uploadHandler );
     FileUploadTestUtil.fakeUploadRequest( token, content, contentType, fileName );
+  }
+
+  private static void fakeUploadRequest( String token ) {
+    FileUploadTestUtil.fakeUploadRequest( token, "TestContent", "text/plain", "test.txt" );
   }
 
   private static List<String> getQueryParameters( String url ) {

@@ -12,8 +12,6 @@ package org.eclipse.rap.fileupload;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import org.eclipse.rap.fileupload.FileUploadHandler;
 import org.eclipse.rap.fileupload.test.TestFileUploadEvent;
 import org.eclipse.rap.fileupload.test.TestFileUploadListener;
@@ -42,13 +40,9 @@ public class FileUploadEvent_Test {
     Fixture.tearDown();
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testCannotCreateWithNullSource() {
-    try {
-      new TestFileUploadEvent( null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    new TestFileUploadEvent( null );
   }
 
   @Test

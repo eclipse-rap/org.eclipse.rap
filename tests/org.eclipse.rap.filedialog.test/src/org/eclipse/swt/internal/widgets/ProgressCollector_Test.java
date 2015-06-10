@@ -53,7 +53,7 @@ public class ProgressCollector_Test {
 
   @Test
   public void testUpdateCompletedFileNames() {
-    List<String> fileNames = new ArrayList<String>();
+    List<String> fileNames = new ArrayList<>();
     fileNames.add( "foo" );
 
     progressCollector.updateCompletedFiles( fileNames );
@@ -63,7 +63,7 @@ public class ProgressCollector_Test {
 
   @Test
   public void testUpdateCompletedFileNames_onDisposedProgressCollector() {
-    List<String> fileNames = new ArrayList<String>();
+    List<String> fileNames = new ArrayList<>();
     fileNames.add( "foo" );
     progressCollector.dispose();
 
