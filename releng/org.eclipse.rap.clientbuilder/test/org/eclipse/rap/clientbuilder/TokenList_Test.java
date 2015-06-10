@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.clientbuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class TokenList_Test {
 
   @Test
   public void testCreate() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "Test" ) );
     tokens.add( new JavaScriptToken( Token.LB, "[" ) );
 
@@ -36,7 +37,7 @@ public class TokenList_Test {
 
   @Test
   public void testGetToken() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "Test" ) );
     tokens.add( new JavaScriptToken( Token.LB, "[" ) );
 
@@ -50,7 +51,7 @@ public class TokenList_Test {
 
   @Test
   public void testRemoveToken() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "First" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "Second" ) );
 
@@ -63,7 +64,7 @@ public class TokenList_Test {
 
   @Test
   public void testRemoveToken_ModifiesOriginalList() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "First" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "Second" ) );
 
@@ -76,7 +77,7 @@ public class TokenList_Test {
 
   @Test
   public void testReplaceToken() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
@@ -97,7 +98,7 @@ public class TokenList_Test {
 
   @Test
   public void testReplaceToken_WithNull() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
@@ -112,7 +113,7 @@ public class TokenList_Test {
 
   @Test
   public void testReplaceToken_ModifiesOriginalList() {
-    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
+    List<JavaScriptToken> tokens = new ArrayList<>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
