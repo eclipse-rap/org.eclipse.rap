@@ -45,6 +45,7 @@ public class FileUploadExamplePage implements IExamplePage {
   private Text logText;
   private ServerPushSession pushSession;
 
+  @Override
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 3 ) );
     Control controlsColumn = createControlsColumn( parent );
@@ -121,14 +122,17 @@ public class FileUploadExamplePage implements IExamplePage {
     FileUploadHandler uploadHandler = new FileUploadHandler( receiver );
     uploadHandler.addUploadListener( new FileUploadListener() {
 
+      @Override
       public void uploadProgress( FileUploadEvent event ) {
         // handle upload progress
       }
 
+      @Override
       public void uploadFailed( FileUploadEvent event ) {
         addToLog( "upload failed: " + event.getException() );
       }
 
+      @Override
       public void uploadFinished( FileUploadEvent event ) {
         for( FileDetails file : event.getFileDetails() ) {
           addToLog( "received: " + file.getFileName() );
@@ -141,6 +145,7 @@ public class FileUploadExamplePage implements IExamplePage {
   private void addToLog( final String message ) {
     if( !logText.isDisposed() ) {
       logText.getDisplay().asyncExec( new Runnable() {
+        @Override
         public void run() {
           String text = logText.getText();
           if( INITIAL_TEXT.equals( text ) ) {
@@ -208,6 +213,7 @@ public class FileUploadExamplePage implements IExamplePage {
     final FileDialog fileDialog = new FileDialog( parent, getDialogStyle( multi ) );
     fileDialog.setText( multi ? "Upload Multiple Files" : "Upload Single File" );
     DialogUtil.open( fileDialog, new DialogCallback() {
+      @Override
       public void dialogClosed( int returnCode ) {
         showUploadResults( fileDialog );
       }
