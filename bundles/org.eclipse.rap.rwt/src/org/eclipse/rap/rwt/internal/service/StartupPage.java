@@ -43,7 +43,7 @@ public class StartupPage {
 
   public StartupPage( ApplicationContextImpl applicationContext ) {
     this.applicationContext = applicationContext;
-    jsLibraries = new ArrayList<String>();
+    jsLibraries = new ArrayList<>();
   }
 
   public void activate() {
@@ -166,6 +166,7 @@ public class StartupPage {
 
   private class StartupPageValueProvider implements VariableWriter {
 
+    @Override
     public void writeVariable( PrintWriter printWriter, String variableName ) {
       if( variableName.equals( StartupPageTemplate.TOKEN_LIBRARIES ) ) {
         writeLibraries( printWriter );

@@ -49,10 +49,6 @@ public class UISessionBuilder {
     return uiSession;
   }
 
-  private String generateConnectionId() {
-    return UUID.randomUUID().toString().substring( 0, 8 );
-  }
-
   private void setCurrentTheme() {
     String servletPath = serviceContext.getRequest().getServletPath();
     ThemeUtil.setCurrentThemeId( uiSession, ThemeUtil.getThemeIdFor( servletPath ) );
@@ -73,6 +69,10 @@ public class UISessionBuilder {
   private void renderConnectionId() {
     String connectionId = uiSession.getConnectionId();
     serviceContext.getProtocolWriter().appendHead( CONNECTION_ID, connectionId );
+  }
+
+  private static String generateConnectionId() {
+    return UUID.randomUUID().toString().substring( 0, 8 );
   }
 
 }

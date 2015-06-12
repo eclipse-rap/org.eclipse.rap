@@ -103,7 +103,7 @@ public class LifeCycleServiceHandler implements ServiceHandler {
     }
   }
 
-  private RequestMessage readRequestMessage( HttpServletRequest request ) {
+  private static RequestMessage readRequestMessage( HttpServletRequest request ) {
     try {
       return new ClientMessage( JsonObject.readFrom( getReader( request ) ) );
     } catch( IOException ioe ) {

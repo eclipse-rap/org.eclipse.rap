@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,13 @@ public class ContextProvider {
 
   // The context mapping mechanism used in standard UI requests from the client
   private final static ThreadLocal<ServiceContext> CONTEXT_HOLDER
-    = new ThreadLocal<ServiceContext>();
+    = new ThreadLocal<>();
 
   // Used to map contexts to background threads from another thread
   // Note: this map could also be used to replace the CONTEXT_HOLDER, but we prefer the thread
   // local for the common use case because of its smaller synchronization impact.
   private final static Map<Thread, ServiceContext> CONTEXT_HOLDER_FOR_BG_THREADS
-    = new WeakHashMap<Thread, ServiceContext>();
+    = new WeakHashMap<>();
 
   /**
    * Maps the given service context to the currently processed request.

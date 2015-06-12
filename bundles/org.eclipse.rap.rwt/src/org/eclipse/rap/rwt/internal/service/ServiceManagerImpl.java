@@ -41,6 +41,7 @@ public class ServiceManagerImpl implements ServiceManager {
     return customHandlers.get( customId );
   }
 
+  @Override
   public void registerServiceHandler( String id, ServiceHandler handler ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     ParamCheck.notNull( handler, "handler" );
@@ -50,11 +51,13 @@ public class ServiceManagerImpl implements ServiceManager {
     }
   }
 
+  @Override
   public void unregisterServiceHandler( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     customHandlers.remove( id );
   }
 
+  @Override
   public String getServiceHandlerUrl( String id ) {
     ParamCheck.notNull( id, "id" );
     HttpServletRequest request = ContextProvider.getRequest();

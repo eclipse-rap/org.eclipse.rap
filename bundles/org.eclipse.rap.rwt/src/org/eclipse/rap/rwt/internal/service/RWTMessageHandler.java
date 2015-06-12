@@ -33,6 +33,7 @@ public class RWTMessageHandler implements MessageFilter {
     this.lifeCycleFactory = lifeCycleFactory;
   }
 
+  @Override
   public ResponseMessage handleMessage( RequestMessage request, MessageFilterChain chain ) {
     ClientMessage clientMessage = new ClientMessage( request );
     ProtocolUtil.setClientMessage( clientMessage );
@@ -41,7 +42,7 @@ public class RWTMessageHandler implements MessageFilter {
     return getProtocolWriter().createMessage();
   }
 
-  private void workAroundMissingReadData( ClientMessage message ) {
+  private static void workAroundMissingReadData( ClientMessage message ) {
     // TODO [tb] : This is usually done in DisplayLCA#readData, but the ReadData
     // phase is omitted in the first POST request. Since RemoteObjects may already be registered
     // at this point, this workaround is currently required. We should find a solution that

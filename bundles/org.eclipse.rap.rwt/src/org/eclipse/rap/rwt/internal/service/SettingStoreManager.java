@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,14 +51,14 @@ public class SettingStoreManager {
     if( !hasFactory() ) {
       throw new IllegalStateException( "There is no SettingStoreFactory for deregistration." );
     }
-    this.factory = null;
+    factory = null;
   }
 
   public synchronized boolean hasFactory() {
     return factory != null;
   }
 
-  private String getStoreId() {
+  private static String getStoreId() {
     UISession uiSession = ContextProvider.getUISession();
     // 1. storeId stored in session? (implies cookie exists)
     String result = ( String )uiSession.getAttribute( COOKIE_NAME );
@@ -82,7 +82,7 @@ public class SettingStoreManager {
     return result;
   }
 
-  private String getStoreIdFromCookie() {
+  private static String getStoreIdFromCookie() {
     String result = null;
     Cookie[] cookies = ContextProvider.getRequest().getCookies();
     if( cookies != null ) {
@@ -101,7 +101,7 @@ public class SettingStoreManager {
     return result;
   }
 
-  private synchronized String createUniqueStoreId() {
+  private synchronized static String createUniqueStoreId() {
     long now = System.currentTimeMillis();
     if( last == now ) {
       instanceCount++;
@@ -113,17 +113,17 @@ public class SettingStoreManager {
   }
 
   static boolean isValidCookieValue( String value ) {
-    boolean result = false;
     int index = value.indexOf( '_' );
     if( index != -1 ) {
       try {
         Long.parseLong( value.substring( 0, index ) );
         Integer.parseInt( value.substring( index + 1 ) );
-        result = true;
-      } catch( NumberFormatException nfe ) {
+        return true;
+      } catch( @SuppressWarnings( "unused" ) NumberFormatException nfe ) {
         // Cookie format is invalid
       }
     }
-    return result;
+    return false;
   }
+
 }

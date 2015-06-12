@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,12 +40,10 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public class UISessionImpl
-  implements UISession, ApplicationContextListener, HttpSessionBindingListener,
-             SerializableCompatibility
+  implements UISession, ApplicationContextListener, HttpSessionBindingListener
 {
 
   private static final String ATTR_UI_SESSION = UISessionImpl.class.getName() + "#uisession:";
@@ -77,8 +75,8 @@ public class UISessionImpl
     this.connectionId = connectionId;
     requestLock = new SerializableLock();
     lock = new SerializableLock();
-    attributes = new HashMap<String, Object>();
-    listeners = new HashSet<UISessionListener>();
+    attributes = new HashMap<>();
+    listeners = new HashSet<>();
     id = Integer.toHexString( hashCode() );
     bound = true;
     connection = new ConnectionImpl( this );
@@ -103,6 +101,7 @@ public class UISessionImpl
     }
   }
 
+  @Override
   public ApplicationContextImpl getApplicationContext() {
     return applicationContext;
   }
@@ -112,6 +111,7 @@ public class UISessionImpl
     if( shutdownAdapter != null ) {
       shutdownAdapter.setUISession( this );
       shutdownAdapter.setShutdownCallback( new Runnable() {
+        @Override
         public void run() {
           destroy();
         }
@@ -123,6 +123,7 @@ public class UISessionImpl
     return shutdownAdapter;
   }
 
+  @Override
   public void beforeDestroy( ApplicationContextEvent event ) {
     shutdown();
   }
@@ -133,6 +134,7 @@ public class UISessionImpl
     getHttpSession().removeAttribute( getUISessionAttributeName( connectionId ) );
   }
 
+  @Override
   public Object getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     Object result = null;
@@ -142,6 +144,7 @@ public class UISessionImpl
     return result;
   }
 
+  @Override
   public boolean setAttribute( String name, Object value ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
@@ -154,6 +157,7 @@ public class UISessionImpl
     return result;
   }
 
+  @Override
   public boolean removeAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
@@ -166,14 +170,17 @@ public class UISessionImpl
     return result;
   }
 
+  @Override
   public Enumeration<String> getAttributeNames() {
     return createAttributeNameEnumeration();
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public HttpSession getHttpSession() {
     synchronized( lock ) {
       return httpSession;
@@ -187,21 +194,25 @@ public class UISessionImpl
     }
   }
 
+  @Override
   public boolean isBound() {
     synchronized( lock ) {
       return bound;
     }
   }
 
+  @Override
   public Client getClient() {
     ClientSelector clientSelector = applicationContext.getClientSelector();
     return clientSelector.getSelectedClient( this );
   }
 
+  @Override
   public Connection getConnection() {
     return connection;
   }
 
+  @Override
   public Locale getLocale() {
     Locale locale = ( Locale )getAttribute( ATTR_LOCALE );
     if( locale == null ) {
@@ -216,6 +227,7 @@ public class UISessionImpl
     return locale;
   }
 
+  @Override
   public void setLocale( Locale locale ) {
     Locale oldLocale = getLocale();
     setAttribute( ATTR_LOCALE, locale );
@@ -228,11 +240,13 @@ public class UISessionImpl
     }
   }
 
+  @Override
   public void exec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
     ContextUtil.runNonUIThreadWithFakeContext( this, runnable );
   }
 
+  @Override
   public boolean addUISessionListener( UISessionListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
@@ -245,6 +259,7 @@ public class UISessionImpl
     return result;
   }
 
+  @Override
   public boolean removeUISessionListener( UISessionListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
@@ -257,6 +272,7 @@ public class UISessionImpl
     return result;
   }
 
+  @Override
   public void valueBound( HttpSessionBindingEvent event ) {
     synchronized( lock ) {
       bound = true;
@@ -264,6 +280,7 @@ public class UISessionImpl
     }
   }
 
+  @Override
   public void valueUnbound( HttpSessionBindingEvent event ) {
     if( shutdownAdapter != null ) {
       shutdownAdapter.interceptShutdown();
@@ -345,13 +362,15 @@ public class UISessionImpl
   private Enumeration<String> createAttributeNameEnumeration() {
     Set<String> names;
     synchronized( lock ) {
-      names = new HashSet<String>( attributes.keySet() );
+      names = new HashSet<>( attributes.keySet() );
     }
     final Iterator<String> iterator = names.iterator();
     return new Enumeration<String>() {
+      @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
+      @Override
       public String nextElement() {
         return iterator.next();
       }

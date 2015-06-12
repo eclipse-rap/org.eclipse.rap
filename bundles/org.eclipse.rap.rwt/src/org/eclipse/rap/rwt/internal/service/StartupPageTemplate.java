@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.internal.util.HTTP;
 
 
 public final class StartupPageTemplate {
-  
+
   public final static String TOKEN_BACKGROUND_IMAGE = "backgroundImage";
   public final static String TOKEN_LIBRARIES = "libraries";
   public final static String TOKEN_APP_SCRIPT = "appScript";
@@ -35,13 +35,13 @@ public final class StartupPageTemplate {
   public interface VariableWriter {
     void writeVariable( PrintWriter printWriter, String variableName );
   }
-  
+
   private final Token[] tokens;
-  
+
   public StartupPageTemplate() {
     this( loadStatupPageTemplate() );
   }
-  
+
   public StartupPageTemplate( String template ) {
     tokens = new TemplateParser( template ).parse();
   }
@@ -82,16 +82,16 @@ public final class StartupPageTemplate {
   static class Token {
     private final String string;
     private final boolean variable;
-    
+
     Token( String string, boolean variable ) {
       this.string = string;
       this.variable = variable;
     }
-    
+
     boolean isVariable() {
       return variable;
     }
-    
+
     @Override
     public String toString() {
       return string;
@@ -105,10 +105,10 @@ public final class StartupPageTemplate {
     private int index;
     private boolean withinBrackets;
     private StringBuilder currentToken;
-    
+
     TemplateParser( String template ) {
       this.template = template;
-      this.tokens = new LinkedList<Token>();
+      this.tokens = new LinkedList<>();
       this.currentToken = new StringBuilder();
     }
 
