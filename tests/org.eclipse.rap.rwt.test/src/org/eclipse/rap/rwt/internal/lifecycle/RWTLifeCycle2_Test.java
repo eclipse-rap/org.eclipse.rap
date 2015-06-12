@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 import static org.junit.Assert.assertEquals;
@@ -75,7 +74,6 @@ public class RWTLifeCycle2_Test {
   private static String maliciousButtonId;
   private static boolean createUIEntered;
   private static boolean createUIExited;
-  private static Shell testShell;
   private static java.util.List<Object> eventLog;
   private static PhaseId currentPhase;
 
@@ -89,7 +87,6 @@ public class RWTLifeCycle2_Test {
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    testShell = null;
     eventLog = new LinkedList<Object>();
     registerTestLogger();
   }
@@ -164,28 +161,25 @@ public class RWTLifeCycle2_Test {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=353053
    */
   @Test
-  public void testSessionRestartWithStringMeasurementInDisplayDispose() throws Exception {
+  public void testSessionShutdownWithStringMeasurementInDisplayDispose() throws Exception {
     Class<? extends EntryPoint> entryPoint = StringMeasurementInDisplayDisposeEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
-    // send initial request - response creates UI
     runRWTServlet( newPostRequest( 0 ) );
 
-    // send 'refresh' request - session is restarted
-    runRWTServlet( newPostRequest( 0 ) );
+    runRWTServlet( newShutdownRequest() );
     assertEquals( 0, eventLog.size() );
   }
 
   @Test
-  public void testEventProcessingOnSessionRestart() throws Exception {
-    Class<? extends EntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
+  public void testEventProcessingOnSessionShutdown() throws Exception {
+    Class<? extends EntryPoint> entryPoint = EventProcessingOnSessionShutdownEntryPoint.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
-    // send 'application startup' request - response is JavaScript to create
-    // client-side representation of what was created in EntryPoint#createUI
+    // send 'application startup' request - creates initial widgets from EntryPoint#createUI
     runRWTServlet( newPostRequest( 0 ) );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
-    // send 'restart' request
-    runRWTServlet( newPostRequest( 0 ) );
+    // send 'shutdown' request
+    runRWTServlet( newShutdownRequest() );
     assertTrue( createUIExited );
     assertEquals( 1, eventLog.size() );
   }
@@ -203,34 +197,11 @@ public class RWTLifeCycle2_Test {
     runRWTServlet( newPostRequest( 0 ) );
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
-    // send another initial request to restart session
-    runRWTServlet( newPostRequest( 0 ) );
+    // send shutdown request
+    runRWTServlet( newShutdownRequest() );
     assertTrue( createUIExited );
     assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
     assertEquals( 0, eventLog.size() );
-  }
-
-  /*
-   * 354368: Occasional exception on refresh (F5)
-   * https://bugs.eclipse.org/bugs/show_bug.cgi?id=354368
-   */
-  @Test
-  public void testClearUISessionOnSessionRestart() throws Exception {
-    getApplicationContext().getEntryPointManager().register( "/test", TestEntryPoint.class, null );
-    // send initial request - response creates UI
-    runRWTServlet( newPostRequest( 0 ) );
-    assertTrue( createUIEntered );
-    assertFalse( createUIExited );
-    // send a request that closes the main shell
-    TestRequest request = newPostRequest( 1 );
-    Fixture.fakeNotifyOperation( getId( testShell ), ClientMessageConst.EVENT_CLOSE, null );
-    runRWTServlet( request );
-    assertTrue( createUIExited );
-    // send a request after the createUI has been exited
-    runRWTServlet( newPostRequest( 2 ) );
-    // send another initial request to restart session
-    runRWTServlet( newPostRequest( 0 ) );
-    // ensures that no exceptions has been thrown
   }
 
   @Test
@@ -272,11 +243,9 @@ public class RWTLifeCycle2_Test {
   public void testGetLockOnUISession() throws Exception {
     Class<? extends EntryPoint> entryPoint = EntryPointWithSynchronizationOnUISession.class;
     getApplicationContext().getEntryPointManager().register( "/test", entryPoint, null );
-    // initial POST request starts the UI thread
     runRWTServlet( newPostRequest( 0 ) );
 
-    // simulate session restart
-    runRWTServlet( newPostRequest( 0 ) );
+    runRWTServlet( newShutdownRequest() );
   }
 
   private static TestResponse runRWTServlet( final HttpServletRequest request )
@@ -321,11 +290,20 @@ public class RWTLifeCycle2_Test {
 
   private TestRequest newPostRequest( int count ) {
     Fixture.fakeNewRequest();
-    TestRequest result = ( TestRequest )ContextProvider.getRequest();
-    result.setServletPath( "/test" );
-    result.setSession( session );
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+    request.setSession( session );
     Fixture.fakeHeadParameter( "requestCounter", count );
-    return result;
+    return request;
+  }
+
+  private TestRequest newShutdownRequest() {
+    Fixture.fakeNewRequest();
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setServletPath( "/test" );
+    request.setSession( session );
+    Fixture.fakeHeadParameter( "shutdown", true );
+    return request;
   }
 
   private void registerTestLogger() {
@@ -442,7 +420,7 @@ public class RWTLifeCycle2_Test {
     }
   }
 
-  public static final class EventProcessingOnSessionRestartEntryPoint implements EntryPoint {
+  public static final class EventProcessingOnSessionShutdownEntryPoint implements EntryPoint {
     public int createUI() {
       createUIEntered = true;
       try {
@@ -507,7 +485,6 @@ public class RWTLifeCycle2_Test {
         shell.setSize( 100, 100 );
         shell.layout();
         shell.open();
-        testShell = shell;
         while( !shell.isDisposed() ) {
           if( !display.readAndDispatch() ) {
             display.sleep();

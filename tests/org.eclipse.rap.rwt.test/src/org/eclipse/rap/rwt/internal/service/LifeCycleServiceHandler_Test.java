@@ -11,16 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
-import static org.eclipse.rap.rwt.internal.service.ContextProvider.getServiceStore;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
-import static org.eclipse.rap.rwt.internal.service.LifeCycleServiceHandler.markSessionStarted;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -41,11 +37,8 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.RequestCounter;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RequestMessage;
 import org.eclipse.rap.rwt.internal.protocol.ResponseMessage;
 import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
@@ -68,9 +61,6 @@ import org.mockito.ArgumentCaptor;
 
 
 public class LifeCycleServiceHandler_Test {
-
-  private static final String SESSION_STORE_ATTRIBUTE = "session-store-attribute";
-  private static final String HTTP_SESSION_ATTRIBUTE = "http-session-attribute";
 
   private static final int THREAD_COUNT = 10;
   private static final String ENTER = "enter|";
@@ -122,22 +112,9 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testUISessionClearedOnSessionRestart() throws IOException {
-    UISession uiSession = getUISession();
-    uiSession.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
-
-    markSessionStarted();
-    simulateInitialUiRequest();
-    service( serviceHandler );
-
-    assertNull( uiSession.getAttribute( SESSION_STORE_ATTRIBUTE ) );
-  }
-
-  @Test
   public void testShutdownUISession() throws IOException {
     UISession uiSession = getUISession();
 
-    markSessionStarted();
     simulateShutdownUiRequest();
     service( serviceHandler );
 
@@ -146,7 +123,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testShutdownUISession_returnsValidJson() throws IOException {
-    markSessionStarted();
     simulateShutdownUiRequest();
     service( serviceHandler );
 
@@ -162,7 +138,6 @@ public class LifeCycleServiceHandler_Test {
     UISession uiSession = getUISession();
     HttpSession httpSession = uiSession.getHttpSession();
 
-    markSessionStarted();
     simulateShutdownUiRequest();
     service( serviceHandler );
 
@@ -173,7 +148,6 @@ public class LifeCycleServiceHandler_Test {
   public void testStartUISession_AfterPreviousShutdown() throws IOException {
     UISession oldUiSession = getUISession();
 
-    markSessionStarted();
     simulateShutdownUiRequest();
     service( serviceHandler );
 
@@ -190,7 +164,6 @@ public class LifeCycleServiceHandler_Test {
     UISessionListener listener = mock( UISessionListener.class );
     uiSession.addUISessionListener(listener );
 
-    markSessionStarted();
     simulateShutdownUiRequest();
     service( serviceHandler );
 
@@ -201,85 +174,14 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testHttpSessionNotClearedOnSessionRestart() throws IOException {
-    HttpSession httpSession = getUISession().getHttpSession();
-    Object attribute = new Object();
-    httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, attribute );
-
-    markSessionStarted();
-    simulateInitialUiRequest();
-    service( serviceHandler );
-
-    assertSame( attribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
-  }
-
-  @Test
-  public void testApplicationContextAfterSessionRestart() throws IOException {
-    markSessionStarted();
-    simulateInitialUiRequest();
-    ApplicationContextImpl applicationContext = getApplicationContext();
-
-    service( serviceHandler );
-
-    UISession uiSession = getUISession();
-    assertSame( applicationContext, uiSession.getApplicationContext() );
-  }
-
-  @Test
   public void testIncrementRequestCounter() throws IOException {
     RequestCounter requestCounter = RequestCounter.getInstance();
-    markSessionStarted();
     requestCounter.nextRequestId();
     simulateUiRequest();
 
     service( serviceHandler );
 
     assertEquals( 2, requestCounter.currentRequestId() );
-  }
-
-  @Test
-  public void testResetRequestCounterAfterSessionRestart() throws IOException {
-    RequestCounter requestCounter = RequestCounter.getInstance();
-    markSessionStarted();
-    requestCounter.nextRequestId();
-    requestCounter.nextRequestId();
-    simulateInitialUiRequest();
-
-    service( serviceHandler );
-
-    assertEquals( 1, RequestCounter.getInstance().currentRequestId() );
-  }
-
-  /*
-   * When cleaning the session store, the display is disposed. This put a list with all disposed
-   * widgets into the service store. As application is restarted in the same request, we have to
-   * prevent these dispose calls to be rendered.
-   * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=373084
-   */
-  @Test
-  public void testClearServiceStoreAfterSessionRestart() throws IOException {
-    markSessionStarted();
-    simulateInitialUiRequest();
-    service( serviceHandler );
-
-    simulateInitialUiRequest();
-    getServiceStore().setAttribute( "foo", "bar" );
-    service( serviceHandler );
-
-    assertNull( getServiceStore().getAttribute( "foo" ) );
-  }
-
-  @Test
-  public void testClearServiceStoreAfterSessionRestart_restoresMessage() throws IOException {
-    markSessionStarted();
-    simulateInitialUiRequest();
-    service( serviceHandler );
-
-    simulateInitialUiRequest();
-    ClientMessage message = ProtocolUtil.getClientMessage();
-    service( serviceHandler );
-
-    assertEquals( message.toString(), ProtocolUtil.getClientMessage().toString() );
   }
 
   @Test
@@ -293,7 +195,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testContentType() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
 
     service( serviceHandler );
@@ -336,7 +237,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testHandleInvalidRequestCounter() throws IOException {
-    markSessionStarted();
     simulateUiRequestWithIllegalCounter();
 
     service( serviceHandler );
@@ -363,7 +263,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testSendBufferedResponse() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
     RequestCounter.getInstance().nextRequestId();
     int requestCounter = RequestCounter.getInstance().nextRequestId();
@@ -382,7 +281,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testWritesValidJson() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
 
     service( serviceHandler );
@@ -427,17 +325,6 @@ public class LifeCycleServiceHandler_Test {
   }
 
   @Test
-  public void testIsRequestCounterValid_toleratesZeroInFirstRequest() {
-    RequestCounter.getInstance().nextRequestId();
-    RequestMessage requestMessage = new TestMessage();
-    requestMessage.getHead().set( "requestCounter", 0 );
-
-    boolean valid = LifeCycleServiceHandler.isRequestCounterValid( requestMessage );
-
-    assertTrue( valid );
-  }
-
-  @Test
   public void testIsRequestCounterValid_falseWithMissingParameter() {
     RequestCounter.getInstance().nextRequestId();
     RequestMessage requestMessage = new TestMessage();
@@ -449,7 +336,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testProcessesMessage() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
     JsonObject message = createExampleMessage();
     getRequest().setBody( message.toString() );
@@ -463,7 +349,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testUIRequest_shutsDownUISession_ifRuntimeExceptionInHandler() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
     doThrow( new RuntimeException() )
       .when( filter ).handleMessage( any( RequestMessage.class ), any( MessageFilterChain.class ) );
@@ -478,7 +363,6 @@ public class LifeCycleServiceHandler_Test {
 
   @Test
   public void testUIRequest_shutsDownUISession_ifIOException() throws IOException {
-    markSessionStarted();
     simulateUiRequest();
     HttpServletResponse response = mock( HttpServletResponse.class );
     doThrow( new IOException() ).when( response ).getWriter();
