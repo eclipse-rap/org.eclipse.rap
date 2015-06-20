@@ -11,6 +11,8 @@
 
    <plugins>
       <plugin id="com.ibm.icu.base"/>
+      <plugin id="org.apache.commons.fileupload"/>
+      <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
@@ -35,19 +37,28 @@
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.rap.addons.autosuggest"/>
+      <plugin id="org.eclipse.rap.addons.ckeditor"/>
+      <plugin id="org.eclipse.rap.addons.dropdown.demo.examples"/>
       <plugin id="org.eclipse.rap.examples"/>
       <plugin id="org.eclipse.rap.examples.pages"/>
-      <plugin id="org.eclipse.rap.addons.ckeditor"/>
       <plugin id="org.eclipse.rap.examples.pages.ckeditor"/>
       <plugin id="org.eclipse.rap.filedialog"/>
-      <plugin id="org.eclipse.rap.fileupload"/>
       <plugin id="org.eclipse.rap.filedialog.demo.examples"/>
-      <plugin id="org.eclipse.rap.nebula.widgets.grid"/>
-      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples"/>
+      <plugin id="org.eclipse.rap.fileupload"/>
       <plugin id="org.eclipse.rap.jface"/>
       <plugin id="org.eclipse.rap.jface.databinding"/>
+      <plugin id="org.eclipse.rap.nebula.widgets.grid"/>
+      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples"/>
       <plugin id="org.eclipse.rap.rwt"/>
       <plugin id="org.eclipse.rap.rwt.osgi"/>
+<!-- external bundles
+      <plugin id="com.eclipsesource.widgets.gmaps"/>
+      <plugin id="org.eclipse.rap.addons.d3chart"/>
+      <plugin id="org.eclipse.rap.addons.d3chart.demo"/>
+      <plugin id="org.eclipse.rap.demo.enrondata"/>
+      <plugin id="org.eclipse.rap.demo.gmaps"/>
+      -->
    </plugins>
 
    <configurations>
@@ -56,14 +67,16 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servletbridge" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.rap.examples.pages.ckeditor" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.filedialog.demo.examples" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.addons.dropdown.demo.examples" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.clientscripting" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.enrondata" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.demo.gmaps" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.addons.d3chart.demo" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.examples" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.examples.pages" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.examples.pages.ckeditor" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.filedialog.demo.examples" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.nebula.widgets.grid.demo.examples" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
    </configurations>

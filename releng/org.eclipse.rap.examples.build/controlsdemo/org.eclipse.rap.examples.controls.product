@@ -38,6 +38,7 @@
       <plugin id="org.eclipse.rap.demo.controls"/>
       <plugin id="org.eclipse.rap.jface"/>
       <plugin id="org.eclipse.rap.jface.databinding"/>
+      <plugin id="org.eclipse.rap.nebula.widgets.grid"/>
       <plugin id="org.eclipse.rap.rwt"/>
       <plugin id="org.eclipse.rap.rwt.osgi"/>
    </plugins>
