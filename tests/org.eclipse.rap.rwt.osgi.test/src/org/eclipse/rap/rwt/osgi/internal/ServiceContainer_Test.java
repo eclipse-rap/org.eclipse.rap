@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,14 +25,15 @@ import org.osgi.framework.ServiceReference;
 
 
 public class ServiceContainer_Test {
+
   private BundleContext bundleContext;
-  private ServiceContainer< Object > container;
-  private ServiceReference< Object > serviceReference;
+  private ServiceContainer<Object> container;
+  private ServiceReference<Object> serviceReference;
 
   @Before
   public void setUp() {
     bundleContext = mock( BundleContext.class );
-    container = new ServiceContainer< Object >( bundleContext );
+    container = new ServiceContainer<>( bundleContext );
   }
 
   @Test
@@ -120,9 +121,9 @@ public class ServiceContainer_Test {
     assertEquals( 0, container.size() );
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockServiceReference( Object service ) {
     serviceReference = mock( ServiceReference.class );
     when( bundleContext.getService( serviceReference ) ).thenReturn( service );
   }
+
 }

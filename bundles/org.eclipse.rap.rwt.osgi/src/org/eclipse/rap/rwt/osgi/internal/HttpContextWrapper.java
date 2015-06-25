@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,10 +29,12 @@ class HttpContextWrapper implements HttpContext {
     this.context = context;
   }
 
+  @Override
   public String getMimeType( String name ) {
     return context.getMimeType( name );
   }
 
+  @Override
   public URL getResource( String name ) {
     URL result = null;
     try {
@@ -48,9 +50,11 @@ class HttpContextWrapper implements HttpContext {
     return result;
   }
 
+  @Override
   public boolean handleSecurity( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
     return context.handleSecurity( request, response );
   }
+
 }

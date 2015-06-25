@@ -52,7 +52,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   {
     this.configuration = configuration;
     this.httpService = httpService;
-    this.httpContext = createWrappedHttpContext( httpContext );
+    this.httpContext = wrapHttpContext( httpContext );
     this.contextLocation = contextLocation;
     this.contextName = contextName;
     this.applicationLauncher = applicationLauncher;
@@ -91,6 +91,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
     }
   }
 
+  @Override
   public void stopApplication() {
     if( !hasBeenStopped() ) {
       doStopApplication();
@@ -152,18 +153,9 @@ class ApplicationReferenceImpl implements ApplicationReference {
     unregisterServlet( SERVLET_CONTEXT_FINDER_ALIAS );
   }
 
-  private HttpContext createWrappedHttpContext( HttpContext httpContext ) {
-    HttpContext result;
-    if( httpContext == null ) {
-      result = wrapHttpContext( httpService.createDefaultHttpContext() );
-    } else {
-      result = wrapHttpContext( httpContext );
-    }
-    return result;
-  }
-
-  private HttpContextWrapper wrapHttpContext( HttpContext createDefaultHttpContext ) {
-    return new HttpContextWrapper( createDefaultHttpContext );
+  private HttpContext wrapHttpContext( HttpContext context ) {
+    HttpContext wrapped = context != null ? context : httpService.createDefaultHttpContext();
+    return new HttpContextWrapper( wrapped );
   }
 
   private HttpServlet registerServletContextProviderServlet() {
@@ -249,4 +241,5 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void markNotAlive() {
     alive = false;
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.osgi.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +34,6 @@ public class Matcher_Test {
   private Matcher matcher;
 
   @Before
-  @SuppressWarnings( "unchecked" )
   public void setUp() {
     httpServiceReference = mock( ServiceReference.class );
     configuratorReference = mock( ServiceReference.class );
@@ -131,16 +129,12 @@ public class Matcher_Test {
     assertTrue( matches );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testIllegalFilterSyntax() {
     String configuratorKey = Matcher.createTargetKey( ApplicationConfiguration.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( "(((" );
 
-    try {
-      matcher.matches();
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    matcher.matches();
   }
 
   @Test
@@ -178,4 +172,5 @@ public class Matcher_Test {
   private void createHttpServiceProperties() {
     when( httpServiceReference.getProperty( KEY ) ).thenReturn( VALUE );
   }
+
 }

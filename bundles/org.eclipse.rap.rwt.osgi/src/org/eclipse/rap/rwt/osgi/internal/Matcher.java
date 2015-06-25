@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,43 +41,41 @@ class Matcher {
     return matchesTarget( httpServiceReference, configurationReference, targetType );
   }
 
-  private boolean matchesTarget( ServiceReference<?> serviceReference,
-                                 ServiceReference<?> targetReference,
-                                 Class<?> targetType )
+  private static boolean matchesTarget( ServiceReference<?> serviceReference,
+                                        ServiceReference<?> targetReference,
+                                        Class<?> targetType )
   {
-    boolean result = targetReference != null;
     String filterExpression = getFilterExpression( serviceReference, targetType );
     if( filterExpression != null ) {
       Filter filter = createFilter( filterExpression );
-      result = filter.match( targetReference );
+      return filter.match( targetReference );
     }
-    return result;
+    return targetReference != null;
   }
 
-  private String getFilterExpression( ServiceReference<?> serviceReference, Class targetType ) {
-    String result = null;
+  private static String getFilterExpression( ServiceReference<?> serviceReference,
+                                             Class<?> targetType )
+  {
     if( serviceReference != null ) {
-      String targetKey = createTargetKey( targetType );
-      result = ( String )serviceReference.getProperty( targetKey );
+      return ( String )serviceReference.getProperty( createTargetKey( targetType ) );
     }
-    return result;
+    return null;
   }
 
-  private Filter createFilter( String filterExpression ) {
-    Filter result = null;
+  private static Filter createFilter( String filterExpression ) {
     try {
-      result = FrameworkUtil.createFilter( filterExpression );
+      return FrameworkUtil.createFilter( filterExpression );
     } catch( InvalidSyntaxException ise ) {
       throw new IllegalArgumentException( ise );
     }
-    return result;
   }
 
-  static String createTargetKey( Class targetType ) {
-    StringBuilder result = new StringBuilder();
-    result.append( targetType.getSimpleName().substring( 0, 1 ).toLowerCase() );
-    result.append( targetType.getSimpleName().substring( 1 ) );
-    result.append( ".target" );
-    return result.toString();
+  static String createTargetKey( Class<?> targetType ) {
+    return new StringBuilder()
+      .append( targetType.getSimpleName().substring( 0, 1 ).toLowerCase() )
+      .append( targetType.getSimpleName().substring( 1 ) )
+      .append( ".target" )
+      .toString();
   }
+
 }

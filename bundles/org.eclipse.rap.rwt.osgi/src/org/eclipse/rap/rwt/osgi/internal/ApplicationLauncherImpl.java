@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,9 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
 
   public ApplicationLauncherImpl( BundleContext bundleContext ) {
     lock = new Object();
-    configurations = new ServiceContainer<ApplicationConfiguration>( bundleContext );
-    httpServices = new ServiceContainer<HttpService>( bundleContext );
-    applicationReferences = new HashSet<ApplicationReferenceImpl>();
+    configurations = new ServiceContainer<>( bundleContext );
+    httpServices = new ServiceContainer<>( bundleContext );
+    applicationReferences = new HashSet<>();
     this.bundleContext = bundleContext;
   }
 
@@ -75,6 +75,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
+  @Override
   public ApplicationReference launch( ApplicationConfiguration configuration,
                                       HttpService httpService,
                                       HttpContext httpContext,
@@ -82,11 +83,10 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
                                       String contextDirectory )
   {
     synchronized( lock ) {
-      ApplicationReference result = null;
       if( isAlive() ) {
-        result = doLaunch( configuration, httpService, httpContext, contextName, contextDirectory );
+        return doLaunch( configuration, httpService, httpContext, contextName, contextDirectory );
       }
-      return result;
+      return null;
     }
   }
 
@@ -167,14 +167,14 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private String getContextName( ServiceHolder<ApplicationConfiguration> configurationHolder ) {
+  private static String getContextName( ServiceHolder<ApplicationConfiguration> configurationHolder )
+  {
     ServiceReference<ApplicationConfiguration> reference = configurationHolder.getReference();
     return ( String )reference.getProperty( PROPERTY_CONTEXT_NAME );
   }
 
   private void stopApplicationReferences( Object service ) {
-    ArrayList<ApplicationReferenceImpl> allReferences
-      = new ArrayList<ApplicationReferenceImpl>( applicationReferences );
+    ArrayList<ApplicationReferenceImpl> allReferences = new ArrayList<>( applicationReferences );
     for( ApplicationReferenceImpl applicationReference : allReferences ) {
       if( applicationReference.belongsTo( service ) ) {
         stopApplicationReference( applicationReference );
@@ -183,8 +183,7 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void stopAllApplicationReferences() {
-    ArrayList<ApplicationReferenceImpl> allReferences
-      = new ArrayList<ApplicationReferenceImpl>( applicationReferences );
+    ArrayList<ApplicationReferenceImpl> allReferences = new ArrayList<>( applicationReferences );
     for( ApplicationReferenceImpl applicationReference : allReferences ) {
       stopApplicationReference( applicationReference );
     }
@@ -198,8 +197,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
     }
   }
 
-  private boolean matches( ServiceHolder<HttpService> httpServiceHolder,
-                           ServiceHolder<ApplicationConfiguration> configurationHolder )
+  private static boolean matches( ServiceHolder<HttpService> httpServiceHolder,
+                                  ServiceHolder<ApplicationConfiguration> configurationHolder )
   {
     ServiceReference<HttpService> httpServiceRef = httpServiceHolder.getReference();
     ServiceReference<ApplicationConfiguration> configurationRef = configurationHolder.getReference();
@@ -207,9 +206,8 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
   }
 
   private void logProblem( String failureMessage, Throwable failure ) {
-    ServiceReference logReference = bundleContext.getServiceReference( LogService.class.getName() );
+    ServiceReference<?> logReference = bundleContext.getServiceReference( LogService.class.getName() );
     if( logReference != null ) {
-      @SuppressWarnings( "unchecked" )
       LogService log = ( LogService )bundleContext.getService( logReference );
       log.log( LogService.LOG_ERROR, failureMessage, failure );
     } else {
@@ -232,12 +230,13 @@ public class ApplicationLauncherImpl implements ApplicationLauncher {
                                     ApplicationConfiguration configuration,
                                     HttpService service )
   {
-    StringBuilder result = new StringBuilder();
-    result.append( name == null ? "rwtcontext" : name );
-    result.append( "_" );
-    result.append( configuration.hashCode() );
-    result.append( "_" );
-    result.append( service.hashCode() );
-    return result.toString();
+    return new StringBuilder()
+      .append( name == null ? "rwtcontext" : name )
+      .append( "_" )
+      .append( configuration.hashCode() )
+      .append( "_" )
+      .append( service.hashCode() )
+      .toString();
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,10 @@ package org.eclipse.rap.rwt.osgi.internal;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
 
@@ -29,7 +29,7 @@ import org.osgi.framework.*;
 public class Activator_Test {
 
   private BundleContext context;
-  private ServiceRegistration serviceRegistration;
+  private ServiceRegistration<?> serviceRegistration;
 
   @Before
   public void setUp() {
@@ -45,7 +45,6 @@ public class Activator_Test {
   }
 
   @Test
-  @SuppressWarnings( "unchecked" )
   public void testStart_registersApplicationLauncher() throws Exception {
     new Activator().start( context );
 
@@ -74,13 +73,13 @@ public class Activator_Test {
     verify( serviceRegistration ).unregister();
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockBundleContext() {
     context = mock( BundleContext.class );
     serviceRegistration = mock( ServiceRegistration.class );
-    when( context.registerService( eq( ApplicationLauncher.class.getName() ),
-                                   any( ApplicationLauncherImpl.class ),
-                                   any( Dictionary.class ) ) ).thenReturn( serviceRegistration );
+    doReturn( serviceRegistration )
+      .when( context ).registerService( eq( ApplicationLauncher.class.getName() ),
+                                        any( ApplicationLauncherImpl.class ),
+                                        any( Dictionary.class ) );
   }
 
 }

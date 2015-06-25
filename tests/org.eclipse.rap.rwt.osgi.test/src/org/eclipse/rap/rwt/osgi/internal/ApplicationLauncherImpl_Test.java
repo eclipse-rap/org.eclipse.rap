@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -56,7 +57,7 @@ public class ApplicationLauncherImpl_Test {
   private ApplicationConfiguration configuration;
   private ServiceReference<ApplicationConfiguration> configuratorReference;
   private ApplicationLauncherImpl applicationLauncher;
-  private ServiceRegistration serviceRegistration;
+  private ServiceRegistration<?> serviceRegistration;
   private LogService log;
 
   @Before
@@ -307,7 +308,6 @@ public class ApplicationLauncherImpl_Test {
     assertFalse( new File( name ).isAbsolute() );
   }
 
-  @SuppressWarnings( "unchecked" )
   private ServiceRegistration<?> checkApplicationReferenceHasBeenRegisteredAsService() {
     return verify( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
                                                     any( ApplicationReference.class ),
@@ -348,7 +348,7 @@ public class ApplicationLauncherImpl_Test {
     }
   }
 
-  private String getResourcesDirectory( String alias ) {
+  private static String getResourcesDirectory( String alias ) {
     String result = "/" + ApplicationRunner.RESOURCES;
     if( alias.lastIndexOf( '/' ) > 0 ) {
       result = "/" + CONTEXT_NAME + "/" + ApplicationRunner.RESOURCES;
@@ -365,7 +365,7 @@ public class ApplicationLauncherImpl_Test {
     verify( httpService ).unregister( getResourcesDirectory( alias ) );
   }
 
-  private void checkDeactivateStateOfApplicationReference( ApplicationReference reference ) {
+  private static void checkDeactivateStateOfApplicationReference( ApplicationReference reference ) {
     assertFalse( ( ( ApplicationReferenceImpl )reference ).isAlive() );
     reference.stopApplication(); // check that repeatedly calls to stop do not cause any problems
   }
@@ -389,13 +389,11 @@ public class ApplicationLauncherImpl_Test {
                        any( IllegalStateException.class ) );
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockLogService() {
     log = mock( LogService.class );
-    ServiceReference logReference = mock( ServiceReference.class );
-    when( bundleContext.getServiceReference( LogService.class.getName() ) )
-      .thenReturn( logReference );
-    when( bundleContext.getService( logReference ) ).thenReturn( log );
+    ServiceReference<?> logReference = mock( ServiceReference.class );
+    doReturn( logReference ).when( bundleContext ).getServiceReference( LogService.class.getName() );
+    doReturn( log ).when( bundleContext ).getService( logReference );
   }
 
   private void registerServiceReferences() {
@@ -417,7 +415,7 @@ public class ApplicationLauncherImpl_Test {
     configureFilterScenario( value, targetType, serviceReference, targetReference );
   }
 
-  private void configureFilterScenario( String value,
+  private static void configureFilterScenario( String value,
                                         Class<?> targetType,
                                         ServiceReference<?> serviceReference,
                                         ServiceReference<?> targetReference )
@@ -431,7 +429,6 @@ public class ApplicationLauncherImpl_Test {
     applicationLauncher = new ApplicationLauncherImpl( bundleContext );
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockHttpServiceReference() {
     httpServiceReference =  mock( ServiceReference.class );
   }
@@ -441,7 +438,6 @@ public class ApplicationLauncherImpl_Test {
     mockConfiguratorReference();
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockConfiguratorReference() {
     configuratorReference = mock( ServiceReference.class );
   }
@@ -457,6 +453,7 @@ public class ApplicationLauncherImpl_Test {
 
   private void createAliasConfigurator( final String servletPath1, final String servletPath2 ) {
     configuration = new ApplicationConfiguration() {
+      @Override
       public void configure( Application configuration ) {
         configuration.addEntryPoint( servletPath1, TestEntryPoint.class, null );
         configuration.addEntryPoint( servletPath2, TestEntryPoint.class, null );
@@ -471,7 +468,7 @@ public class ApplicationLauncherImpl_Test {
     mockHttpServiceReference();
   }
 
-  private void mockServletConfigForServletContextRetrieval( HttpService service ) {
+  private static void mockServletConfigForServletContextRetrieval( HttpService service ) {
     String servletContextFinderAlias = ApplicationReferenceImpl.SERVLET_CONTEXT_FINDER_ALIAS;
     String alias1 = servletContextFinderAlias;
     String alias2 = "/" + CONTEXT_NAME + servletContextFinderAlias;
@@ -479,7 +476,9 @@ public class ApplicationLauncherImpl_Test {
     mockServletConfigForServletContextRetrieval( service, alias2 );
   }
 
-  private void mockServletConfigForServletContextRetrieval( HttpService service, String alias ) {
+  private static void mockServletConfigForServletContextRetrieval( HttpService service,
+                                                                   String alias )
+  {
     try {
       doAnswer( mockServletConfigForServletContextRetrieval() )
        .when( service ).registerServlet( eq( alias ),
@@ -491,8 +490,9 @@ public class ApplicationLauncherImpl_Test {
     }
   }
 
-  private Answer mockServletConfigForServletContextRetrieval() {
-    return new Answer() {
+  private static Answer<Object> mockServletConfigForServletContextRetrieval() {
+    return new Answer<Object>() {
+      @Override
       public Object answer( InvocationOnMock invocation ) throws Throwable {
         HttpServlet servlet = ( HttpServlet )invocation.getArguments()[ 1 ];
         mockServletConfigForServletContextRetrieval( servlet );
@@ -501,7 +501,7 @@ public class ApplicationLauncherImpl_Test {
     };
   }
 
-  private void mockServletConfigForServletContextRetrieval( HttpServlet servlet ) {
+  private static void mockServletConfigForServletContextRetrieval( HttpServlet servlet ) {
     ServletConfig servletConfig = mock( ServletConfig.class );
     // use the fixture servlet context for performanc optimizations
     ServletContext servletContext = Fixture.createServletContext();
@@ -509,7 +509,7 @@ public class ApplicationLauncherImpl_Test {
     initServlet( servlet, servletConfig );
   }
 
-  private void initServlet( HttpServlet servlet, ServletConfig servletConfig ) {
+  private static void initServlet( HttpServlet servlet, ServletConfig servletConfig ) {
     try {
       servlet.init( servletConfig );
     } catch( ServletException shouldNotHappen ) {
@@ -521,7 +521,6 @@ public class ApplicationLauncherImpl_Test {
     mockBundleContext( null );
   }
 
-  @SuppressWarnings( "unchecked" )
   private void mockBundleContext( String contextName ) {
     bundleContext = mock( BundleContext.class );
     String name = ApplicationLauncherImpl.getContextFileName( contextName, configuration, httpService );
@@ -529,10 +528,10 @@ public class ApplicationLauncherImpl_Test {
     when( bundleContext.getService( httpServiceReference ) ).thenReturn( httpService );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configuration );
     serviceRegistration = mock( ServiceRegistration.class );
-    when( bundleContext.registerService( eq( ApplicationReference.class.getName() ),
-                                         any( ApplicationReference.class ),
-                                         any( Dictionary.class ) ) )
-      .thenReturn( serviceRegistration );
+    doReturn( serviceRegistration )
+      .when( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
+                                              any( ApplicationReference.class ),
+                                              any( Dictionary.class ) );
   }
 
   private ApplicationReference launchApplication() {
@@ -549,7 +548,7 @@ public class ApplicationLauncherImpl_Test {
       .when( configuration ).configure( any( Application.class ) );
   }
 
-  private ApplicationReferenceImpl createMalignApplicationReference() {
+  private static ApplicationReferenceImpl createMalignApplicationReference() {
     ApplicationReferenceImpl result = mock( ApplicationReferenceImpl.class );
     doThrow( new IllegalStateException() ).when( result ).stopApplication();
     return result;
@@ -557,9 +556,11 @@ public class ApplicationLauncherImpl_Test {
 
   private static class TestEntryPoint implements EntryPoint {
 
+    @Override
     public int createUI() {
       return 0;
     }
+
   }
 
 }
