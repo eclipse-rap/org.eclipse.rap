@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class Template implements Serializable, Adaptable {
    * Constructs an empty template.
    */
   public Template() {
-    cells = new ArrayList<Cell<?>>();
+    cells = new ArrayList<>();
   }
 
   void addCell( Cell<?> cell ) {
@@ -51,7 +51,7 @@ public class Template implements Serializable, Adaptable {
    * @return the list of cells in this template, may be empty but never <code>null</code>
    */
   public List<Cell<?>> getCells() {
-    return new ArrayList<Cell<?>>( cells );
+    return new ArrayList<>( cells );
   }
 
   /**
@@ -61,10 +61,12 @@ public class Template implements Serializable, Adaptable {
    *
    * @noreference This method is not intended to be referenced by clients.
    */
+  @Override
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
     if( adapter == TemplateSerializer.class ) {
       return ( T )new TemplateSerializer() {
+        @Override
         public JsonValue toJson() {
           JsonArray jsonArray = new JsonArray();
           for( Cell<?> cell : getCells() ) {

@@ -113,6 +113,7 @@ public class ClusteredSynchronizer extends Synchronizer {
       return buffer.toString();
     }
 
+    @Override
     public void service( HttpServletRequest request, HttpServletResponse response ) {
       // do nothing
     }

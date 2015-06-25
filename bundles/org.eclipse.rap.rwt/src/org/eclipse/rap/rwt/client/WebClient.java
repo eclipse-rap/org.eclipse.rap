@@ -126,6 +126,7 @@ public class WebClient implements Client {
     initializeServices();
   }
 
+  @Override
   @SuppressWarnings( "unchecked" )
   public <T extends ClientService> T getService( Class<T> type ) {
     T result = null;
@@ -155,11 +156,11 @@ public class WebClient implements Client {
     return result;
   }
 
-  private <T> T getServiceImpl( Class<T> impl ) {
+  private static <T> T getServiceImpl( Class<T> impl ) {
     return SingletonUtil.getSessionInstance( impl );
   }
 
-  private void initializeServices() {
+  private static void initializeServices() {
     getServiceImpl( ClientInfoImpl.class );
     getServiceImpl( BrowserNavigationImpl.class );
     getServiceImpl( StartupParametersImpl.class );

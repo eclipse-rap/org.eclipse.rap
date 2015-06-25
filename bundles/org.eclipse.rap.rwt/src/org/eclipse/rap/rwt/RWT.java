@@ -98,7 +98,7 @@ public final class RWT {
   @SuppressWarnings("javadoc")
   public static final class NLS {
 
-    private final static Map<ResourceBundle,Object> map = new HashMap<ResourceBundle, Object>();
+    private final static Map<ResourceBundle,Object> map = new HashMap<>();
 
     /**
      * Returns a NLS object for the given resource bundle and type. See

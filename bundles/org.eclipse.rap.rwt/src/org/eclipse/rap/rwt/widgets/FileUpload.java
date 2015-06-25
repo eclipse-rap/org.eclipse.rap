@@ -373,14 +373,18 @@ public class FileUpload extends Canvas {
 
   private final class FileUploadAdapter implements IFileUploadAdapter {
 
+    @Override
     public void setFileNames( String[] value ) {
       fileNames = value;
     }
 
+    @Override
     public String getAndResetUrl() {
       String result = url;
       url = null;
       return result;
     }
+
   }
+
 }

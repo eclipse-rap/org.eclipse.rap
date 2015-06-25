@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ public abstract class AbstractOperationHandler implements OperationHandler, Seri
   /**
    * @since 2.1
    */
+  @Override
   public void handleSet( JsonObject properties ) {
     throw new UnsupportedOperationException( "set operations not supported by this handler" );
   }
@@ -42,6 +43,7 @@ public abstract class AbstractOperationHandler implements OperationHandler, Seri
   /**
    * @since 2.1
    */
+  @Override
   public void handleCall( String method, JsonObject parameters ) {
     throw new UnsupportedOperationException( "call operations not supported by this handler" );
   }
@@ -49,6 +51,7 @@ public abstract class AbstractOperationHandler implements OperationHandler, Seri
   /**
    * @since 2.1
    */
+  @Override
   public void handleNotify( String event, JsonObject properties ) {
     throw new UnsupportedOperationException( "notify operations not supported by this handler" );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -61,18 +60,21 @@ public final class FileSettingStore implements SettingStore {
     checkWorkDir( baseDirectory );
     workDir = baseDirectory;
     props = new Properties();
-    listeners = new HashSet<SettingStoreListener>();
+    listeners = new HashSet<>();
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public synchronized String getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     return props.getProperty( name );
   }
 
+  @Override
   public synchronized void setAttribute( String name, String value ) throws IOException {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
@@ -86,18 +88,22 @@ public final class FileSettingStore implements SettingStore {
     }
   }
 
+  @Override
   public synchronized Enumeration<String> getAttributeNames() {
     final Enumeration<Object> keys = props.keys();
     return new Enumeration<String>() {
+      @Override
       public boolean hasMoreElements() {
         return keys.hasMoreElements();
       }
+      @Override
       public String nextElement() {
         return ( String )keys.nextElement();
       }
     };
   }
 
+  @Override
   public synchronized void loadById( String id ) throws IOException {
     ParamCheck.notNullOrEmpty( id, "id" );
     this.id = id;
@@ -114,6 +120,7 @@ public final class FileSettingStore implements SettingStore {
     }
   }
 
+  @Override
   public synchronized void removeAttribute( String name ) throws IOException {
     String oldValue = ( String )props.remove( name );
     if( oldValue != null ) {
@@ -122,11 +129,13 @@ public final class FileSettingStore implements SettingStore {
     }
   }
 
+  @Override
   public synchronized void addSettingStoreListener( SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.add( listener );
   }
 
+  @Override
   public synchronized void removeSettingStoreListener( SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.remove( listener );
@@ -166,7 +175,7 @@ public final class FileSettingStore implements SettingStore {
   }
 
   private synchronized void notifyForEachAttribute( boolean removed ) {
-    Enumeration attributes = props.keys();
+    Enumeration<Object> attributes = props.keys();
     while( attributes.hasMoreElements() ) {
       String attribute = ( String )attributes.nextElement();
       String value = props.getProperty( attribute );
@@ -181,9 +190,7 @@ public final class FileSettingStore implements SettingStore {
   private synchronized void notifyListeners( String attribute, String oldValue, String newValue ) {
     SettingStoreEvent event = new SettingStoreEvent( this, attribute, oldValue, newValue );
     // TODO [rh] create a snapshot of listeners before invoking (possible concurrent modification)
-    Iterator iter = listeners.iterator();
-    while( iter.hasNext() ) {
-      SettingStoreListener listener = ( SettingStoreListener )iter.next();
+    for( SettingStoreListener listener : listeners ) {
       try {
         listener.settingChanged( event );
       } catch( Exception exc ) {

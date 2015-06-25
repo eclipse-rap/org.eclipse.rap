@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public class RWTServletContextListener implements ServletContextListener {
 
   private ApplicationRunner applicationRunner;
 
+  @Override
   public void contextInitialized( ServletContextEvent event ) {
     ServletContext servletContext = event.getServletContext();
     ApplicationConfiguration configuration = readConfiguration( servletContext );
@@ -50,33 +51,22 @@ public class RWTServletContextListener implements ServletContextListener {
     applicationRunner.start();
   }
 
+  @Override
   public void contextDestroyed( ServletContextEvent event ) {
     applicationRunner.stop();
     applicationRunner = null;
   }
 
   private ApplicationConfiguration readConfiguration( ServletContext servletContext ) {
-    ApplicationConfiguration result;
-    if( hasConfigurationParam( servletContext ) ) {
-      result = readApplicationConfiguration( servletContext );
-    } else {
-      result = readEntryPointRunnerConfiguration( servletContext );
-    }
-    return result;
-  }
-
-  private boolean hasConfigurationParam( ServletContext servletContext ) {
-    return null != servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
-  }
-
-  private ApplicationConfiguration readApplicationConfiguration( ServletContext servletContext ) {
     String name = servletContext.getInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM );
-    return createConfiguration( name );
+    if( name != null ) {
+      return createConfiguration( name );
+    }
+    return readEntryPointRunnerConfiguration( servletContext );
   }
 
   private ApplicationConfiguration createConfiguration( String className ) {
-    ClassLoader loader = getClassLoader();
-    return ( ApplicationConfiguration )ClassUtil.newInstance( loader, className );
+    return ( ApplicationConfiguration )ClassUtil.newInstance( getClassLoader(), className );
   }
 
   private ApplicationConfiguration readEntryPointRunnerConfiguration( ServletContext context ) {
@@ -125,6 +115,7 @@ public class RWTServletContextListener implements ServletContextListener {
       this.entryPointClass = entryPointClass;
     }
 
+    @Override
     public void configure( Application application ) {
       application.addEntryPoint( servletPath, entryPointClass, null );
     }

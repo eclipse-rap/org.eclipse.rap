@@ -52,6 +52,7 @@ public abstract class AbstractEntryPoint implements EntryPoint, StartupParameter
    *
    * @nooverride This method is not intended to be re-implemented or extended by clients.
    */
+  @Override
   public int createUI() {
     display = new Display();
     shell = createShell( display );
@@ -80,6 +81,7 @@ public abstract class AbstractEntryPoint implements EntryPoint, StartupParameter
    * @return a (possibly empty) collection of parameter names
    * @since 3.0
    */
+  @Override
   public Collection<String> getParameterNames() {
     StartupParameters service = getClient().getService( StartupParameters.class );
     return service == null ? new ArrayList<String>() : service.getParameterNames();
@@ -97,6 +99,7 @@ public abstract class AbstractEntryPoint implements EntryPoint, StartupParameter
    * @return the value of the parameter, or <code>null</code> if the parameter does not exist
    * @since 3.0
    */
+  @Override
   public String getParameter( String name ) {
     StartupParameters service = getClient().getService( StartupParameters.class );
     return service == null ? null : service.getParameter( name );
@@ -111,6 +114,7 @@ public abstract class AbstractEntryPoint implements EntryPoint, StartupParameter
    * @return the values of the parameter, or <code>null</code> if the parameter does not exist
    * @since 3.0
    */
+  @Override
   public List<String> getParameterValues( String name ) {
     StartupParameters service = getClient().getService( StartupParameters.class );
     return service == null ? null : service.getParameterValues( name );
