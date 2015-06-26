@@ -13,11 +13,9 @@ package org.eclipse.nebula.widgets.grid.internal.gridkit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
@@ -105,6 +103,11 @@ public class GridLCA extends AbstractWidgetLCA {
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );
     TemplateLCAUtil.renderRowTemplate( grid );
     ScrollBarLCAUtil.renderInitialization( grid );
+    remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( grid ) );
+    // Always render listen for Expand and Collapse, currently required for scrollbar
+    // visibility update and setData events.
+    remoteObject.listen( PROP_EXPAND_LISTENER, true );
+    remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
   }
 
   @Override
@@ -138,9 +141,6 @@ public class GridLCA extends AbstractWidgetLCA {
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
     preserveListenSelection( grid );
     preserveListenDefaultSelection( grid );
-    preserveListener( grid, SWT.SetData, listensToSetData( grid ) );
-    preserveListener( grid, SWT.Expand, hasExpandListener( grid ) );
-    preserveListener( grid, SWT.Collapse, hasCollapseListener( grid ) );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
     preserveProperty( grid, PROP_CELL_TOOLTIP_TEXT, null );
     ScrollBarLCAUtil.preserveValues( grid );
@@ -171,9 +171,6 @@ public class GridLCA extends AbstractWidgetLCA {
     renderProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ), null );
     renderListenSelection( grid );
     renderListenDefaultSelection( grid );
-    renderListener( grid, SWT.SetData, PROP_SETDATA_LISTENER, listensToSetData( grid ) );
-    renderListener( grid, SWT.Expand, PROP_EXPAND_LISTENER, hasExpandListener( grid ) );
-    renderListener( grid, SWT.Collapse, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ) );
     renderProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ), false );
     renderProperty( grid, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( grid ), null );
     ScrollBarLCAUtil.renderChanges( grid );
@@ -194,7 +191,7 @@ public class GridLCA extends AbstractWidgetLCA {
     return toolTipText;
   }
 
-  private static boolean listensToSetData( Grid grid ) {
+  private static boolean isVirtual( Grid grid ) {
     return ( grid.getStyle() & SWT.VIRTUAL ) != 0;
   }
 
@@ -261,20 +258,6 @@ public class GridLCA extends AbstractWidgetLCA {
       result[ i ] = getId( grid.getColumn( order[ i ] ) );
     }
     return result;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasExpandListener( Grid grid ) {
-    // Always render listen for Expand and Collapse, currently required for scrollbar
-    // visibility update and setData events.
-    return true;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasCollapseListener( Grid grid ) {
-    // Always render listen for Expand and Collapse, currently required for scrollbar
-    // visibility update and setData events.
-    return true;
   }
 
   ///////////////

@@ -15,11 +15,9 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -115,10 +113,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
     preserveProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn() );
     preserveListenSelection( tree );
-    preserveListener( tree, SWT.SetData, listensToSetData( tree ) );
     preserveListenDefaultSelection( tree );
-    preserveListener( tree, SWT.Expand, hasExpandListener( tree ) );
-    preserveListener( tree, SWT.Collapse, hasCollapseListener( tree ) );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
     ScrollBarLCAUtil.preserveValues( tree );
@@ -159,6 +154,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( tree ) );
     TemplateLCAUtil.renderRowTemplate( tree );
     ScrollBarLCAUtil.renderInitialization( tree );
+    remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( tree ) );
+    // Always render listen for Expand and Collapse, currently required for scrollbar
+    // visibility update and setData events.
+    remoteObject.listen( PROP_EXPAND_LISTENER, true );
+    remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
   }
 
   @Override
@@ -190,10 +190,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       }
     } );
     renderListenSelection( tree );
-    renderListener( tree, SWT.SetData, PROP_SETDATA_LISTENER, listensToSetData( tree ) );
     renderListenDefaultSelection( tree );
-    renderListener( tree, SWT.Expand, PROP_EXPAND_LISTENER, hasExpandListener( tree ) );
-    renderListener( tree, SWT.Collapse, PROP_COLLAPSE_LISTENER, hasCollapseListener( tree ) );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( tree ), null );
     ScrollBarLCAUtil.renderChanges( tree );
@@ -212,7 +209,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return toolTipText;
   }
 
-  private static boolean listensToSetData( Tree tree ) {
+  private static boolean isVirtual( Tree tree ) {
     return ( tree.getStyle() & SWT.VIRTUAL ) != 0;
   }
 
@@ -268,20 +265,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
       result = "down";
     }
     return result;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasExpandListener( Tree tree ) {
-    // Always render listen for Expand and Collapse, currently required for scrollbar
-    // visibility update and setData events.
-    return true;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasCollapseListener( Tree tree ) {
-    // Always render listen for Expand and Collapse, currently required for scrollbar
-    // visibility update and setData events.
-    return true;
   }
 
   private static ITreeAdapter getTreeAdapter( Tree tree ) {

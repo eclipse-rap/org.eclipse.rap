@@ -15,11 +15,9 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -115,7 +113,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
     preserveListenSelection( table );
-    preserveListener( table, SWT.SetData, listensToSetData( table ) );
     preserveListenDefaultSelection( table );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
@@ -152,6 +149,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( table ) );
     TemplateLCAUtil.renderRowTemplate( table );
     ScrollBarLCAUtil.renderInitialization( table );
+    remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( table ) );
   }
 
   @Override
@@ -180,7 +178,6 @@ public final class TableLCA extends AbstractWidgetLCA {
       }
     } );
     renderListenSelection( table );
-    renderListener( table, SWT.SetData, PROP_SETDATA_LISTENER, listensToSetData( table ) );
     renderListenDefaultSelection( table );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
@@ -201,7 +198,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     return toolTipText;
   }
 
-  private static boolean listensToSetData( Table table ) {
+  private static boolean isVirtual( Table table ) {
     return ( table.getStyle() & SWT.VIRTUAL ) != 0;
   }
 

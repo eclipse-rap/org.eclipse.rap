@@ -12,9 +12,7 @@ package org.eclipse.nebula.widgets.grid.internal.gridcolumngroupkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
@@ -30,7 +28,6 @@ import org.eclipse.nebula.widgets.grid.GridColumnGroup;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -61,6 +58,10 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new GridColumnGroupOperationHandler( group ) );
     remoteObject.set( "parent", getId( group.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
+    // Always render listen for Expand and Collapse, currently required for columns
+    // visibility update.
+    remoteObject.listen( PROP_EXPAND_LISTENER, true );
+    remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
   }
 
   @Override
@@ -75,8 +76,6 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
     preserveProperty( group, PROP_FONT, group.getHeaderFont() );
     preserveProperty( group, PROP_EXPANDED, group.getExpanded() );
     preserveProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap() );
-    preserveListener( group, SWT.Expand, hasExpandListener( group ) );
-    preserveListener( group, SWT.Collapse, hasCollapseListener( group ) );
   }
 
   @Override
@@ -91,8 +90,6 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
     renderFont( group, PROP_FONT, group.getHeaderFont() );
     renderProperty( group, PROP_EXPANDED, group.getExpanded(), true );
     renderProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap(), false );
-    renderListener( group, SWT.Expand, PROP_EXPAND_LISTENER, hasExpandListener( group ) );
-    renderListener( group, SWT.Collapse, PROP_COLLAPSE_LISTENER, hasCollapseListener( group ) );
   }
 
   //////////////////////////////////////////////
@@ -147,20 +144,6 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
       }
     }
     return result;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasExpandListener( GridColumnGroup group ) {
-    // Always render listen for Expand and Collapse, currently required for columns
-    // visibility update.
-    return true;
-  }
-
-  @SuppressWarnings( "unused" )
-  private static boolean hasCollapseListener( GridColumnGroup group ) {
-    // Always render listen for Expand and Collapse, currently required for columns
-    // visibility update.
-    return true;
   }
 
 }

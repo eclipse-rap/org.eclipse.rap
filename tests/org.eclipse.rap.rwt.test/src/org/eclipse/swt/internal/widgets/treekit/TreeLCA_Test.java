@@ -1268,7 +1268,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderAddExpandListener() throws Exception {
-    lca.renderChanges( tree );
+    lca.renderInitialization( tree );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "Expand" ) );
@@ -1276,7 +1276,7 @@ public class TreeLCA_Test {
 
   @Test
   public void testRenderAddCollapseListener() throws Exception {
-    lca.renderChanges( tree );
+    lca.renderInitialization( tree );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( tree, "Collapse" ) );
