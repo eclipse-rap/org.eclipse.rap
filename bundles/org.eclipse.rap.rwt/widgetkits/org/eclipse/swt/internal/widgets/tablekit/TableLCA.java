@@ -115,7 +115,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
     preserveListenSelection( table );
-    preserveListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ) );
+    preserveListener( table, SWT.SetData, listensToSetData( table ) );
     preserveListenDefaultSelection( table );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
@@ -180,7 +180,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       }
     } );
     renderListenSelection( table );
-    renderListener( table, PROP_SETDATA_LISTENER, listensToSetData( table ), false );
+    renderListener( table, SWT.SetData, PROP_SETDATA_LISTENER, listensToSetData( table ) );
     renderListenDefaultSelection( table );
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
@@ -223,7 +223,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private int getFixedColumns( Table table ) {
+  private static int getFixedColumns( Table table ) {
     return getTableAdapter( table ).getFixedColumns();
   }
 

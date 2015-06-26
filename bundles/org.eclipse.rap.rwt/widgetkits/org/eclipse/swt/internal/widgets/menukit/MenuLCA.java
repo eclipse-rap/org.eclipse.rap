@@ -63,8 +63,8 @@ public final class MenuLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Menu menu = ( Menu )widget;
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    preserveListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ) );
-    preserveListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ) );
+    preserveListener( menu, SWT.Show, hasShowListener( menu ) );
+    preserveListener( menu, SWT.Hide, hasHideListener( menu ) );
     WidgetLCAUtil.preserveCustomVariant( menu );
     preserveListenHelp( menu );
   }
@@ -82,8 +82,8 @@ public final class MenuLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     Menu menu = ( Menu )widget;
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
-    renderListener( menu, PROP_SHOW_LISTENER, hasShowListener( menu ), false );
-    renderListener( menu, PROP_HIDE_LISTENER, hasHideListener( menu ), false );
+    renderListener( menu, SWT.Show, PROP_SHOW_LISTENER, hasShowListener( menu ) );
+    renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER, hasHideListener( menu ) );
     WidgetLCAUtil.renderCustomVariant( menu );
     renderListenHelp( menu );
     renderBounds( menu );

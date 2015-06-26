@@ -76,10 +76,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    preserveListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ) );
-    preserveListener( spinner,
-                      PROP_DEFAULT_SELECTION_LISTENER,
-                      isListening( spinner, SWT.DefaultSelection ) );
+    preserveListener( spinner, SWT.Selection, hasSelectionListener( spinner ) );
+    preserveListener( spinner, SWT.DefaultSelection );
   }
 
   @Override
@@ -146,11 +144,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Spinner spinner ) {
-    renderListener( spinner, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ), false );
-    renderListener( spinner,
-                    PROP_DEFAULT_SELECTION_LISTENER,
-                    isListening( spinner, SWT.DefaultSelection ),
-                    false );
+    renderListener( spinner, SWT.Selection, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ) );
+    renderListener( spinner, SWT.DefaultSelection, PROP_DEFAULT_SELECTION_LISTENER );
   }
 
   //////////////////

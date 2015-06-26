@@ -76,7 +76,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
     preserveListenSelection( ccombo );
     preserveListenDefaultSelection( ccombo );
-    preserveListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
+    preserveListener( ccombo, SWT.Modify, hasModifyListener( ccombo ) );
   }
 
   @Override
@@ -156,7 +156,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( CCombo ccombo ) {
-    renderListener( ccombo, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ), false );
+    renderListener( ccombo, SWT.Modify, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
   }
 
   private static boolean hasModifyListener( CCombo ccombo ) {

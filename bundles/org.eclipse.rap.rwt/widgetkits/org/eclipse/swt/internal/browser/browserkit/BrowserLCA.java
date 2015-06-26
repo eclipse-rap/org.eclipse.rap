@@ -214,7 +214,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private boolean hasProgressListener( Browser browser ) {
+  private static boolean hasProgressListener( Browser browser ) {
     return isListening( browser, EventTypes.PROGRESS_CHANGED )
         || isListening( browser, EventTypes.PROGRESS_COMPLETED );
   }

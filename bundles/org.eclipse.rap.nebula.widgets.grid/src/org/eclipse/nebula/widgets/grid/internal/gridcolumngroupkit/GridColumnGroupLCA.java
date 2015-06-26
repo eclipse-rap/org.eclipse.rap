@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.nebula.widgets.grid.GridColumnGroup;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -74,8 +75,8 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
     preserveProperty( group, PROP_FONT, group.getHeaderFont() );
     preserveProperty( group, PROP_EXPANDED, group.getExpanded() );
     preserveProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap() );
-    preserveListener( group, PROP_EXPAND_LISTENER, hasExpandListener( group ) );
-    preserveListener( group, PROP_COLLAPSE_LISTENER, hasCollapseListener( group ) );
+    preserveListener( group, SWT.Expand, hasExpandListener( group ) );
+    preserveListener( group, SWT.Collapse, hasCollapseListener( group ) );
   }
 
   @Override
@@ -90,8 +91,8 @@ public class GridColumnGroupLCA extends AbstractWidgetLCA {
     renderFont( group, PROP_FONT, group.getHeaderFont() );
     renderProperty( group, PROP_EXPANDED, group.getExpanded(), true );
     renderProperty( group, PROP_HEADER_WORD_WRAP, group.getHeaderWordWrap(), false );
-    renderListener( group, PROP_EXPAND_LISTENER, hasExpandListener( group ), false );
-    renderListener( group, PROP_COLLAPSE_LISTENER, hasCollapseListener( group ), false );
+    renderListener( group, SWT.Expand, PROP_EXPAND_LISTENER, hasExpandListener( group ) );
+    renderListener( group, SWT.Collapse, PROP_COLLAPSE_LISTENER, hasCollapseListener( group ) );
   }
 
   //////////////////////////////////////////////

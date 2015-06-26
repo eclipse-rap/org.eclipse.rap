@@ -78,7 +78,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
     preserveListenSelection( combo );
     preserveListenDefaultSelection( combo );
-    preserveListener( combo, PROP_MODIFY_LISTENER, hasModifyListener( combo ) );
+    preserveListener( combo, SWT.Modify, hasModifyListener( combo ) );
   }
 
   @Override
@@ -160,7 +160,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( Combo combo ) {
-    renderListener( combo, PROP_MODIFY_LISTENER, hasModifyListener( combo ), false );
+    renderListener( combo, SWT.Modify, PROP_MODIFY_LISTENER, hasModifyListener( combo ) );
   }
 
   private static boolean hasModifyListener( Combo combo ) {

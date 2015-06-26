@@ -138,9 +138,9 @@ public class GridLCA extends AbstractWidgetLCA {
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
     preserveListenSelection( grid );
     preserveListenDefaultSelection( grid );
-    preserveListener( grid, PROP_SETDATA_LISTENER, listensToSetData( grid ) );
-    preserveListener( grid, PROP_EXPAND_LISTENER, hasExpandListener( grid ) );
-    preserveListener( grid, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ) );
+    preserveListener( grid, SWT.SetData, listensToSetData( grid ) );
+    preserveListener( grid, SWT.Expand, hasExpandListener( grid ) );
+    preserveListener( grid, SWT.Collapse, hasCollapseListener( grid ) );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
     preserveProperty( grid, PROP_CELL_TOOLTIP_TEXT, null );
     ScrollBarLCAUtil.preserveValues( grid );
@@ -171,9 +171,9 @@ public class GridLCA extends AbstractWidgetLCA {
     renderProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ), null );
     renderListenSelection( grid );
     renderListenDefaultSelection( grid );
-    renderListener( grid, PROP_SETDATA_LISTENER, listensToSetData( grid ), false );
-    renderListener( grid, PROP_EXPAND_LISTENER, hasExpandListener( grid ), false );
-    renderListener( grid, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ), false );
+    renderListener( grid, SWT.SetData, PROP_SETDATA_LISTENER, listensToSetData( grid ) );
+    renderListener( grid, SWT.Expand, PROP_EXPAND_LISTENER, hasExpandListener( grid ) );
+    renderListener( grid, SWT.Collapse, PROP_COLLAPSE_LISTENER, hasCollapseListener( grid ) );
     renderProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ), false );
     renderProperty( grid, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( grid ), null );
     ScrollBarLCAUtil.renderChanges( grid );

@@ -75,6 +75,8 @@ import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 @SuppressWarnings( "deprecation" )
 public abstract class Widget implements Adaptable, SerializableCompatibility {
 
+  private static final Listener[] EMPTY_LISTENERS = new Listener[ 0 ];
+
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
@@ -655,13 +657,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   public Listener[] getListeners( int eventType ) {
     checkWidget();
-    Listener[] result;
-    if( eventTable == null ) {
-      result = new Listener[ 0 ];
-    } else {
-      result = eventTable.getListeners( eventType );
-    }
-    return result;
+    return eventTable == null ? EMPTY_LISTENERS : eventTable.getListeners( eventType );
   }
 
   /**
@@ -763,6 +759,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
   }
 
+  @SuppressWarnings( "unused" )
   void reskinChildren( int flags ) {
   }
 

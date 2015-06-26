@@ -86,7 +86,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
-    preserveListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
+    preserveListener( text, SWT.Modify, hasModifyListener( text ) );
     preserveListenDefaultSelection( text );
   }
 
@@ -110,7 +110,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
-    renderListener( text, PROP_MODIFY_LISTENER, hasModifyListener( text ), false );
+    renderListener( text, SWT.Modify, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
     renderListenDefaultSelection( text );
     renderClientListeners( text );
   }

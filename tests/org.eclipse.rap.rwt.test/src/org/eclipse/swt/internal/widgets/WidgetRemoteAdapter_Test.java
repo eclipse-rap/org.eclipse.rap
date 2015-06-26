@@ -120,6 +120,11 @@ public class WidgetRemoteAdapter_Test {
     assertFalse( adapter.getPreservedListener( 64 ) );
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testGetPreservedListener_failsForIllegalValues() {
+    adapter.preserveListener( 65, false );
+  }
+
   @Test
   public void testGetPreservedListener_resetAfterClear() {
     adapter.preserveListener( 23, true );
@@ -129,6 +134,11 @@ public class WidgetRemoteAdapter_Test {
 
     assertFalse( adapter.getPreservedListener( 23 ) );
     assertFalse( adapter.getPreservedListener( 42 ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testPreserveListener_failsWithIllegalValues() {
+    adapter.preserveListener( 65, true );
   }
 
   @Test
