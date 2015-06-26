@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,12 +29,12 @@ public final class LifeCycleAdapterFactory {
   // needs a resource manager to be in place
   private DisplayLifeCycleAdapter displayAdapter;
   // Maps widget classes to their respective life cycle adapters
-  private final Map<Class, WidgetLifeCycleAdapter> widgetAdapters;
+  private final Map<Class<?>, WidgetLifeCycleAdapter> widgetAdapters;
 
   public LifeCycleAdapterFactory() {
     displayAdapterLock = new Object();
     widgetAdaptersLock = new Object();
-    widgetAdapters = new HashMap<Class, WidgetLifeCycleAdapter>();
+    widgetAdapters = new HashMap<>();
   }
 
   public Object getAdapter( Object adaptable ) {
@@ -62,14 +62,14 @@ public final class LifeCycleAdapterFactory {
   ////////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapters for widgets
 
-  private WidgetLifeCycleAdapter getWidgetLCA( Class clazz ) {
+  private WidgetLifeCycleAdapter getWidgetLCA( Class<?> clazz ) {
     // [fappel] This code is performance critical, don't change without checking against a profiler
     WidgetLifeCycleAdapter result;
     synchronized( widgetAdaptersLock ) {
       result = widgetAdapters.get( clazz );
       if( result == null ) {
         WidgetLifeCycleAdapter adapter = null;
-        Class superClass = clazz;
+        Class<?> superClass = clazz;
         while( !Object.class.equals( superClass ) && adapter == null ) {
           adapter = loadWidgetLCA( superClass );
           if( adapter == null ) {
@@ -87,7 +87,7 @@ public final class LifeCycleAdapterFactory {
     return result;
   }
 
-  private static WidgetLifeCycleAdapter loadWidgetLCA( Class clazz ) {
+  private static WidgetLifeCycleAdapter loadWidgetLCA( Class<?> clazz ) {
     WidgetLifeCycleAdapter result = null;
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
@@ -101,10 +101,11 @@ public final class LifeCycleAdapterFactory {
       ClassLoader loader = clazz.getClassLoader();
       try {
         result = ( WidgetLifeCycleAdapter )ClassUtil.newInstance( loader, classToLoad );
-      } catch( ClassInstantiationException ignore ) {
+      } catch( @SuppressWarnings( "unused" ) ClassInstantiationException ignore ) {
         // ignore and try to load next package name variant
       }
     }
     return result;
   }
+
 }

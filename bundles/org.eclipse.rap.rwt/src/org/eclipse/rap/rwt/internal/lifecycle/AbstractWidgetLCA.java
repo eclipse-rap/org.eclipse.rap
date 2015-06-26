@@ -73,6 +73,7 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
     }
   }
 
+  @SuppressWarnings( "unused" )
   public void doRedrawFake( Control control ) {
   }
 

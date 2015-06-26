@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.application;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.application.Application;
@@ -47,6 +46,7 @@ public class ApplicationImpl implements Application {
     this.configuration = configuration;
   }
 
+  @Override
   public void setOperationMode( OperationMode operationMode ) {
     ParamCheck.notNull( operationMode, "operationMode" );
     switch( operationMode ) {
@@ -63,18 +63,21 @@ public class ApplicationImpl implements Application {
     }
   }
 
+  @Override
   public void setSettingStoreFactory( SettingStoreFactory settingStoreFactory ) {
     ParamCheck.notNull( settingStoreFactory, "settingStoreFactory" );
 
     applicationContext.getSettingStoreManager().register( settingStoreFactory );
   }
 
+  @Override
   public void setExceptionHandler( ExceptionHandler exceptionHandler ) {
     ParamCheck.notNull( exceptionHandler, "exceptionHandler" );
 
     applicationContext.setExceptionHandler( exceptionHandler );
   }
 
+  @Override
   public void addEntryPoint( String path,
                              Class<? extends EntryPoint> entryPointType,
                              Map<String, String> properties )
@@ -85,6 +88,7 @@ public class ApplicationImpl implements Application {
     applicationContext.getEntryPointManager().register( path, entryPointType, properties );
   }
 
+  @Override
   public void addEntryPoint( String path,
                              EntryPointFactory entryPointFactory,
                              Map<String, String> properties )
@@ -95,6 +99,7 @@ public class ApplicationImpl implements Application {
     applicationContext.getEntryPointManager().register( path, entryPointFactory, properties );
   }
 
+  @Override
   public void addResource( String resourceName, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( resourceName, "resourceName" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
@@ -102,6 +107,7 @@ public class ApplicationImpl implements Application {
     applicationContext.getResourceRegistry().add( resourceName, resourceLoader );
   }
 
+  @Override
   public void addServiceHandler( String serviceHandlerId, ServiceHandler serviceHandler ) {
     ParamCheck.notNull( serviceHandlerId, "serviceHandlerId" );
     ParamCheck.notNull( serviceHandler, "serviceHandler" );
@@ -110,10 +116,12 @@ public class ApplicationImpl implements Application {
     serviceManager.registerServiceHandler( serviceHandlerId, serviceHandler );
   }
 
+  @Override
   public void addStyleSheet( String themeId, String styleSheetLocation ) {
     addStyleSheet( themeId, styleSheetLocation, new ResourceLoaderImpl( getClassLoader() ) );
   }
 
+  @Override
   public void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader ) {
     ParamCheck.notNull( themeId, "themeId" );
     ParamCheck.notNull( styleSheetLocation, "styleSheetLocation" );
@@ -129,6 +137,7 @@ public class ApplicationImpl implements Application {
     }
   }
 
+  @Override
   public void addThemeableWidget( Class<? extends Widget> widget ) {
     addThemeableWidget( widget, new ResourceLoaderImpl( widget.getClassLoader() ) );
   }
@@ -144,6 +153,7 @@ public class ApplicationImpl implements Application {
     applicationContext.getClientSelector().addClientProvider( clientProvider );
   }
 
+  @Override
   public void setAttribute( String name, Object value ) {
     applicationContext.setAttribute( name, value );
   }
@@ -156,17 +166,13 @@ public class ApplicationImpl implements Application {
     return configuration.getClass().getClassLoader();
   }
 
-  private StyleSheet readStyleSheet( String styleSheetLocation, ResourceLoader loader ) {
-    StyleSheet result;
+  private static StyleSheet readStyleSheet( String styleSheetLocation, ResourceLoader loader ) {
     try {
-      result = CssFileReader.readStyleSheet( styleSheetLocation, loader );
+      return CssFileReader.readStyleSheet( styleSheetLocation, loader );
     } catch( IOException ioe ) {
-      String text = "Failed to read stylesheet from resource ''{0}''";
-      Object[] args = new Object[] { styleSheetLocation };
-      String msg = MessageFormat.format( text, args );
-      throw new IllegalArgumentException( msg );
+      String message = "Failed to read stylesheet from resource: " + styleSheetLocation;
+      throw new IllegalArgumentException( message, ioe );
     }
-    return result;
   }
 
   static class ResourceLoaderImpl implements ResourceLoader {
@@ -177,6 +183,7 @@ public class ApplicationImpl implements Application {
       this.loader = loader;
     }
 
+    @Override
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return loader.getResourceAsStream( resourceName );
     }

@@ -42,11 +42,13 @@ public class RWTLifeCycle extends LifeCycle {
   private static final String REQUEST_THREAD_RUNNABLE
     = RWTLifeCycle.class.getName() + "#requestThreadRunnable";
 
-  private static final IPhase[] PHASE_ORDER_STARTUP = new IPhase[] {
+  private static final IPhase[] PHASE_ORDER_STARTUP = {
     new IInterruptible() {
+      @Override
       public PhaseId execute( Display display ) throws IOException {
         return null;
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
@@ -54,21 +56,25 @@ public class RWTLifeCycle extends LifeCycle {
     new Render()
   };
 
-  private static final IPhase[] PHASE_ORDER_SUBSEQUENT = new IPhase[] {
+  private static final IPhase[] PHASE_ORDER_SUBSEQUENT = {
     new IPhase() {
+      @Override
       public PhaseId execute( Display display ) throws IOException {
         return null;
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
     },
     new ReadData(),
     new IInterruptible() {
+      @Override
       public PhaseId execute( Display display ) throws IOException {
         new ProcessAction().execute( display );
         return null;
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PROCESS_ACTION;
       }
@@ -271,6 +277,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private final class UIThreadController implements Runnable {
+    @Override
     public void run() {
       IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
       try {
@@ -297,7 +304,7 @@ public class RWTLifeCycle extends LifeCycle {
           // In any case: wait for the thread to be terminated by session timeout
           uiThread.switchThread();
         }
-      } catch( UIThreadTerminatedError e ) {
+      } catch( @SuppressWarnings( "unused" ) UIThreadTerminatedError e ) {
         // If we get here, the session is being invalidated, see UIThread#terminateThread()
         ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
       }

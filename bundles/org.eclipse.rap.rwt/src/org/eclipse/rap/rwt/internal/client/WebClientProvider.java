@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,12 @@ import org.eclipse.rap.rwt.client.WebClient;
 
 public class WebClientProvider implements ClientProvider {
 
+  @Override
   public boolean accept( HttpServletRequest request ) {
     return true;
   }
 
+  @Override
   public Client getClient() {
     return new WebClient();
   }

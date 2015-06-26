@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ public class DefaultEntryPointFactory implements EntryPointFactory {
     this.type = type;
   }
 
+  @Override
   public EntryPoint create() {
     EntryPoint instance;
     try {
@@ -53,7 +54,7 @@ public class DefaultEntryPointFactory implements EntryPointFactory {
     return instance;
   }
 
-  private void checkType( Class<? extends EntryPoint> type ) {
+  private static void checkType( Class<? extends EntryPoint> type ) {
     if( type.isInterface() || Modifier.isAbstract( type.getModifiers() ) ) {
       throw new IllegalArgumentException( "Abstract class or interface given as entrypoint: "
                                           + type.getName() );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class ClientInfoImpl implements ClientInfo {
     }
   }
 
+  @Override
   public int getTimezoneOffset() {
     if( timezoneOffset == null ) {
       throw new IllegalStateException( "timezoneOffset is not set" );
@@ -52,10 +53,12 @@ public class ClientInfoImpl implements ClientInfo {
     return timezoneOffset.intValue();
   }
 
+  @Override
   public Locale getLocale() {
     return locales == null ? null : locales[ 0 ];
   }
 
+  @Override
   public Locale[] getLocales() {
     return locales == null ? new Locale[ 0 ] : locales.clone();
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ public final class WidgetDataUtil {
   private static Set<String> getDataKeys( boolean create ) {
     Set<String> dataKeys = ( Set<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
     if( dataKeys == null && create ) {
-      dataKeys = new HashSet<String>();
+      dataKeys = new HashSet<>();
       getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
     }
     return dataKeys;

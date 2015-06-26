@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,8 +88,8 @@ public final class ContextUtil {
 
   private static HttpServletRequest createFakeRequest( UISession uiSession ) {
     InvocationHandler invocationHandler = new RequestInvocationHandler( uiSession );
-    Class[] paramTypes = new Class[] { InvocationHandler.class };
-    Object[] paramValues = new Object[] { invocationHandler };
+    Class<?>[] paramTypes = { InvocationHandler.class };
+    Object[] paramValues = { invocationHandler };
     Object fakeRequest = ClassUtil.newInstance( FAKE_REQUEST_CLASS, paramTypes, paramValues );
     return ( HttpServletRequest )fakeRequest;
   }
@@ -99,13 +99,14 @@ public final class ContextUtil {
   }
 
   private static HttpServletResponse createFakeResponse() {
-    Class[] interfaces = new Class[] { HttpServletResponse.class };
+    Class<?>[] interfaces = { HttpServletResponse.class };
     ResponseInvocationHandler invocationHandler = new ResponseInvocationHandler();
     Object proxy = Proxy.newProxyInstance( CLASS_LOADER, interfaces, invocationHandler );
     return ( HttpServletResponse )proxy;
   }
 
   private static final class ResponseInvocationHandler implements InvocationHandler {
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       throw new UnsupportedOperationException();
     }
@@ -118,6 +119,7 @@ public final class ContextUtil {
       this.uiSession = uiSession;
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable {
       Object result;
       if( "getSession".equals( method.getName() ) ) {

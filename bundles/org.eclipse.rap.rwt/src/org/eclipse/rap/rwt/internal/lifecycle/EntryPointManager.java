@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class EntryPointManager {
   private final Map<String, EntryPointRegistration> entryPoints;
 
   public EntryPointManager() {
-    entryPoints = new HashMap<String, EntryPointRegistration>();
+    entryPoints = new HashMap<>();
   }
 
   public void register( String path,
@@ -75,11 +75,9 @@ public class EntryPointManager {
   }
 
   public Collection<String> getServletPaths() {
-    Collection<String> result;
     synchronized( entryPoints ) {
-      result = new ArrayList<String>( entryPoints.keySet() );
+      return new ArrayList<>( entryPoints.keySet() );
     }
-    return result;
   }
 
   private void doRegister( String path, EntryPointFactory factory, Map<String, String> properties )
@@ -90,7 +88,7 @@ public class EntryPointManager {
     }
   }
 
-  private void checkValidPath( String path ) {
+  private static void checkValidPath( String path ) {
     if( !path.startsWith( "/" ) ) {
       throw new IllegalArgumentException( "Path must start with '/': " + path );
     }

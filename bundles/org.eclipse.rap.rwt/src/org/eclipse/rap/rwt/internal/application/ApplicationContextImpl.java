@@ -134,9 +134,9 @@ public class ApplicationContextImpl implements ApplicationContext {
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     clientSelector = new ClientSelector();
-    listeners = new HashSet<ApplicationContextListener>();
+    listeners = new HashSet<>();
     listenersLock = new SerializableLock();
-    state = new AtomicReference<State>( State.INACTIVE );
+    state = new AtomicReference<>( State.INACTIVE );
   }
 
   protected ThemeManager createThemeManager() {
@@ -159,18 +159,22 @@ public class ApplicationContextImpl implements ApplicationContext {
     servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
+  @Override
   public void setAttribute( String name, Object value ) {
     applicationStore.setAttribute( name, value );
   }
 
+  @Override
   public Object getAttribute( String name ) {
     return applicationStore.getAttribute( name );
   }
 
+  @Override
   public void removeAttribute( String name ) {
     applicationStore.removeAttribute( name );
   }
 
+  @Override
   public boolean addApplicationContextListener( ApplicationContextListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
@@ -183,6 +187,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     return result;
   }
 
+  @Override
   public boolean removeApplicationContextListener( ApplicationContextListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
@@ -236,6 +241,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     return resourceDirectory;
   }
 
+  @Override
   public ResourceManager getResourceManager() {
     return resourceManager;
   }
@@ -260,6 +266,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     return resourceRegistry;
   }
 
+  @Override
   public ServiceManagerImpl getServiceManager() {
     return serviceManager;
   }
@@ -405,7 +412,7 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   private List<ApplicationContextListener> copyListeners() {
     synchronized( listenersLock ) {
-      return new ArrayList<ApplicationContextListener>( listeners );
+      return new ArrayList<>( listeners );
     }
   }
 
@@ -413,7 +420,7 @@ public class ApplicationContextImpl implements ApplicationContext {
                                              RuntimeException exception )
   {
     String txt = "Could not execute {0}.beforeDestroy(ApplicationContextEvent).";
-    Object[] param = new Object[] { listener.getClass().getName() };
+    Object[] param = { listener.getClass().getName() };
     String msg = MessageFormat.format( txt, param );
     servletContext.log( msg, exception );
   }

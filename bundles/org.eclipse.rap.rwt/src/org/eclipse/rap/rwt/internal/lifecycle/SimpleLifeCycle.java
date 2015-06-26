@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,26 +104,32 @@ public class SimpleLifeCycle extends LifeCycle {
       this.thread = thread;
     }
 
+    @Override
     public void updateServiceContext() {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void terminateThread() {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void switchThread() {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void setServiceContext( ServiceContext serviceContext ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Thread getThread() {
       return thread;
     }
 
+    @Override
     public Object getLock() {
       throw new UnsupportedOperationException();
     }
@@ -138,17 +144,21 @@ public class SimpleLifeCycle extends LifeCycle {
       this.applicationContext = applicationContext;
     }
 
+    @Override
     public void setShutdownCallback( Runnable shutdownCallback ) {
       this.shutdownCallback = shutdownCallback;
     }
 
+    @Override
     public void setUISession( UISession uiSession ) {
       this.uiSession = uiSession;
     }
 
+    @Override
     public void interceptShutdown() {
       final Display display = LifeCycleUtil.getSessionDisplay( uiSession );
       ContextUtil.runNonUIThreadWithFakeContext( uiSession, new Runnable() {
+        @Override
         public void run() {
           if( isDisplayActive( display ) && isApplicationContextActive() ) {
             attachThread( display, uiSession );
@@ -160,6 +170,7 @@ public class SimpleLifeCycle extends LifeCycle {
       } );
     }
 
+    @Override
     public void processShutdown() {
       throw new UnsupportedOperationException();
     }

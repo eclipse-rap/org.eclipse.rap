@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public class ProcessActionRunner {
       ServiceStore serviceStore = ContextProvider.getServiceStore();
       List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
       if( list == null ) {
-        list = new ArrayList<Runnable>();
+        list = new ArrayList<>();
         serviceStore.setAttribute( ATTR_RUNNABLE_LIST, list );
       }
       if( !list.contains( runnable ) ) {
@@ -41,16 +41,16 @@ public class ProcessActionRunner {
     }
   }
 
+  @SuppressWarnings( "unchecked" )
   public static boolean executeNext() {
-    boolean result = false;
     ServiceStore serviceStore = ContextProvider.getServiceStore();
-    List list = ( List )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
+    List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null && list.size() > 0 ) {
-      Runnable runnable = ( Runnable )list.remove( 0 );
+      Runnable runnable = list.remove( 0 );
       runnable.run();
-      result = true;
+      return true;
     }
-    return result;
+    return false;
   }
 
   @SuppressWarnings("unchecked")
@@ -58,10 +58,9 @@ public class ProcessActionRunner {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     List<Runnable> list = ( List<Runnable> )serviceStore.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null ) {
-      Runnable[] runables = list.toArray( new Runnable[ list.size() ] );
-      for( int i = 0; i < runables.length; i++ ) {
+      for( Runnable runnable : new ArrayList<>( list ) ) {
         // TODO: [fappel] think about exception handling.
-        runables[ i ].run();
+        runnable.run();
       }
     }
   }

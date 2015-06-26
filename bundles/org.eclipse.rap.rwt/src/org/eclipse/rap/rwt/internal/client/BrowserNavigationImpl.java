@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,15 +43,17 @@ public final class BrowserNavigationImpl implements BrowserNavigation {
     ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
     remoteObject = connection.createServiceObject( TYPE );
     remoteObject.setHandler( new NavigationOperationHandler() );
-    listeners = new LinkedHashSet<BrowserNavigationListener>();
+    listeners = new LinkedHashSet<>();
   }
 
+  @Override
   public void pushState( String state, String title ) {
     ParamCheck.notNullOrEmpty( state, "state" );
     JsonObject properties = new JsonObject().add( PROP_STATE, state ).add( PROP_TITLE, title );
     remoteObject.call( METHOD_ADD_TO_HISTORY, properties );
   }
 
+  @Override
   public void addBrowserNavigationListener( BrowserNavigationListener listener ) {
     if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -62,6 +64,7 @@ public final class BrowserNavigationImpl implements BrowserNavigation {
     }
   }
 
+  @Override
   public void removeBrowserNavigationListener( BrowserNavigationListener listener ) {
     if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonObject.Member;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.StartupParameters;
@@ -39,16 +40,19 @@ public class StartupParametersImpl implements StartupParameters {
     parameters = Collections.emptyMap();
   }
 
+  @Override
   public Collection<String> getParameterNames() {
     return Collections.unmodifiableSet( parameters.keySet() );
   }
 
+  @Override
   public String getParameter( String name ) {
     notNullOrEmpty( name, "name" );
     List<String> values = parameters.get( name );
     return values == null ? null : values.get( 0 );
   }
 
+  @Override
   public List<String> getParameterValues( String name ) {
     notNullOrEmpty( name, "name" );
     List<String> values = parameters.get( name );
@@ -61,14 +65,13 @@ public class StartupParametersImpl implements StartupParameters {
     public void handleSet( JsonObject properties ) {
       JsonValue params = properties.get( "parameters" );
       if( params != null ) {
-        parameters = new HashMap<String, List<String>>();
-        JsonObject map = params.asObject();
-        for( String name : map.names() ) {
-          List<String> stringValues = new ArrayList<String>();
-          for( JsonValue value : map.get( name ).asArray() ) {
+        parameters = new HashMap<>();
+        for( Member member : params.asObject() ) {
+          List<String> stringValues = new ArrayList<>();
+          for( JsonValue value : member.getValue().asArray() ) {
             stringValues.add( value.asString() );
           }
-          parameters.put( name, stringValues );
+          parameters.put( member.getName(), stringValues );
         }
       }
     }

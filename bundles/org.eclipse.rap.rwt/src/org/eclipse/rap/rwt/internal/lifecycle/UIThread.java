@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,10 +39,12 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   //////////////////////////
   // interface IThreadHolder
 
+  @Override
   public void setServiceContext( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
   }
 
+  @Override
   public void updateServiceContext() {
     if( ContextProvider.hasContext() ) {
       ContextProvider.releaseContextHolder();
@@ -50,6 +52,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     ContextProvider.setContext( serviceContext );
   }
 
+  @Override
   public void switchThread() {
     Object lock = getLock();
     synchronized( lock ) {
@@ -107,6 +110,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     }
   }
 
+  @Override
   public void terminateThread() {
     // Prepare a service context to be used by the UI thread that may continue
     // to run as a result of the interrupt call
@@ -126,10 +130,12 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     uiThreadTerminating = false;
   }
 
+  @Override
   public Thread getThread() {
     return this;
   }
 
+  @Override
   public Object getLock() {
     // TODO [rh] use a distinct (final) lock object instead of 'this'
     return this;
@@ -139,18 +145,22 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   ////////////////////////////////////
   // interface ISessionShutdownAdapter
 
+  @Override
   public void setUISession( UISession uiSession ) {
     this.uiSession = uiSession;
   }
 
+  @Override
   public void setShutdownCallback( Runnable shutdownCallback ) {
     this.shutdownCallback = shutdownCallback;
   }
 
+  @Override
   public void interceptShutdown() {
     terminateThread();
   }
 
+  @Override
   public void processShutdown() {
     updateServiceContext();
     try {

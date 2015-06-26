@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,9 @@ import org.eclipse.rap.rwt.internal.service.ContextProvider;
 
 public class JavaScriptLoaderImpl implements JavaScriptLoader {
 
-  private final Set<String> loadedUrls = new HashSet<String>();
+  private final Set<String> loadedUrls = new HashSet<>();
 
+  @Override
   public void require( String url ) {
     JsonArray urlsToLoad = new JsonArray();
     if( !loadedUrls.contains( url ) ) {
@@ -33,7 +34,7 @@ public class JavaScriptLoaderImpl implements JavaScriptLoader {
     load( urlsToLoad );
   }
 
-  private void load( JsonArray urlsToLoad ) {
+  private static void load( JsonArray urlsToLoad ) {
     if( !urlsToLoad.isEmpty() ) {
       ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
       JsonObject parameters = new JsonObject().add( "files", urlsToLoad );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,12 @@ final class PrepareUIRoot implements IPhase {
     this.applicationContext = applicationContext;
   }
 
+  @Override
   public PhaseId getPhaseId() {
     return PhaseId.PREPARE_UI_ROOT;
   }
 
+  @Override
   public PhaseId execute( Display display ) {
     PhaseId result;
     if( LifeCycleUtil.isStartup() ) {

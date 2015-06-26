@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ public class ClientSelector {
 
   // TODO: [if] This constant is made public only to fake different clients in tests
   public static final String SELECTED_CLIENT = ClientSelector.class.getName() + ".selected";
-  private final List<ClientProvider> clients = new ArrayList<ClientProvider>();
+  private final List<ClientProvider> clients = new ArrayList<>();
   private boolean activated = false;
 
   public void addClientProvider( ClientProvider clientProvider ) {

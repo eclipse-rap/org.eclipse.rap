@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ public final class DisposedWidgets {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     List<Widget> disposalList = ( List<Widget> )serviceStore.getAttribute( DISPOSAL_LIST );
     if( disposalList == null ) {
-      disposalList = new LinkedList<Widget>();
+      disposalList = new LinkedList<>();
       serviceStore.setAttribute( DISPOSAL_LIST, disposalList );
     }
     disposalList.add( widget );
@@ -53,4 +53,5 @@ public final class DisposedWidgets {
   private DisposedWidgets() {
     // prevent instantiation
   }
+
 }

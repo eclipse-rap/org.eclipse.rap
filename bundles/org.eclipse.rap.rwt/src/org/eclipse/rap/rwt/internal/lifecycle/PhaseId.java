@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * A type-safe enumeration that represents all standard life cycle phases. The
  * instances can be used to refer to a phase in implementations of
@@ -25,7 +26,7 @@ import java.util.List;
  * @deprecated Support for PhaseListeners is going to be removed in the future.
  */
 @Deprecated
-public class PhaseId implements Comparable {
+public class PhaseId implements Comparable<PhaseId> {
 
   private static int nextOrdinal;
 
@@ -61,7 +62,7 @@ public class PhaseId implements Comparable {
    */
   public static final PhaseId RENDER = new PhaseId( "RENDER" );
 
-  private final static PhaseId[] values = new PhaseId[] {
+  private final static PhaseId[] values = {
     ANY,
     PREPARE_UI_ROOT,
     READ_DATA,
@@ -72,7 +73,7 @@ public class PhaseId implements Comparable {
   /**
    * A list containing the instances of this enumeration.
    */
-  public static final List VALUES = Collections.unmodifiableList( Arrays.asList( values ) );
+  public static final List<PhaseId> VALUES = Collections.unmodifiableList( Arrays.asList( values ) );
 
   private final String name;
   private final int ordinal;
@@ -87,8 +88,9 @@ public class PhaseId implements Comparable {
     return name;
   }
 
-  public int compareTo( Object toCompare ) {
-    return ordinal - ( ( PhaseId )toCompare ).ordinal;
+  @Override
+  public int compareTo( PhaseId toCompare ) {
+    return ordinal - toCompare.ordinal;
   }
 
   /**
