@@ -23,10 +23,11 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ThemeAdapterManager {
-  private final Map<Class,ThemeAdapter> themeAdapters;
+
+  private final Map<Class<? extends Widget>, ThemeAdapter> themeAdapters;
 
   public ThemeAdapterManager() {
-    themeAdapters = new HashMap<Class, ThemeAdapter>();
+    themeAdapters = new HashMap<>();
   }
 
   public void reset() {
@@ -34,7 +35,7 @@ public final class ThemeAdapterManager {
   }
 
   public ThemeAdapter getThemeAdapter( Widget widget ) {
-    Class widgetClass = widget.getClass();
+    Class<? extends Widget> widgetClass = widget.getClass();
     ThemeAdapter result;
     synchronized( themeAdapters ) {
       result = themeAdapters.get( widgetClass );
@@ -48,9 +49,9 @@ public final class ThemeAdapterManager {
     return result;
   }
 
-  private static ThemeAdapter findThemeAdapter( Class widgetClass ) {
+  private static ThemeAdapter findThemeAdapter( Class<? extends Widget> widgetClass ) {
     ThemeAdapter result = null;
-    Class superClass = widgetClass;
+    Class<?> superClass = widgetClass;
     while( !Object.class.equals( superClass ) && result == null ) {
       result = loadThemeAdapter( superClass );
       if( result == null ) {
@@ -60,41 +61,43 @@ public final class ThemeAdapterManager {
     return result;
   }
 
-  private static ThemeAdapter loadThemeAdapter( Class clazz ) {
-    ThemeAdapter result = null;
-    if( clazz == Control.class ) {
-      result = new ControlThemeAdapterImpl();
-    } else {
-      String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-      String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
-      for( int i = 0; result == null && i < variants.length; i++ ) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append( variants[ i ] );
-        buffer.append( "." );
-        buffer.append( className );
-        buffer.append( "ThemeAdapter" );
-        String classToLoad = buffer.toString();
-        ClassLoader loader = clazz.getClassLoader();
-        result = loadThemeAdapter( classToLoad, loader );
+  private static ThemeAdapter loadThemeAdapter( Class<?> superClass ) {
+    if( superClass == Control.class ) {
+      return new ControlThemeAdapterImpl();
+    }
+    String className = LifeCycleAdapterUtil.getSimpleClassName( superClass );
+    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( superClass );
+    for( String variant : variants ) {
+      String classToLoad = new StringBuilder()
+        .append( variant )
+        .append( "." )
+        .append( className )
+        .append( "ThemeAdapter" )
+        .toString();
+      ThemeAdapter adapter = loadThemeAdapter( classToLoad, superClass.getClassLoader() );
+      if( adapter != null ) {
+        return adapter;
       }
     }
-    return result;
+    return null;
   }
 
   private static ThemeAdapter loadThemeAdapter( String className, ClassLoader classLoader ) {
-    ThemeAdapter result = null;
     try {
-      result = ( ThemeAdapter )ClassUtil.newInstance( classLoader, className );
-    } catch( ClassInstantiationException cie ) {
+      return ( ThemeAdapter )ClassUtil.newInstance( classLoader, className );
+    } catch( @SuppressWarnings( "unused" ) ClassInstantiationException cie ) {
       // ignore, try to load from next package name variant
+      return null;
     }
-    return result;
   }
 
-  private static void ensureThemeAdapterWasFound( Class widgetClass, ThemeAdapter result ) {
+  private static void ensureThemeAdapterWasFound( Class< ? extends Widget> widgetClass,
+                                                  ThemeAdapter result )
+  {
     if( result == null ) {
       String msg = "Failed to obtain theme adapter for class: " + widgetClass.getName();
       throw new ThemeManagerException( msg );
     }
   }
+
 }

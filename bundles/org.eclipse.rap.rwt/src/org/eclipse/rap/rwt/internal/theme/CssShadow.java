@@ -24,12 +24,12 @@ public class CssShadow implements CssValue {
   public final float opacity;
 
   private CssShadow( boolean inset,
-                    int offsetX,
-                    int offsetY,
-                    int blur,
-                    int spread,
-                    String color,
-                    float opacity )
+                     int offsetX,
+                     int offsetY,
+                     int blur,
+                     int spread,
+                     String color,
+                     float opacity )
   {
     this.inset = inset;
     this.offsetX = offsetX;
@@ -41,20 +41,19 @@ public class CssShadow implements CssValue {
   }
 
   public static CssShadow create( boolean inset,
-                                 int offsetX,
-                                 int offsetY,
-                                 int blur,
-                                 int spread,
-                                 CssColor color )
+                                  int offsetX,
+                                  int offsetY,
+                                  int blur,
+                                  int spread,
+                                  CssColor color )
   {
-    String msg;
     if( blur < 0 ) {
-      msg = "Shadow blur distance can't be negative";
-      throw new IllegalArgumentException( msg );
+      String message = "Shadow blur distance can't be negative";
+      throw new IllegalArgumentException( message );
     }
     if( spread != 0 ) {
-      msg = "Shadow spread distance is not supported";
-      throw new IllegalArgumentException( msg );
+      String message = "Shadow spread distance is not supported";
+      throw new IllegalArgumentException( message );
     }
     if( color == null ) {
       throw new NullPointerException( "null argument" );
@@ -70,13 +69,13 @@ public class CssShadow implements CssValue {
     }
     if( object instanceof CssShadow ) {
       CssShadow other = ( CssShadow )object;
-      return       other.inset == inset
-                && other.offsetX == offsetX
-                && other.offsetY == offsetY
-                && other.blur == blur
-                && other.spread == spread
-                && ( color == null ? other.color == null : color.equals( other.color ) )
-                && other.opacity == opacity;
+      return    other.inset == inset
+             && other.offsetX == offsetX
+             && other.offsetY == offsetY
+             && other.blur == blur
+             && other.spread == spread
+             && ( color == null ? other.color == null : color.equals( other.color ) )
+             && other.opacity == opacity;
     }
     return false;
   }
@@ -96,53 +95,56 @@ public class CssShadow implements CssValue {
     return result;
   }
 
+  @Override
   public String toDefaultString() {
-    StringBuilder buffer = new StringBuilder();
     if( color == null ) {
-      buffer.append( "none" );
-    } else {
-      if( inset ) {
-        buffer.append( "inset " );
-      }
-      buffer.append( offsetX );
-      buffer.append( "px " );
-      buffer.append( offsetY );
-      buffer.append( "px " );
-      buffer.append( blur );
-      buffer.append( "px " );
-      buffer.append( spread );
-      buffer.append( "px " );
-      buffer.append( "rgba( " );
-      CssColor qxColor = CssColor.valueOf( color );
-      buffer.append( qxColor.red );
-      buffer.append( ", " );
-      buffer.append( qxColor.green );
-      buffer.append( ", " );
-      buffer.append( qxColor.blue );
-      buffer.append( ", " );
-      buffer.append( opacity );
-      buffer.append( " )" );
+      return "none";
     }
-    return buffer.toString();
+    CssColor qxColor = CssColor.valueOf( color );
+    StringBuilder buffer = new StringBuilder();
+    if( inset ) {
+      buffer.append( "inset " );
+    }
+    return buffer
+      .append( offsetX )
+      .append( "px " )
+      .append( offsetY )
+      .append( "px " )
+      .append( blur )
+      .append( "px " )
+      .append( spread )
+      .append( "px " )
+      .append( "rgba( " )
+      .append( qxColor.red )
+      .append( ", " )
+      .append( qxColor.green )
+      .append( ", " )
+      .append( qxColor.blue )
+      .append( ", " )
+      .append( opacity )
+      .append( " )" )
+      .toString();
   }
 
   @Override
   public String toString() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append( inset );
-    buffer.append( ", " );
-    buffer.append( offsetX );
-    buffer.append( ", " );
-    buffer.append( offsetY );
-    buffer.append( ", " );
-    buffer.append( blur );
-    buffer.append( ", " );
-    buffer.append( spread );
-    buffer.append( ", " );
-    buffer.append( color );
-    buffer.append( ", " );
-    buffer.append( opacity );
-    return "CssShadow{ " + buffer.toString() + " }";
+    return new StringBuilder()
+      .append( "CssShadow{ " )
+      .append( inset )
+      .append( ", " )
+      .append( offsetX )
+      .append( ", " )
+      .append( offsetY )
+      .append( ", " )
+      .append( blur )
+      .append( ", " )
+      .append( spread )
+      .append( ", " )
+      .append( color )
+      .append( ", " )
+      .append( opacity )
+      .append( " }" )
+      .toString();
   }
 
 }

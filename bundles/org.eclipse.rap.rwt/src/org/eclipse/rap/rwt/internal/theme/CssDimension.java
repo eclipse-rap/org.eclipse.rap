@@ -43,6 +43,7 @@ public class CssDimension implements CssValue {
     return create( parsed.intValue() );
   }
 
+  @Override
   public String toDefaultString() {
     return value + "px";
   }

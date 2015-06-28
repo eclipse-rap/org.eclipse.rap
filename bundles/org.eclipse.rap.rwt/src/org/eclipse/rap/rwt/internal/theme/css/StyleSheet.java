@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public final class StyleSheet {
   }
 
   public ConditionalValue[] getValues( String elementName, String propertyName ) {
-    List<ConditionalValue> buffer = new ArrayList<ConditionalValue>();
+    List<ConditionalValue> buffer = new ArrayList<>();
     for( SelectorWrapper selectorWrapper : selectorWrappers ) {
       String selectorElement = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
@@ -84,22 +83,19 @@ public final class StyleSheet {
     return buffer.toString();
   }
 
-  private static boolean containsConstraintsAlready( List conditionalValuesList,
+  private static boolean containsConstraintsAlready( List<ConditionalValue> conditionalValuesList,
                                                      String[] constraints )
   {
-    Iterator iterator = conditionalValuesList.iterator();
-    boolean result = false;
-    while( iterator.hasNext() && !result ) {
-      ConditionalValue condValue = ( ConditionalValue )iterator.next();
+    for( ConditionalValue condValue : conditionalValuesList ) {
       if( Arrays.equals( condValue.constraints, constraints ) ) {
-        result = true;
+        return true;
       }
     }
-    return result;
+    return false;
   }
 
   private void createSelectorWrappers() {
-    List<SelectorWrapper> selectorWrappersList = new LinkedList<SelectorWrapper>();
+    List<SelectorWrapper> selectorWrappersList = new LinkedList<>();
     for( int pos = 0; pos < styleRules.length; pos++ ) {
       StyleRule styleRule = styleRules[ pos ];
       SelectorList selectors = styleRule.getSelectors();
@@ -132,6 +128,7 @@ public final class StyleSheet {
 
   private static class SelectorWrapperComparator implements Comparator<SelectorWrapper> {
 
+    @Override
     public int compare( SelectorWrapper selectorWrapper1, SelectorWrapper selectorWrapper2 ) {
       int result = 0;
       int specificity1 = ( ( Specific )selectorWrapper1.selector ).getSpecificity();

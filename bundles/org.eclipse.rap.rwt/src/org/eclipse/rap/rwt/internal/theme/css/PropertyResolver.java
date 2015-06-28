@@ -69,8 +69,8 @@ public final class PropertyResolver {
   /** A thick border. */
   private static final String THICK = "thick";
   private static final String TRANSPARENT = "transparent";
-  private static final Map<String,NamedColor> NAMED_COLORS = new HashMap<String,NamedColor>();
-  private static final List<String> BORDER_STYLES = new ArrayList<String>();
+  private static final Map<String,NamedColor> NAMED_COLORS = new HashMap<>();
+  private static final List<String> BORDER_STYLES = new ArrayList<>();
   /** Width value for "thin" identifier. */
   static final int THIN_VALUE = 1;
   /** Width value for "medium" identifier. */
@@ -108,7 +108,7 @@ public final class PropertyResolver {
     BORDER_STYLES.add( OUTSET );
   }
 
-  private StylePropertyMap resolvedProperties;
+  private final StylePropertyMap resolvedProperties;
 
   public PropertyResolver() {
     resolvedProperties = new StylePropertyMap();
@@ -509,7 +509,7 @@ public final class PropertyResolver {
   }
 
   static String[] readFontFamily( LexicalUnit unit ) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     LexicalUnit nextUnit = unit;
     boolean ok = true;
     String buffer = "";
@@ -648,7 +648,7 @@ public final class PropertyResolver {
   }
 
   static TreeMap<Float, String> readGradientColorsPercents( LexicalUnit unit ) {
-    TreeMap<Float, String> result = new TreeMap<Float, String>();
+    TreeMap<Float, String> result = new TreeMap<>();
     LexicalUnit nextUnit = unit;
     while( nextUnit != null ) {
       Float percent = null;
@@ -1074,7 +1074,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static String[] getGradientColors( TreeMap gradient ) {
+  private static String[] getGradientColors( TreeMap<Float, String> gradient ) {
     Object[] values = gradient.values().toArray();
     String[] result = new String[ values.length ];
     for( int i = 0; i < values.length; i++ ) {
@@ -1083,7 +1083,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static float[] getGradientPercents( TreeMap gradient ) {
+  private static float[] getGradientPercents( TreeMap<Float, String> gradient ) {
     Object[] keys = gradient.keySet().toArray();
     float[] result = new float[ keys.length ];
     for( int i = 0; i < keys.length; i++ ) {

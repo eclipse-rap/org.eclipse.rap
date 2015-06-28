@@ -57,6 +57,7 @@ public class CssBoxDimensions implements CssValue, Serializable {
     return create( top, right, bottom, left );
   }
 
+  @Override
   public String toDefaultString() {
     StringBuilder buffer = new StringBuilder();
     buffer.append( dimensions.top + "px" );

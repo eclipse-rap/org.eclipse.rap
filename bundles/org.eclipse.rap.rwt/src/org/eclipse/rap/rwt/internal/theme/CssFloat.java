@@ -40,6 +40,7 @@ public class CssFloat implements CssValue {
     return create( Float.parseFloat( input ) );
   }
 
+  @Override
   public String toDefaultString() {
     return String.valueOf( value );
   }

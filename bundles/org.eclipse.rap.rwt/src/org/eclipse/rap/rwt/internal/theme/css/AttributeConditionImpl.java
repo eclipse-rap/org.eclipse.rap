@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,30 +26,37 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt 
     this.specified = specified;
   }
 
+  @Override
   public String getLocalName() {
     return localName;
   }
 
+  @Override
   public String getNamespaceURI() {
     return null;
   }
 
+  @Override
   public boolean getSpecified() {
     return specified;
   }
 
+  @Override
   public String getValue() {
     return value;
   }
 
+  @Override
   public short getConditionType() {
     return SAC_ATTRIBUTE_CONDITION;
   }
 
+  @Override
   public int getSpecificity() {
     return ATTR_SPEC;
   }
 
+  @Override
   public String[] getConstraints() {
     if( value != null || localName == null ) {
       throw new UnsupportedOperationException();
@@ -57,6 +64,7 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt 
     return new String[] { "[" + localName };
   }
 
+  @Override
   public String toString() {
     String result;
     if( value != null ) {
@@ -66,4 +74,5 @@ public class AttributeConditionImpl implements AttributeCondition, ConditionExt 
     }
     return result;
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,12 +37,14 @@ public class SelectorFactoryImpl implements SelectorFactory {
     this.reader = reader;
   }
 
+  @Override
   public ElementSelector createElementSelector( String namespaceURI, String tagName )
     throws CSSException
   {
     return new ElementSelectorImpl( tagName );
   }
 
+  @Override
   public ConditionalSelector createConditionalSelector( SimpleSelector selector, Condition condition )
     throws CSSException
   {
@@ -52,6 +54,7 @@ public class SelectorFactoryImpl implements SelectorFactory {
   // ==========================================================================
   // Not supported by RAP
 
+  @Override
   public DescendantSelector createChildSelector( Selector parent, SimpleSelector child )
     throws CSSException
   {
@@ -61,6 +64,7 @@ public class SelectorFactoryImpl implements SelectorFactory {
     return new NullDescendantSelector();
   }
 
+  @Override
   public ElementSelector createPseudoElementSelector( String namespaceURI, String pseudoName )
     throws CSSException
   {
@@ -69,6 +73,7 @@ public class SelectorFactoryImpl implements SelectorFactory {
     return new NullElementSelector();
   }
 
+  @Override
   public DescendantSelector createDescendantSelector( Selector parent, SimpleSelector descendant )
     throws CSSException
   {
@@ -77,6 +82,7 @@ public class SelectorFactoryImpl implements SelectorFactory {
     return new NullDescendantSelector();
   }
 
+  @Override
   public SiblingSelector createDirectAdjacentSelector( short nodeType,
                                                        Selector child,
                                                        SimpleSelector directAdjacent )
@@ -90,18 +96,22 @@ public class SelectorFactoryImpl implements SelectorFactory {
   // ==========================================================================
   // Not implemented in CSS 2
 
+  @Override
   public SimpleSelector createRootNodeSelector() throws CSSException {
     throw new CSSException( "Root node selectors not supported by CSS2" );
   }
 
+  @Override
   public CharacterDataSelector createTextNodeSelector( String data ) throws CSSException {
     throw new CSSException( "Text node selectors not supported by CSS2" );
   }
 
+  @Override
   public CharacterDataSelector createCDataSectionSelector( String data ) throws CSSException {
     throw new CSSException( "CData section selectors not supported by CSS2" );
   }
 
+  @Override
   public ProcessingInstructionSelector createProcessingInstructionSelector( String target,
                                                                             String data )
     throws CSSException
@@ -109,14 +119,17 @@ public class SelectorFactoryImpl implements SelectorFactory {
     throw new CSSException( "Processing instruction selectors not supported by CSS2" );
   }
 
+  @Override
   public CharacterDataSelector createCommentSelector( String data ) throws CSSException {
     throw new CSSException( "Comment selectors not supported by CSS2" );
   }
 
+  @Override
   public SimpleSelector createAnyNodeSelector() throws CSSException {
     throw new CSSException( "Any-node selectors not supported by CSS2" );
   }
 
+  @Override
   public NegativeSelector createNegativeSelector( SimpleSelector selector ) throws CSSException {
     throw new CSSException( "Negative selectors not supported by CSS2" );
   }

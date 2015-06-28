@@ -29,6 +29,7 @@ public class CssAnimation implements CssValue {
     animations = newAnimations;
   }
 
+  @Override
   public String toDefaultString() {
     StringBuilder result = new StringBuilder();
     for( int i = 0; i < animations.length; i++ ) {
@@ -85,7 +86,7 @@ public class CssAnimation implements CssValue {
 
   public static final class Animation {
 
-    private static final String[] PREDEFINED_NAMES = new String[] {
+    private static final String[] PREDEFINED_NAMES = {
       "hoverIn",
       "hoverOut",
       "fadeIn",
@@ -102,7 +103,7 @@ public class CssAnimation implements CssValue {
       "flyOutBottom"
     };
 
-    private static final String[] PREDEFINED_TIMING_FUNCTIONS = new String[] {
+    private static final String[] PREDEFINED_TIMING_FUNCTIONS = {
       "ease",
       "linear",
       "ease-in",
@@ -122,7 +123,7 @@ public class CssAnimation implements CssValue {
       this.timingFunction = timingFunction;
     }
 
-    private void checkName( String name ) {
+    private static void checkName( String name ) {
       boolean result = false;
       if( name == null ) {
         throw new NullPointerException( "null argument" );
@@ -138,7 +139,7 @@ public class CssAnimation implements CssValue {
       }
     }
 
-    private void checkTimingFunction( String timingFunction ) {
+    private static void checkTimingFunction( String timingFunction ) {
       boolean result = false;
       if( timingFunction == null ) {
         throw new NullPointerException( "null argument" );

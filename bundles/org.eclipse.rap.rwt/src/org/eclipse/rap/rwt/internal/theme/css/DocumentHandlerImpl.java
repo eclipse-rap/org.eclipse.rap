@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,20 +36,24 @@ public class DocumentHandlerImpl implements DocumentHandler {
     styleSheetBuilder = new StyleSheetBuilder();
   }
 
+  @Override
   public void startDocument( InputSource source ) throws CSSException {
     uri = source.getURI();
     log( "=== startDocument " + uri + "===" );
   }
 
+  @Override
   public void endDocument( InputSource source ) throws CSSException {
     log( "___ endDocument ___" );
   }
 
+  @Override
   public void startSelector( SelectorList selectors ) throws CSSException {
     log( "startSelector " + toString( selectors ) );
     propertyResolver = new PropertyResolver();
   }
 
+  @Override
   public void endSelector( SelectorList selectors ) throws CSSException {
     log( "endSelector " + toString( selectors ) );
     StyleRule styleRule = new StyleRule( selectors, propertyResolver.getResolvedProperties() );
@@ -57,6 +61,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
     propertyResolver = null;
   }
 
+  @Override
   public void property( String name, LexicalUnit value, boolean important ) throws CSSException {
     log( "  property "
          + name
@@ -79,11 +84,13 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   // -- ignored --
+  @Override
   public void comment( String text ) throws CSSException {
     log( "    /*" + text + "*/" );
   }
 
   // -- unsupported --
+  @Override
   public void importStyle( String uri, SACMediaList media, String defaultNamespaceURI )
     throws CSSException
   {
@@ -91,6 +98,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
     reader.addProblem( new CSSException( "import rules not supported - ignored" ) );
   }
 
+  @Override
   public void namespaceDeclaration( String prefix, String uri ) throws CSSException {
     log( "namespaceDeclaration " + prefix + ", " + uri );
     reader.addProblem( new CSSException( "unsupported namespace declaration '"
@@ -100,34 +108,41 @@ public class DocumentHandlerImpl implements DocumentHandler {
                                          + "' - ignored" ) );
   }
 
+  @Override
   public void ignorableAtRule( String atRule ) throws CSSException {
     log( "ignorableAtRule " + atRule );
     reader.addProblem( new CSSException( "unsupported at rule '" + atRule + "' - ignored" ) );
   }
 
+  @Override
   public void startPage( String name, String pseudo_page ) throws CSSException {
     log( "startPage " + name + ", " + pseudo_page );
     reader.addProblem( new CSSException( "page rules not supported - ignored" ) );
   }
 
+  @Override
   public void endPage( String name, String pseudo_page ) throws CSSException {
     log( "endPage " + name + ", " + pseudo_page );
   }
 
+  @Override
   public void startMedia( SACMediaList media ) throws CSSException {
     log( "startMedia " + media );
     reader.addProblem( new CSSException( "media rules not supported - ignored" ) );
   }
 
+  @Override
   public void endMedia( SACMediaList media ) throws CSSException {
     log( "endMedia " + media );
   }
 
+  @Override
   public void startFontFace() throws CSSException {
     log( "startFontFace" );
     reader.addProblem( new CSSException( "font face rules not supported - ignored" ) );
   }
 
+  @Override
   public void endFontFace() throws CSSException {
     log( "end FontFace" );
   }
@@ -136,6 +151,7 @@ public class DocumentHandlerImpl implements DocumentHandler {
     return styleSheetBuilder.getStyleSheet();
   }
 
+  @SuppressWarnings( "unused" )
   private void log( String message ) {
 //    System.out.println( message );
   }

@@ -16,7 +16,7 @@ public class CssBorder implements CssValue {
 
   public static final CssBorder NONE = new CssBorder( 0, "none", null );
 
-  private static final String[] VALID_STYLES = new String[] {
+  private static final String[] VALID_STYLES = {
     "none",
     "hidden",
     "dotted",
@@ -97,6 +97,7 @@ public class CssBorder implements CssValue {
     return CssBorder.create( width, style, color );
   }
 
+  @Override
   public String toDefaultString() {
     if( width == 0 ) {
       return "none";

@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -25,7 +24,7 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 public class CssColor implements CssValue {
 
   private static final String TRANSPARENT_STR = "transparent";
-  private static final Map<String,int[]> NAMED_COLORS = new HashMap<String,int[]>();
+  private static final Map<String, int[]> NAMED_COLORS = new HashMap<>();
   public static final CssColor BLACK = new CssColor( 0, 0, 0, 1f );
   public static final CssColor WHITE = new CssColor( 255, 255, 255, 1f );
   public static final CssColor TRANSPARENT = new CssColor();
@@ -95,75 +94,65 @@ public class CssColor implements CssValue {
   }
 
   public static CssColor valueOf( String input ) {
-    CssColor result;
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
     if( TRANSPARENT_STR.equals( input ) ) {
-      result = TRANSPARENT;
+      return TRANSPARENT;
+    }
+    int red, green, blue;
+    float alpha = 1f;
+    String lowerCaseInput = input.toLowerCase( Locale.ENGLISH );
+    if( input.startsWith( "#" ) ) {
+      try {
+        if( input.length() == 7 ) {
+          red = Integer.parseInt( input.substring( 1, 3 ), 16 );
+          green = Integer.parseInt( input.substring( 3, 5 ), 16 );
+          blue = Integer.parseInt( input.substring( 5, 7 ), 16 );
+        } else if( input.length() == 4 ) {
+          red = Integer.parseInt( input.substring( 1, 2 ), 16 ) * 17;
+          green = Integer.parseInt( input.substring( 2, 3 ), 16 ) * 17;
+          blue = Integer.parseInt( input.substring( 3, 4 ), 16 ) * 17;
+        } else {
+          String message = "Illegal number of characters in color definition: " + input;
+          throw new IllegalArgumentException( message );
+        }
+      } catch( NumberFormatException e ) {
+        String message = "Illegal number format in color definition: " + input;
+        throw new IllegalArgumentException( message, e );
+      }
+    } else if( NAMED_COLORS.containsKey( lowerCaseInput ) ) {
+      int[] values = NAMED_COLORS.get( lowerCaseInput );
+      red = values[ 0 ];
+      green = values[ 1 ];
+      blue = values[ 2 ];
     } else {
-      int red, green, blue;
-      float alpha = 1f;
-      String lowerCaseInput = input.toLowerCase( Locale.ENGLISH );
-      if( input.startsWith( "#" ) ) {
+      String[] parts = input.split( "\\s*,\\s*" );
+      if( parts.length >= 3 && parts.length <= 4 ) {
         try {
-          if( input.length() == 7 ) {
-            red = Integer.parseInt( input.substring( 1, 3 ), 16 );
-            green = Integer.parseInt( input.substring( 3, 5 ), 16 );
-            blue = Integer.parseInt( input.substring( 5, 7 ), 16 );
-          } else if( input.length() == 4 ) {
-            red = Integer.parseInt( input.substring( 1, 2 ), 16 ) * 17;
-            green = Integer.parseInt( input.substring( 2, 3 ), 16 ) * 17;
-            blue = Integer.parseInt( input.substring( 3, 4 ), 16 ) * 17;
-          } else {
-            String pattern = "Illegal number of characters in color definition ''{0}''";
-            Object[] arguments = new Object[] { input };
-            String message = MessageFormat.format( pattern, arguments );
-            throw new IllegalArgumentException( message );
+          red = Integer.parseInt( parts[ 0 ] );
+          green = Integer.parseInt( parts[ 1 ] );
+          blue = Integer.parseInt( parts[ 2 ] );
+          if( parts.length == 4 ) {
+            alpha = Float.parseFloat( parts[ 3 ] );
           }
         } catch( NumberFormatException e ) {
-          String pattern = "Illegal number format in color definition ''{0}''";
-          Object[] arguments = new Object[] { input };
-          String message = MessageFormat.format( pattern, arguments );
-          throw new IllegalArgumentException( message );
+          String message = "Illegal number format in color definition: " + input;
+          throw new IllegalArgumentException( message, e );
         }
-      } else if( NAMED_COLORS.containsKey( lowerCaseInput ) ) {
-        int[] values = NAMED_COLORS.get( lowerCaseInput );
-        red = values[ 0 ];
-        green = values[ 1 ];
-        blue = values[ 2 ];
       } else {
-        String[] parts = input.split( "\\s*,\\s*" );
-        if( parts.length >= 3 && parts.length <= 4 ) {
-          try {
-            red = Integer.parseInt( parts[ 0 ] );
-            green = Integer.parseInt( parts[ 1 ] );
-            blue = Integer.parseInt( parts[ 2 ] );
-            if( parts.length == 4 ) {
-              alpha = Float.parseFloat( parts[ 3 ] );
-            }
-          } catch( NumberFormatException e ) {
-            String pattern = "Illegal number format in color definition ''{0}''";
-            Object[] arguments = new Object[] { input };
-            String message = MessageFormat.format( pattern, arguments );
-            throw new IllegalArgumentException( message );
-          }
-        } else {
-          String pattern = "Invalid color name ''{0}''";
-          Object[] arguments = new Object[] { input };
-          String message = MessageFormat.format( pattern, arguments );
-          throw new IllegalArgumentException( message );
-        }
+        String message = "Invalid color name: " + input;
+        throw new IllegalArgumentException( message );
       }
-      result = create( red, green, blue, alpha );
     }
-    return result;
+    return create( red, green, blue, alpha );
   }
 
   public boolean isTransparent() {
     return alpha == 0f;
   }
 
+  @Override
   public String toDefaultString() {
     if( isTransparent() ) {
       return TRANSPARENT_STR;

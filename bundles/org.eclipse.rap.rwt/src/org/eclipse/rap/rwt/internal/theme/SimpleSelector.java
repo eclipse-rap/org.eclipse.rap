@@ -29,6 +29,7 @@ public final class SimpleSelector implements ValueSelector {
     requiredConstraints = constraints;
   }
 
+  @Override
   public CssValue select( Widget widget, ConditionalValue... values ) {
     CssValue result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {

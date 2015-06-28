@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,18 +26,22 @@ public class ConditionalSelectorImpl implements ConditionalSelector, SelectorExt
     this.condition = condition;
   }
 
+  @Override
   public Condition getCondition() {
     return condition;
   }
 
+  @Override
   public SimpleSelector getSimpleSelector() {
     return selector;
   }
 
+  @Override
   public short getSelectorType() {
     return SAC_CONDITIONAL_SELECTOR;
   }
 
+  @Override
   public int getSpecificity() {
     Specific specificSelector = ( Specific )selector;
     Specific specificCondition = ( Specific )condition;
@@ -45,15 +49,19 @@ public class ConditionalSelectorImpl implements ConditionalSelector, SelectorExt
            + specificCondition.getSpecificity();
   }
 
+  @Override
   public String getElementName() {
     return ( ( SelectorExt )selector ).getElementName();
   }
 
+  @Override
   public String[] getConstraints() {
     return ( ( ConditionExt )condition ).getConstraints();
   }
 
+  @Override
   public String toString() {
     return selector.toString() + condition.toString();
   }
+
 }

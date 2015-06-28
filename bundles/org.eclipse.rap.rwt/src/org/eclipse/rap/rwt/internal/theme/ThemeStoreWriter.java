@@ -12,11 +12,9 @@ package org.eclipse.rap.rwt.internal.theme;
 
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -43,7 +41,7 @@ public final class ThemeStoreWriter {
 
   public String createJson() {
     CssValue[] allValues = theme.getValuesMap().getAllValues();
-    Map valuesMap = createValuesMap( allValues );
+    Map<String, JsonObject> valuesMap = createValuesMap( allValues );
     JsonObject json = new JsonObject();
     json.add( "values", createJsonFromValuesMap( valuesMap ) );
     json.add( "theme", createThemeJson() );
@@ -83,8 +81,8 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private Map createValuesMap( CssValue[] values ) {
-    Map<String,JsonObject> result = new LinkedHashMap<>();
+  private Map<String, JsonObject> createValuesMap( CssValue[] values ) {
+    Map<String, JsonObject> result = new LinkedHashMap<>();
     for( CssValue value : values ) {
       appendValueToMap( value, result );
     }
@@ -108,15 +106,10 @@ public final class ThemeStoreWriter {
     }
   }
 
-  private static JsonValue createJsonFromValuesMap( Map valuesMap ) {
+  private static JsonValue createJsonFromValuesMap( Map<String, JsonObject> valuesMap ) {
     JsonObject result = new JsonObject();
-    Set entrySet = valuesMap.entrySet();
-    Iterator keyIterator = entrySet.iterator();
-    while( keyIterator.hasNext() ) {
-      Entry entry = ( Entry )keyIterator.next();
-      String key = ( String )entry.getKey();
-      JsonValue value = ( JsonValue )entry.getValue();
-      result.add( key, value );
+    for( Entry<String, JsonObject> entry : valuesMap.entrySet() ) {
+      result.add( entry.getKey(), entry.getValue() );
     }
     return result;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,12 +45,13 @@ public class ThemeManager {
 
   public static final ResourceLoader STANDARD_RESOURCE_LOADER = new ResourceLoader() {
     ClassLoader classLoader = getClass().getClassLoader();
+    @Override
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return classLoader.getResourceAsStream( resourceName );
     }
   };
 
-  private static final Class[] THEMEABLE_WIDGETS = new Class[]{
+  private static final Class<?>[] THEMEABLE_WIDGETS = {
     org.eclipse.swt.widgets.Widget.class,
     org.eclipse.swt.widgets.Control.class,
     org.eclipse.swt.widgets.Composite.class,
@@ -95,11 +96,11 @@ public class ThemeManager {
   private boolean initialized;
 
   public ThemeManager() {
-    themes = new HashMap<String, Theme>();
+    themes = new HashMap<>();
     themeableWidgets = new ThemeableWidgetHolder();
-    appearances = new ArrayList<String>();
+    appearances = new ArrayList<>();
     themeAdapterManager = new ThemeAdapterManager();
-    resolvedPackageNames = new HashMap<String, String>();
+    resolvedPackageNames = new HashMap<>();
     initialized = false;
     createAndAddFallbackTheme();
     addDefaultThemableWidgets();
@@ -150,7 +151,7 @@ public class ThemeManager {
    * @throws IllegalArgumentException if the given widget is not a subtype of
    *           {@link Widget}
    */
-  public void addThemeableWidget( Class widget, ResourceLoader loader ) {
+  public void addThemeableWidget( Class<? extends Widget> widget, ResourceLoader loader ) {
     checkNotInitialized();
     ParamCheck.notNull( widget, "widget" );
     ParamCheck.notNull( loader, "loader" );
@@ -178,7 +179,7 @@ public class ThemeManager {
     String id = theme.getId();
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
-      Object[] arguments = new Object[]{ id };
+      Object[] arguments = { id };
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
@@ -222,7 +223,7 @@ public class ThemeManager {
     return themes.keySet().toArray( result );
   }
 
-  public ThemeableWidget getThemeableWidget( Class widget ) {
+  public ThemeableWidget getThemeableWidget( Class<? extends Widget> widget ) {
     return themeableWidgets.get( widget );
   }
 
@@ -252,9 +253,10 @@ public class ThemeManager {
     }
   }
 
+  @SuppressWarnings( "unchecked" )
   private void addDefaultThemableWidgets() {
-    for( Class widget : THEMEABLE_WIDGETS ) {
-      addThemeableWidget( widget, STANDARD_RESOURCE_LOADER );
+    for( Class<?> widget : THEMEABLE_WIDGETS ) {
+      addThemeableWidget( (Class<? extends Widget>)widget, STANDARD_RESOURCE_LOADER );
     }
   }
 

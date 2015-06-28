@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ public class StyleSheetBuilder {
   private final List<StyleRule> rulesList;
 
   public StyleSheetBuilder() {
-    rulesList = new ArrayList<StyleRule>();
+    rulesList = new ArrayList<>();
   }
 
   public void addStyleSheet( StyleSheet styleSheet ) {
@@ -41,4 +41,5 @@ public class StyleSheetBuilder {
     StyleRule[] styleRules = rulesList.toArray( new StyleRule[ rulesList.size() ] );
     return new StyleSheet( styleRules );
   }
+
 }

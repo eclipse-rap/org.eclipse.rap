@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,24 +25,29 @@ public class AndConditionImpl implements CombinatorCondition, ConditionExt {
     this.second = second;
   }
 
+  @Override
   public Condition getFirstCondition() {
     return first;
   }
 
+  @Override
   public Condition getSecondCondition() {
     return second;
   }
 
+  @Override
   public short getConditionType() {
     return SAC_AND_CONDITION;
   }
 
+  @Override
   public int getSpecificity() {
     Specific specificFirst = ( Specific )first;
     Specific specificSecond = ( Specific )second;
     return specificFirst.getSpecificity() + specificSecond.getSpecificity();
   }
 
+  @Override
   public String[] getConstraints() {
     String[] cond1 = ( ( ConditionExt )first ).getConstraints();
     String[] cond2 = ( ( ConditionExt )second ).getConstraints();
@@ -52,7 +57,9 @@ public class AndConditionImpl implements CombinatorCondition, ConditionExt {
     return result;
   }
 
+  @Override
   public String toString() {
     return first.toString() + second.toString();
   }
+
 }

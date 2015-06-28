@@ -17,12 +17,12 @@ import org.eclipse.rap.rwt.service.ResourceLoader;
 
 final class ThemeableWidget {
 
-  final Class widget;
+  final Class<?> widget;
   final ResourceLoader loader;
   CssElement[] elements;
   StyleSheet defaultStyleSheet;
 
-  ThemeableWidget( Class widget, ResourceLoader loader ) {
+  ThemeableWidget( Class<?> widget, ResourceLoader loader ) {
     this.widget = widget;
     this.loader = loader;
   }

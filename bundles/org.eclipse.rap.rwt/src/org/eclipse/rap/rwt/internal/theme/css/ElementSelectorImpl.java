@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,31 +23,39 @@ public class ElementSelectorImpl implements ElementSelector, SelectorExt {
     this.tagName = tagName;
   }
 
+  @Override
   public String getLocalName() {
     return tagName;
   }
 
+  @Override
   public String getNamespaceURI() {
     return null;
   }
 
+  @Override
   public short getSelectorType() {
     return SAC_ELEMENT_NODE_SELECTOR;
   }
 
+  @Override
   public int getSpecificity() {
     return tagName != null ? ELEMENT_SPEC : 0;
   }
 
+  @Override
   public String getElementName() {
     return tagName;
   }
 
+  @Override
   public String[] getConstraints() {
     return EMPTY_STRING_ARRAY;
   }
 
+  @Override
   public String toString() {
     return tagName != null ? tagName : "*";
   }
+
 }

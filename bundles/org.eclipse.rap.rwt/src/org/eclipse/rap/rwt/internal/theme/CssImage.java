@@ -118,6 +118,7 @@ public class CssImage implements CssValue, ThemeResource {
     return size;
   }
 
+  @Override
   public String getResourcePath( ApplicationContext applicationContext ) {
     String result = null;
     if( !none && path != null ) {
@@ -130,6 +131,7 @@ public class CssImage implements CssValue, ThemeResource {
     return result;
   }
 
+  @Override
   public InputStream getResourceAsStream() throws IOException {
     InputStream inputStream = null;
     if( !none && path != null ) {
@@ -138,6 +140,7 @@ public class CssImage implements CssValue, ThemeResource {
     return inputStream;
   }
 
+  @Override
   public String toDefaultString() {
     // returns an empty string, because the default resource path is only valid
     // for the bundle that specified it

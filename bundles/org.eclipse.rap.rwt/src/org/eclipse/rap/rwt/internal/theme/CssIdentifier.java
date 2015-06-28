@@ -19,6 +19,7 @@ public class CssIdentifier implements CssValue {
     this.value = value;
   }
 
+  @Override
   public String toDefaultString() {
     return value;
   }

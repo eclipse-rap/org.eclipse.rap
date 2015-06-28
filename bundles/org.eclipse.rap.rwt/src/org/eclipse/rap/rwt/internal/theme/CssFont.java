@@ -56,7 +56,7 @@ public class CssFont implements CssValue {
     if( input.trim().length() == 0 ) {
       throw new IllegalArgumentException( "Empty font definition" );
     }
-    List<String> family = new ArrayList<String>();
+    List<String> family = new ArrayList<>();
     int size = 0;
     boolean bold = false;
     boolean italic = false;
@@ -109,6 +109,7 @@ public class CssFont implements CssValue {
     return familyAsString;
   }
 
+  @Override
   public String toDefaultString() {
     StringBuilder result = new StringBuilder();
     if( bold ) {

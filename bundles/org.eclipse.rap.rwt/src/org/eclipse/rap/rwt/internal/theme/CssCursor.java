@@ -22,7 +22,7 @@ public class CssCursor implements CssValue, ThemeResource {
 
   private static final String CURSOR_DEST_PATH = "themes/cursors";
 
-  private static final String[] PREDEFINED_CURSORS = new String[] {
+  private static final String[] PREDEFINED_CURSORS = {
     "default",
     "wait",
     "crosshair",
@@ -99,6 +99,7 @@ public class CssCursor implements CssValue, ThemeResource {
     return !isPredefinedCursor( value );
   }
 
+  @Override
   public String getResourcePath( ApplicationContext applicationContext ) {
     String result = null;
     if( isCustomCursor() ) {
@@ -111,6 +112,7 @@ public class CssCursor implements CssValue, ThemeResource {
     return result;
   }
 
+  @Override
   public InputStream getResourceAsStream() throws IOException {
     InputStream inputStream = null;
     if( isCustomCursor() ) {
@@ -137,6 +139,7 @@ public class CssCursor implements CssValue, ThemeResource {
     return value.hashCode();
   }
 
+  @Override
   public String toDefaultString() {
     // returns an empty string for custom cursor , because the default resource
     // path is only valid for the bundle that specified it

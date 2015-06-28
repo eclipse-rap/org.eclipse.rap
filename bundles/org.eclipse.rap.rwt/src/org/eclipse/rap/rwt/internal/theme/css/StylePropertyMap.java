@@ -24,7 +24,7 @@ public class StylePropertyMap {
   private final Map<String, CssValue> properties;
 
   public StylePropertyMap() {
-    properties = new HashMap<String, CssValue>();
+    properties = new HashMap<>();
   }
 
   public void setProperty( String key, CssValue value ) {

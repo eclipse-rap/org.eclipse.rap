@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.w3c.css.sac.Parser;
 
 
 public class CssFileReader {
+
   private static final String CSS_ENCODING = "UTF-8";
 
   private final List<CSSException> problems;
@@ -40,7 +41,7 @@ public class CssFileReader {
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to instantiate CSS parser", e );
     }
-    problems = new ArrayList<CSSException>();
+    problems = new ArrayList<>();
   }
 
   /**
@@ -130,18 +131,21 @@ public class CssFileReader {
     }
 
     // TODO [rst] decent logging instead of sysout
+    @Override
     public void warning( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "WARNING: ", exception );
       System.err.println( problem );
       problems.add( exception );
     }
 
+    @Override
     public void error( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "ERROR: ", exception );
       System.err.println( problem );
       problems.add( exception );
     }
 
+    @Override
     public void fatalError( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "FATAL ERROR: ", exception );
       System.err.println( problem );
@@ -151,7 +155,7 @@ public class CssFileReader {
 
     private static String createProblemDescription( String type, CSSParseException exception ) {
       String pattern = "{0}: {1} in {2} at pos [{3}:{4}]";
-      Object[] arguments = new Object[]{
+      Object[] arguments = {
         type,
         exception.getMessage(),
         exception.getURI(),
@@ -161,4 +165,5 @@ public class CssFileReader {
       return MessageFormat.format( pattern, arguments );
     }
   }
+
 }

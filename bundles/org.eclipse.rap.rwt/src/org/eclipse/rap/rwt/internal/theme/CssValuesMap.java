@@ -86,7 +86,7 @@ public final class CssValuesMap {
     }
   }
 
-  private ConditionalValue[] filterValues( ConditionalValue[] values, CssElement element ) {
+  private static ConditionalValue[] filterValues( ConditionalValue[] values, CssElement element ) {
     Collection<ConditionalValue> resultList = new ArrayList<>();
     String[] latestConstraint = null;
     for( ConditionalValue value : values ) {

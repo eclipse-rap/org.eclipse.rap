@@ -17,8 +17,8 @@ public class CssBoolean implements CssValue {
   public static final CssBoolean TRUE = new CssBoolean( true );
   public static final CssBoolean FALSE = new CssBoolean( false );
 
-  private static final String[] VALID_TRUE_STRINGS = new String[] { "true", "yes", "on" };
-  private static final String[] VALID_FALSE_STRINGS = new String[] { "false", "no", "off" };
+  private static final String[] VALID_TRUE_STRINGS = { "true", "yes", "on" };
+  private static final String[] VALID_FALSE_STRINGS = { "false", "no", "off" };
 
   public final boolean value;
 
@@ -30,6 +30,7 @@ public class CssBoolean implements CssValue {
     return evalInput( input ) ? TRUE : FALSE;
   }
 
+  @Override
   public String toDefaultString() {
     return value ? VALID_TRUE_STRINGS[ 0 ] : VALID_FALSE_STRINGS[ 0 ];
   }

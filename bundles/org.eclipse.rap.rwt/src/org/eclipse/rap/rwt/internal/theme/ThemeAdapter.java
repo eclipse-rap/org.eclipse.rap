@@ -35,7 +35,7 @@ public abstract class ThemeAdapter {
    * Returns the name of the main CSS element for a given widget.
    */
   public static String getPrimaryElement( Widget widget ) {
-    Class widgetClass = widget.getClass();
+    Class<?> widgetClass = widget.getClass();
     ThemeableWidget thWidget = findThemeableWidget( widget );
     if( thWidget == null || thWidget.elements == null ) {
       throw new RuntimeException( "No themeable widget found for " + widgetClass.getName() );
@@ -92,14 +92,15 @@ public abstract class ThemeAdapter {
     return image.getSize();
   }
 
+  @SuppressWarnings( "unchecked" )
   private static ThemeableWidget findThemeableWidget( Widget widget ) {
     ThemeableWidget result;
-    Class widgetClass = widget.getClass();
+    Class<?> widgetClass = widget.getClass();
     ThemeManager manager = getApplicationContext().getThemeManager();
-    result = manager.getThemeableWidget( widgetClass );
+    result = manager.getThemeableWidget( ( Class<? extends Widget> )widgetClass );
     while( ( result == null || result.elements == null ) && widgetClass.getSuperclass() != null ) {
       widgetClass = widgetClass.getSuperclass();
-      result = manager.getThemeableWidget( widgetClass );
+      result = manager.getThemeableWidget( ( Class<? extends Widget> )widgetClass );
     }
     return result;
   }

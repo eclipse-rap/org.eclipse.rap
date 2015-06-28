@@ -80,7 +80,7 @@ public class Theme {
     styleSheetBuilder = null;
   }
 
-  private CssElement[] extractElements( ThemeableWidget[] themeableWidgets ) {
+  private static CssElement[] extractElements( ThemeableWidget[] themeableWidgets ) {
     CssElementHolder elements = new CssElementHolder();
     for( ThemeableWidget themeableWidget : themeableWidgets ) {
       if( themeableWidget.elements != null ) {
@@ -166,16 +166,14 @@ public class Theme {
   }
 
   private static String createUniqueJsId( String id ) {
-    String result;
     if( RWT.DEFAULT_THEME_ID.equals( id ) ) {
-      result = JS_THEME_PREFIX + "Default";
-    } else if( ThemeManager.FALLBACK_THEME_ID.equals( id ) ) {
-      result = JS_THEME_PREFIX + "Fallback";
-    } else {
-      String hash = Integer.toHexString( id.hashCode() );
-      result = JS_THEME_PREFIX + "Custom_" + hash;
+      return JS_THEME_PREFIX + "Default";
     }
-    return result;
+    if( ThemeManager.FALLBACK_THEME_ID.equals( id ) ) {
+      return JS_THEME_PREFIX + "Fallback";
+    }
+    String hash = Integer.toHexString( id.hashCode() );
+    return JS_THEME_PREFIX + "Custom_" + hash;
   }
 
 }

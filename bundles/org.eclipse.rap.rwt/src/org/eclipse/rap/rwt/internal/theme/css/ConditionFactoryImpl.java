@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,18 +34,21 @@ public class ConditionFactoryImpl implements ConditionFactory {
     this.reader = reader;
   }
 
+  @Override
   public AttributeCondition createClassCondition( String namespaceURI, String value )
     throws CSSException
   {
     return new ClassConditionImpl( value );
   }
 
+  @Override
   public AttributeCondition createPseudoClassCondition( String namespaceURI, String value )
     throws CSSException
   {
     return new PseudoClassConditionImpl( value );
   }
 
+  @Override
   public AttributeCondition createAttributeCondition( String localName,
                                                       String namespaceURI,
                                                       boolean specified,
@@ -54,6 +57,7 @@ public class ConditionFactoryImpl implements ConditionFactory {
     return new AttributeConditionImpl( localName, value, specified );
   }
 
+  @Override
   public AttributeCondition createOneOfAttributeCondition( String localName,
                                                            String namespaceURI,
                                                            boolean specified,
@@ -62,6 +66,7 @@ public class ConditionFactoryImpl implements ConditionFactory {
     return new OneOfAttributeCondition( localName, value, specified );
   }
 
+  @Override
   public CombinatorCondition createAndCondition( Condition first, Condition second )
     throws CSSException
   {
@@ -71,18 +76,21 @@ public class ConditionFactoryImpl implements ConditionFactory {
   // ==========================================================================
   // Not supported by RAP
 
+  @Override
   public LangCondition createLangCondition( String lang ) throws CSSException {
     String mesg = "Lang conditions not supported by RAP - ignored";
     reader.addProblem( new CSSException( mesg ) );
     return new NullLangCondition();
   }
 
+  @Override
   public AttributeCondition createIdCondition( String value ) throws CSSException {
     String mesg = "Id conditions not supported by RAP - ignored";
     reader.addProblem( new CSSException( mesg ) );
     return new NullAttributeCondition();
   }
 
+  @Override
   public AttributeCondition createBeginHyphenAttributeCondition( String localName,
                                                                  String namespaceURI,
                                                                  boolean specified,
@@ -96,31 +104,38 @@ public class ConditionFactoryImpl implements ConditionFactory {
   // ==========================================================================
   // Not supported by CSS 2
 
+  @Override
   public CombinatorCondition createOrCondition( Condition first, Condition second )
     throws CSSException
   {
     throw new CSSException( "Or conditions not supported by CSS2" );
   }
 
+  @Override
   public NegativeCondition createNegativeCondition( Condition condition ) throws CSSException {
     throw new CSSException( "Negative conditions not supported by CSS2" );
   }
 
+  @Override
   public PositionalCondition createPositionalCondition( int position, boolean typeNode, boolean type )
     throws CSSException
   {
     throw new CSSException( "Positional conditions not supported by CSS2" );
   }
 
+  @Override
   public Condition createOnlyChildCondition() throws CSSException {
     throw new CSSException( "Only-one-child conditions not supported by CSS2" );
   }
 
+  @Override
   public Condition createOnlyTypeCondition() throws CSSException {
     throw new CSSException( "Only-one-type conditions not supported by CSS2" );
   }
 
+  @Override
   public ContentCondition createContentCondition( String data ) throws CSSException {
     throw new CSSException( "Content conditions not supported by CSS2" );
   }
+
 }

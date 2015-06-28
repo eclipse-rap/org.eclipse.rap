@@ -43,6 +43,7 @@ public final class WidgetMatcher implements ValueSelector {
     constraintMap.put( ":" + string, constraint );
   }
 
+  @Override
   public CssValue select( Widget widget, ConditionalValue... values ) {
     CssValue result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
@@ -76,6 +77,7 @@ public final class WidgetMatcher implements ValueSelector {
 
   private static Constraint createStyleConstraint( final int style ) {
     return new Constraint() {
+      @Override
       public boolean matches( Widget widget ) {
         return ( widget.getStyle() & style ) != 0;
       }
@@ -84,6 +86,7 @@ public final class WidgetMatcher implements ValueSelector {
 
   private static Constraint createVariantConstraint( final String variant ) {
     return new Constraint() {
+      @Override
       public boolean matches( Widget widget ) {
         return hasVariant( widget, variant );
       }
