@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ public class ConnectionImpl implements Connection, Serializable {
     this.uiSession = uiSession;
   }
 
+  @Override
   public RemoteObject createRemoteObject( String remoteType ) {
     ParamCheck.notNullOrEmpty( remoteType, "type" );
     String id = IdGenerator.getInstance( uiSession ).createId( "r" );

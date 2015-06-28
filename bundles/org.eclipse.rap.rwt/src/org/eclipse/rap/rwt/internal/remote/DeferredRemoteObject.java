@@ -30,10 +30,11 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   private boolean created;
 
   public DeferredRemoteObject( final String id, final String createType ) {
-    super( id, createType );
-    renderQueue = new ArrayList<RenderRunnable>();
+    super( id );
+    renderQueue = new ArrayList<>();
     if( createType != null ) {
       renderQueue.add( new RenderRunnable() {
+        @Override
         public void render( ProtocolMessageWriter writer ) {
           writer.appendCreate( id, createType );
         }
@@ -45,6 +46,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void set( final String name, final int value ) {
     super.set( name, value );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( getId(), name, value );
       }
@@ -55,6 +57,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void set( final String name, final double value ) {
     super.set( name, value );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( getId(), name, value );
       }
@@ -65,6 +68,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void set( final String name, final boolean value ) {
     super.set( name, value );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( getId(), name, value );
       }
@@ -75,6 +79,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void set( final String name, final String value ) {
     super.set( name, value );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( getId(), name, value );
       }
@@ -85,6 +90,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void set( final String name, final JsonValue value ) {
     super.set( name, value );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendSet( getId(), name, value );
       }
@@ -95,6 +101,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void listen( final String eventType, final boolean listen ) {
     super.listen( eventType, listen );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendListen( getId(), eventType, listen );
       }
@@ -105,6 +112,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void call( final String method, final JsonObject parameters ) {
     super.call( method, parameters );
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendCall( getId(), method, parameters );
       }
@@ -115,6 +123,7 @@ public class DeferredRemoteObject extends RemoteObjectImpl {
   public void destroy() {
     super.destroy();
     renderQueue.add( new RenderRunnable() {
+      @Override
       public void render( ProtocolMessageWriter writer ) {
         writer.appendDestroy( getId() );
       }

@@ -25,7 +25,7 @@ public final class StylesUtil {
   private static final Map<String, Integer> availableStyles;
 
   static {
-    availableStyles = new LinkedHashMap<String, Integer>();
+    availableStyles = new LinkedHashMap<>();
     initializeAvailableStyles();
   }
 
@@ -45,8 +45,8 @@ public final class StylesUtil {
       Integer value = Integer.valueOf( constant.getInt( null ) ); // use null because we access statics
       availableStyles.put( styleName, value );
     } catch( Exception e ) {
-      String causeMessage = "Could not initialize SWT styles map with constant " + styleName;
-      throw new RuntimeException( causeMessage );
+      String message = "Could not initialize SWT styles map with constant " + styleName;
+      throw new RuntimeException( message, e );
     }
   }
 
@@ -64,7 +64,7 @@ public final class StylesUtil {
   }
 
   private static List<String> findContainedStyles( int styles, String... allowedStyles ) {
-    List<String> containedStyles = new ArrayList<String>();
+    List<String> containedStyles = new ArrayList<>();
     for( String allowedStyle : allowedStyles ) {
       Integer object = availableStyles.get( allowedStyle );
       if( object == null ) {
@@ -80,4 +80,5 @@ public final class StylesUtil {
   private StylesUtil() {
     // prevent instantiation
   }
+
 }

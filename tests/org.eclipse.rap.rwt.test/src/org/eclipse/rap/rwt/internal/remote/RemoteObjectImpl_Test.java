@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public class RemoteObjectImpl_Test {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     objectId = "testId";
-    remoteObject = new RemoteObjectImpl( objectId, "type" ) {};
+    remoteObject = new RemoteObjectImpl( objectId ) {};
   }
 
   @After
@@ -48,7 +48,7 @@ public class RemoteObjectImpl_Test {
 
   @Test
   public void testGetId() {
-    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id", "type" ) {};
+    RemoteObjectImpl remoteObject = new RemoteObjectImpl( "id" ) {};
 
     String id = remoteObject.getId();
 

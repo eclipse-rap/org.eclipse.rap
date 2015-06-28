@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class RemoteObjectRegistry implements Serializable {
     // TODO [rst] This is a linked list in order to provide an ordered list of remote objects to
     //            iterate in the render phase. Once messages are rendered directly, this doesn't
     //            have to be a linked list anymore.
-    remoteObjects = new LinkedHashMap<String, RemoteObjectImpl>();
+    remoteObjects = new LinkedHashMap<>();
   }
 
   public static RemoteObjectRegistry getInstance() {
@@ -61,7 +61,7 @@ public class RemoteObjectRegistry implements Serializable {
   }
 
   public List<RemoteObjectImpl> getRemoteObjects() {
-    return new ArrayList<RemoteObjectImpl>( remoteObjects.values() );
+    return new ArrayList<>( remoteObjects.values() );
   }
 
 }

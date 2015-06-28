@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,12 +37,12 @@ public class ClientMessage extends RequestMessage {
   }
 
   private void createOperationsIndex() {
-    index = new HashMap<String, List<Operation>>();
+    index = new HashMap<>();
     for( Operation operation : getOperations() ) {
       String target = operation.getTarget();
       List<Operation> targetOperations = index.get( target );
       if( targetOperations == null ) {
-        targetOperations = new ArrayList<Operation>();
+        targetOperations = new ArrayList<>();
       }
       targetOperations.add( operation );
       index.put( target, targetOperations );
@@ -58,7 +58,7 @@ public class ClientMessage extends RequestMessage {
   }
 
   public List<CallOperation> getAllCallOperationsFor( String target, String methodName ) {
-    List<CallOperation> result = new ArrayList<CallOperation>();
+    List<CallOperation> result = new ArrayList<>();
     List<Operation> selected = target == null ? getOperations() : index.get( target );
     if( selected != null ) {
       for( Operation operation : selected ) {

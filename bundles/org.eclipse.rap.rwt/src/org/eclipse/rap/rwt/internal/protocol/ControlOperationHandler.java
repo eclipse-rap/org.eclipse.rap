@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,6 +190,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   /*
    * PROTOCOL NOTIFY FocusIn
    */
+  @SuppressWarnings( "unused" )
   public void handleNotifyFocusIn( T control, JsonObject properties ) {
     control.notifyListeners( SWT.FocusIn, new Event() );
   }
@@ -197,6 +198,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   /*
    * PROTOCOL NOTIFY FocusOut
    */
+  @SuppressWarnings( "unused" )
   public void handleNotifyFocusOut( T control, JsonObject properties ) {
     control.notifyListeners( SWT.FocusOut, new Event() );
   }
@@ -295,6 +297,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   /*
    * PROTOCOL NOTIFY Help
    */
+  @SuppressWarnings( "unused" )
   public void handleNotifyHelp( T control, JsonObject properties ) {
     control.notifyListeners( SWT.Help, new Event() );
   }
@@ -304,6 +307,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    *
    * ignored, Activate event is fired when set activeControl
    */
+  @SuppressWarnings( "unused" )
   public void handleNotifyActivate( T control, JsonObject properties ) {
   }
 
@@ -312,6 +316,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
    *
    * ignored, Deactivate event is fired when set activeControl
    */
+  @SuppressWarnings( "unused" )
   public void handleNotifyDeactivate( T control, JsonObject properties ) {
   }
 
@@ -332,6 +337,7 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     return event;
   }
 
+  @SuppressWarnings( "unused" )
   protected boolean allowMouseEvent( T control, int x, int y ) {
     return x >= 0 && y >= 0;
   }
@@ -390,122 +396,89 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
   }
 
   static int getTraverseKey( int keyCode, int stateMask ) {
-    int result = SWT.TRAVERSE_NONE;
     switch( keyCode ) {
       case 27:
-        result = SWT.TRAVERSE_ESCAPE;
-      break;
+        return SWT.TRAVERSE_ESCAPE;
       case 13:
-        result = SWT.TRAVERSE_RETURN;
-      break;
+        return SWT.TRAVERSE_RETURN;
       case 9:
         if( ( stateMask & SWT.MODIFIER_MASK ) == 0 ) {
-          result = SWT.TRAVERSE_TAB_NEXT;
-        } else if( stateMask == SWT.SHIFT ) {
-          result = SWT.TRAVERSE_TAB_PREVIOUS;
+          return SWT.TRAVERSE_TAB_NEXT;
         }
-      break;
+        if( stateMask == SWT.SHIFT ) {
+          return SWT.TRAVERSE_TAB_PREVIOUS;
+        }
+        return SWT.TRAVERSE_NONE;
+      default:
+        return SWT.TRAVERSE_NONE;
     }
-    return result;
   }
 
   static int translateKeyCode( int keyCode ) {
-    int result;
     switch( keyCode ) {
       case 16:
-        result = SWT.SHIFT;
-      break;
+        return SWT.SHIFT;
       case 17:
-        result = SWT.CONTROL;
-      break;
+        return SWT.CONTROL;
       case 18:
-        result = SWT.ALT;
-      break;
+        return SWT.ALT;
       case 20:
-        result = SWT.CAPS_LOCK;
-      break;
+        return SWT.CAPS_LOCK;
       case 38:
-        result = SWT.ARROW_UP;
-      break;
+        return SWT.ARROW_UP;
       case 37:
-        result = SWT.ARROW_LEFT;
-      break;
+        return SWT.ARROW_LEFT;
       case 39:
-        result = SWT.ARROW_RIGHT;
-      break;
+        return SWT.ARROW_RIGHT;
       case 40:
-        result = SWT.ARROW_DOWN;
-      break;
+        return SWT.ARROW_DOWN;
       case 33:
-        result = SWT.PAGE_UP;
-      break;
+        return SWT.PAGE_UP;
       case 34:
-        result = SWT.PAGE_DOWN;
-      break;
+        return SWT.PAGE_DOWN;
       case 35:
-        result = SWT.END;
-      break;
+        return SWT.END;
       case 36:
-        result = SWT.HOME;
-      break;
+        return SWT.HOME;
       case 45:
-        result = SWT.INSERT;
-      break;
+        return SWT.INSERT;
       case 46:
-        result = SWT.DEL;
-      break;
+        return SWT.DEL;
       case 112:
-        result = SWT.F1;
-      break;
+        return SWT.F1;
       case 113:
-        result = SWT.F2;
-      break;
+        return SWT.F2;
       case 114:
-        result = SWT.F3;
-      break;
+        return SWT.F3;
       case 115:
-        result = SWT.F4;
-      break;
+        return SWT.F4;
       case 116:
-        result = SWT.F5;
-      break;
+        return SWT.F5;
       case 117:
-        result = SWT.F6;
-      break;
+        return SWT.F6;
       case 118:
-        result = SWT.F7;
-      break;
+        return SWT.F7;
       case 119:
-        result = SWT.F8;
-      break;
+        return SWT.F8;
       case 120:
-        result = SWT.F9;
-      break;
+        return SWT.F9;
       case 121:
-        result = SWT.F10;
-      break;
+        return SWT.F10;
       case 122:
-        result = SWT.F11;
-      break;
+        return SWT.F11;
       case 123:
-        result = SWT.F12;
-      break;
+        return SWT.F12;
       case 144:
-        result = SWT.NUM_LOCK;
-      break;
+        return SWT.NUM_LOCK;
       case 44:
-        result = SWT.PRINT_SCREEN;
-      break;
+        return SWT.PRINT_SCREEN;
       case 145:
-        result = SWT.SCROLL_LOCK;
-      break;
+        return SWT.SCROLL_LOCK;
       case 19:
-        result = SWT.PAUSE;
-      break;
+        return SWT.PAUSE;
       default:
-        result = keyCode;
+        return keyCode;
     }
-    return result;
   }
 
   private static char translateCharacter( int keyCode ) {

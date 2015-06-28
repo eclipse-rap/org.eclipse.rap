@@ -35,9 +35,10 @@ public final class ProtocolUtil {
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
   //                improves performance - still under investigation.
   private final static SharedInstanceBuffer<String,String[]> parsedFonts
-    = new SharedInstanceBuffer<String,String[]>();
+    = new SharedInstanceBuffer<>();
   private final static InstanceCreator<String, String[]> parsedFontsCreator
     = new InstanceCreator<String, String[]>() {
+    @Override
     public String[] createInstance( String name ) {
       return parseFontNameInternal( name );
     }

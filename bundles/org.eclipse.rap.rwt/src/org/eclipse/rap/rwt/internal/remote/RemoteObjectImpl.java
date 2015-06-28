@@ -26,51 +26,60 @@ public abstract class RemoteObjectImpl implements RemoteObject, Serializable {
   private boolean destroyed;
   private OperationHandler handler;
 
-  public RemoteObjectImpl( final String id, final String createType ) {
+  public RemoteObjectImpl( String id ) {
     this.id = id;
     destroyed = false;
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public void set( final String name, final int value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
   }
 
+  @Override
   public void set( final String name, final double value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
   }
 
+  @Override
   public void set( final String name, final boolean value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
   }
 
+  @Override
   public void set( final String name, final String value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     checkState();
   }
 
+  @Override
   public void set( final String name, final JsonValue value ) {
     ParamCheck.notNullOrEmpty( name, "name" );
     ParamCheck.notNull( value, "value" );
     checkState();
   }
 
+  @Override
   public void listen( final String eventType, final boolean listen ) {
     ParamCheck.notNullOrEmpty( eventType, "eventType" );
     checkState();
   }
 
+  @Override
   public void call( final String method, final JsonObject parameters ) {
     ParamCheck.notNullOrEmpty( method, "method" );
     checkState();
   }
 
+  @Override
   public void destroy() {
     checkState();
     destroyed = true;
@@ -88,6 +97,7 @@ public abstract class RemoteObjectImpl implements RemoteObject, Serializable {
     destroyed = true;
   }
 
+  @Override
   public void setHandler( OperationHandler handler ) {
     this.handler = handler;
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,14 +51,34 @@ public abstract class WidgetOperationHandler<T extends Widget> extends AbstractO
     handleNotify( widget, eventName, properties );
   }
 
+  /**
+   * Handles a set operation for the given widget. To be implemented by subclasses.
+   *
+   * @param widget the widget that receives the operation
+   * @param properties the properties to be set on the widget
+   */
   public void handleSet( T widget, JsonObject properties ) {
     throw new UnsupportedOperationException( "set operations not supported by this handler" );
   }
 
+  /**
+   * Handles a call operation for the given widget. To be implemented by subclasses.
+   *
+   * @param widget the widget that receives the operation
+   * @param method the method that is called
+   * @param parameters the named method parameters
+   */
   public void handleCall( T widget, String method, JsonObject parameters ) {
     throw new UnsupportedOperationException( "call operations not supported by this handler" );
   }
 
+  /**
+   * Handles a notify operation for the given widget. To be implemented by subclasses.
+   *
+   * @param widget the widget that receives the operation
+   * @param eventName the event that the widget is notified of
+   * @param properties the named event properties
+   */
   public void handleNotify( T widget, String eventName, JsonObject properties ) {
     throw new UnsupportedOperationException( "notify operations not supported by this handler" );
   }
