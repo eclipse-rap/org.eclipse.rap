@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,24 +21,21 @@ public final class ClassUtil {
   public static Object newInstance( ClassLoader classLoader, String className ) {
     ParamCheck.notNull( className, "className" );
     ParamCheck.notNull( classLoader, "classLoader" );
-    Class<?> type;
     try {
-      type = classLoader.loadClass( className );
+      return newInstance( classLoader.loadClass( className ) );
     } catch( ClassNotFoundException cnfe ) {
       throw new ClassInstantiationException( "Failed to load type: " + className, cnfe );
     }
-    return newInstance( type );
   }
 
   public static <T> T newInstance( Class<T> type ) {
     return newInstance( type, null, null );
   }
 
-  public static <T> T newInstance( Class<T> type, Class[] paramTypes, Object[] paramValues ) {
+  public static <T> T newInstance( Class<T> type, Class<?>[] paramTypes, Object[] paramValues ) {
     ParamCheck.notNull( type, "type" );
-    T result = null;
     try {
-      result = createInstance( type, paramTypes, paramValues );
+      return createInstance( type, paramTypes, paramValues );
     } catch( RuntimeException rte ) {
       throw rte;
     } catch( InvocationTargetException ite ) {
@@ -47,10 +44,10 @@ public final class ClassUtil {
     } catch( Exception exception ) {
       throwInstantiationException( type, exception );
     }
-    return result;
+    return null;
   }
 
-  private static <T> T createInstance( Class<T> type, Class[] paramTypes, Object[] paramValues )
+  private static <T> T createInstance( Class<T> type, Class<?>[] paramTypes, Object[] paramValues )
     throws Exception
   {
     Constructor<T> constructor = type.getDeclaredConstructor( paramTypes );
@@ -74,4 +71,5 @@ public final class ClassUtil {
   private ClassUtil() {
     // prevent instantiation
   }
+
 }

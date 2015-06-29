@@ -53,8 +53,8 @@ class MeasurementOperator implements SerializableCompatibility {
     ConnectionImpl connection = ( ConnectionImpl )RWT.getUISession().getConnection();
     remoteObject = connection.createServiceObject( TYPE );
     remoteObject.setHandler( new MeasurementOperatorHandler() );
-    probes = new HashSet<Probe>();
-    items = new HashSet<MeasurementItem>();
+    probes = new HashSet<>();
+    items = new HashSet<>();
     addStartupProbesToBuffer();
   }
 
@@ -120,6 +120,7 @@ class MeasurementOperator implements SerializableCompatibility {
           handleMeasuredFontProbeSizes( results );
         } else {
           ProcessActionRunner.add( new Runnable() {
+            @Override
             public void run() {
               handleMeasuredFontProbeSizes( results );
               if( handleMeasuredTextSizes( results ) ) {
@@ -132,9 +133,9 @@ class MeasurementOperator implements SerializableCompatibility {
     }
 
     private void handleMeasuredFontProbeSizes( JsonObject results ) {
-      Iterator probeList = probes.iterator();
+      Iterator<Probe> probeList = probes.iterator();
       while( probeList.hasNext() ) {
-        Probe probe = ( Probe )probeList.next();
+        Probe probe = probeList.next();
         Point size = readMeasuredSize( results, getId( probe ) );
         if( size != null ) {
           createProbeResult( probe, size );
@@ -145,9 +146,9 @@ class MeasurementOperator implements SerializableCompatibility {
 
     private boolean handleMeasuredTextSizes( JsonObject results ) {
       int originalItemsSize = items.size();
-      Iterator itemList = items.iterator();
+      Iterator<MeasurementItem> itemList = items.iterator();
       while( itemList.hasNext() ) {
-        MeasurementItem item = ( MeasurementItem )itemList.next();
+        MeasurementItem item = itemList.next();
         Point size = readMeasuredSize( results, getId( item ) );
         if( size != null ) {
           storeTextMeasurement( item, size );

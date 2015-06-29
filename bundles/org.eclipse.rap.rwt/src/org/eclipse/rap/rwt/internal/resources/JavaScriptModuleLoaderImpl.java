@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
   private static final String MODULES_KEY = JavaScriptModuleRegistry.class.getName() + "#instance";
   private static final Object LOCK = new Object();
 
+  @Override
   public void ensureModule( Class< ? extends JavaScriptModule> type ) {
     if( !isLoaded( type ) ) {
       if( !isRegistered( type ) ) {
@@ -40,7 +41,7 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
     }
   }
 
-  private void registerModule( Class< ? extends JavaScriptModule> type ) {
+  private static void registerModule( Class< ? extends JavaScriptModule> type ) {
     JavaScriptModule module = ClassUtil.newInstance( type );
     String[] fileNames = module.getFileNames();
     if( fileNames.length == 0 ) {
@@ -85,12 +86,8 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
   }
 
   private static String getPublicPath( JavaScriptModule module, String fileName ) {
-    Class type = module.getClass();
-    String result =   type.getSimpleName()
-                    + String.valueOf( type.hashCode() )
-                    + "/"
-                    + fileName;
-    return result;
+    Class<?> type = module.getClass();
+    return type.getSimpleName() + type.hashCode() + "/" + fileName;
   }
 
   private static String getLocalPath( JavaScriptModule module, String fileName ) {
@@ -123,8 +120,7 @@ public class JavaScriptModuleLoaderImpl implements JavaScriptModuleLoader {
 
   static private class JavaScriptModuleRegistry {
 
-    private final Map<Class<? extends JavaScriptModule>, String[]> map
-      = new HashMap<Class<? extends JavaScriptModule>, String[]>();
+    private final Map<Class<? extends JavaScriptModule>, String[]> map = new HashMap<>();
 
     public void put( Class<? extends JavaScriptModule> type, String[] files ) {
       map.put( type, files );

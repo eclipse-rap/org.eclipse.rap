@@ -353,9 +353,8 @@ public class UISessionImpl
   private void handleBeforeDestroyException( UISessionListener listener,
                                              RuntimeException exception )
   {
-    String txt = "Could not execute {0}.beforeDestroy(UISessionEvent).";
-    Object[] param = new Object[] { listener.getClass().getName() };
-    String msg = MessageFormat.format( txt, param );
+    String pattern = "Could not execute {0}.beforeDestroy(UISessionEvent).";
+    String msg = MessageFormat.format( pattern, listener.getClass().getName() );
     httpSession.getServletContext().log( msg, exception );
   }
 

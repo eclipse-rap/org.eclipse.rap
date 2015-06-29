@@ -34,7 +34,7 @@ public final class ClientResources {
 
   private static final List<String> JAVASCRIPT_FILES = getInputFiles( CLIENT_FILES );
 
-  private static final String[] WIDGET_IMAGES = new String[] {
+  private static final String[] WIDGET_IMAGES = {
     "resource/static/image/blank.gif",
     "resource/widget/rap/arrows/chevron-left.png",
     "resource/widget/rap/arrows/chevron-right.png",

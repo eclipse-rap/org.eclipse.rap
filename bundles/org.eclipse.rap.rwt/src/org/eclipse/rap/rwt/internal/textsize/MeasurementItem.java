@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 class MeasurementItem implements SerializableCompatibility {
   private final int wrapWidth;
@@ -45,6 +46,7 @@ class MeasurementItem implements SerializableCompatibility {
     return mode;
   }
 
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
@@ -55,6 +57,7 @@ class MeasurementItem implements SerializableCompatibility {
     return result;
   }
 
+  @Override
   public boolean equals( Object object ) {
     boolean result = false;
     if( object != null && getClass() == object.getClass() ) {
@@ -70,4 +73,5 @@ class MeasurementItem implements SerializableCompatibility {
     }
     return result;
   }
+
 }

@@ -51,7 +51,7 @@ public final class EncodingUtil {
   }
 
   public static List<String> splitNewLines( String input ) {
-    List<String> lines = new ArrayList<String>();
+    List<String> lines = new ArrayList<>();
     int length = input.length();
     int start = 0;
     char last = 0;

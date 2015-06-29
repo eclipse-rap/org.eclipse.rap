@@ -46,6 +46,7 @@ public final class TextSizeStorage {
 
   private static class EntryComparator implements Comparator<Entry>, Serializable {
 
+    @Override
     public int compare( Entry entry1, Entry entry2 ) {
       int result = 0;
       if( entry1.timeStamp > entry2.timeStamp ) {
@@ -60,8 +61,8 @@ public final class TextSizeStorage {
 
   public TextSizeStorage() {
     lock = new Object();
-    data = new HashMap<Integer,Entry>();
-    fontDatas = new HashSet<FontData>();
+    data = new HashMap<>();
+    fontDatas = new HashSet<>();
     setMaximumStoreSize( DEFAULT_STORE_SIZE );
   }
 
@@ -136,20 +137,16 @@ public final class TextSizeStorage {
   //////////////////
   // helping methods
 
-  private void checkLowerStoreSizeBoundary( int maximumStoreSize ) {
+  private static void checkLowerStoreSizeBoundary( int maximumStoreSize ) {
     if( maximumStoreSize < MIN_STORE_SIZE ) {
-      Object[] param = new Object[] { Integer.valueOf( MIN_STORE_SIZE ) };
+      Object[] param = { Integer.valueOf( MIN_STORE_SIZE ) };
       String msg = MessageFormat.format( "Store size must be >= {0}.", param );
       throw new IllegalArgumentException( msg );
     }
   }
 
   private static Point defensiveCopy( Point point ) {
-    Point result = null;
-    if( point != null ) {
-      result = new Point( point.x, point.y );
-    }
-    return result;
+    return point == null ? null : new Point( point.x, point.y );
   }
 
   private void updateTimestamp( Entry entry ) {
@@ -161,4 +158,5 @@ public final class TextSizeStorage {
     BigDecimal bdStoreSize = new BigDecimal( maximumStoreSize );
     clearRange = bdStoreSize.divide( ten, 0, BigDecimal.ROUND_HALF_UP ).intValue();
   }
+
 }

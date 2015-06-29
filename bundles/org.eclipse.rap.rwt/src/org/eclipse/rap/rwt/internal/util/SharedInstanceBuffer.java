@@ -22,7 +22,7 @@ public class SharedInstanceBuffer<K, I> implements Serializable {
 
   public SharedInstanceBuffer() {
     lock = new SerializableLock();
-    store = new HashMap<K, I>();
+    store = new HashMap<>();
   }
 
   public I get( K key, InstanceCreator<K, I> instanceCreator ) {

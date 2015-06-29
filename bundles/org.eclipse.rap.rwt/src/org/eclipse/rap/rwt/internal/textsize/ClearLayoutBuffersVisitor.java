@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Widget;
 
 class ClearLayoutBuffersVisitor extends AllWidgetTreeVisitor {
 
+  @Override
   public boolean doVisit( Widget widget ) {
     if( widget instanceof Composite ) {
       Composite composite = ( Composite )widget;
@@ -24,4 +25,5 @@ class ClearLayoutBuffersVisitor extends AllWidgetTreeVisitor {
     }
     return true;
   }
+
 }

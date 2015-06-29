@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,10 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
+
 class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
 
+  @Override
   public boolean doVisit( Widget widget ) {
     if( widget instanceof ScrolledComposite && hasContentControl( widget ) ) {
       enlargeContentControl( widget );
@@ -26,22 +28,23 @@ class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
     return true;
   }
 
-  private void enlargeContentControl( Widget widget ) {
+  private static void enlargeContentControl( Widget widget ) {
     enlargeContentControl( getContentControl( widget ) );
   }
 
-  private void enlargeContentControl( Control content ) {
+  private static void enlargeContentControl( Control content ) {
     Point currentSize = content.getSize();
     int width = currentSize.x + TextSizeRecalculation.RESIZE_OFFSET;
     int height = currentSize.y + TextSizeRecalculation.RESIZE_OFFSET;
     content.setSize( width, height );
   }
 
-  private boolean hasContentControl( Widget widget ) {
+  private static boolean hasContentControl( Widget widget ) {
     return getContentControl( widget ) != null;
   }
 
-  private Control getContentControl( Widget widget ) {
+  private static Control getContentControl( Widget widget ) {
     return ( ( ScrolledComposite )widget ).getContent();
   }
+
 }

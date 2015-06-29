@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,76 +29,54 @@ public class ClientListenerUtil {
   }
 
   public static String getEventType( int bindingType ) {
-    String result = null;
     switch( bindingType ) {
       case SWT.KeyUp:
-        result = "KeyUp";
-      break;
+        return "KeyUp";
       case SWT.KeyDown:
-        result = "KeyDown";
-      break;
+        return "KeyDown";
       case SWT.FocusIn:
-        result = "FocusIn";
-      break;
+        return "FocusIn";
       case SWT.FocusOut:
-        result = "FocusOut";
-      break;
+        return "FocusOut";
       case SWT.MouseDown:
-        result = "MouseDown";
-      break;
+        return "MouseDown";
       case SWT.MouseUp:
-        result = "MouseUp";
-      break;
+        return "MouseUp";
       case SWT.MouseEnter:
-        result = "MouseEnter";
-      break;
+        return "MouseEnter";
       case SWT.MouseExit:
-        result = "MouseExit";
-      break;
+        return "MouseExit";
       case SWT.MouseMove:
-        result = "MouseMove";
-      break;
+        return "MouseMove";
       case SWT.MouseDoubleClick:
-        result = "MouseDoubleClick";
-      break;
+        return "MouseDoubleClick";
       case SWT.Modify:
-        result = "Modify";
-      break;
+        return "Modify";
       case SWT.Show:
-        result = "Show";
-      break;
+        return "Show";
       case SWT.Hide:
-        result = "Hide";
-      break;
+        return "Hide";
       case SWT.Verify:
-        result = "Verify";
-      break;
+        return "Verify";
       case SWT.Paint:
-        result = "Paint";
-      break;
+        return "Paint";
       case SWT.Resize:
-        result = "Resize";
-      break;
+        return "Resize";
       case SWT.Selection:
-        result = "Selection";
-      break;
+        return "Selection";
       case SWT.DefaultSelection:
-        result = "DefaultSelection";
-      break;
+        return "DefaultSelection";
       case SWT.MouseWheel:
-        result = "MouseWheel";
-      break;
+        return "MouseWheel";
+      default:
+        throw new IllegalArgumentException( "Unsupported event type " + bindingType );
     }
-    if( result == null ) {
-      throw new IllegalArgumentException( "Unsupported event type " + bindingType );
-    }
-    return result;
   }
 
   public static void clientListenerAdded( Widget widget, int eventType, ClientListener listener ) {
     List<ClientListenerOperation> operations = getClientListenerOperations( widget );
     if( operations == null ) {
-      operations = new ArrayList<ClientListenerOperation>( 1 );
+      operations = new ArrayList<>( 1 );
       widget.setData( OPERATIONS, operations );
     }
     operations.add( new AddListener( eventType, listener ) );
@@ -108,7 +86,7 @@ public class ClientListenerUtil {
   {
     List<ClientListenerOperation> operations = getClientListenerOperations( widget );
     if( operations == null ) {
-      operations = new ArrayList<ClientListenerOperation>( 1 );
+      operations = new ArrayList<>( 1 );
       widget.setData( OPERATIONS, operations );
     }
     operations.add( new RemoveListener( eventType, listener ) );

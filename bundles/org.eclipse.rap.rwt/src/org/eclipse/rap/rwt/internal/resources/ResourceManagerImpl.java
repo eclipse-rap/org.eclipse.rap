@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,7 @@ public class ResourceManagerImpl implements ResourceManager {
     }
   }
 
+  @Override
   public void register( String path, InputStream inputStream ) {
     ParamCheck.notNull( path, "name" );
     ParamCheck.notNull( inputStream, "inputStream" );
@@ -83,6 +84,7 @@ public class ResourceManagerImpl implements ResourceManager {
     internalRegister( path, inputStream );
   }
 
+  @Override
   public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
@@ -94,11 +96,13 @@ public class ResourceManagerImpl implements ResourceManager {
     return result;
   }
 
+  @Override
   public boolean isRegistered( String name ) {
     ParamCheck.notNull( name, "name" );
     return resources.contains( name );
   }
 
+  @Override
   public String getLocation( String name ) {
     ParamCheck.notNull( name, "name" );
     if( !resources.contains( name ) ) {
@@ -107,6 +111,7 @@ public class ResourceManagerImpl implements ResourceManager {
     return createRequestUrl( name );
   }
 
+  @Override
   public InputStream getRegisteredContent( String name ) {
     ParamCheck.notNull( name, "name" );
     InputStream result = null;
@@ -124,14 +129,12 @@ public class ResourceManagerImpl implements ResourceManager {
   //////////////////
   // helping methods
 
-  private String createRequestUrl( String resourceName ) {
-    String newFileName = resourceName.replace( '\\', '/' );
-    StringBuilder url = new StringBuilder();
-    url.append( ResourceDirectory.DIRNAME );
-    url.append( "/" );
-    String escapedResourceNamea = escapeResourceName( newFileName );
-    url.append( escapedResourceNamea );
-    return url.toString();
+  private static String createRequestUrl( String resourceName ) {
+    return new StringBuilder()
+      .append( ResourceDirectory.DIRNAME )
+      .append( "/" )
+      .append( escapeResourceName( resourceName.replace( '\\', '/' ) ) )
+      .toString();
   }
 
   private void internalRegister( String name, InputStream inputStream ) {
@@ -189,11 +192,10 @@ public class ResourceManagerImpl implements ResourceManager {
   }
 
   private static String escapeResourceName( String name ) {
-    String result = name;
-    result = name.replaceAll( "\\$", "\\$\\$" );
-    result = result.replaceAll( ":", "\\$1" );
-    result = result.replaceAll( "\\?", "\\$2" );
-    return result;
+    return name
+      .replaceAll( "\\$", "\\$\\$" )
+      .replaceAll( ":", "\\$1" )
+      .replaceAll( "\\?", "\\$2" );
   }
 
 }

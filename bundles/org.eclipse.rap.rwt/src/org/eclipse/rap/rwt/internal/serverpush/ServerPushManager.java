@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public final class ServerPushManager implements SerializableCompatibility {
             lock.wait( requestCheckInterval );
             canRelease = canReleaseBlockedRequest( response, requestStartTime );
           }
-        } catch( InterruptedException ie ) {
+        } catch( @SuppressWarnings( "unused" ) InterruptedException ie ) {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
           listener.detach();
@@ -198,15 +198,13 @@ public final class ServerPushManager implements SerializableCompatibility {
   }
 
   private static boolean isConnectionAlive( HttpServletResponse response ) {
-    boolean result;
     try {
       PrintWriter writer = response.getWriter();
       writer.write( " " );
-      result = !writer.checkError();
-    } catch( IOException ioe ) {
-      result = false;
+      return !writer.checkError();
+    } catch( @SuppressWarnings( "unused" ) IOException ioe ) {
+      return false;
     }
-    return result;
   }
 
   private static boolean forceServerPushForPendingRunnables() {
@@ -218,9 +216,7 @@ public final class ServerPushManager implements SerializableCompatibility {
     return result;
   }
 
-  private static class TerminationListener
-    implements UISessionListener, SerializableCompatibility
-  {
+  private static class TerminationListener implements UISessionListener {
 
     private transient final Thread currentThread;
     private transient final UISession uiSession;
@@ -238,6 +234,7 @@ public final class ServerPushManager implements SerializableCompatibility {
       uiSession.removeUISessionListener( this );
     }
 
+    @Override
     public void beforeDestroy( UISessionEvent event ) {
       currentThread.interrupt();
     }

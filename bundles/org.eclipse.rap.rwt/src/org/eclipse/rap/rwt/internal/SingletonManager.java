@@ -29,10 +29,11 @@ public class SingletonManager implements SerializableCompatibility {
   private InstanceCreator<Class<?>, AtomicReference<Object>> instanceCreator;
 
   SingletonManager() {
-    singletonHolders = new SharedInstanceBuffer<Class<?>, AtomicReference<Object>>();
+    singletonHolders = new SharedInstanceBuffer<>();
     instanceCreator = new InstanceCreator<Class<?>, AtomicReference<Object>>() {
+      @Override
       public AtomicReference<Object> createInstance( Class<?> key ) {
-        return new AtomicReference<Object>();
+        return new AtomicReference<>();
       }
     };
   }

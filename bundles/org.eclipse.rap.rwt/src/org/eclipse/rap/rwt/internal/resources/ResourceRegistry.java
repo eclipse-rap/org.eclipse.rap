@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,24 +29,24 @@ public class ResourceRegistry {
 
   public ResourceRegistry( ResourceManager resourceManager ) {
     this.resourceManager = resourceManager;
-    this.resources = new LinkedList<ResourceRegistration>();
+    resources = new LinkedList<>();
   }
-  
+
   public void add( String resourceName, ResourceLoader resourceLoader ) {
     resources.add( new ResourceRegistration( resourceName, resourceLoader ) );
   }
-  
+
   public void registerResources() {
     for( ResourceRegistration resourceRegistration : getResourceRegistrations() ) {
       registerResource( resourceRegistration );
     }
     clear();
   }
-  
+
   public ResourceRegistration[] getResourceRegistrations() {
     return resources.toArray( new ResourceRegistration[ resources.size() ] );
   }
-  
+
   public void clear() {
     resources.clear();
   }
@@ -68,11 +68,11 @@ public class ResourceRegistry {
       this.resourceName = resourceName;
       this.resourceLoader = resourceLoader;
     }
-    
+
     public String getResourceName() {
       return resourceName;
     }
-    
+
     public ResourceLoader getResourceLoader() {
       return resourceLoader;
     }
@@ -92,5 +92,5 @@ public class ResourceRegistry {
     }
 
   }
-  
+
 }
