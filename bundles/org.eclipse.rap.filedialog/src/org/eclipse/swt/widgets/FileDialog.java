@@ -43,6 +43,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.FileDialogAdapter;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable;
 import org.eclipse.swt.internal.widgets.ProgressCollector;
 import org.eclipse.swt.internal.widgets.UploadPanel;
@@ -90,6 +91,8 @@ public class FileDialog extends Dialog {
   private Label spacer;
   private UploadPanel placeHolder;
   private ProgressCollector progressCollector;
+  private ClientFile[] clientFiles;
+  private FileDialogAdapterImpl fileDialogAdapter;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -187,6 +190,9 @@ public class FileDialog extends Dialog {
     initializeBounds();
     initializeDefaults();
     pushSession.start();
+    if( clientFiles != null && clientFiles.length > 0 ) {
+      handleFileDrop( clientFiles );
+    }
   }
 
   private void createShell() {
@@ -503,6 +509,27 @@ public class FileDialog extends Dialog {
       }
     }
 
+  }
+
+  private class FileDialogAdapterImpl implements FileDialogAdapter{
+
+    @Override
+    public void setClientFiles( ClientFile[] files ) {
+      clientFiles = files;
+    }
+
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == FileDialogAdapter.class ) {
+      if( fileDialogAdapter == null ) {
+        fileDialogAdapter = new FileDialogAdapterImpl();
+      }
+      return ( T )fileDialogAdapter;
+    }
+    return super.getAdapter( adapter );
   }
 
 }
