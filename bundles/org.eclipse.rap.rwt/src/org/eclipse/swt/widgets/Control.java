@@ -128,7 +128,7 @@ public abstract class Control extends Widget implements Drawable {
   private transient IControlAdapter controlAdapter;
   Composite parent;
   private int tabIndex;
-  Rectangle bounds;
+  private Rectangle bounds;
   private Object layoutData;
   private String toolTipText;
   private Menu menu;
@@ -1297,10 +1297,12 @@ public abstract class Control extends Widget implements Drawable {
     this.layoutData = layoutData;
   }
 
+  @SuppressWarnings( "unused" )
   void markLayout( boolean changed, boolean all ) {
     /* Do nothing */
   }
 
+  @SuppressWarnings( "unused" )
   void updateLayout( boolean resize, boolean all ) {
     /* Do nothing */
   }
@@ -2456,15 +2458,19 @@ public abstract class Control extends Widget implements Drawable {
   void setBounds( Rectangle bounds, boolean updateMode ) {
     Point oldLocation = getLocation();
     Point oldSize = getSize();
-    this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
-    this.bounds.width = Math.max( 0, this.bounds.width );
-    this.bounds.height = Math.max( 0, this.bounds.height );
+    _setBounds( new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height ) );
     if( updateMode ) {
       updateMode();
     }
     clearPacked( oldSize );
     notifyMove( oldLocation );
     notifyResize( oldSize );
+  }
+
+  void _setBounds( Rectangle rectangle ) {
+    bounds = rectangle;
+    bounds.width = Math.max( 0, bounds.width );
+    bounds.height = Math.max( 0, bounds.height );
   }
 
   void updateMode() {

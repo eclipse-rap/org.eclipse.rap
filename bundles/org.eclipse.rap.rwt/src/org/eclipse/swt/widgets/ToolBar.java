@@ -99,7 +99,7 @@ public class ToolBar extends Composite {
     } else {
       this.style |= SWT.HORIZONTAL;
     }
-    this.itemHolder = new ItemHolder<ToolItem>( ToolItem.class );
+    itemHolder = new ItemHolder<>( ToolItem.class );
   }
 
   @Override
@@ -381,6 +381,7 @@ public class ToolBar extends Composite {
     for( int i = 0; i < itemHolder.size(); i++ ) {
       ToolItem item = itemHolder.getItem( i );
       Rectangle ibounds = item.getBounds();
+      Rectangle bounds = getBounds();
       boolean hasEnoughWidth = ibounds.x + ibounds.width <= bounds.width;
       boolean hasEnoughHeight = ibounds.y + ibounds.height <= bounds.height;
       item.setVisible( hasEnoughWidth && hasEnoughHeight );

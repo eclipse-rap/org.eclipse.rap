@@ -133,29 +133,37 @@ public class Shell extends Decorations {
   private static final int MIN_WIDTH_LIMIT = 30;
 
   private class ShellAdapter implements IShellAdapter {
+
+    @Override
     public Control getActiveControl() {
       return lastActive;
     }
 
+    @Override
     public void setActiveControl( Control control ) {
       Shell.this.setActiveControl( control );
     }
 
+    @Override
     public Rectangle getMenuBounds() {
       return Shell.this.getMenuBounds();
     }
 
+    @Override
     public int getTopTrim() {
       return Shell.this.getTopTrim();
     }
 
+    @Override
     public void setBounds( Rectangle bounds ) {
       Shell.this.setBounds( bounds, false );
     }
 
+    @Override
     public ToolTip[] getToolTips() {
       return Shell.this.getToolTips();
     }
+
   }
 
   private Control lastActive;
@@ -168,7 +176,7 @@ public class Shell extends Decorations {
   private int minHeight;
   private ToolTip[] toolTips;
 
-  private Shell( Display display, Shell parent, int style, int handle ) {
+  private Shell( Display display, Shell parent, int style ) {
     super( checkParent( parent ) );
     if( display != null ) {
       this.display = display;
@@ -314,7 +322,7 @@ public class Shell extends Decorations {
    * @see SWT#SHEET
    */
   public Shell( Display display, int style ) {
-    this( display, null, style, 0 );
+    this( display, null, style );
   }
 
   /**
@@ -392,7 +400,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#SYSTEM_MODAL-->
    */
   public Shell( Shell parent, int style ) {
-    this( parent != null ? parent.display : null, parent, style, 0 );
+    this( parent != null ? parent.display : null, parent, style );
   }
 
   @Override
@@ -539,7 +547,7 @@ public class Shell extends Decorations {
   private void setInitialSize() {
     int width = display.getBounds().width * INITIAL_SIZE_PERCENT / 100;
     int height = display.getBounds().height * INITIAL_SIZE_PERCENT / 100;
-    bounds = new Rectangle( 0, 0, width, height );
+    _setBounds( new Rectangle( 0, 0, width, height ) );
   }
 
   private int getMinHeightLimit() {
@@ -731,6 +739,7 @@ public class Shell extends Decorations {
   public void close() {
     checkWidget();
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         Event event = new Event();
         notifyListeners( SWT.Close, event );
@@ -1058,6 +1067,7 @@ public class Shell extends Decorations {
   ////////////////
   // Tab traversal
 
+  @SuppressWarnings( "unused" )
   private boolean traverseGroup( boolean next ) {
     // TODO [rh] fake implementation
     boolean result = false;
