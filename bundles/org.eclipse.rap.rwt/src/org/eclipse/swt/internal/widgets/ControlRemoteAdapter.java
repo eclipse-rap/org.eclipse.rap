@@ -38,6 +38,9 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private transient String[] activeKeys;
   private transient String[] cancelKeys;
 
+  // TODO [rst] Use a bit set for multiple properties to save memory
+  private transient boolean boundsPreserved;
+
   public ControlRemoteAdapter( String id ) {
     super( id );
   }
@@ -59,7 +62,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBounds( Rectangle bounds ) {
+    boundsPreserved = true;
     this.bounds = bounds;
+  }
+
+  public boolean hasPreservedBounds() {
+    return boundsPreserved;
   }
 
   public Rectangle getPreservedBounds() {
@@ -176,6 +184,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     parent = null;
     children = null;
     bounds = null;
+    boundsPreserved = false;
     tabIndex = 0;
     toolTipText = null;
     menu = null;

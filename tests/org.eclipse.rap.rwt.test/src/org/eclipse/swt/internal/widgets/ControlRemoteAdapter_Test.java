@@ -63,6 +63,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveBounds( bounds );
 
+    assertTrue( adapter.hasPreservedBounds() );
     assertSame( bounds, adapter.getPreservedBounds() );
   }
 
@@ -210,6 +211,11 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
+  public void testDefaults() {
+    checkDefaults();
+  }
+
+  @Test
   public void testClearPreserved() {
     Color color = mock( Color.class );
     adapter.preserveParent( mock( Composite.class ) );
@@ -229,20 +235,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.clearPreserved();
 
-    assertNull( adapter.getPreservedParent() );
-    assertNull( adapter.getPreservedChildren() );
-    assertNull( adapter.getPreservedBounds() );
-    assertEquals( 0, adapter.getPreservedTabIndex() );
-    assertNull( adapter.getPreservedToolTipText() );
-    assertNull( adapter.getPreservedMenu() );
-    assertFalse( adapter.getPreservedVisible() );
-    assertFalse( adapter.getPreservedEnabled() );
-    assertNull( adapter.getPreservedForeground() );
-    assertNull( adapter.getPreservedBackground() );
-    assertFalse( adapter.getPreservedBackgroundTransparency() );
-    assertNull( adapter.getPreservedBackgroundImage() );
-    assertNull( adapter.getPreservedFont() );
-    assertNull( adapter.getPreservedCursor() );
+    checkDefaults();
   }
 
   @Test
@@ -271,22 +264,27 @@ public class ControlRemoteAdapter_Test {
     adapter.preserveFont( mock( Font.class ) );
     adapter.preserveCursor( mock( Cursor.class ) );
 
-    ControlRemoteAdapter deserializedAdapter = serializeAndDeserialize( adapter );
+    adapter = serializeAndDeserialize( adapter );
 
-    assertNull( deserializedAdapter.getPreservedParent() );
-    assertNull( deserializedAdapter.getPreservedChildren() );
-    assertNull( deserializedAdapter.getPreservedBounds() );
-    assertEquals( 0, deserializedAdapter.getPreservedTabIndex() );
-    assertNull( deserializedAdapter.getPreservedToolTipText() );
-    assertNull( deserializedAdapter.getPreservedMenu() );
-    assertFalse( deserializedAdapter.getPreservedVisible() );
-    assertFalse( deserializedAdapter.getPreservedEnabled() );
-    assertNull( deserializedAdapter.getPreservedForeground() );
-    assertNull( deserializedAdapter.getPreservedBackground() );
-    assertFalse( deserializedAdapter.getPreservedBackgroundTransparency() );
-    assertNull( deserializedAdapter.getPreservedBackgroundImage() );
-    assertNull( deserializedAdapter.getPreservedFont() );
-    assertNull( deserializedAdapter.getPreservedCursor() );
+    checkDefaults();
+  }
+
+  private void checkDefaults() {
+    assertNull( adapter.getPreservedParent() );
+    assertNull( adapter.getPreservedChildren() );
+    assertFalse( adapter.hasPreservedBounds() );
+    assertNull( adapter.getPreservedBounds() );
+    assertEquals( 0, adapter.getPreservedTabIndex() );
+    assertNull( adapter.getPreservedToolTipText() );
+    assertNull( adapter.getPreservedMenu() );
+    assertFalse( adapter.getPreservedVisible() );
+    assertFalse( adapter.getPreservedEnabled() );
+    assertNull( adapter.getPreservedForeground() );
+    assertNull( adapter.getPreservedBackground() );
+    assertFalse( adapter.getPreservedBackgroundTransparency() );
+    assertNull( adapter.getPreservedBackgroundImage() );
+    assertNull( adapter.getPreservedFont() );
+    assertNull( adapter.getPreservedCursor() );
   }
 
 }

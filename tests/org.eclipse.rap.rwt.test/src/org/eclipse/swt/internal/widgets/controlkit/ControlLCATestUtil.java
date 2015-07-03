@@ -33,6 +33,7 @@ public class ControlLCATestUtil {
 
   private static void testRendersChangedControlProperties( Control control ) throws IOException {
     Fixture.fakeNewRequest();
+    Fixture.clearPreserved();
     Fixture.markInitialized( control );
     AbstractWidgetLCA lca = getLCA( control );
     Display display = control.getDisplay();
@@ -51,6 +52,7 @@ public class ControlLCATestUtil {
 
   private static void testDoesNotRenderPreservedValues( Control control ) throws IOException {
     Fixture.fakeNewRequest();
+    Fixture.clearPreserved();
     Fixture.markInitialized( control );
     AbstractWidgetLCA lca = getLCA( control );
 

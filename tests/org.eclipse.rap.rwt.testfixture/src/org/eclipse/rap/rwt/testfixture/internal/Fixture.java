@@ -275,6 +275,8 @@ public final class Fixture {
     Display display = LifeCycleUtil.getSessionDisplay();
     DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
+    fakePhase( PhaseId.RENDER );
+    displayLCA.clearPreserved( display );
     fakePhase( PhaseId.READ_DATA );
     displayLCA.preserveValues( display );
     fakePhase( bufferedPhaseId );

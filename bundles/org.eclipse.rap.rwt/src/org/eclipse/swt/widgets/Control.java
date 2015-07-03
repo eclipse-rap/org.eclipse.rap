@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -2468,6 +2469,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   void _setBounds( Rectangle rectangle ) {
+    ControlLCAUtil.preserveBounds( this, bounds );
     bounds = rectangle;
     bounds.width = Math.max( 0, bounds.width );
     bounds.height = Math.max( 0, bounds.height );

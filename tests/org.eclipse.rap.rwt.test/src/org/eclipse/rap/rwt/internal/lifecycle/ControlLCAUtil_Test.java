@@ -197,7 +197,6 @@ public class ControlLCAUtil_Test {
   public void testRenderBounds_changed() {
     Fixture.markInitialized( control );
 
-    ControlLCAUtil.preserveValues( control );
     control.setBounds( 1, 2, 3, 4 );
     ControlLCAUtil.renderChanges( control );
 
@@ -206,10 +205,35 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testRenderBounds_changedTwice() {
+    Fixture.markInitialized( control );
+
+    control.setBounds( 1, 2, 3, 4 );
+    control.setBounds( 2, 3, 4, 5 );
+    ControlLCAUtil.renderChanges( control );
+
+    JsonArray expected = JsonArray.readFrom( "[ 2, 3, 4, 5 ]" );
+    assertEquals( expected, getProtocolMessage().findSetProperty( control, "bounds" ) );
+  }
+
+  @Test
   public void testRenderBounds_unchanged() {
     Fixture.markInitialized( control );
 
-    ControlLCAUtil.preserveValues( control );
+    ControlLCAUtil.renderChanges( control );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( control, "bounds" ) );
+  }
+
+  @Test
+  public void testRenderBounds_changedBackToOriginalValue() {
+    control.setBounds( 1, 2, 3, 4 );
+    Fixture.clearPreserved();
+    Fixture.markInitialized( control );
+
+    control.setBounds( 2, 3, 4, 5 );
+    control.setBounds( 1, 2, 3, 4 );
     ControlLCAUtil.renderChanges( control );
 
     TestMessage message = getProtocolMessage();
