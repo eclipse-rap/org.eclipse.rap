@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public class TabFolderOperationHandler extends ControlOperationHandler<TabFolder
     if( value != null ) {
       final TabItem item = getItem( folder, value.asString() );
       ProcessActionRunner.add( new Runnable() {
+        @Override
         public void run() {
           folder.setSelection( item );
           preserveProperty( folder, PROP_SELECTION, getId( item ) );

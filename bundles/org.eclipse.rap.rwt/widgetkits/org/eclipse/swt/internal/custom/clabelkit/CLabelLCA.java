@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class CLabelLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Label";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
   };
 

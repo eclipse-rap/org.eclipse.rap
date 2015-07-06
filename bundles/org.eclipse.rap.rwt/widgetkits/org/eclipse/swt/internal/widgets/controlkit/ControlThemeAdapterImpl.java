@@ -28,22 +28,27 @@ public class ControlThemeAdapterImpl extends ThemeAdapter implements ControlThem
     matcher.addStyle( "BORDER", SWT.BORDER );
   }
 
+  @Override
   public BoxDimensions getBorder( Control control ) {
     return getCssBorder( getPrimaryElement( control ), control );
   }
 
+  @Override
   public BoxDimensions getPadding( Control control ) {
     return getCssBoxDimensions( getPrimaryElement( control ), "padding", control ).dimensions;
   }
 
+  @Override
   public Color getForeground( Control control ) {
     return getCssColor( getPrimaryElement( control ), "color", control );
   }
 
+  @Override
   public Color getBackground( Control control ) {
     return getCssColor( getPrimaryElement( control ), "background-color", control );
   }
 
+  @Override
   public Font getFont( Control control ) {
     return getCssFont( getPrimaryElement( control ), "font", control );
   }

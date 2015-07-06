@@ -226,7 +226,7 @@ public class MenuItemLCA_Test {
     Fixture.fakeNotifyOperation( getId( item ), "Help", new JsonObject() );
     lca.readData( item );
 
-    verify( handler ).handleNotifyHelp( item, new JsonObject() );
+    verify( handler ).handleNotifyHelp( item );
   }
 
   @Test

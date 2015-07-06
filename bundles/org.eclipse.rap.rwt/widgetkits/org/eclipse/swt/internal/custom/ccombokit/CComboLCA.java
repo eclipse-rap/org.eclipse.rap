@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class CComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
-  private static final String[] ALLOWED_STYLES = new String[] { "FLAT", "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "FLAT", "BORDER" };
 
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";

@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Widget;
 public class CoolBarLCA extends AbstractWidgetLCA {
 
   public static final String TYPE = "rwt.widgets.CoolBar";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER"
   };
 

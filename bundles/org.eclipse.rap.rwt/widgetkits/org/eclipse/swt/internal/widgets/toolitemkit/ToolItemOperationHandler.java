@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,7 @@ public class ToolItemOperationHandler extends WidgetOperationHandler<ToolItem> {
     item.notifyListeners( SWT.Selection, event );
   }
 
-  private Rectangle getBounds( ToolItem item ) {
+  private static Rectangle getBounds( ToolItem item ) {
     Rectangle bounds = item.getBounds();
     bounds.y += bounds.height;
     return bounds;

@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public class ScrollBarThemeAdapter extends ThemeAdapter {
 
+  @Override
   protected void configureMatcher( WidgetMatcher matcher ) {
     matcher.addStyle( "HORIZONTAL", SWT.HORIZONTAL );
     matcher.addStyle( "VERTICAL", SWT.VERTICAL );

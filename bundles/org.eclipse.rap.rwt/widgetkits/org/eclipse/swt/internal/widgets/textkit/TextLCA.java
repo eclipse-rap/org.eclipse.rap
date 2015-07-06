@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class TextLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Text";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "CENTER",
     "LEFT",
     "RIGHT",
@@ -54,7 +54,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     "V_SCROLL",
     "BORDER"
   };
-  private static final String[] ALLOWED_STYLES_WITH_SEARCH = new String[] {
+  private static final String[] ALLOWED_STYLES_WITH_SEARCH = {
     "CENTER",
     "LEFT",
     "RIGHT",

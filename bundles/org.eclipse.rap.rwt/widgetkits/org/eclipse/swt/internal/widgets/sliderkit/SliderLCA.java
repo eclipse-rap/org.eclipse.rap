@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Widget;
 public class SliderLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Slider";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "HORIZONTAL", "VERTICAL", "BORDER"
   };
 

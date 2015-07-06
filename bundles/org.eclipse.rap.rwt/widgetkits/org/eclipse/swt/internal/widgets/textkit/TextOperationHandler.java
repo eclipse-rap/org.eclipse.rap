@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
     } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( text, properties );
     } else if( EVENT_MODIFY.equals( eventName ) ) {
-      handleNotifyModify( text, properties );
+      handleNotifyModify();
     } else {
       super.handleNotify( text, eventName, properties );
     }
@@ -71,6 +71,7 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
+          @Override
           public void run() {
             if( !text.isDisposed() ) {
               setText( text, stringValue );
@@ -97,6 +98,7 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
       if( isListening( text, SWT.Verify ) ) {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
+          @Override
           public void run() {
             if( !text.isDisposed() ) {
               text.setSelection( selection );
@@ -144,7 +146,7 @@ public class TextOperationHandler extends ControlOperationHandler<Text> {
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text
    */
-  public void handleNotifyModify( Text text, JsonObject properties ) {
+  public void handleNotifyModify() {
   }
 
   private static void setText( Text text, String value ) {

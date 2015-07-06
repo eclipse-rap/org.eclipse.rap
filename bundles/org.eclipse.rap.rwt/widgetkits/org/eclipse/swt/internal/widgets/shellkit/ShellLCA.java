@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class ShellLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Shell";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "CLOSE",
     "MIN",
     "MAX",
@@ -145,7 +145,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderProperty( shell, PROP_TEXT, shell.getText(), "" );
   }
 
-  private void renderAlpha( Shell shell ) {
+  private static void renderAlpha( Shell shell ) {
     renderProperty( shell, PROP_ALPHA, shell.getAlpha(), 0xFF );
   }
 

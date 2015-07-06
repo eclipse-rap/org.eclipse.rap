@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ToolBarLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolBar";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER", "RIGHT"
   };
 

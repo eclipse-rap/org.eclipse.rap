@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,11 +49,11 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
   @Override
   public void handleNotify( Shell shell, String eventName, JsonObject properties ) {
     if( EVENT_CLOSE.equals( eventName ) ) {
-      handleNotifyClose( shell, properties );
+      handleNotifyClose( shell );
     } else if( EVENT_RESIZE.equals( eventName ) ) {
-      handleNotifyResize( shell, properties );
+      handleNotifyResize();
     } else if( EVENT_MOVE.equals( eventName ) ) {
-      handleNotifyMove( shell, properties );
+      handleNotifyMove();
     } else {
       super.handleNotify( shell, eventName, properties );
     }
@@ -117,7 +117,7 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
   /*
    * PROTOCOL NOTIFY Close
    */
-  public void handleNotifyClose( Shell shell, JsonObject properties ) {
+  public void handleNotifyClose( Shell shell ) {
     shell.close();
   }
 
@@ -126,7 +126,7 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
    *
    * ignored, Resize event is fired when set bounds
    */
-  public void handleNotifyResize( Shell shell, JsonObject properties ) {
+  public void handleNotifyResize() {
   }
 
   /*
@@ -134,7 +134,7 @@ public class ShellOperationHandler extends ControlOperationHandler<Shell> {
    *
    * ignored, Move event is fired when set bounds
    */
-  public void handleNotifyMove( Shell shell, JsonObject properties ) {
+  public void handleNotifyMove() {
   }
 
   /*

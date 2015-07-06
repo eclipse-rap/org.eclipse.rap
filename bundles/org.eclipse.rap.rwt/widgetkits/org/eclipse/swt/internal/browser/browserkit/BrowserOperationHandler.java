@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,14 +52,14 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
     } else if( METHOD_EVALUATION_SUCCEEDED.equals( method ) ) {
       handleCallEvaluationSucceeded( browser, properties );
     } else if( METHOD_EVALUATION_FAILED.equals( method ) ) {
-      handleCallEvaluationFailed( browser, properties );
+      handleCallEvaluationFailed( browser );
     }
   }
 
   @Override
   public void handleNotify( Browser browser, String eventName, JsonObject properties ) {
     if( EVENT_PROGRESS.equals( eventName ) ) {
-      handleNotifyProgress( browser, properties );
+      handleNotifyProgress( browser );
     } else {
       super.handleNotify( browser, eventName, properties );
     }
@@ -77,6 +77,7 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
     if( function != null ) {
       final Object[] arguments = jsonToJava( properties.get( PARAM_ARGUMENTS ).asArray() );
       ProcessActionRunner.add( new Runnable() {
+        @Override
         public void run() {
           executeFunction( browser, function, arguments );
         }
@@ -102,7 +103,7 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
    * PROTOCOL CALL evaluationFailed
    *
    */
-  public void handleCallEvaluationFailed( Browser browser, JsonObject properties ) {
+  public void handleCallEvaluationFailed( Browser browser ) {
     getAdapter( browser ).setExecuteResult( false, null );
   }
 
@@ -110,7 +111,7 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
    * PROTOCOL NOTIFY Progress
    *
    */
-  public void handleNotifyProgress( Browser browser, JsonObject properties ) {
+  public void handleNotifyProgress( Browser browser ) {
     browser.notifyListeners( PROGRESS_CHANGED, new Event() );
     browser.notifyListeners( PROGRESS_COMPLETED, new Event() );
   }
@@ -182,13 +183,13 @@ public class BrowserOperationHandler extends ControlOperationHandler<Browser> {
       return JsonValue.NULL;
     }
     if( value instanceof String ) {
-      return JsonObject.valueOf( ( String )value );
+      return JsonValue.valueOf( ( String )value );
     }
     if( value instanceof Number ) {
-      return JsonObject.valueOf( ( ( Number )value ).doubleValue() );
+      return JsonValue.valueOf( ( ( Number )value ).doubleValue() );
     }
     if( value instanceof Boolean ) {
-      return JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
+      return JsonValue.valueOf( ( ( Boolean )value ).booleanValue() );
     }
     if( value instanceof Object[] ) {
       return javaToJson( ( Object[] )value );

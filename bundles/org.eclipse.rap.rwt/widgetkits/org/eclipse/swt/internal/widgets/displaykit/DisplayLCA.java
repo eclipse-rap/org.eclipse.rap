@@ -94,7 +94,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     renderFocus( display );
     renderBeep( display );
     renderResizeListener( display );
-    renderUICallBack( display );
+    renderUICallBack();
     ActiveKeysUtil.renderActiveKeys( display );
     ActiveKeysUtil.renderCancelKeys( display );
     ActiveKeysUtil.renderMnemonicActivator( display );
@@ -211,7 +211,7 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
   }
 
-  private static void renderUICallBack( Display display ) {
+  private static void renderUICallBack() {
     new ServerPushRenderer().render();
   }
 

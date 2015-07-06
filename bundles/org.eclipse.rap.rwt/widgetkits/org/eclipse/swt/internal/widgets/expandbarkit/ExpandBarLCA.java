@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ExpandBar";
-  private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
 
   private static final String PROP_BOTTOM_SPACING_BOUNDS = "bottomSpacingBounds";
   private static final String PROP_VSCROLLBAR_MAX = "vScrollBarMax";

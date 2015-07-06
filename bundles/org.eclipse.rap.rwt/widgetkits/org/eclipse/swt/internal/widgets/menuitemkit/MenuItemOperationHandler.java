@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class MenuItemOperationHandler extends WidgetOperationHandler<MenuItem> {
     if( EVENT_SELECTION.equals( eventName ) ) {
       handleNotifySelection( item, properties );
     } else if( EVENT_HELP.equals( eventName ) ) {
-      handleNotifyHelp( item, properties );
+      handleNotifyHelp( item );
     } else {
       super.handleNotify( item, eventName, properties );
     }
@@ -75,7 +75,7 @@ public class MenuItemOperationHandler extends WidgetOperationHandler<MenuItem> {
   /*
    * PROTOCOL NOTIFY Help
    */
-  public void handleNotifyHelp( MenuItem item, JsonObject properties ) {
+  public void handleNotifyHelp( MenuItem item ) {
     item.notifyListeners( SWT.Help, new Event() );
   }
 

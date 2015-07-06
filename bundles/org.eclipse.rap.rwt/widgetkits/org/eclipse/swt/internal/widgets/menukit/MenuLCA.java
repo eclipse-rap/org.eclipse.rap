@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class MenuLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Menu";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "BAR", "DROP_DOWN", "POP_UP", "NO_RADIO_GROUP"
   };
 

@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ProgressBarLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ProgressBar";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "SMOOTH", "HORIZONTAL", "VERTICAL", "INDETERMINATE", "BORDER"
   };
 

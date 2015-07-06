@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class SashLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Sash";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "HORIZONTAL", "VERTICAL", "SMOOTH", "BORDER"
   };
 

@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class MenuItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.MenuItem";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "CHECK", "CASCADE", "PUSH", "RADIO", "SEPARATOR"
   };
 

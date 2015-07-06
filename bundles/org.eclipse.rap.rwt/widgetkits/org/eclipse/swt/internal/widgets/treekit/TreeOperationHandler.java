@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
     } else if( EVENT_COLLAPSE.equals( eventName ) ) {
       handleNotifyCollapse( tree, properties );
     } else if( EVENT_SET_DATA.equals( eventName ) ) {
-      handleNotifySetData( tree, properties );
+      handleNotifySetData();
     } else {
       super.handleNotify( tree, eventName, properties );
     }
@@ -216,10 +216,10 @@ public class TreeOperationHandler extends ControlOperationHandler<Tree> {
    * PROTOCOL NOTIFY SetData
    * ignored, SetData event is fired when set topItemIndex
    */
-  public void handleNotifySetData( Tree tree, JsonObject properties ) {
+  public void handleNotifySetData() {
   }
 
-  private TreeItem getItem( Tree tree, String itemId ) {
+  private static TreeItem getItem( Tree tree, String itemId ) {
     TreeItem item = null;
     String[] idParts = itemId.split( "#" );
     if( idParts.length == 2 ) {

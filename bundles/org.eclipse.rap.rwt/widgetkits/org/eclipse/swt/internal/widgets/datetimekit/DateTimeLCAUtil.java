@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.DateTime;
 final class DateTimeLCAUtil {
 
   private static final String TYPE = "rwt.widgets.DateTime";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "DATE", "TIME", "CALENDAR", "SHORT", "MEDIUM", "LONG", "DROP_DOWN", "BORDER"
   };
 

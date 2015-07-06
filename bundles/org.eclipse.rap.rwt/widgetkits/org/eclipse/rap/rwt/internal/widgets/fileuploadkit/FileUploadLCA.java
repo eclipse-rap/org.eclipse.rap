@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.FileUpload";
-  private static final String[] ALLOWED_STYLES = new String[] { "BORDER", "MULTI" };
+  private static final String[] ALLOWED_STYLES = { "BORDER", "MULTI" };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";

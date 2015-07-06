@@ -116,7 +116,7 @@ public class CTabFolder extends Composite {
 
   private transient ICTabFolderAdapter tabFolderAdapter;
   private final IWidgetGraphicsAdapter selectionGraphicsAdapter;
-  private final ItemHolder<CTabItem> itemHolder = new ItemHolder<CTabItem>( CTabItem.class );
+  private final ItemHolder<CTabItem> itemHolder = new ItemHolder<>( CTabItem.class );
   private final ControlListener resizeListener;
   private FocusListener focusListener;
   private Menu showMenu;
@@ -587,8 +587,8 @@ public class CTabFolder extends Composite {
    */
   public void setMaximizeVisible( boolean maximizeVisible ) {
     checkWidget();
-    if( this.showMax != maximizeVisible ) {
-      this.showMax = maximizeVisible;
+    if( showMax != maximizeVisible ) {
+      showMax = maximizeVisible;
       updateItems();
     }
   }
@@ -622,8 +622,8 @@ public class CTabFolder extends Composite {
    */
   public void setMinimizeVisible( boolean minimizeVisible ) {
     checkWidget();
-    if( this.showMin != minimizeVisible ) {
-      this.showMin = minimizeVisible;
+    if( showMin != minimizeVisible ) {
+      showMin = minimizeVisible;
       updateItems();
     }
   }
@@ -658,7 +658,7 @@ public class CTabFolder extends Composite {
   public void setMinimized( boolean minimized ) {
     checkWidget();
     if( this.minimized != minimized ) {
-      if( minimized && this.maximized ) {
+      if( minimized && maximized ) {
         setMaximized( false );
       }
       this.minimized = minimized;
@@ -693,7 +693,7 @@ public class CTabFolder extends Composite {
   public void setMaximized( boolean maximized ) {
     checkWidget();
     if( this.maximized != maximized ) {
-      if( maximized && this.minimized ) {
+      if( maximized && minimized ) {
         setMinimized( false );
       }
       this.maximized = maximized;
@@ -811,8 +811,8 @@ public class CTabFolder extends Composite {
     if( minimumCharacters < 0 ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
-    if( this.minChars != minimumCharacters ) {
-      this.minChars = minimumCharacters;
+    if( minChars != minimumCharacters ) {
+      minChars = minimumCharacters;
       updateItems();
     }
   }
@@ -1071,7 +1071,7 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionBackground;
     if( result == null ) {
-      result = getThemeAdapter().getSelectedBackground( this );
+      result = getThemeAdapter().getSelectedBackground();
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -1237,7 +1237,7 @@ public class CTabFolder extends Composite {
     checkWidget();
     Color result = selectionForeground;
     if( result == null ) {
-      result = getThemeAdapter().getSelectedForeground( this );
+      result = getThemeAdapter().getSelectedForeground();
     }
     if( result == null ) {
       // Should never happen as the theming must prevent transparency for
@@ -2197,6 +2197,7 @@ CTabItem[] items = itemHolder.getItems();
 
   private void registerDisposeListener() {
     addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         onDispose();
         CTabFolder.this.removeDisposeListener( this );
@@ -2207,9 +2208,11 @@ CTabItem[] items = itemHolder.getItems();
   private void registerFocusListener() {
     if( focusListener == null ) {
       focusListener = new FocusListener() {
+        @Override
         public void focusGained( FocusEvent event ) {
           onFocus();
         }
+        @Override
         public void focusLost( FocusEvent event ) {
           onFocus();
         }
@@ -2408,55 +2411,69 @@ CTabItem[] items = itemHolder.getItems();
 
   private final class CTabFolderAdapter implements ICTabFolderAdapter {
 
+    @Override
     public Rectangle getChevronRect() {
-      Rectangle rect = CTabFolder.this.chevronRect;
+      Rectangle rect = chevronRect;
       return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
 
+    @Override
     public boolean getChevronVisible() {
-      return CTabFolder.this.showChevron;
+      return showChevron;
     }
 
+    @Override
     public Rectangle getMinimizeRect() {
-      Rectangle rect = CTabFolder.this.minRect;
+      Rectangle rect = minRect;
       return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
 
+    @Override
     public Rectangle getMaximizeRect() {
-      Rectangle rect = CTabFolder.this.maxRect;
+      Rectangle rect = maxRect;
       return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
 
+    @Override
     public void showListMenu() {
       CTabFolder.this.showListMenu();
     }
 
+    @Override
     public boolean showItemImage( CTabItem item ) {
       return item.showImage();
     }
 
+    @Override
     public boolean showItemClose( CTabItem item ) {
       return item.parent.showClose || item.showClose;
     }
 
+    @Override
     public String getShortenedItemText( CTabItem item ) {
       return item.getShortenedText( item.getParent().getSelection() == item );
     }
 
+    @Override
     public Color getUserSelectionForeground() {
       return selectionForeground;
     }
 
+    @Override
     public Color getUserSelectionBackground() {
       return selectionBackground;
     }
 
+    @Override
     public Image getUserSelectionBackgroundImage() {
       return selectionBgImage;
     }
 
+    @Override
     public IWidgetGraphicsAdapter getUserSelectionBackgroundGradient() {
       return selectionGraphicsAdapter;
     }
+
   }
+
 }

@@ -49,14 +49,14 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapterImpl {
     return getCssColor( "CTabItem", "color", folder );
   }
 
-  public Color getSelectedBackground( CTabFolder folder ) {
+  public Color getSelectedBackground() {
     CssValue cssValue = ThemeUtil.getCssValue( "CTabItem",
-                                              "background-color",
-                                              SimpleSelector.SELECTED );
+                                               "background-color",
+                                               SimpleSelector.SELECTED );
     return CssColor.createColor( ( CssColor )cssValue );
   }
 
-  public Color getSelectedForeground( CTabFolder folder ) {
+  public Color getSelectedForeground() {
     CssValue cssValue = ThemeUtil.getCssValue( "CTabItem", "color", SimpleSelector.SELECTED );
     return CssColor.createColor( ( CssColor )cssValue );
   }

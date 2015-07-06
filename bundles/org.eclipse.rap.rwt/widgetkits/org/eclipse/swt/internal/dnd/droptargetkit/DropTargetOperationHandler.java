@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,14 +95,15 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
    */
   public void handleNotifyDragEnter( final DropTarget dropTarget, final JsonObject properties ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         int x = properties.get( EVENT_PARAM_X ).asInt();
         int y = properties.get( EVENT_PARAM_Y ).asInt();
         int time = properties.get( EVENT_PARAM_TIME ).asInt();
         int detail = translateOperation( properties.get( EVENT_PARAM_OPERATION ).asString() );
         int feedback = properties.get( EVENT_PARAM_FEEDBACK ).asInt();
-        Item item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
-        Control sourceControl = getWidget( Control.class, properties.get( EVENT_PARAM_SOURCE ) );
+        Item item = getWidget( properties.get( EVENT_PARAM_ITEM ) );
+        Control sourceControl = getWidget( properties.get( EVENT_PARAM_SOURCE ) );
         DragSource dragSource = getDragSource( sourceControl );
         int operations = getOperations( dragSource, dropTarget );
         TransferData[] dataTypes = determineDataTypes( dragSource, dropTarget );
@@ -144,6 +145,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
                                                 final JsonObject properties )
   {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         int x = properties.get( EVENT_PARAM_X ).asInt();
         int y = properties.get( EVENT_PARAM_Y ).asInt();
@@ -151,8 +153,8 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
         int detail = getOperation( properties.get( EVENT_PARAM_OPERATION ) );
         int feedback = getFeedback( properties.get( EVENT_PARAM_FEEDBACK ) );
         TransferData dataType = getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
-        Item item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
-        Control sourceControl = getWidget( Control.class, properties.get( EVENT_PARAM_SOURCE ) );
+        Item item = getWidget( properties.get( EVENT_PARAM_ITEM ) );
+        Control sourceControl = getWidget( properties.get( EVENT_PARAM_SOURCE ) );
         DragSource dragSource = getDragSource( sourceControl );
         int operations = getOperations( dragSource, dropTarget );
         TransferData[] dataTypes = determineDataTypes( dragSource, dropTarget );
@@ -193,6 +195,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
    */
   public void handleNotifyDragOver( final DropTarget dropTarget, final JsonObject properties ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         int x = properties.get( EVENT_PARAM_X ).asInt();
         int y = properties.get( EVENT_PARAM_Y ).asInt();
@@ -200,8 +203,8 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
         int detail = getOperation( properties.get( EVENT_PARAM_OPERATION ) );
         int feedback = getFeedback( properties.get( EVENT_PARAM_FEEDBACK ) );
         TransferData dataType = getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
-        Item item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
-        Control sourceControl = getWidget( Control.class, properties.get( EVENT_PARAM_SOURCE ) );
+        Item item = getWidget( properties.get( EVENT_PARAM_ITEM ) );
+        Control sourceControl = getWidget( properties.get( EVENT_PARAM_SOURCE ) );
         DragSource dragSource = getDragSource( sourceControl );
         int operations = getOperations( dragSource, dropTarget );
         TransferData[] dataTypes = determineDataTypes( dragSource, dropTarget );
@@ -238,6 +241,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
    */
   public void handleNotifyDragLeave( final DropTarget dropTarget, final JsonObject properties ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         int x = properties.get( EVENT_PARAM_X ).asInt();
         int y = properties.get( EVENT_PARAM_Y ).asInt();
@@ -262,6 +266,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
    */
   public void handleNotifyDropAccept( final DropTarget dropTarget, final JsonObject properties ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         DropData dropData = createDropData( dropTarget, properties );
         if( !isFileDrop( dropData ) ) { // In this case no DRAG_ENTER was fired by the client
@@ -291,7 +296,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
     dropTarget.notifyListeners( DND.DragLeave, leaveEvent );
   }
 
-  private void fireDropAccept( DropTarget dropTarget, DropData dropData ) {
+  private static void fireDropAccept( DropTarget dropTarget, DropData dropData ) {
     DNDEvent acceptEvent = createDropTargetEvent( dropData.x,
                                                   dropData.y,
                                                   dropData.time,
@@ -320,7 +325,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
     changeOperation( dropData.dragSource, dropTarget, dropEvent.detail ); // needed for DRAG_END
   }
 
-  private boolean isFileDrop( DropData dropData ) {
+  private static boolean isFileDrop( DropData dropData ) {
     return dropData.data instanceof ClientFileImpl[];
   }
 
@@ -347,7 +352,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
                         : getDataType( properties.get( EVENT_PARAM_DATATYPE ) );
     dropData.dragSource = getDragSource( properties.get( EVENT_PARAM_SOURCE ) );
     dropData.dataTypes = determineDataTypes( dropData.dragSource, dropTarget );
-    dropData.item = getWidget( Item.class, properties.get( EVENT_PARAM_ITEM ) );
+    dropData.item = getWidget( properties.get( EVENT_PARAM_ITEM ) );
     dropData.operations = getOperations( dropData.dragSource, dropTarget );
     return dropData;
   }
@@ -371,7 +376,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   }
 
   private static DragSource getDragSource( JsonValue sourceId ) {
-    Control sourceControl = getWidget( Control.class, sourceId );
+    Control sourceControl = getWidget( sourceId );
     DragSource dragSource = sourceControl != null ? getDragSource( sourceControl ) : null;
     return dragSource;
   }
@@ -484,7 +489,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   }
 
   static TransferData[] determineDataTypes( DragSource dragSource, DropTarget dropTarget ) {
-    List<TransferData> supportedTypes = new ArrayList<TransferData>();
+    List<TransferData> supportedTypes = new ArrayList<>();
     for( Transfer dropTargetTransfer : dropTarget.getTransfer() ) {
       TransferData[] dataTypes = dropTargetTransfer.getSupportedTypes();
       for( TransferData dataType : dataTypes ) {
@@ -525,7 +530,7 @@ public class DropTargetOperationHandler extends WidgetOperationHandler<DropTarge
   }
 
   @SuppressWarnings( "unchecked" )
-  private static <T> T getWidget( Class<T> widget, JsonValue itemId ) {
+  private static <T> T getWidget( JsonValue itemId ) {
     if( itemId != null && !itemId.isNull() ) {
       return ( T )findWidgetById( itemId.asString() );
     }

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class ToolTipLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolTip";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING"
   };
 

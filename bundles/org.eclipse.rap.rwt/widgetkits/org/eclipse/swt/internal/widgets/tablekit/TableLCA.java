@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class TableLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Grid";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "SINGLE",
     "MULTI",
     "CHECK",

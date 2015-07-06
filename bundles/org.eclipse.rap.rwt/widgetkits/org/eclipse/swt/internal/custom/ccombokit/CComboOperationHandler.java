@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
     } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( ccombo, properties );
     } else if( EVENT_MODIFY.equals( eventName ) ) {
-      handleNotifyModify( ccombo, properties );
+      handleNotifyModify();
     } else {
       super.handleNotify( ccombo, eventName, properties );
     }
@@ -99,6 +99,7 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
         // fire a VerifyEvent whose fields (text and doit) need to be evaluated
         // before actually setting the new value
         ProcessActionRunner.add( new Runnable() {
+          @Override
           public void run() {
             if( !ccombo.isDisposed() ) {
               setText( ccombo, text );
@@ -125,6 +126,7 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
       if( isListening( ccombo, SWT.Verify ) ) {
         // if text is delayed, delay the selection too
         ProcessActionRunner.add( new Runnable() {
+          @Override
           public void run() {
             if( !ccombo.isDisposed() ) {
               ccombo.setSelection( selection );
@@ -167,7 +169,7 @@ public class CComboOperationHandler extends ControlOperationHandler<CCombo> {
    * PROTOCOL NOTIFY Modify
    * ignored, Modify event is fired when set text
    */
-  public void handleNotifyModify( CCombo ccombo, JsonObject properties ) {
+  public void handleNotifyModify() {
   }
 
   private static void setText( CCombo ccombo, String value ) {

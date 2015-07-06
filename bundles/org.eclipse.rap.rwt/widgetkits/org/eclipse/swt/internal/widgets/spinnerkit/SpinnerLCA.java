@@ -38,9 +38,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Spinner";
-  private static final String[] ALLOWED_STYLES = new String[] {
-    "READ_ONLY", "WRAP", "BORDER"
-  };
+  private static final String[] ALLOWED_STYLES = { "READ_ONLY", "WRAP", "BORDER" };
 
   // Property names for preserveValues
   static final String PROP_MINIMUM = "minimum";

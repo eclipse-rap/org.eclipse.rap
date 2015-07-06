@@ -436,7 +436,7 @@ final class GCOperationWriter {
     return result;
   }
 
-  float round( double value, int decimals ) {
+  static float round( double value, int decimals ) {
     int factor = ( int )Math.pow( 10, decimals );
     return ( ( float )Math.round( factor * value ) ) / factor;
   }

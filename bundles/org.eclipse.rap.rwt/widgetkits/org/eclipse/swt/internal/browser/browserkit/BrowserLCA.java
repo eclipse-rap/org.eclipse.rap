@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Browser";
-  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "BORDER" };
 
   // Background color is set due to bug 401300 and 401278
   static final String BLANK_HTML

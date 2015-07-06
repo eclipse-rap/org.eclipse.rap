@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class DisplayOperationHandler extends AbstractOperationHandler {
   @Override
   public void handleNotify( String eventName, JsonObject properties ) {
     if( EVENT_RESIZE.equals( eventName ) ) {
-      handleNotifyResize( display, properties );
+      handleNotifyResize( display );
     }
   }
 
@@ -117,7 +117,7 @@ public class DisplayOperationHandler extends AbstractOperationHandler {
   /*
    * PROTOCOL NOTIFY Resize
    */
-  public void handleNotifyResize( Display display, JsonObject properties ) {
+  public void handleNotifyResize( Display display ) {
     Event event = new Event();
     event.display = display;
     event.type = SWT.Resize;

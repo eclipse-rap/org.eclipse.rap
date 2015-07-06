@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ListLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.List";
-  private static final String[] ALLOWED_STYLES = new String[] { "SINGLE", "MULTI", "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "SINGLE", "MULTI", "BORDER" };
 
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION_INDICES = "selectionIndices";

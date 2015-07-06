@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ public class TableOperationHandler extends ControlOperationHandler<Table> {
     } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( table, properties );
     } else if( EVENT_SET_DATA.equals( eventName ) ) {
-      handleNotifySetData( table, properties );
+      handleNotifySetData();
     } else {
       super.handleNotify( table, eventName, properties );
     }
@@ -201,7 +201,7 @@ public class TableOperationHandler extends ControlOperationHandler<Table> {
    * PROTOCOL NOTIFY SetData
    * ignored, SetData event is fired when set topItemIndex
    */
-  public void handleNotifySetData( Table table, JsonObject properties ) {
+  public void handleNotifySetData() {
   }
 
   private static TableItem getItem( Table table, String itemId ) {

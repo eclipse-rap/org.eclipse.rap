@@ -29,7 +29,7 @@ public class TextThemeAdapter extends ControlThemeAdapterImpl {
     matcher.addStyle( "SINGLE", SWT.SINGLE );
     matcher.addStyle( "MULTI", SWT.MULTI );
     matcher.addState( "read-only", new Constraint() {
-
+      @Override
       public boolean matches( Widget widget ) {
         Text text = ( Text )widget;
         return !text.getEditable();

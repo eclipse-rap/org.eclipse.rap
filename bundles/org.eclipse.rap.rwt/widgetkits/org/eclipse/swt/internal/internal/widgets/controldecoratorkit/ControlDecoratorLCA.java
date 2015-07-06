@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ControlDecorator";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "TOP", "BOTTOM", "LEFT", "RIGHT", "CENTER"
   };
 

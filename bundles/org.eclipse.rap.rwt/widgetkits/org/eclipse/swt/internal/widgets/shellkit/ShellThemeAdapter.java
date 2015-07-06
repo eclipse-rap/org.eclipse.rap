@@ -38,7 +38,7 @@ public class ShellThemeAdapter extends ControlThemeAdapterImpl {
     matcher.addStyle( "TOOL", SWT.TOOL );
     matcher.addStyle( "SHEET", SWT.SHEET );
     matcher.addState( "maximized", new Constraint() {
-
+      @Override
       public boolean matches( Widget widget ) {
         return ( ( Shell )widget ).getMaximized();
       }

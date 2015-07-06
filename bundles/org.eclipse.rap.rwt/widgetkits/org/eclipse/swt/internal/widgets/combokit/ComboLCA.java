@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
-  private static final String[] ALLOWED_STYLES = new String[] { "DROP_DOWN", "SIMPLE", "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "DROP_DOWN", "SIMPLE", "BORDER" };
 
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";

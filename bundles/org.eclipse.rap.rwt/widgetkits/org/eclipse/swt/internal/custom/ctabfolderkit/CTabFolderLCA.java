@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CTabFolder";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "CLOSE", "FLAT", "SINGLE", "MULTI", "NO_RADIO_GROUP", "BORDER"
   };
 

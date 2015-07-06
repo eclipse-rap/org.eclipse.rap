@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class ToolItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolItem";
-  private static final String[] ALLOWED_STYLES = new String[] {
+  private static final String[] ALLOWED_STYLES = {
     "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN"
   };
 
@@ -149,7 +149,7 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     return ( item.getStyle() & SWT.SEPARATOR ) != 0;
   }
 
-  private String getBadge( ToolItem item ) {
+  private static String getBadge( ToolItem item ) {
     return ( String )item.getData( RWT.BADGE );
   }
 

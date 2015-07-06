@@ -33,9 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class ScaleLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Scale";
-  private static final String[] ALLOWED_STYLES = new String[] {
-    "HORIZONTAL", "VERTICAL", "BORDER"
-  };
+  private static final String[] ALLOWED_STYLES = { "HORIZONTAL", "VERTICAL", "BORDER" };
 
   // Property names for preserveValues
   static final String PROP_MINIMUM = "minimum";

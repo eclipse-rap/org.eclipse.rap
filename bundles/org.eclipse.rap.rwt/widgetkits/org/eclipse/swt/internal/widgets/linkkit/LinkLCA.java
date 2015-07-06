@@ -23,7 +23,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Widget;
 public class LinkLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Link";
-  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
+  private static final String[] ALLOWED_STYLES = { "BORDER" };
 
   static final String PROP_TEXT = "text";
 
@@ -94,7 +94,7 @@ public class LinkLCA extends AbstractWidgetLCA {
       // before link
       if( pos < start ) {
         result.add( new JsonArray().add( displayText.substring( pos, start ) )
-                                   .add( JsonObject.NULL ) );
+                                   .add( JsonValue.NULL ) );
       }
       // link itself
       if( start < end ) {
@@ -105,7 +105,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     // after last link
     if( pos < length ) {
       result.add( new JsonArray().add( displayText.substring( pos, length ) )
-                                 .add( JsonObject.NULL ) );
+                                 .add( JsonValue.NULL ) );
     }
     return result;
   }

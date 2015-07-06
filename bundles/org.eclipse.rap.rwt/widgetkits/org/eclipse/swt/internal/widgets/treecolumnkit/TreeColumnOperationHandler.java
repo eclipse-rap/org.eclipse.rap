@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
   public void handleCallMove( final TreeColumn column, JsonObject properties ) {
     final int newLeft = properties.get( PROP_LEFT ).asInt();
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         moveColumn( column, newLeft );
       }
@@ -79,6 +80,7 @@ public class TreeColumnOperationHandler extends WidgetOperationHandler<TreeColum
   public void handleCallResize( final TreeColumn column, JsonObject properties ) {
     final int width = properties.get( PROP_WIDTH ).asInt();
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         column.setWidth( width );
       }
