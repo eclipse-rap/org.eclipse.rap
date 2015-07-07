@@ -220,7 +220,7 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
     getCursor : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       var result = this._values.cursors[ key ];
-      if( key === null ) {
+      if( result === null ) {
         result = "rwt-resources/themes/cursors/" + key;
       }
       return result;
