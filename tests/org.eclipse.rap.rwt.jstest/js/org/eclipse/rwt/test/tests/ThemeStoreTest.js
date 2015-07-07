@@ -329,6 +329,29 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ThemeStoreTest", {
       assertTrue( border === borderLeft );
     },
 
+    testGetCursor : function() {
+      scheduleResponse( {
+        "values" : {
+          "cursors" :  {
+            4711: "pointer",
+            "4713.gif" : null
+          }
+        },
+        "theme" : {
+          "mywidget" : {
+            "cursor" : [ [ [":foo"], "4713.gif" ], [ [], "4711" ] ]
+          }
+        }
+      } );
+      loadActiveTheme( "rwt-resource/myTheme" );
+
+      var systemCursor = themeStore.getCursor( "mywidget", {}, "cursor" );
+      var customCursor = themeStore.getCursor( "mywidget", {foo: true}, "cursor" );
+
+      assertEquals( "pointer", systemCursor );
+      assertEquals( "rwt-resources/themes/cursors/4713.gif", customCursor );
+    },
+
     testLoadFallbackTheme : function() {
       scheduleResponse( {
         "values" : { "colors" :  { "xyz" : "#00ff00" } },
