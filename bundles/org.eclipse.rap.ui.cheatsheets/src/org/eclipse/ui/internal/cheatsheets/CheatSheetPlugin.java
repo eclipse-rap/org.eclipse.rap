@@ -69,7 +69,7 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	private static final String HISTORY_FILENAME = "history.xml"; //$NON-NLS-1$
 	private static final String MEMENTO_TAG_CHEATSHEET = "cheatsheet"; //$NON-NLS-1$
 	private static final String MEMENTO_TAG_VERSION = "version"; //$NON-NLS-1$
-	private static final String VERSION_STRING[] = { "0.0", "3.0.0" }; //$NON-NLS-1$ //$NON-NLS-2$
+	private static final String VERSION_STRING[] = { "0.0", "3.0.1" }; //$NON-NLS-1$ //$NON-NLS-2$
 	private static final String MEMENTO_TAG_CHEATSHEET_HISTORY = "cheatsheetHistory"; //$NON-NLS-1$
 
 	public static final IPath ICONS_PATH = new Path("$nl$/icons/"); //$NON-NLS-1$

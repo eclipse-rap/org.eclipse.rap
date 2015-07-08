@@ -21,25 +21,25 @@
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.feature"
-      version="3.0.0.qualifier">
+      version="3.0.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.sdk.feature"
-      version="3.0.0.qualifier">
+      version="3.0.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.examples.feature"
-      version="3.0.0.qualifier">
+      version="3.0.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.equinox.target.feature"
-      version="3.0.0.qualifier">
+      version="3.0.1.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
 

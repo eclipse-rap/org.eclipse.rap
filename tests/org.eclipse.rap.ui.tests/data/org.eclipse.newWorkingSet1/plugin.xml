@@ -3,7 +3,7 @@
 <plugin
    id="newWorkingSet1"
    name="New WorkingSet One Plug-In"
-   version="3.0.0"
+   version="3.0.1"
    provider-name="">
 
    <runtime>

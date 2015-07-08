@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.fileupload;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
@@ -12,6 +12,6 @@ Import-Package: javax.servlet;version="[2.3.0,4.0.0)",
  org.apache.commons.fileupload.disk;version="[1.3.1,2.0.0)",
  org.apache.commons.fileupload.servlet;version="[1.3.1,2.0.0)",
  org.apache.commons.io;version="[2.2.0,3.0.0)"
-Export-Package: org.eclipse.rap.fileupload;version="3.0.0",
- org.eclipse.rap.fileupload.internal;version="3.0.0";x-friends:="org.eclipse.rap.fileupload.test"
+Export-Package: org.eclipse.rap.fileupload;version="3.0.1",
+ org.eclipse.rap.fileupload.internal;version="3.0.1";x-friends:="org.eclipse.rap.fileupload.test"
 Bundle-Localization: plugin
