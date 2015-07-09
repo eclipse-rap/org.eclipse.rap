@@ -190,9 +190,10 @@ public class ControlLCAUtil {
       // tabIndex must be a positive value
       computeTabIndices( ( Shell )control, 1 );
     }
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     int actual = getTabIndex( control );
-    int preserved = getRemoteAdapter( control ).getPreservedTabIndex();
-    if( changed( control, actual, preserved, -1 ) ) {
+    int preserved = remoteAdapter.getPreservedTabIndex();
+    if( !remoteAdapter.isInitialized() || actual != preserved ) {
       getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
     }
   }
