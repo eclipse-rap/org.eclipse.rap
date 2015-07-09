@@ -17,16 +17,15 @@ package org.eclipse.ui.services;
  * be retrieved from this locator using some key -- typically the class
  * representing the interface the service must implement. For example:
  * </p>
- * 
+ *
  * <pre>
- * IHandlerService service = (IHandlerService) workbenchWindow
- * 		.getService(IHandlerService.class);
+ * IHandlerService service = workbenchWindow.getService(IHandlerService.class);
  * </pre>
- * 
+ *
  * <p>
  * This interface is not to be implemented or extended by clients.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public interface IServiceLocator {
@@ -40,7 +39,7 @@ public interface IServiceLocator {
 	 * @return The service, or <code>null</code> if no such service could be
 	 *         found.
 	 */
-	public Object getService(Class api);
+	public <T> T getService(Class<T> api);
 
 	/**
 	 * Whether this service exists within the scope of this service locator.
@@ -51,8 +50,8 @@ public interface IServiceLocator {
 	 * @param api
 	 *            This is the interface that the service implements. Must not be
 	 *            <code>null</code>.
-	 * @return <code>true</code> iff the service locator can find a service
-	 *         for the given API; <code>false</code> otherwise.
+	 * @return <code>true</code> if the service locator can find a service for
+	 *         the given API; <code>false</code> otherwise.
 	 */
-	public boolean hasService(Class api);
+	public boolean hasService(Class<?> api);
 }
