@@ -225,6 +225,16 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testRenderTabIndex_disabled() {
+    shell.setTabList( new Control[ 0 ] );
+
+    ControlLCAUtil.renderChanges( shell );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( -1, getProtocolMessage().findSetProperty( control, "tabIndex" ).asInt() );
+  }
+
+  @Test
   public void testRenderTabIndex_changed() {
     Fixture.markInitialized( control );
 
