@@ -87,10 +87,10 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   @Override
   public void render( Display display ) throws IOException {
-    disposeWidgets();
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
+    disposeWidgets();
     renderFocus( display );
     renderBeep( display );
     renderResizeListener( display );
