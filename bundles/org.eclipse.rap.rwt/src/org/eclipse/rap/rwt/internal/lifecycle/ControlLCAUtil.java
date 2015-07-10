@@ -80,7 +80,6 @@ public class ControlLCAUtil {
   }
 
   public static void preserveValues( Control control ) {
-    preserveParent( control );
     preserveChildren( control );
     preserveTabIndex( control );
     preserveToolTipText( control );
@@ -130,17 +129,17 @@ public class ControlLCAUtil {
     renderListenHelp( control );
   }
 
-  private static void preserveParent( Control control ) {
-    Composite parent = control.getParent();
-    if( parent != null ) {
-      getRemoteAdapter( control ).preserveParent( parent );
+  public static void preserveParent( Control control, Composite parent ) {
+    ControlRemoteAdapter adapter = getRemoteAdapter( control );
+    if( !adapter.hasPreservedParent() ) {
+      adapter.preserveParent( parent );
     }
   }
 
   private static void renderParent( Control control ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    Composite actual = control.getParent();
-    if( remoteAdapter.isInitialized() && actual != null ) {
+    if( remoteAdapter.isInitialized() && remoteAdapter.hasPreservedParent() ) {
+      Composite actual = control.getParent();
       Composite preserved = remoteAdapter.getPreservedParent();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_PARENT, getId( actual ) );

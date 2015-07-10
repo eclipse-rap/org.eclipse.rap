@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -20,6 +21,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+
 
 /**
  * Instances of this class are selectable user interface objects that represent
@@ -48,7 +50,7 @@ public class CoolItem extends Item {
   static final int GRABBER_WIDTH = 2;
   static final int MINIMUM_WIDTH = (2 * MARGIN_WIDTH) + GRABBER_WIDTH;
 
-  private String CHEVRON_IMAGE = "resource/widget/rap/coolitem/chevron.gif";
+  private final String CHEVRON_IMAGE = "resource/widget/rap/coolitem/chevron.gif";
   private int CHEVRON_HORIZONTAL_TRIM = -1; // platform dependent values
   private int CHEVRON_VERTICAL_TRIM = -1;
   private static final int CHEVRON_LEFT_MARGIN = 2;
@@ -264,10 +266,12 @@ public class CoolItem extends Item {
   public Point computeSize( int wHint, int hHint ) {
     checkWidget();
     int width = wHint, height = hHint;
-    if ( wHint == SWT.DEFAULT )
+    if ( wHint == SWT.DEFAULT ) {
       width = 32;
-    if ( hHint == SWT.DEFAULT )
+    }
+    if ( hHint == SWT.DEFAULT ) {
       height = 32;
+    }
     if ( (parent.style & SWT.VERTICAL) != 0 ) {
       height += MINIMUM_WIDTH;
     } else {
@@ -278,8 +282,9 @@ public class CoolItem extends Item {
 
   @Override
   public void dispose() {
-    if ( isDisposed() )
+    if ( isDisposed() ) {
       return;
+    }
 
     /*
      * Must call parent.destroyItem() before super.dispose(), since it needs to
@@ -294,10 +299,13 @@ public class CoolItem extends Item {
      * Although the parent for the chevron is the CoolBar (CoolItem can not be
      * the parent) it has to be disposed with the item
      */
-    if ( chevron != null && !chevron.isDisposed() )
+    if ( chevron != null && !chevron.isDisposed() ) {
       chevron.dispose();
+    }
     chevron = null;
-    if (arrowImage != null && !arrowImage.isDisposed()) arrowImage.dispose();
+    if (arrowImage != null && !arrowImage.isDisposed()) {
+      arrowImage.dispose();
+    }
     arrowImage = null;
 
   }
@@ -483,7 +491,7 @@ public class CoolItem extends Item {
   /*
    * Called when the chevron is selected.
    */
-  void onSelection( Event ev ) {
+  void onSelection() {
     Rectangle bounds = chevron.getBounds();
     Event event = new Event();
     event.detail = SWT.ARROW;
@@ -568,10 +576,12 @@ public class CoolItem extends Item {
   public void setControl( Control control ) {
     checkWidget();
     if ( control != null ) {
-      if ( control.isDisposed() )
+      if ( control.isDisposed() ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
-      if ( control.parent != parent )
+      }
+      if ( control._getParent() != parent ) {
         error( SWT.ERROR_INVALID_PARENT );
+      }
     }
     this.control = control;
     if ( control != null ) {
@@ -629,8 +639,9 @@ public class CoolItem extends Item {
    */
   public void setMinimumSize( Point size ) {
     checkWidget();
-    if ( size == null )
+    if ( size == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
     setMinimumSize( size.x, size.y );
   }
 
@@ -676,8 +687,9 @@ public class CoolItem extends Item {
    */
   public void setPreferredSize( Point size ) {
     checkWidget();
-    if ( size == null )
+    if ( size == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
     setPreferredSize( size.x, size.y );
   }
 
@@ -748,8 +760,9 @@ public class CoolItem extends Item {
    */
   public void setSize( Point size ) {
     checkWidget();
-    if ( size == null )
+    if ( size == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
     setSize( size.x, size.y );
   }
 
@@ -766,20 +779,23 @@ public class CoolItem extends Item {
           chevron.setBackground( new Color( display, 255, 0, 0 ) );
           ToolItem toolItem = new ToolItem( chevron, SWT.PUSH );
           toolItem.addListener( SWT.Selection, new Listener() {
+            @Override
             public void handleEvent( Event event ) {
-              CoolItem.this.onSelection( event );
+              CoolItem.this.onSelection();
             }
           } );
         }
         int controlHeight, currentImageHeight = 0;
         if ( (parent.style & SWT.VERTICAL) != 0 ) {
           controlHeight = control.getSize().x;
-          if ( arrowImage != null )
+          if ( arrowImage != null ) {
             currentImageHeight = arrowImage.getBounds().width;
+          }
         } else {
           controlHeight = control.getSize().y;
-          if ( arrowImage != null )
+          if ( arrowImage != null ) {
             currentImageHeight = arrowImage.getBounds().height;
+          }
         }
         int height = Math.min( controlHeight, itemBounds.height );
         int imageHeight = Math.max( 1, height - CHEVRON_VERTICAL_TRIM );
@@ -787,7 +803,9 @@ public class CoolItem extends Item {
           // Image image = createArrowImage (CHEVRON_IMAGE_WIDTH, imageHeight);
           Image image = createArrowImage();
           chevron.getItem( 0 ).setImage( image );
-          if (arrowImage != null) arrowImage.dispose ();
+          if (arrowImage != null) {
+            arrowImage.dispose ();
+          }
           arrowImage = image;
         }
         chevron.setBackground( parent.getBackground() );

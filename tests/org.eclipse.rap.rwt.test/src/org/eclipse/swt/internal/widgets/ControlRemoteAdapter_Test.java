@@ -45,6 +45,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveParent( parent );
 
+    assertTrue( adapter.hasPreservedParent() );
     assertSame( parent, adapter.getPreservedParent() );
   }
 
@@ -270,6 +271,7 @@ public class ControlRemoteAdapter_Test {
   }
 
   private void checkDefaults() {
+    assertFalse( adapter.hasPreservedParent() );
     assertNull( adapter.getPreservedParent() );
     assertNull( adapter.getPreservedChildren() );
     assertFalse( adapter.hasPreservedBounds() );

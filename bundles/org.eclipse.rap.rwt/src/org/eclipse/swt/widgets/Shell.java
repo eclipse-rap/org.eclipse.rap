@@ -430,7 +430,7 @@ public class Shell extends Decorations {
     for( int i = 0; i < shells.length; i++ ) {
       Control shell = shells[ i ];
       do {
-        shell = shell.parent;
+        shell = shell._getParent();
       } while( shell != null && shell != this );
       if( shell == this ) {
         count++;
@@ -441,7 +441,7 @@ public class Shell extends Decorations {
     for( int i = 0; i < shells.length; i++ ) {
       Control shell = shells[ i ];
       do {
-        shell = shell.parent;
+        shell = shell._getParent();
       } while( shell != null && shell != this );
       if( shell == this ) {
         result[ index++ ] = shells[ i ];

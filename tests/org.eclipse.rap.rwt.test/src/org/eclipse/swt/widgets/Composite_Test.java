@@ -189,7 +189,7 @@ public class Composite_Test {
     Rectangle clientArea = group.getClientArea();
     Button button = new Button( group, SWT.PUSH );
     button.setBounds( clientArea.x, clientArea.y, 200, 50 );
-    Point size = group.minimumSize( SWT.DEFAULT, SWT.DEFAULT, true );
+    Point size = group.minimumSize();
     assertEquals( new Point( 200, 50 ), size );
   }
 

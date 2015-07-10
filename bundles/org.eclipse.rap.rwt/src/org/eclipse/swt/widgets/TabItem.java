@@ -176,7 +176,7 @@ public class TabItem extends Item {
       if( control.isDisposed() ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
       }
-      if( control.parent != parent ) {
+      if( control._getParent() != parent ) {
         error( SWT.ERROR_INVALID_PARENT );
       }
     }

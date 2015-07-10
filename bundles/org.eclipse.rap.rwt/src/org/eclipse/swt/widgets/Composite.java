@@ -451,13 +451,13 @@ public class Composite extends Scrollable {
           error (SWT.ERROR_INVALID_ARGUMENT);
         }
         boolean ancestor = false;
-        Composite composite = control.parent;
+        Composite composite = control._getParent();
         while (composite != null) {
           ancestor = composite == this;
           if (ancestor) {
             break;
           }
-          composite = composite.parent;
+          composite = composite._getParent();
         }
         if (!ancestor) {
           error (SWT.ERROR_INVALID_PARENT);
@@ -467,7 +467,7 @@ public class Composite extends Scrollable {
       Composite [] update = new Composite [16];
       for (int i=0; i<changed.length; i++) {
         Control child = changed [i];
-        Composite composite = child.parent;
+        Composite composite = child._getParent();
         while (child != this) {
           if (composite.layout != null) {
             composite.state |= LAYOUT_NEEDED;
@@ -481,7 +481,7 @@ public class Composite extends Scrollable {
             update = newUpdate;
           }
           child = update [updateCount++] = composite;
-          composite = child.parent;
+          composite = child._getParent();
         }
       }
       if ((flags & SWT.DEFER) != 0) {
@@ -548,7 +548,7 @@ public class Composite extends Scrollable {
   }
 
   Composite findDeferredControl() {
-    return layoutCount > 0 ? this : parent.findDeferredControl();
+    return layoutCount > 0 ? this : _getParent().findDeferredControl();
   }
 
   @Override
@@ -565,7 +565,7 @@ public class Composite extends Scrollable {
         size = new Point( wHint, hHint );
       }
     } else {
-      size = minimumSize( wHint, hHint, hasChanged );
+      size = minimumSize();
       if( size.x == 0 ) {
         size.x = DEFAULT_WIDTH;
       }
@@ -615,13 +615,13 @@ public class Composite extends Scrollable {
         error( SWT.ERROR_INVALID_ARGUMENT );
       }
       boolean ancestor = false;
-      Composite composite = control.parent;
+      Composite composite = control._getParent();
       while( composite != null ) {
         ancestor = composite == this;
         if( ancestor ) {
           break;
         }
-        composite = composite.parent;
+        composite = composite._getParent();
       }
       if( !ancestor ) {
         error( SWT.ERROR_INVALID_PARENT );
@@ -629,14 +629,14 @@ public class Composite extends Scrollable {
       }
     for( int i = 0; i < changed.length; i++ ) {
       Control child = changed[ i ];
-      Composite composite = child.parent;
+      Composite composite = child._getParent();
       while( child != this ) {
         if( composite.layout == null || !composite.layout.flushCache( child ) )
         {
           composite.state |= LAYOUT_CHANGED;
         }
         child = composite;
-        composite = child.parent;
+        composite = child._getParent();
       }
     }
   }
@@ -755,7 +755,7 @@ public class Composite extends Scrollable {
         if( control.isDisposed() ) {
           error( SWT.ERROR_INVALID_ARGUMENT );
         }
-        if( control.parent != this ) {
+        if( control._getParent() != this ) {
           error( SWT.ERROR_INVALID_PARENT );
         }
       }
@@ -831,7 +831,7 @@ public class Composite extends Scrollable {
   /////////////////////////////////////
   // Helping method used by computeSize
 
-  Point minimumSize( int wHint, int hHint, boolean changed ) {
+  Point minimumSize() {
     Control[] children = getChildren();
     Rectangle clientArea = getClientArea();
     int width = 0, height = 0;
@@ -870,6 +870,7 @@ public class Composite extends Scrollable {
     //      'super' (fires resize events) and *then* does the layouting
     if( !oldSize.equals( getSize() ) || isLayoutNeeded() ) {
       ProcessActionRunner.add( new Runnable() {
+        @Override
         public void run() {
           if( !isDisposed() && layout != null ) {
             markLayout( false, false );
@@ -905,9 +906,11 @@ public class Composite extends Scrollable {
 
   private final class CompositeAdapter implements ICompositeAdapter, SerializableCompatibility {
 
+    @Override
     public void markLayoutNeeded() {
       markLayout( false, false );
     }
 
   }
+
 }

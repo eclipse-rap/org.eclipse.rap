@@ -106,7 +106,6 @@ public class ControlLCAUtil_Test {
   public void testRenderParent_unchanged() {
     Fixture.markInitialized( control );
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "parent" ) );
@@ -115,8 +114,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderParent_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setParent( anotherParent );
     ControlLCAUtil.renderChanges( control );
 

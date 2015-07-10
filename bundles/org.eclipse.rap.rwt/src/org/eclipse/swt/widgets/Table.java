@@ -92,7 +92,8 @@ import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 public class Table extends Composite {
 
   // handle the fact that we have two item types to deal with
-  private final class CompositeItemHolder implements IItemHolderAdapter {
+  private final class CompositeItemHolder implements IItemHolderAdapter<Item> {
+    @Override
     public void add( Item item ) {
       if( item instanceof TableColumn ) {
         columnHolder.add( ( TableColumn )item );
@@ -101,6 +102,7 @@ public class Table extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public void insert( Item item, int index ) {
       if( item instanceof TableColumn ) {
         columnHolder.insert( ( TableColumn )item, index );
@@ -109,6 +111,7 @@ public class Table extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public void remove( Item item ) {
       if( item instanceof TableColumn ) {
         columnHolder.remove( ( TableColumn )item );
@@ -117,6 +120,7 @@ public class Table extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public Item[] getItems() {
       TableItem[] items = getCreatedItems();
       Item[] columns = columnHolder.getItems();
@@ -133,18 +137,22 @@ public class Table extends Composite {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
+    @Override
     public int getCheckWidthWithMargin() {
       return Table.this.getCheckSize().x;
     }
 
+    @Override
     public int getCheckLeft() {
       return getCheckBoxMargin().left;
     }
 
+    @Override
     public int getCheckWidth() {
       return getThemeAdapter().getCheckBoxImageSize( Table.this ).width;
     }
 
+    @Override
     public int getItemImageWidth( int columnIndex ) {
       int result = 0;
       if( hasColumnImages( columnIndex ) ) {
@@ -153,38 +161,47 @@ public class Table extends Composite {
       return result;
     }
 
+    @Override
     public int getFocusIndex() {
       return focusIndex;
     }
 
+    @Override
     public void setFocusIndex( int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
 
+    @Override
     public int getColumnLeftOffset( int columnIndex ) {
       return Table.this.getColumnLeftOffset( columnIndex );
     }
 
+    @Override
     public int getColumnLeft( TableColumn column ) {
       int index = Table.this.indexOf( column );
       return columnHolder.getItem( index ).getLeft();
     }
 
+    @Override
     public int getLeftOffset() {
       return leftOffset;
     }
 
+    @Override
     public void setLeftOffset( int leftOffset ) {
       Table.this.leftOffset = leftOffset;
     }
 
+    @Override
     public void checkData() {
       Table.this.checkData();
     }
 
+    @Override
     public void checkData( final int index ) {
       if( ( Table.this.style & SWT.VIRTUAL ) != 0  ) {
         ProcessActionRunner.add( new Runnable() {
+          @Override
           public void run() {
             if( index >= 0 && index < itemCount ) {
               TableItem item = _getItem( index );
@@ -197,6 +214,7 @@ public class Table extends Composite {
       }
     }
 
+    @Override
     public int getDefaultColumnWidth() {
       int result = 0;
       TableItem[] items = Table.this.getCachedItems();
@@ -206,6 +224,7 @@ public class Table extends Composite {
       return result;
     }
 
+    @Override
     public boolean isItemVirtual( int index ) {
       boolean result = false;
       if( ( style & SWT.VIRTUAL ) != 0 ) {
@@ -215,30 +234,37 @@ public class Table extends Composite {
       return result;
     }
 
+    @Override
     public TableItem[] getCachedItems() {
       return Table.this.getCachedItems();
     }
 
+    @Override
     public TableItem[] getCreatedItems() {
       return Table.this.getCreatedItems();
     }
 
+    @Override
     public TableItem getMeasureItem() {
       return Table.this.getMeasureItem();
     }
 
+    @Override
     public ICellToolTipProvider getCellToolTipProvider() {
       return provider;
     }
 
+    @Override
     public void setCellToolTipProvider( ICellToolTipProvider provider ) {
       this.provider = provider;
     }
 
+    @Override
     public String getCellToolTipText() {
       return toolTipText;
     }
 
+    @Override
     public void setCellToolTipText( String toolTipText ) {
       if(    toolTipText != null
           && isToolTipMarkupEnabledFor( Table.this )
@@ -249,10 +275,12 @@ public class Table extends Composite {
       this.toolTipText = toolTipText;
     }
 
+    @Override
     public int getFixedColumns() {
       return Table.this.getFixedColumns();
     }
 
+    @Override
     public boolean isFixedColumn( TableColumn column ) {
       return Table.this.isFixedColumn( Table.this.indexOf( column ) );
     }
@@ -330,7 +358,7 @@ public class Table extends Composite {
     focusIndex = -1;
     sortDirection = SWT.NONE;
     tableAdapter = new TableAdapter();
-    columnHolder = new ItemHolder<TableColumn>( TableColumn.class );
+    columnHolder = new ItemHolder<>( TableColumn.class );
     setTableEmpty();
     selection = EMPTY_SELECTION;
     customItemHeight = -1;
@@ -2398,7 +2426,7 @@ public class Table extends Composite {
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      bufferedCellSpacing = getThemeAdapter().getCellSpacing( parent );
+      bufferedCellSpacing = getThemeAdapter().getCellSpacing( _getParent() );
     }
     return bufferedCellSpacing;
   }
@@ -2521,16 +2549,13 @@ public class Table extends Composite {
   }
 
   private int getFixedColumns() {
-    int result = -1;
-    try {
-      Integer data = ( Integer )getData( RWT.FIXED_COLUMNS );
-      if( data != null && !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
-        result = data.intValue();
+    Object fixedColumns = getData( RWT.FIXED_COLUMNS );
+    if( fixedColumns instanceof Integer ) {
+      if( !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
+        return ( ( Integer )fixedColumns ).intValue();
       }
-    } catch( ClassCastException ex ) {
-      // not a valid fixedColumns value
     }
-    return result;
+    return -1;
   }
 
 
