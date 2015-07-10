@@ -18,6 +18,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getAdapter;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -49,6 +51,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -299,6 +302,27 @@ public class DisplayLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findCreateOperation( getId( shell ) ) );
+  }
+
+  @Test
+  public void testRenderDisposedWidget_afterSettingProperties() throws IOException {
+    // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=472298
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    child.setParent( parent2 );
+    parent1.dispose();
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    DestroyOperation destroyOperation = message.findDestroyOperation( parent1 );
+    SetOperation setParentOperation = message.findSetOperation( child, "parent" );
+    List<Operation> operations = message.getOperations();
+    assertTrue( operations.indexOf( setParentOperation ) < operations.indexOf( destroyOperation ) );
   }
 
   @Test
