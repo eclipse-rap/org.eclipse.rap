@@ -25,7 +25,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
-        <version>${tycho-version}</version>
+        <version>${tycho.version}</version>
         <executions>
           <execution>
             <id>materialize-products</id>
@@ -46,7 +46,7 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>maven-replacer-plugin</artifactId>
-        <version>${replacer-version}</version>
+        <version>${replacer.version}</version>
         <executions>
           <execution>
             <phase>verify</phase>
@@ -78,7 +78,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${assembly-version}</version>
+        <version>${assembly.version}</version>
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
