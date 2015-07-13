@@ -44,7 +44,7 @@ fi
 ######################################################################
 # rename ZIP archive
 
-repoDirectory="$basedirectory"/releng/org.eclipse.rap.build/repository.mars/target/repository
+repoDirectory="$basedirectory"/releng/org.eclipse.rap.build/repository/target/repository
 VERSION=$(ls "$repoDirectory"/features/org.eclipse.rap.sdk.feature_*.jar | sed 's/.*_\([0-9.-]\+\)\..*\.jar/\1/')
 echo "Version is $VERSION"
 test -n "$VERSION" || exit 1
@@ -53,8 +53,6 @@ echo "Timestamp is $TIMESTAMP"
 test -n "$TIMESTAMP" || exit 1
 
 # Example: rap-1.5.0-N-20110814-2110.zip
-# zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
-zipFileNameMars=rap-mars-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
+zipFileName=rap-$VERSION-$BUILD_TYPE-$TIMESTAMP.zip
 
-# mv "$basedirectory"/releng/org.eclipse.rap.build/repository.luna/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
-mv "$basedirectory"/releng/org.eclipse.rap.build/repository.mars/target/*.zip "$WORKSPACE/$zipFileNameMars" || exit 1
+mv "$basedirectory"/releng/org.eclipse.rap.build/repository/target/*.zip "$WORKSPACE/$zipFileName" || exit 1
