@@ -20,21 +20,20 @@
     <version>3.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>org.eclipse.rap.mars.runtime-aggregation-repository</artifactId>
+  <artifactId>org.eclipse.rap.runtime-aggregation-repository</artifactId>
   <packaging>eclipse-repository</packaging>
   <version>3.1.0-SNAPSHOT</version>
 
   <repositories>
     <repository>
-      <id>base-platform-repository</id>
+      <id>platform-repo</id>
       <layout>p2</layout>
-      <url>${base-platform-mars-repository}</url>
+      <url>${platform-repo.url}</url>
     </repository>
     <repository>
-      <id>base-platform-repository-with-ICU-bundle</id>
+      <id>orbit-repo</id>
       <layout>p2</layout>
-      <!-- This repository is required in order to pull in the base ICU bundle -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/3.1/M0/runtime-base</url>
+      <url>${orbit-repo.url}</url>
     </repository>
   </repositories>
 
@@ -66,7 +65,7 @@
         <configuration>
           <source>
             <repository>
-              <url>${base-platform-mars-repository}</url>
+              <url>${platform-repo.url}</url>
               <layout>p2</layout>
             </repository>
           </source>

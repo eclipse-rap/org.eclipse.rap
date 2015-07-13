@@ -28,8 +28,10 @@
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.0/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
-    <base-platform-mars>4.5/R-4.5-201506032000/</base-platform-mars>
-    <base-platform-mars-repository>http://download.eclipse.org/eclipse/updates/${base-platform-mars}</base-platform-mars-repository>
+    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.5/R-4.5-201506032000/</platform-repo.url>
+    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-repo.url>
+    <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies/</rap-extra-repo.url>
+    <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
   </properties>
 
   <prerequisites>
@@ -38,23 +40,19 @@
 
   <repositories>
     <repository>
-      <id>base-platform-repository</id>
+      <id>platform-repo</id>
       <layout>p2</layout>
-      <!--
-        TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
-                    target platform, try target definitions instead.
-        -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/3.1/M0/runtime-base</url>
+      <url>${platform-repo.url}</url>
     </repository>
     <repository>
-      <id>extra-dependencies-repository</id>
+      <id>rap-extra-repo</id>
       <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies</url>
+      <url>${rap-extra-repo.url}</url>
     </repository>
     <repository>
-      <id>license-feature</id>
-      <url>http://download.eclipse.org/cbi/updates/license/</url>
+      <id>license-repo</id>
       <layout>p2</layout>
+      <url>${license-repo.url}</url>
     </repository>
   </repositories>
 
