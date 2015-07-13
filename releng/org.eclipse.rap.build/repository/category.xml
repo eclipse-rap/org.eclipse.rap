@@ -11,14 +11,6 @@
 -->
 <site>
 
-  <category-def
-      name="org.eclipse.rap.category"
-      label="Remote Application Platform (RAP)">
-    <description>
-      Remote Application Platform (RAP)
-    </description>
-  </category-def>
-
   <feature url="http://eclipse.org/rap"
       id="org.eclipse.rap.feature"
       version="3.1.0.qualifier">
@@ -42,5 +34,13 @@
       version="3.1.0.qualifier">
     <category name="org.eclipse.rap.category"/>
   </feature>
+  
+  <category-def
+      name="org.eclipse.rap.category"
+      label="Remote Application Platform (RAP)">
+    <description>
+      Remote Application Platform (RAP)
+    </description>
+  </category-def>
 
 </site>

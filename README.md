@@ -35,7 +35,7 @@ run the following command from the root of the Git repository:
 As a result, you'll get a p2 repository with all the RAP Runtime bundles and
 features in
 
-    releng/org.eclipse.rap.build/repository.luna/target/repository/
+    releng/org.eclipse.rap.build/repository/target/repository/
 
 Official builds are available from the [RAP Download page] [4].
 
