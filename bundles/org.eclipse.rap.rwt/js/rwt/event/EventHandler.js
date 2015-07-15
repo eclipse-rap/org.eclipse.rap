@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -218,6 +218,9 @@ rwt.event.EventHandler = {
     }
     var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
     var vTarget = this._getKeyEventTarget();
+    if( this.getCaptureWidget() ) {
+      EventHandlerUtil.stopDomEvent( vDomEvent );
+    }
     var vKeyEventObject = new rwt.event.KeyEvent( vType,
                                                       vDomEvent,
                                                       vDomTarget,
