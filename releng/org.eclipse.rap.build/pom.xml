@@ -21,6 +21,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <tycho.version>0.23.0</tycho.version>
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
@@ -33,6 +34,9 @@
     <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.6milestones/S-4.6M2-201509162000/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
+    <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
+    <buildType>N</buildType>
+    <build>${maven.build.timestamp}</build>
   </properties>
 
   <prerequisites>
@@ -174,6 +178,11 @@
 
     <profile>
       <id>eclipse-sign</id>
+
+      <properties>
+        <skipTests>true</skipTests>
+        <buildType>S</buildType>
+      </properties>
 
       <pluginRepositories>
         <pluginRepository>
