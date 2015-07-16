@@ -202,14 +202,17 @@ rwt.event.EventHandlerUtil = {
       rwt.widgets.util.FocusHandler.mouseFocus = true;
       var root = target.getFocusRoot();
       if( root ) {
-        rwt.event.EventHandler.setFocusRoot( root );
         var focusTarget = target;
         while( !focusTarget.isFocusable() && focusTarget != root ) {
+          if( focusTarget instanceof rwt.widgets.MenuBar ) {
+            return;
+          }
           focusTarget = focusTarget.getParent();
         }
         // We need to focus first and active afterwards.
         // Otherwise the focus will activate another widget if the
         // active one is not tabable.
+        rwt.event.EventHandler.setFocusRoot( root );
         root.setFocusedChild( focusTarget );
         root.setActiveChild( target );
       }

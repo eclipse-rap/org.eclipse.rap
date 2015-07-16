@@ -637,7 +637,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       TestUtil.rightClick( control );
       TestUtil.flush();
 
-      assertTrue( menuItem.isFocusable() );
       TestUtil.click( menuItem );
 
       assertTrue( control.getFocused() );
