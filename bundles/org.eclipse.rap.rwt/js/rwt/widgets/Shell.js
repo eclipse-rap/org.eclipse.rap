@@ -193,12 +193,22 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     },
 
     setDefaultButton : function( value ) {
-      if( this._defaultButton != null ) {
-        this._defaultButton.removeState( "default" );
-      }
       this._defaultButton = value;
-      if( this._defaultButton != null ) {
-        this._defaultButton.addState( "default" );
+      this._renderHighlightButton();
+    },
+
+    _renderHighlightButton : function() {
+      var button = this._defaultButton;
+      var focused = this.getFocusedChild();
+      if ( focused instanceof rwt.widgets.Button && focused.hasState( "push" ) ) {
+        button = focused;
+      }
+      if( this._highlightButton != null ) {
+        this._highlightButton.removeState( "default" );
+      }
+      this._highlightButton = button;
+      if( this._highlightButton != null ) {
+        this._highlightButton.addState( "default" );
       }
     },
 
@@ -376,6 +386,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       if( rwt.remote.EventUtil.getSuspended() ) {
         this._focusControl = this.getFocusedChild();
       }
+      this._renderHighlightButton();
     },
 
     _onChangeActive : function( evt ) {

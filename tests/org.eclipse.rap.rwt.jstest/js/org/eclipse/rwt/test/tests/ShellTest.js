@@ -183,9 +183,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( shell._closeButton.hasState( variant) );
     },
 
-    testDefaultButtonState : function() {
+    testDefaultButtonState_addedAndRemovedWithSetter : function() {
       var shell = new rwt.widgets.Shell( [ "APPLICATION_MODAL" ] );
       var button = new rwt.widgets.Button( "push" );
+      button.setParent( shell );
       assertFalse( button.hasState( "default") );
       shell.setDefaultButton( button );
       assertTrue( button.hasState( "default") );
@@ -195,8 +196,45 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testDefaultButtonState_movedToFocusedButton : function() {
+      var shell = TestUtil.createShellByProtocol( "w3" );
+      shell.open();
+      var button1 = new rwt.widgets.Button( "push" );
+      button1.setParent( shell );
+      var button2 = new rwt.widgets.Button( "push" );
+      rwt.remote.ObjectRegistry.add( "w4", button2, rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" ) );
+      button2.setParent( shell );
+      shell.setDefaultButton( button1 );
+      TestUtil.flush();
+
+      TestUtil.click( button2 );
+
+      assertFalse( button1.hasState( "default") );
+      assertTrue( button2.hasState( "default") );
+      shell.destroy();
+    },
+
+    testDefaultButtonState_notMovedToFocusedCheckBox : function() {
+        var shell = TestUtil.createShellByProtocol( "w3" );
+        shell.open();
+        var button1 = new rwt.widgets.Button( "push" );
+        button1.setParent( shell );
+        var button2 = new rwt.widgets.Button( "check" );
+        rwt.remote.ObjectRegistry.add( "w4", button2, rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Button" ) );
+        button2.setParent( shell );
+        shell.setDefaultButton( button1 );
+        TestUtil.flush();
+
+        TestUtil.click( button2 );
+
+        assertTrue( button1.hasState( "default" ) );
+        assertFalse( button2.hasState( "default" ) );
+        shell.destroy();
+    },
+
     testDefaultButtonGainFocusOnExecute : function() {
       var shell = TestUtil.createShellByProtocol( "w3" );
+      shell.open();
       rwt.event.EventHandler.setFocusRoot( shell );
       MessageProcessor.processOperation( {
         "target" : "w4",
