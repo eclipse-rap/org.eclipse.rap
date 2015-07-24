@@ -14,7 +14,7 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 
@@ -43,7 +43,7 @@ public final class WidgetDataUtil {
   private static Set<String> getDataKeys( boolean create ) {
     Set<String> dataKeys = ( Set<String> )getUISession().getAttribute( ATTR_DATA_KEYS );
     if( dataKeys == null && create ) {
-      dataKeys = new HashSet<>();
+      dataKeys = new LinkedHashSet<>();
       getUISession().setAttribute( ATTR_DATA_KEYS, dataKeys );
     }
     return dataKeys;
