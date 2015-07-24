@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
-import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
 
 
 /**
@@ -123,7 +122,7 @@ public class Composite extends Scrollable {
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
-    if( adapter == IControlHolderAdapter.class ) {
+    if( adapter == ControlHolder.class ) {
       result = ( T )controlHolder;
     } else if( adapter == ICompositeAdapter.class ) {
       result = ( T )compositeAdapter;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,21 +21,16 @@ import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Widget;
 
 
-/**
- * Utility class that provides a traversal through a widget-tree
- * using the visitor pattern.
- *
- * <p>The traversal through the children will be skipped if the visit call
- * on the parent node returns <code>false</code>.</p>
- */
 public class WidgetTreeVisitor {
 
   public static abstract class AllWidgetTreeVisitor extends WidgetTreeVisitor {
 
+    @Override
     public final boolean visit( Widget widget ) {
       return doVisit( widget );
     }
 
+    @Override
     public final boolean visit( Composite composite ) {
       return doVisit( composite );
     }
@@ -71,10 +66,22 @@ public class WidgetTreeVisitor {
     }
   }
 
+  /**
+   * Visit a widget that is not a Composite.
+   *
+   * @param widget the widget that is visited
+   * @return whether items should be visited
+   */
   public boolean visit( Widget widget ) {
     return true;
   }
 
+  /**
+   * Visit a Composite.
+   *
+   * @param composite the composite that is visited
+   * @return whether children and items should be visited
+   */
   public boolean visit( Composite composite ) {
     return true;
   }
@@ -85,8 +92,8 @@ public class WidgetTreeVisitor {
   private static void handleMenus( Composite composite, WidgetTreeVisitor visitor ) {
     if( MenuHolder.isMenuHolder( composite ) ) {
       Menu[] menus = MenuHolder.getMenus( composite );
-      for( int i = 0; i < menus.length; i++ ) {
-        accept( menus[ i ], visitor );
+      for( Menu menu : menus ) {
+        accept( menu, visitor );
       }
     }
   }
@@ -106,35 +113,33 @@ public class WidgetTreeVisitor {
 
   private static void handleDecorator( Widget root, WidgetTreeVisitor visitor ) {
     Decorator[] decorators = Decorator.getDecorators( root );
-    for( int i = 0; i < decorators.length; i++ ) {
-      visitor.visit( decorators[ i ] );
+    for( Decorator decorator : decorators ) {
+      visitor.visit( decorator );
     }
   }
 
   private static void handleItems( Widget root, WidgetTreeVisitor visitor ) {
     if( ItemHolder.isItemHolder( root ) ) {
       Item[] items = ItemHolder.getItemHolder( root ).getItems();
-      for( int i = 0; i < items.length; i++ ) {
-        accept( items[ i ], visitor );
+      for( Item item : items ) {
+        accept( item, visitor );
       }
     }
   }
 
   private static void handleChildren( Composite composite, WidgetTreeVisitor visitor ) {
-    IControlHolderAdapter adapter = composite.getAdapter( IControlHolderAdapter.class );
-    Control[] children = adapter.getControls();
-    for( int i = 0; i < children.length; i++ ) {
-      accept( children[ i ], visitor );
+    ControlHolder controlHolder = composite.getAdapter( ControlHolder.class );
+    for( Control child : controlHolder.getControls() ) {
+      accept( child, visitor );
     }
   }
 
   private static void handleToolTips( Widget root, WidgetTreeVisitor visitor ) {
-    Object adapter = root.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = root.getAdapter( IShellAdapter.class );
     if( adapter != null ) {
-      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-      ToolTip[] toolTips = shellAdapter.getToolTips();
-      for( int i = 0; i < toolTips.length; i++ ) {
-        visitor.visit( toolTips[ i ] );
+      ToolTip[] toolTips = adapter.getToolTips();
+      for( ToolTip toolTip : toolTips ) {
+        visitor.visit( toolTip );
       }
     }
   }
