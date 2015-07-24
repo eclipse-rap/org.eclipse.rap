@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -557,35 +558,36 @@ public class Control_Test {
     Control control1 = new Button( shell, SWT.PUSH );
     Control control2 = new Button( shell, SWT.PUSH );
     Control control3 = new Button( shell, SWT.PUSH );
-    assertEquals( 0, ControlHolder.indexOf( shell, control1 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, control2 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, control3 ) );
+    ControlHolder shellControls = shell.getAdapter( ControlHolder.class );
+    assertEquals( 0, shellControls.indexOf( control1 ) );
+    assertEquals( 1, shellControls.indexOf( control2 ) );
+    assertEquals( 2, shellControls.indexOf( control3 ) );
     control3.moveAbove( control2 );
-    assertEquals( 0, ControlHolder.indexOf( shell, control1 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, control3 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
+    assertEquals( 0, shellControls.indexOf( control1 ) );
+    assertEquals( 1, shellControls.indexOf( control3 ) );
+    assertEquals( 2, shellControls.indexOf( control2 ) );
     control1.moveBelow( control3 );
-    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
+    assertEquals( 0, shellControls.indexOf( control3 ) );
+    assertEquals( 1, shellControls.indexOf( control1 ) );
+    assertEquals( 2, shellControls.indexOf( control2 ) );
     control2.moveAbove( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, control2 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, control3 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 0, shellControls.indexOf( control2 ) );
+    assertEquals( 1, shellControls.indexOf( control3 ) );
+    assertEquals( 2, shellControls.indexOf( control1 ) );
     control2.moveBelow( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
+    assertEquals( 0, shellControls.indexOf( control3 ) );
+    assertEquals( 1, shellControls.indexOf( control1 ) );
+    assertEquals( 2, shellControls.indexOf( control2 ) );
     // control is already at the top / bottom
     control3.moveAbove( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 0, shellControls.indexOf( control3 ) );
     control2.moveBelow( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 0, shellControls.indexOf( control3 ) );
     // try to move control above / below itself
     control1.moveAbove( control1 );
-    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 1, shellControls.indexOf( control1 ) );
     control1.moveBelow( control1 );
-    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 1, shellControls.indexOf( control1 ) );
     shell.dispose();
   }
 
@@ -606,6 +608,7 @@ public class Control_Test {
     final Control control2 = new Button( shell, SWT.PUSH );
     final StringBuilder log = new StringBuilder();
     FocusListener focusListener = new FocusListener() {
+      @Override
       public void focusGained( FocusEvent event ) {
         if( event.getSource() == shell ) {
           log.append( "shell.focusGained|" );
@@ -615,6 +618,7 @@ public class Control_Test {
           fail( "Unexpected event: focusGained" );
         }
       }
+      @Override
       public void focusLost( FocusEvent event ) {
         if( event.getSource() == shell ) {
           log.append( "shell.focusLost|" );
@@ -878,6 +882,7 @@ public class Control_Test {
   public void testShowEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -907,6 +912,7 @@ public class Control_Test {
   @Test
   public void testShowEventDetails() {
     Listener ensureInvisible = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         assertFalse( ( ( Control )event.widget ).getVisible() );
       }
@@ -919,6 +925,7 @@ public class Control_Test {
   public void testHideEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -972,6 +979,7 @@ public class Control_Test {
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null };
     shell.addListener( SWT.Help, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         untypedHelpEvent[ 0 ] = event;
       }
@@ -1570,6 +1578,82 @@ public class Control_Test {
     Control control = new Button( shell, SWT.NONE );
 
     assertTrue( control.isReparentable() );
+  }
+
+  @Test
+  public void testMoveAbove() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+
+    child2.moveAbove( child1 );
+
+    assertArrayEquals( new Control[] {child2, child1}, shell.getChildren() );
+  }
+
+  @Test
+  public void testMoveAbove_ignoresWidgetWithDifferentParent() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+
+    child1.moveAbove( shell );
+
+    assertArrayEquals( new Control[] {child1, child2}, shell.getChildren() );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testMoveAbove_failsOnDisposed() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+    child1.dispose();
+
+    child1.moveAbove( child2 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMoveAbove_failsWithDisposed() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+    child2.dispose();
+
+    child1.moveAbove( child2 );
+  }
+
+  @Test
+  public void testMoveBelow() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+
+    child1.moveBelow( child2 );
+
+    assertArrayEquals( new Control[] {child2, child1}, shell.getChildren() );
+  }
+
+  @Test
+  public void testMoveBelow_ignoresWidgetWithDifferentParent() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+
+    child1.moveBelow( shell );
+
+    assertArrayEquals( new Control[] {child1, child2}, shell.getChildren() );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testMoveBelow_failsOnDisposed() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+    child1.dispose();
+
+    child1.moveBelow( child2 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testMoveBelow_failsWithDisposed() {
+    Control child1 = new Label(shell, SWT.NONE);
+    Control child2 = new Label(shell, SWT.NONE);
+    child2.dispose();
+
+    child1.moveBelow( child2 );
   }
 
   @Test

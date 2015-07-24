@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package org.eclipse.swt.internal.widgets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -70,84 +68,6 @@ public class ControlHolder_Test {
 
     assertEquals( 0, controlHolder.size() );
     assertEquals( 0, controlHolder.getControls().length );
-  }
-
-  @Test
-  public void testAddControlTwice() {
-    Control control = new Text( shell, SWT.NONE );
-    controlHolder.add( control );
-
-    try {
-      controlHolder.add( control );
-      fail( "The same control must not be added twice." );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
-  }
-
-  @Test
-  public void testRemoveNonExistingControl() {
-    Control control = new Text( shell, SWT.NONE );
-
-    try {
-      controlHolder.remove( control );
-      String msg = "Only controls that are contained in the item list can be removed.";
-      fail( msg );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
-  }
-
-  @Test
-  public void testAddControlWithNull() {
-    try {
-      controlHolder.add( null );
-      fail( "Parameter item must not be null" );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
-  }
-
-  @Test
-  public void testRemoveControlWithNull() {
-    try {
-      controlHolder.remove( null );
-      fail( "Parameter item must not be null" );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
-  }
-
-  @Test
-  public void testStaticSizeWithEmptyShell() {
-    assertEquals( 0, ControlHolder.size( shell ) );
-  }
-
-  @Test
-  public void testStaticSizeWithOneChild() {
-    new Button( shell, SWT.PUSH );
-
-    assertEquals( 1, ControlHolder.size( shell ) );
-  }
-
-  @Test
-  public void testStaticSizeWithDisposedChild() {
-    Button control = new Button( shell, SWT.PUSH );
-    control.dispose();
-
-    assertEquals( 0, ControlHolder.size( shell ) );
-  }
-
-  @Test
-  public void testStaticAddControlWithWrongParent() {
-    Composite otherParent = new Composite( shell, SWT.NONE );
-    Control button = new Button( otherParent, SWT.PUSH );
-    try {
-      ControlHolder.addControl( shell, button );
-      fail( "Control has wrong parent." );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
   }
 
   @Test

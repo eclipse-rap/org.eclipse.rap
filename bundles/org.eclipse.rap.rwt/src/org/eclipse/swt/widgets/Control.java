@@ -187,7 +187,7 @@ public abstract class Control extends Widget implements Drawable {
     controlAdapter = new ControlAdapter();
     bounds = new Rectangle( 0, 0, 0, 0 );
     tabIndex = -1;
-    ControlHolder.addControl( parent, this );
+    parent.getAdapter( ControlHolder.class ).add( this );
     createWidget();
   }
 
@@ -1452,12 +1452,10 @@ public abstract class Control extends Widget implements Drawable {
     if( this instanceof Shell ) {
       // TODO: add support for Shell reordering
     } else if( control == null || control.parent == parent && control != this ) {
-      ControlHolder.removeControl( getParent(), this );
-      int index = 0;
-      if( control != null ) {
-        index = ControlHolder.indexOf( getParent(), control );
-      }
-      ControlHolder.addControl( getParent(), this, index );
+      ControlHolder parentControls = getParent().getAdapter( ControlHolder.class );
+      parentControls.remove( this );
+      int index = control != null ? parentControls.indexOf( control ) : 0;
+      parentControls.add( this, index );
     }
   }
 
@@ -1489,12 +1487,10 @@ public abstract class Control extends Widget implements Drawable {
     if( this instanceof Shell ) {
       // TODO: add support for Shell reordering
     } else if( control == null || control.parent == parent && control != this ) {
-      ControlHolder.removeControl( getParent(), this );
-      int index = ControlHolder.size( getParent() );
-      if( control != null ) {
-        index = ControlHolder.indexOf( getParent(), control ) + 1;
-      }
-      ControlHolder.addControl( getParent(), this, index );
+      ControlHolder parentControls = getParent().getAdapter( ControlHolder.class );
+      parentControls.remove( this );
+      int index = control != null ? parentControls.indexOf( control ) + 1 : parentControls.size();
+      parentControls.add( this, index );
     }
   }
 
@@ -2160,7 +2156,7 @@ public abstract class Control extends Widget implements Drawable {
       }
       ControlLCAUtil.preserveParent( this, this.parent );
       this.parent = parent;
-      ControlHolder.addControl( parent, this );
+      parent.getAdapter( ControlHolder.class ).add( this );
     }
     return true;
   }
