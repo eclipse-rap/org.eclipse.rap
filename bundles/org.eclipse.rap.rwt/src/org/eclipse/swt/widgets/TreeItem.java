@@ -266,7 +266,7 @@ public class TreeItem extends Item {
     adjustItemIndices( index );
   }
 
-  private void destroyItem( TreeItem item, int index ) {
+  private void destroyItem( int index ) {
     itemCount--;
     if( itemCount == 0 ) {
       setEmpty();
@@ -1441,9 +1441,9 @@ public class TreeItem extends Item {
   @Override
   final void releaseParent() {
     if( parentItem != null ) {
-      parentItem.destroyItem( this, index );
+      parentItem.destroyItem( index );
     } else {
-      parent.destroyItem( this, index );
+      parent.destroyItem( index );
     }
     if( !parent.isInDispose() ) {
       parent.invalidateFlatIndex();
@@ -1608,7 +1608,7 @@ public class TreeItem extends Item {
 
   private void updateSelection() {
     TreeItem[] selection = parent.getSelection();
-    List<TreeItem> selectedItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
+    List<TreeItem> selectedItems = new ArrayList<>( Arrays.asList( selection ) );
     if( deselectChildren( selectedItems ) ) {
       if( ( parent.getStyle() & SWT.SINGLE ) != 0 ) {
         selectedItems.add( this );
@@ -1644,23 +1644,28 @@ public class TreeItem extends Item {
     implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
 
+    @Override
     public boolean isParentDisposed() {
       Widget itemParent = parentItem == null ? parent : parentItem;
       return itemParent.isDisposed();
     }
 
+    @Override
     public Color getUserBackground() {
       return background;
     }
 
+    @Override
     public Color getUserForeground() {
       return foreground;
     }
 
+    @Override
     public Font getUserFont() {
       return font;
     }
 
+    @Override
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -1674,6 +1679,7 @@ public class TreeItem extends Item {
       return result;
     }
 
+    @Override
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -1687,6 +1693,7 @@ public class TreeItem extends Item {
       return result;
     }
 
+    @Override
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Font[] result = new Font[ columnCount ];
@@ -1699,28 +1706,34 @@ public class TreeItem extends Item {
       }
       return result;
     }
+
   }
 
-  private final class CompositeItemHolder implements IItemHolderAdapter {
+  private final class CompositeItemHolder implements IItemHolderAdapter<Item> {
 
+    @Override
     public void add( Item item ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void insert( Item item, int index ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void remove( Item item ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Item[] getItems() {
       TreeItem[] items = getCreatedItems();
       Item[] result = new Item[ items.length ];
       System.arraycopy( items, 0, result, 0, items.length );
       return result;
     }
+
   }
 
   private static final class Data implements SerializableCompatibility {
@@ -1735,4 +1748,5 @@ public class TreeItem extends Item {
     Color background;
     Color foreground;
   }
+
 }

@@ -174,7 +174,7 @@ public class Tree extends Composite {
    */
   public Tree( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    columnHolder = new ItemHolder<TreeColumn>( TreeColumn.class );
+    columnHolder = new ItemHolder<>( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
     setTreeEmpty();
     sortDirection = SWT.NONE;
@@ -269,7 +269,7 @@ public class Tree extends Composite {
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         } else {
-          destroyItem( null, deleteIndex );
+          destroyItem( deleteIndex );
         }
         deleteIndex--;
       }
@@ -532,8 +532,8 @@ public class Tree extends Composite {
     checkWidget();
     TreeItem result = null;
     if( itemCount > 0 ) {
-      List visibleItems = collectVisibleItems( null );
-      result = ( TreeItem )visibleItems.get( getTopItemIndex() );
+      List<TreeItem> visibleItems = collectVisibleItems( null );
+      result = visibleItems.get( getTopItemIndex() );
     }
     return result;
   }
@@ -797,7 +797,7 @@ public class Tree extends Composite {
     if( ( style & SWT.SINGLE ) != 0 ) {
       setSelection( item );
     } else {
-      List<TreeItem> selItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
+      List<TreeItem> selItems = new ArrayList<>( Arrays.asList( selection ) );
       if( !selItems.contains( item ) ) {
         selItems.add( item );
         selection = new TreeItem[ selItems.size() ];
@@ -821,7 +821,7 @@ public class Tree extends Composite {
   public void selectAll() {
     checkWidget();
     if( ( style & SWT.MULTI ) != 0 ) {
-      final java.util.List<TreeItem> allItems = new ArrayList<TreeItem>();
+      final java.util.List<TreeItem> allItems = new ArrayList<>();
       WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
         @Override
         public boolean doVisit( Widget widget ) {
@@ -861,7 +861,7 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    List<TreeItem> selItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
+    List<TreeItem> selItems = new ArrayList<>( Arrays.asList( selection ) );
     if( selItems.contains( item ) ) {
       selItems.remove( item );
       selection = new TreeItem[ selItems.size() ];
@@ -1013,9 +1013,9 @@ public class Tree extends Composite {
     }
     TreeItem result = null;
     int index = ( point.y - getHeaderHeight() ) / getItemHeight() + getTopItemIndex();
-    List visibleItems = collectVisibleItems( null );
+    List<TreeItem> visibleItems = collectVisibleItems( null );
     if( 0 <= index && index < visibleItems.size() ) {
-      result = ( TreeItem )visibleItems.get( index );
+      result = visibleItems.get( index );
     }
     return result;
   }
@@ -1694,7 +1694,7 @@ public class Tree extends Composite {
       for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = items[ i ];
         if( item != null && item.isCached() ) {
-          int itemWidth = getPreferredCellWidth( item, 0, false );
+          int itemWidth = getPreferredCellWidth( item, 0 );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
             int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
@@ -1781,7 +1781,7 @@ public class Tree extends Composite {
         if( clearBuffer ) {
           item.clearPreferredWidthBuffers( false );
         }
-        int itemWidth = getPreferredCellWidth( item, columnIndex, false ) + indention;
+        int itemWidth = getPreferredCellWidth( item, columnIndex ) + indention;
         maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
         if( item.getExpanded() ) {
           int innerWidth = getMaxInnerWidth( item.items, columnIndex, level + 1, clearBuffer );
@@ -1881,7 +1881,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getPreferredCellWidth( TreeItem item, int index, boolean checkData ) {
+  int getPreferredCellWidth( TreeItem item, int index ) {
     int result = item.getPreferredWidthBuffer( index );
     if( !item.hasPreferredWidthBuffer( index ) ) {
       BoxDimensions padding = getCellPadding();
@@ -1928,16 +1928,13 @@ public class Tree extends Composite {
   }
 
   private int getFixedColumns() {
-    int result = -1;
-    try {
-      Integer data = ( Integer )getData( RWT.FIXED_COLUMNS );
-      if( data != null && !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
-        result = data.intValue();
+    Object fixedColumns = getData( RWT.FIXED_COLUMNS );
+    if( fixedColumns instanceof Integer ) {
+      if( !( getData( RWT.ROW_TEMPLATE ) instanceof Template ) ) {
+        return ( ( Integer )fixedColumns ).intValue();
       }
-    } catch( ClassCastException ex ) {
-      // not a valid fixedColumns value
     }
-    return result;
+    return -1;
   }
 
   private boolean hasCheckBoxes( int index ) {
@@ -2139,7 +2136,7 @@ public class Tree extends Composite {
   }
 
   private List<TreeItem> collectVisibleItems( TreeItem parentItem ) {
-    List<TreeItem> result = new ArrayList<TreeItem>();
+    List<TreeItem> result = new ArrayList<>();
     TreeItem[] items = parentItem == null ? this.items : parentItem.items;
     int itemCount = parentItem == null ? this.itemCount : parentItem.itemCount;
     for( int i = 0; i < itemCount; i++ ) {
@@ -2291,7 +2288,7 @@ public class Tree extends Composite {
       for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = items[ i ];
         if( item != null && !item.isInDispose() && item.isCached() ) {
-          int itemWidth = getPreferredCellWidth( item, 0, false );
+          int itemWidth = getPreferredCellWidth( item, 0 );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
             int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
@@ -2340,7 +2337,7 @@ public class Tree extends Composite {
     adjustItemIndices( index );
   }
 
-  void destroyItem( TreeItem treeItem, int index ) {
+  void destroyItem( int index ) {
     itemCount--;
     if( itemCount == 0 ) {
       setTreeEmpty();
@@ -2384,7 +2381,8 @@ public class Tree extends Composite {
   ////////////////
   // Inner classes
 
-  private final class CompositeItemHolder implements IItemHolderAdapter {
+  private final class CompositeItemHolder implements IItemHolderAdapter<Item> {
+    @Override
     public void add( Item item ) {
       if( item instanceof TreeColumn ) {
         columnHolder.add( ( TreeColumn )item );
@@ -2393,6 +2391,7 @@ public class Tree extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public void insert( Item item, int index ) {
       if( item instanceof TreeColumn ) {
         columnHolder.insert( ( TreeColumn )item, index );
@@ -2401,6 +2400,7 @@ public class Tree extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public void remove( Item item ) {
       if( item instanceof TreeColumn ) {
         columnHolder.remove( ( TreeColumn )item );
@@ -2409,6 +2409,7 @@ public class Tree extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
+    @Override
     public Item[] getItems() {
       TreeItem[] items = getCreatedItems();
       Item[] columns = columnHolder.getItems();
@@ -2425,87 +2426,108 @@ public class Tree extends Composite {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
+    @Override
     public void checkData() {
       updateAllItems();
     }
 
+    @Override
     public void setScrollLeft( int left ) {
       scrollLeft = left;
     }
 
+    @Override
     public int getScrollLeft() {
       return scrollLeft;
     }
 
+    @Override
     public boolean isCached( TreeItem item ) {
       return item.isCached();
     }
 
+    @Override
     public Point getItemImageSize( int index ) {
       return Tree.this.getItemImageSize( index );
     }
 
+    @Override
     public int getCellLeft( int index ) {
       return Tree.this.getCellLeft( index );
     }
 
+    @Override
     public int getCellWidth( int index ) {
       return Tree.this.getCellWidth( index );
     }
 
+    @Override
     public int getTextOffset( int index ) {
       return Tree.this.getTextOffset( index );
     }
 
+    @Override
     public int getTextMaxWidth( int index ) {
       return getTextWidth( index );
     }
 
+    @Override
     public int getCheckWidth() {
       return getCheckImageSize().width;
     }
 
+    @Override
     public int getImageOffset( int index ) {
       return Tree.this.getImageOffset( index );
     }
 
+    @Override
     public int getIndentionWidth() {
       return Tree.this.getIndentionWidth();
     }
 
+    @Override
     public int getCheckLeft() {
       return getCheckBoxMargin().left;
     }
 
+    @Override
     public Rectangle getTextMargin() {
       return TEXT_MARGIN;
     }
 
+    @Override
     public int getTopItemIndex() {
       return Tree.this.getTopItemIndex();
     }
 
+    @Override
     public void setTopItemIndex( int index ) {
       Tree.this.setTopItemIndex( index );
     }
 
+    @Override
     public int getColumnLeft( TreeColumn column ) {
       int index = Tree.this.indexOf( column );
       return getColumn( index ).getLeft();
     }
 
+    @Override
     public ICellToolTipProvider getCellToolTipProvider() {
       return provider;
     }
 
+    @Override
     public void setCellToolTipProvider( ICellToolTipProvider provider ) {
       this.provider = provider;
     }
 
+    @Override
     public String getCellToolTipText() {
       return toolTipText;
     }
 
+    @Override
     public void setCellToolTipText( String toolTipText ) {
       if(    toolTipText != null
           && isToolTipMarkupEnabledFor( Tree.this )
@@ -2516,10 +2538,12 @@ public class Tree extends Composite {
       this.toolTipText = toolTipText;
     }
 
+    @Override
     public int getFixedColumns() {
       return Tree.this.getFixedColumns();
     }
 
+    @Override
     public boolean isFixedColumn( TreeColumn column ) {
       return Tree.this.isFixedColumn( Tree.this.indexOf( column ) );
     }
@@ -2582,5 +2606,7 @@ public class Tree extends Composite {
       invalidateCellPadding();
       invalidateCheckBoxMargin();
     }
+
   }
+
 }

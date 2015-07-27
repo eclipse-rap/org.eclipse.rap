@@ -1642,8 +1642,8 @@ public class Tree_Test {
     item.setText( 0, "short" );
     item.setText( 1, "very long text" );
 
-    int width1 = tree.getPreferredCellWidth( item, 0, false );
-    int width2 = tree.getPreferredCellWidth( item, 1, false );
+    int width1 = tree.getPreferredCellWidth( item, 0 );
+    int width2 = tree.getPreferredCellWidth( item, 1 );
     assertTrue( width2 > width1 );
   }
 
@@ -1651,11 +1651,11 @@ public class Tree_Test {
   public void testGetPreferredCellWidth_withMarkup() {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "<b>foo</b>" );
-    int width1 = tree.getPreferredCellWidth( item, 0, false );
+    int width1 = tree.getPreferredCellWidth( item, 0 );
 
     item.clearPreferredWidthBuffers( false );
     tree.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-    int width2 = tree.getPreferredCellWidth( item, 0, false );
+    int width2 = tree.getPreferredCellWidth( item, 0 );
 
     assertTrue( width1 > width2 );
   }
