@@ -158,6 +158,7 @@ public class Tree_Test {
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
     tree.setFont( font );
     tree.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         font.dispose();
       }
@@ -273,9 +274,11 @@ public class Tree_Test {
   public void testExpandCollapse() {
     final StringBuilder log = new StringBuilder();
     tree.addTreeListener( new TreeListener() {
+      @Override
       public void treeCollapsed( TreeEvent e ) {
         log.append( "collapsed" );
       }
+      @Override
       public void treeExpanded( TreeEvent e ) {
         log.append( "expanded" );
       }
@@ -1162,6 +1165,7 @@ public class Tree_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     final List<Widget> log = new ArrayList<Widget>();
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event.item );
       }
@@ -1192,6 +1196,7 @@ public class Tree_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -1323,6 +1328,7 @@ public class Tree_Test {
     tree.setItemCount( 10 );
     tree.addListener( SWT.SetData, new Listener() {
 
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         int treeIndex = item.getParent().indexOf( item );
@@ -1637,7 +1643,7 @@ public class Tree_Test {
 
   @Test
   public void testGetPreferredCellWidth_withColumns() {
-    createColumns( tree, 3 );
+    createColumns( tree, 3, 50 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( 0, "short" );
     item.setText( 1, "very long text" );
@@ -1703,6 +1709,7 @@ public class Tree_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 1000 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         eventLog.add( event );
       }
@@ -1877,6 +1884,7 @@ public class Tree_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.setSize( 100, 160 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         int i = item.getParent().indexOf( item );
@@ -1904,92 +1912,132 @@ public class Tree_Test {
     assertEquals( "item0#SetData", log.get( 3 ) );
   }
 
-  @Test
-  public void testShowColumn() {
-    tree.setSize( 325, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    assertEquals( 0, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 8 ) );
-    assertEquals( 175, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 1 ) );
-    assertEquals( 50, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 3 ) );
-    assertEquals( 50, adapter.getScrollLeft() );
-
-    tree.getColumn( 3 ).dispose();
-    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
-    tree.showColumn( tree.getColumn( 8 ) );
-    assertEquals( 0, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 5 ) );
-    assertEquals( 125, adapter.getScrollLeft() );
-  }
-
-  @Test
-  public void testShowColumnWithReorderedColumns() {
-    tree.setSize( 325, 100 );
-    for( int i = 0; i < 9; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( 50 );
-    }
-
-    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
-    tree.showColumn( tree.getColumn( 8 ) );
-
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    assertEquals( 0, adapter.getScrollLeft() );
-
-    tree.showColumn( tree.getColumn( 5 ) );
-    assertEquals( 125, adapter.getScrollLeft() );
-  }
-
-  @Test( expected = IllegalArgumentException.class )
-  public void testShowColumnWithNullArgument() {
+  @Test( expected = IllegalArgumentException.class)
+  public void testShowColumn_nullArgument() {
     tree.showColumn( null );
   }
 
-  @Test( expected = IllegalArgumentException.class )
-  public void testShowColumnWithDisposedColumn() {
+  @Test( expected = IllegalArgumentException.class)
+  public void testShowColumn_withDisposedColumn() {
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.dispose();
+
     tree.showColumn( column );
   }
 
   @Test
-  public void testShowColumnWithForeignColumn() {
+  public void testShowColumn_withForeignColumn() {
     int initialLeftOffset = 123456;
-    tree.setSize( 325, 100 );
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    column.setWidth( 50 );
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    adapter.setScrollLeft( initialLeftOffset );
+    createColumns( tree, 10, 50 );
+    getTreeAdapter( tree ).setScrollLeft( initialLeftOffset );
     Tree otherTree = new Tree( shell, SWT.NONE );
     TreeColumn otherColumn = new TreeColumn( otherTree, SWT.NONE );
 
     tree.showColumn( otherColumn );
 
-    assertEquals( initialLeftOffset, adapter.getScrollLeft() );
+    assertEquals( initialLeftOffset, getTreeAdapter( tree ).getScrollLeft() );
   }
 
   @Test
-  public void testShowFixedColumn() {
+  public void testShowColumn_scrolledToRight() {
+    tree.setSize( 325, 100 );
+    createColumns( tree, 20, 50 );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+
+    tree.showColumn( tree.getColumn( 8 ) );
+
+    assertEquals( 125, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_scrolledToLeft() {
+    tree.setSize( 325, 100 );
+    createColumns( tree, 20, 50 );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    adapter.setScrollLeft( 250 );
+
+    tree.showColumn( tree.getColumn( 3 ) );
+
+    assertEquals( 150, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_onVisibleColumn() {
+    tree.setSize( 325, 100 );
+    createColumns( tree, 20, 50 );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    adapter.setScrollLeft( 150 );
+
+    tree.showColumn( tree.getColumn( 5 ) );
+
+    assertEquals( 150, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_withReorderedColumns_scrolledToRight() {
+    tree.setSize( 125, 100 );
+    createColumns( tree, 10, 50 );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 9, 3, 6, 5, 4 } );
+
+    tree.showColumn( tree.getColumn( 2 ) );
+
+    assertEquals( 125, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_withReorderedColumns_scrolledToLeft() {
+    tree.setSize( 125, 100 );
+    createColumns( tree, 10, 50 );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    adapter.setScrollLeft( 225 );
+    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 9, 3, 6, 5, 4 } );
+
+    tree.showColumn( tree.getColumn( 1 ) );
+
+    assertEquals( 150, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_doesNotScrollOnFixedColumn() {
     shell.setSize( 800, 600 );
     Tree tree = createFixedColumnsTree();
     tree.setSize( 300, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    createTreeItems( tree, 10 );
+    createColumns( tree, 10, 50 );
     ITreeAdapter adapter = getTreeAdapter( tree );
 
     adapter.setScrollLeft( 100 );
     tree.showColumn( tree.getColumn( 0 ) );
 
     assertEquals( 100, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_withFixedColumns_scrolledToLeft() {
+    Tree tree = createFixedColumnsTree();
+    int numColumns = 4;
+    int columnWidth = 100;
+    tree.setSize( columnWidth * ( numColumns - 1 ), 100 );
+    createColumns( tree, numColumns, columnWidth );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    adapter.setScrollLeft( 100 );
+
+    tree.showColumn( tree.getColumn( 2 ) );
+
+    assertEquals( 0, adapter.getScrollLeft() );
+  }
+
+  @Test
+  public void testShowColumn_withFixedColumns_scrolledToRight() {
+    int numColumns = 4;
+    int columnWidth = 100;
+    Tree tree = createFixedColumnsTree();
+    tree.setSize( columnWidth  * ( numColumns - 1 ), 100 );
+    createColumns( tree, numColumns, columnWidth );
+
+    tree.showColumn( tree.getColumn( 3 ) );
+
+    assertEquals( 100, getTreeAdapter( tree ).getScrollLeft() );
   }
 
   @Test
@@ -2000,41 +2048,6 @@ public class Tree_Test {
 
     ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
     assertEquals( -1, adapter.getFixedColumns() );
-  }
-
-  @Test
-  public void testShowColumnWithFixedColumns_ScrolledToLeft() {
-    int numColumns = 4;
-    int columnWidth = 100;
-    Tree tree = createFixedColumnsTree();
-    tree.setSize( columnWidth * ( numColumns - 1 ), 100 );
-    for( int i = 0; i < numColumns; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( columnWidth );
-    }
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    adapter.setScrollLeft( 100 );
-
-    tree.showColumn( tree.getColumn( 2 ) );
-
-    assertEquals( 0, adapter.getScrollLeft() );
-  }
-
-  @Test
-  public void testShowColumnWithFixedColumns_ScrolledToRight() {
-    int numColumns = 4;
-    int columnWidth = 100;
-    Tree tree = createFixedColumnsTree();
-    tree.setSize( columnWidth  * ( numColumns - 1 ), 100 );
-    for( int i = 0; i < numColumns; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( columnWidth );
-    }
-
-    tree.showColumn( tree.getColumn( 3 ) );
-
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    assertEquals( 100, adapter.getScrollLeft() );
   }
 
   @Test
@@ -2223,18 +2236,16 @@ public class Tree_Test {
     assertEquals( 200, countResolvedItems( tree ) );
   }
 
-  /////////
-  // Helper
-
   private Tree createFixedColumnsTree() {
     Tree result = new Tree( shell, SWT.NONE );
     result.setData( RWT.FIXED_COLUMNS, new Integer( 2 ) );
     return result;
   }
 
-  private static void createColumns( Tree tree, int count ) {
+  private static void createColumns( Tree tree, int count, int columnWidth ) {
     for( int i = 0; i < count; i++ ) {
-      new TreeColumn( tree, SWT.NONE );
+      TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setWidth( columnWidth );
     }
   }
 
@@ -2249,6 +2260,7 @@ public class Tree_Test {
 
   private static Listener createSetDataListener() {
     return new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         Tree parent = item.getParent();

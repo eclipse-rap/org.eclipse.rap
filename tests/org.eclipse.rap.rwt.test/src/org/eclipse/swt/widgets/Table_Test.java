@@ -433,6 +433,7 @@ public class Table_Test {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         event.item.dispose();
       }
@@ -497,6 +498,7 @@ public class Table_Test {
     shell.setLayout( new FillLayout() );
     Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
@@ -627,6 +629,7 @@ public class Table_Test {
     shell.setLayout( new FillLayout() );
     Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
@@ -650,6 +653,7 @@ public class Table_Test {
     createTableItems( table, 5 );
     for( TableItem item : table.getItems() ) {
       item.addDisposeListener( new DisposeListener() {
+        @Override
         public void widgetDisposed( DisposeEvent event ) {
           TableItem item = ( TableItem )event.getSource();
           log.add( item.getText() );
@@ -690,6 +694,7 @@ public class Table_Test {
     shell.setLayout( new FillLayout() );
     Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
@@ -730,6 +735,7 @@ public class Table_Test {
     shell.setLayout( new FillLayout() );
     Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
@@ -1558,6 +1564,7 @@ public class Table_Test {
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
     table.setFont( font );
     table.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         font.dispose();
       }
@@ -1571,6 +1578,7 @@ public class Table_Test {
     final Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent e ) {
         table.setItemCount( 0 );
       }
@@ -1586,6 +1594,7 @@ public class Table_Test {
     TableItem item3 = new TableItem( table, SWT.NONE );
     table.setItemCount( 10 );
     table.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent e ) {
         table.setItemCount( 0 );
       }
@@ -1694,6 +1703,7 @@ public class Table_Test {
     createTableItems( table, 30 );
     for( TableItem item : table.getItems() ) {
       item.addDisposeListener( new DisposeListener() {
+        @Override
         public void widgetDisposed( DisposeEvent event ) {
           TableItem item = ( TableItem )event.getSource();
           log.add( item.getText() );
@@ -1765,6 +1775,7 @@ public class Table_Test {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         fail( "SetItemCount must not fire SetData events" );
       }
@@ -2003,6 +2014,7 @@ public class Table_Test {
     Table table = new Table( shell, SWT.BORDER | SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TableItem item = ( TableItem )event.item;
         int tableIndex = item.getParent().indexOf( item );
@@ -2292,6 +2304,7 @@ public class Table_Test {
       data[ i ] = "";
     }
     Listener setDataListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TableItem item = ( TableItem )event.item;
         int index = item.getParent().indexOf( item );
@@ -2366,73 +2379,24 @@ public class Table_Test {
     table.remove( 5 );
   }
 
-  @Test
-  public void testShowColumn() {
-    table.setSize( 325, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    ITableAdapter adapter = getTableAdapter( table );
-    assertEquals( 0, adapter.getLeftOffset() );
-    table.showColumn( table.getColumn( 8 ) );
-    assertEquals( 175, adapter.getLeftOffset() );
-    table.showColumn( table.getColumn( 1 ) );
-    assertEquals( 50, adapter.getLeftOffset() );
-    table.showColumn( table.getColumn( 3 ) );
-    assertEquals( 50, adapter.getLeftOffset() );
-
-    table.getColumn( 3 ).dispose();
-    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
-    table.showColumn( table.getColumn( 8 ) );
-    assertEquals( 0, adapter.getLeftOffset() );
-    table.showColumn( table.getColumn( 5 ) );
-    assertEquals( 125, adapter.getLeftOffset() );
+  @Test( expected = IllegalArgumentException.class)
+  public void testShowColumn_nullArgument() {
+    table.showColumn( null );
   }
 
-  @Test
-  public void testShowColumnWithReorderedColumns() {
-    table.setSize( 325, 100 );
-    for( int i = 0; i < 9; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-    }
-
-    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
-    table.showColumn( table.getColumn( 8 ) );
-
-    ITableAdapter adapter = getTableAdapter( table );
-    assertEquals( 0, adapter.getLeftOffset() );
-
-    table.showColumn( table.getColumn( 5 ) );
-    assertEquals( 125, adapter.getLeftOffset() );
-  }
-
-  @Test
-  public void testShowColumnWithNullArgument() {
-    try {
-      table.showColumn( null );
-      fail( "Null argument not allowed" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  @Test
-  public void testShowColumnWithDisposedColumn() {
+  @Test( expected = IllegalArgumentException.class)
+  public void testShowColumn_withDisposedColumn() {
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.dispose();
-    try {
-      table.showColumn( column );
-      fail( "Disposed column not allowed as argument" );
-    } catch( IllegalArgumentException expeted ) {
-    }
+
+    table.showColumn( column );
   }
 
   @Test
-  public void testShowColumnWithForeignColumn() {
+  public void testShowColumn_withForeignColumn() {
     int initialLeftOffset = 123456;
     Table table = createTable( SWT.NONE, 1 );
-    table.leftOffset = initialLeftOffset;
+    getTableAdapter( table ).setLeftOffset( initialLeftOffset );
     Table otherTable = new Table( shell, SWT.NONE );
     TableColumn otherColumn = new TableColumn( otherTable, SWT.NONE );
 
@@ -2442,15 +2406,71 @@ public class Table_Test {
   }
 
   @Test
-  public void testShowFixedColumn() {
+  public void testShowColumn_scrolledToRight() {
+    table.setSize( 325, 100 );
+    createColumns( table, 20, 50 );
+    ITableAdapter adapter = getTableAdapter( table );
+
+    table.showColumn( table.getColumn( 8 ) );
+
+    assertEquals( 125, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testShowColumn_scrolledToLeft() {
+    table.setSize( 325, 100 );
+    createColumns( table, 20, 50 );
+    ITableAdapter adapter = getTableAdapter( table );
+    adapter.setLeftOffset( 250 );
+
+    table.showColumn( table.getColumn( 3 ) );
+
+    assertEquals( 150, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testShowColumn_onVisibleColumn() {
+    table.setSize( 325, 100 );
+    createColumns( table, 20, 50 );
+    ITableAdapter adapter = getTableAdapter( table );
+    adapter.setLeftOffset( 150 );
+
+    table.showColumn( table.getColumn( 5 ) );
+
+    assertEquals( 150, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testShowColumn_withReorderedColumns_scrolledToRight() {
+    table.setSize( 125, 100 );
+    createColumns( table, 10, 50 );
+    ITableAdapter adapter = getTableAdapter( table );
+    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 9, 3, 6, 5, 4 } );
+
+    table.showColumn( table.getColumn( 2 ) );
+
+    assertEquals( 125, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testShowColumn_withReorderedColumns_scrolledToLeft() {
+    table.setSize( 125, 100 );
+    createColumns( table, 10, 50 );
+    ITableAdapter adapter = getTableAdapter( table );
+    adapter.setLeftOffset( 225 );
+    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 9, 3, 6, 5, 4 } );
+
+    table.showColumn( table.getColumn( 1 ) );
+
+    assertEquals( 150, adapter.getLeftOffset() );
+  }
+
+  @Test
+  public void testShowColumn_doesNotScrollOnFixedColumn() {
     shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable();
     table.setSize( 300, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    createTableItems( table, 10 );
+    createColumns( table, 10, 50 );
     ITableAdapter adapter = getTableAdapter( table );
 
     adapter.setLeftOffset( 100 );
@@ -2460,24 +2480,12 @@ public class Table_Test {
   }
 
   @Test
-  public void testFixedColumnsNotSetWithRowTemplate() {
-    Table table = createFixedColumnsTable();
-
-    table.setData( RWT.ROW_TEMPLATE, new Template() );
-
-    assertEquals( -1, getTableAdapter( table ).getFixedColumns() );
-  }
-
-  @Test
-  public void testShowColumnWithFixedColumns_ScrolledToLeft() {
+  public void testShowColumn_withFixedColumns_scrolledToLeft() {
     Table table = createFixedColumnsTable();
     int numColumns = 4;
     int columnWidth = 100;
     table.setSize( columnWidth * ( numColumns - 1 ), 100 );
-    for( int i = 0; i < numColumns; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( columnWidth );
-    }
+    createColumns( table, numColumns, columnWidth );
     ITableAdapter adapter = getTableAdapter( table );
     adapter.setLeftOffset( 100 );
 
@@ -2487,19 +2495,25 @@ public class Table_Test {
   }
 
   @Test
-  public void testShowColumnWithFixedColumns_ScrolledToRight() {
+  public void testShowColumn_withFixedColumns_scrolledToRight() {
     int numColumns = 4;
     int columnWidth = 100;
     Table table = createFixedColumnsTable();
     table.setSize( columnWidth  * ( numColumns - 1 ), 100 );
-    for( int i = 0; i < numColumns; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( columnWidth );
-    }
+    createColumns( table, numColumns, columnWidth );
 
     table.showColumn( table.getColumn( 3 ) );
 
     assertEquals( 100, getTableAdapter( table ).getLeftOffset() );
+  }
+
+  @Test
+  public void testFixedColumnsNotSetWithRowTemplate() {
+    Table table = createFixedColumnsTable();
+
+    table.setData( RWT.ROW_TEMPLATE, new Template() );
+
+    assertEquals( -1, getTableAdapter( table ).getFixedColumns() );
   }
 
   @Test
@@ -2587,6 +2601,7 @@ public class Table_Test {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 1000 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         eventLog.add( event );
       }
@@ -2606,6 +2621,7 @@ public class Table_Test {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 1000 );
     table.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         eventLog.add( event );
       }
@@ -2886,6 +2902,13 @@ public class Table_Test {
       result[ i ].setText( "item" + i );
     }
     return result;
+  }
+
+  private static void createColumns( Table table, int count, int columnWidth ) {
+    for( int i = 0; i < count; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( columnWidth );
+    }
   }
 
   private static boolean find( int element, int[] array ) {
