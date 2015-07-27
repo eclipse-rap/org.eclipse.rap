@@ -1617,7 +1617,6 @@ public class Table extends Composite {
       int index = indexOf( column );
       if( 0 <= index && index < getColumnCount() ) {
         int leftColumnsWidth = 0;
-        int rightColumnsWidth = 0;
         int columnWidth = column.getWidth();
         int clientWidth = getClientArea().width;
         int[] columnOrder = getColumnOrder();
@@ -1625,9 +1624,7 @@ public class Table extends Composite {
         for( int i = 0; i < columnOrder.length; i++ ) {
           if( index != columnOrder[ i ] ) {
             int currentColumnWidth = getColumn( columnOrder[ i ] ).getWidth();
-            if( found ) {
-              rightColumnsWidth += currentColumnWidth;
-            } else {
+            if( !found ) {
               if( isFixedColumn( columnOrder[ i ] ) ) {
                 clientWidth -= currentColumnWidth;
               } else {
@@ -1641,11 +1638,7 @@ public class Table extends Composite {
         if( getColumnLeftOffset( index ) > leftColumnsWidth ) {
           leftOffset = leftColumnsWidth;
         } else if( leftOffset < leftColumnsWidth + columnWidth - clientWidth ) {
-          if( columnWidth + rightColumnsWidth < clientWidth ) {
-            leftOffset = leftColumnsWidth + columnWidth + rightColumnsWidth - clientWidth;
-          } else {
-            leftOffset = leftColumnsWidth;
-          }
+          leftOffset = leftColumnsWidth + columnWidth - clientWidth;
         }
       }
     }
