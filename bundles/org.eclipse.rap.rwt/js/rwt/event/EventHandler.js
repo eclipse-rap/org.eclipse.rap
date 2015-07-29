@@ -342,7 +342,7 @@ rwt.event.EventHandler = {
     if( vType !== "contextmenu" ) {
       rwt.event.MouseEvent.storeEventState( vEventObject );
     }
-    if( !eventConsumed ) {
+    if( !eventConsumed && !( vType === "mousewheel" && vEventObject.getWheelDelta() === 0 ) ) {
       this._dispatchMouseEvent( vDispatchTarget, vEventObject );
       if( vDispatchTarget.getEnabled() ) {
         this._onmouseevent_special_post( vType,
