@@ -293,7 +293,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setToolTipText( "foo" );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "toolTip" ) );
@@ -325,7 +325,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setToolTipText( "foo" );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     control.setToolTipText( null );
     ControlLCAUtil.renderChanges( control );
 

@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
@@ -81,7 +82,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    preserveToolTipText( control );
     preserveMenu( control );
     preserveVisible( control );
     preserveEnabled( control );
@@ -107,6 +107,7 @@ public class ControlLCAUtil {
     renderChildren( control );
     renderBounds( control );
     renderTabIndex( control );
+    renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
     renderMenu( control );
     renderVisible( control );
@@ -201,20 +202,25 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveToolTipText( Control control ) {
-    getRemoteAdapter( control ).preserveToolTipText( control.getToolTipText() );
+  public static void preserveToolTipText( Control control, String toolTipText ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedToolTipText() ) {
+      remoteAdapter.preserveToolTipText( toolTipText );
+    }
   }
 
   private static void renderToolTipText( Control control ) {
-    WidgetLCAUtil.renderToolTipMarkupEnabled( control );
-    String actual = control.getToolTipText();
-    String preserved = getRemoteAdapter( control ).getPreservedToolTipText();
-    if( changed( control, actual, preserved, null ) ) {
-      String text = actual == null ? "" : actual;
-      if( !isToolTipMarkupEnabledFor( control ) ) {
-        text = removeAmpersandControlCharacters( text );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedToolTipText() ) {
+      String actual = control.getToolTipText();
+      String preserved = getRemoteAdapter( control ).getPreservedToolTipText();
+      if( changed( control, actual, preserved, null ) ) {
+        String text = actual == null ? "" : actual;
+        if( !isToolTipMarkupEnabledFor( control ) ) {
+          text = removeAmpersandControlCharacters( text );
+        }
+        getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
       }
-      getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
     }
   }
 

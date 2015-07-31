@@ -1333,6 +1333,7 @@ public abstract class Control extends Widget implements Drawable {
     {
       MarkupValidator.getInstance().validate( toolTipText );
     }
+    ControlLCAUtil.preserveToolTipText( this, this.toolTipText );
     this.toolTipText = toolTipText;
   }
 
