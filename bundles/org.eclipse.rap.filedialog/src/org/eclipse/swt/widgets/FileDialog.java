@@ -84,7 +84,7 @@ import org.eclipse.swt.layout.GridLayout;
 public class FileDialog extends Dialog {
 
   private final ServerPushSession pushSession;
-  private final ThreadPoolExecutor singleThreadExecutor;
+  private ThreadPoolExecutor singleThreadExecutor;
   private Display display;
   private ScrolledComposite uploadsScroller;
   private Button okButton;
@@ -140,7 +140,6 @@ public class FileDialog extends Dialog {
     super( parent, checkStyle( parent, style ) );
     checkSubclass();
     pushSession = new ServerPushSession();
-    singleThreadExecutor = createSingleThreadExecutor();
   }
 
   /**
@@ -190,6 +189,7 @@ public class FileDialog extends Dialog {
     initializeBounds();
     initializeDefaults();
     pushSession.start();
+    singleThreadExecutor = createSingleThreadExecutor();
     if( clientFiles != null && clientFiles.length > 0 ) {
       handleFileDrop( clientFiles );
     }

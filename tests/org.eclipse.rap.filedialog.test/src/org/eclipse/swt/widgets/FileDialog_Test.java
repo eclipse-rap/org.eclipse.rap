@@ -34,6 +34,7 @@ import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.rap.rwt.widgets.DialogUtil;
+import org.eclipse.rap.rwt.widgets.FileDialogUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -326,6 +327,17 @@ public class FileDialog_Test {
   @Test
   public void testGetAdapter_returnsDialogAdapter() {
     assertNotNull( dialog.getAdapter( IDialogAdapter.class ) );
+  }
+
+  @Test
+  public void testOpen_twice_withClientFiles() {
+    // expected not to fail
+    dialog = new FileDialog( shell );
+    FileDialogUtil.setClientFiles( dialog, new ClientFile[] { mock( ClientFile.class ) } );
+    DialogUtil.open( dialog, callback );
+    dialog.shell.close();
+    FileDialogUtil.setClientFiles( dialog, new ClientFile[] { mock( ClientFile.class ) } );
+    DialogUtil.open( dialog, callback );
   }
 
   private DropTarget getDropTarget() {
