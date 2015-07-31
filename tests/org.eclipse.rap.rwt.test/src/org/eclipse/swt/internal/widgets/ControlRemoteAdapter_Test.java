@@ -110,6 +110,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveForeground( color );
 
+    assertTrue( adapter.hasPreservedForeground() );
     assertSame( color, adapter.getPreservedForeground() );
   }
 
@@ -119,6 +120,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveBackground( color );
 
+    assertTrue( adapter.hasPreservedBackground() );
     assertSame( color, adapter.getPreservedBackground() );
   }
 
@@ -126,6 +128,7 @@ public class ControlRemoteAdapter_Test {
   public void testPreserveBackgroundTransparency() {
     adapter.preserveBackgroundTransparency( true );
 
+    assertTrue( adapter.hasPreservedBackground() );
     assertTrue( adapter.getPreservedBackgroundTransparency() );
   }
 
@@ -290,7 +293,9 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedMenu() );
     assertFalse( adapter.getPreservedVisible() );
     assertFalse( adapter.getPreservedEnabled() );
+    assertFalse( adapter.hasPreservedForeground() );
     assertNull( adapter.getPreservedForeground() );
+    assertFalse( adapter.hasPreservedBackground() );
     assertNull( adapter.getPreservedBackground() );
     assertFalse( adapter.getPreservedBackgroundTransparency() );
     assertNull( adapter.getPreservedBackgroundImage() );

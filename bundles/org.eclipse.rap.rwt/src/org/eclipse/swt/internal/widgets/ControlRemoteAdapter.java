@@ -27,6 +27,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int CHILDREN = 3;
   private static final int TOOL_TIP_TEXT = 4;
   private static final int MENU = 5;
+  private static final int FOREGROUND = 6;
+  private static final int BACKGROUND = 7;
 
   private transient int preserved;
   private transient Composite parent;
@@ -140,7 +142,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveForeground( Color foreground ) {
+    markPreserved( FOREGROUND );
     this.foreground = foreground;
+  }
+
+  public boolean hasPreservedForeground() {
+    return hasPreserved( FOREGROUND );
   }
 
   public Color getPreservedForeground() {
@@ -148,7 +155,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBackground( Color background ) {
+    markPreserved( BACKGROUND );
     this.background = background;
+  }
+
+  public boolean hasPreservedBackground() {
+    return hasPreserved( BACKGROUND );
   }
 
   public Color getPreservedBackground() {
@@ -156,6 +168,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBackgroundTransparency( boolean transparency ) {
+    markPreserved( BACKGROUND );
     backgroundTransparency = transparency;
   }
 

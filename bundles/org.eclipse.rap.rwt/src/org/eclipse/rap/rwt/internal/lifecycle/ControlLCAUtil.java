@@ -84,8 +84,6 @@ public class ControlLCAUtil {
     preserveTabIndex( control );
     preserveVisible( control );
     preserveEnabled( control );
-    preserveForeground( control );
-    preserveBackground( control );
     preserveBackgroundImage( control );
     preserveFont( control );
     preserveCursor( control );
@@ -269,45 +267,53 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveForeground( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    getRemoteAdapter( control ).preserveForeground( controlAdapter.getUserForeground() );
-  }
-
-  private static void renderForeground( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Color actual = controlAdapter.getUserForeground();
-    Color preserved = getRemoteAdapter( control ).getPreservedForeground();
-    if( changed( control, actual, preserved, null ) ) {
-      getRemoteObject( control ).set( PROP_FOREGROUND, toJson( actual ) );
+  public static void preserveForeground( Control control, Color foreground ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedForeground() ) {
+      getRemoteAdapter( control ).preserveForeground( foreground );
     }
   }
 
-  private static void preserveBackground( Control control ) {
-    ControlRemoteAdapter adapter = getRemoteAdapter( control );
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    adapter.preserveBackground( controlAdapter.getUserBackground() );
-    adapter.preserveBackgroundTransparency( controlAdapter.getBackgroundTransparency() );
+  private static void renderForeground( Control control ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedForeground() ) {
+      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+      Color actual = controlAdapter.getUserForeground();
+      Color preserved = getRemoteAdapter( control ).getPreservedForeground();
+      if( changed( control, actual, preserved, null ) ) {
+        getRemoteObject( control ).set( PROP_FOREGROUND, toJson( actual ) );
+      }
+    }
+  }
+
+  public static void preserveBackground( Control control, Color background, boolean transparency ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedBackground() ) {
+      remoteAdapter.preserveBackground( background );
+      remoteAdapter.preserveBackgroundTransparency( transparency );
+    }
   }
 
   private static void renderBackground( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Color actualBackground = controlAdapter.getUserBackground();
-    boolean actualTransparency = controlAdapter.getBackgroundTransparency();
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    boolean colorChanged = changed( control,
-                                    actualBackground,
-                                    remoteAdapter.getPreservedBackground(),
-                                    null );
-    boolean transparencyChanged = changed( control,
-                                           actualTransparency,
-                                           remoteAdapter.getPreservedBackgroundTransparency(),
-                                           false );
-    if( transparencyChanged || colorChanged ) {
-      JsonValue color = actualTransparency && actualBackground == null
-                      ? toJson( new RGB( 0, 0, 0 ), 0 )
-                      : toJson( actualBackground, actualTransparency ? 0 : 255 );
-      getRemoteObject( control ).set( PROP_BACKGROUND, color );
+    if( remoteAdapter.hasPreservedBackground() ) {
+      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+      Color actualBackground = controlAdapter.getUserBackground();
+      boolean actualTransparency = controlAdapter.getBackgroundTransparency();
+      boolean colorChanged = changed( control,
+                                      actualBackground,
+                                      remoteAdapter.getPreservedBackground(),
+                                      null );
+      boolean transparencyChanged = changed( control,
+                                             actualTransparency,
+                                             remoteAdapter.getPreservedBackgroundTransparency(),
+                                             false );
+      if( transparencyChanged || colorChanged ) {
+        JsonValue color = actualTransparency && actualBackground == null
+            ? toJson( new RGB( 0, 0, 0 ), 0 )
+            : toJson( actualBackground, actualTransparency ? 0 : 255 );
+            getRemoteObject( control ).set( PROP_BACKGROUND, color );
+      }
     }
   }
 

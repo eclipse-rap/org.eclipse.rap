@@ -444,7 +444,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setForeground( red );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "foreground" ) );
@@ -466,7 +466,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setForeground( red );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     control.setForeground( null );
     ControlLCAUtil.renderChanges( control );
 
@@ -485,7 +485,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setBackground( red );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "background" ) );
@@ -518,7 +518,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setBackground( red );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     control.setBackground( null );
     ControlLCAUtil.renderChanges( control );
 
