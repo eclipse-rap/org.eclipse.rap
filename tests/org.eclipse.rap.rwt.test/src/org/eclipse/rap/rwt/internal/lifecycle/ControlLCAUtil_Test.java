@@ -344,7 +344,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setMenu( new Menu( shell ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "menu" ) );

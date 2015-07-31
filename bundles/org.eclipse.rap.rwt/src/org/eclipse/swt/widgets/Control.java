@@ -24,8 +24,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.GestureListener;
@@ -132,7 +130,7 @@ public abstract class Control extends Widget implements Drawable {
   private Object layoutData;
   private String toolTipText;
   private Menu menu;
-  private DisposeListener menuDisposeListener;
+  private Listener menuDisposeListener;
   private Color foreground;
   private Color background;
   private Image backgroundImage;
@@ -1396,7 +1394,7 @@ public abstract class Control extends Widget implements Drawable {
         }
       }
       removeMenuDisposeListener();
-      this.menu = menu;
+      _setMenu( menu );
       addMenuDisposeListener();
     }
   }
@@ -2470,6 +2468,11 @@ public abstract class Control extends Widget implements Drawable {
     bounds.height = Math.max( 0, bounds.height );
   }
 
+  private void _setMenu( Menu menu ) {
+    ControlLCAUtil.preserveMenu( this, this.menu );
+    this.menu = menu;
+  }
+
   void updateMode() {
     // subclasses may override
   }
@@ -2595,20 +2598,21 @@ public abstract class Control extends Widget implements Drawable {
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
-        menuDisposeListener = new DisposeListener() {
+        menuDisposeListener = new Listener() {
           @Override
-          public void widgetDisposed( DisposeEvent event ) {
-            menu = null;
+          public void handleEvent( Event event ) {
+            _setMenu( null );
           }
         };
       }
-      menu.addDisposeListener( menuDisposeListener );
+      menu.addListener( SWT.Dispose, menuDisposeListener );
     }
   }
 
   private void removeMenuDisposeListener() {
     if( menu != null ) {
-      menu.removeDisposeListener( menuDisposeListener );
+      menu.removeListener( SWT.Dispose, menuDisposeListener );
     }
   }
+
 }

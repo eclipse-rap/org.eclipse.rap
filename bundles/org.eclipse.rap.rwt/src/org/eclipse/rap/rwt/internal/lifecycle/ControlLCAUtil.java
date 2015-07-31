@@ -82,7 +82,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    preserveMenu( control );
     preserveVisible( control );
     preserveEnabled( control );
     preserveForeground( control );
@@ -224,16 +223,22 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveMenu( Control control ) {
-    getRemoteAdapter( control ).preserveMenu( control.getMenu() );
+  public static void preserveMenu( Control control, Menu menu ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedMenu() ) {
+      getRemoteAdapter( control ).preserveMenu( menu );
+    }
   }
 
   private static void renderMenu( Control control ) {
-    Menu actual = control.getMenu();
-    Menu preserved = getRemoteAdapter( control ).getPreservedMenu();
-    if( changed( control, actual, preserved, null ) ) {
-      String actualMenuId = actual == null ? null : getId( actual );
-      getRemoteObject( control ).set( PROP_MENU, actualMenuId );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedMenu() ) {
+      Menu actual = control.getMenu();
+      Menu preserved = getRemoteAdapter( control ).getPreservedMenu();
+      if( changed( control, actual, preserved, null ) ) {
+        String actualMenuId = actual == null ? null : getId( actual );
+        getRemoteObject( control ).set( PROP_MENU, actualMenuId );
+      }
     }
   }
 

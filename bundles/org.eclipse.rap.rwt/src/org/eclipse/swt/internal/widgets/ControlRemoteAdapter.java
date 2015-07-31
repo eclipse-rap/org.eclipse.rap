@@ -25,7 +25,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int PARENT = 1;
   private static final int BOUNDS = 2;
   private static final int CHILDREN = 3;
-  private static final int TOOLTIP_TEXT = 4;
+  private static final int TOOL_TIP_TEXT = 4;
+  private static final int MENU = 5;
 
   private transient int preserved;
   private transient Composite parent;
@@ -97,12 +98,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveToolTipText( String toolTipText ) {
-    markPreserved( TOOLTIP_TEXT );
+    markPreserved( TOOL_TIP_TEXT );
     this.toolTipText = toolTipText;
   }
 
   public boolean hasPreservedToolTipText() {
-    return hasPreserved( TOOLTIP_TEXT );
+    return hasPreserved( TOOL_TIP_TEXT );
   }
 
   public String getPreservedToolTipText() {
@@ -110,7 +111,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveMenu( Menu menu ) {
+    markPreserved( MENU );
     this.menu = menu;
+  }
+
+  public boolean hasPreservedMenu() {
+    return hasPreserved( MENU );
   }
 
   public Menu getPreservedMenu() {

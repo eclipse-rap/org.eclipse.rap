@@ -86,6 +86,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveMenu( menu );
 
+    assertTrue( adapter.hasPreservedMenu() );
     assertSame( menu, adapter.getPreservedMenu() );
   }
 
@@ -285,6 +286,7 @@ public class ControlRemoteAdapter_Test {
     assertEquals( 0, adapter.getPreservedTabIndex() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
+    assertFalse( adapter.hasPreservedMenu() );
     assertNull( adapter.getPreservedMenu() );
     assertFalse( adapter.getPreservedVisible() );
     assertFalse( adapter.getPreservedEnabled() );
