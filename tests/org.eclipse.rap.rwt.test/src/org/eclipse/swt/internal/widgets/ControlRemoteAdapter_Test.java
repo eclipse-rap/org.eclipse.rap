@@ -11,11 +11,7 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.swt.graphics.Color;
@@ -55,6 +51,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveChildren( children );
 
+    assertTrue( adapter.hasPreservedChildren() );
     assertSame( children, adapter.getPreservedChildren() );
   }
 
@@ -270,9 +267,17 @@ public class ControlRemoteAdapter_Test {
     checkDefaults();
   }
 
+  @Test
+  public void testPreservingDoesNotAffectOtherProperties() {
+    adapter.preserveChildren( new Control[ 0 ] );
+    assertFalse( adapter.hasPreservedBounds() );
+    assertFalse( adapter.hasPreservedParent() );
+  }
+
   private void checkDefaults() {
     assertFalse( adapter.hasPreservedParent() );
     assertNull( adapter.getPreservedParent() );
+    assertFalse( adapter.hasPreservedChildren() );
     assertNull( adapter.getPreservedChildren() );
     assertFalse( adapter.hasPreservedBounds() );
     assertNull( adapter.getPreservedBounds() );

@@ -80,7 +80,6 @@ public class ControlLCAUtil {
   }
 
   public static void preserveValues( Control control ) {
-    preserveChildren( control );
     preserveTabIndex( control );
     preserveToolTipText( control );
     preserveMenu( control );
@@ -147,18 +146,19 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveChildren( Control control ) {
-    if( control instanceof Composite ) {
-      Composite composite = ( Composite )control;
-      getRemoteAdapter( control ).preserveChildren( composite.getChildren() );
+  public static void preserveChildren( Composite composite, Control[] children ) {
+    ControlRemoteAdapter adapter = getRemoteAdapter( composite );
+    if( !adapter.hasPreservedChildren() ) {
+      adapter.preserveChildren( children );
     }
   }
 
   private static void renderChildren( Control control ) {
-    if( control instanceof Composite ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( control instanceof Composite && remoteAdapter.hasPreservedChildren() ) {
       Composite composite = ( Composite )control;
       Control[] actual = composite.getChildren();
-      Control[] preserved = getRemoteAdapter( control ).getPreservedChildren();
+      Control[] preserved = remoteAdapter.getPreservedChildren();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_CHILDREN, getIdsAsJson( actual ) );
       }

@@ -168,7 +168,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( shell );
     new Button( shell, SWT.PUSH );
 
-    ControlLCAUtil.preserveValues( shell );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( shell );
 
     assertNull( getProtocolMessage().findSetOperation( shell, "children" ) );
@@ -1208,6 +1208,7 @@ public class ControlLCAUtil_Test {
     final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         eventLog.add( event );
       }

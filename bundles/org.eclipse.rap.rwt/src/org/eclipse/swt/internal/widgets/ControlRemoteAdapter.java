@@ -19,10 +19,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 
+
 public class ControlRemoteAdapter extends WidgetRemoteAdapter {
 
   private static final int PARENT = 1;
   private static final int BOUNDS = 2;
+  private static final int CHILDREN = 3;
 
   private transient int preserved;
   private transient Composite parent;
@@ -47,12 +49,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveParent( Composite parent ) {
-    preserved |= PARENT;
+    markPreserved( PARENT );
     this.parent = parent;
   }
 
   public boolean hasPreservedParent() {
-    return ( preserved & PARENT ) != 0;
+    return hasPreserved( PARENT );
   }
 
   public Composite getPreservedParent() {
@@ -60,7 +62,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveChildren( Control[] children ) {
+    markPreserved( CHILDREN );
     this.children = children;
+  }
+
+  public boolean hasPreservedChildren() {
+    return hasPreserved( CHILDREN );
   }
 
   public Control[] getPreservedChildren() {
@@ -68,12 +75,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBounds( Rectangle bounds ) {
-    preserved |= BOUNDS;
+    markPreserved( BOUNDS );
     this.bounds = bounds;
   }
 
   public boolean hasPreservedBounds() {
-    return ( preserved & BOUNDS ) != 0;
+    return hasPreserved( BOUNDS );
   }
 
   public Rectangle getPreservedBounds() {
@@ -204,6 +211,14 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     cursor = null;
     activeKeys = null;
     cancelKeys = null;
+  }
+
+  private void markPreserved( int index ) {
+    preserved |= ( 1 << index );
+  }
+
+  private boolean hasPreserved( int index ) {
+    return ( preserved & ( 1 << index ) ) != 0;
   }
 
   private Object readResolve() {

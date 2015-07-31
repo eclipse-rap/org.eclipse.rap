@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -831,20 +832,24 @@ public class Composite extends Scrollable {
   }
 
   void addChild( Control control ) {
+    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
     children.add( control );
   }
 
   void removeChild( Control control ) {
+    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
     children.remove( control );
   }
 
   void moveAbove( Control control1, Control control2 ) {
+    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
     children.remove( control1 );
     int index = control2 != null ? children.indexOf( control2 ) : 0;
     children.add( index, control1 );
   }
 
   void moveBelow( Control control1, Control control2 ) {
+    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
     children.remove( control1 );
     int index = control2 != null ? children.indexOf( control2 ) + 1 : children.size();
     children.add( index, control1 );
