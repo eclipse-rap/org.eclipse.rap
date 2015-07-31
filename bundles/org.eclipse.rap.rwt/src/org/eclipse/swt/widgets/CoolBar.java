@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -48,23 +49,28 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 public class CoolBar extends Composite {
 
   private class CoolBarAdapter implements ICoolBarAdapter {
+    @Override
     public void setItemOrder( int[] itemOrder ) {
       CoolBar.this.setItemOrder( itemOrder );
     }
   }
 
   private class CoolBarItemHolder implements IItemHolderAdapter {
-  
+
+    @Override
     public void add( Item item ) {
     }
-  
+
+    @Override
     public Item[] getItems() {
       return CoolBar.this.getItems();
     }
-  
+
+    @Override
     public void insert( Item item, int index ) {
     }
-  
+
+    @Override
     public void remove( Item item ) {
     }
   }
@@ -129,6 +135,7 @@ public class CoolBar extends Composite {
     }
     // dragCursor = new Cursor(display, SWT.CURSOR_SIZEALL);
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         switch (event.type) {
         case SWT.Dispose:
@@ -159,6 +166,7 @@ public class CoolBar extends Composite {
     }
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
@@ -174,10 +182,12 @@ public class CoolBar extends Composite {
   // if (this.cursor != null) return;
   // super.setCursor (cursor);
   // }
+  @Override
   protected void checkSubclass() {
      if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
   }
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0, height = 0;
@@ -885,8 +895,9 @@ public class CoolBar extends Composite {
     layoutItems();
   }
 
-  void removeControl( Control control ) {
-    super.removeControl( control );
+  @Override
+  void removeChild( Control control ) {
+    super.removeChild( control );
     CoolItem[] items = getItems();
     for ( int i = 0; i < items.length; i++ ) {
       CoolItem item = items[i];
@@ -1368,6 +1379,7 @@ public class CoolBar extends Composite {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -1390,6 +1402,7 @@ public class CoolBar extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     CoolItem[] items = getItems();
     if( items != null ) {

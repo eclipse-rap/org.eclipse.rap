@@ -128,8 +128,8 @@ public class WidgetTreeVisitor {
   }
 
   private static void handleChildren( Composite composite, WidgetTreeVisitor visitor ) {
-    ControlHolder controlHolder = composite.getAdapter( ControlHolder.class );
-    for( Control child : controlHolder.getControls() ) {
+    ICompositeAdapter adapter = composite.getAdapter( ICompositeAdapter.class );
+    for( Control child : adapter.getChildren() ) {
       accept( child, visitor );
     }
   }

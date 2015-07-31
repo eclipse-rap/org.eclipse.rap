@@ -331,8 +331,8 @@ public class ToolBar extends Composite {
   // Child control removal
 
   @Override
-  void removeControl( Control control ) {
-    super.removeControl( control );
+  void removeChild( Control control ) {
+    super.removeChild( control );
     ToolItem[] items = itemHolder.getItems();
     for( int i = 0; i < items.length; i++ ) {
       ToolItem item = items[ i ];

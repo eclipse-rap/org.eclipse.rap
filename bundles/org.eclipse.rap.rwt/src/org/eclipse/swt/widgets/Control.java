@@ -43,7 +43,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -187,7 +186,7 @@ public abstract class Control extends Widget implements Drawable {
     controlAdapter = new ControlAdapter();
     bounds = new Rectangle( 0, 0, 0, 0 );
     tabIndex = -1;
-    parent.getAdapter( ControlHolder.class ).add( this );
+    parent.addChild( this );
     createWidget();
   }
 
@@ -1452,10 +1451,7 @@ public abstract class Control extends Widget implements Drawable {
     if( this instanceof Shell ) {
       // TODO: add support for Shell reordering
     } else if( control == null || control.parent == parent && control != this ) {
-      ControlHolder parentControls = getParent().getAdapter( ControlHolder.class );
-      parentControls.remove( this );
-      int index = control != null ? parentControls.indexOf( control ) : 0;
-      parentControls.add( this, index );
+      parent.moveAbove( this, control );
     }
   }
 
@@ -1487,10 +1483,7 @@ public abstract class Control extends Widget implements Drawable {
     if( this instanceof Shell ) {
       // TODO: add support for Shell reordering
     } else if( control == null || control.parent == parent && control != this ) {
-      ControlHolder parentControls = getParent().getAdapter( ControlHolder.class );
-      parentControls.remove( this );
-      int index = control != null ? parentControls.indexOf( control ) + 1 : parentControls.size();
-      parentControls.add( this, index );
+      parent.moveBelow( this, control );
     }
   }
 
@@ -2156,7 +2149,7 @@ public abstract class Control extends Widget implements Drawable {
       }
       ControlLCAUtil.preserveParent( this, this.parent );
       this.parent = parent;
-      parent.getAdapter( ControlHolder.class ).add( this );
+      parent.addChild( this );
     }
     return true;
   }
@@ -2406,7 +2399,7 @@ public abstract class Control extends Widget implements Drawable {
   @Override
   void releaseParent() {
     if( parent != null ) {
-      parent.removeControl( this );
+      parent.removeChild( this );
     }
   }
 

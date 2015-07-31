@@ -11,13 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
 
 
@@ -41,14 +43,14 @@ public class Composite extends Scrollable {
   private final ICompositeAdapter compositeAdapter;
   private Layout layout;
   int layoutCount;
-  private final ControlHolder controlHolder;
+  private final List<Control> children;
   private Control[] tabList;
   int backgroundMode;
 
   Composite( Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
-    controlHolder = new ControlHolder();
+    children = new ArrayList<>();
     compositeAdapter = new CompositeAdapter();
   }
 
@@ -81,7 +83,7 @@ public class Composite extends Scrollable {
    */
   public Composite( Composite parent, int style ) {
     super( parent, style );
-    controlHolder = new ControlHolder();
+    children = new ArrayList<>();
     compositeAdapter = new CompositeAdapter();
   }
 
@@ -115,21 +117,16 @@ public class Composite extends Scrollable {
    */
   public Control[] getChildren() {
     checkWidget();
-    return controlHolder.getControls();
+    return children.toArray( new Control[ 0 ] );
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
-    if( adapter == ControlHolder.class ) {
-      result = ( T )controlHolder;
-    } else if( adapter == ICompositeAdapter.class ) {
-      result = ( T )compositeAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+    if( adapter == ICompositeAdapter.class ) {
+      return ( T )compositeAdapter;
     }
-    return result;
+    return super.getAdapter( adapter );
   }
 
   //////////////////
@@ -512,9 +509,8 @@ public class Composite extends Scrollable {
       }
     }
     if( all ) {
-      Control[] children = controlHolder.getControls();
-      for( int i = 0; i < children.length; i++ ) {
-        children[ i ].markLayout( changed, all );
+      for( Control child : children ) {
+        child.markLayout( changed, all );
       }
     }
   }
@@ -539,9 +535,8 @@ public class Composite extends Scrollable {
     }
     if( all ) {
       state &= ~LAYOUT_CHILD;
-      Control[] children = controlHolder.getControls();
-      for( int i = 0; i < children.length; i++ ) {
-        children[ i ].updateLayout( resize, all );
+      for( Control child : children ) {
+        child.updateLayout( resize, all );
       }
     }
   }
@@ -683,45 +678,28 @@ public class Composite extends Scrollable {
   public void setBackgroundMode( int mode ) {
     checkWidget();
     backgroundMode = mode;
-    Control[] children = controlHolder.getControls();
-    for( int i = 0; i < children.length; i++ ) {
-      children[ i ].updateBackgroundMode();
+    for( Control child : children ) {
+      child.updateBackgroundMode();
     }
   }
 
   @Override
   void updateBackgroundMode() {
     super.updateBackgroundMode();
-    Control[] children = controlHolder.getControls();
-    for( int i = 0; i < children.length; i++ ) {
-      children[ i ].updateBackgroundMode();
+    for( Control child : children ) {
+      child.updateBackgroundMode();
     }
   }
-
-  // ///////////////////
-  // setFocus override
 
   @Override
   public boolean setFocus() {
     checkWidget();
-    Control[] children = getChildren();
-//     for( int i = 0; i < children.length; i++ ) {
-//      Control child = children[ i ];
-//      if( child.setRadioFocus() )
-//        return true;
-//    }
-    Control focusedChild = null;
-    for( int i = 0; focusedChild == null && i < children.length; i++ ) {
-      Control child = children[ i ];
+    for( Control child : children ) {
       if( child.setFocus() ) {
-        focusedChild = child;
+        return true;
       }
     }
-    boolean result = true;
-    if( focusedChild == null ) {
-      result = super.setFocus();
-    }
-    return result;
+    return super.setFocus ();
   }
 
   ////////////
@@ -782,17 +760,16 @@ public class Composite extends Scrollable {
     Control[] result = _getTabList();
     if( result == null ) {
       int count = 0;
-      Control[] list = controlHolder.getControls();
-      for( int i = 0; i < list.length; i++ ) {
-        if( list[ i ].isTabGroup() ) {
+      for( Control child : children ) {
+        if( child.isTabGroup() ) {
           count++;
         }
       }
       result = new Control[ count ];
       int index = 0;
-      for( int i = 0; i < list.length; i++ ) {
-        if( list[ i ].isTabGroup() ) {
-          result[ index++ ] = list[ i ];
+      for( Control child : children ) {
+        if( child.isTabGroup() ) {
+          result[ index++ ] = child;
         }
       }
     }
@@ -831,11 +808,10 @@ public class Composite extends Scrollable {
   // Helping method used by computeSize
 
   Point minimumSize() {
-    Control[] children = getChildren();
     Rectangle clientArea = getClientArea();
     int width = 0, height = 0;
-    for( int i = 0; i < children.length; i++ ) {
-      Rectangle rect = children[ i ].getBounds();
+    for( Control child : children ) {
+      Rectangle rect = child.getBounds();
       width = Math.max( width, rect.x - clientArea.x + rect.width );
       height = Math.max( height, rect.y - clientArea.y + rect.height );
     }
@@ -848,20 +824,31 @@ public class Composite extends Scrollable {
   @Override
   void releaseChildren() {
     super.releaseChildren();
-    Control[] children = controlHolder.getControls();
-    for( int i = 0; i < children.length; i++ ) {
-      children[ i ].dispose();
+    List<Control> copy = new ArrayList<>( children );
+    for( Control child : copy ) {
+      child.dispose();
     }
   }
 
-  void removeControl( Control control ) {
-    if( controlHolder.contains( control ) ) {
-      controlHolder.remove( control );
-    }
+  void addChild( Control control ) {
+    children.add( control );
   }
 
-  ////////////////
-  // Resize helper
+  void removeChild( Control control ) {
+    children.remove( control );
+  }
+
+  void moveAbove( Control control1, Control control2 ) {
+    children.remove( control1 );
+    int index = control2 != null ? children.indexOf( control2 ) : 0;
+    children.add( index, control1 );
+  }
+
+  void moveBelow( Control control1, Control control2 ) {
+    children.remove( control1 );
+    int index = control2 != null ? children.indexOf( control2 ) + 1 : children.size();
+    children.add( index, control1 );
+  }
 
   @Override
   void notifyResize( Point oldSize ) {
@@ -885,29 +872,26 @@ public class Composite extends Scrollable {
     return ( state & LAYOUT_NEEDED ) != 0;
   }
 
-  ///////////////////
-  // Skinning support
-
   @Override
   void reskinChildren( int flags ) {
     super.reskinChildren( flags );
-    Control[] children = controlHolder.getControls();
-    for( int i = 0; i < children.length; i++ ) {
-      Control child = children[ i ];
+    for( Control child : children ) {
       if( child != null ) {
         child.reskin( flags );
       }
     }
   }
 
-  ////////////////
-  // Inner classes
-
   private final class CompositeAdapter implements ICompositeAdapter, SerializableCompatibility {
 
     @Override
     public void markLayoutNeeded() {
       markLayout( false, false );
+    }
+
+    @Override
+    public Iterable<Control> getChildren() {
+      return children;
     }
 
   }
