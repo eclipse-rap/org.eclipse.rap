@@ -128,7 +128,7 @@ public class Combo extends Composite {
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */THEME_BACKGROUND );
+    removeState( /* CANVAS | */THEME_BACKGROUND );
   }
 
   /**
@@ -1059,6 +1059,7 @@ public class Combo extends Composite {
     if( adapter == ITextAdapter.class ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
+          @Override
           public void setText( String text ) {
             if( internalSetText( text, true ) ) {
               adjustSelection();

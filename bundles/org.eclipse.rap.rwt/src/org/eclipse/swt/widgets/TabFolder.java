@@ -88,14 +88,14 @@ public class TabFolder extends Composite {
    */
   public TabFolder( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    itemHolder = new ItemHolder<TabItem>( TabItem.class );
+    itemHolder = new ItemHolder<>( TabItem.class );
     selectionIndex = -1;
     onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
   }
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+    removeState( /* CANVAS | */ THEME_BACKGROUND );
   }
 
   @Override

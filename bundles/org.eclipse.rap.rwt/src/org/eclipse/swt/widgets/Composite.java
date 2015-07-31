@@ -91,7 +91,7 @@ public class Composite extends Scrollable {
   @Override
   void initState() {
     if( ( style & ( SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
-      state |= THEME_BACKGROUND;
+      addState( THEME_BACKGROUND );
     }
   }
 
@@ -191,7 +191,7 @@ public class Composite extends Scrollable {
     checkWidget();
     if( !defer ) {
       if( --layoutCount == 0 ) {
-        if( ( state & LAYOUT_CHILD ) != 0 || ( state & LAYOUT_NEEDED ) != 0 ) {
+        if( hasState( LAYOUT_CHILD ) || hasState( LAYOUT_NEEDED ) ) {
           updateLayout( true, true );
         }
       }
@@ -467,9 +467,9 @@ public class Composite extends Scrollable {
         Composite composite = child._getParent();
         while (child != this) {
           if (composite.layout != null) {
-            composite.state |= LAYOUT_NEEDED;
+            composite.addState( LAYOUT_NEEDED );
             if (!composite.layout.flushCache (child)) {
-              composite.state |= LAYOUT_CHANGED;
+              composite.addState( LAYOUT_CHANGED );
             }
           }
           if (updateCount == update.length) {
@@ -504,9 +504,9 @@ public class Composite extends Scrollable {
   @Override
   void markLayout( boolean changed, boolean all ) {
     if( layout != null ) {
-      state |= LAYOUT_NEEDED;
+      addState( LAYOUT_NEEDED );
       if( changed ) {
-        state |= LAYOUT_CHANGED;
+        addState( LAYOUT_CHANGED );
       }
     }
     if( all ) {
@@ -524,18 +524,18 @@ public class Composite extends Scrollable {
   void updateLayout( boolean resize, boolean all ) {
     Composite parent = findDeferredControl();
     if( parent != null ) {
-      parent.state |= LAYOUT_CHILD;
+      parent.addState( LAYOUT_CHILD );
       return;
     }
-    if( ( state & LAYOUT_NEEDED ) != 0 ) {
-      boolean changed = ( state & LAYOUT_CHANGED ) != 0;
-      state &= ~( LAYOUT_NEEDED | LAYOUT_CHANGED );
+    if( hasState( LAYOUT_NEEDED ) ) {
+      boolean changed = hasState( LAYOUT_CHANGED );
+      removeState( LAYOUT_NEEDED | LAYOUT_CHANGED );
 // if (resize) setResizeChildren (false);
       layout.layout( this, changed );
 // if (resize) setResizeChildren (true);
     }
     if( all ) {
-      state &= ~LAYOUT_CHILD;
+      removeState( LAYOUT_CHILD );
       for( Control child : children ) {
         child.updateLayout( resize, all );
       }
@@ -553,8 +553,8 @@ public class Composite extends Scrollable {
     boolean hasChanged = changed;
     if( layout != null ) {
       if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
-        hasChanged |= ( state & LAYOUT_CHANGED ) != 0;
-        state &= ~LAYOUT_CHANGED;
+        hasChanged |= hasState( LAYOUT_CHANGED );
+        removeState( LAYOUT_CHANGED );
         size = layout.computeSize( this, wHint, hHint, hasChanged );
       } else {
         size = new Point( wHint, hHint );
@@ -626,9 +626,8 @@ public class Composite extends Scrollable {
       Control child = changed[ i ];
       Composite composite = child._getParent();
       while( child != this ) {
-        if( composite.layout == null || !composite.layout.flushCache( child ) )
-        {
-          composite.state |= LAYOUT_CHANGED;
+        if( composite.layout == null || !composite.layout.flushCache( child ) ) {
+          composite.addState( LAYOUT_CHANGED );
         }
         child = composite;
         composite = child._getParent();
@@ -874,7 +873,7 @@ public class Composite extends Scrollable {
   }
 
   private boolean isLayoutNeeded() {
-    return ( state & LAYOUT_NEEDED ) != 0;
+    return hasState( LAYOUT_NEEDED );
   }
 
   @Override

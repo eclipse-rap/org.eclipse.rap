@@ -13,14 +13,7 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClientListenerOperations;
 import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.inOrder;
@@ -121,6 +114,7 @@ public class Widget_Test {
   @Test
   public void testCheckWidget() throws Throwable {
     Runnable target = new Runnable() {
+      @Override
       public void run() {
         widget.checkWidget();
       }
@@ -330,6 +324,7 @@ public class Widget_Test {
   @Test( expected = SWTException.class )
   public void testDispose_failsOnIllegalThread() throws Throwable {
     runInThread( new Runnable() {
+      @Override
       public void run() {
         widget.dispose();
       }
@@ -339,6 +334,7 @@ public class Widget_Test {
   @Test
   public void testDispose_withException() {
     widget.addListener( SWT.Dispose, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         throw new RuntimeException();
       }
@@ -363,11 +359,13 @@ public class Widget_Test {
     ToolBar toolbar = new ToolBar( composite, SWT.NONE );
     final ToolItem[] item = { null };
     toolbar.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         item[ 0 ].dispose();
       }
     } );
     toolbar.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         composite.dispose();
       }
@@ -380,6 +378,7 @@ public class Widget_Test {
   @Test
   public void testDisposeSelfWhileInDispose() {
     widget.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         widget.dispose();
       }
@@ -392,6 +391,7 @@ public class Widget_Test {
   public void testDisposeSelfWhileInDispose_RenderOnce() {
     Fixture.markInitialized( widget );
     widget.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         widget.dispose();
       }
@@ -618,6 +618,7 @@ public class Widget_Test {
   @Test
   public void testNotifyListeners_withDenyingFilter() {
     Listener filter = spy( new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         event.type = SWT.None;
       }
@@ -637,6 +638,7 @@ public class Widget_Test {
   public void testNotifyListeners_eventFields() {
     final AtomicReference<Event> eventCaptor = new AtomicReference<Event>();
     display.addFilter( SWT.Resize, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         eventCaptor.set( event );
       }
@@ -883,6 +885,7 @@ public class Widget_Test {
     final AtomicReference<Display> displayCaptor = new AtomicReference<Display>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         displayCaptor.set( widget.getDisplay() );
       }
@@ -895,6 +898,7 @@ public class Widget_Test {
   public void testReskin() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( event.type == SWT.Skin ) {
           log.add( event.widget );
@@ -957,6 +961,27 @@ public class Widget_Test {
     shell.reskin( SWT.ALL );
     display.readAndDispatch();
     assertEquals( 0, log.size() );
+  }
+
+  @Test
+  public void testAddState() {
+    widget.addState( 1 << 2 );
+
+    assertFalse( widget.hasState( 1 << 0 ) );
+    assertFalse( widget.hasState( 1 << 1 ) );
+    assertTrue( widget.hasState( 1 << 2 ) );
+    assertFalse( widget.hasState( 1 << 3 ) );
+  }
+
+  @Test
+  public void testRemoveState() {
+    widget.addState( 1 << 23 );
+    widget.removeState( 1 << 23 );
+
+    assertFalse( widget.hasState( 1 << 0 ) );
+    assertFalse( widget.hasState( 1 << 1 ) );
+    assertFalse( widget.hasState( 1 << 2 ) );
+    assertFalse( widget.hasState( 1 << 3 ) );
   }
 
 }

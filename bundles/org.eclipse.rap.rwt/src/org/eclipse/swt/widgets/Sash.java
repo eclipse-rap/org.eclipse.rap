@@ -81,7 +81,7 @@ public class Sash extends Control {
 
   @Override
   void initState() {
-    state |= THEME_BACKGROUND;
+    addState( THEME_BACKGROUND );
   }
 
   @Override
@@ -178,4 +178,5 @@ public class Sash extends Control {
     }
     return result;
   }
+
 }

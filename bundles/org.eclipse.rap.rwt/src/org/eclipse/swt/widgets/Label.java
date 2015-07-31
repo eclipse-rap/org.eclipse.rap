@@ -113,7 +113,7 @@ public class Label extends Control {
 
   @Override
   void initState() {
-    state |= THEME_BACKGROUND;
+    addState( THEME_BACKGROUND );
   }
 
   /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -211,6 +211,7 @@ public class Menu extends Widget {
     return null;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result;
@@ -219,6 +220,7 @@ public class Menu extends Widget {
     } else if( adapter == IMenuAdapter.class ) {
       if( menuAdapter == null ) {
         menuAdapter = new IMenuAdapter() {
+          @Override
           public Point getLocation() {
             return new Point( x, y );
           }
@@ -451,9 +453,9 @@ public class Menu extends Widget {
    */
   public void setEnabled( boolean enabled ) {
     checkWidget();
-    state &= ~DISABLED;
+    removeState( DISABLED );
     if( !enabled ) {
-      state |= DISABLED;
+      addState( DISABLED );
     }
   }
 
@@ -474,7 +476,7 @@ public class Menu extends Widget {
    */
   public boolean getEnabled() {
     checkWidget();
-    return ( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**
@@ -631,6 +633,7 @@ public class Menu extends Widget {
   // Widget overrides
 
   // TODO [rh] disposal of Menu and its items not yet completely implemented
+  @Override
   final void releaseChildren() {
     MenuItem[] menuItems = itemHolder.getItems();
     for( int i = 0; i < menuItems.length; i++ ) {
@@ -639,11 +642,13 @@ public class Menu extends Widget {
     super.releaseChildren();
   }
 
+  @Override
   final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
     super.releaseWidget();
   }
 
+  @Override
   String getNameText() {
     String result = "";
     MenuItem[] items = getItems();
@@ -801,6 +806,7 @@ public class Menu extends Widget {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     MenuItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -809,4 +815,5 @@ public class Menu extends Widget {
     }
     super.reskinChildren( flags );
   }
+
 }

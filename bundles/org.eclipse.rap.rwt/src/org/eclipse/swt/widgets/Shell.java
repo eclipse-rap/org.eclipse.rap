@@ -189,7 +189,7 @@ public class Shell extends Decorations {
     alpha = 0xFF;
     mode = MODE_NONE;
     this.style = checkStyle( style );
-    state |= HIDDEN;
+    addState( HIDDEN );
     minWidth = MIN_WIDTH_LIMIT;
     minHeight = getMinHeightLimit();
     this.display.addShell( this );

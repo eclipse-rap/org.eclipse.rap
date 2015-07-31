@@ -425,9 +425,9 @@ public class ToolItem extends Item {
   public void setEnabled( boolean enabled ) {
     checkWidget();
     if( enabled ) {
-      state &= ~DISABLED;
+      removeState( DISABLED );
     } else {
-      state |= DISABLED;
+      addState( DISABLED );
     }
   }
 
@@ -448,7 +448,7 @@ public class ToolItem extends Item {
    */
   public boolean getEnabled() {
     checkWidget();
-    return ( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**
@@ -813,6 +813,7 @@ public class ToolItem extends Item {
     if ( adapter == IToolItemAdapter.class ) {
       if( toolItemAdapter == null ) {
         toolItemAdapter = new IToolItemAdapter() {
+          @Override
           public boolean getVisible() {
             return visible;
           }
@@ -862,4 +863,5 @@ public class ToolItem extends Item {
   void setVisible( boolean visible ) {
     this.visible = visible;
   }
+
 }

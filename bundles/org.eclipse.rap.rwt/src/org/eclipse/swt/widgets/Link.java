@@ -85,7 +85,7 @@ public class Link extends Control {
 
   @Override
   void initState() {
-    state |= THEME_BACKGROUND;
+    addState( THEME_BACKGROUND );
   }
 
   /**
@@ -246,12 +246,15 @@ public class Link extends Control {
     if( adapter == ILinkAdapter.class ) {
       if( linkAdapter == null ) {
         linkAdapter = new ILinkAdapter() {
+          @Override
           public String getDisplayText() {
             return displayText;
           }
+          @Override
           public Point[] getOffsets() {
             return offsets;
           }
+          @Override
           public String[] getIds() {
             return ids;
           }
@@ -434,4 +437,5 @@ public class Link extends Control {
     }
     return mnemonic;
   }
+
 }

@@ -856,7 +856,7 @@ public class Display extends Device implements Adaptable {
         shells.remove( activeShell );
         shells.add( activeShell );
       }
-      if( lastActiveShell != null && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 ) {
+      if( lastActiveShell != null && !lastActiveShell.hasState( Widget.DISPOSE_SENT ) ) {
         lastActiveShell.notifyListeners( SWT.Deactivate, new Event() );
       }
       this.activeShell = activeShell;
@@ -1871,7 +1871,7 @@ public class Display extends Device implements Adaptable {
       for( int i = 0; i < count; i++ ) {
         Widget widget = oldSkinWidgets[ i ];
         if( widget != null && !widget.isDisposed() ) {
-          widget.state &= ~Widget.SKIN_NEEDED;
+          widget.removeState( Widget.SKIN_NEEDED );
           oldSkinWidgets[ i ] = null;
           sendSkinEvent( widget );
         }

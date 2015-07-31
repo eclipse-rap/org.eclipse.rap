@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -348,9 +348,9 @@ public class MenuItem extends Item {
    */
   public void setEnabled( boolean enabled ) {
     checkWidget();
-    state &= ~DISABLED;
+    removeState( DISABLED );
     if( !enabled ) {
-      state |= DISABLED;
+      addState( DISABLED );
     }
   }
 
@@ -371,7 +371,7 @@ public class MenuItem extends Item {
    */
   public boolean getEnabled() {
     checkWidget();
-    return ( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**
@@ -650,7 +650,7 @@ public class MenuItem extends Item {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
         menuDisposeListener = new DisposeListener() {
-
+          @Override
           public void widgetDisposed( DisposeEvent event ) {
             menu = null;
           }

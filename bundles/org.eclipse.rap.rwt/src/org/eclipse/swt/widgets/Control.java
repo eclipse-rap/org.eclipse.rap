@@ -277,7 +277,7 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void setVisible( boolean visible ) {
     checkWidget();
-    if( ( state & HIDDEN ) != 0 != !visible ) {
+    if( hasState( HIDDEN ) != !visible ) {
       if( visible ) {
         notifyListeners( SWT.Show, null );
       }
@@ -287,7 +287,11 @@ public abstract class Control extends Widget implements Drawable {
         control = display.getFocusControl();
         fixFocus = isFocusAncestor( control );
       }
-      state = visible ? state & ~HIDDEN : state | HIDDEN;
+      if( visible ) {
+        removeState( HIDDEN );
+      } else {
+        addState( HIDDEN );
+      }
       if( !visible ) {
         notifyListeners( SWT.Hide, null );
       }
@@ -335,7 +339,7 @@ public abstract class Control extends Widget implements Drawable {
    */
   public boolean getVisible() {
     checkWidget();
-    return ( state & HIDDEN ) == 0;
+    return !hasState( HIDDEN );
   }
 
   //////////////
@@ -370,9 +374,9 @@ public abstract class Control extends Widget implements Drawable {
       fixFocus = isFocusAncestor( control );
     }
     if( enabled ) {
-      state &= ~DISABLED;
+      removeState( DISABLED );
     } else {
-      state |= DISABLED;
+      addState( DISABLED );
     }
     if( fixFocus ) {
       fixFocus( control );
@@ -396,7 +400,7 @@ public abstract class Control extends Widget implements Drawable {
    */
   public boolean getEnabled() {
     checkWidget();
-    return ( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**
@@ -586,9 +590,9 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   void updateBackgroundMode() {
-    int oldState = state & PARENT_BACKGROUND;
+    boolean oldState = hasState( PARENT_BACKGROUND );
     checkBackground();
-    if( oldState != ( state & PARENT_BACKGROUND ) ) {
+    if( oldState != hasState( PARENT_BACKGROUND ) ) {
       updateBackground();
     }
   }
@@ -603,7 +607,7 @@ public abstract class Control extends Widget implements Drawable {
     if (this == shell) {
       return;
     }
-    state &= ~PARENT_BACKGROUND;
+    removeState( PARENT_BACKGROUND );
     Composite composite = parent;
     do {
       int mode = composite.backgroundMode;
@@ -611,13 +615,13 @@ public abstract class Control extends Widget implements Drawable {
         if (mode == SWT.INHERIT_DEFAULT) {
           Control control = this;
           do {
-            if ((control.state & THEME_BACKGROUND) == 0) {
+            if( !control.hasState( THEME_BACKGROUND ) ) {
               return;
             }
             control = control.parent;
           } while (control != composite);
         }
-        state |= PARENT_BACKGROUND;
+        addState( PARENT_BACKGROUND );
         return;
       }
       if (composite == shell) {
@@ -634,14 +638,14 @@ public abstract class Control extends Widget implements Drawable {
     ControlLCAUtil.preserveBackground( this, background, backgroundTransparency );
     backgroundTransparency =    background == null
                              && backgroundImage == null
-                             && ( state & PARENT_BACKGROUND ) != 0;
+                             && hasState( PARENT_BACKGROUND );
   }
 
   Control findBackgroundControl() {
     Control result = null;
     if( background != null || backgroundImage != null ) {
       result = this;
-    } else if( ( state & PARENT_BACKGROUND ) != 0 ) {
+    } else if( hasState( PARENT_BACKGROUND ) ) {
       result = parent.findBackgroundControl();
     }
     return result;

@@ -224,7 +224,7 @@ public class Slider extends Control {
   @Override
   public boolean getEnabled() {
     checkWidget();
-    return( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**

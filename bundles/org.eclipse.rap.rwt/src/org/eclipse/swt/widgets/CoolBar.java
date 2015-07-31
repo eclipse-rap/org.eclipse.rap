@@ -168,7 +168,7 @@ public class CoolBar extends Composite {
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+    removeState( /* CANVAS | */ THEME_BACKGROUND );
   }
 
   private static int checkStyle( int style ) {

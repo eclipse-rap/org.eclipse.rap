@@ -152,7 +152,7 @@ public class Text extends Scrollable {
   void initState() {
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       if( ( style & ( SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
-        state |= THEME_BACKGROUND;
+        addState( THEME_BACKGROUND );
       }
     }
   }
@@ -1029,6 +1029,7 @@ public class Text extends Scrollable {
     if( adapter == ITextAdapter.class ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
+          @Override
           public void setText( String text ) {
             if( internalSetText( text ) ) {
               adjustSelection();

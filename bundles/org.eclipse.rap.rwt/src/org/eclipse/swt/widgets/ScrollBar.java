@@ -181,9 +181,13 @@ public class ScrollBar extends Widget {
    */
   public void setVisible( boolean visible ) {
     checkWidget();
-    boolean isVisible = ( state & HIDDEN ) == 0;
+    boolean isVisible = !hasState( HIDDEN );
     if( isVisible != visible ) {
-      state = visible ? state & ~HIDDEN : state | HIDDEN;
+      if( visible ) {
+        removeState( HIDDEN );
+      } else {
+        addState( HIDDEN );
+      }
     }
   }
 
@@ -206,7 +210,7 @@ public class ScrollBar extends Widget {
    */
   public boolean getVisible() {
     checkWidget();
-    return ( state & HIDDEN ) == 0;
+    return !hasState( HIDDEN );
   }
 
   /**
@@ -247,9 +251,9 @@ public class ScrollBar extends Widget {
   public void setEnabled( boolean enabled ) {
     checkWidget();
     if( enabled ) {
-      state &= ~DISABLED;
+      removeState( DISABLED );
     } else {
-      state |= DISABLED;
+      addState( DISABLED );
     }
   }
 
@@ -270,7 +274,7 @@ public class ScrollBar extends Widget {
    */
   public boolean getEnabled() {
     checkWidget();
-    return ( state & DISABLED ) == 0;
+    return !hasState( DISABLED );
   }
 
   /**

@@ -60,6 +60,7 @@ import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
 public class DateTime extends Composite {
 
   private final class DateTimeAdapter implements IDateTimeAdapter {
+    @Override
     public Rectangle getBounds( int widget ) {
       Rectangle result = new Rectangle( 0, 0, 0, 0 );
       switch( widget ) {
@@ -109,26 +110,32 @@ public class DateTime extends Composite {
       return result;
     }
 
+    @Override
     public Point getCellSize() {
       return new Point( cellSize.x, cellSize.y );
     }
 
+    @Override
     public String[] getMonthNames() {
       return monthNames;
     }
 
+    @Override
     public String[] getWeekdayNames() {
       return weekdayNames;
     }
 
+    @Override
     public String[] getWeekdayShortNames() {
       return weekdayShortNames;
     }
 
+    @Override
     public String getDateSeparator() {
       return dateSeparator;
     }
 
+    @Override
     public String getDatePattern() {
       return datePattern;
     }
@@ -214,7 +221,7 @@ public class DateTime extends Composite {
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */THEME_BACKGROUND );
+    removeState( /* CANVAS | */THEME_BACKGROUND );
   }
 
   /**

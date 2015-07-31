@@ -105,7 +105,7 @@ public class Spinner extends Composite {
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+    removeState( /* CANVAS | */ THEME_BACKGROUND );
   }
 
   /**

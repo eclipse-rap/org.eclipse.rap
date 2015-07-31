@@ -367,7 +367,7 @@ public class Table extends Composite {
 
   @Override
   void initState() {
-    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+    removeState( /* CANVAS | */ THEME_BACKGROUND );
   }
 
   @Override

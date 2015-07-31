@@ -67,12 +67,12 @@ public class WidgetSerialization_Test {
 
   @Test
   public void testStateIsSerializable() throws Exception {
-    int state = 5678;
-    widget.state = state;
+    int state = 1 << 23;
+    widget.addState( state );
 
     Widget deserializedWidget = serializeAndDeserialize( widget );
 
-    assertEquals( state, deserializedWidget.state );
+    assertTrue( deserializedWidget.hasState( state ) );
   }
 
   @Test
@@ -116,6 +116,7 @@ public class WidgetSerialization_Test {
   }
 
   private static class TestListener implements Listener {
+    @Override
     public void handleEvent( Event event ) {
     }
   }
