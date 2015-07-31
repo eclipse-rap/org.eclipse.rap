@@ -11,11 +11,21 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static java.util.Arrays.asList;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -52,7 +62,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -81,6 +90,19 @@ public class Control_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testCreate() {
+    Control control = new Button( shell, SWT.NONE );
+
+    assertSame( shell, control.getParent() );
+    assertSame( display, control.getDisplay() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testCreate_failsWithNullParent() {
+    new Button( null, SWT.NONE );
   }
 
   @Test
@@ -256,6 +278,47 @@ public class Control_Test {
     IControlAdapter adapter = ControlUtil.getControlAdapter( control );
 
     assertEquals( -1, adapter.getTabIndex() );
+  }
+
+  @Test
+  public void testDispose() {
+    Control control = new Button( shell, SWT.PUSH );
+
+    control.dispose();
+
+    assertTrue( control.isDisposed() );
+  }
+
+  @Test
+  public void testDispose_triggersDisposeEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Dispose, listener );
+
+    control.dispose();
+
+    verify( listener ).handleEvent( any( Event.class ) );
+  }
+
+  @Test
+  public void testDisposeTwice_doesNotTriggerAnotherDisposeEvent() {
+    Control control = new Button( shell, SWT.PUSH );
+    Listener listener = mock( Listener.class );
+    control.addListener( SWT.Dispose, listener );
+
+    control.dispose();
+    control.dispose();
+
+    verify( listener, times( 1 ) ).handleEvent( any( Event.class ) );
+  }
+
+  @Test
+  public void testDispose_removesFromParent() {
+    Control control = new Button( shell, SWT.PUSH );
+
+    control.dispose();
+
+    assertFalse( asList( shell.getChildren() ).contains( control ) );
   }
 
   @Test
@@ -558,37 +621,40 @@ public class Control_Test {
     Control control1 = new Button( shell, SWT.PUSH );
     Control control2 = new Button( shell, SWT.PUSH );
     Control control3 = new Button( shell, SWT.PUSH );
-    ControlHolder shellControls = shell.getAdapter( ControlHolder.class );
-    assertEquals( 0, shellControls.indexOf( control1 ) );
-    assertEquals( 1, shellControls.indexOf( control2 ) );
-    assertEquals( 2, shellControls.indexOf( control3 ) );
+    assertEquals( 0, indexOf( shell, control1 ) );
+    assertEquals( 1, indexOf( shell, control2 ) );
+    assertEquals( 2, indexOf( shell, control3 ) );
     control3.moveAbove( control2 );
-    assertEquals( 0, shellControls.indexOf( control1 ) );
-    assertEquals( 1, shellControls.indexOf( control3 ) );
-    assertEquals( 2, shellControls.indexOf( control2 ) );
+    assertEquals( 0, indexOf( shell, control1 ) );
+    assertEquals( 1, indexOf( shell, control3 ) );
+    assertEquals( 2, indexOf( shell, control2 ) );
     control1.moveBelow( control3 );
-    assertEquals( 0, shellControls.indexOf( control3 ) );
-    assertEquals( 1, shellControls.indexOf( control1 ) );
-    assertEquals( 2, shellControls.indexOf( control2 ) );
+    assertEquals( 0, indexOf( shell, control3 ) );
+    assertEquals( 1, indexOf( shell, control1 ) );
+    assertEquals( 2, indexOf( shell, control2 ) );
     control2.moveAbove( null );
-    assertEquals( 0, shellControls.indexOf( control2 ) );
-    assertEquals( 1, shellControls.indexOf( control3 ) );
-    assertEquals( 2, shellControls.indexOf( control1 ) );
+    assertEquals( 0, indexOf( shell, control2 ) );
+    assertEquals( 1, indexOf( shell, control3 ) );
+    assertEquals( 2, indexOf( shell, control1 ) );
     control2.moveBelow( null );
-    assertEquals( 0, shellControls.indexOf( control3 ) );
-    assertEquals( 1, shellControls.indexOf( control1 ) );
-    assertEquals( 2, shellControls.indexOf( control2 ) );
+    assertEquals( 0, indexOf( shell, control3 ) );
+    assertEquals( 1, indexOf( shell, control1 ) );
+    assertEquals( 2, indexOf( shell, control2 ) );
     // control is already at the top / bottom
     control3.moveAbove( null );
-    assertEquals( 0, shellControls.indexOf( control3 ) );
+    assertEquals( 0, indexOf( shell, control3 ) );
     control2.moveBelow( null );
-    assertEquals( 0, shellControls.indexOf( control3 ) );
+    assertEquals( 0, indexOf( shell, control3 ) );
     // try to move control above / below itself
     control1.moveAbove( control1 );
-    assertEquals( 1, shellControls.indexOf( control1 ) );
+    assertEquals( 1, indexOf( shell, control1 ) );
     control1.moveBelow( control1 );
-    assertEquals( 1, shellControls.indexOf( control1 ) );
+    assertEquals( 1, indexOf( shell, control1 ) );
     shell.dispose();
+  }
+
+  private int indexOf( Composite parent, Control control ) {
+    return asList(parent.getChildren()).indexOf( control );
   }
 
   @Test

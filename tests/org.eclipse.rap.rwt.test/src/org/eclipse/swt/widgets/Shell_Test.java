@@ -283,6 +283,15 @@ public class Shell_Test {
   }
 
   @Test
+  public void testDispose_removesFromDisplay() {
+    shell.open();
+
+    shell.dispose();
+
+    assertEquals( 0, display.getShells().length );
+  }
+
+  @Test
   public void testDisposeChildShell() {
     shell.open();
     Shell childShell = new Shell( shell );

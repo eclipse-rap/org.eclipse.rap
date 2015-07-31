@@ -18,6 +18,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
@@ -38,6 +41,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 
 public class Composite_Test {
@@ -54,6 +58,28 @@ public class Composite_Test {
     display = new Display();
     shell = new Shell( display );
     composite = new Composite( shell, SWT.NONE );
+  }
+
+  @Test
+  public void testGetChildren_initiallyEmpty() {
+    assertEquals( 0, composite.getChildren().length );
+  }
+
+  @Test
+  public void testGetChildren_withSingleChild() {
+    Button button = new Button( composite, SWT.PUSH );
+
+    assertArrayEquals( new Control[] { button }, composite.getChildren() );
+  }
+
+  @Test
+  public void testGetChildren_returnsSafeCopy() {
+    Button button = new Button( composite, SWT.PUSH );
+    Control[] children = composite.getChildren();
+
+    children[ 0 ] = null;
+
+    assertArrayEquals( new Control[] { button }, composite.getChildren() );
   }
 
   @Test
@@ -201,6 +227,32 @@ public class Composite_Test {
 
     assertEquals( 1, deserializedComposite.getChildren().length );
     assertTrue( deserializedComposite.getChildren()[ 0 ] instanceof Label );
+  }
+
+  @Test
+  public void testDispose_disposesChildren() {
+    Button child = new Button( composite, SWT.PUSH );
+
+    composite.dispose();
+
+    assertTrue( composite.isDisposed() );
+    assertTrue( child.isDisposed() );
+  }
+
+  @Test
+  public void testDispose_disposesChildren_inOrder() {
+    Listener parentListener = mock( Listener.class );
+    composite.addListener( SWT.Dispose, parentListener );
+    Button child = new Button( composite, SWT.PUSH );
+    Listener childListener = mock( Listener.class );
+    child.addListener( SWT.Dispose, childListener );
+
+    composite.dispose();
+
+    InOrder order = inOrder( childListener, parentListener );
+    order.verify( parentListener ).handleEvent( any( Event.class ) );
+    order.verify( childListener ).handleEvent( any( Event.class ) );
+    order.verifyNoMoreInteractions();
   }
 
 }
