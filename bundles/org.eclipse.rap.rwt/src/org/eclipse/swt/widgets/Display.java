@@ -33,7 +33,6 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -235,7 +234,7 @@ public class Display extends Device implements Adaptable {
   private EventTable eventTable;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
-  private WidgetRemoteAdapter widgetAdapter;
+  private WidgetRemoteAdapter remoteAdapter;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
@@ -787,28 +786,25 @@ public class Display extends Device implements Adaptable {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result = null;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {
         displayAdapter = new DisplayAdapter();
       }
-      result = ( T )displayAdapter;
-    } else if( adapter == RemoteAdapter.class ) {
-      if( widgetAdapter == null ) {
-        String id = IdGenerator.getInstance( uiSession ).createId( this );
-        widgetAdapter = new WidgetRemoteAdapter( id );
-      }
-      result = ( T )widgetAdapter;
-    } else if( adapter == DisplayLifeCycleAdapter.class ) {
-      result = ( T )getApplicationContext().getLifeCycleAdapterFactory().getAdapter( this );
+      return ( T )displayAdapter;
     }
-    return result;
+    if( adapter == RemoteAdapter.class ) {
+      if( remoteAdapter == null ) {
+        String id = IdGenerator.getInstance( uiSession ).createId( this );
+        remoteAdapter = new WidgetRemoteAdapter( id );
+      }
+      return ( T )remoteAdapter;
+    }
+    return null;
   }
 
   private ApplicationContextImpl getApplicationContext() {
     return ( ApplicationContextImpl )uiSession.getApplicationContext();
   }
-
 
   ///////////////////
   // Shell management

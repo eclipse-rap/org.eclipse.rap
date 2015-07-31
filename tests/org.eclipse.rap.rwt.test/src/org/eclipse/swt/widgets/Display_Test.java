@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
@@ -124,14 +123,6 @@ public class Display_Test {
   }
 
   @Test
-  public void testGetAdapter_forLifeCycleAdapter() {
-    Display display = new Display();
-    Object adapter = display.getAdapter( DisplayLifeCycleAdapter.class );
-
-    assertTrue( adapter instanceof DisplayLifeCycleAdapter );
-  }
-
-  @Test
   public void testCreation_preventsMultipleDisplays() {
     new Display();
 
@@ -170,6 +161,7 @@ public class Display_Test {
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         resultCaptor.set( Display.getCurrent() );
       }
@@ -184,8 +176,10 @@ public class Display_Test {
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         RWT.getUISession( display ).exec( new Runnable() {
+          @Override
           public void run() {
             resultCaptor.set( Display.getCurrent() );
           }
@@ -232,6 +226,7 @@ public class Display_Test {
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>();
 
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         resultCaptor.set( Display.getDefault() );
       }
@@ -246,6 +241,7 @@ public class Display_Test {
   public void testGetDefault_fromBackgroundThreadDoesNotCreateDisplay() throws Throwable {
     final Display[] backgroundDisplay = { null };
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         backgroundDisplay[ 0 ] = Display.getDefault();
       }
@@ -261,8 +257,10 @@ public class Display_Test {
     final Display[] backgroundDisplay = { null };
     final Display display = new Display();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         RWT.getUISession( display ).exec( new Runnable() {
+          @Override
           public void run() {
             backgroundDisplay[ 0 ] = Display.getDefault();
           }
@@ -303,6 +301,7 @@ public class Display_Test {
     final AtomicReference<Thread> resultCaptor = new AtomicReference<Thread>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         resultCaptor.set( display.getThread() );
       }
@@ -1103,6 +1102,7 @@ public class Display_Test {
     final Display display = new Display();
     try {
       runInThread( new Runnable() {
+        @Override
         public void run() {
           display.timerExec( 1, mock( Runnable.class ) );
         }
@@ -1197,16 +1197,19 @@ public class Display_Test {
     final List<Object> log = new ArrayList<Object>();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         log.add( event );
       }
     } );
     display.addListener( SWT.Dispose, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
     display.disposeExec( new Runnable() {
+      @Override
       public void run() {
         log.add( "disposeRunnable" );
       }
@@ -1250,6 +1253,7 @@ public class Display_Test {
     Display display = new Display();
     final List<Event> log = new ArrayList<Event>();
     display.addListener( SWT.Close, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -1266,6 +1270,7 @@ public class Display_Test {
     Display display = new Display();
     final String exceptionMessage = "exception in close event";
     display.addListener( SWT.Close, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         throw new RuntimeException( exceptionMessage );
       }
@@ -1288,6 +1293,7 @@ public class Display_Test {
   public void testCloseWithVetoingListener() {
     Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         event.doit = false;
       }
@@ -1301,6 +1307,7 @@ public class Display_Test {
     final Display display = new Display();
     try {
       runInThread( new Runnable() {
+        @Override
         public void run() {
           // access some method that calls checkDevice()
           display.getShells();
@@ -1330,12 +1337,14 @@ public class Display_Test {
     final StringBuilder order = new StringBuilder();
     final List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Close, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         events.add( event );
         order.append( "filter, " );
       }
     } );
     display.addListener( SWT.Close, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         events.add( event );
         event.doit = false;
@@ -1361,12 +1370,14 @@ public class Display_Test {
     final StringBuilder order = new StringBuilder();
     final List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Dispose, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         events.add( event );
         order.append( "filter, " );
       }
     } );
     display.addListener( SWT.Dispose, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         events.add( event );
         order.append( "listener" );
@@ -1565,6 +1576,7 @@ public class Display_Test {
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         Fixture.createServiceContext();
         resultCaptor.set( Display.findDisplay( uiThread ) );
@@ -1646,6 +1658,7 @@ public class Display_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final RuntimeException exception = new RuntimeException( "bad things happen" );
     display.asyncExec( new Runnable() {
+      @Override
       public void run() {
         throw exception;
       }
@@ -1692,8 +1705,10 @@ public class Display_Test {
     final Display display = new Display();
     final AtomicBoolean executed = new AtomicBoolean( false );
     Thread thread = new Thread( new Runnable() {
+      @Override
       public void run() {
         display.syncExec( new Runnable() {
+          @Override
           public void run() {
             executed.set( true );
           }
@@ -1747,6 +1762,7 @@ public class Display_Test {
     final Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         display.dispose();
       }
@@ -1923,6 +1939,7 @@ public class Display_Test {
   }
 
   public static class EnsureIdEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );

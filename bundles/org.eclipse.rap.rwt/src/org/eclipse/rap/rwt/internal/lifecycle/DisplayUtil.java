@@ -11,6 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -21,12 +25,8 @@ public final class DisplayUtil {
   }
 
   public static DisplayLifeCycleAdapter getLCA( Display display ) {
-    DisplayLifeCycleAdapter result = display.getAdapter( DisplayLifeCycleAdapter.class );
-    if( result == null ) {
-      String message = "Could not retrieve an instance of DisplayLifeCycleAdapter.";
-      throw new IllegalStateException( message );
-    }
-    return result;
+    UISession uiSession = display.getAdapter( IDisplayAdapter.class ).getUISession();
+    return SingletonUtil.getUniqueInstance( DisplayLCA.class, uiSession.getApplicationContext() );
   }
 
   public static String getId( Display display ) {
@@ -36,7 +36,7 @@ public final class DisplayUtil {
   public static RemoteAdapter getAdapter( Display display ) {
     RemoteAdapter result = display.getAdapter( RemoteAdapter.class );
     if( result == null ) {
-      throw new IllegalStateException( "Could not retrieve an instance of WidgetAdapter." );
+      throw new IllegalStateException( "Could not retrieve an instance of RemoteAdapter." );
     }
     return result;
   }

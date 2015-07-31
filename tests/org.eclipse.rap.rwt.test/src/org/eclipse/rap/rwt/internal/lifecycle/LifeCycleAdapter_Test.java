@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.Locale;
 
@@ -47,49 +43,6 @@ public class LifeCycleAdapter_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testDisplayAdapter() {
-    Display display = new Display();
-
-    DisplayLifeCycleAdapter adapter = display.getAdapter( DisplayLifeCycleAdapter.class );
-
-    assertNotNull( adapter );
-  }
-
-  @Test
-  public void testDisplayAdapterReturnsSameAdapterForEachInvocation() {
-    Display display = new Display();
-
-    Object adapter1 = display.getAdapter( DisplayLifeCycleAdapter.class );
-    Object adapter2 = display.getAdapter( DisplayLifeCycleAdapter.class );
-
-    assertSame( adapter1, adapter2 );
-  }
-
-  @Test
-  public void testDisplayAdapterReturnsSameAdapterForDifferentDisplays() {
-    Display display1 = new Display();
-    Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
-    display1.dispose();
-    Display display2 = new Display();
-
-    Object adapter2 = display2.getAdapter( DisplayLifeCycleAdapter.class );
-
-    assertSame( adapter1, adapter2 );
-  }
-
-  @Test
-  public void testDisplayAdapterIsApplicationScoped() {
-    Display display1 = new Display();
-    Object adapter1 = display1.getAdapter( DisplayLifeCycleAdapter.class );
-    newSession();
-    Display display2 = new Display();
-
-    Object adapter2 = display2.getAdapter( DisplayLifeCycleAdapter.class );
-
-    assertSame( adapter1, adapter2 );
   }
 
   @Test
@@ -157,11 +110,8 @@ public class LifeCycleAdapter_Test {
     Display display = new Display();
     Shell shell = new Shell( display );
     Widget widget = new TestWidget( shell );
-    try {
-      widget.getAdapter( WidgetLifeCycleAdapter.class );
-      fail();
-    } catch( LifeCycleAdapterException expected ) {
-    }
+
+    assertNull( widget.getAdapter( WidgetLifeCycleAdapter.class ) );
   }
 
   @Test

@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
@@ -113,7 +112,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   Display display;
   private Object data;
   private EventTable eventTable;
-  private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private RemoteAdapter remoteAdapter;
   private IWidgetGraphicsAdapter widgetGraphicsAdapter;
 
@@ -175,30 +173,28 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   public <T> T getAdapter( Class<T> adapter ) {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
-    T result = null;
     if( adapter == RemoteAdapter.class ) {
       if( remoteAdapter == null ) {
         remoteAdapter = createRemoteAdapter( null );
       } else if( remoteAdapter instanceof ParentHolderRemoteAdapter ) {
         remoteAdapter = createRemoteAdapter( remoteAdapter.getParent() );
       }
-      result = ( T )remoteAdapter;
-    } else if( adapter == ThemeAdapter.class ) {
-      ApplicationContextImpl applicationContext = getApplicationContext();
-      ThemeManager themeManager = applicationContext.getThemeManager();
-      result = ( T )themeManager.getThemeAdapterManager().getThemeAdapter( this );
-    } else if( adapter == IWidgetGraphicsAdapter.class ) {
+      return (T) remoteAdapter;
+    }
+    if( adapter == ThemeAdapter.class ) {
+      ThemeManager themeManager = getApplicationContext().getThemeManager();
+      return (T) themeManager.getThemeAdapterManager().getThemeAdapter( this );
+    }
+    if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
       }
-      result = ( T )widgetGraphicsAdapter;
-    } else if ( adapter == WidgetLifeCycleAdapter.class ) {
-      if( lifeCycleAdapterFactory == null ) {
-        lifeCycleAdapterFactory = getApplicationContext().getLifeCycleAdapterFactory();
-      }
-      result = ( T )lifeCycleAdapterFactory.getAdapter( this );
+      return (T) widgetGraphicsAdapter;
     }
-    return result;
+    if ( adapter == WidgetLifeCycleAdapter.class ) {
+      return (T) getApplicationContext().getLifeCycleAdapterFactory().getWidgetLCA( this );
+    }
+    return null;
   }
 
   private RemoteAdapter createRemoteAdapter( Widget parent ) {
@@ -897,7 +893,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
   void releaseWidget() {
-    lifeCycleAdapterFactory = null;
     eventTable = null;
     state |= DISPOSED;
   }
