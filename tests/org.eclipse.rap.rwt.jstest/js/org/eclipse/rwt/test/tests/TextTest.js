@@ -537,48 +537,63 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertTrue( wrapProperty == "soft" || wrapAttribute == "soft" );
     },
 
-    testTextAreaMaxLength : rwt.util.Variant.select( "qx.client", {
-      "webkit|blink" : function() {
-        // NOTE: This test would fail in IE because it has a bug that sometimes
-        // prevents a textFields value from being overwritten and read in the
-        // same call. In webkit it seems to fail randomly aswell.
-      },
-      "default" : function() {
+    testTextAreaMaxLength_doNotShortenExistingText : function() {
         createText( false, true );
-        var changeLog = [];
-        text.addEventListener( "input", function(){
-          changeLog.push( true );
-        } );
         text.setValue( "0123456789" );
-        assertEquals( "0123456789", text.getValue() );
-        assertEquals( "0123456789", text.getComputedValue() );
+
         text.setMaxLength( 5 );
-        assertEquals( "0123456789", text.getValue() );
+
         assertEquals( "0123456789", text.getComputedValue() );
-        assertEquals( 0, changeLog.length );
-        text._inputElement.value = "012345678";
-        text.__oninput( {} );
-        TestUtil.forceTimerOnce();
-        assertEquals( "012345678", text.getValue() );
-        assertEquals( "012345678", text.getComputedValue() );
-        assertEquals( 1, changeLog.length );
-        text._inputElement.value = "01234567x8";
-        text._setSelectionStart( 9 );
-        text.__oninput( {} );
-        TestUtil.forceTimerOnce();
-        assertEquals( "012345678", text.getValue() );
-        assertEquals( "012345678", text.getComputedValue() );
-        assertEquals( 1, changeLog.length );
-        assertEquals( 8, text._getSelectionStart() );
-        text._inputElement.value = "abcdefghiklmnopq";
-        text.__oninput( {} );
-        TestUtil.forceTimerOnce();
-        assertEquals( "abcde", text.getValue() );
-        assertEquals( "abcde", text.getComputedValue() );
-        assertEquals( 2, changeLog.length );
-        assertEquals( 5, text._getSelectionStart() );
-      }
-    } ),
+    },
+
+    testTextAreaMaxLength_allowBackspaceWhileOverLimit : function() {
+      createText( false, true );
+      var logger = TestUtil.getLogger();
+      text.addEventListener( "input", logger.log );
+      text.setValue( "0123456789" );
+      text.setMaxLength( 5 );
+
+      text._inputElement.value = "012345678";
+      text.__oninput( {} );
+      TestUtil.forceTimerOnce();
+
+      assertEquals( "012345678", text.getComputedValue() );
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testTextAreaMaxLength_preventInputWhileOverLimit : function() {
+      createText( false, true );
+      var logger = TestUtil.getLogger();
+      text.addEventListener( "input", logger.log );
+      text.setValue( "012345678" );
+      text.setMaxLength( 5 );
+
+      text._inputElement.value = "01234567x8";
+      text._setSelectionStart( 9 );
+      text.__oninput( {} );
+      TestUtil.forceTimerOnce();
+
+      assertEquals( "012345678", text.getComputedValue() );
+      assertEquals( 0, logger.getLog().length );
+      assertEquals( 8, text._getSelectionStart() );
+    },
+
+    testTextAreaMaxLength_pasteCutsOffContent : function() {
+      createText( false, true );
+      var logger = TestUtil.getLogger();
+      text.addEventListener( "input", logger.log );
+      text.setValue( "012345678" );
+      text.setMaxLength( 5 );
+
+      text._inputElement.value = "abcdefghiklmnopq";
+      text._setSelectionStart( 16 );
+      text.__oninput( {} );
+      TestUtil.forceTimerOnce();
+
+      assertEquals( "abcde", text.getComputedValue() );
+      assertEquals( 1, logger.getLog().length );
+      assertEquals( 5, text._getSelectionStart() );
+    },
 
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857
     // NOTE [tb] : This test seems to fail at random in IE9?
