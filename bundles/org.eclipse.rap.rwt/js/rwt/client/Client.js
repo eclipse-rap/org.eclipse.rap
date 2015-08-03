@@ -360,9 +360,7 @@ rwt.client.Client = {
   },
 
   _initLocale : function() {
-    var language =   ( this._engineName === "trident" )
-                   ? navigator.userLanguage
-                   : navigator.language;
+    var language = navigator.userLanguage || navigator.language;
     var browserLocale = language.toLowerCase();
     var browserLocaleVariantIndex = browserLocale.indexOf( "-" );
     if( browserLocaleVariantIndex != -1 ) {
