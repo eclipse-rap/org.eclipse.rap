@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -24,7 +25,7 @@ final class ReadData implements IPhase {
 
   @Override
   public PhaseId execute( Display display ) {
-    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLCA displayLCA = DisplayUtil.getLCA( display );
     displayLCA.readData( display );
     displayLCA.preserveValues( display );
     return PhaseId.PROCESS_ACTION;

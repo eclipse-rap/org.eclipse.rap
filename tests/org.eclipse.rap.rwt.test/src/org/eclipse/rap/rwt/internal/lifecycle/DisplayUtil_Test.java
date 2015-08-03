@@ -63,11 +63,11 @@ public class DisplayUtil_Test {
 
   @Test
   public void testGetLCA_isApplicationScoped() {
-    Object adapter1 = display.getAdapter( DisplayLifeCycleAdapter.class );
+    Object adapter1 = DisplayUtil.getLCA( display );
     newSession();
     Display display2 = new Display();
 
-    Object adapter2 = display2.getAdapter( DisplayLifeCycleAdapter.class );
+    Object adapter2 = DisplayUtil.getLCA( display2 );
 
     assertSame( adapter1, adapter2 );
   }

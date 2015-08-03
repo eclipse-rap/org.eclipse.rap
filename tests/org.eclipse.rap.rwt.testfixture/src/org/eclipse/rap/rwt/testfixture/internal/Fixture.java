@@ -45,7 +45,6 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
@@ -66,6 +65,7 @@ import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -245,7 +245,7 @@ public final class Fixture {
   // LifeCycle helpers
 
   public static void readDataAndProcessAction( Display display ) {
-    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLCA displayLCA = DisplayUtil.getLCA( display );
     fakePhase( PhaseId.READ_DATA );
     displayLCA.readData( display );
     Fixture.preserveWidgets();
@@ -273,7 +273,7 @@ public final class Fixture {
 
   public static void preserveWidgets() {
     Display display = LifeCycleUtil.getSessionDisplay();
-    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLCA displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.RENDER );
     displayLCA.clearPreserved( display );
@@ -284,7 +284,7 @@ public final class Fixture {
 
   public static void clearPreserved() {
     Display display = LifeCycleUtil.getSessionDisplay();
-    DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    DisplayLCA displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.RENDER );
     displayLCA.clearPreserved( display );
@@ -576,6 +576,7 @@ public final class Fixture {
       = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     final ServiceContext context = ContextProvider.getContext();
     Thread result = new Thread( new Runnable() {
+      @Override
       public void run() {
         synchronized( threadHolder.getLock() ) {
           ContextProvider.setContext( context );
@@ -600,8 +601,10 @@ public final class Fixture {
     final IUIThreadHolder result = new IUIThreadHolder() {
       private final Thread thread = Thread.currentThread();
 
+      @Override
       public void setServiceContext( ServiceContext serviceContext ) {
       }
+      @Override
       public void switchThread() {
         synchronized( getLock() ) {
           notifyAll();
@@ -612,13 +615,17 @@ public final class Fixture {
           }
         }
       }
+      @Override
       public void updateServiceContext() {
       }
+      @Override
       public void terminateThread() {
       }
+      @Override
       public Thread getThread() {
         return thread;
       }
+      @Override
       public Object getLock() {
         return this;
       }
@@ -650,6 +657,7 @@ public final class Fixture {
   }
 
   private static class FixtureApplicationConfiguration implements ApplicationConfiguration {
+    @Override
     public void configure( Application application ) {
       application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     }

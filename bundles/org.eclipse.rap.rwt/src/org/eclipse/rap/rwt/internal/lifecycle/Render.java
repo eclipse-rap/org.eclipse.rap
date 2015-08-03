@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -27,7 +28,7 @@ final class Render implements IPhase {
   @Override
   public PhaseId execute( Display display ) throws IOException {
     if( display != null ) {
-      DisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+      DisplayLCA displayLCA = DisplayUtil.getLCA( display );
       displayLCA.render( display );
       displayLCA.clearPreserved( display );
     }

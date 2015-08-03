@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
-import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
@@ -48,14 +47,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class DisplayLCA implements DisplayLifeCycleAdapter {
+public class DisplayLCA {
 
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   private static final String METHOD_BEEP = "beep";
   private static final String PROP_RESIZE_LISTENER = "listener_Resize";
 
-  @Override
   public void readData( Display display ) {
     handleOperations( display );
     visitWidgets( display );
@@ -63,7 +61,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     RemoteObjectLifeCycleAdapter.readData( ProtocolUtil.getClientMessage() );
   }
 
-  @Override
   public void preserveValues( Display display ) {
     RemoteAdapter adapter = getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
@@ -85,7 +82,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     }
   }
 
-  @Override
   public void render( Display display ) throws IOException {
     renderExitConfirmation( display );
     renderEnableUiTests( display );
@@ -104,7 +100,6 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     markInitialized( display );
   }
 
-  @Override
   public void clearPreserved( Display display ) {
     ( ( WidgetRemoteAdapter )getAdapter( display ) ).clearPreserved();
     for( Shell shell : getShells( display ) ) {

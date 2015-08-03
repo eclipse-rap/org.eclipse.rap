@@ -24,7 +24,7 @@ public final class DisplayUtil {
     // prevent instance creation
   }
 
-  public static DisplayLifeCycleAdapter getLCA( Display display ) {
+  public static DisplayLCA getLCA( Display display ) {
     UISession uiSession = display.getAdapter( IDisplayAdapter.class ).getUISession();
     return SingletonUtil.getUniqueInstance( DisplayLCA.class, uiSession.getApplicationContext() );
   }
