@@ -30,6 +30,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int FOREGROUND = 6;
   private static final int BACKGROUND = 7;
   private static final int FONT = 8;
+  private static final int CURSOR = 9;
 
   private transient int preserved;
   private transient Composite parent;
@@ -199,7 +200,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveCursor( Cursor cursor ) {
+    markPreserved( CURSOR );
     this.cursor = cursor;
+  }
+
+  public boolean hasPreservedCursor() {
+    return hasPreserved( CURSOR );
   }
 
   public Cursor getPreservedCursor() {

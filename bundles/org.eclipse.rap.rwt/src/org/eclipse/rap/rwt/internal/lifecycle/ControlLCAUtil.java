@@ -85,7 +85,6 @@ public class ControlLCAUtil {
     preserveVisible( control );
     preserveEnabled( control );
     preserveBackgroundImage( control );
-    preserveCursor( control );
     preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
@@ -350,15 +349,21 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveCursor( Control control ) {
-    getRemoteAdapter( control ).preserveCursor( control.getCursor() );
+  public static void preserveCursor( Control control, Cursor cursor ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedCursor() ) {
+      getRemoteAdapter( control ).preserveCursor( cursor );
+    }
   }
 
   private static void renderCursor( Control control ) {
-    Cursor actual = control.getCursor();
-    Object preserved = getRemoteAdapter( control ).getPreservedCursor();
-    if( changed( control, actual, preserved, null ) ) {
-      getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedCursor() ) {
+      Cursor actual = control.getCursor();
+      Cursor preserved = getRemoteAdapter( control ).getPreservedCursor();
+      if( changed( control, actual, preserved, null ) ) {
+        getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
+      }
     }
   }
 

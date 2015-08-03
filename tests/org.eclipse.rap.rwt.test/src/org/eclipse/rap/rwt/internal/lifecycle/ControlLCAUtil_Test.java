@@ -647,7 +647,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "cursor" ) );
@@ -669,7 +669,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     control.setCursor( null );
     ControlLCAUtil.renderChanges( control );
 

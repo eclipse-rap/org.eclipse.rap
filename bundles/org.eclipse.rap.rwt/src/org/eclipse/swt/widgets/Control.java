@@ -722,6 +722,7 @@ public abstract class Control extends Widget implements Drawable {
     if( cursor != null && cursor.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
+    ControlLCAUtil.preserveCursor( this, this.cursor );
     this.cursor = cursor;
   }
 

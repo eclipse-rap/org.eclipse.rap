@@ -161,6 +161,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveCursor( cursor );
 
+    assertTrue( adapter.hasPreservedCursor() );
     assertSame( cursor, adapter.getPreservedCursor() );
   }
 
@@ -306,6 +307,7 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedBackgroundImage() );
     assertFalse( adapter.hasPreservedFont() );
     assertNull( adapter.getPreservedFont() );
+    assertFalse( adapter.hasPreservedCursor() );
     assertNull( adapter.getPreservedCursor() );
   }
 
