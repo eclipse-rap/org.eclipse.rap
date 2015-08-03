@@ -85,7 +85,6 @@ public class ControlLCAUtil {
     preserveVisible( control );
     preserveEnabled( control );
     preserveBackgroundImage( control );
-    preserveFont( control );
     preserveCursor( control );
     preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
@@ -332,17 +331,22 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveFont( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    getRemoteAdapter( control ).preserveFont( controlAdapter.getUserFont() );
+  public static void preserveFont( Control control, Font font ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedFont() ) {
+      getRemoteAdapter( control ).preserveFont( font );
+    }
   }
 
   private static void renderFont( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Font actual = controlAdapter.getUserFont();
-    Font preserved = getRemoteAdapter( control ).getPreservedFont();
-    if( changed( control, actual, preserved, null ) ) {
-      getRemoteObject( control ).set( PROP_FONT, toJson( actual ) );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedFont() ) {
+      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+      Font actual = controlAdapter.getUserFont();
+      Font preserved = getRemoteAdapter( control ).getPreservedFont();
+      if( changed( control, actual, preserved, null ) ) {
+        getRemoteObject( control ).set( PROP_FONT, toJson( actual ) );
+      }
     }
   }
 

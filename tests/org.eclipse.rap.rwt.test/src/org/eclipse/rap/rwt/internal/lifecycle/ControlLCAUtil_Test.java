@@ -617,7 +617,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "font" ) );
@@ -628,7 +628,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     control.setFont( null );
     ControlLCAUtil.renderChanges( control );
 

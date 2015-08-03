@@ -29,6 +29,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int MENU = 5;
   private static final int FOREGROUND = 6;
   private static final int BACKGROUND = 7;
+  private static final int FONT = 8;
 
   private transient int preserved;
   private transient Composite parent;
@@ -185,7 +186,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveFont( Font font ) {
+    markPreserved( FONT );
     this.font = font;
+  }
+
+  public boolean hasPreservedFont() {
+    return hasPreserved( FONT );
   }
 
   public Font getPreservedFont() {
