@@ -535,7 +535,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setBackgroundImage( createImage( display, Fixture.IMAGE1 ) );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "backgroundImage" ) );
@@ -546,7 +546,6 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Image image = createImage( display, Fixture.IMAGE1 );
 
-    ControlLCAUtil.preserveValues( control );
     control.setBackgroundImage( image );
     ControlLCAUtil.renderChanges( control );
 

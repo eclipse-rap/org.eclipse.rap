@@ -144,6 +144,7 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveBackgroundImage( image );
 
+    assertTrue( adapter.hasPreservedBackgroundImage() );
     assertSame( image, adapter.getPreservedBackgroundImage() );
   }
 
@@ -308,6 +309,7 @@ public class ControlRemoteAdapter_Test {
     assertFalse( adapter.hasPreservedBackground() );
     assertNull( adapter.getPreservedBackground() );
     assertFalse( adapter.getPreservedBackgroundTransparency() );
+    assertFalse( adapter.hasPreservedBackgroundImage() );
     assertNull( adapter.getPreservedBackgroundImage() );
     assertFalse( adapter.hasPreservedFont() );
     assertNull( adapter.getPreservedFont() );

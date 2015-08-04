@@ -82,7 +82,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    preserveBackgroundImage( control );
     preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
@@ -325,18 +324,22 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveBackgroundImage( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Image image = controlAdapter.getUserBackgroundImage();
-    getRemoteAdapter( control ).preserveBackgroundImage( image );
+  public static void preserveBackgroundImage( Control control, Image image ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedBackgroundImage() ) {
+      getRemoteAdapter( control ).preserveBackgroundImage( image );
+    }
   }
 
   private static void renderBackgroundImage( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Image actual = controlAdapter.getUserBackgroundImage();
-    Image preserved = getRemoteAdapter( control ).getPreservedBackgroundImage();
-    if( changed( control, actual, preserved, null ) ) {
-      getRemoteObject( control ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedBackgroundImage() ) {
+      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+      Image actual = controlAdapter.getUserBackgroundImage();
+      Image preserved = getRemoteAdapter( control ).getPreservedBackgroundImage();
+      if( changed( control, actual, preserved, null ) ) {
+        getRemoteObject( control ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
+      }
     }
   }
 

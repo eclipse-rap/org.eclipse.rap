@@ -33,6 +33,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int CURSOR = 9;
   private static final int VISIBLE = 10;
   private static final int ENABLED = 11;
+  private static final int BACKGROUND_IMAGE = 12;
 
   private transient int preserved;
   private transient Composite parent;
@@ -191,7 +192,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBackgroundImage( Image backgroundImage ) {
+    markPreserved( BACKGROUND_IMAGE );
     this.backgroundImage = backgroundImage;
+  }
+
+  public boolean hasPreservedBackgroundImage() {
+    return hasPreserved( BACKGROUND_IMAGE );
   }
 
   public Image getPreservedBackgroundImage() {
