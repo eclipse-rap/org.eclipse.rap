@@ -67,7 +67,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
       WidgetLCAUtil.preserveCustomVariant( item );
-      WidgetLCAUtil.preserveData( item );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
       preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );

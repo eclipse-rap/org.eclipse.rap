@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -31,7 +30,6 @@ public class ItemLCAUtil {
   public static void preserve( Item item ) {
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
-    preserveData( item );
   }
 
   public static void renderChanges( Item item ) {

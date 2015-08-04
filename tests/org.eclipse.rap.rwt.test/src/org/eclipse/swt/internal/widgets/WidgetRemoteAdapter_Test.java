@@ -12,7 +12,11 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
@@ -213,6 +217,7 @@ public class WidgetRemoteAdapter_Test {
 
     adapter.preserveData( data );
 
+    assertTrue( adapter.hasPreservedData() );
     assertSame( data, adapter.getPreservedData() );
   }
 
@@ -231,6 +236,7 @@ public class WidgetRemoteAdapter_Test {
 
     adapter = serializeAndDeserialize( adapter );
 
+    assertFalse( adapter.hasPreservedData() );
     assertNull( adapter.getPreservedData() );
   }
 

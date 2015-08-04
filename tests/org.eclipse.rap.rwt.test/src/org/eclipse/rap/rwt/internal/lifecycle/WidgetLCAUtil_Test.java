@@ -612,7 +612,6 @@ public class WidgetLCAUtil_Test {
     widget.setData( "foo", "string" );
     Fixture.markInitialized( widget );
 
-    WidgetLCAUtil.preserveData( widget );
     widget.setData( "foo", "another string" );
     WidgetLCAUtil.renderData( widget );
 
@@ -626,7 +625,7 @@ public class WidgetLCAUtil_Test {
     widget.setData( "foo", "string" );
     Fixture.markInitialized( widget );
 
-    WidgetLCAUtil.preserveData( widget );
+    Fixture.clearPreserved();
     WidgetLCAUtil.renderData( widget );
 
     assertNull( getProtocolMessage().findSetOperation( widget, "data" ) );
@@ -638,7 +637,7 @@ public class WidgetLCAUtil_Test {
     widget.setData( "foo", "string" );
     Fixture.markInitialized( widget );
 
-    WidgetLCAUtil.preserveData( widget );
+    Fixture.clearPreserved();
     widget.setData( "foo", null );
     WidgetLCAUtil.renderData( widget );
 

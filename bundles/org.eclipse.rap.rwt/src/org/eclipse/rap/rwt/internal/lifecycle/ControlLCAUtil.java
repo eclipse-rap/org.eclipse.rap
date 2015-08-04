@@ -82,7 +82,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
     preserveListenActivate( control );
@@ -378,10 +377,6 @@ public class ControlLCAUtil {
         getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
       }
     }
-  }
-
-  private static void preserveData( Control control ) {
-    WidgetLCAUtil.preserveData( control );
   }
 
   private static void renderData( Control control ) {

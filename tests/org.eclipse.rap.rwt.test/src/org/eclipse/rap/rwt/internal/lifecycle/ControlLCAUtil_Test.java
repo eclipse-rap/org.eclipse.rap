@@ -686,7 +686,7 @@ public class ControlLCAUtil_Test {
     registerDataKeys( new String[]{ "foo" } );
     control.setData( "foo", Boolean.TRUE );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "data" ) );
@@ -697,7 +697,6 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     registerDataKeys( new String[]{ "foo" } );
 
-    ControlLCAUtil.preserveValues( control );
     control.setData( "foo", Boolean.TRUE );
     ControlLCAUtil.renderChanges( control );
 

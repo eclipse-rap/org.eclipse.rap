@@ -20,6 +20,8 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -35,8 +37,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.IdGenerator;
 import org.eclipse.swt.internal.widgets.ParentHolderRemoteAdapter;
-import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 
 
 /**
@@ -343,6 +345,9 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
     if( RWT.CUSTOM_VARIANT.equals( key ) && value != null ) {
       checkCustomVariant( value );
+    }
+    if( WidgetDataUtil.getDataKeys().contains( key ) ) {
+      WidgetLCAUtil.preserveData( this );
     }
     int index = 1;
     Object[] table = null;

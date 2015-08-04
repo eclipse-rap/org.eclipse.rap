@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
@@ -59,7 +60,6 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveEnabled( item, item.getEnabled() );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( item );
-    WidgetLCAUtil.preserveData( item );
     preserveProperty( item, PROP_VISIBLE, isVisible( item ) );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, getImage( item ) );

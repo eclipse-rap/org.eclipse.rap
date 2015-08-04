@@ -139,14 +139,20 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveData( Widget widget ) {
-    getRemoteAdapter( widget ).preserveData( getData( widget ) );
+    WidgetRemoteAdapter remoteAdapter = getRemoteAdapter( widget );
+    if( !remoteAdapter.hasPreservedData() ) {
+      remoteAdapter.preserveData( getData( widget ) );
+    }
   }
 
   public static void renderData( Widget widget ) {
-    Object[] actual = getData( widget );
-    Object[] preserved = getRemoteAdapter( widget ).getPreservedData();
-    if( changed( widget, actual, preserved, null ) ) {
-      getRemoteObject( widget ).set( PROP_DATA, getJsonForData( actual ) );
+    WidgetRemoteAdapter remoteAdapter = getRemoteAdapter( widget );
+    if( remoteAdapter.hasPreservedData() ) {
+      Object[] actual = getData( widget );
+      Object[] preserved = getRemoteAdapter( widget ).getPreservedData();
+      if( changed( widget, actual, preserved, null ) ) {
+        getRemoteObject( widget ).set( PROP_DATA, getJsonForData( actual ) );
+      }
     }
   }
 

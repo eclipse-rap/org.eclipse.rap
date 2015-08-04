@@ -22,20 +22,19 @@ import org.eclipse.swt.widgets.Menu;
 
 public class ControlRemoteAdapter extends WidgetRemoteAdapter {
 
-  private static final int PARENT = 1;
-  private static final int BOUNDS = 2;
-  private static final int CHILDREN = 3;
-  private static final int TOOL_TIP_TEXT = 4;
-  private static final int MENU = 5;
-  private static final int FOREGROUND = 6;
-  private static final int BACKGROUND = 7;
-  private static final int FONT = 8;
-  private static final int CURSOR = 9;
-  private static final int VISIBLE = 10;
-  private static final int ENABLED = 11;
-  private static final int BACKGROUND_IMAGE = 12;
+  private static final int PARENT = 11;
+  private static final int BOUNDS = 12;
+  private static final int CHILDREN = 13;
+  private static final int TOOL_TIP_TEXT = 14;
+  private static final int MENU = 15;
+  private static final int FOREGROUND = 16;
+  private static final int BACKGROUND = 17;
+  private static final int FONT = 18;
+  private static final int CURSOR = 19;
+  private static final int VISIBLE = 20;
+  private static final int ENABLED = 21;
+  private static final int BACKGROUND_IMAGE = 22;
 
-  private transient int preserved;
   private transient Composite parent;
   private transient Control[] children;
   private transient Rectangle bounds;
@@ -249,7 +248,6 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   @Override
   public void clearPreserved() {
     super.clearPreserved();
-    preserved = 0;
     parent = null;
     children = null;
     bounds = null;
@@ -266,14 +264,6 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     cursor = null;
     activeKeys = null;
     cancelKeys = null;
-  }
-
-  private void markPreserved( int index ) {
-    preserved |= ( 1 << index );
-  }
-
-  private boolean hasPreserved( int index ) {
-    return ( preserved & ( 1 << index ) ) != 0;
   }
 
   private Object readResolve() {

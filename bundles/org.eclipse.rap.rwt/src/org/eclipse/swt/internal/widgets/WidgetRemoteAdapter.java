@@ -22,11 +22,13 @@ import org.eclipse.swt.widgets.Widget;
 
 public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibility {
 
+  private static final int DATA = 1;
   private final static Runnable[] EMPTY = new Runnable[ 0 ];
 
   private final String id;
   private Widget parent;
   private boolean initialized;
+  private transient int preserved;
   private transient Map<String, Object> preservedValues;
   private transient long preservedListeners;
   private transient Runnable[] renderRunnables;
@@ -89,7 +91,12 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   }
 
   public void preserveData( Object[] data ) {
+    markPreserved( DATA );
     this.data = data;
+  }
+
+  public boolean hasPreservedData() {
+    return hasPreserved( DATA );
   }
 
   public Object[] getPreservedData() {
@@ -105,10 +112,19 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   }
 
   public void clearPreserved() {
+    preserved = 0;
     preservedValues.clear();
     preservedListeners = 0;
     data = null;
     variant = null;
+  }
+
+  protected void markPreserved( int index ) {
+    preserved |= ( 1 << index );
+  }
+
+  protected boolean hasPreserved( int index ) {
+    return ( preserved & ( 1 << index ) ) != 0;
   }
 
   public void addRenderRunnable( Runnable renderRunnable ) {

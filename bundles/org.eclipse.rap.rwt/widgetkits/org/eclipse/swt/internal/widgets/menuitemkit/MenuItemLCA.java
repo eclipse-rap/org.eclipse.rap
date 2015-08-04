@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
@@ -21,12 +19,15 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenH
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
-import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
@@ -52,7 +53,6 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     MenuItem item = ( MenuItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
-    WidgetLCAUtil.preserveData( item );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
     preserveProperty( item, PROP_MENU, item.getMenu() );

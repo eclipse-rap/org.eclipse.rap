@@ -43,7 +43,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
     WidgetLCAUtil.preserveCustomVariant( item );
-    WidgetLCAUtil.preserveData( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
