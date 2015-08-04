@@ -385,7 +385,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setVisible( false );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "visibility" ) );
@@ -396,7 +396,6 @@ public class ControlLCAUtil_Test {
     control.setSize( 16, 16 ); // needed to make the control visible
     Fixture.markInitialized( control );
 
-    ControlLCAUtil.preserveValues( control );
     control.setVisible( false );
     ControlLCAUtil.renderChanges( control );
 
@@ -415,7 +414,7 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.setEnabled( false );
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "enabled" ) );
@@ -425,7 +424,6 @@ public class ControlLCAUtil_Test {
   public void testRenderEnabled_changed() {
     Fixture.markInitialized( control );
 
-    ControlLCAUtil.preserveValues( control );
     control.setEnabled( false );
     ControlLCAUtil.renderChanges( control );
 

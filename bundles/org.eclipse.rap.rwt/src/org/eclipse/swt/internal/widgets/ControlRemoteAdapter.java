@@ -31,6 +31,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int BACKGROUND = 7;
   private static final int FONT = 8;
   private static final int CURSOR = 9;
+  private static final int VISIBLE = 10;
+  private static final int ENABLED = 11;
 
   private transient int preserved;
   private transient Composite parent;
@@ -128,7 +130,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveVisible( boolean visible ) {
+    markPreserved( VISIBLE );
     this.visible = visible;
+  }
+
+  public boolean hasPreservedVisible() {
+    return hasPreserved( VISIBLE );
   }
 
   public boolean getPreservedVisible() {
@@ -136,7 +143,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveEnabled( boolean enabled ) {
+    markPreserved( ENABLED );
     this.enabled = enabled;
+  }
+
+  public boolean hasPreservedEnabled() {
+    return hasPreserved( ENABLED );
   }
 
   public boolean getPreservedEnabled() {

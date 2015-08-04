@@ -82,8 +82,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    preserveVisible( control );
-    preserveEnabled( control );
     preserveBackgroundImage( control );
     preserveData( control );
     ActiveKeysUtil.preserveActiveKeys( control );
@@ -238,30 +236,42 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveVisible( Control control ) {
-    getRemoteAdapter( control ).preserveVisible( getVisible( control ) );
-  }
-
-  private static void renderVisible( Control control ) {
-    boolean actual = getVisible( control );
-    boolean preserved = getRemoteAdapter( control ).getPreservedVisible();
-    boolean defaultValue = control instanceof Shell ? false : true;
-    if( changed( control, actual, preserved, defaultValue ) ) {
-      getRemoteObject( control ).set( PROP_VISIBLE, actual );
+  public static void preserveVisible( Control control, boolean visible ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedVisible() ) {
+      remoteAdapter.preserveVisible( visible );
     }
   }
 
-  private static void preserveEnabled( Control control ) {
-    getRemoteAdapter( control ).preserveEnabled( control.getEnabled() );
+  private static void renderVisible( Control control ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedVisible() ) {
+      boolean actual = control.getVisible();
+      boolean preserved = remoteAdapter.getPreservedVisible();
+      boolean defaultValue = control instanceof Shell ? false : true;
+      if( changed( control, actual, preserved, defaultValue ) ) {
+        getRemoteObject( control ).set( PROP_VISIBLE, actual );
+      }
+    }
+  }
+
+  public static void preserveEnabled( Control control, boolean enabled ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedEnabled() ) {
+      getRemoteAdapter( control ).preserveEnabled( enabled );
+    }
   }
 
   private static void renderEnabled( Control control ) {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
-    boolean actual = control.getEnabled();
-    boolean preserved = getRemoteAdapter( control ).getPreservedEnabled();
-    if( changed( control, actual, preserved, true ) ) {
-      getRemoteObject( control ).set( PROP_ENABLED, actual );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( remoteAdapter.hasPreservedEnabled() ) {
+      boolean actual = control.getEnabled();
+      boolean preserved = remoteAdapter.getPreservedEnabled();
+      if( changed( control, actual, preserved, true ) ) {
+        getRemoteObject( control ).set( PROP_ENABLED, actual );
+      }
     }
   }
 
@@ -447,13 +457,6 @@ public class ControlLCAUtil {
 
   private static void renderListenHelp( Control control ) {
     renderListener( control, SWT.Help, PROP_HELP_LISTENER );
-  }
-
-  // [if] Fix for bug 263025, 297466, 223873 and more
-  // some qooxdoo widgets with size (0,0) are not invisible
-  private static boolean getVisible( Control control ) {
-    Rectangle bounds = ControlUtil.getControlAdapter( control ).getBounds();
-    return control.getVisible() && bounds.width > 0 && bounds.height > 0;
   }
 
   // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS

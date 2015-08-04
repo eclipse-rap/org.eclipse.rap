@@ -98,6 +98,7 @@ public class ControlRemoteAdapter_Test {
   public void testPreserveVisible() {
     adapter.preserveVisible( true );
 
+    assertTrue( adapter.hasPreservedVisible() );
     assertTrue( adapter.getPreservedVisible() );
   }
 
@@ -105,6 +106,7 @@ public class ControlRemoteAdapter_Test {
   public void testPreserveEnabled() {
     adapter.preserveEnabled( true );
 
+    assertTrue( adapter.hasPreservedEnabled() );
     assertTrue( adapter.getPreservedEnabled() );
   }
 
@@ -297,7 +299,9 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedToolTipText() );
     assertFalse( adapter.hasPreservedMenu() );
     assertNull( adapter.getPreservedMenu() );
+    assertFalse( adapter.hasPreservedVisible() );
     assertFalse( adapter.getPreservedVisible() );
+    assertFalse( adapter.hasPreservedEnabled() );
     assertFalse( adapter.getPreservedEnabled() );
     assertFalse( adapter.hasPreservedForeground() );
     assertNull( adapter.getPreservedForeground() );

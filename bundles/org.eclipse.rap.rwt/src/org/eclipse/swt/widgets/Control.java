@@ -2601,8 +2601,26 @@ public abstract class Control extends Widget implements Drawable {
     oldDecorations.fixDecorations( newDecorations, this );
   }
 
-  ///////////////////////////////////////////////////////
-  // Helping methods to observe the disposal of the menu
+  @Override
+  void addState( int flag ) {
+    preserveState( flag );
+    super.addState( flag );
+  }
+
+  @Override
+  void removeState( int flag ) {
+    preserveState( flag );
+    super.removeState( flag );
+  }
+
+  private void preserveState( int flag ) {
+    if( ( flag & DISABLED ) != 0 ) {
+      ControlLCAUtil.preserveEnabled( this, !hasState( DISABLED ) );
+    }
+    if( ( flag & HIDDEN ) != 0 ) {
+      ControlLCAUtil.preserveVisible( this, !hasState( HIDDEN ) );
+    }
+  }
 
   private void addMenuDisposeListener() {
     if( menu != null ) {
