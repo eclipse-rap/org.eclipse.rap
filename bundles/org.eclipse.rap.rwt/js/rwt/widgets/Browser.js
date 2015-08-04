@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     // [if] This wrapper function is a workaround for bug 332313
     _createFunctionWrapper : function( name ) {
       var script = [];
-      script.push( "function " + name + "(){" );
+      script.push( "window." + name + " = function(){" );
       script.push( "  var result = " + name + "_impl.apply( window, arguments );" );
       script.push( "  if( result.error ) {" );
       script.push( "    throw new Error( result.error );" );
