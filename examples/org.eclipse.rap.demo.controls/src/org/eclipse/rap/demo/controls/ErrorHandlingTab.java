@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
-
-import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
@@ -28,8 +26,6 @@ import org.eclipse.swt.widgets.Label;
 
 
 public class ErrorHandlingTab extends ExampleTab {
-
-  private static final int DELAY = 2000;
 
   public ErrorHandlingTab() {
     super( "Error Handling" );
@@ -62,18 +58,7 @@ public class ErrorHandlingTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         lblFeedback.setText( "The session will be invalidated shortly." );
         lblFeedback.getParent().layout();
-        final HttpSession session = RWT.getUISession().getHttpSession();
-        Thread thread = new Thread( new Runnable() {
-          public void run() {
-            try {
-              Thread.sleep( DELAY );
-              session.invalidate();
-            } catch( InterruptedException e ) {
-              // ignore, invalidate won't be executed
-            }
-          }
-        } );
-        thread.start();
+        RWT.getUISession().getHttpSession().setMaxInactiveInterval( 2 );
       }
     } );
     Button btnErrorResponse = new Button( parent, SWT.PUSH );
