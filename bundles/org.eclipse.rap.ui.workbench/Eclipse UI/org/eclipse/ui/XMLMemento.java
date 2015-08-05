@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - ongoing development
  *******************************************************************************/
 package org.eclipse.ui;
 
@@ -56,7 +57,7 @@ public final class XMLMemento implements IMemento {
      * <p>
      * Same as calling createReadRoot(reader, null)
      * </p>
-     * 
+     *
      * @param reader the <code>Reader</code> used to create the memento's document
      * @return a memento on the first <code>Element</code> for reading the document
      * @throws WorkbenchException if IO problems, invalid format, or no element.
@@ -70,7 +71,7 @@ public final class XMLMemento implements IMemento {
      * Creates a <code>Document</code> from the <code>Reader</code>
      * and returns a memento on the first <code>Element</code> for reading
      * the document.
-     * 
+     *
      * @param reader the <code>Reader</code> used to create the memento's document
      * @param baseDir the directory used to resolve relative file names
      * 		in the XML document. This directory must exist and include the
@@ -98,18 +99,21 @@ public final class XMLMemento implements IMemento {
 				/**
 				 * @throws SAXException
 				 */
-				public void warning(SAXParseException exception) throws SAXException {
+				@Override
+                public void warning(SAXParseException exception) throws SAXException {
 					// ignore
 				}
 
 				/**
 				 * @throws SAXException
 				 */
-				public void error(SAXParseException exception) throws SAXException {
+				@Override
+                public void error(SAXParseException exception) throws SAXException {
 					// ignore
 				}
 
-				public void fatalError(SAXParseException exception) throws SAXException {
+				@Override
+                public void fatalError(SAXParseException exception) throws SAXException {
 					throw exception;
 				}
 			});
@@ -127,10 +131,10 @@ public final class XMLMemento implements IMemento {
             errorMessage = WorkbenchMessages.get().XMLMemento_parserConfigError;
         } catch (IOException e) {
             exception = e;
-            errorMessage = WorkbenchMessages.get().XMLMemento_ioError; 
+            errorMessage = WorkbenchMessages.get().XMLMemento_ioError;
         } catch (SAXException e) {
             exception = e;
-            errorMessage = WorkbenchMessages.get().XMLMemento_formatError; 
+            errorMessage = WorkbenchMessages.get().XMLMemento_formatError;
         }
 
         String problemText = null;
@@ -140,13 +144,13 @@ public final class XMLMemento implements IMemento {
         if (problemText == null || problemText.length() == 0) {
 			problemText = errorMessage != null ? errorMessage
                     : WorkbenchMessages.get().XMLMemento_noElement;
-		} 
+		}
         throw new WorkbenchException(problemText, exception);
     }
 
     /**
      * Returns a root memento for writing a document.
-     * 
+     *
      * @param type the element node type to create on the document
      * @return the root memento for writing a document
      */
@@ -171,7 +175,7 @@ public final class XMLMemento implements IMemento {
      * <code>createWriteRoot</code> to create the initial
      * memento on a document.
      * </p>
-     * 
+     *
      * @param document the document for the memento
      * @param element the element node for the memento
      */
@@ -184,6 +188,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public IMemento createChild(String type) {
         Element child = factory.createElement(type);
         element.appendChild(child);
@@ -193,6 +198,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public IMemento createChild(String type, String id) {
         Element child = factory.createElement(type);
         child.setAttribute(TAG_ID, id == null ? "" : id); //$NON-NLS-1$
@@ -213,6 +219,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public IMemento getChild(String type) {
 
         // Get the nodes.
@@ -237,9 +244,42 @@ public final class XMLMemento implements IMemento {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * @since 3.8
+     */
+    @Override
+    public IMemento[] getChildren() {
+
+        // Get the nodes.
+        final NodeList nodes = element.getChildNodes();
+        int size = nodes.getLength();
+        if (size == 0) {
+            return new IMemento[0];
+        }
+
+        // Extract each node with given type.
+        ArrayList list = new ArrayList(size);
+        for (int nX = 0; nX < size; nX++) {
+            final Node node = nodes.item(nX);
+            if (node instanceof Element) {
+              list.add(node);
+            }
+        }
+
+        // Create a memento for each node.
+        size = list.size();
+        IMemento[] results = new IMemento[size];
+        for (int x = 0; x < size; x++) {
+            results[x] = new XMLMemento(factory, (Element) list.get(x));
+        }
+        return results;
+    }
+
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public IMemento[] getChildren(String type) {
 
         // Get the nodes.
@@ -273,6 +313,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public Float getFloat(String key) {
         Attr attr = element.getAttributeNode(key);
         if (attr == null) {
@@ -291,13 +332,15 @@ public final class XMLMemento implements IMemento {
 	/**
 	 * @since 3.4
 	 */
-	public String getType() {
+	@Override
+    public String getType() {
 		return element.getNodeName();
 	}
 
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public String getID() {
         return element.getAttribute(TAG_ID);
     }
@@ -305,6 +348,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public Integer getInteger(String key) {
         Attr attr = element.getAttributeNode(key);
         if (attr == null) {
@@ -324,6 +368,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public String getString(String key) {
         Attr attr = element.getAttributeNode(key);
         if (attr == null) {
@@ -335,7 +380,8 @@ public final class XMLMemento implements IMemento {
 	/**
 	 * @since 3.4
 	 */
-	public Boolean getBoolean(String key) {
+	@Override
+    public Boolean getBoolean(String key) {
         Attr attr = element.getAttributeNode(key);
         if (attr == null) {
 			return null;
@@ -346,6 +392,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public String getTextData() {
         Text textNode = getTextNode();
         if (textNode != null) {
@@ -357,7 +404,8 @@ public final class XMLMemento implements IMemento {
 	/**
 	 * @since 3.4
 	 */
-	public String[] getAttributeKeys() {
+	@Override
+    public String[] getAttributeKeys() {
 		NamedNodeMap map = element.getAttributes();
 		int size = map.getLength();
 		String[] attributes = new String[size];
@@ -369,9 +417,9 @@ public final class XMLMemento implements IMemento {
 	}
 
     /**
-     * Returns the Text node of the memento. Each memento is allowed only 
+     * Returns the Text node of the memento. Each memento is allowed only
      * one Text node.
-     * 
+     *
      * @return the Text node of the memento, or <code>null</code> if
      * the memento has no Text node.
      */
@@ -424,6 +472,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public void putFloat(String key, float f) {
         element.setAttribute(key, String.valueOf(f));
     }
@@ -431,6 +480,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public void putInteger(String key, int n) {
         element.setAttribute(key, String.valueOf(n));
     }
@@ -438,6 +488,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public void putMemento(IMemento memento) {
     	// Do not copy the element's top level text node (this would overwrite the existing text).
     	// Text nodes of children are copied.
@@ -447,6 +498,7 @@ public final class XMLMemento implements IMemento {
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public void putString(String key, String value) {
         if (value == null) {
 			return;
@@ -457,18 +509,20 @@ public final class XMLMemento implements IMemento {
 	/**
 	 * @since 3.4
 	 */
-	public void putBoolean(String key, boolean value) {
+	@Override
+    public void putBoolean(String key, boolean value) {
 		element.setAttribute(key, value ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
     /* (non-Javadoc)
      * Method declared in IMemento.
      */
+    @Override
     public void putTextData(String data) {
         Text textNode = getTextNode();
         if (textNode == null) {
             textNode = factory.createTextNode(data);
-			// Always add the text node as the first child (fixes bug 93718) 
+			// Always add the text node as the first child (fixes bug 93718)
 			element.insertBefore(textNode, element.getFirstChild());
         } else {
             textNode.setData(data);
@@ -477,8 +531,8 @@ public final class XMLMemento implements IMemento {
 
     /**
      * Saves this memento's document current values to the
-     * specified writer. 
-     * 
+     * specified writer.
+     *
      * @param writer the writer used to save the memento's document
      * @throws IOException if there is a problem serializing the document to the stream.
      */
@@ -493,10 +547,10 @@ public final class XMLMemento implements IMemento {
 
 	/**
      * A simple XML writer.  Using this instead of the javax.xml.transform classes allows
-     * compilation against JCL Foundation (bug 80053). 
+     * compilation against JCL Foundation (bug 80053).
      */
     private static final class DOMWriter extends PrintWriter {
-    	
+
     	private int tab;
 
     	/* constants */
@@ -504,7 +558,7 @@ public final class XMLMemento implements IMemento {
 
     	/**
     	 * Creates a new DOM writer on the given output writer.
-    	 * 
+    	 *
     	 * @param output the output writer
     	 */
     	public DOMWriter(Writer output) {
@@ -515,7 +569,7 @@ public final class XMLMemento implements IMemento {
 
     	/**
     	 * Prints the given element.
-    	 * 
+    	 *
     	 * @param element the element to print
     	 */
         public void print(Element element) {
@@ -557,7 +611,7 @@ public final class XMLMemento implements IMemento {
         	// In 3.0, elements were separated by a newline but not indented.
     		// This causes getTextData() to return "\n" even if no text data had explicitly been set.
         	// The code here emulates that behaviour.
-    		
+
 //    		for (int i = 0; i < tab; i++)
 //    			super.print("\t"); //$NON-NLS-1$
     	}
@@ -586,7 +640,7 @@ public final class XMLMemento implements IMemento {
     		sb.append(">"); //$NON-NLS-1$
    			print(sb.toString());
     	}
-    	
+
     	private static void appendEscapedChar(StringBuffer buffer, char c) {
     		String replacement = getReplacement(c);
     		if (replacement != null) {
