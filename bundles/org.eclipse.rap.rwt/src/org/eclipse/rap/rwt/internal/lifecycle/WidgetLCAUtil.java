@@ -71,6 +71,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_HELP_LISTENER = "Help";
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
+  private static final String PROP_MODIFY_LISTENER = "Modify";
 
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
 
@@ -521,6 +522,23 @@ public final class WidgetLCAUtil {
 
   public static void renderListenDefaultSelection( Widget widget ) {
     renderListener( widget, SWT.DefaultSelection, PROP_DEFAULT_SELECTION_LISTENER );
+  }
+
+  public static void preserveListenModifyVerify( Widget widget ) {
+    preserveListener( widget, SWT.Modify );
+    preserveListener( widget, SWT.Verify );
+  }
+
+  // NOTE : Client does not support Verify, it is created server-side from Modify
+  public static void renderListenModifyVerify( Widget widget ) {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
+    boolean actual = isListening( widget, SWT.Modify )
+                  || isListening( widget, SWT.Verify );
+    boolean preserved = adapter.getPreservedListener( SWT.Modify )
+                     || adapter.getPreservedListener( SWT.Verify );
+    if( actual != preserved ) {
+      getRemoteObject( widget ).listen( PROP_MODIFY_LISTENER, actual );
+    }
   }
 
   public static void preserveListener( Widget widget, String listener, boolean value ) {

@@ -337,14 +337,6 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
-  public void testRenderInitialListenHelp() {
-    WidgetLCAUtil.renderListenHelp( widget );
-
-    TestMessage message = getProtocolMessage();
-    assertNull( message.findListenOperation( widget, "Help" ) );
-  }
-
-  @Test
   public void testRenderListenHelp_initial() {
     WidgetLCAUtil.renderListenHelp( widget );
 
@@ -384,6 +376,86 @@ public class WidgetLCAUtil_Test {
     WidgetLCAUtil.renderListenHelp( widget );
 
     assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( widget, "Help" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_initial() {
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_added() {
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    widget.addListener( SWT.Modify, mock( Listener.class ) );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_addedVerify() {
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    widget.addListener( SWT.Verify, mock( Listener.class ) );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_unchanged() {
+    Fixture.markInitialized( widget );
+    widget.addListener( SWT.Modify, mock( Listener.class ) );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_unchangedVerify() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Modify, listener );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    widget.removeListener( SWT.Modify, listener );
+    widget.addListener( SWT.Verify, listener );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_removed() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Modify, listener );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    widget.removeListener( SWT.Modify, listener );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( widget, "Modify" ) );
+  }
+
+  @Test
+  public void testRenderListenModifyVerify_removedVerify() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Verify, listener );
+
+    WidgetLCAUtil.preserveListenModifyVerify( widget );
+    widget.removeListener( SWT.Verify, listener );
+    WidgetLCAUtil.renderListenModifyVerify( widget );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( widget, "Modify" ) );
   }
 
   @Test

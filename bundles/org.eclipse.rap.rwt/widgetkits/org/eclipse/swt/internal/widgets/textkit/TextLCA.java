@@ -17,15 +17,13 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
@@ -71,7 +69,6 @@ public final class TextLCA extends AbstractWidgetLCA {
   private static final String PROP_EDITABLE = "editable";
   private static final String PROP_ECHO_CHAR = "echoChar";
   private static final String PROP_MESSAGE = "message";
-  private static final String PROP_MODIFY_LISTENER = "Modify";
 
   private static final Point ZERO_SELECTION = new Point( 0, 0 );
 
@@ -86,7 +83,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
-    preserveListener( text, SWT.Modify, hasModifyListener( text ) );
+    preserveListenModifyVerify( text );
     preserveListenDefaultSelection( text );
   }
 
@@ -110,7 +107,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
     renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
     renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
-    renderListener( text, SWT.Modify, PROP_MODIFY_LISTENER, hasModifyListener( text ) );
+    renderListenModifyVerify( text );
     renderListenDefaultSelection( text );
     renderClientListeners( text );
   }
@@ -145,11 +142,6 @@ public final class TextLCA extends AbstractWidgetLCA {
 
   private static String getEchoChar( Text text ) {
     return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
-  }
-
-  private static boolean hasModifyListener( Text text ) {
-    // NOTE : Client does not support Verify, it is created server-side from Modify
-    return isListening( text, SWT.Modify ) || isListening( text, SWT.Verify );
   }
 
 }

@@ -13,19 +13,17 @@ package org.eclipse.swt.internal.custom.ccombokit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
@@ -33,7 +31,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Widget;
@@ -53,7 +50,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
-  static final String PROP_MODIFY_LISTENER = "Modify";
 
   // Default values
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
@@ -76,7 +72,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
     preserveListenSelection( ccombo );
     preserveListenDefaultSelection( ccombo );
-    preserveListener( ccombo, SWT.Modify, hasModifyListener( ccombo ) );
+    preserveListenModifyVerify( ccombo );
   }
 
   @Override
@@ -104,7 +100,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderTextLimit( ccombo );
     renderListenSelection( ccombo );
     renderListenDefaultSelection( ccombo );
-    renderListenModify( ccombo );
+    renderListenModifyVerify( ccombo );
   }
 
   //////////////////////////////////////////////
@@ -153,14 +149,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static void renderTextLimit( CCombo ccombo ) {
     renderProperty( ccombo, PROP_TEXT_LIMIT, getTextLimit( ccombo ), null );
-  }
-
-  private static void renderListenModify( CCombo ccombo ) {
-    renderListener( ccombo, SWT.Modify, PROP_MODIFY_LISTENER, hasModifyListener( ccombo ) );
-  }
-
-  private static boolean hasModifyListener( CCombo ccombo ) {
-    return isListening( ccombo, SWT.Modify ) || isListening( ccombo, SWT.Verify );
   }
 
   //////////////////
