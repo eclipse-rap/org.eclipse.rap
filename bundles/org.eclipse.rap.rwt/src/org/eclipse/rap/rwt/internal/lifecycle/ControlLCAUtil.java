@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -20,7 +22,6 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
 import java.lang.reflect.Field;
@@ -68,7 +69,6 @@ public class ControlLCAUtil {
   private static final String PROP_MOUSE_DOWN_LISTENER = "MouseDown";
   private static final String PROP_MOUSE_DOUBLE_CLICK_LISTENER = "MouseDoubleClick";
   private static final String PROP_MOUSE_UP_LISTENER = "MouseUp";
-  private static final String PROP_KEY_LISTENER = "KeyDown";
   private static final String PROP_TRAVERSE_LISTENER = "Traverse";
   private static final String PROP_MENU_DETECT_LISTENER = "MenuDetect";
   private static final String PROP_HELP_LISTENER = "Help";
@@ -425,14 +425,6 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveListenKey( Control control ) {
-    preserveListener( control, SWT.KeyDown, hasKeyListener( control ) );
-  }
-
-  private static void renderListenKey( Control control ) {
-    renderListener( control, SWT.KeyDown, PROP_KEY_LISTENER, hasKeyListener( control ) );
-  }
-
   private static void preserveListenTraverse( Control control ) {
     preserveListener( control, SWT.Traverse );
   }
@@ -566,10 +558,6 @@ public class ControlLCAUtil {
       }
     }
     return null;
-  }
-
-  private static boolean hasKeyListener( Control control ) {
-    return isListening( control, SWT.KeyUp ) || isListening( control, SWT.KeyDown );
   }
 
   private static ControlRemoteAdapter getRemoteAdapter( Control control ) {

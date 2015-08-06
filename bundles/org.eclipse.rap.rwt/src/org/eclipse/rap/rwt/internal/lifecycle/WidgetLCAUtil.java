@@ -72,6 +72,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_SELECTION_LISTENER = "Selection";
   private static final String PROP_DEFAULT_SELECTION_LISTENER = "DefaultSelection";
   private static final String PROP_MODIFY_LISTENER = "Modify";
+  private static final String PROP_KEY_LISTENER = "KeyDown";
 
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
 
@@ -538,6 +539,22 @@ public final class WidgetLCAUtil {
                      || adapter.getPreservedListener( SWT.Verify );
     if( actual != preserved ) {
       getRemoteObject( widget ).listen( PROP_MODIFY_LISTENER, actual );
+    }
+  }
+
+  public static void preserveListenKey( Widget widget ) {
+    preserveListener( widget, SWT.KeyUp );
+    preserveListener( widget, SWT.KeyDown );
+  }
+
+  public static void renderListenKey( Widget widget ) {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
+    boolean actual = isListening( widget, SWT.KeyUp )
+                  || isListening( widget, SWT.KeyDown );
+    boolean preserved = adapter.getPreservedListener( SWT.KeyUp )
+                     || adapter.getPreservedListener( SWT.KeyDown );
+    if( changed( widget, actual, preserved, false ) ) {
+      getRemoteObject( widget ).listen( WidgetLCAUtil.PROP_KEY_LISTENER, actual );
     }
   }
 

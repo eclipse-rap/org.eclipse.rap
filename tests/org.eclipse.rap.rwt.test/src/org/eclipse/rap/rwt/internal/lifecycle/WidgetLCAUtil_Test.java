@@ -155,25 +155,25 @@ public class WidgetLCAUtil_Test {
     assertFalse( WidgetLCAUtil.equals( "1", "2" ) );
     assertTrue( WidgetLCAUtil.equals( "1", "1" ) );
     assertTrue( WidgetLCAUtil.equals( new String[] { "1" },
-                                   new String[] { "1" } ) );
+                                      new String[] { "1" } ) );
     assertTrue( WidgetLCAUtil.equals( new int[] { 1 },
-                                   new int[] { 1 } ) );
+                                      new int[] { 1 } ) );
     assertTrue( WidgetLCAUtil.equals( new boolean[] { true },
-                                   new boolean[] { true } ) );
+                                      new boolean[] { true } ) );
     assertTrue( WidgetLCAUtil.equals( new long[] { 232 },
-                                   new long[] { 232 } ) );
+                                      new long[] { 232 } ) );
     assertTrue( WidgetLCAUtil.equals( new float[] { 232 },
-                                   new float[] { 232 } ) );
+                                      new float[] { 232 } ) );
     assertTrue( WidgetLCAUtil.equals( new double[] { 345 },
-                                   new double[] { 345 } ) );
+                                      new double[] { 345 } ) );
     assertTrue( WidgetLCAUtil.equals( new Date[] { new Date( 1 ) },
-                                   new Date[] { new Date( 1 ) } ) );
+                                      new Date[] { new Date( 1 ) } ) );
     assertFalse( WidgetLCAUtil.equals( new double[] { 345 },
-                                    new float[] { 345 } ) );
+                                       new float[] { 345 } ) );
     assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
-                                    new float[] { 345 } ) );
+                                       new float[] { 345 } ) );
     assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
-                                    new long[] { 345 } ) );
+                                       new long[] { 345 } ) );
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
@@ -181,8 +181,8 @@ public class WidgetLCAUtil_Test {
   public void testParseFontName() {
     // IE doesn't like quoted font names (or whatever qooxdoo makes out of them)
     String systemFontName
-      = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", "
-      + "sans-serif";
+    = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", "
+        + "sans-serif";
     String[] fontNames = ProtocolUtil.parseFontName( systemFontName );
     assertEquals( 6, fontNames.length );
     assertEquals( "Segoe UI", fontNames[ 0 ] );
@@ -459,6 +459,76 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
+  public void testRenderListenKey_initial() {
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_unchanged() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.KeyDown, listener );
+
+    WidgetLCAUtil.preserveListenKey( widget );
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_unchanged_keyUpDown() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.KeyDown, listener );
+
+    WidgetLCAUtil.preserveListenKey( widget );
+    widget.removeListener( SWT.KeyDown, listener );
+    widget.addListener( SWT.KeyUp, listener );
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertNull( getProtocolMessage().findListenOperation( widget, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_changed_keyDown() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+
+    WidgetLCAUtil.preserveListenKey( widget );
+    widget.addListener( SWT.KeyDown, listener );
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( widget, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_changed_keyUp() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+
+    WidgetLCAUtil.preserveListenKey( widget );
+    widget.addListener( SWT.KeyUp, listener );
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( widget, "KeyDown" ) );
+  }
+
+  @Test
+  public void testRenderListenKey_removed() {
+    Fixture.markInitialized( widget );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.KeyDown, listener );
+
+    WidgetLCAUtil.preserveListenKey( widget );
+    widget.removeListener( SWT.KeyDown, listener );
+    WidgetLCAUtil.renderListenKey( widget );
+
+    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( widget, "KeyDown" ) );
+  }
+
+  @Test
   public void testRenderBackgroundGradient() {
     Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
@@ -474,7 +544,7 @@ public class WidgetLCAUtil_Test {
 
     TestMessage message = getProtocolMessage();
     JsonArray expected
-      = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
+    = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], true]" );
     assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
@@ -494,7 +564,7 @@ public class WidgetLCAUtil_Test {
 
     TestMessage message = getProtocolMessage();
     JsonArray expected
-      = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], false]" );
+    = JsonArray.readFrom( "[[[0, 255, 0, 255], [0, 0, 255, 255]], [0, 100], false]" );
     assertEquals( expected, message.findSetProperty( control, "backgroundGradient" ) );
   }
 
