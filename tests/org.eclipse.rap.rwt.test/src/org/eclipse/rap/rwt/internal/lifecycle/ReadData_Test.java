@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class ReadData_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result = null;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = new LoggingWidgetLCA( log );
       } else {
         result = super.getAdapter( adapter );
@@ -95,7 +95,7 @@ public class ReadData_Test {
     }
   }
 
-  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
+  private static class LoggingWidgetLCA extends WidgetLCA {
     private static final String READ_DATA = "readData";
     private static final String PRESERVE_VALUES = "preserveValues";
     private static final String RENDER_INITIALIZATION = "renderInitialization";

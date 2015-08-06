@@ -25,7 +25,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ListLCA extends AbstractWidgetLCA {
+public class ListLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.List";
   private static final String[] ALLOWED_STYLES = { "SINGLE", "MULTI", "BORDER" };

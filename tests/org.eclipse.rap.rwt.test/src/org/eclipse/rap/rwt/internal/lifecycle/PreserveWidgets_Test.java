@@ -115,7 +115,7 @@ public class PreserveWidgets_Test {
     }
   }
 
-  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
+  private static class LoggingWidgetLCA extends WidgetLCA {
     private final StringBuilder log;
 
     LoggingWidgetLCA() {
@@ -147,9 +147,9 @@ public class PreserveWidgets_Test {
 
   private static class CustomLCAWidget extends Composite {
 
-    private final AbstractWidgetLCA widgetLCA;
+    private final WidgetLCA widgetLCA;
 
-    CustomLCAWidget( Composite parent, AbstractWidgetLCA widgetLCA ) {
+    CustomLCAWidget( Composite parent, WidgetLCA widgetLCA ) {
       super( parent, 0 );
       this.widgetLCA = widgetLCA;
     }
@@ -158,7 +158,7 @@ public class PreserveWidgets_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
@@ -170,9 +170,9 @@ public class PreserveWidgets_Test {
   private static class CustomLCAShell extends Shell {
     private static final long serialVersionUID = 1L;
 
-    private final AbstractWidgetLCA widgetLCA;
+    private final WidgetLCA widgetLCA;
 
-    CustomLCAShell( Display display, AbstractWidgetLCA widgetLCA ) {
+    CustomLCAShell( Display display, WidgetLCA widgetLCA ) {
       super( display );
       this.widgetLCA = widgetLCA;
     }
@@ -181,7 +181,7 @@ public class PreserveWidgets_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );

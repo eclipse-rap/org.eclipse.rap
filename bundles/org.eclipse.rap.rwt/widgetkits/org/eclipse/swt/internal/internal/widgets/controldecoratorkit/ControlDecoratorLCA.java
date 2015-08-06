@@ -21,14 +21,14 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderPropert
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ControlDecoratorLCA extends AbstractWidgetLCA {
+public class ControlDecoratorLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ControlDecorator";
   private static final String[] ALLOWED_STYLES = {

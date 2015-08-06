@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -31,7 +31,7 @@ import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class FileUploadLCA extends AbstractWidgetLCA {
+public final class FileUploadLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.FileUpload";
   private static final String[] ALLOWED_STYLES = { "BORDER", "MULTI" };

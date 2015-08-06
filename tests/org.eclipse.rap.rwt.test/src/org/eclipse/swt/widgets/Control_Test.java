@@ -35,10 +35,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -1770,7 +1769,7 @@ public class Control_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result = null;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = new LoggingWidgetLCA( log );
       } else {
         result = super.getAdapter( adapter );
@@ -1779,7 +1778,7 @@ public class Control_Test {
     }
   }
 
-  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
+  private static class LoggingWidgetLCA extends WidgetLCA {
     private final List<Widget> log;
 
     public LoggingWidgetLCA( List<Widget> log ) {

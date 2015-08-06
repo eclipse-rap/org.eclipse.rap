@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.IGridItemAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings("restriction")
-public class GridItemLCA extends AbstractWidgetLCA {
+public class GridItemLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridItem";
 

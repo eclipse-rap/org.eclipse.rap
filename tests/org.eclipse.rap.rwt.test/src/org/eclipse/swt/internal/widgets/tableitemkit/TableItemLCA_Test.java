@@ -30,7 +30,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -230,7 +230,7 @@ public class TableItemLCA_Test {
   public void testDispose() throws IOException {
     table = new Table( shell, SWT.CHECK );
     item = new TableItem( table, SWT.NONE );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
+    WidgetLCA lca = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
     Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();
@@ -246,7 +246,7 @@ public class TableItemLCA_Test {
   public void testDisposeTable() throws IOException {
     table = new Table( shell, SWT.CHECK );
     item = new TableItem( table, SWT.NONE );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
+    WidgetLCA lca = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
     Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();

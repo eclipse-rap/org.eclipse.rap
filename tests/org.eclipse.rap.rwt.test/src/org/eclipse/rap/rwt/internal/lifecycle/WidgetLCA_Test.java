@@ -37,13 +37,13 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 
-public class AbstractWidgetLCA_Test {
+public class WidgetLCA_Test {
 
   private Shell shell;
   private Button widget;
   private String shellId;
   private String widgetId;
-  private AbstractWidgetLCA lca;
+  private WidgetLCA lca;
 
   @Before
   public void setUp() {
@@ -193,7 +193,7 @@ public class AbstractWidgetLCA_Test {
     return remoteObject;
   }
 
-  private static class TestWidgetLCA extends AbstractWidgetLCA {
+  private static class TestWidgetLCA extends WidgetLCA {
 
     @Override
     public void preserveValues( Widget widget ) {

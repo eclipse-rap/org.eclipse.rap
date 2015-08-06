@@ -29,7 +29,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ButtonLCA extends AbstractWidgetLCA {
+public final class ButtonLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Button";
   private static final String[] ALLOWED_STYLES = {

@@ -20,7 +20,7 @@ import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGc
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class CanvasLCA extends AbstractWidgetLCA {
+public final class CanvasLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Canvas";
   private static final String TYPE_GC = "rwt.widgets.GC";

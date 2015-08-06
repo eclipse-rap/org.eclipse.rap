@@ -28,7 +28,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ComboLCA extends AbstractWidgetLCA {
+public class ComboLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
   private static final String[] ALLOWED_STYLES = { "DROP_DOWN", "SIMPLE", "BORDER" };

@@ -20,7 +20,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ExpandBarLCA extends AbstractWidgetLCA {
+public final class ExpandBarLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ExpandBar";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };

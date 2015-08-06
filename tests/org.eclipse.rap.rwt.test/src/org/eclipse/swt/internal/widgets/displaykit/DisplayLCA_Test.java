@@ -43,13 +43,12 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
@@ -124,7 +123,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRender() throws IOException {
-    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    WidgetLCA lca = mock( WidgetLCA.class );
     Shell shell1 = new CustomLCAShell( display, lca );
     Widget button1 = new CustomLCAWidget( shell1, lca );
     Shell shell2 = new CustomLCAShell( display, lca );
@@ -158,7 +157,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testReadData() {
-    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    WidgetLCA lca = mock( WidgetLCA.class );
     Composite shell = new CustomLCAShell( display, lca );
     Widget button = new CustomLCAWidget( shell, lca );
     Widget text = new CustomLCAWidget( shell, lca );
@@ -224,7 +223,7 @@ public class DisplayLCA_Test {
   @Test
   public void testRenderWithChangedAndDisposedWidget() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
-    AbstractWidgetLCA lca = mock( AbstractWidgetLCA.class );
+    WidgetLCA lca = mock( WidgetLCA.class );
     Composite composite = new CustomLCAWidget( shell, lca );
     Fixture.markInitialized( composite );
     Fixture.preserveWidgets();
@@ -245,6 +244,7 @@ public class DisplayLCA_Test {
     Control control = new Button( composite, SWT.PUSH );
     WidgetRemoteAdapter controlAdapter = ( WidgetRemoteAdapter )getAdapter( control );
     controlAdapter.addRenderRunnable( new Runnable() {
+      @Override
       public void run() {
         boolean initState = getAdapter( composite ).isInitialized();
         compositeInitState[ 0 ] = Boolean.valueOf( initState );
@@ -526,7 +526,7 @@ public class DisplayLCA_Test {
     }
   }
 
-  private static class TestWidgetLCA extends AbstractWidgetLCA {
+  private static class TestWidgetLCA extends WidgetLCA {
     @Override
     public void readData( Widget widget ) {
     }
@@ -547,9 +547,9 @@ public class DisplayLCA_Test {
   private static class CustomLCAWidget extends Composite {
     private static final long serialVersionUID = 1L;
 
-    private final AbstractWidgetLCA widgetLCA;
+    private final WidgetLCA widgetLCA;
 
-    CustomLCAWidget( Composite parent, AbstractWidgetLCA widgetLCA ) {
+    CustomLCAWidget( Composite parent, WidgetLCA widgetLCA ) {
       super( parent, 0 );
       this.widgetLCA = widgetLCA;
     }
@@ -558,7 +558,7 @@ public class DisplayLCA_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
@@ -570,9 +570,9 @@ public class DisplayLCA_Test {
   private static class CustomLCAShell extends Shell {
     private static final long serialVersionUID = 1L;
 
-    private final AbstractWidgetLCA widgetLCA;
+    private final WidgetLCA widgetLCA;
 
-    CustomLCAShell( Display display, AbstractWidgetLCA widgetLCA ) {
+    CustomLCAShell( Display display, WidgetLCA widgetLCA ) {
       super( display );
       this.widgetLCA = widgetLCA;
     }
@@ -581,7 +581,7 @@ public class DisplayLCA_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
+      if( adapter == WidgetLCA.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
@@ -591,6 +591,7 @@ public class DisplayLCA_Test {
   }
 
   public static final class TestRenderInitiallyDisposedEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       Display display = new Display();
       display.dispose();

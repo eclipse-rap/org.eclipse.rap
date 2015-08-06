@@ -1073,8 +1073,8 @@ public class RWTLifeCycle_Test {
       @Override
       public <T> T getAdapter( Class<T> adapter ) {
         Object result;
-        if( adapter.equals( WidgetLifeCycleAdapter.class ) ) {
-          result = new AbstractWidgetLCA() {
+        if( adapter.equals( WidgetLCA.class ) ) {
+          result = new WidgetLCA() {
             @Override
             public void preserveValues( Widget widget ) {
             }

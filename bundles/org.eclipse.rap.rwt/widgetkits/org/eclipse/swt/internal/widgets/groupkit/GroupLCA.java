@@ -22,7 +22,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class GroupLCA extends AbstractWidgetLCA {
+public class GroupLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Group";
   private static final String[] ALLOWED_STYLES = {

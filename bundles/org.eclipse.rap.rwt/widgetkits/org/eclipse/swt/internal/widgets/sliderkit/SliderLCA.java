@@ -21,7 +21,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderPropert
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class SliderLCA extends AbstractWidgetLCA {
+public class SliderLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Slider";
   private static final String[] ALLOWED_STYLES = {

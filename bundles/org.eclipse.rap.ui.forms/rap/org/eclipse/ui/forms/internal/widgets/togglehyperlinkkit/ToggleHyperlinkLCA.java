@@ -34,7 +34,7 @@ import org.eclipse.ui.forms.widgets.*;
  * org.eclipse.ui.forms.widgets.Twistie.
  */
 @SuppressWarnings("restriction")
-public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
+public final class ToggleHyperlinkLCA extends WidgetLCA {
 
   private static final String TYPE = "forms.widgets.ToggleHyperlink"; //$NON-NLS-1$
 

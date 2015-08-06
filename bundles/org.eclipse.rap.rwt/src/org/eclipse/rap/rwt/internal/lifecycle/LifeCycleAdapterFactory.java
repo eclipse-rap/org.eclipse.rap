@@ -22,21 +22,21 @@ import org.eclipse.swt.widgets.Widget;
 public final class LifeCycleAdapterFactory {
 
   private final Object widgetAdaptersLock;
-  private final Map<Class<?>, WidgetLifeCycleAdapter> widgetAdapters;
+  private final Map<Class<?>, WidgetLCA> widgetAdapters;
 
   public LifeCycleAdapterFactory() {
     widgetAdaptersLock = new Object();
     widgetAdapters = new HashMap<>();
   }
 
-  public WidgetLifeCycleAdapter getWidgetLCA( Widget widget ) {
+  public WidgetLCA getWidgetLCA( Widget widget ) {
     Class<?> clazz = widget.getClass();
     // [fappel] This code is performance critical, don't change without checking against a profiler
-    WidgetLifeCycleAdapter result;
+    WidgetLCA result;
     synchronized( widgetAdaptersLock ) {
       result = widgetAdapters.get( clazz );
       if( result == null ) {
-        WidgetLifeCycleAdapter adapter = null;
+        WidgetLCA adapter = null;
         Class<?> superClass = clazz;
         while( !Object.class.equals( superClass ) && adapter == null ) {
           adapter = loadWidgetLCA( superClass );
@@ -51,8 +51,8 @@ public final class LifeCycleAdapterFactory {
     return result;
   }
 
-  private static WidgetLifeCycleAdapter loadWidgetLCA( Class<?> clazz ) {
-    WidgetLifeCycleAdapter result = null;
+  private static WidgetLCA loadWidgetLCA( Class<?> clazz ) {
+    WidgetLCA result = null;
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
     for( int i = 0; result == null && i < variants.length; i++ ) {
@@ -64,7 +64,7 @@ public final class LifeCycleAdapterFactory {
       String classToLoad = buffer.toString();
       ClassLoader loader = clazz.getClassLoader();
       try {
-        result = ( WidgetLifeCycleAdapter )ClassUtil.newInstance( loader, classToLoad );
+        result = ( WidgetLCA )ClassUtil.newInstance( loader, classToLoad );
       } catch( @SuppressWarnings( "unused" ) ClassInstantiationException ignore ) {
         // ignore and try to load next package name variant
       }

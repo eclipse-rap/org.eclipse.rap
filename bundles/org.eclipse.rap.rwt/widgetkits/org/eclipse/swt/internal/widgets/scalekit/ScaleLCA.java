@@ -22,7 +22,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderPropert
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ScaleLCA extends AbstractWidgetLCA {
+public final class ScaleLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Scale";
   private static final String[] ALLOWED_STYLES = { "HORIZONTAL", "VERTICAL", "BORDER" };

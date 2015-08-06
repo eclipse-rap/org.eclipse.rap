@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class LinkLCA extends AbstractWidgetLCA {
+public class LinkLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Link";
   private static final String[] ALLOWED_STYLES = { "BORDER" };

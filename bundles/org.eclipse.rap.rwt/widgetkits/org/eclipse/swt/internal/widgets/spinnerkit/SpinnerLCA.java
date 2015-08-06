@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class SpinnerLCA extends AbstractWidgetLCA {
+public final class SpinnerLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Spinner";
   private static final String[] ALLOWED_STYLES = { "READ_ONLY", "WRAP", "BORDER" };

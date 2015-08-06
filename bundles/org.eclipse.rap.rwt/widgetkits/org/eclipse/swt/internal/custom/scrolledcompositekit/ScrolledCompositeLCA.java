@@ -20,7 +20,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
+public final class ScrolledCompositeLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
   private static final String[] ALLOWED_STYLES = { "H_SCROLL", "V_SCROLL", "BORDER" };

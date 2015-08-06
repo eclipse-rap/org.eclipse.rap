@@ -32,10 +32,9 @@ import java.util.List;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
@@ -94,10 +93,8 @@ public class CTabFolderLCA_Test {
   public void testLCA() {
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
-    assertSame( CTabFolderLCA.class,
-                folder.getAdapter( WidgetLifeCycleAdapter.class ).getClass() );
-    assertSame( CTabItemLCA.class,
-                item.getAdapter( WidgetLifeCycleAdapter.class ).getClass() );
+    assertSame( CTabFolderLCA.class, folder.getAdapter( WidgetLCA.class ).getClass() );
+    assertSame( CTabItemLCA.class, item.getAdapter( WidgetLCA.class ).getClass() );
   }
 
   @Test
@@ -748,8 +745,8 @@ public class CTabFolderLCA_Test {
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
-      if( adapter == WidgetLifeCycleAdapter.class ) {
-        result = new AbstractWidgetLCA() {
+      if( adapter == WidgetLCA.class ) {
+        result = new WidgetLCA() {
           @Override
           public void preserveValues( Widget widget ) {
             Control control = ( Control )widget;

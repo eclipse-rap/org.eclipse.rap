@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridColumnGroup;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Font;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings( "restriction" )
-public class GridColumnGroupLCA extends AbstractWidgetLCA {
+public class GridColumnGroupLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridColumnGroup";
   private static final String[] ALLOWED_STYLES = new String[] { "TOGGLE" };

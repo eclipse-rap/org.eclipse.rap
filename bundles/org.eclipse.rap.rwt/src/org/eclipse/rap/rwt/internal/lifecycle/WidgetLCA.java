@@ -30,9 +30,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
-public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
+public abstract class WidgetLCA {
 
-  @Override
   public void render( Widget widget ) throws IOException {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
@@ -42,7 +41,6 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
     adapter.setInitialized( true );
   }
 
-  @Override
   public void readData( Widget widget ) {
     ClientMessage clientMessage = ProtocolUtil.getClientMessage();
     String id = getId( widget );
@@ -55,7 +53,6 @@ public abstract class AbstractWidgetLCA implements WidgetLifeCycleAdapter {
     }
   }
 
-  @Override
   public abstract void preserveValues( Widget widget );
 
   public abstract void renderInitialization( Widget widget ) throws IOException;

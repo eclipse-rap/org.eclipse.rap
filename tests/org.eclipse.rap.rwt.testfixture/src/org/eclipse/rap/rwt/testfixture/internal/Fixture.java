@@ -43,7 +43,7 @@ import org.eclipse.rap.rwt.internal.SingletonManager;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextHelper;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.IUIThreadHolder;
@@ -255,7 +255,7 @@ public final class Fixture {
   }
 
   public static void readDataAndProcessAction( Widget widget ) {
-    AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
+    WidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
     fakePhase( PhaseId.READ_DATA );
     widgetLCA.readData( widget );
     fakePhase( PhaseId.PROCESS_ACTION );

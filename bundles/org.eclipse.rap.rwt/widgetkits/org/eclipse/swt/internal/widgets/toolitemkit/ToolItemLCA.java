@@ -25,7 +25,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ToolItemLCA extends AbstractWidgetLCA {
+public final class ToolItemLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolItem";
   private static final String[] ALLOWED_STYLES = {

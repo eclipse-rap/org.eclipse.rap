@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridColumnGroup;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings( "restriction" )
-public class GridColumnLCA extends AbstractWidgetLCA {
+public class GridColumnLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridColumn";
 

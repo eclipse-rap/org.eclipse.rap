@@ -20,7 +20,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class TabFolderLCA extends AbstractWidgetLCA {
+public class TabFolderLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.TabFolder";
   private static final String[] ALLOWED_STYLES = { "TOP", "BOTTOM", "NO_RADIO_GROUP", "BORDER" };

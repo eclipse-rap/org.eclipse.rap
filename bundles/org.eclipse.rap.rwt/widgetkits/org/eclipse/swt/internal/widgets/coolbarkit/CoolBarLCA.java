@@ -19,7 +19,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class CoolBarLCA extends AbstractWidgetLCA {
+public class CoolBarLCA extends WidgetLCA {
 
   public static final String TYPE = "rwt.widgets.CoolBar";
   private static final String[] ALLOWED_STYLES = {

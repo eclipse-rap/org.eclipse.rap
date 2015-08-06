@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
@@ -71,7 +71,7 @@ public final class CoolBarLCA_Test {
   @Test
   public void testPreserveValues() {
     Fixture.markInitialized( bar );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
+    WidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
     RemoteAdapter adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );

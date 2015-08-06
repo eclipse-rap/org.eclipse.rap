@@ -19,7 +19,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderPropert
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class TableColumnLCA extends AbstractWidgetLCA {
+public final class TableColumnLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridColumn";
 

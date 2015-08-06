@@ -27,7 +27,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class MenuLCA extends AbstractWidgetLCA {
+public final class MenuLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Menu";
   private static final String[] ALLOWED_STYLES = {

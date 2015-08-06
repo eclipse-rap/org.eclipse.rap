@@ -27,7 +27,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -36,7 +36,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
-public final class TextLCA extends AbstractWidgetLCA {
+public final class TextLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Text";
   private static final String[] ALLOWED_STYLES = {

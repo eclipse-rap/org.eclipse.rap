@@ -23,7 +23,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
@@ -35,7 +35,7 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class CLabelLCA extends AbstractWidgetLCA {
+public final class CLabelLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Label";
   private static final String[] ALLOWED_STYLES = {

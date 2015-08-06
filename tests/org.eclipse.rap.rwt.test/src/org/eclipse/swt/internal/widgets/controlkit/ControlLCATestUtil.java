@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
@@ -35,7 +35,7 @@ public class ControlLCATestUtil {
     Fixture.fakeNewRequest();
     Fixture.clearPreserved();
     Fixture.markInitialized( control );
-    AbstractWidgetLCA lca = getLCA( control );
+    WidgetLCA lca = getLCA( control );
     Display display = control.getDisplay();
     control.getShell().open();
     control.setSize( 16, 16 );
@@ -54,7 +54,7 @@ public class ControlLCATestUtil {
     Fixture.fakeNewRequest();
     Fixture.clearPreserved();
     Fixture.markInitialized( control );
-    AbstractWidgetLCA lca = getLCA( control );
+    WidgetLCA lca = getLCA( control );
 
     lca.preserveValues( control );
     lca.renderChanges( control );

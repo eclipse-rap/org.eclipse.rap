@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,13 @@ package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class LabelLCA extends AbstractWidgetLCA {
+public class LabelLCA extends WidgetLCA {
 
   private static final AbstractLabelLCADelegate SEPARATOR_LCA = new SeparatorLabelLCA();
   private static final AbstractLabelLCADelegate LABEL_LCA = new StandardLabelLCA();

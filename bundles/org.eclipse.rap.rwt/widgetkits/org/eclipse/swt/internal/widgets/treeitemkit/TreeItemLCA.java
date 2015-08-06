@@ -18,7 +18,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class TreeItemLCA extends AbstractWidgetLCA {
+public final class TreeItemLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.GridItem";
 

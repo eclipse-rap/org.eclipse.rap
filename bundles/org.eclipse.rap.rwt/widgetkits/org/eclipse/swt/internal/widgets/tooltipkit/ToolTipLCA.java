@@ -23,7 +23,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Point;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ToolTipLCA extends AbstractWidgetLCA {
+public final class ToolTipLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolTip";
   private static final String[] ALLOWED_STYLES = {

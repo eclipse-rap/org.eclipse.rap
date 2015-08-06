@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -39,7 +39,7 @@ import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class CTabFolderLCA extends AbstractWidgetLCA {
+public final class CTabFolderLCA extends WidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CTabFolder";
   private static final String[] ALLOWED_STYLES = {
