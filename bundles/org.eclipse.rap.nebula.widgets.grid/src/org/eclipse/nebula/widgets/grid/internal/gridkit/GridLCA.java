@@ -30,8 +30,8 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.rap.json.JsonArray;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.template.TemplateLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -41,11 +41,10 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings("restriction")
-public class GridLCA extends WidgetLCA {
+public class GridLCA extends WidgetLCA<Grid> {
 
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = new String[] {
@@ -91,8 +90,7 @@ public class GridLCA extends WidgetLCA {
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Grid grid = ( Grid )widget;
+  public void renderInitialization( Grid grid ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( grid, TYPE );
     remoteObject.setHandler( new GridOperationHandler( grid ) );
     remoteObject.set( "parent", getId( grid.getParent() ) );
@@ -111,15 +109,14 @@ public class GridLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( Grid )widget );
+  public void readData( Grid grid ) {
+    super.readData( grid );
+    ScrollBarLCAUtil.processSelectionEvent( grid );
   }
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Grid grid = ( Grid )widget;
-    ControlLCAUtil.preserveValues( ( Control )widget );
+  public void preserveValues( Grid grid ) {
+    ControlLCAUtil.preserveValues( grid );
     WidgetLCAUtil.preserveCustomVariant( grid );
     preserveProperty( grid, PROP_ITEM_COUNT, grid.getRootItemCount() );
     preserveProperty( grid, PROP_ITEM_HEIGHT, grid.getItemHeight() );
@@ -147,8 +144,7 @@ public class GridLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Grid grid = ( Grid )widget;
+  public void renderChanges( Grid grid ) throws IOException {
     ControlLCAUtil.renderChanges( grid );
     WidgetLCAUtil.renderCustomVariant( grid );
     renderProperty( grid, PROP_ITEM_COUNT, grid.getRootItemCount(), ZERO );

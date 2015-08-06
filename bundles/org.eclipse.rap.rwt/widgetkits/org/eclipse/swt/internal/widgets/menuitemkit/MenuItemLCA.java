@@ -32,10 +32,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class MenuItemLCA extends WidgetLCA {
+public final class MenuItemLCA extends WidgetLCA<MenuItem> {
 
   private static final String TYPE = "rwt.widgets.MenuItem";
   private static final String[] ALLOWED_STYLES = {
@@ -50,8 +49,7 @@ public final class MenuItemLCA extends WidgetLCA {
   private static final String PROP_SELECTION = "selection";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    MenuItem item = ( MenuItem )widget;
+  public void preserveValues( MenuItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
@@ -63,8 +61,7 @@ public final class MenuItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    MenuItem item = ( MenuItem )widget;
+  public void renderInitialization( MenuItem item ) throws IOException {
     RemoteObject remoteObject = RemoteObjectFactory.createRemoteObject( item, TYPE );
     remoteObject.setHandler( new MenuItemOperationHandler( item ) );
     Menu parent = item.getParent();
@@ -74,8 +71,7 @@ public final class MenuItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    MenuItem item = ( MenuItem )widget;
+  public void renderChanges( MenuItem item ) throws IOException {
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
     renderText( item );

@@ -34,9 +34,8 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
 
-public final class TextLCA extends WidgetLCA {
+public final class TextLCA extends WidgetLCA<Text> {
 
   private static final String TYPE = "rwt.widgets.Text";
   private static final String[] ALLOWED_STYLES = {
@@ -73,8 +72,7 @@ public final class TextLCA extends WidgetLCA {
   private static final Point ZERO_SELECTION = new Point( 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Text text = ( Text )widget;
+  public void preserveValues( Text text ) {
     ControlLCAUtil.preserveValues( text );
     WidgetLCAUtil.preserveCustomVariant( text );
     preserveProperty( text, PROP_TEXT, text.getText() );
@@ -88,8 +86,7 @@ public final class TextLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Text text = ( Text )widget;
+  public void renderInitialization( Text text ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( text, TYPE );
     remoteObject.setHandler( new TextOperationHandler( text ) );
     remoteObject.set( "parent", getId( text.getParent() ) );
@@ -97,8 +94,7 @@ public final class TextLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Text text = ( Text )widget;
+  public void renderChanges( Text text ) throws IOException {
     ControlLCAUtil.renderChanges( text );
     WidgetLCAUtil.renderCustomVariant( text );
     renderProperty( text, PROP_TEXT, text.getText(), "" );

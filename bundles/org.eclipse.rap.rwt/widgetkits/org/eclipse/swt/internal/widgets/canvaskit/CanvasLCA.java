@@ -28,11 +28,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class CanvasLCA extends WidgetLCA {
+public final class CanvasLCA extends WidgetLCA<Canvas> {
 
   private static final String TYPE = "rwt.widgets.Canvas";
   private static final String TYPE_GC = "rwt.widgets.GC";
@@ -40,18 +38,16 @@ public final class CanvasLCA extends WidgetLCA {
   private static final String PROP_CLIENT_AREA = "clientArea";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ControlLCAUtil.preserveValues( ( Control )widget );
-    WidgetLCAUtil.preserveCustomVariant( widget );
-    WidgetLCAUtil.preserveBackgroundGradient( widget );
-    WidgetLCAUtil.preserveRoundedBorder( widget );
-    Canvas canvas = ( Canvas )widget;
+  public void preserveValues( Canvas canvas ) {
+    ControlLCAUtil.preserveValues( canvas );
+    WidgetLCAUtil.preserveCustomVariant( canvas );
+    WidgetLCAUtil.preserveBackgroundGradient( canvas );
+    WidgetLCAUtil.preserveRoundedBorder( canvas );
     WidgetLCAUtil.preserveProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea() );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Canvas canvas = ( Canvas )widget;
+  public void renderInitialization( Canvas canvas ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( canvas, TYPE );
     remoteObject.setHandler( new CanvasOperationHandler( canvas ) );
     remoteObject.set( "parent", getId( canvas.getParent() ) );
@@ -61,14 +57,14 @@ public final class CanvasLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ControlLCAUtil.renderChanges( ( Control )widget );
-    WidgetLCAUtil.renderBackgroundGradient( widget );
-    WidgetLCAUtil.renderRoundedBorder( widget );
-    WidgetLCAUtil.renderCustomVariant( widget );
-    renderClientArea( ( Canvas )widget );
-    writeGCOperations( ( Canvas )widget );
-    renderClientListeners( widget );
+  public void renderChanges( Canvas canvas ) throws IOException {
+    ControlLCAUtil.renderChanges( canvas );
+    WidgetLCAUtil.renderBackgroundGradient( canvas );
+    WidgetLCAUtil.renderRoundedBorder( canvas );
+    WidgetLCAUtil.renderCustomVariant( canvas );
+    renderClientArea( canvas );
+    writeGCOperations( canvas );
+    renderClientListeners( canvas );
   }
 
   private static void writeGCOperations( Canvas canvas ) {

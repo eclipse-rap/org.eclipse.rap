@@ -11,24 +11,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class TabFolderLCA extends WidgetLCA {
+public class TabFolderLCA extends WidgetLCA<TabFolder> {
 
   private static final String TYPE = "rwt.widgets.TabFolder";
   private static final String[] ALLOWED_STYLES = { "TOP", "BOTTOM", "NO_RADIO_GROUP", "BORDER" };
@@ -37,16 +36,14 @@ public class TabFolderLCA extends WidgetLCA {
   private static final String PROP_SELECTION_LISTENER = "Selection";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    TabFolder folder = ( TabFolder )widget;
+  public void preserveValues( TabFolder folder ) {
     ControlLCAUtil.preserveValues( folder );
     WidgetLCAUtil.preserveCustomVariant( folder );
     preserveProperty( folder, PROP_SELECTION, getSelection( folder ) );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    TabFolder folder = ( TabFolder )widget;
+  public void renderInitialization( TabFolder folder ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( folder, TYPE );
     remoteObject.setHandler( new TabFolderOperationHandler( folder ) );
     remoteObject.set( "parent", getId( folder.getParent() ) );
@@ -57,8 +54,7 @@ public class TabFolderLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    TabFolder folder = ( TabFolder )widget;
+  public void renderChanges( TabFolder folder ) throws IOException {
     ControlLCAUtil.renderChanges( folder );
     WidgetLCAUtil.renderCustomVariant( folder );
     renderProperty( folder, PROP_SELECTION, getSelection( folder ), null );

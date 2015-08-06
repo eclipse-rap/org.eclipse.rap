@@ -42,10 +42,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class DropTargetLCA extends WidgetLCA {
+public final class DropTargetLCA extends WidgetLCA<DropTarget> {
 
   private static final String TYPE = "rwt.widgets.DropTarget";
   private static final String PROP_TRANSFER = "transfer";
@@ -59,8 +58,7 @@ public final class DropTargetLCA extends WidgetLCA {
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
   @Override
-  public void preserveValues( Widget widget ) {
-    DropTarget dropTarget = ( DropTarget )widget;
+  public void preserveValues( DropTarget dropTarget ) {
     preserveProperty( dropTarget, PROP_TRANSFER, dropTarget.getTransfer() );
     preserveProperty( dropTarget, PROP_FILE_DROP_ENABLED, isFileDropEnabled( dropTarget ) );
     preserveListener( dropTarget,
@@ -81,12 +79,11 @@ public final class DropTargetLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
+  public void readData( DropTarget dropTarget ) {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    DropTarget dropTarget = ( DropTarget )widget;
+  public void renderInitialization( DropTarget dropTarget ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( dropTarget, TYPE );
     remoteObject.setHandler( new DropTargetOperationHandler( dropTarget ) );
     remoteObject.set( "control", getId( dropTarget.getControl() ) );
@@ -94,8 +91,7 @@ public final class DropTargetLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    DropTarget dropTarget = ( DropTarget )widget;
+  public void renderChanges( DropTarget dropTarget ) throws IOException {
     renderTransfer( dropTarget );
     renderDetail( dropTarget );
     renderFeedback( dropTarget );

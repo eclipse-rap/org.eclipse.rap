@@ -25,10 +25,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ExpandItemLCA extends WidgetLCA {
+public final class ExpandItemLCA extends WidgetLCA<ExpandItem> {
 
   private static final String TYPE = "rwt.widgets.ExpandItem";
 
@@ -38,8 +37,7 @@ public final class ExpandItemLCA extends WidgetLCA {
   public static final int DEFAULT_HEADER_HEIGHT = 24;
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ExpandItem item = ( ExpandItem )widget;
+  public void preserveValues( ExpandItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveBounds( item, getBounds( item ) );
     ItemLCAUtil.preserve( item );
@@ -48,17 +46,15 @@ public final class ExpandItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ExpandItem item = ( ExpandItem )widget;
+  public void renderInitialization( ExpandItem item ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
     remoteObject.setHandler( new ExpandItemOperationHandler( item ) );
     remoteObject.set( "parent", getId( item.getParent() ) );
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ExpandItem item = ( ExpandItem )widget;
-    WidgetLCAUtil.renderCustomVariant( widget );
+  public void renderChanges( ExpandItem item ) throws IOException {
+    WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderBounds( item, getBounds( item ) );
     ItemLCAUtil.renderChanges( item );
     renderProperty( item, PROP_EXPANDED, item.getExpanded(), false );

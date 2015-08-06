@@ -31,10 +31,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class LinkLCA extends WidgetLCA {
+public class LinkLCA extends WidgetLCA<Link> {
 
   private static final String TYPE = "rwt.widgets.Link";
   private static final String[] ALLOWED_STYLES = { "BORDER" };
@@ -42,8 +41,7 @@ public class LinkLCA extends WidgetLCA {
   static final String PROP_TEXT = "text";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Link link = ( Link )widget;
+  public void preserveValues( Link link ) {
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
@@ -51,8 +49,7 @@ public class LinkLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Link link = ( Link )widget;
+  public void renderInitialization( Link link ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( link, TYPE );
     remoteObject.setHandler( new LinkOperationHandler( link ) );
     remoteObject.set( "parent", getId( link.getParent() ) );
@@ -60,8 +57,7 @@ public class LinkLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Link link = ( Link )widget;
+  public void renderChanges( Link link ) throws IOException {
     ControlLCAUtil.renderChanges( link );
     WidgetLCAUtil.renderCustomVariant( link );
     renderText( link );

@@ -38,10 +38,9 @@ import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class MenuLCA extends WidgetLCA {
+public final class MenuLCA extends WidgetLCA<Menu> {
 
   private static final String TYPE = "rwt.widgets.Menu";
   private static final String[] ALLOWED_STYLES = {
@@ -57,8 +56,7 @@ public final class MenuLCA extends WidgetLCA {
   private static final Rectangle DEFAULT_BOUNDS = new Rectangle( 0, 0, 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Menu menu = ( Menu )widget;
+  public void preserveValues( Menu menu ) {
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
     preserveListener( menu, SWT.Hide );
     WidgetLCAUtil.preserveCustomVariant( menu );
@@ -66,8 +64,7 @@ public final class MenuLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Menu menu = ( Menu )widget;
+  public void renderInitialization( Menu menu ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( menu , TYPE );
     remoteObject.setHandler( new MenuOperationHandler( menu ) );
     remoteObject.set( "parent", getId( menu.getParent() ) );
@@ -79,8 +76,7 @@ public final class MenuLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Menu menu = ( Menu )widget;
+  public void renderChanges( Menu menu ) throws IOException {
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
     if( !isMenuBar( menu ) ) {
       renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER );
@@ -93,9 +89,9 @@ public final class MenuLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
+  public void renderDispose( Menu menu ) throws IOException {
     // TODO [tb] : The menu can currently not be destroyed automatically on the client
-    getRemoteObject( widget ).destroy();
+    getRemoteObject( menu ).destroy();
   }
 
   private static void renderBounds( Menu menu ) {

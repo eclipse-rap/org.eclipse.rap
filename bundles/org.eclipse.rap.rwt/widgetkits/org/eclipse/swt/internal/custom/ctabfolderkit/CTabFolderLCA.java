@@ -36,10 +36,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class CTabFolderLCA extends WidgetLCA {
+public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
 
   private static final String TYPE = "rwt.widgets.CTabFolder";
   private static final String[] ALLOWED_STYLES = {
@@ -79,8 +78,7 @@ public final class CTabFolderLCA extends WidgetLCA {
   private static final Rectangle ZERO_BOUNDS = new Rectangle( 0, 0, 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    CTabFolder folder = ( CTabFolder )widget;
+  public void preserveValues( CTabFolder folder ) {
     ControlLCAUtil.preserveValues( folder );
     WidgetLCAUtil.preserveCustomVariant( folder );
     preserveProperty( folder, PROP_TAB_POSITION, getTabPosition( folder ) );
@@ -105,8 +103,7 @@ public final class CTabFolderLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    CTabFolder folder = ( CTabFolder )widget;
+  public void renderInitialization( CTabFolder folder ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( folder, TYPE );
     remoteObject.setHandler( new CTabFolderOperationHandler( folder ) );
     remoteObject.set( "parent", WidgetUtil.getId( folder.getParent() ) );
@@ -126,8 +123,7 @@ public final class CTabFolderLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    CTabFolder folder = ( CTabFolder )widget;
+  public void renderChanges( CTabFolder folder ) throws IOException {
     ControlLCAUtil.renderChanges( folder );
     WidgetLCAUtil.renderCustomVariant( folder );
     renderProperty( folder, PROP_TAB_POSITION, getTabPosition( folder ), DEFAULT_TAB_POSITION );

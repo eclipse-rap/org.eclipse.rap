@@ -28,10 +28,9 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ScrolledCompositeLCA extends WidgetLCA {
+public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
 
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
   private static final String[] ALLOWED_STYLES = { "H_SCROLL", "V_SCROLL", "BORDER" };
@@ -45,8 +44,7 @@ public final class ScrolledCompositeLCA extends WidgetLCA {
   private static final Point DEFAULT_ORIGIN = new Point( 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ScrolledComposite composite = ( ScrolledComposite )widget;
+  public void preserveValues( ScrolledComposite composite ) {
     ControlLCAUtil.preserveValues( composite );
     WidgetLCAUtil.preserveCustomVariant( composite );
     preserveProperty( composite, PROP_ORIGIN, getOrigin( composite ) );
@@ -56,14 +54,13 @@ public final class ScrolledCompositeLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( ScrolledComposite )widget );
+  public void readData( ScrolledComposite composite ) {
+    super.readData( composite );
+    ScrollBarLCAUtil.processSelectionEvent( composite );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ScrolledComposite composite = ( ScrolledComposite )widget;
+  public void renderInitialization( ScrolledComposite composite ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( composite, TYPE );
     remoteObject.setHandler( new ScrolledCompositeOperationHandler( composite ) );
     remoteObject.set( "parent", getId( composite.getParent() ) );
@@ -72,8 +69,7 @@ public final class ScrolledCompositeLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ScrolledComposite composite = ( ScrolledComposite )widget;
+  public void renderChanges( ScrolledComposite composite ) throws IOException {
     ControlLCAUtil.renderChanges( composite );
     WidgetLCAUtil.renderCustomVariant( composite );
     renderProperty( composite, PROP_CONTENT, composite.getContent(), null );

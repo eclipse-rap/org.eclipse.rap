@@ -25,10 +25,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class ControlDecoratorLCA extends WidgetLCA {
+public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
 
   private static final String TYPE = "rwt.widgets.ControlDecorator";
   private static final String[] ALLOWED_STYLES = {
@@ -41,8 +40,7 @@ public class ControlDecoratorLCA extends WidgetLCA {
   private static final String PROP_SHOW_HOVER = "showHover";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ControlDecorator decorator = ( ControlDecorator )widget;
+  public void preserveValues( ControlDecorator decorator ) {
     WidgetLCAUtil.preserveBounds( decorator, decorator.getBounds() );
     preserveProperty( decorator, PROP_TEXT, decorator.getText() );
     preserveProperty( decorator, PROP_IMAGE, decorator.getImage() );
@@ -53,8 +51,7 @@ public class ControlDecoratorLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ControlDecorator decorator = ( ControlDecorator )widget;
+  public void renderInitialization( ControlDecorator decorator ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( decorator, TYPE );
     remoteObject.setHandler( new ControlDecoratorOperationHandler( decorator ) );
     remoteObject.set( "parent", getId( decorator.getParent() ) );
@@ -62,8 +59,7 @@ public class ControlDecoratorLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ControlDecorator decorator = ( ControlDecorator )widget;
+  public void renderChanges( ControlDecorator decorator ) throws IOException {
     WidgetLCAUtil.renderBounds( decorator, decorator.getBounds() );
     renderProperty( decorator, PROP_TEXT, decorator.getText(), "" );
     renderProperty( decorator, PROP_IMAGE, decorator.getImage(), null );
@@ -74,8 +70,8 @@ public class ControlDecoratorLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    getRemoteObject( widget ).destroy();
+  public void renderDispose( ControlDecorator decorator ) throws IOException {
+    getRemoteObject( decorator ).destroy();
   }
 
 }

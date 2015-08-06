@@ -29,10 +29,9 @@ import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class TableColumnLCA extends WidgetLCA {
+public final class TableColumnLCA extends WidgetLCA<TableColumn> {
 
   private static final String TYPE = "rwt.widgets.GridColumn";
 
@@ -48,8 +47,7 @@ public final class TableColumnLCA extends WidgetLCA {
   private static final String DEFAULT_ALIGNMENT = "left";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    TableColumn column = ( TableColumn )widget;
+  public void preserveValues( TableColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( column );
     WidgetLCAUtil.preserveFont( column, getFont( column ) );
@@ -65,16 +63,14 @@ public final class TableColumnLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    TableColumn column = ( TableColumn )widget;
+  public void renderInitialization( TableColumn column ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( column, TYPE );
     remoteObject.setHandler( new TableColumnOperationHandler( column ) );
     remoteObject.set( "parent", getId( column.getParent() ) );
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    TableColumn column = ( TableColumn )widget;
+  public void renderChanges( TableColumn column ) throws IOException {
     WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( column );
     WidgetLCAUtil.renderFont( column, getFont( column ) );

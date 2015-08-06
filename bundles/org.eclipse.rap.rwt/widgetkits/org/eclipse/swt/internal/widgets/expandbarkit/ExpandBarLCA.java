@@ -30,10 +30,9 @@ import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ExpandBarLCA extends WidgetLCA {
+public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
 
   private static final String TYPE = "rwt.widgets.ExpandBar";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
@@ -44,8 +43,7 @@ public final class ExpandBarLCA extends WidgetLCA {
   private static final String PROP_COLLAPSE_LISTENER = "Collapse";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ExpandBar expandBar = ( ExpandBar )widget;
+  public void preserveValues( ExpandBar expandBar ) {
     ControlLCAUtil.preserveValues( expandBar );
     WidgetLCAUtil.preserveCustomVariant( expandBar );
     preserveProperty( expandBar, PROP_BOTTOM_SPACING_BOUNDS, getBottomSpacingBounds( expandBar ) );
@@ -54,14 +52,13 @@ public final class ExpandBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( ExpandBar )widget );
+  public void readData( ExpandBar expandBar ) {
+    super.readData( expandBar );
+    ScrollBarLCAUtil.processSelectionEvent( expandBar );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ExpandBar expandBar = ( ExpandBar )widget;
+  public void renderInitialization( ExpandBar expandBar ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( expandBar, TYPE );
     remoteObject.setHandler( new ExpandBarOperationHandler( expandBar ) );
     remoteObject.set( "parent", getId( expandBar.getParent() ) );
@@ -74,8 +71,7 @@ public final class ExpandBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ExpandBar expandBar = ( ExpandBar )widget;
+  public void renderChanges( ExpandBar expandBar ) throws IOException {
     ControlLCAUtil.renderChanges( expandBar );
     WidgetLCAUtil.renderCustomVariant( expandBar );
     renderProperty( expandBar,

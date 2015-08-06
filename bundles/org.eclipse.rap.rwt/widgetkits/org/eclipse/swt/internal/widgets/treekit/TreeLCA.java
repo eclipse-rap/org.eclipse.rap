@@ -46,10 +46,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class TreeLCA extends WidgetLCA {
+public final class TreeLCA extends WidgetLCA<Tree> {
 
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = {
@@ -92,9 +91,8 @@ public final class TreeLCA extends WidgetLCA {
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Tree tree = ( Tree )widget;
-    ControlLCAUtil.preserveValues( ( Control )widget );
+  public void preserveValues( Tree tree ) {
+    ControlLCAUtil.preserveValues( tree );
     WidgetLCAUtil.preserveCustomVariant( tree );
     preserveProperty( tree, PROP_ITEM_COUNT, tree.getItemCount() );
     preserveProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight() );
@@ -120,14 +118,13 @@ public final class TreeLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( Tree )widget );
+  public void readData( Tree tree ) {
+    super.readData( tree );
+    ScrollBarLCAUtil.processSelectionEvent( tree );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Tree tree = ( Tree )widget;
+  public void renderInitialization( Tree tree ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( tree, TYPE );
     remoteObject.setHandler( new TreeOperationHandler( tree ) );
     remoteObject.set( "parent", getId( tree.getParent() ) );
@@ -162,8 +159,7 @@ public final class TreeLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    final Tree tree = ( Tree )widget;
+  public void renderChanges( final Tree tree ) throws IOException {
     ControlLCAUtil.renderChanges( tree );
     WidgetLCAUtil.renderCustomVariant( tree );
     renderProperty( tree, PROP_ITEM_COUNT, tree.getItemCount(), ZERO );

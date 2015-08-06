@@ -35,10 +35,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ButtonLCA extends WidgetLCA {
+public final class ButtonLCA extends WidgetLCA<Button> {
 
   private static final String TYPE = "rwt.widgets.Button";
   private static final String[] ALLOWED_STYLES = {
@@ -57,8 +56,7 @@ public final class ButtonLCA extends WidgetLCA {
   private static final String DEFAULT_ALIGNMENT = "center";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Button button = ( Button )widget;
+  public void preserveValues( Button button ) {
     ControlLCAUtil.preserveValues( button );
     WidgetLCAUtil.preserveCustomVariant( button );
     preserveProperty( button, PROP_TEXT, button.getText() );
@@ -71,8 +69,7 @@ public final class ButtonLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Button button = ( Button )widget;
+  public void renderInitialization( Button button ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( button, TYPE );
     remoteObject.setHandler( new ButtonOperationHandler( button ) );
     remoteObject.set( "parent", getId( button.getParent() ) );
@@ -81,8 +78,7 @@ public final class ButtonLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Button button = ( Button )widget;
+  public void renderChanges( Button button ) throws IOException {
     ControlLCAUtil.renderChanges( button );
     WidgetLCAUtil.renderCustomVariant( button );
     renderText( button );
@@ -93,7 +89,7 @@ public final class ButtonLCA extends WidgetLCA {
     renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
     renderProperty( button, PROP_BADGE, getBadge( button ), null );
     renderListenSelection( button );
-    renderClientListeners( widget );
+    renderClientListeners( button );
   }
 
   private static String getAlignment( Button button ) {

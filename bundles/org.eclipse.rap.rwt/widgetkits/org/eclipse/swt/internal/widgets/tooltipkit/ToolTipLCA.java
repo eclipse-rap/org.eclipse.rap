@@ -29,10 +29,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 import org.eclipse.swt.widgets.ToolTip;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ToolTipLCA extends WidgetLCA {
+public final class ToolTipLCA extends WidgetLCA<ToolTip> {
 
   private static final String TYPE = "rwt.widgets.ToolTip";
   private static final String[] ALLOWED_STYLES = {
@@ -49,11 +48,10 @@ public final class ToolTipLCA extends WidgetLCA {
   private static final Point DEFAULT_LOCATION = new Point( 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ToolTip toolTip = ( ToolTip )widget;
-    WidgetLCAUtil.preserveCustomVariant( widget );
-    WidgetLCAUtil.preserveRoundedBorder( widget );
-    WidgetLCAUtil.preserveBackgroundGradient( widget );
+  public void preserveValues( ToolTip toolTip ) {
+    WidgetLCAUtil.preserveCustomVariant( toolTip );
+    WidgetLCAUtil.preserveRoundedBorder( toolTip );
+    WidgetLCAUtil.preserveBackgroundGradient( toolTip );
     preserveProperty( toolTip, PROP_AUTO_HIDE, toolTip.getAutoHide() );
     preserveProperty( toolTip, PROP_TEXT, toolTip.getText() );
     preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
@@ -63,8 +61,7 @@ public final class ToolTipLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ToolTip toolTip = ( ToolTip )widget;
+  public void renderInitialization( ToolTip toolTip ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( toolTip, TYPE );
     remoteObject.setHandler( new ToolTipOperationHandler( toolTip ) );
     remoteObject.set( "parent", getId( toolTip.getParent() ) );
@@ -73,11 +70,10 @@ public final class ToolTipLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ToolTip toolTip = ( ToolTip )widget;
-    WidgetLCAUtil.renderCustomVariant( widget );
-    WidgetLCAUtil.renderRoundedBorder( widget );
-    WidgetLCAUtil.renderBackgroundGradient( widget );
+  public void renderChanges( ToolTip toolTip ) throws IOException {
+    WidgetLCAUtil.renderCustomVariant( toolTip );
+    WidgetLCAUtil.renderRoundedBorder( toolTip );
+    WidgetLCAUtil.renderBackgroundGradient( toolTip );
     renderProperty( toolTip, PROP_AUTO_HIDE, toolTip.getAutoHide(), false );
     renderProperty( toolTip, PROP_TEXT, toolTip.getText(), "" );
     renderProperty( toolTip, PROP_MESSAGE, toolTip.getMessage(), "" );

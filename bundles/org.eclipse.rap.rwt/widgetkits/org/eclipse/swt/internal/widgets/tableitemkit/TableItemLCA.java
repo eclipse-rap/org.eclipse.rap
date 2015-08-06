@@ -33,10 +33,9 @@ import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class TableItemLCA extends WidgetLCA {
+public final class TableItemLCA extends WidgetLCA<TableItem> {
 
   private static interface IRenderRunnable {
     void run() throws IOException;
@@ -55,8 +54,7 @@ public final class TableItemLCA extends WidgetLCA {
   static final String PROP_CACHED = "cached";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    TableItem item = ( TableItem )widget;
+  public void preserveValues( TableItem item ) {
     preserveProperty( item, PROP_INDEX, getIndex( item ) );
     preserveProperty( item, PROP_CACHED, isCached( item ) );
     if( isCached( item ) ) {
@@ -75,8 +73,7 @@ public final class TableItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    TableItem item = ( TableItem )widget;
+  public void renderInitialization( TableItem item ) throws IOException {
     Table parent = item.getParent();
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
     remoteObject.setHandler( new TableItemOperationHandler( item ) );
@@ -84,8 +81,7 @@ public final class TableItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    final TableItem item = ( TableItem )widget;
+  public void renderChanges( final TableItem item ) throws IOException {
     renderProperty( item, PROP_INDEX, getIndex( item ), -1 );
     if( wasCleared( item ) ) {
       renderClear( item );

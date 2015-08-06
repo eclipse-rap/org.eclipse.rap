@@ -32,10 +32,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class CTabItemLCA extends WidgetLCA {
+public final class CTabItemLCA extends WidgetLCA<CTabItem> {
 
   private static final String TYPE = "rwt.widgets.CTabItem";
   private static final String[] ALLOWED_STYLES = { "CLOSE" };
@@ -47,8 +46,7 @@ public final class CTabItemLCA extends WidgetLCA {
   private static final String PROP_SHOW_CLOSE = "showClose";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    CTabItem item = ( CTabItem )widget;
+  public void preserveValues( CTabItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveBounds( item, item.getBounds() );
@@ -60,12 +58,11 @@ public final class CTabItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
+  public void readData( CTabItem item ) {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    CTabItem item = ( CTabItem )widget;
+  public void renderInitialization( CTabItem item ) throws IOException {
     CTabFolder parent = item.getParent();
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
     remoteObject.set( "parent", getId( parent ) );
@@ -74,8 +71,7 @@ public final class CTabItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    CTabItem item = ( CTabItem )widget;
+  public void renderChanges( CTabItem item ) throws IOException {
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
     WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );

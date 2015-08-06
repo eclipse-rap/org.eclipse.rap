@@ -30,11 +30,10 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings( "restriction" )
-public class GridColumnLCA extends WidgetLCA {
+public class GridColumnLCA extends WidgetLCA<GridColumn> {
 
   private static final String TYPE = "rwt.widgets.GridColumn";
 
@@ -58,8 +57,7 @@ public class GridColumnLCA extends WidgetLCA {
   private static final String DEFAULT_ALIGNMENT = "left";
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    GridColumn column = ( GridColumn )widget;
+  public void renderInitialization( GridColumn column ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( column, TYPE );
     remoteObject.setHandler( new GridColumnOperationHandler( column ) );
     remoteObject.set( "parent", WidgetUtil.getId( column.getParent() ) );
@@ -70,8 +68,7 @@ public class GridColumnLCA extends WidgetLCA {
   }
 
   @Override
-  public void preserveValues( Widget widget ) {
-    GridColumn column = ( GridColumn )widget;
+  public void preserveValues( GridColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getHeaderTooltip() );
     WidgetLCAUtil.preserveCustomVariant( column );
     ItemLCAUtil.preserve( column );
@@ -94,8 +91,7 @@ public class GridColumnLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    GridColumn column = ( GridColumn )widget;
+  public void renderChanges( GridColumn column ) throws IOException {
     WidgetLCAUtil.renderToolTip( column, column.getHeaderTooltip() );
     WidgetLCAUtil.renderCustomVariant( column );
     ItemLCAUtil.renderChanges( column );

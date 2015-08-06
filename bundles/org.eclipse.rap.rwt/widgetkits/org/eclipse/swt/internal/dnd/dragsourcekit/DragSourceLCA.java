@@ -30,10 +30,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class DragSourceLCA extends WidgetLCA {
+public final class DragSourceLCA extends WidgetLCA<DragSource> {
 
   private static final String TYPE = "rwt.widgets.DragSource";
   private static final String PROP_TRANSFER = "transfer";
@@ -43,8 +42,7 @@ public final class DragSourceLCA extends WidgetLCA {
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
   @Override
-  public void preserveValues( Widget widget ) {
-    DragSource dragSource = ( DragSource )widget;
+  public void preserveValues( DragSource dragSource ) {
     preserveProperty( dragSource, PROP_TRANSFER, dragSource.getTransfer() );
     preserveListener( dragSource,
                       PROP_DRAG_START_LISTENER,
@@ -53,12 +51,11 @@ public final class DragSourceLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
+  public void readData( DragSource dragSource ) {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    DragSource dragSource = ( DragSource )widget;
+  public void renderInitialization( DragSource dragSource ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( dragSource, TYPE );
     remoteObject.setHandler( new DragSourceOperationHandler( dragSource ) );
     remoteObject.set( "control", getId( dragSource.getControl() ) );
@@ -66,8 +63,7 @@ public final class DragSourceLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    DragSource dragSource = ( DragSource )widget;
+  public void renderChanges( DragSource dragSource ) throws IOException {
     renderTransfer( dragSource );
     renderCancel( dragSource );
     renderListener( dragSource,

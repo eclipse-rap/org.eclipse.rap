@@ -32,10 +32,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class CLabelLCA extends WidgetLCA {
+public final class CLabelLCA extends WidgetLCA<CLabel> {
 
   private static final String TYPE = "rwt.widgets.Label";
   private static final String[] ALLOWED_STYLES = {
@@ -55,8 +54,7 @@ public final class CLabelLCA extends WidgetLCA {
   private static final String DEFAULT_ALIGNMENT = "left";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    CLabel label = ( CLabel )widget;
+  public void preserveValues( CLabel label ) {
     ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
     preserveProperty( label, PROP_TEXT, label.getText() );
@@ -70,28 +68,26 @@ public final class CLabelLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    CLabel clabel = ( CLabel )widget;
-    RemoteObject remoteObject = createRemoteObject( clabel, TYPE );
-    remoteObject.setHandler( new CLabelOperationHandler( clabel ) );
-    remoteObject.set( "parent", getId( clabel.getParent() ) );
-    remoteObject.set( "style", createJsonArray( getStyles( clabel, ALLOWED_STYLES ) ) );
+  public void renderInitialization( CLabel label ) throws IOException {
+    RemoteObject remoteObject = createRemoteObject( label, TYPE );
+    remoteObject.setHandler( new CLabelOperationHandler( label ) );
+    remoteObject.set( "parent", getId( label.getParent() ) );
+    remoteObject.set( "style", createJsonArray( getStyles( label, ALLOWED_STYLES ) ) );
     // NOTE : This is consistent with Tree and Table, but might change - See Bug 373764
     remoteObject.set( "appearance", "clabel" );
-    renderProperty( clabel, PROP_MARKUP_ENABLED, isMarkupEnabledFor( clabel ), false );
+    renderProperty( label, PROP_MARKUP_ENABLED, isMarkupEnabledFor( label ), false );
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    CLabel clabel = ( CLabel )widget;
-    ControlLCAUtil.renderChanges( clabel );
-    WidgetLCAUtil.renderCustomVariant( clabel );
-    renderText( clabel );
-    renderMnemonicIndex( clabel );
-    renderProperty( clabel, PROP_IMAGE, clabel.getImage(), null );
-    renderProperty( clabel, PROP_ALIGNMENT, getAlignment( clabel ), DEFAULT_ALIGNMENT );
-    renderMargins( clabel );
-    WidgetLCAUtil.renderBackgroundGradient( clabel );
+  public void renderChanges( CLabel label ) throws IOException {
+    ControlLCAUtil.renderChanges( label );
+    WidgetLCAUtil.renderCustomVariant( label );
+    renderText( label );
+    renderMnemonicIndex( label );
+    renderProperty( label, PROP_IMAGE, label.getImage(), null );
+    renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
+    renderMargins( label );
+    WidgetLCAUtil.renderBackgroundGradient( label );
   }
 
   ///////////////////////////////////////////////////

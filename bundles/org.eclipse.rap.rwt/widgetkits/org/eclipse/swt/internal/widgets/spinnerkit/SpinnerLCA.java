@@ -33,10 +33,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class SpinnerLCA extends WidgetLCA {
+public final class SpinnerLCA extends WidgetLCA<Spinner> {
 
   private static final String TYPE = "rwt.widgets.Spinner";
   private static final String[] ALLOWED_STYLES = { "READ_ONLY", "WRAP", "BORDER" };
@@ -63,8 +62,7 @@ public final class SpinnerLCA extends WidgetLCA {
   private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Spinner spinner = ( Spinner )widget;
+  public void preserveValues( Spinner spinner ) {
     ControlLCAUtil.preserveValues( spinner );
     WidgetLCAUtil.preserveCustomVariant( spinner );
     preserveProperty( spinner, PROP_MINIMUM, spinner.getMinimum() );
@@ -81,8 +79,7 @@ public final class SpinnerLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Spinner spinner = ( Spinner )widget;
+  public void renderInitialization( Spinner spinner ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( spinner, TYPE );
     remoteObject.setHandler( new SpinnerOperationHandler( spinner ) );
     remoteObject.set( "parent", getId( spinner.getParent() ) );
@@ -90,8 +87,7 @@ public final class SpinnerLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Spinner spinner = ( Spinner )widget;
+  public void renderChanges( Spinner spinner ) throws IOException {
     ControlLCAUtil.renderChanges( spinner );
     WidgetLCAUtil.renderCustomVariant( spinner );
     renderMinimum( spinner );

@@ -27,10 +27,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ScaleLCA extends WidgetLCA {
+public final class ScaleLCA extends WidgetLCA<Scale> {
 
   private static final String TYPE = "rwt.widgets.Scale";
   private static final String[] ALLOWED_STYLES = { "HORIZONTAL", "VERTICAL", "BORDER" };
@@ -50,8 +49,7 @@ public final class ScaleLCA extends WidgetLCA {
   private static final int DEFAULT_PAGE_INCREMENT = 10;
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Scale scale = ( Scale )widget;
+  public void preserveValues( Scale scale ) {
     ControlLCAUtil.preserveValues( scale );
     WidgetLCAUtil.preserveCustomVariant( scale );
     preserveProperty( scale, PROP_MINIMUM, scale.getMinimum() );
@@ -63,8 +61,7 @@ public final class ScaleLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Scale scale = ( Scale )widget;
+  public void renderInitialization( Scale scale ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( scale, TYPE );
     remoteObject.setHandler( new ScaleOperationHandler( scale ) );
     remoteObject.set( "parent", getId( scale.getParent() ) );
@@ -72,8 +69,7 @@ public final class ScaleLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Scale scale = ( Scale )widget;
+  public void renderChanges( Scale scale ) throws IOException {
     ControlLCAUtil.renderChanges( scale );
     WidgetLCAUtil.renderCustomVariant( scale );
     renderProperty( scale, PROP_MINIMUM, scale.getMinimum(), DEFAULT_MINIMUM );

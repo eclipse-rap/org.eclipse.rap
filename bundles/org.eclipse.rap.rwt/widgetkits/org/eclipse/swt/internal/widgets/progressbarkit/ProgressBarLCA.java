@@ -27,10 +27,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class ProgressBarLCA extends WidgetLCA {
+public class ProgressBarLCA extends WidgetLCA<ProgressBar> {
 
   private static final String TYPE = "rwt.widgets.ProgressBar";
   private static final String[] ALLOWED_STYLES = {
@@ -49,8 +48,7 @@ public class ProgressBarLCA extends WidgetLCA {
   private static final String DEFAULT_STATE = "normal";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ProgressBar progressBar = ( ProgressBar )widget;
+  public void preserveValues( ProgressBar progressBar ) {
     ControlLCAUtil.preserveValues( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
     preserveProperty( progressBar, PROP_MINIMUM, Integer.valueOf( progressBar.getMinimum() ) );
@@ -60,8 +58,7 @@ public class ProgressBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    ProgressBar progressBar = ( ProgressBar )widget;
+  public void renderInitialization( ProgressBar progressBar ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( progressBar, TYPE );
     remoteObject.setHandler( new ProgressBarOperationHandler( progressBar ) );
     remoteObject.set( "parent", getId( progressBar.getParent() ) );
@@ -69,15 +66,14 @@ public class ProgressBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ProgressBar pBar = ( ProgressBar )widget;
-    ControlLCAUtil.renderChanges( pBar );
-    WidgetLCAUtil.renderCustomVariant( pBar );
-    renderProperty( pBar, PROP_MINIMUM, pBar.getMinimum(), DEFAULT_MINIMUM );
-    renderProperty( pBar, PROP_MAXIMUM, pBar.getMaximum(), DEFAULT_MAXIMUM );
-    renderProperty( pBar, PROP_SELECTION, pBar.getSelection(), DEFAULT_SELECTION );
-    renderProperty( pBar, PROP_STATE, getState( pBar ), DEFAULT_STATE );
-    renderClientListeners( pBar );
+  public void renderChanges( ProgressBar progressBar ) throws IOException {
+    ControlLCAUtil.renderChanges( progressBar );
+    WidgetLCAUtil.renderCustomVariant( progressBar );
+    renderProperty( progressBar, PROP_MINIMUM, progressBar.getMinimum(), DEFAULT_MINIMUM );
+    renderProperty( progressBar, PROP_MAXIMUM, progressBar.getMaximum(), DEFAULT_MAXIMUM );
+    renderProperty( progressBar, PROP_SELECTION, progressBar.getSelection(), DEFAULT_SELECTION );
+    renderProperty( progressBar, PROP_STATE, getState( progressBar ), DEFAULT_STATE );
+    renderClientListeners( progressBar );
   }
 
   //////////////////

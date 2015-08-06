@@ -25,29 +25,25 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class CompositeLCA extends WidgetLCA {
+public class CompositeLCA extends WidgetLCA<Composite> {
 
   private static final String TYPE = "rwt.widgets.Composite";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
   private static final String PROP_CLIENT_AREA = "clientArea";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    ControlLCAUtil.preserveValues( ( Control )widget );
-    WidgetLCAUtil.preserveCustomVariant( widget );
-    WidgetLCAUtil.preserveBackgroundGradient( widget );
-    WidgetLCAUtil.preserveRoundedBorder( widget );
-    Composite composite = ( Composite )widget;
+  public void preserveValues( Composite composite ) {
+    ControlLCAUtil.preserveValues( composite );
+    WidgetLCAUtil.preserveCustomVariant( composite );
+    WidgetLCAUtil.preserveBackgroundGradient( composite );
+    WidgetLCAUtil.preserveRoundedBorder( composite );
     WidgetLCAUtil.preserveProperty( composite, PROP_CLIENT_AREA, composite.getClientArea() );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Composite composite = ( Composite )widget;
+  public void renderInitialization( Composite composite ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( composite, TYPE );
     remoteObject.setHandler( new CompositeOperationHandler( composite ) );
     remoteObject.set( "parent", getId( composite.getParent() ) );
@@ -55,13 +51,13 @@ public class CompositeLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    ControlLCAUtil.renderChanges( ( Control )widget );
-    WidgetLCAUtil.renderBackgroundGradient( widget );
-    WidgetLCAUtil.renderRoundedBorder( widget );
-    WidgetLCAUtil.renderCustomVariant( widget );
-    renderClientArea( ( Composite )widget );
-    renderClientListeners( widget );
+  public void renderChanges( Composite composite ) throws IOException {
+    ControlLCAUtil.renderChanges( composite );
+    WidgetLCAUtil.renderBackgroundGradient( composite );
+    WidgetLCAUtil.renderRoundedBorder( composite );
+    WidgetLCAUtil.renderCustomVariant( composite );
+    renderClientArea( composite );
+    renderClientListeners( composite );
   }
 
   public void renderClientArea( Composite composite ) {

@@ -11,12 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
@@ -29,10 +30,9 @@ import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class TreeColumnLCA extends WidgetLCA {
+public final class TreeColumnLCA extends WidgetLCA<TreeColumn> {
 
   private static final String TYPE = "rwt.widgets.GridColumn";
 
@@ -48,8 +48,7 @@ public final class TreeColumnLCA extends WidgetLCA {
   private static final String DEFAULT_ALIGNMENT = "left";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    TreeColumn column = ( TreeColumn )widget;
+  public void preserveValues( TreeColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( column );
     WidgetLCAUtil.preserveFont( column, getFont( column ) );
@@ -65,16 +64,14 @@ public final class TreeColumnLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    TreeColumn column = ( TreeColumn )widget;
+  public void renderInitialization( TreeColumn column ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( column, TYPE );
     remoteObject.setHandler( new TreeColumnOperationHandler( column ) );
     remoteObject.set( "parent", getId( column.getParent() ) );
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    TreeColumn column = ( TreeColumn )widget;
+  public void renderChanges( TreeColumn column ) throws IOException {
     WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( column );
     WidgetLCAUtil.renderFont( column, getFont( column ) );

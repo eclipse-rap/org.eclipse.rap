@@ -33,10 +33,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class CComboLCA extends WidgetLCA {
+public final class CComboLCA extends WidgetLCA<CCombo> {
 
   private static final String TYPE = "rwt.widgets.Combo";
   private static final String[] ALLOWED_STYLES = { "FLAT", "BORDER" };
@@ -58,8 +57,7 @@ public final class CComboLCA extends WidgetLCA {
   private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 
   @Override
-  public void preserveValues( Widget widget ) {
-    CCombo ccombo = ( CCombo )widget;
+  public void preserveValues( CCombo ccombo ) {
     ControlLCAUtil.preserveValues( ccombo );
     WidgetLCAUtil.preserveCustomVariant( ccombo );
     preserveProperty( ccombo, PROP_ITEMS, ccombo.getItems() );
@@ -76,8 +74,7 @@ public final class CComboLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    CCombo ccombo = ( CCombo )widget;
+  public void renderInitialization( CCombo ccombo ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( ccombo, TYPE );
     remoteObject.setHandler( new CComboOperationHandler( ccombo ) );
     remoteObject.set( "parent", getId( ccombo.getParent() ) );
@@ -86,8 +83,7 @@ public final class CComboLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    CCombo ccombo = ( CCombo )widget;
+  public void renderChanges( CCombo ccombo ) throws IOException {
     ControlLCAUtil.renderChanges( ccombo );
     WidgetLCAUtil.renderCustomVariant( ccombo );
     renderVisibleItemCount( ccombo );

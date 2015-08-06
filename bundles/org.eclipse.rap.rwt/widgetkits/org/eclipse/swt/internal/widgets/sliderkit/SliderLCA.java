@@ -26,10 +26,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class SliderLCA extends WidgetLCA {
+public class SliderLCA extends WidgetLCA<Slider> {
 
   private static final String TYPE = "rwt.widgets.Slider";
   private static final String[] ALLOWED_STYLES = {
@@ -53,8 +52,7 @@ public class SliderLCA extends WidgetLCA {
   private static final int DEFAULT_THUMB = 10;
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Slider slider = ( Slider )widget;
+  public void preserveValues( Slider slider ) {
     ControlLCAUtil.preserveValues( slider );
     WidgetLCAUtil.preserveCustomVariant( slider );
     preserveProperty( slider, PROP_MINIMUM, slider.getMinimum() );
@@ -67,8 +65,7 @@ public class SliderLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Slider slider = ( Slider )widget;
+  public void renderInitialization( Slider slider ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( slider, TYPE );
     remoteObject.setHandler( new SliderOperationHandler( slider ) );
     remoteObject.set( "parent", getId( slider.getParent() ) );
@@ -76,10 +73,9 @@ public class SliderLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Slider slider = ( Slider )widget;
+  public void renderChanges( Slider slider ) throws IOException {
     ControlLCAUtil.renderChanges( slider );
-    WidgetLCAUtil.renderCustomVariant( widget );
+    WidgetLCAUtil.renderCustomVariant( slider );
     renderProperty( slider, PROP_MINIMUM, slider.getMinimum(), DEFAULT_MINIMUM );
     renderProperty( slider, PROP_MAXIMUM, slider.getMaximum(), DEFAULT_MAXIMUM );
     renderProperty( slider, PROP_SELECTION, slider.getSelection(), DEFAULT_SELECTION );

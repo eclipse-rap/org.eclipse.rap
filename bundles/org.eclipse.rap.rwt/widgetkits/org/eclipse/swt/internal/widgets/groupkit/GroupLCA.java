@@ -11,26 +11,25 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class GroupLCA extends WidgetLCA {
+public class GroupLCA extends WidgetLCA<Group> {
 
   private static final String TYPE = "rwt.widgets.Group";
   private static final String[] ALLOWED_STYLES = {
@@ -47,16 +46,14 @@ public class GroupLCA extends WidgetLCA {
   private static final String PROP_MNEMONIC_INDEX = "mnemonicIndex";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Group group = ( Group )widget;
+  public void preserveValues( Group group ) {
     ControlLCAUtil.preserveValues( group );
     WidgetLCAUtil.preserveCustomVariant( group );
     preserveProperty( group, PROP_TEXT, group.getText() );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Group group = ( Group )widget;
+  public void renderInitialization( Group group ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( group, TYPE );
     remoteObject.setHandler( new GroupOperationHandler( group ) );
     remoteObject.set( "parent", getId( group.getParent() ) );
@@ -64,8 +61,7 @@ public class GroupLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Group group = ( Group )widget;
+  public void renderChanges( Group group ) throws IOException {
     ControlLCAUtil.renderChanges( group );
     WidgetLCAUtil.renderCustomVariant( group );
     renderText( group );

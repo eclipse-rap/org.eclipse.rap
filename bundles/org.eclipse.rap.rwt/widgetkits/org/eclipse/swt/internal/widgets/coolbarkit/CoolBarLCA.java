@@ -26,10 +26,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class CoolBarLCA extends WidgetLCA {
+public class CoolBarLCA extends WidgetLCA<CoolBar> {
 
   public static final String TYPE = "rwt.widgets.CoolBar";
   private static final String[] ALLOWED_STYLES = {
@@ -39,8 +38,7 @@ public class CoolBarLCA extends WidgetLCA {
   public static final String PROP_LOCKED = "locked";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    CoolBar coolBar = ( CoolBar )widget;
+  public void preserveValues( CoolBar coolBar ) {
     ControlLCAUtil.preserveValues( coolBar );
     RemoteAdapter adapter = WidgetUtil.getAdapter( coolBar );
     adapter.preserve( PROP_LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
@@ -48,8 +46,7 @@ public class CoolBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    CoolBar coolBar = ( CoolBar )widget;
+  public void renderInitialization( CoolBar coolBar ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( coolBar, TYPE );
     remoteObject.setHandler( new CoolBarOperationHandler( coolBar ) );
     remoteObject.set( "parent", getId( coolBar.getParent() ) );
@@ -57,8 +54,7 @@ public class CoolBarLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    CoolBar coolBar = ( CoolBar )widget;
+  public void renderChanges( CoolBar coolBar ) throws IOException {
     ControlLCAUtil.renderChanges( coolBar );
     renderProperty( coolBar, PROP_LOCKED ,coolBar.getLocked(), false );
     WidgetLCAUtil.renderCustomVariant( coolBar );

@@ -21,8 +21,8 @@ import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.IGridItemAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings("restriction")
-public class GridItemLCA extends WidgetLCA {
+public class GridItemLCA extends WidgetLCA<GridItem> {
 
   private static final String TYPE = "rwt.widgets.GridItem";
 
@@ -58,16 +58,14 @@ public class GridItemLCA extends WidgetLCA {
   private static final int ZERO = 0;
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    GridItem item = ( GridItem )widget;
+  public void renderInitialization( GridItem item ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
     remoteObject.setHandler( new GridItemOperationHandler( item ) );
     remoteObject.set( "parent", WidgetUtil.getId( getParent( item ) ) );
   }
 
   @Override
-  public void preserveValues( Widget widget ) {
-    GridItem item = ( GridItem )widget;
+  public void preserveValues( GridItem item ) {
     preserveProperty( item, PROP_INDEX, getItemIndex( item ) );
     preserveProperty( item, PROP_CACHED, isCached( item ) );
     if( isCached( item ) ) {
@@ -91,8 +89,7 @@ public class GridItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    final GridItem item = ( GridItem )widget;
+  public void renderChanges( final GridItem item ) throws IOException {
     renderProperty( item, PROP_INDEX, getItemIndex( item ), -1 );
     if( wasCleared( item ) ) {
       renderClear( item );
@@ -153,9 +150,8 @@ public class GridItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    GridItem item = ( GridItem )widget;
-    RemoteObject remoteObject = getRemoteObject( widget );
+  public void renderDispose( GridItem item ) throws IOException {
+    RemoteObject remoteObject = getRemoteObject( item );
     if( !isParentDisposed( item ) ) {
       // The tree disposes the items itself on the client (faster)
       remoteObject.destroy();

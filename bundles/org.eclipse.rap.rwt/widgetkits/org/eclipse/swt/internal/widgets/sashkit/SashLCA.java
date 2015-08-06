@@ -24,10 +24,9 @@ import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.Sash;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class SashLCA extends WidgetLCA {
+public final class SashLCA extends WidgetLCA<Sash> {
 
   private static final String TYPE = "rwt.widgets.Sash";
   private static final String[] ALLOWED_STYLES = {
@@ -35,16 +34,14 @@ public final class SashLCA extends WidgetLCA {
   };
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Sash sash = ( Sash )widget;
+  public void preserveValues( Sash sash ) {
     ControlLCAUtil.preserveValues( sash );
     WidgetLCAUtil.preserveCustomVariant( sash );
     preserveListenSelection( sash );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Sash sash = ( Sash )widget;
+  public void renderInitialization( Sash sash ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( sash, TYPE );
     remoteObject.setHandler( new SashOperationHandler( sash ) );
     remoteObject.set( "parent", getId( sash.getParent() ) );
@@ -52,8 +49,7 @@ public final class SashLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Sash sash = ( Sash )widget;
+  public void renderChanges( Sash sash ) throws IOException {
     ControlLCAUtil.renderChanges( sash );
     WidgetLCAUtil.renderCustomVariant( sash );
     renderListenSelection( sash );

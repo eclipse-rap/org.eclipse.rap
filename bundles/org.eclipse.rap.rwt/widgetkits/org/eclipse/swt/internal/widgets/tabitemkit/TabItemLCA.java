@@ -26,10 +26,9 @@ import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class TabItemLCA extends WidgetLCA {
+public class TabItemLCA extends WidgetLCA<TabItem> {
 
   private static final String TYPE = "rwt.widgets.TabItem";
 
@@ -40,8 +39,7 @@ public class TabItemLCA extends WidgetLCA {
   private static final String PROP_BADGE = "badge";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    TabItem item = ( TabItem )widget;
+  public void preserveValues( TabItem item ) {
     WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     preserveProperty( item, PROP_TEXT, item.getText() );
@@ -51,12 +49,11 @@ public class TabItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
+  public void readData( TabItem item ) {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    TabItem item = ( TabItem )widget;
+  public void renderInitialization( TabItem item ) throws IOException {
     TabFolder parent = item.getParent();
     RemoteObject remoteObject = createRemoteObject( item, TYPE );
     // TODO [tb] : Do not render id!
@@ -66,8 +63,7 @@ public class TabItemLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    TabItem item = ( TabItem )widget;
+  public void renderChanges( TabItem item ) throws IOException {
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
     WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );

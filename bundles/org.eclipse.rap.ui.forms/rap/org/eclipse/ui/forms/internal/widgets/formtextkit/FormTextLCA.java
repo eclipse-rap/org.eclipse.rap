@@ -27,7 +27,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.*;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -35,7 +34,7 @@ import org.eclipse.ui.internal.forms.widgets.*;
 
 
 @SuppressWarnings("restriction")
-public class FormTextLCA extends WidgetLCA {
+public class FormTextLCA extends WidgetLCA<FormText> {
 
   private static final String TYPE = "forms.widgets.FormText"; //$NON-NLS-1$
 
@@ -54,8 +53,7 @@ public class FormTextLCA extends WidgetLCA {
   private static final String PROP_RESOURCE_TABLE = "resourceTable"; //$NON-NLS-1$
 
   @Override
-  public void preserveValues( Widget widget ) {
-    FormText formText = ( FormText )widget;
+  public void preserveValues( FormText formText ) {
     ControlLCAUtil.preserveValues( formText );
     WidgetLCAUtil.preserveCustomVariant( formText );
     HyperlinkSettings settings = formText.getHyperlinkSettings();
@@ -68,20 +66,18 @@ public class FormTextLCA extends WidgetLCA {
     preserveProperty( formText,
                       PROP_HYPERLINK_ACTIVE_FOREGROUND,
                       settings.getActiveForeground() );
-    preserveProperty( widget, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
+    preserveProperty( formText, PROP_RESOURCE_TABLE, getResourceTable( formText ) );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    FormText formText = ( FormText )widget;
+  public void renderInitialization( FormText formText ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( formText, TYPE );
     remoteObject.setHandler( new FormTextOperationHandler( formText ) );
     remoteObject.set( "parent", getId( formText.getParent() ) ); //$NON-NLS-1$
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    FormText formText = ( FormText )widget;
+  public void renderChanges( FormText formText ) throws IOException {
     ControlLCAUtil.renderChanges( formText );
     WidgetLCAUtil.renderCustomVariant( formText );
     renderHyperlinkSettings( formText );

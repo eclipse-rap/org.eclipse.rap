@@ -33,10 +33,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class ListLCA extends WidgetLCA {
+public class ListLCA extends WidgetLCA<List> {
 
   private static final String TYPE = "rwt.widgets.List";
   private static final String[] ALLOWED_STYLES = { "SINGLE", "MULTI", "BORDER" };
@@ -55,8 +54,7 @@ public class ListLCA extends WidgetLCA {
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
   @Override
-  public void preserveValues( Widget widget ) {
-    List list = ( List  )widget;
+  public void preserveValues( List list ) {
     ControlLCAUtil.preserveValues( list );
     WidgetLCAUtil.preserveCustomVariant( list );
     preserveProperty( list, PROP_ITEMS, list.getItems() );
@@ -70,14 +68,13 @@ public class ListLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( List )widget );
+  public void readData( List list ) {
+    super.readData( list );
+    ScrollBarLCAUtil.processSelectionEvent( list );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    List list = ( List )widget;
+  public void renderInitialization( List list ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( list, TYPE );
     remoteObject.setHandler( new ListOperationHandler( list ) );
     remoteObject.set( "parent", getId( list.getParent() ) );
@@ -87,8 +84,7 @@ public class ListLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    List list = ( List )widget;
+  public void renderChanges( List list ) throws IOException {
     ControlLCAUtil.renderChanges( list );
     WidgetLCAUtil.renderCustomVariant( list );
     renderProperty( list, PROP_ITEMS, list.getItems(), DEFAUT_ITEMS );

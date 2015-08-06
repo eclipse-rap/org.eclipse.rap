@@ -47,10 +47,9 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class TableLCA extends WidgetLCA {
+public final class TableLCA extends WidgetLCA<Table> {
 
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = {
@@ -93,8 +92,7 @@ public final class TableLCA extends WidgetLCA {
   private static final String DEFAULT_SORT_DIRECTION = "none";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Table table = ( Table )widget;
+  public void preserveValues( Table table ) {
     ControlLCAUtil.preserveValues( table );
     WidgetLCAUtil.preserveCustomVariant( table );
     preserveProperty( table, PROP_ITEM_COUNT, table.getItemCount() );
@@ -121,14 +119,13 @@ public final class TableLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
-    super.readData( widget );
-    ScrollBarLCAUtil.processSelectionEvent( ( Table )widget );
+  public void readData( Table table ) {
+    super.readData( table );
+    ScrollBarLCAUtil.processSelectionEvent( table );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Table table = ( Table )widget;
+  public void renderInitialization( Table table ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( table, TYPE );
     remoteObject.setHandler( new TableOperationHandler( table ) );
     remoteObject.set( "parent", getId( table.getParent() ) );
@@ -153,8 +150,7 @@ public final class TableLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    final Table table = ( Table )widget;
+  public void renderChanges( final Table table ) throws IOException {
     ControlLCAUtil.renderChanges( table );
     WidgetLCAUtil.renderCustomVariant( table );
     renderProperty( table, PROP_ITEM_COUNT, table.getItemCount(), ZERO );

@@ -39,10 +39,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 
 
-public final class ShellLCA extends WidgetLCA {
+public final class ShellLCA extends WidgetLCA<Shell> {
 
   private static final String TYPE = "rwt.widgets.Shell";
   private static final String[] ALLOWED_STYLES = {
@@ -77,8 +76,7 @@ public final class ShellLCA extends WidgetLCA {
   private static final String PROP_DEFAULT_BUTTON = "defaultButton";
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Shell shell = ( Shell )widget;
+  public void preserveValues( Shell shell ) {
     ControlLCAUtil.preserveValues( shell );
     WidgetLCAUtil.preserveCustomVariant( shell );
     preserveProperty( shell, PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
@@ -93,15 +91,14 @@ public final class ShellLCA extends WidgetLCA {
   }
 
   @Override
-  public void readData( Widget widget ) {
+  public void readData( Shell shell ) {
     // [if] Preserve the menu bounds before setting the new shell bounds.
-    preserveMenuBounds( ( Shell )widget );
-    super.readData( widget );
+    preserveMenuBounds( shell );
+    super.readData( shell );
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Shell shell = ( Shell )widget;
+  public void renderInitialization( Shell shell ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( shell, TYPE );
     remoteObject.setHandler( new ShellOperationHandler( shell ) );
     remoteObject.set( "style", createJsonArray( getStyles( shell, ALLOWED_STYLES ) ) );
@@ -119,8 +116,7 @@ public final class ShellLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Shell shell = ( Shell )widget;
+  public void renderChanges( Shell shell ) throws IOException {
     WidgetLCAUtil.renderCustomVariant( shell ); // Order matters for animation
     renderImage( shell );
     renderText( shell );
@@ -134,8 +130,8 @@ public final class ShellLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderDispose( Widget widget ) throws IOException {
-    getRemoteObject( widget ).destroy();
+  public void renderDispose( Shell shell ) throws IOException {
+    getRemoteObject( shell ).destroy();
   }
 
   //////////////////

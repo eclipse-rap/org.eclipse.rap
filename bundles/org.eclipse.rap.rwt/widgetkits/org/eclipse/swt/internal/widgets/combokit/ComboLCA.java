@@ -36,10 +36,9 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Widget;
 
 
-public class ComboLCA extends WidgetLCA {
+public class ComboLCA extends WidgetLCA<Combo> {
 
   private static final String TYPE = "rwt.widgets.Combo";
   private static final String[] ALLOWED_STYLES = { "DROP_DOWN", "SIMPLE", "BORDER" };
@@ -61,8 +60,7 @@ public class ComboLCA extends WidgetLCA {
   private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 
   @Override
-  public void preserveValues( Widget widget ) {
-    Combo combo = ( Combo )widget;
+  public void preserveValues( Combo combo ) {
     ControlLCAUtil.preserveValues( combo );
     WidgetLCAUtil.preserveCustomVariant( combo );
     preserveProperty( combo, PROP_ITEMS, combo.getItems() );
@@ -79,8 +77,7 @@ public class ComboLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderInitialization( Widget widget ) throws IOException {
-    Combo combo = ( Combo )widget;
+  public void renderInitialization( Combo combo ) throws IOException {
     RemoteObject remoteObject = createRemoteObject( combo, TYPE );
     remoteObject.setHandler( new ComboOperationHandler( combo ) );
     remoteObject.set( "parent", getId( combo.getParent() ) );
@@ -88,8 +85,7 @@ public class ComboLCA extends WidgetLCA {
   }
 
   @Override
-  public void renderChanges( Widget widget ) throws IOException {
-    Combo combo = ( Combo )widget;
+  public void renderChanges( Combo combo ) throws IOException {
     ControlLCAUtil.renderChanges( combo );
     WidgetLCAUtil.renderCustomVariant( combo );
     renderVisibleItemCount( combo );
