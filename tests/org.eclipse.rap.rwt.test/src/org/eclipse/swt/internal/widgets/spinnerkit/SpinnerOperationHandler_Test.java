@@ -13,11 +13,14 @@ package org.eclipse.swt.internal.widgets.spinnerkit;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Spinner;
@@ -62,6 +65,13 @@ public class SpinnerOperationHandler_Test {
     ArgumentCaptor<Event> captor = ArgumentCaptor.forClass( Event.class );
     verify( spinner ).notifyListeners( eq( SWT.DefaultSelection ), captor.capture() );
     assertEquals( SWT.ALT | SWT.SHIFT, captor.getValue().stateMask );
+  }
+
+  @Test
+  public void testHandleNotifyModify() {
+    handler.handleNotify( ClientMessageConst.EVENT_MODIFY, new JsonObject() );
+
+    verify( spinner, never() ).notifyListeners( eq( SWT.Modify ), any( Event.class ) );
   }
 
 }

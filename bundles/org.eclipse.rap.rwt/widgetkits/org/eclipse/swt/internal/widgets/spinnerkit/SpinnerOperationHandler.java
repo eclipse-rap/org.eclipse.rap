@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_DEFAULT_SELECTION;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_MODIFY;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SELECTION;
 
 import org.eclipse.rap.json.JsonObject;
@@ -41,6 +42,8 @@ public class SpinnerOperationHandler extends ControlOperationHandler<Spinner> {
       handleNotifySelection( spinner, properties );
     } else if( EVENT_DEFAULT_SELECTION.equals( eventName ) ) {
       handleNotifyDefaultSelection( spinner, properties );
+    } else if( EVENT_MODIFY.equals( eventName ) ) {
+      handleNotifyModify();
     } else {
       super.handleNotify( spinner, eventName, properties );
     }
@@ -80,6 +83,13 @@ public class SpinnerOperationHandler extends ControlOperationHandler<Spinner> {
   public void handleNotifyDefaultSelection( Spinner spinner, JsonObject properties ) {
     Event event = createSelectionEvent( SWT.DefaultSelection, properties );
     spinner.notifyListeners( SWT.DefaultSelection, event );
+  }
+
+  /*
+   * PROTOCOL NOTIFY Modify
+   * ignored, Modify event is fired when set selection
+   */
+  public void handleNotifyModify() {
   }
 
 }

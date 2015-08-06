@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,8 +119,8 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
         var connection = rwt.remote.Connection.getInstance();
         var remoteObject = connection.getRemoteObject( this );
         remoteObject.set( "selection", this.getManager().getValue() );
-        if( remoteObject.isListening( "Selection" ) ) {
-          connection.onNextSend( this._sendWidgetSelected, this );
+        if( remoteObject.isListening( "Selection" ) || remoteObject.isListening( "Modify" ) ) {
+          connection.onNextSend( this._onSend, this );
           connection.sendDelayed( 500 );
         }
       }
@@ -151,8 +151,11 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       }
     },
 
-    _sendWidgetSelected : function() {
+    _onSend : function() {
       rwt.remote.EventUtil.notifySelected( this );
+      if( !this.isDisposed() ) {
+        rwt.remote.Connection.getInstance().getRemoteObject( this ).notify( "Modify", null, true );
+      }
     },
 
     /////////////////

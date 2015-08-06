@@ -11,16 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
@@ -74,7 +75,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    preserveListener( spinner, SWT.Selection, hasSelectionListener( spinner ) );
+    preserveListenModifyVerify( spinner );
+    preserveListener( spinner, SWT.Selection );
     preserveListener( spinner, SWT.DefaultSelection );
   }
 
@@ -100,6 +102,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     renderPageIncrement( spinner );
     renderTextLimit( spinner );
     renderDecimalSeparator( spinner );
+    renderListenModifyVerify( spinner );
     renderListenSelection( spinner );
     renderClientListeners( spinner );
   }
@@ -142,12 +145,9 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Spinner spinner ) {
-    renderListener( spinner, SWT.Selection, PROP_SELECTION_LISTENER, hasSelectionListener( spinner ) );
+    renderListener( spinner, SWT.Selection, PROP_SELECTION_LISTENER );
     renderListener( spinner, SWT.DefaultSelection, PROP_DEFAULT_SELECTION_LISTENER );
   }
-
-  //////////////////
-  // Helping methods
 
   private static Integer getTextLimit( Spinner spinner ) {
     Integer result = null;
@@ -161,10 +161,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static String getDecimalSeparator() {
     DecimalFormatSymbols symbols = new DecimalFormatSymbols( RWT.getLocale() );
     return String.valueOf( symbols.getDecimalSeparator() );
-  }
-
-  private static boolean hasSelectionListener( Spinner spinner ) {
-    return isListening( spinner, SWT.Selection ) || isListening( spinner, SWT.Modify );
   }
 
 }

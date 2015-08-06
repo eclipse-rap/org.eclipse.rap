@@ -108,6 +108,7 @@ public class SpinnerLCA_Test {
     spinner.setPageIncrement( 9 );
     spinner.setTextLimit( 10 );
     spinner.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
       }
     } );
@@ -537,32 +538,26 @@ public class SpinnerLCA_Test {
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
 
-    spinner.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    spinner.addListener( SWT.Modify, mock( Listener.class ) );
     lca.renderChanges( spinner );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( spinner, "Selection" ) );
+    assertEquals( JsonValue.TRUE, message.findListenProperty( spinner, "Modify" ) );
   }
 
   @Test
   public void testRenderRemoveModifyListener() throws Exception {
-    ModifyListener listener = new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    };
-    spinner.addModifyListener( listener );
+    Listener listener = mock( Listener.class );
+    spinner.addListener( SWT.Modify, listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
 
-    spinner.removeModifyListener( listener );
+    spinner.removeListener( SWT.Modify, listener );
     lca.renderChanges( spinner );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( spinner, "Selection" ) );
+    assertEquals( JsonValue.FALSE, message.findListenProperty( spinner, "Modify" ) );
   }
 
   @Test
@@ -571,10 +566,7 @@ public class SpinnerLCA_Test {
     Fixture.markInitialized( spinner );
     Fixture.preserveWidgets();
 
-    spinner.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    spinner.addListener( SWT.Modify, mock( Listener.class ) );
     Fixture.preserveWidgets();
     lca.renderChanges( spinner );
 

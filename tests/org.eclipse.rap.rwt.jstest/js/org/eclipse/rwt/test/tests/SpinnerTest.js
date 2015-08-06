@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
     testSpinnerHandlerEventsList : function() {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Spinner" );
 
-      assertEquals( [ "Selection", "DefaultSelection" ], handler.events );
+      assertEquals( [ "Selection", "DefaultSelection", "Modify" ], handler.events );
     },
 
     testCreateSpinnerByProtocol : function() {
@@ -229,6 +229,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       var messages = TestUtil.getMessages();
       assertEquals( 10, messages[ 0 ].findSetProperty( "w3", "selection" ) );
       assertNotNull( messages[ 0 ].findNotifyOperation( "w3", "Selection" ) );
+      shell.destroy();
+    },
+
+    testSendModifyEvent : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var spinner = this._createSpinnerByProtocol( "w3", "w2" );
+      TestUtil.protocolListen( "w3", { "Modify" : true } );
+
+      spinner.setValue( 10 );
+      TestUtil.forceInterval( rwt.remote.Connection.getInstance()._delayTimer );
+
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var messages = TestUtil.getMessages();
+      assertNotNull( messages[ 0 ].findNotifyOperation( "w3", "Modify" ) );
       shell.destroy();
     },
 
