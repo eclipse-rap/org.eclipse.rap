@@ -24,8 +24,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListene
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
@@ -40,7 +38,6 @@ import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -63,8 +60,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Menu menu = ( Menu )widget;
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    preserveListener( menu, SWT.Show, hasShowListener( menu ) );
-    preserveListener( menu, SWT.Hide, hasHideListener( menu ) );
+    preserveListener( menu, SWT.Hide );
     WidgetLCAUtil.preserveCustomVariant( menu );
     preserveListenHelp( menu );
   }
@@ -76,14 +72,19 @@ public final class MenuLCA extends AbstractWidgetLCA {
     remoteObject.setHandler( new MenuOperationHandler( menu ) );
     remoteObject.set( "parent", getId( menu.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( menu, ALLOWED_STYLES ) ) );
+    // Always listen to Show events in order to notify potential Arm listeners on menu items
+    if( !isMenuBar( menu ) ) {
+      remoteObject.listen( PROP_SHOW_LISTENER, true );
+    }
   }
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
     Menu menu = ( Menu )widget;
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
-    renderListener( menu, SWT.Show, PROP_SHOW_LISTENER, hasShowListener( menu ) );
-    renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER, hasHideListener( menu ) );
+    if( !isMenuBar( menu ) ) {
+      renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER );
+    }
     WidgetLCAUtil.renderCustomVariant( menu );
     renderListenHelp( menu );
     renderBounds( menu );
@@ -124,24 +125,6 @@ public final class MenuLCA extends AbstractWidgetLCA {
       JsonObject parameters = new JsonObject().add( "reveal", reveal );
       getRemoteObject( menu ).call( METHOD_UNHIDE_ITEMS, parameters );
     }
-  }
-
-  private static boolean hasShowListener( Menu menu ) {
-    boolean result = false;
-    if( !isMenuBar( menu ) ) {
-      result = isListening( menu, SWT.Show );
-      if( !result ) {
-        MenuItem[] items = menu.getItems();
-        for( int i = 0; !result && i < items.length && !result; i++ ) {
-          result = isListening( items[ i ], SWT.Arm );
-        }
-      }
-    }
-    return result;
-  }
-
-  private static boolean hasHideListener( Menu menu ) {
-    return isMenuBar( menu ) ? false : isListening( menu, SWT.Hide );
   }
 
   private static Rectangle getBounds( Menu menu ) {

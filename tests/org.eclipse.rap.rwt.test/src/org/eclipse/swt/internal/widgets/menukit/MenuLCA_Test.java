@@ -14,11 +14,7 @@ package org.eclipse.swt.internal.widgets.menukit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -40,7 +36,6 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
@@ -199,6 +194,26 @@ public class MenuLCA_Test {
   }
 
   @Test
+  public void testRenderShowListener() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+
+    lca.renderInitialization( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Show" ) );
+  }
+
+  @Test
+  public void testRenderShowListener_bar() throws IOException {
+    Menu menu = new Menu( shell, SWT.BAR );
+
+    lca.renderInitialization( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( menu, "Show" ) );
+  }
+
+  @Test
   public void testRenderInitialBounds() throws IOException {
     Menu menu = new Menu( shell, SWT.BAR );
 
@@ -351,7 +366,7 @@ public class MenuLCA_Test {
     lca.renderChanges( menu );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Show" ) );
+    assertNull( message.findListenOperation( menu, "Show" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Hide" ) );
   }
 
@@ -373,7 +388,6 @@ public class MenuLCA_Test {
   @Test
   public void testRenderAddMenuListener_DropDown() throws Exception {
     Menu menu = new Menu( shell, SWT.DROP_DOWN );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
     Fixture.preserveWidgets();
 
@@ -381,23 +395,8 @@ public class MenuLCA_Test {
     lca.renderChanges( menu );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Show" ) );
+    assertNull( message.findListenOperation( menu, "Show" ) );
     assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Hide" ) );
-  }
-
-  @Test
-  public void testRenderAddMenuListener_ArmListener() throws Exception {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem item = new MenuItem( menu, SWT.PUSH );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
-
-    item.addArmListener( mock( ArmListener.class ) );
-    lca.renderChanges( menu );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( menu, "Show" ) );
   }
 
   @Test
@@ -413,7 +412,7 @@ public class MenuLCA_Test {
     lca.renderChanges( menu );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( menu, "Show" ) );
+    assertNull( message.findListenOperation( menu, "Show" ) );
     assertEquals( JsonValue.FALSE, message.findListenProperty( menu, "Hide" ) );
   }
 
