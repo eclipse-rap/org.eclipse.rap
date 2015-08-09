@@ -70,7 +70,6 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
     preserveProperty( item, PROP_CACHED, isCached( item ) );
     if( isCached( item ) ) {
       WidgetLCAUtil.preserveCustomVariant( item );
-      WidgetLCAUtil.preserveData( item );
       preserveProperty( item, PROP_ITEM_COUNT, item.getItemCount() );
       preserveProperty( item, PROP_HEIGHT, item.getHeight() );
       preserveProperty( item, PROP_TEXTS, getTexts( item ) );
