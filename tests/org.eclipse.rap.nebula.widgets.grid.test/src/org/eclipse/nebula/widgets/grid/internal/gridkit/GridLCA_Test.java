@@ -789,9 +789,8 @@ public class GridLCA_Test {
 
   @Test
   public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( grid );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     grid.addSelectionListener( mock( SelectionListener.class ) );
     lca.renderChanges( grid );
@@ -805,9 +804,8 @@ public class GridLCA_Test {
   public void testRenderRemoveSelectionListener() throws Exception {
     SelectionListener listener = mock( SelectionListener.class );
     grid.addSelectionListener( listener );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( grid );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     grid.removeSelectionListener( listener );
     lca.renderChanges( grid );
@@ -819,9 +817,8 @@ public class GridLCA_Test {
 
   @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( grid );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     grid.addSelectionListener( mock( SelectionListener.class ) );
     Fixture.preserveWidgets();

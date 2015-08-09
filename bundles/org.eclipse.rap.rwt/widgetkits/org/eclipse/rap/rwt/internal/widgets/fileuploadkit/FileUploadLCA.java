@@ -14,7 +14,6 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -44,7 +43,6 @@ public final class FileUploadLCA extends WidgetLCA<FileUpload> {
     WidgetLCAUtil.preserveCustomVariant( fileUpload );
     preserveProperty( fileUpload, PROP_TEXT, fileUpload.getText() );
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );
-    preserveListenSelection( fileUpload );
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -37,11 +38,10 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.junit.After;
@@ -445,44 +445,27 @@ public class ToolTipLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
+  public void testRenderListen_Selection() throws Exception {
     Fixture.markInitialized( toolTip );
     Fixture.preserveWidgets();
 
-    toolTip.addSelectionListener( new SelectionAdapter() { } );
+    toolTip.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( toolTip );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( toolTip, "Selection" ) );
-    assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
   }
 
   @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    toolTip.addSelectionListener( listener );
+  public void testRenderListen_NoDefaultSelection() throws Exception {
     Fixture.markInitialized( toolTip );
     Fixture.preserveWidgets();
 
-    toolTip.removeSelectionListener( listener );
+    toolTip.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( toolTip );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( toolTip, "Selection" ) );
     assertNull( message.findListenOperation( toolTip, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( toolTip );
-    Fixture.preserveWidgets();
-
-    toolTip.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( toolTip );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( toolTip, "selection" ) );
   }
 
 }

@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.scalekit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -57,7 +56,6 @@ public final class ScaleLCA extends WidgetLCA<Scale> {
     preserveProperty( scale, PROP_SELECTION, scale.getSelection() );
     preserveProperty( scale, PROP_INCREMENT, scale.getIncrement() );
     preserveProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement() );
-    preserveListenSelection( scale );
   }
 
   @Override

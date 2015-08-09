@@ -44,9 +44,6 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Display;
@@ -557,104 +554,42 @@ public class MenuItemLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
+  public void testRenderListen_Selection() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     item.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( item );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( item, "Selection" ) );
+  }
+
+  @Test
+  public void testRenderListen_NoDefaultSelection() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( item );
+    Fixture.clearPreserved();
+
+    item.addListener( SWT.DefaultSelection, mock( Listener.class ) );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( item, "DefaultSelection" ) );
   }
 
   @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
+  public void testRenderListen_Help() throws Exception {
     MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Listener listener = mock( Listener.class );
-    item.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    item.removeListener( SWT.Selection, listener );
-    lca.renderChanges( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( item, "Selection" ) );
-    assertNull( message.findListenOperation( item, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
-
-    item.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( item, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderAddHelpListener() throws Exception {
-    MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
-
-    item.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    } );
+    item.addListener( SWT.Help, mock( Listener.class ) );
     lca.renderChanges( item );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( item, "Help" ) );
-  }
-
-  @Test
-  public void testRenderRemoveHelpListener() throws Exception {
-    MenuItem item = new MenuItem( menu, SWT.CHECK );
-    HelpListener listener = new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    };
-    item.addHelpListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
-
-    item.removeHelpListener( listener );
-    lca.renderChanges( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( item, "Help" ) );
-  }
-
-  @Test
-  public void testRenderHelpListenerUnchanged() throws Exception {
-    MenuItem item = new MenuItem( menu, SWT.CHECK );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
-
-    item.addHelpListener( new HelpListener() {
-      public void helpRequested( HelpEvent e ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( item, "help" ) );
   }
 
   @Test

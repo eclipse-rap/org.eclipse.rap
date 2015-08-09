@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -65,9 +64,6 @@ public final class ToolItemLCA extends WidgetLCA<ToolItem> {
     preserveProperty( item, PROP_CONTROL, item.getControl() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
     preserveProperty( item, PROP_BADGE, getBadge( item ) );
-    if( !isSeparator( item ) ) {
-      preserveListenSelection( item );
-    }
   }
 
   @Override

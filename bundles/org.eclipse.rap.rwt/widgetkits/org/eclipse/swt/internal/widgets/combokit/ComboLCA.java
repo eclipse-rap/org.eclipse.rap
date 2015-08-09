@@ -13,9 +13,6 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
@@ -71,9 +68,6 @@ public class ComboLCA extends WidgetLCA<Combo> {
     preserveProperty( combo, PROP_TEXT, combo.getText() );
     preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
-    preserveListenSelection( combo );
-    preserveListenDefaultSelection( combo );
-    preserveListenModifyVerify( combo );
   }
 
   @Override

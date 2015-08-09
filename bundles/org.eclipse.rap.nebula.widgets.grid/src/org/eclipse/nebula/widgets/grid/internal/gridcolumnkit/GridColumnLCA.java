@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.grid.internal.gridcolumnkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -87,7 +86,6 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
     preserveProperty( column, PROP_FOOTER_SPAN, getFooterSpan( column ) );
     preserveProperty( column, PROP_WORD_WRAP, column.getWordWrap() );
     preserveProperty( column, PROP_HEADER_WORD_WRAP, column.getHeaderWordWrap() );
-    preserveListenSelection( column );
   }
 
   @Override

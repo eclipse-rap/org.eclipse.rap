@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.scrollbarkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -41,7 +40,6 @@ public final class ScrollBarLCA extends WidgetLCA<ScrollBar> {
   @Override
   public void preserveValues( ScrollBar scrollBar ) {
     preserveProperty( scrollBar, PROP_VISIBILITY, scrollBar.getVisible() );
-    preserveListenSelection( scrollBar );
   }
 
   @Override

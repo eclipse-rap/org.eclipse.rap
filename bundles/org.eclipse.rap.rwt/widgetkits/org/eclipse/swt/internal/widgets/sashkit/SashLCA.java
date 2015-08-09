@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.sashkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import java.io.IOException;
@@ -37,7 +36,6 @@ public final class SashLCA extends WidgetLCA<Sash> {
   public void preserveValues( Sash sash ) {
     ControlLCAUtil.preserveValues( sash );
     WidgetLCAUtil.preserveCustomVariant( sash );
-    preserveListenSelection( sash );
   }
 
   @Override

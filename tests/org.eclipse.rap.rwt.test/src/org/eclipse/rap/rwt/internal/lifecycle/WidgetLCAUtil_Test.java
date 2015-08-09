@@ -347,7 +347,6 @@ public class WidgetLCAUtil_Test {
   public void testRenderListenHelp_added() {
     Fixture.markInitialized( widget );
 
-    WidgetLCAUtil.preserveListenHelp( widget );
     widget.addListener( SWT.Help, mock( Listener.class ) );
     WidgetLCAUtil.renderListenHelp( widget );
 
@@ -358,8 +357,8 @@ public class WidgetLCAUtil_Test {
   public void testRenderListenHelp_unchanged() {
     Fixture.markInitialized( widget );
     widget.addListener( SWT.Help, mock( Listener.class ) );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenHelp( widget );
     WidgetLCAUtil.renderListenHelp( widget );
 
     assertNull( getProtocolMessage().findListenOperation( widget, "Help" ) );
@@ -370,8 +369,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Help, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenHelp( widget );
     widget.removeListener( SWT.Help, listener );
     WidgetLCAUtil.renderListenHelp( widget );
 
@@ -388,8 +387,8 @@ public class WidgetLCAUtil_Test {
   @Test
   public void testRenderListenModifyVerify_added() {
     Fixture.markInitialized( widget );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     widget.addListener( SWT.Modify, mock( Listener.class ) );
     WidgetLCAUtil.renderListenModifyVerify( widget );
 
@@ -399,8 +398,8 @@ public class WidgetLCAUtil_Test {
   @Test
   public void testRenderListenModifyVerify_addedVerify() {
     Fixture.markInitialized( widget );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     widget.addListener( SWT.Verify, mock( Listener.class ) );
     WidgetLCAUtil.renderListenModifyVerify( widget );
 
@@ -411,8 +410,8 @@ public class WidgetLCAUtil_Test {
   public void testRenderListenModifyVerify_unchanged() {
     Fixture.markInitialized( widget );
     widget.addListener( SWT.Modify, mock( Listener.class ) );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     WidgetLCAUtil.renderListenModifyVerify( widget );
 
     assertNull( getProtocolMessage().findListenOperation( widget, "Modify" ) );
@@ -423,8 +422,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Modify, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     widget.removeListener( SWT.Modify, listener );
     widget.addListener( SWT.Verify, listener );
     WidgetLCAUtil.renderListenModifyVerify( widget );
@@ -437,8 +436,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Modify, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     widget.removeListener( SWT.Modify, listener );
     WidgetLCAUtil.renderListenModifyVerify( widget );
 
@@ -450,8 +449,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.Verify, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenModifyVerify( widget );
     widget.removeListener( SWT.Verify, listener );
     WidgetLCAUtil.renderListenModifyVerify( widget );
 
@@ -470,8 +469,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.KeyDown, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenKey( widget );
     WidgetLCAUtil.renderListenKey( widget );
 
     assertNull( getProtocolMessage().findListenOperation( widget, "KeyDown" ) );
@@ -482,8 +481,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.KeyDown, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenKey( widget );
     widget.removeListener( SWT.KeyDown, listener );
     widget.addListener( SWT.KeyUp, listener );
     WidgetLCAUtil.renderListenKey( widget );
@@ -495,8 +494,8 @@ public class WidgetLCAUtil_Test {
   public void testRenderListenKey_changed_keyDown() {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenKey( widget );
     widget.addListener( SWT.KeyDown, listener );
     WidgetLCAUtil.renderListenKey( widget );
 
@@ -507,8 +506,8 @@ public class WidgetLCAUtil_Test {
   public void testRenderListenKey_changed_keyUp() {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenKey( widget );
     widget.addListener( SWT.KeyUp, listener );
     WidgetLCAUtil.renderListenKey( widget );
 
@@ -520,8 +519,8 @@ public class WidgetLCAUtil_Test {
     Fixture.markInitialized( widget );
     Listener listener = mock( Listener.class );
     widget.addListener( SWT.KeyDown, listener );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveListenKey( widget );
     widget.removeListener( SWT.KeyDown, listener );
     WidgetLCAUtil.renderListenKey( widget );
 

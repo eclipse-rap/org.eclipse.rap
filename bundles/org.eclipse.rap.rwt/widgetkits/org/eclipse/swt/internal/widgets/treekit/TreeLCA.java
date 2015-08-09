@@ -13,8 +13,6 @@ package org.eclipse.swt.internal.widgets.treekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -109,8 +107,6 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     preserveProperty( tree, PROP_SELECTION, getSelection( tree ) );
     preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
     preserveProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn() );
-    preserveListenSelection( tree );
-    preserveListenDefaultSelection( tree );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
   }

@@ -13,8 +13,6 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -109,8 +107,6 @@ public final class TableLCA extends WidgetLCA<Table> {
     preserveProperty( table, PROP_SELECTION, getSelection( table ) );
     preserveProperty( table, PROP_SORT_DIRECTION, getSortDirection( table ) );
     preserveProperty( table, PROP_SORT_COLUMN, table.getSortColumn() );
-    preserveListenSelection( table );
-    preserveListenDefaultSelection( table );
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );

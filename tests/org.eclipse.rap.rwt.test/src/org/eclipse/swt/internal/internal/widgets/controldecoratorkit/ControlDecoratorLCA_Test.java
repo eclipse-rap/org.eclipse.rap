@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,6 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ControlDecorator;
@@ -335,76 +333,27 @@ public class ControlDecoratorLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListen_Selection() throws Exception {
     Fixture.markInitialized( decorator );
-    Fixture.preserveWidgets();
-
-    decorator.addSelectionListener( new SelectionAdapter() { } );
-    lca.renderChanges( decorator );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
-    assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    decorator.addSelectionListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( decorator );
-    Fixture.preserveWidgets();
-
-    decorator.removeSelectionListener( listener );
-    lca.renderChanges( decorator );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "Selection" ) );
-    assertEquals( JsonValue.FALSE, message.findListenProperty( decorator, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( decorator );
-    Fixture.preserveWidgets();
-
-    decorator.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( decorator );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( decorator, "Selection" ) );
-    assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( decorator );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     decorator.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( decorator );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "Selection" ) );
-    assertNull( message.findListenOperation( decorator, "DefaultSelection" ) );
   }
 
   @Test
-  public void testRenderDefaultSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListen_DefaultSelection() throws Exception {
     Fixture.markInitialized( decorator );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     decorator.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( decorator );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( decorator, "DefaultSelection" ) );
-    assertNull( message.findListenOperation( decorator, "Selection" ) );
   }
 
 }

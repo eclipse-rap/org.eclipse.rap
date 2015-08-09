@@ -176,12 +176,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     // The adapters returned here are buffered for performance reasons. Don't change this without
     // good reason
     if( adapter == RemoteAdapter.class ) {
-      if( remoteAdapter == null ) {
-        remoteAdapter = createRemoteAdapter( null );
-      } else if( remoteAdapter instanceof ParentHolderRemoteAdapter ) {
-        remoteAdapter = createRemoteAdapter( remoteAdapter.getParent() );
-      }
-      return (T) remoteAdapter;
+      return (T) ensureRemoteAdapter();
     }
     if( adapter == ThemeAdapter.class ) {
       ThemeManager themeManager = getApplicationContext().getThemeManager();
@@ -197,22 +192,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       return (T) getApplicationContext().getLifeCycleAdapterFactory().getWidgetLCA( this );
     }
     return null;
-  }
-
-  private RemoteAdapter createRemoteAdapter( Widget parent ) {
-    String id = IdGenerator.getInstance( RWT.getUISession( display ) ).createId( this );
-    return createRemoteAdapter( parent, id );
-  }
-
-  RemoteAdapter createRemoteAdapter( Widget parent, String id ) {
-    WidgetRemoteAdapter remoteAdapter = new WidgetRemoteAdapter( id );
-    remoteAdapter.setParent( parent );
-    return remoteAdapter;
-  }
-
-  private ApplicationContextImpl getApplicationContext() {
-    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
-    return ( ApplicationContextImpl )displayAdapter.getUISession().getApplicationContext();
   }
 
   /**
@@ -500,6 +479,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    preserveListeners();
     if( eventTable != null ) {
       eventTable.unhook( SWT.Dispose, listener );
     }
@@ -538,6 +518,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     ensureEventTable();
+    preserveListeners();
     eventTable.hook( eventType, listener );
     if( listener instanceof ClientListener ) {
       clientListenerAdded( this, eventType, ( ClientListener )listener );
@@ -572,6 +553,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    preserveListeners();
     if( eventTable != null ) {
       eventTable.unhook( eventType, listener );
     }
@@ -693,6 +675,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    preserveListeners();
     if( eventTable != null ) {
       eventTable.unhook( eventType, listener );
     }
@@ -1045,6 +1028,38 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
 
   void removeState( int flag ) {
     state &= ~flag;
+  }
+
+  private void preserveListeners() {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )ensureRemoteAdapter();
+    if( !( adapter ).hasPreservedListeners() ) {
+      WidgetLCAUtil.preserveListeners( this, eventTable != null ? eventTable.getEventList() : 0 );
+    }
+  }
+
+  private RemoteAdapter ensureRemoteAdapter() {
+    if( remoteAdapter == null ) {
+      remoteAdapter = createRemoteAdapter( null );
+    } else if( remoteAdapter instanceof ParentHolderRemoteAdapter ) {
+      remoteAdapter = createRemoteAdapter( remoteAdapter.getParent() );
+    }
+    return remoteAdapter;
+  }
+
+  private RemoteAdapter createRemoteAdapter( Widget parent ) {
+    String id = IdGenerator.getInstance( RWT.getUISession( display ) ).createId( this );
+    return createRemoteAdapter( parent, id );
+  }
+
+  RemoteAdapter createRemoteAdapter( Widget parent, String id ) {
+    WidgetRemoteAdapter remoteAdapter = new WidgetRemoteAdapter( id );
+    remoteAdapter.setParent( parent );
+    return remoteAdapter;
+  }
+
+  private ApplicationContextImpl getApplicationContext() {
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
+    return ( ApplicationContextImpl )displayAdapter.getUISession().getApplicationContext();
   }
 
   private static void checkCustomVariant( Object value ) {

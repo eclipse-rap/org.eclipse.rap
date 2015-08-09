@@ -10,15 +10,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
@@ -46,8 +45,6 @@ public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
     preserveProperty( decorator, PROP_IMAGE, decorator.getImage() );
     preserveProperty( decorator, PROP_VISIBLE, decorator.isVisible() );
     preserveProperty( decorator, PROP_SHOW_HOVER, decorator.getShowHover() );
-    preserveListenSelection( decorator );
-    preserveListenDefaultSelection( decorator );
   }
 
   @Override

@@ -12,7 +12,6 @@
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -57,7 +56,6 @@ public class HyperlinkLCA extends WidgetLCA<Hyperlink> {
     preserveProperty( hyperlink,
                       PROP_ACTIVE_BACKGROUND,
                       getActiveBackground( hyperlink ) );
-    preserveListenDefaultSelection( hyperlink );
   }
 
   @Override

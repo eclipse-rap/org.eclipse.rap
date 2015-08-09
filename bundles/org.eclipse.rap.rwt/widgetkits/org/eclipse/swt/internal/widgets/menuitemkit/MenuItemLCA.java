@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenHelp;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -56,8 +54,6 @@ public final class MenuItemLCA extends WidgetLCA<MenuItem> {
     preserveProperty( item, PROP_MENU, item.getMenu() );
     preserveProperty( item, PROP_ENABLED, item.getEnabled() );
     preserveProperty( item, PROP_SELECTION, item.getSelection() );
-    preserveListenSelection( item );
-    preserveListenHelp( item );
   }
 
   @Override

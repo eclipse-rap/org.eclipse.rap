@@ -103,9 +103,8 @@ public class ScrollBarLCA_Test {
 
   @Test
   public void testRenderListenSelection() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( scrollBar );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     lca.renderChanges( scrollBar );
 
@@ -115,9 +114,8 @@ public class ScrollBarLCA_Test {
 
   @Test
   public void testRenderListenSelection_added() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( scrollBar );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     scrollBar.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( scrollBar );
@@ -128,11 +126,10 @@ public class ScrollBarLCA_Test {
 
   @Test
   public void testRenderListenSelection_removed() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( scrollBar );
     Listener listener = mock( Listener.class );
     scrollBar.addListener( SWT.Selection, listener );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     scrollBar.removeListener( SWT.Selection, listener );
     lca.renderChanges( scrollBar );
@@ -143,10 +140,9 @@ public class ScrollBarLCA_Test {
 
   @Test
   public void testRenderListenSelection_unchanged() throws Exception {
-    Fixture.markInitialized( display );
     Fixture.markInitialized( scrollBar );
     scrollBar.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     lca.renderChanges( scrollBar );
 

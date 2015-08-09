@@ -13,8 +13,6 @@ package org.eclipse.swt.internal.widgets.datetimekit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -55,8 +53,6 @@ final class DateTimeLCAUtil {
   static void preserveValues( DateTime dateTime ) {
     ControlLCAUtil.preserveValues( dateTime );
     WidgetLCAUtil.preserveCustomVariant( dateTime );
-    preserveListenSelection( dateTime );
-    preserveListenDefaultSelection( dateTime );
   }
 
   static void renderInitialization( DateTime dateTime ) {

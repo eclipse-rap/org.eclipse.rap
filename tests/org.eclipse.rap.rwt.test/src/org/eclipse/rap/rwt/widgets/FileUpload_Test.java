@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -228,18 +227,7 @@ public class FileUpload_Test {
   // Listeners
 
   @Test
-  public void testAddRemoveSelectionListener() {
-    FileUpload upload = new FileUpload( shell, SWT.NONE );
-    SelectionListener listener = new SelectionAdapter() {};
-    assertFalse( upload.isListening( SWT.Selection ) );
-    upload.addSelectionListener( listener );
-    assertTrue( upload.isListening( SWT.Selection ) );
-    upload.removeSelectionListener( listener );
-    assertFalse( upload.isListening( SWT.Selection ) );
-  }
-
-  @Test
-  public void testAddSelectionListenerRegistersUntypedListeners() {
+  public void testAddSelectionListener_registersUntypedListeners() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
 
     upload.addSelectionListener( mock( SelectionListener.class ) );
@@ -249,7 +237,7 @@ public class FileUpload_Test {
   }
 
   @Test
-  public void testRemoveSelectionListenerUnregistersUntypedListeners() {
+  public void testRemoveSelectionListener_unregistersUntypedListeners() {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     upload.addSelectionListener( listener );

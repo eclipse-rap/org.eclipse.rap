@@ -141,8 +141,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderChildren_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( shell );
     Button button = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderChanges( shell );
 
@@ -154,8 +154,8 @@ public class ControlLCAUtil_Test {
   public void testRenderChildren_changedOrder() {
     Fixture.markInitialized( control );
     Button button = new Button( shell, SWT.PUSH );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( shell );
     control.moveBelow( button );
     ControlLCAUtil.renderChanges( shell );
 
@@ -302,8 +302,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderToolTipText_unchanged_null() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "toolTip" ) );
@@ -312,8 +312,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderToolTipText_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setToolTipText( "foo" );
     ControlLCAUtil.renderChanges( control );
 
@@ -324,8 +324,8 @@ public class ControlLCAUtil_Test {
   public void testRenderToolTipText_reset() {
     Fixture.markInitialized( control );
     control.setToolTipText( "foo" );
-
     Fixture.clearPreserved();
+
     control.setToolTipText( null );
     ControlLCAUtil.renderChanges( control );
 
@@ -353,8 +353,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderMenu_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -451,8 +451,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderForeground_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setForeground( red );
     ControlLCAUtil.renderChanges( control );
 
@@ -492,8 +492,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderBackground_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setBackground( red );
     ControlLCAUtil.renderChanges( control );
 
@@ -503,8 +503,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderBackground_changedTransparency() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.getParent().setBackgroundMode( SWT.INHERIT_FORCE );
     ControlLCAUtil.renderChanges( control );
 
@@ -564,8 +564,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderFont_changedNormal() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -576,8 +576,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderFont_changedBold() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -588,8 +588,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderFont_changedItalic() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -600,8 +600,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderFont_changedBoldItalic() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setFont( new Font( display, "Arial", 12, SWT.BOLD | SWT.ITALIC ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -653,8 +653,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderCursor_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
     ControlLCAUtil.renderChanges( control );
 
@@ -734,8 +734,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     control.addListener( SWT.Activate, mock( Listener.class ) );
     control.addListener( SWT.Deactivate, mock( Listener.class ) );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     TestMessage message = getProtocolMessage();
@@ -767,8 +767,8 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Activate, listener );
     control.addListener( SWT.Deactivate, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.Activate, listener );
     control.removeListener( SWT.Deactivate, listener );
     ControlLCAUtil.renderChanges( control );
@@ -795,8 +795,8 @@ public class ControlLCAUtil_Test {
     control.addListener( SWT.MouseDown, listener );
     control.addListener( SWT.MouseDoubleClick, listener );
     control.addListener( SWT.MouseUp, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     TestMessage message = getProtocolMessage();
@@ -809,8 +809,8 @@ public class ControlLCAUtil_Test {
   public void testRenderListenMouse_changed() {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.MouseDown, listener );
     control.addListener( SWT.MouseDoubleClick, listener );
     control.addListener( SWT.MouseUp, listener );
@@ -829,8 +829,8 @@ public class ControlLCAUtil_Test {
     control.addListener( SWT.MouseDown, listener );
     control.addListener( SWT.MouseDoubleClick, listener );
     control.addListener( SWT.MouseUp, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.MouseDown, listener );
     control.removeListener( SWT.MouseDoubleClick, listener );
     control.removeListener( SWT.MouseUp, listener );
@@ -857,8 +857,8 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.FocusIn, listener );
     control.addListener( SWT.FocusOut, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     TestMessage message = getProtocolMessage();
@@ -870,8 +870,8 @@ public class ControlLCAUtil_Test {
   public void testRenderListenFocus_changed() {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.FocusIn, listener );
     control.addListener( SWT.FocusOut, listener );
     ControlLCAUtil.renderChanges( control );
@@ -886,8 +886,8 @@ public class ControlLCAUtil_Test {
     control = new Label( shell, SWT.NONE );
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.FocusIn, listener );
     control.addListener( SWT.FocusOut, listener );
     ControlLCAUtil.renderChanges( control );
@@ -903,8 +903,8 @@ public class ControlLCAUtil_Test {
     Listener listener = mock( Listener.class );
     control.addListener( SWT.FocusIn, listener );
     control.addListener( SWT.FocusOut, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.FocusIn, listener );
     control.removeListener( SWT.FocusOut, listener );
     ControlLCAUtil.renderChanges( control );
@@ -926,8 +926,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Traverse, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findListenOperation( control, "Traverse" ) );
@@ -937,8 +937,8 @@ public class ControlLCAUtil_Test {
   public void testRenderListenTraverse_changed() {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.Traverse, listener );
     ControlLCAUtil.renderChanges( control );
 
@@ -950,8 +950,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Traverse, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.Traverse, listener );
     ControlLCAUtil.renderChanges( control );
 
@@ -969,8 +969,8 @@ public class ControlLCAUtil_Test {
   public void testRenderListenMenuDetect_changed() {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.MenuDetect, listener );
     ControlLCAUtil.renderChanges( control );
 
@@ -982,8 +982,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.MenuDetect, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findListenOperation( control, "MenuDetect" ) );
@@ -994,8 +994,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.MenuDetect, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.MenuDetect, listener );
     ControlLCAUtil.renderChanges( control );
 
@@ -1013,8 +1013,8 @@ public class ControlLCAUtil_Test {
   public void testRenderListenHelp_changed() {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.addListener( SWT.Help, listener );
     ControlLCAUtil.renderChanges( control );
 
@@ -1026,8 +1026,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Help, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findListenOperation( control, "Help" ) );
@@ -1038,8 +1038,8 @@ public class ControlLCAUtil_Test {
     Fixture.markInitialized( control );
     Listener listener = mock( Listener.class );
     control.addListener( SWT.Help, listener );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     control.removeListener( SWT.Help, listener );
     ControlLCAUtil.renderChanges( control );
 

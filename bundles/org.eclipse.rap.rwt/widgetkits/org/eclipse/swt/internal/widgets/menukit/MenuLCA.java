@@ -11,19 +11,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
-import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SHOW;
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenHelp;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.wasEventSent;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_SHOW;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
@@ -58,9 +57,7 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   @Override
   public void preserveValues( Menu menu ) {
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    preserveListener( menu, SWT.Hide );
     WidgetLCAUtil.preserveCustomVariant( menu );
-    preserveListenHelp( menu );
   }
 
   @Override

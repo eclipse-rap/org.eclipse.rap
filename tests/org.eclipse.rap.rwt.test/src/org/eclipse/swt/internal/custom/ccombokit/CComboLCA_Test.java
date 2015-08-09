@@ -42,8 +42,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
@@ -115,6 +113,7 @@ public class CComboLCA_Test {
     };
     ccombo.addSelectionListener( selectionListener );
     ccombo.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
       }
     } );
@@ -585,87 +584,35 @@ public class CComboLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListenSelection() throws Exception {
     Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     ccombo.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( ccombo );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "Selection" ) );
-    assertNull( message.findListenOperation( ccombo, "DefaultSelection" ) );
   }
 
   @Test
-  public void testRenderAddDefaultSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListenDefaultSelection() throws Exception {
     Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     ccombo.addListener( SWT.DefaultSelection, mock( Listener.class ) );
     lca.renderChanges( ccombo );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "DefaultSelection" ) );
-    assertNull( message.findListenOperation( ccombo, "Selection" ) );
   }
 
   @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    Listener selection = mock( Listener.class );
-    ccombo.addListener( SWT.Selection, selection );
-    Fixture.markInitialized( display );
+  public void testRenderListenModify() throws Exception {
     Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    ccombo.removeListener( SWT.Selection, selection );
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveDefaultSelectionListener() throws Exception {
-    Listener selection = mock( Listener.class );
-    ccombo.addListener( SWT.DefaultSelection, selection );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.removeListener( SWT.DefaultSelection, selection );
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "DefaultSelection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( ccombo, "selection" ) );
-  }
-
-  @Test
-  public void testRenderAddModifyListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    ccombo.addListener( SWT.Modify, mock( Listener.class ) );
     lca.renderChanges( ccombo );
 
     TestMessage message = Fixture.getProtocolMessage();
@@ -673,89 +620,15 @@ public class CComboLCA_Test {
   }
 
   @Test
-  public void testRenderRemoveModifyListener() throws Exception {
-    ModifyListener listener = new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    };
-    ccombo.addModifyListener( listener );
-    Fixture.markInitialized( display );
+  public void testRenderListenVerify() throws Exception {
     Fixture.markInitialized( ccombo );
     Fixture.preserveWidgets();
 
-    ccombo.removeModifyListener( listener );
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderModifyListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( ccombo, "modify" ) );
-  }
-
-  @Test
-  public void testRenderAddVerifyListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
+    ccombo.addListener( SWT.Verify, mock( Listener.class ) );
     lca.renderChanges( ccombo );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( ccombo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderRemoveVerifyListener() throws Exception {
-    VerifyListener listener = new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    };
-    ccombo.addVerifyListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.removeVerifyListener( listener );
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( ccombo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderVerifyListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.preserveWidgets();
-
-    ccombo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( ccombo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( ccombo, "verify" ) );
   }
 
 }

@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -26,7 +25,6 @@ import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
@@ -40,7 +38,6 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
@@ -266,48 +263,6 @@ public class FileUploadLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( fileUpload, "customVariant" ) );
-  }
-
-  @Test
-  public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( fileUpload );
-    Fixture.preserveWidgets();
-
-    fileUpload.addSelectionListener( mock( SelectionListener.class ) );
-    lca.renderChanges( fileUpload );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( fileUpload, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = mock( SelectionListener.class );
-    fileUpload.addSelectionListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( fileUpload );
-    Fixture.preserveWidgets();
-
-    fileUpload.removeSelectionListener( listener );
-    lca.renderChanges( fileUpload );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( fileUpload, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( fileUpload );
-    Fixture.preserveWidgets();
-
-    fileUpload.addSelectionListener( mock( SelectionListener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( fileUpload );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( fileUpload, "Selection" ) );
   }
 
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {

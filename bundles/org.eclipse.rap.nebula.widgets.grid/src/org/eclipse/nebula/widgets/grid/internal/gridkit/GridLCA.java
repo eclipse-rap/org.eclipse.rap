@@ -11,8 +11,6 @@
 package org.eclipse.nebula.widgets.grid.internal.gridkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -128,8 +126,6 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight() );
     preserveProperty( grid, PROP_SORT_DIRECTION, getSortDirection( grid ) );
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
-    preserveListenSelection( grid );
-    preserveListenDefaultSelection( grid );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
     preserveProperty( grid, PROP_CELL_TOOLTIP_TEXT, null );
   }

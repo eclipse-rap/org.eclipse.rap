@@ -16,8 +16,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
@@ -81,8 +79,6 @@ public final class TextLCA extends WidgetLCA<Text> {
     preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
-    preserveListenModifyVerify( text );
-    preserveListenDefaultSelection( text );
   }
 
   @Override

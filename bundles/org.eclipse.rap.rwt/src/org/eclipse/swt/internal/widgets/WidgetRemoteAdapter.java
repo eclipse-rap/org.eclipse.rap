@@ -22,8 +22,9 @@ import org.eclipse.swt.widgets.Widget;
 
 public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibility {
 
-  private static final int DATA = 1;
   private final static Runnable[] EMPTY = new Runnable[ 0 ];
+  private static final int DATA = 1;
+  private static final int LISTENERS = 2;
 
   private final String id;
   private Widget parent;
@@ -77,17 +78,17 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
     return preservedValues.get( propertyName );
   }
 
-  public void preserveListener( int eventType, boolean value ) {
-    long eventMask = getEventMask( eventType );
-    if( value ) {
-      preservedListeners |= eventMask;
-    } else {
-      preservedListeners &= ~eventMask;
-    }
+  public void preserveListeners( long eventList ) {
+    markPreserved( LISTENERS );
+    preservedListeners = eventList;
   }
 
-  public boolean getPreservedListener( int eventType ) {
-    return ( preservedListeners & getEventMask( eventType ) ) != 0;
+  public boolean hasPreservedListeners() {
+    return hasPreserved( LISTENERS );
+  }
+
+  public long getPreservedListeners() {
+    return preservedListeners;
   }
 
   public void preserveData( Object[] data ) {
@@ -156,13 +157,6 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   private Object readResolve() {
     initialize();
     return this;
-  }
-
-  private static long getEventMask( int eventType ) {
-    if( eventType <= 0 || eventType > 64 ) {
-      throw new IllegalArgumentException( "eventType not supported: " + eventType );
-    }
-    return 1L << (eventType - 1);
   }
 
 }

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -59,7 +58,6 @@ public final class ToggleHyperlinkLCA extends WidgetLCA<ToggleHyperlink> {
     ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
-    preserveListenDefaultSelection( hyperlink );
   }
 
   @Override

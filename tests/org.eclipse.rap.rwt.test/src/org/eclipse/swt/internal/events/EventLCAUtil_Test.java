@@ -187,4 +187,25 @@ public class EventLCAUtil_Test {
     assertTrue( EventLCAUtil.isListening( button, SWT.Selection ) );
   }
 
+  @Test
+  public void testGetEventMask() {
+    long eventMask = EventLCAUtil.getEventMask( 23 );
+
+    assertTrue( EventLCAUtil.containsEvent( eventMask, 23 ) );
+  }
+
+  @Test
+  public void testGetEventMask_ignoresCustomEvents() {
+    long eventMask = EventLCAUtil.getEventMask( 100 );
+
+    assertFalse( EventLCAUtil.containsEvent( eventMask, 100 ) );
+  }
+
+  @Test
+  public void testContainsEvent_ignoresCustomEvents() {
+    long eventMask = EventLCAUtil.getEventMask( 1 );
+
+    assertFalse( EventLCAUtil.containsEvent( eventMask, 65 ) );
+  }
+
 }

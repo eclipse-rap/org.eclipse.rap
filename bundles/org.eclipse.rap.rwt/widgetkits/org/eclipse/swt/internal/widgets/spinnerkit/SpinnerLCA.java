@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenModifyVerify;
@@ -27,8 +25,8 @@ import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -73,9 +71,6 @@ public final class SpinnerLCA extends WidgetLCA<Spinner> {
     preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    preserveListenModifyVerify( spinner );
-    preserveListener( spinner, SWT.Selection );
-    preserveListener( spinner, SWT.DefaultSelection );
   }
 
   @Override

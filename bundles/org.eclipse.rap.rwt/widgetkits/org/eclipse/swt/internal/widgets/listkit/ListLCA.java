@@ -14,8 +14,6 @@ package org.eclipse.swt.internal.widgets.listkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -61,8 +59,6 @@ public class ListLCA extends WidgetLCA<List> {
     preserveProperty( list, PROP_TOP_INDEX, list.getTopIndex() );
     preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
-    preserveListenSelection( list );
-    preserveListenDefaultSelection( list );
   }
 
   @Override

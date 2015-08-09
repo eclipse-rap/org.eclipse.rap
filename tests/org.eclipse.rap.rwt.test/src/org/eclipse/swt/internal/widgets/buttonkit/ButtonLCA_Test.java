@@ -155,6 +155,7 @@ public class ButtonLCA_Test {
     getRemoteObject( button ).setHandler( new ButtonOperationHandler( button ) );
     Label label = new Label( shell, SWT.NONE );
     button.addListener( SWT.Activate, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         button.setEnabled( false );
       }
@@ -207,6 +208,7 @@ public class ButtonLCA_Test {
     getRemoteObject( button2 ).setHandler( new ButtonOperationHandler( button2 ) );
     button2.setSelection( true );
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event.widget );
       }
@@ -398,45 +400,15 @@ public class ButtonLCA_Test {
   }
 
   @Test
-  public void testRenderAddSelectionListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListen_Selection() throws Exception {
     Fixture.markInitialized( button );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    button.addSelectionListener( new SelectionAdapter() { } );
+    button.addListener( SWT.Selection, mock( Listener.class ) );
     lca.renderChanges( button );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( button, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveSelectionListener() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    button.addSelectionListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( button );
-    Fixture.preserveWidgets();
-
-    button.removeSelectionListener( listener );
-    lca.renderChanges( button );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( button, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderSelectionListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( button );
-    Fixture.preserveWidgets();
-
-    button.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( button );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( button, "selection" ) );
   }
 
   @Test

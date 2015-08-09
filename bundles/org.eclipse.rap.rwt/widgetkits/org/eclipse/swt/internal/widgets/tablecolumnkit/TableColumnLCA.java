@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -59,7 +58,6 @@ public final class TableColumnLCA extends WidgetLCA<TableColumn> {
     preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
     preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
     preserveProperty( column, PROP_FIXED, isFixed( column ) );
-    preserveListenSelection( column );
   }
 
   @Override

@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.sliderkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -61,7 +60,6 @@ public class SliderLCA extends WidgetLCA<Slider> {
     preserveProperty( slider, PROP_INCREMENT, slider.getIncrement() );
     preserveProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement() );
     preserveProperty( slider, PROP_THUMB, slider.getThumb() );
-    preserveListenSelection( slider );
   }
 
   @Override

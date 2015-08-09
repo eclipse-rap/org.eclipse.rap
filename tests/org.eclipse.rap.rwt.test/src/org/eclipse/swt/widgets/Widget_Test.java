@@ -41,7 +41,10 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.internal.SWTEventListener;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.events.EventList;
+import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -508,6 +511,56 @@ public class Widget_Test {
     assertEquals( 2, operations.size() );
     assertEquals( listener, operations.get( 0 ).getListener() );
     assertEquals( listener, operations.get( 1 ).getListener() );
+  }
+
+  @Test
+  public void testAddListener_preservesListeners() {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
+    adapter.clearPreserved();
+
+    widget.addListener( SWT.Selection, mock( Listener.class ) );
+
+    assertTrue( adapter.hasPreservedListeners() );
+    assertEquals( 0, adapter.getPreservedListeners(), SWT.Selection );
+  }
+
+  @Test
+  public void testRemoveListener_preservesListeners() {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
+    Listener listener = mock( Listener.class );
+    widget.addListener( SWT.Selection, listener );
+    adapter.clearPreserved();
+
+    widget.removeListener( SWT.Selection, listener );
+
+    assertTrue( adapter.hasPreservedListeners() );
+    assertTrue( EventLCAUtil.containsEvent( adapter.getPreservedListeners(), SWT.Selection ) );
+  }
+
+  @Test
+  public void testRemoveListener_typed_preservesListeners() {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
+    SWTEventListener listener = mock( SWTEventListener.class );
+    widget.addListener( SWT.Selection, new TypedListener( listener ) );
+    adapter.clearPreserved();
+
+    widget.removeListener( SWT.Selection, listener );
+
+    assertTrue( adapter.hasPreservedListeners() );
+    assertTrue( EventLCAUtil.containsEvent( adapter.getPreservedListeners(), SWT.Selection ) );
+  }
+
+  @Test
+  public void testRemoveDisposeListener_typed_preservesListeners() {
+    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )widget.getAdapter( RemoteAdapter.class );
+    DisposeListener listener = mock( DisposeListener.class );
+    widget.addDisposeListener( listener );
+    adapter.clearPreserved();
+
+    widget.removeDisposeListener( listener );
+
+    assertTrue( adapter.hasPreservedListeners() );
+    assertTrue( EventLCAUtil.containsEvent( adapter.getPreservedListeners(), SWT.Dispose ) );
   }
 
   @Test

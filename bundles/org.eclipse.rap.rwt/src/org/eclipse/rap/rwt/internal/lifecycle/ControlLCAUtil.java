@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenKey;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
@@ -84,13 +82,6 @@ public class ControlLCAUtil {
     preserveTabIndex( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
-    preserveListenActivate( control );
-    preserveListenMouse( control );
-    preserveListenFocus( control );
-    preserveListenKey( control );
-    preserveListenTraverse( control );
-    preserveListenMenuDetect( control );
-    preserveListenHelp( control );
   }
 
   public static void renderChanges( Control control ) {
@@ -383,14 +374,6 @@ public class ControlLCAUtil {
     WidgetLCAUtil.renderData( control );
   }
 
-  private static void preserveListenActivate( Control control ) {
-    // Note: Shell "Activate" event is handled by ShellLCA
-    if( !( control instanceof Shell ) ) {
-      preserveListener( control, SWT.Activate );
-      preserveListener( control, SWT.Deactivate );
-    }
-  }
-
   private static void renderListenActivate( Control control ) {
     // Note: Shell "Activate" event is handled by ShellLCA
     if( !( control instanceof Shell ) ) {
@@ -399,23 +382,10 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveListenMouse( Control control ) {
-    preserveListener( control, SWT.MouseDown );
-    preserveListener( control, SWT.MouseUp );
-    preserveListener( control, SWT.MouseDoubleClick );
-  }
-
   private static void renderListenMouse( Control control ) {
     renderListener( control, SWT.MouseDown, PROP_MOUSE_DOWN_LISTENER );
     renderListener( control, SWT.MouseUp, PROP_MOUSE_UP_LISTENER );
     renderListener( control, SWT.MouseDoubleClick, PROP_MOUSE_DOUBLE_CLICK_LISTENER );
-  }
-
-  private static void preserveListenFocus( Control control ) {
-    if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      preserveListener( control, SWT.FocusIn );
-      preserveListener( control, SWT.FocusOut );
-    }
   }
 
   private static void renderListenFocus( Control control ) {
@@ -425,24 +395,12 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveListenTraverse( Control control ) {
-    preserveListener( control, SWT.Traverse );
-  }
-
   private static void renderListenTraverse( Control control ) {
     renderListener( control, SWT.Traverse, PROP_TRAVERSE_LISTENER );
   }
 
-  private static void preserveListenMenuDetect( Control control ) {
-    preserveListener( control, SWT.MenuDetect );
-  }
-
   private static void renderListenMenuDetect( Control control ) {
     renderListener( control, SWT.MenuDetect, PROP_MENU_DETECT_LISTENER );
-  }
-
-  private static void preserveListenHelp( Control control ) {
-    preserveListener( control, SWT.Help );
   }
 
   private static void renderListenHelp( Control control ) {

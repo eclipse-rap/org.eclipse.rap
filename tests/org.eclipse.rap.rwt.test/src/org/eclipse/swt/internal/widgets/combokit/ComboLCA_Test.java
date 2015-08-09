@@ -41,8 +41,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
@@ -112,6 +110,7 @@ public class ComboLCA_Test {
     };
     combo.addSelectionListener( selectionListener );
     combo.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
       }
     } );
@@ -613,15 +612,11 @@ public class ComboLCA_Test {
   }
 
   @Test
-  public void testRenderAddModifyListener() throws Exception {
-    Fixture.markInitialized( display );
+  public void testRenderListen_Modify() throws Exception {
     Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    combo.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
+    combo.addListener( SWT.Modify, mock( Listener.class ) );
     lca.renderChanges( combo );
 
     TestMessage message = Fixture.getProtocolMessage();
@@ -629,89 +624,15 @@ public class ComboLCA_Test {
   }
 
   @Test
-  public void testRenderRemoveModifyListener() throws Exception {
-    ModifyListener listener = new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    };
-    combo.addModifyListener( listener );
-    Fixture.markInitialized( display );
+  public void testRenderListen_Verify() throws Exception {
     Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    combo.removeModifyListener( listener );
-    lca.renderChanges( combo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( combo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderModifyListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
-
-    combo.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( combo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( combo, "modify" ) );
-  }
-
-  @Test
-  public void testRenderAddVerifyListener() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
-
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
+    combo.addListener( SWT.Verify, mock( Listener.class ) );
     lca.renderChanges( combo );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.TRUE, message.findListenProperty( combo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderRemoveVerifyListener() throws Exception {
-    VerifyListener listener = new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    };
-    combo.addVerifyListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
-
-    combo.removeVerifyListener( listener );
-    lca.renderChanges( combo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( combo, "Modify" ) );
-  }
-
-  @Test
-  public void testRenderVerifyListenerUnchanged() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( combo );
-    Fixture.preserveWidgets();
-
-    combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( combo );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( combo, "verify" ) );
   }
 
   @Test

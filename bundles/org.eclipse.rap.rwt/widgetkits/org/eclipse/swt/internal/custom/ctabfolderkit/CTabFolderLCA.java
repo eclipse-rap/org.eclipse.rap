@@ -99,7 +99,6 @@ public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
                       getSelectionBackgroundImage( folder ) );
     preserveSelectionBgGradient( folder );
     preserveProperty( folder, PROP_BORDER_VISIBLE, folder.getBorderVisible() );
-    WidgetLCAUtil.preserveListenDefaultSelection( folder );
   }
 
   @Override

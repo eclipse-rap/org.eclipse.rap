@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.scripting.ClientListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.events.EventLCAUtil;
 
 
 /**
@@ -183,6 +185,20 @@ class EventTable implements SerializableCompatibility {
         }
       }
     }
+  }
+
+  public long getEventList() {
+    long result = 0;
+    if( types != null ) {
+      for( int i = 0; i < types.length; i++ ) {
+        int type = types[ i ];
+        Listener listener = listeners[ i ];
+        if( !( listener instanceof ClientListener ) ) {
+          result |= EventLCAUtil.getEventMask( type );
+        }
+      }
+    }
+    return result;
   }
 
 }

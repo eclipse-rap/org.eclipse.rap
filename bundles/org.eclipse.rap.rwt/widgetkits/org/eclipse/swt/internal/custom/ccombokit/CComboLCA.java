@@ -12,9 +12,6 @@ package org.eclipse.swt.internal.custom.ccombokit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenDefaultSelection;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenModifyVerify;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenDefaultSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenModifyVerify;
@@ -68,9 +65,6 @@ public final class CComboLCA extends WidgetLCA<CCombo> {
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
     preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
-    preserveListenSelection( ccombo );
-    preserveListenDefaultSelection( ccombo );
-    preserveListenModifyVerify( ccombo );
   }
 
   @Override

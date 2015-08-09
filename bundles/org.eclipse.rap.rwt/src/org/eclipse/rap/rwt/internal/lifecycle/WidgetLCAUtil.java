@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getClien
 import static org.eclipse.rap.rwt.internal.scripting.ClientListenerUtil.getRemoteId;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.eclipse.swt.internal.events.EventLCAUtil.containsEvent;
 import static org.eclipse.swt.internal.events.EventLCAUtil.isListening;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
@@ -501,60 +502,40 @@ public final class WidgetLCAUtil {
     }
   }
 
-  public static void preserveListenHelp( Widget widget ) {
-    preserveListener( widget, SWT.Help );
-  }
-
   public static void renderListenHelp( Widget widget ) {
     renderListener( widget, SWT.Help, PROP_HELP_LISTENER );
-  }
-
-  public static void preserveListenSelection( Widget widget ) {
-    preserveListener( widget, SWT.Selection );
   }
 
   public static void renderListenSelection( Widget widget ) {
     renderListener( widget, SWT.Selection, PROP_SELECTION_LISTENER );
   }
 
-  public static void preserveListenDefaultSelection( Widget widget ) {
-    preserveListener( widget, SWT.DefaultSelection );
-  }
-
   public static void renderListenDefaultSelection( Widget widget ) {
     renderListener( widget, SWT.DefaultSelection, PROP_DEFAULT_SELECTION_LISTENER );
   }
 
-  public static void preserveListenModifyVerify( Widget widget ) {
-    preserveListener( widget, SWT.Modify );
-    preserveListener( widget, SWT.Verify );
-  }
-
-  // NOTE : Client does not support Verify, it is created server-side from Modify
+  // NOTE: Client does not support Verify, it is created server-side from Modify
   public static void renderListenModifyVerify( Widget widget ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    boolean actual = isListening( widget, SWT.Modify )
-                  || isListening( widget, SWT.Verify );
-    boolean preserved = adapter.getPreservedListener( SWT.Modify )
-                     || adapter.getPreservedListener( SWT.Verify );
-    if( actual != preserved ) {
-      getRemoteObject( widget ).listen( PROP_MODIFY_LISTENER, actual );
+    if( adapter.hasPreservedListeners() ) {
+      boolean actual = isListening( widget, SWT.Modify ) || isListening( widget, SWT.Verify );
+      boolean preserved = containsEvent( adapter.getPreservedListeners(), SWT.Modify )
+                       || containsEvent( adapter.getPreservedListeners(), SWT.Verify );
+      if( changed( widget, actual, preserved, false ) ) {
+        getRemoteObject( widget ).listen( PROP_MODIFY_LISTENER, actual );
+      }
     }
-  }
-
-  public static void preserveListenKey( Widget widget ) {
-    preserveListener( widget, SWT.KeyUp );
-    preserveListener( widget, SWT.KeyDown );
   }
 
   public static void renderListenKey( Widget widget ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    boolean actual = isListening( widget, SWT.KeyUp )
-                  || isListening( widget, SWT.KeyDown );
-    boolean preserved = adapter.getPreservedListener( SWT.KeyUp )
-                     || adapter.getPreservedListener( SWT.KeyDown );
-    if( changed( widget, actual, preserved, false ) ) {
-      getRemoteObject( widget ).listen( WidgetLCAUtil.PROP_KEY_LISTENER, actual );
+    if( adapter.hasPreservedListeners() ) {
+      boolean actual = isListening( widget, SWT.KeyUp ) || isListening( widget, SWT.KeyDown );
+      boolean preserved = containsEvent( adapter.getPreservedListeners(), SWT.KeyUp )
+                       || containsEvent( adapter.getPreservedListeners(), SWT.KeyDown );
+      if( changed( widget, actual, preserved, false ) ) {
+        getRemoteObject( widget ).listen( WidgetLCAUtil.PROP_KEY_LISTENER, actual );
+      }
     }
   }
 
@@ -574,29 +555,28 @@ public final class WidgetLCAUtil {
     }
   }
 
-  public static void preserveListener( Widget widget, int eventType ) {
-    boolean listening = isListening( widget, eventType );
-    preserveListener( widget, eventType, listening );
-  }
-
-  public static void preserveListener( Widget widget, int eventType, boolean isListening ) {
+  public static void preserveListeners( Widget widget, long eventList ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    adapter.preserveListener( eventType, isListening );
+    if( !adapter.hasPreservedListeners() ) {
+      adapter.preserveListeners( eventList );
+    }
   }
 
   public static void renderListener( Widget widget, int eventType, String eventName ) {
     renderListener( widget, eventType, eventName, isListening( widget, eventType ) );
   }
 
-  public static void renderListener( Widget widget,
-                                     int eventType,
-                                     String eventName,
-                                     boolean isListening )
+  private static void renderListener( Widget widget,
+                                      int eventType,
+                                      String eventName,
+                                      boolean isListening )
   {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( widget );
-    boolean preserved = adapter.getPreservedListener( eventType );
-    if( changed( widget, isListening, preserved, false ) ) {
-      getRemoteObject( widget ).listen( eventName, isListening );
+    if( adapter.hasPreservedListeners() ) {
+      boolean preserved = containsEvent( adapter.getPreservedListeners(), eventType );
+      if( changed( widget, isListening, preserved, false ) ) {
+        getRemoteObject( widget ).listen( eventName, isListening );
+      }
     }
   }
 

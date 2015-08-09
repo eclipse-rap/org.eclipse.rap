@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.tooltipkit;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
@@ -57,7 +56,6 @@ public final class ToolTipLCA extends WidgetLCA<ToolTip> {
     preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
     preserveProperty( toolTip, PROP_LOCATION, getLocation( toolTip ) );
     preserveProperty( toolTip, PROP_VISIBLE, toolTip.isVisible() );
-    preserveListenSelection( toolTip );
   }
 
   @Override

@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
@@ -65,7 +64,6 @@ public final class ButtonLCA extends WidgetLCA<Button> {
     preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
     preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
     preserveProperty( button, PROP_BADGE, getBadge( button ) );
-    preserveListenSelection( button );
   }
 
   @Override

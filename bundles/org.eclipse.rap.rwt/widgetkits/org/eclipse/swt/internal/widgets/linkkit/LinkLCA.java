@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRe
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
@@ -45,7 +44,6 @@ public class LinkLCA extends WidgetLCA<Link> {
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
-    preserveListenSelection( link );
   }
 
   @Override

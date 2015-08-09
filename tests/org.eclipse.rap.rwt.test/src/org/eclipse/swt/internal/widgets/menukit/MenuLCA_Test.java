@@ -40,6 +40,7 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -356,11 +357,10 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderAddMenuListener() throws Exception {
+  public void testRenderListen_Menu() throws Exception {
     Menu menu = new Menu( shell, SWT.POP_UP );
-    Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     menu.addMenuListener( mock( MenuListener.class ) );
     lca.renderChanges( menu );
@@ -375,7 +375,7 @@ public class MenuLCA_Test {
     Menu menu = new Menu( shell, SWT.BAR );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     menu.addMenuListener( mock( MenuListener.class ) );
     lca.renderChanges( menu );
@@ -389,7 +389,7 @@ public class MenuLCA_Test {
   public void testRenderAddMenuListener_DropDown() throws Exception {
     Menu menu = new Menu( shell, SWT.DROP_DOWN );
     Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     menu.addMenuListener( mock( MenuListener.class ) );
     lca.renderChanges( menu );
@@ -406,7 +406,7 @@ public class MenuLCA_Test {
     menu.addMenuListener( listener );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
     menu.removeMenuListener( listener );
     lca.renderChanges( menu );
@@ -449,32 +449,16 @@ public class MenuLCA_Test {
   @Test
   public void testRenderRemoveHelpListener() throws Exception {
     Menu menu = new Menu( shell, SWT.BAR );
-    HelpListener listener = mock ( HelpListener.class );
-    menu.addHelpListener( listener );
-    Fixture.markInitialized( display );
+    Listener listener = mock ( Listener.class );
+    menu.addListener( SWT.Help, listener );
     Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
+    Fixture.clearPreserved();
 
-    menu.removeHelpListener( listener );
+    menu.removeListener( SWT.Help, listener );
     lca.renderChanges( menu );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( JsonValue.FALSE, message.findListenProperty( menu, "Help" ) );
-  }
-
-  @Test
-  public void testRenderHelpListenerUnchanged() throws Exception {
-    Menu menu = new Menu( shell, SWT.BAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( menu );
-    Fixture.preserveWidgets();
-
-    menu.addHelpListener( mock ( HelpListener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( menu );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( menu, "help" ) );
   }
 
   @Test
