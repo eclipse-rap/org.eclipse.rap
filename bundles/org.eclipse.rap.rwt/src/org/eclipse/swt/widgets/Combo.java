@@ -1190,7 +1190,6 @@ public class Combo extends Composite {
     if( ( result & SWT.SIMPLE ) != 0 ) {
       return result & ~SWT.READ_ONLY;
     }
-    result |= SWT.H_SCROLL; // Copied from SWT Combo constructor
     return result;
   }
 }

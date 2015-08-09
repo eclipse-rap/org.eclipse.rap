@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -61,6 +62,14 @@ public class Combo_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testDoesNotSupportScrollBars() {
+    Combo combo = new Combo( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+
+    assertNull( combo.getHorizontalBar() );
+    assertNull( combo.getVerticalBar() );
   }
 
   @Test
@@ -516,6 +525,7 @@ public class Combo_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
@@ -584,6 +594,7 @@ public class Combo_Test {
     combo = new Combo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
@@ -699,11 +710,13 @@ public class Combo_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
     combo.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     combo.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
@@ -720,6 +733,7 @@ public class Combo_Test {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
@@ -735,6 +749,7 @@ public class Combo_Test {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
@@ -812,6 +827,7 @@ public class Combo_Test {
     combo.add( "test1" );
     combo.add( "test2" );
     combo.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.text = event.text + "2";
       }

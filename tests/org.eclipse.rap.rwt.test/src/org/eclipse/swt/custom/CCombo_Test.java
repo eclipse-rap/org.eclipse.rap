@@ -13,6 +13,7 @@ package org.eclipse.swt.custom;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -64,6 +65,14 @@ public class CCombo_Test {
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testDoesNotSupportScrollBars() {
+    Combo combo = new Combo( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+
+    assertNull( combo.getHorizontalBar() );
+    assertNull( combo.getVerticalBar() );
   }
 
   @Test
@@ -466,6 +475,7 @@ public class CCombo_Test {
   public void testAddModifyListener() {
     combo.setItems( new String [] { "A-1", "B-1", "C-1" } );
     ModifyListener listener = new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
@@ -541,6 +551,7 @@ public class CCombo_Test {
     combo = new CCombo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
@@ -647,11 +658,13 @@ public class CCombo_Test {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
     combo.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     combo.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
@@ -668,6 +681,7 @@ public class CCombo_Test {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
@@ -683,6 +697,7 @@ public class CCombo_Test {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
@@ -766,6 +781,7 @@ public class CCombo_Test {
     combo.add( "test1" );
     combo.add( "test2" );
     combo.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.text = event.text + "2";
       }
@@ -836,12 +852,9 @@ public class CCombo_Test {
     assertFalse( combo.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    try {
-      combo.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+    combo.addSelectionListener( null );
   }
 
 }
