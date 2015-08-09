@@ -31,7 +31,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.List;
 
 
@@ -64,13 +63,6 @@ public class ListLCA extends WidgetLCA<List> {
     preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
     preserveListenSelection( list );
     preserveListenDefaultSelection( list );
-    ScrollBarLCAUtil.preserveValues( list );
-  }
-
-  @Override
-  public void readData( List list ) {
-    super.readData( list );
-    ScrollBarLCAUtil.processSelectionEvent( list );
   }
 
   @Override
@@ -80,7 +72,6 @@ public class ListLCA extends WidgetLCA<List> {
     remoteObject.set( "parent", getId( list.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( list, ALLOWED_STYLES ) ) );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( list ) );
-    ScrollBarLCAUtil.renderInitialization( list );
   }
 
   @Override
@@ -100,7 +91,6 @@ public class ListLCA extends WidgetLCA<List> {
                     PROP_ITEM_DIMENSIONS,
                     getItemDimensions( list ),
                     DEFAULT_ITEM_DIMENSIONS );
-    ScrollBarLCAUtil.renderChanges( list );
   }
 
   //////////////////

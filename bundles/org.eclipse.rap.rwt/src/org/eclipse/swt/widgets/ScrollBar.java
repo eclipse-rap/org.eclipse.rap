@@ -11,18 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
-import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
@@ -529,17 +523,14 @@ public class ScrollBar extends Widget {
   }
 
   @Override
-  public void dispose() {
-    // FIXME: [if] ScrollBar has no LCA. Quick fix that prevents Scrollbars to be added to
-    // DisposedWidgets list. See DisplayLCA#disposeWidgets().
-    // For the same reason the remote object is marked as destroyed here too.
-    WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( this );
-    adapter.setInitialized( false );
-    RemoteObject remoteObject = getRemoteObject( this );
-    if( remoteObject != null ) {
-      ( ( RemoteObjectImpl )remoteObject ).markDestroyed();
+  void releaseParent() {
+    super.releaseParent();
+    if( parent.horizontalBar == this ) {
+      parent.horizontalBar = null;
     }
-    super.dispose();
+    if( parent.verticalBar == this ) {
+      parent.verticalBar = null;
+    }
   }
 
   //////////////////

@@ -32,7 +32,6 @@ import java.util.List;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridItem;
-import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.gridkit.GridLCA.ItemMetrics;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -55,8 +54,6 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -791,161 +788,6 @@ public class GridLCA_Test {
   }
 
   @Test
-  public void testRenderInitialScrollBarsVisible() throws IOException {
-    doFakeRedraw();
-
-    lca.render( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( grid.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( grid.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    grid.setSize( 200, 200 );
-    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
-
-    columns[ 0 ].setWidth( 150 );
-    doFakeRedraw();
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( grid.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( grid.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    grid.setSize( 200, 200 );
-    createGridColumns( grid, 3, SWT.NONE );
-
-    createGridItems( grid, 20, 0 );
-    doFakeRedraw();
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( grid.getHorizontalBar(), "visibility" ) );
-    assertEquals( JsonValue.TRUE, message.findSetProperty( grid.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    grid.setSize( 200, 200 );
-    GridColumn[] columns = createGridColumns( grid, 3, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( grid.getHorizontalBar() );
-    Fixture.markInitialized( grid.getVerticalBar() );
-
-    columns[ 0 ].setWidth( 150 );
-    createGridItems( grid, 20, 0 );
-    doFakeRedraw();
-    Fixture.preserveWidgets();
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( grid.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( grid.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrollBar hScroll = grid.getHorizontalBar();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrollBar hScroll = grid.getHorizontalBar();
-    Listener listener = mock( Listener.class );
-    hScroll.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    ScrollBar hScroll = grid.getHorizontalBar();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrollBar vScroll = grid.getVerticalBar();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrollBar vScroll = grid.getVerticalBar();
-    Listener listener = mock( Listener.class );
-    vScroll.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    ScrollBar vScroll = grid.getVerticalBar();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( grid );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( grid );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
-  }
-
-  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( grid );
@@ -1060,6 +902,7 @@ public class GridLCA_Test {
     createGridItems( grid, 5, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( grid );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         adapter.setCellToolTipText( null );
       }
@@ -1250,10 +1093,6 @@ public class GridLCA_Test {
       .add( "column", column );
     Fixture.fakeCallOperation( getId( grid ), "renderToolTipText", parameters );
     Fixture.executeLifeCycleFromServerThread();
-  }
-
-  private void doFakeRedraw() {
-    grid.getAdapter( IGridAdapter.class ).doRedraw();
   }
 
 }

@@ -38,7 +38,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ScrollBar;
 
@@ -100,18 +99,11 @@ public class GridLCA extends WidgetLCA<Grid> {
     remoteObject.set( "indentionWidth", adapter.getIndentationWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );
     TemplateLCAUtil.renderRowTemplate( grid );
-    ScrollBarLCAUtil.renderInitialization( grid );
     remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( grid ) );
     // Always render listen for Expand and Collapse, currently required for scrollbar
     // visibility update and setData events.
     remoteObject.listen( PROP_EXPAND_LISTENER, true );
     remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
-  }
-
-  @Override
-  public void readData( Grid grid ) {
-    super.readData( grid );
-    ScrollBarLCAUtil.processSelectionEvent( grid );
   }
 
   @Override
@@ -140,7 +132,6 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveListenDefaultSelection( grid );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
     preserveProperty( grid, PROP_CELL_TOOLTIP_TEXT, null );
-    ScrollBarLCAUtil.preserveValues( grid );
   }
 
   @Override
@@ -169,7 +160,6 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderListenDefaultSelection( grid );
     renderProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ), false );
     renderProperty( grid, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( grid ), null );
-    ScrollBarLCAUtil.renderChanges( grid );
   }
 
   @Override

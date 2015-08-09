@@ -19,10 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -40,9 +37,6 @@ import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Composite;
@@ -100,20 +94,6 @@ public class ScrolledCompositeLCA_Test {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
-  }
-
-  @Test
-  public void testReadData_ScrollBarsSelectionEvent() {
-    sc.setContent( new Composite( sc, SWT.NONE ) );
-    SelectionListener selectionListener = mock( SelectionListener.class );
-    hScroll.addSelectionListener( selectionListener );
-    vScroll.addSelectionListener( selectionListener );
-
-    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
-    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
-    Fixture.readDataAndProcessAction( sc );
-
-    verify( selectionListener, times( 2 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
@@ -276,142 +256,6 @@ public class ScrolledCompositeLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( sc, "showFocusedControl" ) );
-  }
-
-  @Test
-  public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    hScroll.addSelectionListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.removeSelectionListener( listener );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( hScroll );
-    Fixture.preserveWidgets();
-
-    hScroll.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    SelectionListener listener = new SelectionAdapter() { };
-    vScroll.addSelectionListener( listener );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.removeSelectionListener( listener );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( vScroll );
-    Fixture.preserveWidgets();
-
-    vScroll.addSelectionListener( new SelectionAdapter() { } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderInitialScrollBarsVisible() throws IOException {
-    lca.render( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    hScroll.setVisible( true );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    vScroll.setVisible( true );
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sc );
-    Fixture.markInitialized( hScroll );
-    Fixture.markInitialized( vScroll );
-
-    hScroll.setVisible( false );
-    vScroll.setVisible( false );
-    Fixture.preserveWidgets();
-    lca.renderChanges( sc );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
   }
 
 }

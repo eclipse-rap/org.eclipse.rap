@@ -19,16 +19,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -39,10 +35,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -54,8 +48,6 @@ public class ListLCA_Test {
   private Shell shell;
   private ListLCA lca;
   private List list;
-  private ScrollBar hScroll;
-  private ScrollBar vScroll;
 
   @Before
   public void setUp() {
@@ -63,8 +55,6 @@ public class ListLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    hScroll = list.getHorizontalBar();
-    vScroll = list.getVerticalBar();
     lca = new ListLCA();
   }
 
@@ -76,30 +66,6 @@ public class ListLCA_Test {
   @Test
   public void testCommonControlProperties() throws IOException {
     ControlLCATestUtil.testCommonControlProperties( list );
-  }
-
-  @Test
-  public void testScrollBarsSelectionEvent_horizontal() {
-    Listener listener = mock( Listener.class );
-    hScroll.addListener( SWT.Selection, listener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
-    Fixture.readDataAndProcessAction( list );
-
-    verify( listener ).handleEvent( any( Event.class ) );
-  }
-
-  @Test
-  public void testScrollBarsSelectionEvent_vertical() {
-    Listener listener = mock( Listener.class );
-    vScroll.addListener( SWT.Selection, listener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
-    Fixture.readDataAndProcessAction( list );
-
-    verify( listener ).handleEvent( any( Event.class ) );
   }
 
   @Test
@@ -247,8 +213,6 @@ public class ListLCA_Test {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( list );
-    Fixture.markInitialized( hScroll );
-    Fixture.markInitialized( vScroll );
 
     list.setTopIndex( 2 );
     Fixture.preserveWidgets();
@@ -293,65 +257,13 @@ public class ListLCA_Test {
   }
 
   @Test
-  public void testRenderInitialScrollBarsVisible() throws IOException {
-    lca.render( list );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    list.setSize( 20, 100 );
-
-    list.add( "Item 1" );
-    lca.renderChanges( list );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    list.setSize( 100, 20 );
-
-    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
-    lca.renderChanges( list );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    list.setSize( 20, 20 );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( list );
-    Fixture.markInitialized( hScroll );
-    Fixture.markInitialized( vScroll );
-
-    list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
-    Fixture.preserveWidgets();
-    lca.renderChanges( list );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( hScroll, "visibility" ) );
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
   public void testRenderInitialItemDimensions() throws IOException {
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
 
     lca.render( list );
 
     TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( list, "itemDimensions" ) );
+    assertNotNull( message.findCreateOperation( list ).getProperties().get( "itemDimensions" ) );
   }
 
   @Test

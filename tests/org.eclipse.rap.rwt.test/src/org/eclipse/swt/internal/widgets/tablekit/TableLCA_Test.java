@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.tablekit;
 import static org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
@@ -23,10 +22,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -51,7 +48,6 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
@@ -67,7 +63,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -153,6 +148,7 @@ public class TableLCA_Test {
     Fixture.markInitialized( table );
     getRemoteObject( table ).setHandler( new TableOperationHandler( table ) );
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
@@ -364,30 +360,6 @@ public class TableLCA_Test {
 
     assertEquals( 100, metrics[ 1 ].left );
     assertEquals( 100, metrics[ 1 ].width );
-  }
-
-  @Test
-  public void testHorizontalScrollbarsSelectionEvent() {
-    createTableItems( table, 20 );
-    SelectionListener listener = mock( SelectionListener.class );
-    table.getHorizontalBar().addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( table.getHorizontalBar() ), "Selection", null );
-    Fixture.readDataAndProcessAction( table );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
-  }
-
-  @Test
-  public void testVerticalScrollbarsSelectionEvent() {
-    createTableItems( table, 20 );
-    SelectionListener listener = mock( SelectionListener.class );
-    table.getVerticalBar().addSelectionListener( listener );
-
-    Fixture.fakeNotifyOperation( getId( table.getVerticalBar() ), "Selection", null );
-    Fixture.readDataAndProcessAction( table );
-
-    verify( listener, times( 1 ) ).widgetSelected( any( SelectionEvent.class ) );
   }
 
   @Test
@@ -1087,132 +1059,6 @@ public class TableLCA_Test {
   }
 
   @Test
-  public void testRenderScrollBarsSelectionListener_horizontal_added() throws Exception {
-    ScrollBar hScroll = table.getHorizontalBar();
-    Fixture.markInitialized( hScroll );
-
-    lca.preserveValues( table );
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( table );
-
-    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_horizontal_removed() throws Exception {
-    ScrollBar hScroll = table.getHorizontalBar();
-    Fixture.markInitialized( hScroll );
-    Listener listener = mock( Listener.class );
-    hScroll.addListener( SWT.Selection, listener );
-
-    lca.preserveValues( table );
-    hScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( table );
-
-    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_horizontal_unchanged() throws Exception {
-    ScrollBar hScroll = table.getHorizontalBar();
-    Fixture.markInitialized( hScroll );
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-
-    lca.preserveValues( table );
-    lca.renderChanges( table );
-
-    assertNull( getProtocolMessage().findListenOperation( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_added() throws Exception {
-    ScrollBar vScroll = table.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-
-    lca.preserveValues( table );
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( table );
-
-    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_removed() throws Exception {
-    ScrollBar vScroll = table.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-    Listener listener = mock( Listener.class );
-    vScroll.addListener( SWT.Selection, listener );
-
-    lca.preserveValues( table );
-    vScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( table );
-
-    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_unchanged() throws Exception {
-    ScrollBar vScroll = table.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-
-    lca.preserveValues( table );
-    lca.renderChanges( table );
-
-    assertNull( getProtocolMessage().findListenOperation( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderInitialScrollBarsVisible() throws IOException {
-    lca.render( table );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-
-    column.setWidth( 25 );
-    lca.renderChanges( table );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    new TableColumn( table, SWT.NONE );
-
-    table.setHeaderVisible( true );
-    lca.renderChanges( table );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertEquals( JsonValue.TRUE, message.findSetProperty( table.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    TableColumn column = new TableColumn( table, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( table.getHorizontalBar() );
-    Fixture.markInitialized( table.getVerticalBar() );
-
-    column.setWidth( 25 );
-    table.setHeaderVisible( true );
-    Fixture.preserveWidgets();
-    lca.renderChanges( table );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( table.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( table.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( table );
@@ -1356,6 +1202,7 @@ public class TableLCA_Test {
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
@@ -1394,6 +1241,7 @@ public class TableLCA_Test {
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         adapter.setCellToolTipText( null );
       }

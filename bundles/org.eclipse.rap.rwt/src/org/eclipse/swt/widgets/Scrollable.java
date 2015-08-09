@@ -33,8 +33,8 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public abstract class Scrollable extends Control {
 
-  private ScrollBar verticalBar;
-  private ScrollBar horizontalBar;
+  ScrollBar verticalBar;
+  ScrollBar horizontalBar;
 
   Scrollable( Composite parent ) {
     // prevent instantiation from outside this package

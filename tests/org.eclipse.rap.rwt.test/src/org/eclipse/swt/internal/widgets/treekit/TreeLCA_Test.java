@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +47,6 @@ import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -63,7 +61,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -302,36 +299,13 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testScrollbarsSelectionEvent() {
-    List<SelectionEvent> events = new ArrayList<SelectionEvent>();
-    SelectionListener listener = new LoggingSelectionListener( events );
-    ScrollBar hScroll = tree.getHorizontalBar();
-    hScroll.addSelectionListener( listener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeNotifyOperation( getId( hScroll ), "Selection", null );
-    Fixture.readDataAndProcessAction( tree );
-
-    assertEquals( 1, events.size() );
-
-    events.clear();
-    ScrollBar vScroll = tree.getVerticalBar();
-    vScroll.addSelectionListener( listener );
-
-    Fixture.fakeNewRequest();
-    Fixture.fakeNotifyOperation( getId( vScroll ), "Selection", null );
-    Fixture.readDataAndProcessAction( tree );
-
-    assertEquals( 1, events.size() );
-  }
-
-  @Test
   public void testCellTooltipRequestForMissingCells() {
     getRemoteObject( tree ).setHandler( new TreeOperationHandler( tree ) );
     createTreeItems( tree, 3 );
     final StringBuilder log = new StringBuilder();
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
@@ -383,6 +357,7 @@ public class TreeLCA_Test {
     tree.setSize( 200, 200 );
     tree.addListener( SWT.SetData, new Listener() {
 
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( "node " + tree.indexOf( item ) );
@@ -1051,148 +1026,6 @@ public class TreeLCA_Test {
   }
 
   @Test
-  public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrollBar hScroll = tree.getHorizontalBar();
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.preserveWidgets();
-
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
-    ScrollBar hScroll = tree.getHorizontalBar();
-    Listener listener = mock( Listener.class );
-    hScroll.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
-    Fixture.preserveWidgets();
-
-    hScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
-    ScrollBar hScroll = tree.getHorizontalBar();
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.preserveWidgets();
-
-    hScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( hScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrollBar vScroll = tree.getVerticalBar();
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.preserveWidgets();
-
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
-    ScrollBar vScroll = tree.getVerticalBar();
-    Listener listener = mock( Listener.class );
-    vScroll.addListener( SWT.Selection, listener );
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.fakeNewRequest();
-    Fixture.preserveWidgets();
-
-    vScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.FALSE, message.findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
-    ScrollBar vScroll = tree.getVerticalBar();
-    Fixture.markInitialized( display );
-    lca.render( tree );
-    Fixture.preserveWidgets();
-
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    Fixture.preserveWidgets();
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findListenOperation( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderInitialScrollBarsVisible() throws IOException {
-    lca.render( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Horizontal() throws IOException {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-
-    column.setWidth( 25 );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisible_Vertical() throws IOException {
-    new TreeColumn( tree, SWT.NONE );
-
-    tree.setHeaderVisible( true );
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertEquals( JsonValue.TRUE, message.findSetProperty( tree.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( tree.getHorizontalBar() );
-    Fixture.markInitialized( tree.getVerticalBar() );
-
-    column.setWidth( 25 );
-    tree.setHeaderVisible( true );
-    Fixture.preserveWidgets();
-    lca.renderChanges( tree );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( tree.getHorizontalBar(), "visibility" ) );
-    assertNull( message.findSetOperation( tree.getVerticalBar(), "visibility" ) );
-  }
-
-  @Test
   public void testRenderAddSelectionListener() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( tree );
@@ -1321,6 +1154,7 @@ public class TreeLCA_Test {
     createTreeItems( tree, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
@@ -1360,6 +1194,7 @@ public class TreeLCA_Test {
     createTreeItems( tree, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      @Override
       public void getToolTipText( Item item, int columnIndex ) {
         adapter.setCellToolTipText( null );
       }

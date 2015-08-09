@@ -27,7 +27,6 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 
@@ -48,13 +47,6 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
     WidgetLCAUtil.preserveCustomVariant( expandBar );
     preserveProperty( expandBar, PROP_BOTTOM_SPACING_BOUNDS, getBottomSpacingBounds( expandBar ) );
     preserveProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ) );
-    ScrollBarLCAUtil.preserveValues( expandBar );
-  }
-
-  @Override
-  public void readData( ExpandBar expandBar ) {
-    super.readData( expandBar );
-    ScrollBarLCAUtil.processSelectionEvent( expandBar );
   }
 
   @Override
@@ -67,7 +59,6 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
     // Currently required for item's control visibility and bounds update.
     remoteObject.listen( PROP_EXPAND_LISTENER, true );
     remoteObject.listen( PROP_COLLAPSE_LISTENER, true );
-    ScrollBarLCAUtil.renderInitialization( expandBar );
   }
 
   @Override
@@ -79,7 +70,6 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
                     getBottomSpacingBounds( expandBar ),
                     null );
     renderProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ), 0 );
-    ScrollBarLCAUtil.renderChanges( expandBar );
   }
 
   //////////////////

@@ -40,7 +40,6 @@ import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -114,13 +113,6 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     preserveListenDefaultSelection( tree );
     preserveProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ) );
     preserveProperty( tree, PROP_CELL_TOOLTIP_TEXT, null );
-    ScrollBarLCAUtil.preserveValues( tree );
-  }
-
-  @Override
-  public void readData( Tree tree ) {
-    super.readData( tree );
-    ScrollBarLCAUtil.processSelectionEvent( tree );
   }
 
   @Override
@@ -150,7 +142,6 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     remoteObject.set( "indentionWidth", adapter.getIndentionWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( tree ) );
     TemplateLCAUtil.renderRowTemplate( tree );
-    ScrollBarLCAUtil.renderInitialization( tree );
     remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( tree ) );
     // Always render listen for Expand and Collapse, currently required for scrollbar
     // visibility update and setData events.
@@ -189,7 +180,6 @@ public final class TreeLCA extends WidgetLCA<Tree> {
     renderListenDefaultSelection( tree );
     renderProperty( tree, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( tree ), false );
     renderProperty( tree, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( tree ), null );
-    ScrollBarLCAUtil.renderChanges( tree );
   }
 
   @Override

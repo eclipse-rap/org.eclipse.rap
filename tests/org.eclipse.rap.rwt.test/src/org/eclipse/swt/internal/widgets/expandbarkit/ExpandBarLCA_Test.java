@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.expandbarkit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.eclipse.rap.rwt.testfixture.internal.Fixture.getProtocolMessage;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.junit.Assert.assertEquals;
@@ -21,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -43,8 +41,6 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -186,51 +182,6 @@ public class ExpandBarLCA_Test {
   }
 
   @Test
-  public void testRenderInitialVScrollBarVisible() throws IOException {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    expandBar.setSize( 100, 40 );
-    new ExpandItem( expandBar, SWT.NONE );
-
-    lca.render( expandBar );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderVScrollBarVisible() throws IOException {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    expandBar.setSize( 100, 40 );
-    new ExpandItem( expandBar, SWT.NONE );
-
-    new ExpandItem( expandBar, SWT.NONE );
-    lca.renderChanges( expandBar );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertEquals( JsonValue.TRUE, message.findSetProperty( vScroll, "visibility" ) );
-  }
-
-  @Test
-  public void testRenderVScrollBarVisibleUnchanged() throws IOException {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    expandBar.setSize( 100, 40 );
-    new ExpandItem( expandBar, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( expandBar );
-    Fixture.markInitialized( vScroll );
-
-    new ExpandItem( expandBar, SWT.NONE );
-    Fixture.preserveWidgets();
-    lca.renderChanges( expandBar );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( vScroll, "visibility" ) );
-  }
-
-  @Test
   public void testRenderInitialVScrollBarMax() throws IOException {
     expandBar = new ExpandBar( shell, SWT.NONE );
     expandBar.setSize( 100, 40 );
@@ -270,47 +221,6 @@ public class ExpandBarLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( expandBar, "vScrollBarMax" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_added() throws Exception {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-
-    lca.preserveValues( expandBar );
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-    lca.renderChanges( expandBar );
-
-    assertEquals( JsonValue.TRUE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_removed() throws Exception {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-    Listener listener = mock( Listener.class );
-    vScroll.addListener( SWT.Selection, listener );
-
-    lca.preserveValues( expandBar );
-    vScroll.removeListener( SWT.Selection, listener );
-    lca.renderChanges( expandBar );
-
-    assertEquals( JsonValue.FALSE, getProtocolMessage().findListenProperty( vScroll, "Selection" ) );
-  }
-
-  @Test
-  public void testRenderScrollBarsSelectionListener_vertical_unchanged() throws Exception {
-    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ScrollBar vScroll = expandBar.getVerticalBar();
-    Fixture.markInitialized( vScroll );
-    vScroll.addListener( SWT.Selection, mock( Listener.class ) );
-
-    lca.preserveValues( expandBar );
-    lca.renderChanges( expandBar );
-
-    assertNull( getProtocolMessage().findListenOperation( vScroll, "Selection" ) );
   }
 
 }

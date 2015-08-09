@@ -26,7 +26,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.widgets.ScrollBar;
 
 
@@ -50,13 +49,6 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
     preserveProperty( composite, PROP_ORIGIN, getOrigin( composite ) );
     preserveProperty( composite, PROP_CONTENT, composite.getContent() );
     preserveProperty( composite, PROP_SHOW_FOCUSED_CONTROL, composite.getShowFocusedControl() );
-    ScrollBarLCAUtil.preserveValues( composite );
-  }
-
-  @Override
-  public void readData( ScrolledComposite composite ) {
-    super.readData( composite );
-    ScrollBarLCAUtil.processSelectionEvent( composite );
   }
 
   @Override
@@ -65,7 +57,6 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
     remoteObject.setHandler( new ScrolledCompositeOperationHandler( composite ) );
     remoteObject.set( "parent", getId( composite.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( composite, ALLOWED_STYLES ) ) );
-    ScrollBarLCAUtil.renderInitialization( composite );
   }
 
   @Override
@@ -78,7 +69,6 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
                     PROP_SHOW_FOCUSED_CONTROL,
                     composite.getShowFocusedControl(),
                     false );
-    ScrollBarLCAUtil.renderChanges( composite );
   }
 
   //////////////////

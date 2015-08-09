@@ -14,7 +14,6 @@ import static org.eclipse.nebula.widgets.grid.GridTestUtil.createGridColumns;
 import static org.eclipse.nebula.widgets.grid.GridTestUtil.createGridItems;
 import static org.eclipse.nebula.widgets.grid.GridTestUtil.loadImage;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -758,22 +757,6 @@ public class GridItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "cellCheckable" ) );
-  }
-
-  @Test
-  public void testRenderScrollbarsVisibleAfterExpanded() {
-    grid.setSize( 200, 200 );
-    createGridColumns( grid, 3, SWT.NONE );
-    GridItem[] items = createGridItems( grid, 5, 10 );
-    Fixture.markInitialized( items[ 0 ] );
-    getRemoteObject( items[ 0 ] ).setHandler( new GridItemOperationHandler( items[ 0 ] ) );
-
-    Fixture.markInitialized( grid );
-    Fixture.fakeSetProperty( getId( items[ 0 ] ), "expanded", true );
-    Fixture.executeLifeCycleFromServerThread();
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNotNull( message.findSetOperation( grid.getVerticalBar(), "visibility" ) );
   }
 
   @Test

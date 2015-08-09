@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionListener;
 import org.junit.After;
 import org.junit.Before;
@@ -84,13 +82,25 @@ public class ScrollBar_Test {
   }
 
   @Test
-  public void testDispose_destroysRemoteObject() {
-    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
-    RemoteObjectImpl remoteObject = ( RemoteObjectImpl )getRemoteObject( scrollBar );
+  public void testDispose_nullsOutHorizontalScrollBarInParent() {
+    Scrollable parent = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrollBar hScrollBar = parent.getHorizontalBar();
 
-    scrollBar.dispose();
+    hScrollBar.dispose();
 
-    assertTrue( remoteObject.isDestroyed() );
+    assertNull( parent.getHorizontalBar() );
+    assertNotNull( parent.getVerticalBar() );
+  }
+
+  @Test
+  public void testDispose_nullsOutVerticalScrollBarInParent() {
+    Scrollable parent = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrollBar vScrollBar = parent.getVerticalBar();
+
+    vScrollBar.dispose();
+
+    assertNotNull( parent.getHorizontalBar() );
+    assertNull( parent.getVerticalBar() );
   }
 
 }

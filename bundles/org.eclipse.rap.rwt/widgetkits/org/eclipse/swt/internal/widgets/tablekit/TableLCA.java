@@ -40,7 +40,6 @@ import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
-import org.eclipse.swt.internal.widgets.ScrollBarLCAUtil;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -115,13 +114,6 @@ public final class TableLCA extends WidgetLCA<Table> {
     preserveProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     preserveProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ) );
     preserveProperty( table, PROP_CELL_TOOLTIP_TEXT, null );
-    ScrollBarLCAUtil.preserveValues( table );
-  }
-
-  @Override
-  public void readData( Table table ) {
-    super.readData( table );
-    ScrollBarLCAUtil.processSelectionEvent( table );
   }
 
   @Override
@@ -145,7 +137,6 @@ public final class TableLCA extends WidgetLCA<Table> {
     remoteObject.set( PROP_TREE_COLUMN, -1 );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( table ) );
     TemplateLCAUtil.renderRowTemplate( table );
-    ScrollBarLCAUtil.renderInitialization( table );
     remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( table ) );
   }
 
@@ -178,7 +169,6 @@ public final class TableLCA extends WidgetLCA<Table> {
     renderProperty( table, PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ), false );
     renderProperty( table, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( table ), false );
     renderProperty( table, PROP_CELL_TOOLTIP_TEXT, getAndResetCellToolTipText( table ), null );
-    ScrollBarLCAUtil.renderChanges( table );
   }
 
   @Override
