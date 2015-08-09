@@ -36,6 +36,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int BACKGROUND_IMAGE = 22;
   private static final int ACTIVE_KEYS = 23;
   private static final int CANCEL_KEYS = 24;
+  private static final int TAB_INDEX = 25;
 
   private transient Composite parent;
   private transient Control[] children;
@@ -98,7 +99,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveTabIndex( int tabIndex ) {
+    markPreserved( TAB_INDEX );
     this.tabIndex = tabIndex;
+  }
+
+  public boolean hasPreservedTabIndex() {
+    return hasPreserved( TAB_INDEX );
   }
 
   public int getPreservedTabIndex() {

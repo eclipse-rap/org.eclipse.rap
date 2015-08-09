@@ -27,7 +27,6 @@ import java.lang.reflect.Field;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -79,7 +78,6 @@ public class ControlLCAUtil {
   }
 
   public static void preserveValues( Control control ) {
-    preserveTabIndex( control );
   }
 
   public static void renderChanges( Control control ) {
@@ -164,8 +162,11 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void preserveTabIndex( Control control ) {
-    getRemoteAdapter( control ).preserveTabIndex( getTabIndex( control ) );
+  public static void preserveTabIndex( Control control, int tabIndex ) {
+    ControlRemoteAdapter adapter = getRemoteAdapter( control );
+    if( !adapter.hasPreservedTabIndex() ) {
+      adapter.preserveTabIndex( tabIndex );
+    }
   }
 
   private static void renderTabIndex( Control control ) {
@@ -175,10 +176,12 @@ public class ControlLCAUtil {
       computeTabIndices( ( Shell )control, 1 );
     }
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    int actual = getTabIndex( control );
-    int preserved = remoteAdapter.getPreservedTabIndex();
-    if( !remoteAdapter.isInitialized() || actual != preserved ) {
-      getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
+    if( remoteAdapter.hasPreservedTabIndex() ) {
+      int actual = ControlUtil.getControlAdapter( control ).getTabIndex();
+      int preserved = remoteAdapter.getPreservedTabIndex();
+      if( !remoteAdapter.isInitialized() || actual != preserved ) {
+        getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
+      }
     }
   }
 
@@ -403,23 +406,6 @@ public class ControlLCAUtil {
 
   private static void renderListenHelp( Control control ) {
     renderListener( control, SWT.Help, PROP_HELP_LISTENER );
-  }
-
-  // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
-  private static boolean takesFocus( Control control ) {
-    boolean result = true;
-    result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
-    result &= control.getClass() != Composite.class;
-    result &= control.getClass() != SashForm.class;
-    return result;
-  }
-
-  private static int getTabIndex( Control control ) {
-    int result = -1;
-    if( takesFocus( control ) ) {
-      result = ControlUtil.getControlAdapter( control ).getTabIndex();
-    }
-    return result;
   }
 
   private static void resetTabIndices( Composite composite ) {

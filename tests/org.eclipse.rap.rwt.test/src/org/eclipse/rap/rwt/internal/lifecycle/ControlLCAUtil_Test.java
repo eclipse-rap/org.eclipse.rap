@@ -260,8 +260,8 @@ public class ControlLCAUtil_Test {
   @Test
   public void testRenderTabIndex_changed() {
     Fixture.markInitialized( control );
+    Fixture.clearPreserved();
 
-    ControlLCAUtil.preserveValues( control );
     shell.setTabList( new Control[] { new Button( shell, SWT.PUSH ), control } );
     ControlLCAUtil.renderChanges( shell ); // needed for tab index recomputation
     ControlLCAUtil.renderChanges( control );
@@ -275,7 +275,8 @@ public class ControlLCAUtil_Test {
     shell.setTabList( new Control[] { new Button( shell, SWT.PUSH ), control } );
     ControlLCAUtil.renderChanges( shell ); // needed for tab index recomputation
 
-    ControlLCAUtil.preserveValues( control );
+    Fixture.clearPreserved();
+    ControlLCAUtil.renderChanges( shell ); // needed for tab index recomputation
     ControlLCAUtil.renderChanges( control );
 
     assertNull( getProtocolMessage().findSetOperation( control, "tabIndex" ) );

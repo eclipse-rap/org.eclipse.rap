@@ -73,6 +73,7 @@ public class ControlRemoteAdapter_Test {
   public void testPreserveTabIndex() {
     adapter.preserveTabIndex( 3 );
 
+    assertTrue( adapter.hasPreservedTabIndex() );
     assertEquals( 3, adapter.getPreservedTabIndex() );
   }
 
@@ -252,6 +253,7 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedChildren() );
     assertFalse( adapter.hasPreservedBounds() );
     assertNull( adapter.getPreservedBounds() );
+    assertFalse( adapter.hasPreservedTabIndex() );
     assertEquals( 0, adapter.getPreservedTabIndex() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );

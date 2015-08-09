@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.accessibility.Accessible;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.FocusListener;
@@ -83,7 +84,17 @@ public abstract class Control extends Widget implements Drawable {
 
     @Override
     public void setTabIndex( int index ) {
-      tabIndex = index;
+      if( takesFocus() ) {
+        ControlLCAUtil.preserveTabIndex( Control.this, tabIndex );
+        tabIndex = index;
+      }
+    }
+
+    private boolean takesFocus() {
+      boolean result = ( getStyle() & SWT.NO_FOCUS ) == 0;
+      result &= Control.this.getClass() != Composite.class;
+      result &= Control.this.getClass() != SashForm.class;
+      return result;
     }
 
     @Override
