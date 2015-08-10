@@ -106,7 +106,6 @@ public class GridLCA extends WidgetLCA<Grid> {
 
   @Override
   public void preserveValues( Grid grid ) {
-    WidgetLCAUtil.preserveCustomVariant( grid );
     preserveProperty( grid, PROP_ITEM_COUNT, grid.getRootItemCount() );
     preserveProperty( grid, PROP_ITEM_HEIGHT, grid.getItemHeight() );
     preserveProperty( grid, PROP_ITEM_METRICS, getItemMetrics( grid ) );

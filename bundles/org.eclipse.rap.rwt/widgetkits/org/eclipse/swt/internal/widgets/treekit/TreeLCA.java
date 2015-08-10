@@ -89,7 +89,6 @@ public final class TreeLCA extends WidgetLCA<Tree> {
 
   @Override
   public void preserveValues( Tree tree ) {
-    WidgetLCAUtil.preserveCustomVariant( tree );
     preserveProperty( tree, PROP_ITEM_COUNT, tree.getItemCount() );
     preserveProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight() );
     preserveProperty( tree, PROP_ITEM_METRICS, getItemMetrics( tree ) );

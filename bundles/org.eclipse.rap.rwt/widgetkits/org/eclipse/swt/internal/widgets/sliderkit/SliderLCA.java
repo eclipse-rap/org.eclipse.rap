@@ -52,7 +52,6 @@ public class SliderLCA extends WidgetLCA<Slider> {
 
   @Override
   public void preserveValues( Slider slider ) {
-    WidgetLCAUtil.preserveCustomVariant( slider );
     preserveProperty( slider, PROP_MINIMUM, slider.getMinimum() );
     preserveProperty( slider, PROP_MAXIMUM, slider.getMaximum() );
     preserveProperty( slider, PROP_SELECTION, slider.getSelection() );

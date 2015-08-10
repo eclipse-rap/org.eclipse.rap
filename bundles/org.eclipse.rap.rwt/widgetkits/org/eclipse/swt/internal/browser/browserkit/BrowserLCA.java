@@ -73,7 +73,6 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
 
   @Override
   public void preserveValues( Browser browser ) {
-    WidgetLCAUtil.preserveCustomVariant( browser );
     preserveListener( browser, PARAM_PROGRESS_LISTENER, hasProgressListener( browser ) );
   }
 

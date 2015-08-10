@@ -58,7 +58,6 @@ public class ComboLCA extends WidgetLCA<Combo> {
 
   @Override
   public void preserveValues( Combo combo ) {
-    WidgetLCAUtil.preserveCustomVariant( combo );
     preserveProperty( combo, PROP_ITEMS, combo.getItems() );
     preserveProperty( combo, PROP_SELECTION_INDEX, Integer.valueOf( combo.getSelectionIndex() ) );
     preserveProperty( combo, PROP_SELECTION, combo.getSelection() );

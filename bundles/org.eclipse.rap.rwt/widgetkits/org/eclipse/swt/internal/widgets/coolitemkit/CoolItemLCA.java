@@ -42,7 +42,6 @@ public class CoolItemLCA extends WidgetLCA<CoolItem> {
   public void preserveValues( CoolItem item ) {
     preserveProperty( item, PROP_CONTROL, item.getControl() );
     preserveProperty( item, Props.BOUNDS, item.getBounds() );
-    WidgetLCAUtil.preserveCustomVariant( item );
   }
 
   @Override

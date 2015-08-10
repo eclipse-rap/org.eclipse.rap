@@ -217,34 +217,12 @@ public class GridItemLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getProperties().names().indexOf( "customVariant" ) == -1 );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     item.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-
-    item.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( item );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
   @Test

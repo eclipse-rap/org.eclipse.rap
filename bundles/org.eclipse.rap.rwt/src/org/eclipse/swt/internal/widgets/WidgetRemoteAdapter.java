@@ -25,6 +25,7 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   private final static Runnable[] EMPTY = new Runnable[ 0 ];
   private static final int DATA = 1;
   private static final int LISTENERS = 2;
+  private static final int VARIANT = 3;
 
   private final String id;
   private Widget parent;
@@ -105,7 +106,12 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
   }
 
   public void preserveVariant( String variant ) {
+    markPreserved( VARIANT );
     this.variant = variant;
+  }
+
+  public boolean hasPreservedVariant() {
+    return hasPreserved( VARIANT );
   }
 
   public String getPreservedVariant() {

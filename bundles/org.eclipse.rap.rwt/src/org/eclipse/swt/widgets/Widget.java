@@ -322,8 +322,11 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( RWT.CUSTOM_VARIANT.equals( key ) && value != null ) {
-      checkCustomVariant( value );
+    if( RWT.CUSTOM_VARIANT.equals( key ) ) {
+      if( value != null ) {
+        checkCustomVariant( value );
+      }
+      WidgetLCAUtil.preserveCustomVariant( this );
     }
     if( WidgetDataUtil.getDataKeys().contains( key ) ) {
       WidgetLCAUtil.preserveData( this );

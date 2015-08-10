@@ -285,17 +285,6 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    Menu menu = new Menu( shell, SWT.BAR );
-
-    lca.render( menu );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( menu );
-    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     Menu menu = new Menu( shell, SWT.BAR );
 
@@ -304,20 +293,6 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( menu, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Menu menu = new Menu( shell, SWT.BAR );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( menu );
-
-    menu.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( menu );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( menu, "customVariant" ) );
   }
 
   @Test

@@ -48,7 +48,6 @@ public final class MenuItemLCA extends WidgetLCA<MenuItem> {
 
   @Override
   public void preserveValues( MenuItem item ) {
-    WidgetLCAUtil.preserveCustomVariant( item );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );
     preserveProperty( item, PROP_MENU, item.getMenu() );

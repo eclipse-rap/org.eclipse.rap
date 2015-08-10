@@ -47,7 +47,6 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
 
   @Override
   public void preserveValues( CTabItem item ) {
-    WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveBounds( item, item.getBounds() );
     WidgetLCAUtil.preserveFont( item, getFont( item ) );

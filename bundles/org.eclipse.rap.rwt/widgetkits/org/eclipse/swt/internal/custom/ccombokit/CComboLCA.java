@@ -55,7 +55,6 @@ public final class CComboLCA extends WidgetLCA<CCombo> {
 
   @Override
   public void preserveValues( CCombo ccombo ) {
-    WidgetLCAUtil.preserveCustomVariant( ccombo );
     preserveProperty( ccombo, PROP_ITEMS, ccombo.getItems() );
     preserveProperty( ccombo, PROP_SELECTION_INDEX, ccombo.getSelectionIndex() );
     preserveProperty( ccombo, PROP_SELECTION, ccombo.getSelection() );

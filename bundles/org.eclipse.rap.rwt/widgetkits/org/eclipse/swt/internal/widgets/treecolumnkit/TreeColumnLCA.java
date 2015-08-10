@@ -49,7 +49,6 @@ public final class TreeColumnLCA extends WidgetLCA<TreeColumn> {
   @Override
   public void preserveValues( TreeColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
-    WidgetLCAUtil.preserveCustomVariant( column );
     WidgetLCAUtil.preserveFont( column, getFont( column ) );
     ItemLCAUtil.preserve( column );
     preserveProperty( column, PROP_INDEX, getIndex( column ) );

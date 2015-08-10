@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,34 +150,12 @@ public class ExpandItemLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( expandItem );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( expandItem );
-    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( expandItem );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( expandItem, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( expandItem );
-
-    expandItem.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( expandItem );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( expandItem, "customVariant" ) );
   }
 
   @Test

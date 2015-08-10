@@ -51,7 +51,6 @@ final class DateTimeLCAUtil {
   }
 
   static void preserveValues( DateTime dateTime ) {
-    WidgetLCAUtil.preserveCustomVariant( dateTime );
   }
 
   static void renderInitialization( DateTime dateTime ) {

@@ -188,33 +188,12 @@ public class ToolTipLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( toolTip );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( toolTip );
-    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolTip );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( toolTip, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( toolTip );
-
-    toolTip.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( toolTip );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( toolTip, "customVariant" ) );
   }
 
   @Test

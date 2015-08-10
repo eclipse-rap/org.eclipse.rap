@@ -40,7 +40,6 @@ public class TabItemLCA extends WidgetLCA<TabItem> {
 
   @Override
   public void preserveValues( TabItem item ) {
-    WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, item.getImage() );

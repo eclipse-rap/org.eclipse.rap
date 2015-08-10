@@ -48,7 +48,6 @@ public final class ToolTipLCA extends WidgetLCA<ToolTip> {
 
   @Override
   public void preserveValues( ToolTip toolTip ) {
-    WidgetLCAUtil.preserveCustomVariant( toolTip );
     WidgetLCAUtil.preserveRoundedBorder( toolTip );
     WidgetLCAUtil.preserveBackgroundGradient( toolTip );
     preserveProperty( toolTip, PROP_AUTO_HIDE, toolTip.getAutoHide() );

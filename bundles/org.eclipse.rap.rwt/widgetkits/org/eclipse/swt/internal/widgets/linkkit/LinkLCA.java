@@ -41,7 +41,6 @@ public class LinkLCA extends WidgetLCA<Link> {
 
   @Override
   public void preserveValues( Link link ) {
-    WidgetLCAUtil.preserveCustomVariant( link );
     preserveProperty( link, PROP_TEXT, link.getText() );
   }
 

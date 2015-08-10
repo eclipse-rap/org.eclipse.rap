@@ -79,7 +79,6 @@ public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
 
   @Override
   public void preserveValues( CTabFolder folder ) {
-    WidgetLCAUtil.preserveCustomVariant( folder );
     preserveProperty( folder, PROP_TAB_POSITION, getTabPosition( folder ) );
     preserveProperty( folder, PROP_TAB_HEIGHT, folder.getTabHeight() );
     preserveProperty( folder, PROP_MIN_MAX_STATE, getMinMaxState( folder ) );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -195,34 +195,12 @@ public class GridColumnLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( column );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( column );
-    assertTrue( operation.getProperties().names().indexOf( "customVariant" ) == -1 );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     column.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( column );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( column, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( column );
-
-    column.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( column );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( column, "customVariant" ) );
   }
 
   @Test
@@ -903,6 +881,7 @@ public class GridColumnLCA_Test {
     private LoggingControlListener( List<Event> events ) {
       this.events = events;
     }
+    @Override
     public void handleEvent( Event event ) {
       events.add( event );
     }

@@ -46,7 +46,6 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   @Override
   void preserveValues( Label label ) {
-    WidgetLCAUtil.preserveCustomVariant( label );
     preserveProperty( label, PROP_TEXT, label.getText() );
     preserveProperty( label, PROP_IMAGE, label.getImage() );
     preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );

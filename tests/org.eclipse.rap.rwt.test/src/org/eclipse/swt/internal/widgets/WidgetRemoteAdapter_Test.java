@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
-import static org.eclipse.swt.internal.events.EventLCAUtil.containsEvent;
 import static org.eclipse.swt.internal.events.EventLCAUtil.getEventMask;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -224,6 +223,7 @@ public class WidgetRemoteAdapter_Test {
   public void testPreserveVariant() {
     adapter.preserveVariant( "foo" );
 
+    assertTrue( adapter.hasPreservedVariant() );
     assertEquals( "foo", adapter.getPreservedVariant() );
   }
 
@@ -233,6 +233,7 @@ public class WidgetRemoteAdapter_Test {
 
     adapter.clearPreserved();
 
+    assertFalse( adapter.hasPreservedVariant() );
     assertNull( adapter.getPreservedVariant() );
   }
 
@@ -242,6 +243,7 @@ public class WidgetRemoteAdapter_Test {
 
     adapter = serializeAndDeserialize( adapter );
 
+    assertFalse( adapter.hasPreservedVariant() );
     assertNull( adapter.getPreservedVariant() );
   }
 

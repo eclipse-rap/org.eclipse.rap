@@ -56,7 +56,6 @@ public final class ToolItemLCA extends WidgetLCA<ToolItem> {
     WidgetLCAUtil.preserveBounds( item, item.getBounds() );
     WidgetLCAUtil.preserveEnabled( item, item.getEnabled() );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
-    WidgetLCAUtil.preserveCustomVariant( item );
     preserveProperty( item, PROP_VISIBLE, isVisible( item ) );
     preserveProperty( item, PROP_TEXT, item.getText() );
     preserveProperty( item, PROP_IMAGE, getImage( item ) );

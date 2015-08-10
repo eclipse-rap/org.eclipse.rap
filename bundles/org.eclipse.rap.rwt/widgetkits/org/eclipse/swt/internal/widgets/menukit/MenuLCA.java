@@ -57,7 +57,6 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   @Override
   public void preserveValues( Menu menu ) {
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    WidgetLCAUtil.preserveCustomVariant( menu );
   }
 
   @Override

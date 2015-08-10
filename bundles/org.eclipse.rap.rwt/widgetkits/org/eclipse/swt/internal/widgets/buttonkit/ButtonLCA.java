@@ -56,7 +56,6 @@ public final class ButtonLCA extends WidgetLCA<Button> {
 
   @Override
   public void preserveValues( Button button ) {
-    WidgetLCAUtil.preserveCustomVariant( button );
     preserveProperty( button, PROP_TEXT, button.getText() );
     preserveProperty( button, PROP_IMAGE, button.getImage() );
     preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );

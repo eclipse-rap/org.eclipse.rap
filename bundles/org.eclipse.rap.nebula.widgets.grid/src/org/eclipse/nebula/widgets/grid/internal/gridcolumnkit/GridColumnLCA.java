@@ -69,7 +69,6 @@ public class GridColumnLCA extends WidgetLCA<GridColumn> {
   @Override
   public void preserveValues( GridColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getHeaderTooltip() );
-    WidgetLCAUtil.preserveCustomVariant( column );
     ItemLCAUtil.preserve( column );
     preserveProperty( column, PROP_INDEX, getIndex( column ) );
     preserveProperty( column, PROP_LEFT, getLeft( column ) );

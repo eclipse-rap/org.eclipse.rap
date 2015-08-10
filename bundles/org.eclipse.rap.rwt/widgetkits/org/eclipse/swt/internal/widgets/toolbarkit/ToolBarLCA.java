@@ -34,7 +34,6 @@ public class ToolBarLCA extends WidgetLCA<ToolBar> {
 
   @Override
   public void preserveValues( ToolBar toolBar ) {
-    WidgetLCAUtil.preserveCustomVariant( toolBar );
   }
 
   @Override

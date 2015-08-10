@@ -38,7 +38,6 @@ public final class ExpandItemLCA extends WidgetLCA<ExpandItem> {
 
   @Override
   public void preserveValues( ExpandItem item ) {
-    WidgetLCAUtil.preserveCustomVariant( item );
     WidgetLCAUtil.preserveBounds( item, getBounds( item ) );
     ItemLCAUtil.preserve( item );
     preserveProperty( item, PROP_EXPANDED, item.getExpanded() );

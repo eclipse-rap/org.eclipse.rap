@@ -160,14 +160,20 @@ public final class WidgetLCAUtil {
   }
 
   public static void preserveCustomVariant( Widget widget ) {
-    getRemoteAdapter( widget ).preserveVariant( getVariant( widget ) );
+    WidgetRemoteAdapter remoteAdapter = getRemoteAdapter( widget );
+    if( !remoteAdapter.hasPreservedVariant() ) {
+      remoteAdapter.preserveVariant( getVariant( widget ) );
+    }
   }
 
   public static void renderCustomVariant( Widget widget ) {
-    String actual = getVariant( widget );
-    String preserved = getRemoteAdapter( widget ).getPreservedVariant();
-    if( changed( widget, actual, preserved, null ) ) {
-      getRemoteObject( widget ).set( PROP_VARIANT, actual == null ? null : "variant_" + actual );
+    WidgetRemoteAdapter remoteAdapter = getRemoteAdapter( widget );
+    if( remoteAdapter.hasPreservedVariant() ) {
+      String actual = getVariant( widget );
+      String preserved = remoteAdapter.getPreservedVariant();
+      if( changed( widget, actual, preserved, null ) ) {
+        getRemoteObject( widget ).set( PROP_VARIANT, actual == null ? null : "variant_" + actual );
+      }
     }
   }
 

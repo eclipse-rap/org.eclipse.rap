@@ -55,7 +55,6 @@ public final class CLabelLCA extends WidgetLCA<CLabel> {
 
   @Override
   public void preserveValues( CLabel label ) {
-    WidgetLCAUtil.preserveCustomVariant( label );
     preserveProperty( label, PROP_TEXT, label.getText() );
     preserveProperty( label, PROP_IMAGE, label.getImage() );
     preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );

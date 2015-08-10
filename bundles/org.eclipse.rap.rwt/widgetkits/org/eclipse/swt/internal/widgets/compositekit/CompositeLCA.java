@@ -35,7 +35,6 @@ public class CompositeLCA extends WidgetLCA<Composite> {
 
   @Override
   public void preserveValues( Composite composite ) {
-    WidgetLCAUtil.preserveCustomVariant( composite );
     WidgetLCAUtil.preserveBackgroundGradient( composite );
     WidgetLCAUtil.preserveRoundedBorder( composite );
     WidgetLCAUtil.preserveProperty( composite, PROP_CLIENT_AREA, composite.getClientArea() );

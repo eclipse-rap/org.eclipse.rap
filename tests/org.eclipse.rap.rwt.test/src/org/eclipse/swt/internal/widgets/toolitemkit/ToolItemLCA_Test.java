@@ -262,34 +262,12 @@ public class ToolItemLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( toolitem );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( toolitem );
-    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     toolitem.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( toolitem );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( toolitem, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( toolitem );
-
-    toolitem.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( toolitem );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( toolitem, "customVariant" ) );
   }
 
   @Test

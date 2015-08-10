@@ -71,7 +71,6 @@ public final class TextLCA extends WidgetLCA<Text> {
 
   @Override
   public void preserveValues( Text text ) {
-    WidgetLCAUtil.preserveCustomVariant( text );
     preserveProperty( text, PROP_TEXT, text.getText() );
     preserveProperty( text, PROP_SELECTION, text.getSelection() );
     preserveProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ) );

@@ -48,7 +48,6 @@ public final class TableColumnLCA extends WidgetLCA<TableColumn> {
   @Override
   public void preserveValues( TableColumn column ) {
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
-    WidgetLCAUtil.preserveCustomVariant( column );
     WidgetLCAUtil.preserveFont( column, getFont( column ) );
     ItemLCAUtil.preserve( column );
     preserveProperty( column, PROP_INDEX, getIndex( column ) );

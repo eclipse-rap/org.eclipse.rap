@@ -304,8 +304,8 @@ public class WidgetLCAUtil_Test {
   @Test
   public void testRenderCustomVariant_changed() {
     Fixture.markInitialized( widget );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveCustomVariant( widget );
     widget.setData( RWT.CUSTOM_VARIANT, "foo" );
     WidgetLCAUtil.renderCustomVariant( widget );
 
@@ -317,8 +317,8 @@ public class WidgetLCAUtil_Test {
   public void testRenderCustomVariant_reset() {
     Fixture.markInitialized( widget );
     widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveCustomVariant( widget );
     widget.setData( RWT.CUSTOM_VARIANT, null );
     WidgetLCAUtil.renderCustomVariant( widget );
 
@@ -326,11 +326,22 @@ public class WidgetLCAUtil_Test {
   }
 
   @Test
+  public void testRenderCustomVariant_changedTwice() {
+    Fixture.markInitialized( widget );
+
+    widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+    widget.setData( RWT.CUSTOM_VARIANT, null );
+    WidgetLCAUtil.renderCustomVariant( widget );
+
+    assertNull( getProtocolMessage().findSetOperation( widget, "customVariant" ) );
+  }
+
+  @Test
   public void testRenderCustomVariant_unchanged() {
     Fixture.markInitialized( widget );
     widget.setData( RWT.CUSTOM_VARIANT, "foo" );
+    Fixture.clearPreserved();
 
-    WidgetLCAUtil.preserveCustomVariant( widget );
     WidgetLCAUtil.renderCustomVariant( widget );
 
     assertNull( getProtocolMessage().findSetOperation( widget, "customVariant" ) );

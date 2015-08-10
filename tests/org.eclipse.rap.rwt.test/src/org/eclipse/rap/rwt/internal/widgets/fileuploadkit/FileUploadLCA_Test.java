@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
@@ -235,34 +234,12 @@ public class FileUploadLCA_Test {
   }
 
   @Test
-  public void testRenderInitialCustomVariant() throws IOException {
-    lca.render( fileUpload );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( fileUpload );
-    assertFalse( operation.getProperties().names().contains( "customVariant" ) );
-  }
-
-  @Test
   public void testRenderCustomVariant() throws IOException {
     fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( fileUpload );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( "variant_blue", message.findSetProperty( fileUpload, "customVariant" ).asString() );
-  }
-
-  @Test
-  public void testRenderCustomVariantUnchanged() throws IOException {
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( fileUpload );
-
-    fileUpload.setData( RWT.CUSTOM_VARIANT, "blue" );
-    Fixture.preserveWidgets();
-    lca.renderChanges( fileUpload );
-
-    TestMessage message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( fileUpload, "customVariant" ) );
   }
 
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {

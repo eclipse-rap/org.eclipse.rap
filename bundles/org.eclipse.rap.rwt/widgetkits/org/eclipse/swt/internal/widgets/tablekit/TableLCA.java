@@ -90,7 +90,6 @@ public final class TableLCA extends WidgetLCA<Table> {
 
   @Override
   public void preserveValues( Table table ) {
-    WidgetLCAUtil.preserveCustomVariant( table );
     preserveProperty( table, PROP_ITEM_COUNT, table.getItemCount() );
     preserveProperty( table, PROP_ITEM_HEIGHT, table.getItemHeight() );
     preserveProperty( table, PROP_ITEM_METRICS, getItemMetrics( table ) );

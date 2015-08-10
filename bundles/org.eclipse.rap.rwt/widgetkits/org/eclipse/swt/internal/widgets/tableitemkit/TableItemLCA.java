@@ -63,7 +63,6 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
       WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
       WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
-      WidgetLCAUtil.preserveCustomVariant( item );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
       preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );

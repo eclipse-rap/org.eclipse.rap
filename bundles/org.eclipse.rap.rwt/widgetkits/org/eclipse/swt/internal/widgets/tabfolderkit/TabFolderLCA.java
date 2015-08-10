@@ -37,7 +37,6 @@ public class TabFolderLCA extends WidgetLCA<TabFolder> {
 
   @Override
   public void preserveValues( TabFolder folder ) {
-    WidgetLCAUtil.preserveCustomVariant( folder );
     preserveProperty( folder, PROP_SELECTION, getSelection( folder ) );
   }
 

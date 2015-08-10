@@ -64,7 +64,6 @@ public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
 
   @Override
   public void preserveValues( GridColumnGroup group ) {
-    WidgetLCAUtil.preserveCustomVariant( group );
     ItemLCAUtil.preserve( group );
     preserveProperty( group, PROP_LEFT, getLeft( group ) );
     preserveProperty( group, PROP_WIDTH, getWidth( group ) );
