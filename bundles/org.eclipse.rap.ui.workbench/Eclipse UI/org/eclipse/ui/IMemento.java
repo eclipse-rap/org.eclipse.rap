@@ -98,7 +98,7 @@ public interface IMemento {
      * @return an array of children of this node. This will not be
      *         <code>null</code>. If there are no children, an array of length
      *         zero will be returned.
-     * @since 3.8
+     * @since 3.1
      */
     public IMemento[] getChildren();
 

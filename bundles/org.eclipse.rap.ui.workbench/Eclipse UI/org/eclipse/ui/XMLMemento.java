@@ -246,7 +246,7 @@ public final class XMLMemento implements IMemento {
 
     /**
      * {@inheritDoc}
-     * @since 3.8
+     * @since 3.1
      */
     @Override
     public IMemento[] getChildren() {
