@@ -43,7 +43,6 @@ public class HyperlinkLCA extends WidgetLCA<Hyperlink> {
 
   @Override
   public void preserveValues( Hyperlink hyperlink ) {
-    ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     preserveProperty( hyperlink, PROP_TEXT, hyperlink.getText() );
     preserveProperty( hyperlink, PROP_UNDERLINED, hyperlink.isUnderlined() );

@@ -47,7 +47,6 @@ public class GroupLCA extends WidgetLCA<Group> {
 
   @Override
   public void preserveValues( Group group ) {
-    ControlLCAUtil.preserveValues( group );
     WidgetLCAUtil.preserveCustomVariant( group );
     preserveProperty( group, PROP_TEXT, group.getText() );
   }

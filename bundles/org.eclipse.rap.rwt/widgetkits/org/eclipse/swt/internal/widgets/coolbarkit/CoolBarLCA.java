@@ -39,7 +39,6 @@ public class CoolBarLCA extends WidgetLCA<CoolBar> {
 
   @Override
   public void preserveValues( CoolBar coolBar ) {
-    ControlLCAUtil.preserveValues( coolBar );
     RemoteAdapter adapter = WidgetUtil.getAdapter( coolBar );
     adapter.preserve( PROP_LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
     WidgetLCAUtil.preserveCustomVariant( coolBar );

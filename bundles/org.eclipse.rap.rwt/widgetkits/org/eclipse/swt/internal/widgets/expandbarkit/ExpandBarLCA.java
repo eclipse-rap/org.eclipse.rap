@@ -43,7 +43,6 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
 
   @Override
   public void preserveValues( ExpandBar expandBar ) {
-    ControlLCAUtil.preserveValues( expandBar );
     WidgetLCAUtil.preserveCustomVariant( expandBar );
     preserveProperty( expandBar, PROP_BOTTOM_SPACING_BOUNDS, getBottomSpacingBounds( expandBar ) );
     preserveProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ) );

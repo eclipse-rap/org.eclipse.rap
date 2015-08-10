@@ -77,9 +77,6 @@ public class ControlLCAUtil {
     // prevent instance creation
   }
 
-  public static void preserveValues( Control control ) {
-  }
-
   public static void renderChanges( Control control ) {
     renderParent( control );
     renderChildren( control );

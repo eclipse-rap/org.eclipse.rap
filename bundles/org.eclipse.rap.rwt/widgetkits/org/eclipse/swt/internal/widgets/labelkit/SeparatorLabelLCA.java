@@ -33,7 +33,6 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   @Override
   void preserveValues( Label label ) {
-    ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
   }
 

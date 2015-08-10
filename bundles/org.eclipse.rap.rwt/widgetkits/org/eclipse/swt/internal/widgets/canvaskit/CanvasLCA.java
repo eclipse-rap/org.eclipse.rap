@@ -39,7 +39,6 @@ public final class CanvasLCA extends WidgetLCA<Canvas> {
 
   @Override
   public void preserveValues( Canvas canvas ) {
-    ControlLCAUtil.preserveValues( canvas );
     WidgetLCAUtil.preserveCustomVariant( canvas );
     WidgetLCAUtil.preserveBackgroundGradient( canvas );
     WidgetLCAUtil.preserveRoundedBorder( canvas );

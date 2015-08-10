@@ -34,7 +34,6 @@ public final class SashLCA extends WidgetLCA<Sash> {
 
   @Override
   public void preserveValues( Sash sash ) {
-    ControlLCAUtil.preserveValues( sash );
     WidgetLCAUtil.preserveCustomVariant( sash );
   }
 

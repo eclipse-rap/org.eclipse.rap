@@ -54,7 +54,6 @@ public class FormTextLCA extends WidgetLCA<FormText> {
 
   @Override
   public void preserveValues( FormText formText ) {
-    ControlLCAUtil.preserveValues( formText );
     WidgetLCAUtil.preserveCustomVariant( formText );
     HyperlinkSettings settings = formText.getHyperlinkSettings();
     preserveProperty( formText,

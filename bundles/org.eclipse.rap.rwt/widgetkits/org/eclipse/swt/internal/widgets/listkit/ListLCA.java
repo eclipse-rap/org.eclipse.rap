@@ -52,7 +52,6 @@ public class ListLCA extends WidgetLCA<List> {
 
   @Override
   public void preserveValues( List list ) {
-    ControlLCAUtil.preserveValues( list );
     WidgetLCAUtil.preserveCustomVariant( list );
     preserveProperty( list, PROP_ITEMS, list.getItems() );
     preserveProperty( list, PROP_SELECTION_INDICES, list.getSelectionIndices() );

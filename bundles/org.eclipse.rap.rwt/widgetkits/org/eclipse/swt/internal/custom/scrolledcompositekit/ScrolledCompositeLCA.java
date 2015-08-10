@@ -44,7 +44,6 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
 
   @Override
   public void preserveValues( ScrolledComposite composite ) {
-    ControlLCAUtil.preserveValues( composite );
     WidgetLCAUtil.preserveCustomVariant( composite );
     preserveProperty( composite, PROP_ORIGIN, getOrigin( composite ) );
     preserveProperty( composite, PROP_CONTENT, composite.getContent() );

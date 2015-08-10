@@ -55,7 +55,6 @@ public final class ToggleHyperlinkLCA extends WidgetLCA<ToggleHyperlink> {
 
   @Override
   public void preserveValues( ToggleHyperlink hyperlink ) {
-    ControlLCAUtil.preserveValues( hyperlink );
     WidgetLCAUtil.preserveCustomVariant( hyperlink );
     preserveProperty( hyperlink, PROP_EXPANDED, hyperlink.isExpanded() );
   }

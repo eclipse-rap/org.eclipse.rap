@@ -39,7 +39,6 @@ public final class FileUploadLCA extends WidgetLCA<FileUpload> {
 
   @Override
   public void preserveValues( FileUpload fileUpload ) {
-    ControlLCAUtil.preserveValues( fileUpload );
     WidgetLCAUtil.preserveCustomVariant( fileUpload );
     preserveProperty( fileUpload, PROP_TEXT, fileUpload.getText() );
     preserveProperty( fileUpload, PROP_IMAGE, fileUpload.getImage() );

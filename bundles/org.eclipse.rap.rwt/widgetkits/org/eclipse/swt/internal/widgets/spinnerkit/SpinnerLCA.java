@@ -61,7 +61,6 @@ public final class SpinnerLCA extends WidgetLCA<Spinner> {
 
   @Override
   public void preserveValues( Spinner spinner ) {
-    ControlLCAUtil.preserveValues( spinner );
     WidgetLCAUtil.preserveCustomVariant( spinner );
     preserveProperty( spinner, PROP_MINIMUM, spinner.getMinimum() );
     preserveProperty( spinner, PROP_MAXIMUM, spinner.getMaximum() );

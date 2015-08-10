@@ -49,7 +49,6 @@ public final class ScaleLCA extends WidgetLCA<Scale> {
 
   @Override
   public void preserveValues( Scale scale ) {
-    ControlLCAUtil.preserveValues( scale );
     WidgetLCAUtil.preserveCustomVariant( scale );
     preserveProperty( scale, PROP_MINIMUM, scale.getMinimum() );
     preserveProperty( scale, PROP_MAXIMUM, scale.getMaximum() );

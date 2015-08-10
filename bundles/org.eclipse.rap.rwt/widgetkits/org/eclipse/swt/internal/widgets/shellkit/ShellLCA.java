@@ -77,7 +77,6 @@ public final class ShellLCA extends WidgetLCA<Shell> {
 
   @Override
   public void preserveValues( Shell shell ) {
-    ControlLCAUtil.preserveValues( shell );
     WidgetLCAUtil.preserveCustomVariant( shell );
     preserveProperty( shell, PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
     preserveProperty( shell, PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );

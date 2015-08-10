@@ -49,7 +49,6 @@ public class ProgressBarLCA extends WidgetLCA<ProgressBar> {
 
   @Override
   public void preserveValues( ProgressBar progressBar ) {
-    ControlLCAUtil.preserveValues( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
     preserveProperty( progressBar, PROP_MINIMUM, Integer.valueOf( progressBar.getMinimum() ) );
     preserveProperty( progressBar, PROP_MAXIMUM, Integer.valueOf( progressBar.getMaximum() ) );
