@@ -104,7 +104,9 @@ public final class ActiveKeysUtil {
 
   public static void preserveActiveKeys( Control control ) {
     ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
-    adapter.preserveActiveKeys( getActiveKeys( control ) );
+    if( !adapter.hasPreservedActiveKeys() ) {
+      adapter.preserveActiveKeys( getActiveKeys( control ) );
+    }
   }
 
   public static void preserveCancelKeys( Display display ) {
@@ -114,7 +116,9 @@ public final class ActiveKeysUtil {
 
   public static void preserveCancelKeys( Control control ) {
     ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
-    adapter.preserveCancelKeys( getCancelKeys( control ) );
+    if( !adapter.hasPreservedCancelKeys() ) {
+      adapter.preserveCancelKeys( getCancelKeys( control ) );
+    }
   }
 
   public static void renderActiveKeys( Display display ) {
@@ -131,10 +135,12 @@ public final class ActiveKeysUtil {
   public static void renderActiveKeys( Control control ) {
     if( !control.isDisposed() ) {
       ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
-      String[] actual = getActiveKeys( control );
-      String[] preserved = adapter.getPreservedActiveKeys();
-      if( !Arrays.equals( actual, preserved ) ) {
-        getRemoteObject( control ).set( PROP_ACTIVE_KEYS, translateKeySequences( actual ) );
+      if( adapter.hasPreservedActiveKeys() ) {
+        String[] actual = getActiveKeys( control );
+        String[] preserved = adapter.getPreservedActiveKeys();
+        if( !Arrays.equals( actual, preserved ) ) {
+          getRemoteObject( control ).set( PROP_ACTIVE_KEYS, translateKeySequences( actual ) );
+        }
       }
     }
   }
@@ -153,10 +159,12 @@ public final class ActiveKeysUtil {
   public static void renderCancelKeys( Control control ) {
     if( !control.isDisposed() ) {
       ControlRemoteAdapter adapter = ( ControlRemoteAdapter )WidgetUtil.getAdapter( control );
-      String[] actual = getCancelKeys( control );
-      String[] preserved = adapter.getPreservedCancelKeys();
-      if( !Arrays.equals( actual, preserved ) ) {
-        getRemoteObject( control ).set( PROP_CANCEL_KEYS, translateKeySequences( actual ) );
+      if( adapter.hasPreservedCancelKeys() ) {
+        String[] actual = getCancelKeys( control );
+        String[] preserved = adapter.getPreservedCancelKeys();
+        if( !Arrays.equals( actual, preserved ) ) {
+          getRemoteObject( control ).set( PROP_CANCEL_KEYS, translateKeySequences( actual ) );
+        }
       }
     }
   }
@@ -182,7 +190,7 @@ public final class ActiveKeysUtil {
     String[] result = null;
     if( data != null ) {
       if( data instanceof String[] ) {
-        result = getArrayCopy( data );
+        result = getArrayCopy( ( String[] )data );
       } else {
         String mesg = "Illegal value for RWT.ACTIVE_KEYS in display data, must be a string array";
         throw new IllegalArgumentException( mesg );
@@ -193,23 +201,7 @@ public final class ActiveKeysUtil {
 
   private static String[] getActiveKeys( Control control ) {
     Object data = control.getData( RWT.ACTIVE_KEYS );
-    String[] result = null;
-    if( data != null ) {
-      if( data instanceof String[] ) {
-        result = getArrayCopy( data );
-      } else {
-        String mesg = "Illegal value for RWT.ACTIVE_KEYS in widget data, must be a string array";
-        throw new IllegalArgumentException( mesg );
-      }
-    }
-    return result;
-  }
-
-  private static String[] getArrayCopy( Object data ) {
-    String[] activeKeys = ( String[] )data;
-    String[] result = new String[ activeKeys.length ];
-    System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
-    return result;
+    return data != null ? getArrayCopy( ( String[] )data ) : null;
   }
 
   private static String[] getCancelKeys( Display display ) {
@@ -217,7 +209,7 @@ public final class ActiveKeysUtil {
     Object data = display.getData( RWT.CANCEL_KEYS );
     if( data != null ) {
       if( data instanceof String[] ) {
-        result = getArrayCopy( data );
+        result = getArrayCopy( ( String[] )data );
       } else {
         String mesg = "Illegal value for RWT.CANCEL_KEYS in display data, must be a string array";
         throw new IllegalArgumentException( mesg );
@@ -227,17 +219,8 @@ public final class ActiveKeysUtil {
   }
 
   private static String[] getCancelKeys( Control control ) {
-    String[] result = null;
     Object data = control.getData( RWT.CANCEL_KEYS );
-    if( data != null ) {
-      if( data instanceof String[] ) {
-        result = getArrayCopy( data );
-      } else {
-        String mesg = "Illegal value for RWT.CANCEL_KEYS in widget data, must be a string array";
-        throw new IllegalArgumentException( mesg );
-      }
-    }
-    return result;
+    return data != null ? getArrayCopy( ( String[] )data ) : null;
   }
 
   private static String getMnemonicActivator( Display display ) {
@@ -324,6 +307,10 @@ public final class ActiveKeysUtil {
       throw new IllegalArgumentException( "Unrecognized key: " + key );
     }
     return result;
+  }
+
+  private static String[] getArrayCopy( String[] data ) {
+    return Arrays.copyOf( data, data.length );
   }
 
   private static boolean equals( Object object1, Object object2 ) {

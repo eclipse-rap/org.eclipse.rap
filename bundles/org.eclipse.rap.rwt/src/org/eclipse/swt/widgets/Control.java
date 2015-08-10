@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
+import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -2395,9 +2396,25 @@ public abstract class Control extends Widget implements Drawable {
 
   @Override
   public void setData( String key, Object value ) {
-    if( !RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) || !isToolTipMarkupEnabledFor( this ) ) {
-      super.setData( key, value );
+    if( RWT.TOOLTIP_MARKUP_ENABLED.equals( key ) && isToolTipMarkupEnabledFor( this ) ) {
+      // MARKUP_ENABLED cannot be changed once it is set
+      return;
     }
+    if( RWT.ACTIVE_KEYS.equals( key ) ) {
+      if( value != null && !( value instanceof String[] ) ) {
+        String mesg = "Illegal value for RWT.ACTIVE_KEYS in data, must be a string array";
+        throw new IllegalArgumentException( mesg );
+      }
+      ActiveKeysUtil.preserveActiveKeys( this );
+    }
+    if( RWT.CANCEL_KEYS.equals( key ) ) {
+      if( value != null && !( value instanceof String[] ) ) {
+        String mesg = "Illegal value for RWT.CANCEL_KEYS in data, must be a string array";
+        throw new IllegalArgumentException( mesg );
+      }
+      ActiveKeysUtil.preserveCancelKeys( this );
+    }
+    super.setData( key, value );
   }
 
   ////////////

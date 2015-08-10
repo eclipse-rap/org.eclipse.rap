@@ -80,8 +80,6 @@ public class ControlLCAUtil {
 
   public static void preserveValues( Control control ) {
     preserveTabIndex( control );
-    ActiveKeysUtil.preserveActiveKeys( control );
-    ActiveKeysUtil.preserveCancelKeys( control );
   }
 
   public static void renderChanges( Control control ) {

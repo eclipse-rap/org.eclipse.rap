@@ -34,6 +34,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int VISIBLE = 20;
   private static final int ENABLED = 21;
   private static final int BACKGROUND_IMAGE = 22;
+  private static final int ACTIVE_KEYS = 23;
+  private static final int CANCEL_KEYS = 24;
 
   private transient Composite parent;
   private transient Control[] children;
@@ -230,7 +232,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveActiveKeys( String[] activeKeys ) {
+    markPreserved( ACTIVE_KEYS );
     this.activeKeys = activeKeys;
+  }
+
+  public boolean hasPreservedActiveKeys() {
+    return hasPreserved( ACTIVE_KEYS );
   }
 
   public String[] getPreservedActiveKeys() {
@@ -238,7 +245,12 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveCancelKeys( String[] cancelKeys ) {
+    markPreserved( CANCEL_KEYS );
     this.cancelKeys = cancelKeys;
+  }
+
+  public boolean hasPreservedCancelKeys() {
+    return hasPreserved( CANCEL_KEYS );
   }
 
   public String[] getPreservedCancelKeys() {

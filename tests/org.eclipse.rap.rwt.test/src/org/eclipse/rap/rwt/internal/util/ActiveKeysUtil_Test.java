@@ -101,19 +101,6 @@ public class ActiveKeysUtil_Test {
   }
 
   @Test
-  public void testRender_detectsModifications() {
-    markInitialized();
-    String[] keys = new String[] { "CTRL+A" };
-    setData( keys );
-
-    preserve();
-    keys[ 0 ] = "CTRL+B";
-    render();
-
-    assertEquals( new JsonArray().add( "CTRL+#66" ), findSetProperty() );
-  }
-
-  @Test
   public void testRender_translatesCorrectly() {
     setData( new String[] {
       "x",
@@ -309,11 +296,7 @@ public class ActiveKeysUtil_Test {
         ActiveKeysUtil.preserveCancelKeys( display );
       }
     } else {
-      if( useActiveKeys ) {
-        ActiveKeysUtil.preserveActiveKeys( control );
-      } else {
-        ActiveKeysUtil.preserveCancelKeys( control );
-      }
+      Fixture.clearPreserved();
     }
   }
 

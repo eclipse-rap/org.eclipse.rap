@@ -174,25 +174,8 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveActiveKeys( keys );
 
+    assertTrue( adapter.hasPreservedActiveKeys() );
     assertSame( keys, adapter.getPreservedActiveKeys() );
-  }
-
-  @Test
-  public void testPreserveActiveKeys_isCleared() {
-    adapter.preserveActiveKeys( new String[] { "foo" } );
-
-    adapter.clearPreserved();
-
-    assertNull( adapter.getPreservedActiveKeys() );
-  }
-
-  @Test
-  public void testPreserveActiveKeys_isTransient() throws Exception {
-    adapter.preserveActiveKeys( new String[] { "foo" } );
-
-    adapter = serializeAndDeserialize( adapter );
-
-    assertNull( adapter.getPreservedActiveKeys() );
   }
 
   @Test
@@ -201,25 +184,8 @@ public class ControlRemoteAdapter_Test {
 
     adapter.preserveCancelKeys( keys );
 
+    assertTrue( adapter.hasPreservedCancelKeys() );
     assertSame( keys, adapter.getPreservedCancelKeys() );
-  }
-
-  @Test
-  public void testPreserveCancelKeys_isCleared() {
-    adapter.preserveCancelKeys( new String[] { "foo" } );
-
-    adapter.clearPreserved();
-
-    assertNull( adapter.getPreservedCancelKeys() );
-  }
-
-  @Test
-  public void testPreserveCancelKeys_isTransient() throws Exception {
-    adapter.preserveCancelKeys( new String[] { "foo" } );
-
-    adapter = serializeAndDeserialize( adapter );
-
-    assertNull( adapter.getPreservedCancelKeys() );
   }
 
   @Test
@@ -229,21 +195,7 @@ public class ControlRemoteAdapter_Test {
 
   @Test
   public void testClearPreserved() {
-    Color color = mock( Color.class );
-    adapter.preserveParent( mock( Composite.class ) );
-    adapter.preserveChildren( new Control[] { mock( Control.class ) } );
-    adapter.preserveBounds( new Rectangle( 1, 2, 3, 4 ) );
-    adapter.preserveTabIndex( 3 );
-    adapter.preserveToolTipText( "foo" );
-    adapter.preserveMenu( mock( Menu.class ) );
-    adapter.preserveVisible( true );
-    adapter.preserveEnabled( true );
-    adapter.preserveForeground( color );
-    adapter.preserveBackground( color );
-    adapter.preserveBackgroundTransparency( true );
-    adapter.preserveBackgroundImage( mock( Image.class ) );
-    adapter.preserveFont( mock( Font.class ) );
-    adapter.preserveCursor( mock( Cursor.class ) );
+    preserveEverything();
 
     adapter.clearPreserved();
 
@@ -260,21 +212,7 @@ public class ControlRemoteAdapter_Test {
 
   @Test
   public void testTransientFields() throws Exception {
-    Color color = mock( Color.class );
-    adapter.preserveParent( mock( Composite.class ) );
-    adapter.preserveChildren( new Control[] { mock( Control.class ) } );
-    adapter.preserveBounds( new Rectangle( 1, 2, 3, 4 ) );
-    adapter.preserveTabIndex( 3 );
-    adapter.preserveToolTipText( "foo" );
-    adapter.preserveMenu( mock( Menu.class ) );
-    adapter.preserveVisible( true );
-    adapter.preserveEnabled( true );
-    adapter.preserveForeground( color );
-    adapter.preserveBackground( color );
-    adapter.preserveBackgroundTransparency( true );
-    adapter.preserveBackgroundImage( mock( Image.class ) );
-    adapter.preserveFont( mock( Font.class ) );
-    adapter.preserveCursor( mock( Cursor.class ) );
+    preserveEverything();
 
     adapter = serializeAndDeserialize( adapter );
 
@@ -286,6 +224,25 @@ public class ControlRemoteAdapter_Test {
     adapter.preserveChildren( new Control[ 0 ] );
     assertFalse( adapter.hasPreservedBounds() );
     assertFalse( adapter.hasPreservedParent() );
+  }
+
+  private void preserveEverything() {
+    adapter.preserveParent( mock( Composite.class ) );
+    adapter.preserveChildren( new Control[] { mock( Control.class ) } );
+    adapter.preserveBounds( new Rectangle( 1, 2, 3, 4 ) );
+    adapter.preserveTabIndex( 3 );
+    adapter.preserveToolTipText( "foo" );
+    adapter.preserveMenu( mock( Menu.class ) );
+    adapter.preserveVisible( true );
+    adapter.preserveEnabled( true );
+    adapter.preserveForeground( mock( Color.class ) );
+    adapter.preserveBackground( mock( Color.class ) );
+    adapter.preserveBackgroundTransparency( true );
+    adapter.preserveBackgroundImage( mock( Image.class ) );
+    adapter.preserveFont( mock( Font.class ) );
+    adapter.preserveCursor( mock( Cursor.class ) );
+    adapter.preserveActiveKeys( new String[] { "foo" } );
+    adapter.preserveCancelKeys( new String[] { "foo" } );
   }
 
   private void checkDefaults() {
@@ -315,6 +272,10 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedFont() );
     assertFalse( adapter.hasPreservedCursor() );
     assertNull( adapter.getPreservedCursor() );
+    assertFalse( adapter.hasPreservedActiveKeys() );
+    assertNull( adapter.getPreservedActiveKeys() );
+    assertFalse( adapter.hasPreservedCancelKeys() );
+    assertNull( adapter.getPreservedCancelKeys() );
   }
 
 }

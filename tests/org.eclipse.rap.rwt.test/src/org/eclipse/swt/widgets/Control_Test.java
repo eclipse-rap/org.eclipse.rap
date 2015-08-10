@@ -1757,6 +1757,56 @@ public class Control_Test {
                 control.getAdapter( IControlAdapter.class ).getBounds() );
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forActiveKeys_rejectsNonStringArray() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.ACTIVE_KEYS, "1-Foo-Bar" );
+  }
+
+  @Test
+  public void testSetData_forActiveKeys_acceptsNull() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.ACTIVE_KEYS, new String[] { "foo" } );
+
+    control.setData( RWT.ACTIVE_KEYS, null );
+
+    assertNull( control.getData( RWT.ACTIVE_KEYS ) );
+  }
+
+  @Test
+  public void testSetData_forActiveKeys_preservesActiveKeys() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.ACTIVE_KEYS, new String[] { "foo"} );
+
+    ControlRemoteAdapter adapter = ( ControlRemoteAdapter )control.getAdapter( RemoteAdapter.class );
+    assertTrue( adapter.hasPreservedActiveKeys() );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testSetData_forCancelKeys_rejectsNonStringArray() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.CANCEL_KEYS, "1-Foo-Bar" );
+  }
+
+  @Test
+  public void testSetData_forCancelKeys_acceptsNull() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.CANCEL_KEYS, new String[] { "foo" } );
+
+    control.setData( RWT.CANCEL_KEYS, null );
+
+    assertNull( control.getData( RWT.CANCEL_KEYS ) );
+  }
+
+  @Test
+  public void testSetData_forCancelKeys_preservesCancelKeys() {
+    Control control = new Control( shell, SWT.NONE ) {};
+    control.setData( RWT.CANCEL_KEYS, new String[] { "foo"} );
+
+    ControlRemoteAdapter adapter = ( ControlRemoteAdapter )control.getAdapter( RemoteAdapter.class );
+    assertTrue( adapter.hasPreservedCancelKeys() );
+  }
+
   private static class RedrawLogginShell extends Shell {
     private final List<Widget> log;
 
