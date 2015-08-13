@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
@@ -105,9 +106,9 @@ public class ControlLCAUtil {
   }
 
   public static void preserveParent( Control control, Composite parent ) {
-    ControlRemoteAdapter adapter = getRemoteAdapter( control );
-    if( !adapter.hasPreservedParent() ) {
-      adapter.preserveParent( parent );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedParent() ) {
+      remoteAdapter.preserveParent( parent );
     }
   }
 
@@ -123,9 +124,9 @@ public class ControlLCAUtil {
   }
 
   public static void preserveChildren( Composite composite, Control[] children ) {
-    ControlRemoteAdapter adapter = getRemoteAdapter( composite );
-    if( !adapter.hasPreservedChildren() ) {
-      adapter.preserveChildren( children );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( composite );
+    if( !remoteAdapter.hasPreservedChildren() ) {
+      remoteAdapter.preserveChildren( children );
     }
   }
 
@@ -142,9 +143,9 @@ public class ControlLCAUtil {
   }
 
   public static void preserveBounds( Control control, Rectangle bounds ) {
-    ControlRemoteAdapter adapter = getRemoteAdapter( control );
-    if( !adapter.hasPreservedBounds() ) {
-      adapter.preserveBounds( bounds );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedBounds() ) {
+      remoteAdapter.preserveBounds( bounds );
     }
   }
 
@@ -160,9 +161,9 @@ public class ControlLCAUtil {
   }
 
   public static void preserveTabIndex( Control control, int tabIndex ) {
-    ControlRemoteAdapter adapter = getRemoteAdapter( control );
-    if( !adapter.hasPreservedTabIndex() ) {
-      adapter.preserveTabIndex( tabIndex );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.hasPreservedTabIndex() ) {
+      remoteAdapter.preserveTabIndex( tabIndex );
     }
   }
 
@@ -193,7 +194,7 @@ public class ControlLCAUtil {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( remoteAdapter.hasPreservedToolTipText() ) {
       String actual = control.getToolTipText();
-      String preserved = getRemoteAdapter( control ).getPreservedToolTipText();
+      String preserved = remoteAdapter.getPreservedToolTipText();
       if( changed( control, actual, preserved, null ) ) {
         String text = actual == null ? "" : actual;
         if( !isToolTipMarkupEnabledFor( control ) ) {
@@ -207,7 +208,7 @@ public class ControlLCAUtil {
   public static void preserveMenu( Control control, Menu menu ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedMenu() ) {
-      getRemoteAdapter( control ).preserveMenu( menu );
+      remoteAdapter.preserveMenu( menu );
     }
   }
 
@@ -215,7 +216,7 @@ public class ControlLCAUtil {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( remoteAdapter.hasPreservedMenu() ) {
       Menu actual = control.getMenu();
-      Menu preserved = getRemoteAdapter( control ).getPreservedMenu();
+      Menu preserved = remoteAdapter.getPreservedMenu();
       if( changed( control, actual, preserved, null ) ) {
         String actualMenuId = actual == null ? null : getId( actual );
         getRemoteObject( control ).set( PROP_MENU, actualMenuId );
@@ -245,7 +246,7 @@ public class ControlLCAUtil {
   public static void preserveEnabled( Control control, boolean enabled ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedEnabled() ) {
-      getRemoteAdapter( control ).preserveEnabled( enabled );
+      remoteAdapter.preserveEnabled( enabled );
     }
   }
 
@@ -265,7 +266,7 @@ public class ControlLCAUtil {
   public static void preserveForeground( Control control, Color foreground ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedForeground() ) {
-      getRemoteAdapter( control ).preserveForeground( foreground );
+      remoteAdapter.preserveForeground( foreground );
     }
   }
 
@@ -274,7 +275,7 @@ public class ControlLCAUtil {
     if( remoteAdapter.hasPreservedForeground() ) {
       IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
       Color actual = controlAdapter.getUserForeground();
-      Color preserved = getRemoteAdapter( control ).getPreservedForeground();
+      Color preserved = remoteAdapter.getPreservedForeground();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_FOREGROUND, toJson( actual ) );
       }
@@ -315,7 +316,7 @@ public class ControlLCAUtil {
   public static void preserveBackgroundImage( Control control, Image image ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedBackgroundImage() ) {
-      getRemoteAdapter( control ).preserveBackgroundImage( image );
+      remoteAdapter.preserveBackgroundImage( image );
     }
   }
 
@@ -324,7 +325,7 @@ public class ControlLCAUtil {
     if( remoteAdapter.hasPreservedBackgroundImage() ) {
       IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
       Image actual = controlAdapter.getUserBackgroundImage();
-      Image preserved = getRemoteAdapter( control ).getPreservedBackgroundImage();
+      Image preserved = remoteAdapter.getPreservedBackgroundImage();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
       }
@@ -334,7 +335,7 @@ public class ControlLCAUtil {
   public static void preserveFont( Control control, Font font ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedFont() ) {
-      getRemoteAdapter( control ).preserveFont( font );
+      remoteAdapter.preserveFont( font );
     }
   }
 
@@ -343,7 +344,7 @@ public class ControlLCAUtil {
     if( remoteAdapter.hasPreservedFont() ) {
       IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
       Font actual = controlAdapter.getUserFont();
-      Font preserved = getRemoteAdapter( control ).getPreservedFont();
+      Font preserved = remoteAdapter.getPreservedFont();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_FONT, toJson( actual ) );
       }
@@ -353,7 +354,7 @@ public class ControlLCAUtil {
   public static void preserveCursor( Control control, Cursor cursor ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.hasPreservedCursor() ) {
-      getRemoteAdapter( control ).preserveCursor( cursor );
+      remoteAdapter.preserveCursor( cursor );
     }
   }
 
@@ -361,15 +362,11 @@ public class ControlLCAUtil {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( remoteAdapter.hasPreservedCursor() ) {
       Cursor actual = control.getCursor();
-      Cursor preserved = getRemoteAdapter( control ).getPreservedCursor();
+      Cursor preserved = remoteAdapter.getPreservedCursor();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
       }
     }
-  }
-
-  private static void renderData( Control control ) {
-    WidgetLCAUtil.renderData( control );
   }
 
   private static void renderListenActivate( Control control ) {

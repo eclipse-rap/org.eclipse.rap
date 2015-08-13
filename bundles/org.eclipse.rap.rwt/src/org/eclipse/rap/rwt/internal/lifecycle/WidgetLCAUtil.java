@@ -152,7 +152,7 @@ public final class WidgetLCAUtil {
     WidgetRemoteAdapter remoteAdapter = getRemoteAdapter( widget );
     if( remoteAdapter.hasPreservedData() ) {
       Object[] actual = getData( widget );
-      Object[] preserved = getRemoteAdapter( widget ).getPreservedData();
+      Object[] preserved = remoteAdapter.getPreservedData();
       if( changed( widget, actual, preserved, null ) ) {
         getRemoteObject( widget ).set( PROP_DATA, getJsonForData( actual ) );
       }
