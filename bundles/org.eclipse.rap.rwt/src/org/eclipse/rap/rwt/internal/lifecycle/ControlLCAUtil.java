@@ -305,10 +305,15 @@ public class ControlLCAUtil {
                                              remoteAdapter.getPreservedBackgroundTransparency(),
                                              false );
       if( transparencyChanged || colorChanged ) {
-        JsonValue color = actualTransparency && actualBackground == null
-            ? toJson( new RGB( 0, 0, 0 ), 0 )
-            : toJson( actualBackground, actualTransparency ? 0 : 255 );
-            getRemoteObject( control ).set( PROP_BACKGROUND, color );
+        RGB rgb = null;
+        int alpha = 0;
+        if( actualBackground != null ) {
+          rgb = actualBackground.getRGB();
+          alpha = actualTransparency ? 0 : actualBackground.getAlpha();
+        } else if( actualTransparency ) {
+          rgb = new RGB( 0, 0, 0 );
+        }
+        getRemoteObject( control ).set( PROP_BACKGROUND, toJson( rgb, alpha ) );
       }
     }
   }

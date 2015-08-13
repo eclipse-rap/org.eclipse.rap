@@ -69,6 +69,7 @@ import org.mockito.ArgumentCaptor;
 public class ControlLCAUtil_Test {
 
   private static final JsonArray RED_JSON = JsonArray.readFrom( "[255, 0, 0, 255]" );
+  private static final JsonArray RED_ALPHA_JSON = JsonArray.readFrom( "[255, 0, 0, 128]" );
   private static final JsonArray TRANSPARENT_JSON = JsonArray.readFrom( "[0, 0, 0, 0]" );
 
   private Display display;
@@ -76,12 +77,14 @@ public class ControlLCAUtil_Test {
   private Composite anotherParent;
   private Control control;
   private Color red;
+  private Color redAlpha;
 
   @Before
   public void setUp() {
     Fixture.setUp();
     display = new Display();
     red = display.getSystemColor( SWT.COLOR_RED );
+    redAlpha = new Color( display, 255, 0, 0, 128 );
     shell = new Shell( display );
     anotherParent = new Shell( display );
     getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
@@ -499,6 +502,17 @@ public class ControlLCAUtil_Test {
     ControlLCAUtil.renderChanges( control );
 
     assertEquals( RED_JSON, getProtocolMessage().findSetProperty( control, "background" ) );
+  }
+
+  @Test
+  public void testRenderBackground_changed_withAlpha() {
+    Fixture.markInitialized( control );
+    Fixture.clearPreserved();
+
+    control.setBackground( redAlpha );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( RED_ALPHA_JSON, getProtocolMessage().findSetProperty( control, "background" ) );
   }
 
   @Test

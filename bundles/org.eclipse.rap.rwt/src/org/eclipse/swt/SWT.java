@@ -2703,7 +2703,7 @@ public class SWT {
    * (value is 1&lt;&lt;13).
    * <!-- RAP specific -->
    * <p><strong>Note:</strong></p>This constant is meant to ease
-   * single-sourcing. In RAP the <code>FileDialog</code> does not support this constant. 
+   * single-sourcing. In RAP the <code>FileDialog</code> does not support this constant.
    * @since 1.3
    */
   public static final int SAVE = 1 << 13;
@@ -2916,6 +2916,17 @@ public class SWT {
    * System color used to paint inactive title background gradient (value is 35).
    */
   public static final int COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT = 35;
+
+  /**
+   * System color used to paint with alpha 0 (value is 37).
+   * <p>
+   * This pseudo-color can be used to set a transparent background on SWT
+   * controls.
+   * </p>
+   *
+   * @since 3.1
+   */
+  public static final int COLOR_TRANSPARENT = 37;
 
   // Error codes
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,31 +18,28 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.Graphics;
 import org.eclipse.swt.widgets.Display;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 @SuppressWarnings( "deprecation" )
 public class Color_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Device device;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     device = new Display();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -51,6 +48,25 @@ public class Color_Test {
     assertEquals( 250, salmon.getRed() );
     assertEquals( 128, salmon.getGreen() );
     assertEquals( 114, salmon.getBlue() );
+    assertEquals( 255, salmon.getAlpha() );
+  }
+
+  @Test
+  public void testColorFromRGBWithAlpha() {
+    Color salmon = new Color( device, new RGB( 250, 128, 114 ), 128 );
+    assertEquals( 250, salmon.getRed() );
+    assertEquals( 128, salmon.getGreen() );
+    assertEquals( 114, salmon.getBlue() );
+    assertEquals( 128, salmon.getAlpha() );
+  }
+
+  @Test
+  public void testColorFromRGBA() {
+    Color salmon = new Color( device, new RGBA( 250, 128, 114, 128 ) );
+    assertEquals( 250, salmon.getRed() );
+    assertEquals( 128, salmon.getGreen() );
+    assertEquals( 114, salmon.getBlue() );
+    assertEquals( 128, salmon.getAlpha() );
   }
 
   @Test
@@ -59,6 +75,16 @@ public class Color_Test {
     assertEquals( 250, salmon.getRed() );
     assertEquals( 128, salmon.getGreen() );
     assertEquals( 114, salmon.getBlue() );
+    assertEquals( 255, salmon.getAlpha() );
+  }
+
+  @Test
+  public void testColorFromIntWithAlpha() {
+    Color salmon = new Color( device, 250, 128, 114, 64 );
+    assertEquals( 250, salmon.getRed() );
+    assertEquals( 128, salmon.getGreen() );
+    assertEquals( 114, salmon.getBlue() );
+    assertEquals( 64, salmon.getAlpha() );
   }
 
   @Test
@@ -67,6 +93,7 @@ public class Color_Test {
     assertEquals( 255, color.getRed() );
     assertEquals( 0, color.getGreen() );
     assertEquals( 0, color.getBlue() );
+    assertEquals( 255, color.getAlpha() );
   }
 
   @Test
@@ -81,6 +108,14 @@ public class Color_Test {
     assertTrue( salmon1.equals( salmon2 ) );
     salmon1 = new Color( device, 250, 128, 114 );
     salmon2 = Graphics.getColor( 250, 128, 114 );
+    assertTrue( salmon1.equals( salmon2 ) );
+  }
+
+  @Test
+  public void testEquality_withAlpha() {
+    Color salmon1 = new Color( device, 250, 128, 114 );
+    Color salmon2 = new Color( device, 250, 128, 114, 255 );
+
     assertTrue( salmon1.equals( salmon2 ) );
   }
 
@@ -101,114 +136,137 @@ public class Color_Test {
   }
 
   @Test
+  public void testGetRGBA() {
+    RGBA rgbSalmon = new RGBA( 250, 128, 114, 128 );
+
+    assertEquals( rgbSalmon, new Color( device, rgbSalmon ).getRGBA() );
+  }
+
+  @Test
   public void testConstructor() {
     Color color = new Color( null, 0, 0, 0 );
     assertSame( Display.getCurrent(), color.getDevice() );
+
     color = new Color( null, new RGB( 0, 0, 0 ) );
     assertSame( Display.getCurrent(), color.getDevice() );
   }
 
-  @Test
-  public void testConstructorWithoutDevice() {
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withNullDevice() {
     device.dispose();
-    try {
-      new Color( null, new RGB( 0, 0, 0 ) );
-      fail( "Must provide device for color constructor" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      new Color( null, 0, 0, 0 );
-      fail( "Must provide device for color constructor" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+
+    new Color( null, 0, 0, 0 );
   }
 
   @Test
-  public void testConstructorWithInvalidRedValue() {
-    try {
-      new Color( device, -1, 0, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-    try {
-      new Color( device, 300, 0, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testConstructor_withDisposedDevice() {
+    device.dispose();
+
+    new Color( device, 0, 0, 0 );
   }
 
-  @Test
-  public void testConstructorWithInvalidGreenValue() {
-    try {
-      new Color( device, 0, -1, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-    try {
-      new Color( device, 0, 300, 0 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withNegativeRedValue() {
+    new Color( device, -1, 0, 0, 0 );
   }
 
-  @Test
-  public void testConstructorWithInvalidBlueValue() {
-    try {
-      new Color( device, 0, 0, -1 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-    try {
-      new Color( device, 0, 0, 300 );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withInvalidRedValue() {
+    new Color( device, 300, 0, 0, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withNegativeGreenValue() {
+    new Color( device, 0, -1, 0, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withInvalidGreenValue() {
+    new Color( device, 0, 300, 0, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withNegativeBlueValue() {
+    new Color( device, 0, 0, -1, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withInvalidBlueValue() {
+    new Color( device, 0, 0, 300, 0 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withNegativeAlphaValue() {
+    new Color( device, 0, 0, 0, -1 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testConstructor_withInvalidAlphaValue() {
+    new Color( device, 0, 0, 0, 300 );
   }
 
   @Test
   public void testDispose() {
     Color color = new Color( device, new RGB( 0, 0, 0 ) );
+
     color.dispose();
+
     assertTrue( color.isDisposed() );
   }
 
-  @Test
+  @Test( expected = IllegalStateException.class )
   public void testDisposeFactoryCreated() {
     Color color = Graphics.getColor( new RGB( 0, 0, 0 ) );
-    try {
-      color.dispose();
-      fail( "It is not allowed to dispose of a factory-created color" );
-    } catch( IllegalStateException e ) {
-      assertFalse( color.isDisposed() );
-    }
+
+    color.dispose();
   }
 
-  @Test
-  public void testGetAttributesAfterDispose() {
-    Color font = new Color( device, 0, 0, 0 );
-    font.dispose();
-    try {
-      font.getRed();
-      fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception expected ) {
-    }
-    try {
-      font.getGreen();
-      fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception expected ) {
-    }
-    try {
-      font.getBlue();
-      fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception expected ) {
-    }
-    try {
-      font.getRGB();
-      fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception expected ) {
-    }
+  @Test( expected = SWTException.class )
+  public void testGetRed_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getRed();
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetGreen_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getGreen();
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetBlue_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getBlue();
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetAlpha_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getAlpha();
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetRGB_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getRGB();
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetRGBA_afterDispose() {
+    Color color = new Color( device, 0, 0, 0 );
+    color.dispose();
+
+    color.getRGBA();
   }
 
   @Test
@@ -218,6 +276,7 @@ public class Color_Test {
     Color deserializedColor = serializeAndDeserialize( color );
 
     assertEquals( color.getRGB(), deserializedColor.getRGB() );
+    assertEquals( color.getRGBA(), deserializedColor.getRGBA() );
     assertFalse( deserializedColor.isDisposed() );
     assertNotNull( deserializedColor.getDevice() );
     assertNotSame( color.getDevice(), deserializedColor.getDevice() );

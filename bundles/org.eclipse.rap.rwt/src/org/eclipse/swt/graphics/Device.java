@@ -67,6 +67,9 @@ public abstract class Device implements Drawable, SerializableCompatibility {
     ResourceFactory resourceFactory = getApplicationContext().getResourceFactory();
     Color result;
     switch( id ) {
+      case SWT.COLOR_TRANSPARENT:
+        result = resourceFactory.getColor( 0, 0, 0, 0 );
+        break;
       case SWT.COLOR_WHITE:
         result = resourceFactory.getColor( 255, 255, 255 );
       break;

@@ -31,20 +31,23 @@ public class ResourceFactory {
   private InstanceCreator<FontData, Font> fontCreator;
 
   public ResourceFactory() {
-    colors = new SharedInstanceBuffer<Integer, Color>();
-    fonts = new SharedInstanceBuffer<FontData, Font>();
-    cursors = new SharedInstanceBuffer<Integer, Cursor>();
+    colors = new SharedInstanceBuffer<>();
+    fonts = new SharedInstanceBuffer<>();
+    cursors = new SharedInstanceBuffer<>();
     colorCreator = new InstanceCreator<Integer, Color>() {
+      @Override
       public Color createInstance( Integer value ) {
         return createColorInstance( value.intValue() );
       }
     };
     cursorCreator = new InstanceCreator<Integer, Cursor>() {
+      @Override
       public Cursor createInstance( Integer style ) {
         return createCursorInstance( style.intValue() );
       }
     };
     fontCreator = new InstanceCreator<FontData, Font>() {
+      @Override
       public Font createInstance( FontData fontData ) {
         return createFontInstance( fontData );
       }
@@ -52,7 +55,11 @@ public class ResourceFactory {
   }
 
   public Color getColor( int red, int green, int blue ) {
-    int colorNr = ColorUtil.computeColorNr( red, green, blue );
+    return getColor( red, green, blue, 255 );
+  }
+
+  public Color getColor( int red, int green, int blue, int alpha ) {
+    int colorNr = ColorUtil.computeColorNr( red, green, blue, alpha );
     return colors.get( Integer.valueOf( colorNr ), colorCreator );
   }
 
@@ -65,19 +72,19 @@ public class ResourceFactory {
   }
 
   private static Color createColorInstance( int colorNr ) {
-    Class[] paramTypes = new Class[] { int.class };
+    Class<?>[] paramTypes = new Class[] { int.class };
     Object[] paramValues = new Object[] { Integer.valueOf( colorNr ) };
     return ClassUtil.newInstance( Color.class, paramTypes, paramValues );
   }
 
   private static Font createFontInstance( FontData fontData ) {
-    Class[] paramTypes = new Class[] { FontData.class };
+    Class<?>[] paramTypes = new Class[] { FontData.class };
     Object[] paramValues = new Object[] { fontData };
     return ClassUtil.newInstance( Font.class, paramTypes, paramValues );
   }
 
   private static Cursor createCursorInstance( int style ) {
-    Class[] paramTypes = new Class[] { int.class };
+    Class<?>[] paramTypes = new Class[] { int.class };
     Object[] paramValues = new Object[] { Integer.valueOf( style ) };
     return ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
   }
