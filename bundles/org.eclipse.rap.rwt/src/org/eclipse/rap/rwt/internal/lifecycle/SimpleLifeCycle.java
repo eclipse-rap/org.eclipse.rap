@@ -86,7 +86,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
   private class SessionDisplayPhaseExecutor extends PhaseExecutor {
 
-    SessionDisplayPhaseExecutor( IPhase[] phases, ILifeCycle lifecycle ) {
+    SessionDisplayPhaseExecutor( IPhase[] phases, LifeCycle lifecycle ) {
       super( phaseListenerManager, phases, lifecycle );
     }
 

@@ -85,7 +85,7 @@ public class PhaseExecutor_Test {
 
     private TestPhaseExecutor( PhaseListenerManager phaseListenerManager,
                                IPhase[] phases,
-                               ILifeCycle lifecycle )
+                               LifeCycle lifecycle )
     {
       super( phaseListenerManager, phases, lifecycle );
     }

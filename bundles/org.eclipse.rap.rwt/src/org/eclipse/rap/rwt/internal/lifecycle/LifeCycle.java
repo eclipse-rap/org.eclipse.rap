@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 
 
 @SuppressWarnings( "deprecation" )
-public abstract class LifeCycle implements ILifeCycle {
+public abstract class LifeCycle {
 
   protected final ApplicationContextImpl applicationContext;
   protected final PhaseListenerManager phaseListenerManager;
@@ -31,12 +31,10 @@ public abstract class LifeCycle implements ILifeCycle {
 
   public abstract void requestThreadExec( Runnable runnable );
 
-  @Override
   public void addPhaseListener( PhaseListener listener ) {
     phaseListenerManager.addPhaseListener( listener );
   }
 
-  @Override
   public void removePhaseListener( PhaseListener listener ) {
     phaseListenerManager.removePhaseListener( listener );
   }

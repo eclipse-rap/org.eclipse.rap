@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.client.Client;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rap.rwt.internal.lifecycle.ILifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
@@ -52,14 +51,12 @@ import org.eclipse.swt.widgets.Widget;
  * example, it provides access to the current UI session and the request.
  *
  * @since 2.0
- * @see ILifeCycle
  * @see UISession
  * @see ApplicationContext
  * @see ResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
  */
-@SuppressWarnings( "deprecation" )
 public final class RWT {
 
   /**

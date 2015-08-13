@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import java.util.EventObject;
  * <p>This event is sent to the <code>PhaseListener</code> before and after
  * a lifecycle phase is executed.</p>
  * <p>The <code>getSource()</code> method returns an instance of type
- * <code>ILifeCycle</code>.</p>
+ * <code>LifeCycle</code>.</p>
  * <p>This class is not intended to be instantiated by clients.</p>
  *
  * @since 2.0
@@ -38,7 +38,7 @@ public class PhaseEvent extends EventObject {
    * @param source the lifecycle which causes this event
    * @param phaseId the id of the phase that will be or was executed.
    */
-  public PhaseEvent( ILifeCycle source, PhaseId phaseId ) {
+  public PhaseEvent( LifeCycle source, PhaseId phaseId ) {
     super( source );
     this.phaseId = phaseId;
   }

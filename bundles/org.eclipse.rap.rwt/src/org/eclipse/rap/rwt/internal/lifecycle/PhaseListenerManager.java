@@ -49,7 +49,7 @@ public class PhaseListenerManager {
     }
   }
 
-  void notifyBeforePhase( PhaseId phase, ILifeCycle eventSource ) {
+  void notifyBeforePhase( PhaseId phase, LifeCycle eventSource ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -64,7 +64,7 @@ public class PhaseListenerManager {
     }
   }
 
-  void notifyAfterPhase( PhaseId phase, ILifeCycle eventSource ) {
+  void notifyAfterPhase( PhaseId phase, LifeCycle eventSource ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {
