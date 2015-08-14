@@ -65,7 +65,7 @@ public final class ThemeAdapterManager {
     if( superClass == Control.class ) {
       return new ControlThemeAdapterImpl();
     }
-    String className = LifeCycleAdapterUtil.getSimpleClassName( superClass );
+    String className = superClass.getSimpleName();
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( superClass );
     for( String variant : variants ) {
       String classToLoad = new StringBuilder()

@@ -261,7 +261,7 @@ public class ThemeManager {
   }
 
   private void loadThemeableWidgetResources( ThemeableWidget themeWidget ) {
-    String className = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
+    String className = themeWidget.widget.getSimpleName();
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
     boolean found = false;
     try {

@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterUtil.getKitPackageVariants;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,21 +24,21 @@ import org.eclipse.swt.widgets.Widget;
 public final class LifeCycleAdapterFactory {
 
   private final Object widgetAdaptersLock;
-  private final Map<Class<?>, WidgetLCA> widgetAdapters;
+  private final Map<Class<?>, WidgetLCA<?>> widgetAdapters;
 
   public LifeCycleAdapterFactory() {
     widgetAdaptersLock = new Object();
     widgetAdapters = new HashMap<>();
   }
 
-  public WidgetLCA getWidgetLCA( Widget widget ) {
+  public WidgetLCA<?> getWidgetLCA( Widget widget ) {
     Class<?> clazz = widget.getClass();
     // [fappel] This code is performance critical, don't change without checking against a profiler
-    WidgetLCA result;
+    WidgetLCA<?> result;
     synchronized( widgetAdaptersLock ) {
       result = widgetAdapters.get( clazz );
       if( result == null ) {
-        WidgetLCA adapter = null;
+        WidgetLCA<?> adapter = null;
         Class<?> superClass = clazz;
         while( !Object.class.equals( superClass ) && adapter == null ) {
           adapter = loadWidgetLCA( superClass );
@@ -51,25 +53,22 @@ public final class LifeCycleAdapterFactory {
     return result;
   }
 
-  private static WidgetLCA loadWidgetLCA( Class<?> clazz ) {
-    WidgetLCA result = null;
-    String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
-    for( int i = 0; result == null && i < variants.length; i++ ) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append( variants[ i ] );
-      buffer.append( "." );
-      buffer.append( className );
-      buffer.append( "LCA" );
-      String classToLoad = buffer.toString();
-      ClassLoader loader = clazz.getClassLoader();
+  private static WidgetLCA<?> loadWidgetLCA( Class<?> clazz ) {
+    String className = clazz.getSimpleName();
+    ClassLoader loader = clazz.getClassLoader();
+    for( String variant : getKitPackageVariants( clazz ) ) {
+      String classToLoad = new StringBuilder()
+        .append( variant )
+        .append( '.' )
+        .append( className )
+        .append( "LCA" ).toString();
       try {
-        result = ( WidgetLCA )ClassUtil.newInstance( loader, classToLoad );
+        return ( WidgetLCA<?> )ClassUtil.newInstance( loader, classToLoad );
       } catch( @SuppressWarnings( "unused" ) ClassInstantiationException ignore ) {
         // ignore and try to load next package name variant
       }
     }
-    return result;
+    return null;
   }
 
 }
