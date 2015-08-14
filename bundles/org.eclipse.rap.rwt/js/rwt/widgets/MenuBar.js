@@ -18,6 +18,7 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
     this._openItem = null;
     this._active = false;
     this._mnemonics = false;
+    this.addState( "rwt_FLAT" );
     this.setAppearance( "toolbar" );
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseup", this._onMouseUp );
