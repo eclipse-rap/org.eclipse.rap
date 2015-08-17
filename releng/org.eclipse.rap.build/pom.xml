@@ -28,7 +28,7 @@
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.0/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
-    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.5/R-4.5-201506032000/</platform-repo.url>
+    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.6milestones/S-4.6M1-201508052000/</platform-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
