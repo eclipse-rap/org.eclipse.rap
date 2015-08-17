@@ -3937,6 +3937,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testKeyboardNavigationRight_scrolls : function() {
+      var tree = this._createDefaultTree();
+      tree.setWidth( 100 );
+      tree.setItemCount( 1 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      item0.setTexts( [ "very long text that can be scrolled by left and right arrow key" ] );
+      item0.setItemCount( 1 );
+      var item1 = this._createItem( item0, 0 );
+      TestUtil.flush();
+
+      TestUtil.clickDOM( tree._rowContainer.getRow( 0 ).$el.get( 0 ) );
+      TestUtil.press( tree, "Right" );
+      var offsetItemExpanded = tree.getHorizontalBar().getValue();
+      TestUtil.press( tree, "Right" );
+      var offsetItemSelected = tree.getHorizontalBar().getValue();
+      TestUtil.press( tree, "Right" );
+      var offsetScrolled = tree.getHorizontalBar().getValue();
+
+      assertEquals( 0, offsetItemExpanded );
+      assertEquals( 0, offsetItemSelected );
+      assertEquals( 10, offsetScrolled );
+      tree.destroy();
+    },
+
     testKeyboardNavigationLeft : function() {
       var tree = this._createDefaultTree();
       tree.setItemCount( 1 );
@@ -3971,6 +3995,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertFalse( item0.isExpanded() );
+      tree.destroy();
+    },
+
+    testKeyboardNavigationLeft_scrolls : function() {
+      var tree = this._createDefaultTree();
+      tree.setWidth( 100 );
+      tree.setItemCount( 1 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      item0.setTexts( [ "very long text that can be scrolled by left and right arrow key" ] );
+      item0.setItemCount( 1 );
+      var item1 = this._createItem( item0, 0 );
+      item0.setExpanded( true );
+      tree.getHorizontalBar().setValue( 50 );
+      TestUtil.flush();
+
+      TestUtil.clickDOM( tree._rowContainer.getRow( 1 ).$el.get( 0 ) );
+      TestUtil.press( tree, "Left" );
+      var offsetItemSelected = tree.getHorizontalBar().getValue();
+      TestUtil.press( tree, "Left" );
+      var offsetItemCollapsed = tree.getHorizontalBar().getValue();
+      TestUtil.press( tree, "Left" );
+      var offsetScrolled = tree.getHorizontalBar().getValue();
+
+      assertEquals( 50, offsetItemSelected );
+      assertEquals( 50, offsetItemCollapsed );
+      assertEquals( 40, offsetScrolled );
       tree.destroy();
     },
 

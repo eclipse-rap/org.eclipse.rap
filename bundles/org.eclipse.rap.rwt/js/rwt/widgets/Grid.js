@@ -778,6 +778,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         var item = this._focusItem.getParent();
         var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, true );
+      } else {
+        this._horzScrollBar.setValue( this._horzScrollBar.getValue() - 10 );
       }
     },
 
@@ -790,6 +792,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           var itemIndex = item.getFlatIndex();
           this._handleKeyboardSelect( event, item, itemIndex, true );
         }
+      } else {
+        this._horzScrollBar.setValue( this._horzScrollBar.getValue() + 10 );
       }
     },
 
