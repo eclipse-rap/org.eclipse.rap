@@ -772,19 +772,23 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _handleKeyLeft : function( event ) {
-      if( this._focusItem.isExpanded() ) {
+      if( event.isCtrlPressed() ) {
+        this._scrollLeft();
+      } else if( this._focusItem.isExpanded() ) {
         this._focusItem.setExpanded( false );
       } else if( !this._focusItem.getParent().isRootItem() ) {
         var item = this._focusItem.getParent();
         var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, true );
       } else {
-        this._horzScrollBar.setValue( this._horzScrollBar.getValue() - 10 );
+        this._scrollLeft();
       }
     },
 
     _handleKeyRight : function( event ) {
-      if( this._focusItem.hasChildren() ) {
+      if( event.isCtrlPressed() ) {
+        this._scrollRight();
+      } else if( this._focusItem.hasChildren() ) {
         if( !this._focusItem.isExpanded() ) {
           this._focusItem.setExpanded( true );
         } else {
@@ -793,7 +797,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           this._handleKeyboardSelect( event, item, itemIndex, true );
         }
       } else {
-        this._horzScrollBar.setValue( this._horzScrollBar.getValue() + 10 );
+        this._scrollRight();
       }
     },
 
@@ -813,6 +817,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
           this.setFocusItem( firstItem );
         }
       }
+    },
+
+    _scrollLeft : function() {
+      this._horzScrollBar.setValue( this._horzScrollBar.getValue() - 10 );
+    },
+
+    _scrollRight : function() {
+      this._horzScrollBar.setValue( this._horzScrollBar.getValue() + 10 );
     },
 
     /////////////////
