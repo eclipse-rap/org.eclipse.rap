@@ -513,7 +513,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
-    testCreateScrollBarForControlInProtocol : function() {
+    testCreateScrollBarForScrollableInProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var scrollable = this._createScrollable();
 
@@ -532,7 +532,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       shell.destroy();
     },
 
-    testCreateHorizontalScrollBarForControlInProtocol : function() {
+    testCreateScrollBarForNonScrollableInProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      MessageProcessor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w2",
+          "style" : []
+        }
+      } );
+
+      assertNotNull( rwt.remote.ObjectRegistry.getObject( "w5" ) );
+      shell.destroy();
+    },
+
+    testCreateHorizontalScrollBarForScrollableInProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var scrollable = this._createScrollable();
 
@@ -548,6 +565,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
       var scrollbar = rwt.remote.ObjectRegistry.getObject( "w5" );
       assertIdentical( scrollable.getHorizontalBar(), scrollbar );
+      shell.destroy();
+    },
+
+    testCreateHorizontalScrollBarForNonScrollableInProtocol : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      MessageProcessor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "HORIZONTAL" ]
+        }
+      } );
+
+      assertNotNull( rwt.remote.ObjectRegistry.getObject( "w5" ) );
       shell.destroy();
     },
 
