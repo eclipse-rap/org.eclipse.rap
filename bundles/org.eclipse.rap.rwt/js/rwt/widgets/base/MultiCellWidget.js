@@ -22,7 +22,7 @@ var $imageTemplate = $( "<div>" ).css( {
   backgroundRepeat : "no-repeat"
 } );
 
-rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
+rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget", {
 
   extend : rwt.widgets.base.Terminator,
 
@@ -622,7 +622,8 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget",  {
         if( this.cellIsDisplayable( i ) ) {
           var size = vertical ? this.getCellHeight( i ) : this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
-            this.$cells[ i ].css( vertical ? "top" : "left", offset );
+            var prop = this.getDirection() === "rtl" ? "right" : "left";
+            this.$cells[ i ].css( vertical ? "top" : prop, offset );
             this.$cells[ i ].css( vertical ? "height" : "width", Math.max( 0, size ) );
           }
           offset += ( size + space );

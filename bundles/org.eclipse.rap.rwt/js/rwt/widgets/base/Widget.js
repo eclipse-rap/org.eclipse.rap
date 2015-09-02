@@ -1008,6 +1008,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       event : "changeAppearance"
     },
 
+    direction : {
+      check : "String",
+      init : "ltr",
+      apply : "_applyDirection"
+    },
+
     /*
      * The method which this.supportsDrop() calls to determine whether the
      * widget supports a particular drop operation.
@@ -3167,6 +3173,17 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         this.removeStyleProperty("zIndex");
       } else {
         this.setStyleProperty("zIndex", value);
+      }
+    },
+
+    //////////////////////
+    // DIRECTION SUPPORT
+
+    _applyDirection : function( value ) {
+      if( value === "rtl" ) {
+        this.setStyleProperty( "direction", "rtl" );
+      } else {
+        this.setStyleProperty( "direction", "ltr" );
       }
     },
 

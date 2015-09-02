@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,9 +45,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -86,6 +88,7 @@ abstract class ExampleTab implements Serializable {
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
+  private Button ltrButton, rtlButton;
   private int[] horizontalWeights = new int[] { 50, 50 };
   private final Set<String> properties = new HashSet<String>();
   private Object data;
@@ -588,6 +591,43 @@ abstract class ExampleTab implements Serializable {
     } );
   }
 
+  protected void createOrientationGroup() {
+    Group orientationGroup = new Group( styleComp, SWT.NONE );
+    orientationGroup.setLayout( new GridLayout() );
+    orientationGroup.setText( "Orientation" );
+    Button defaultOrietationButton = new Button( orientationGroup, SWT.RADIO );
+    defaultOrietationButton.setText( "Default" );
+    defaultOrietationButton.setSelection( true );
+    ltrButton = new Button( orientationGroup, SWT.RADIO );
+    ltrButton.setText( "LEFT_TO_RIGHT" );
+    ltrButton.setData( "style", Integer.valueOf( SWT.LEFT_TO_RIGHT ) );
+    rtlButton = new Button( orientationGroup, SWT.RADIO );
+    rtlButton.setText( "RIGHT_TO_LEFT" );
+    rtlButton.setData( "style", Integer.valueOf( SWT.RIGHT_TO_LEFT ) );
+    Listener listener = new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        Button button = ( Button )event.widget;
+        if( button.getSelection() ) {
+          createNew();
+        }
+      }
+    };
+    defaultOrietationButton.addListener( SWT.Selection, listener );
+    ltrButton.addListener( SWT.Selection, listener );
+    rtlButton.addListener( SWT.Selection, listener );
+  }
+
+  private int getOrientationStyle() {
+    if( ltrButton != null && ltrButton.getSelection() ) {
+      return SWT.LEFT_TO_RIGHT;
+    }
+    if( rtlButton != null && rtlButton.getSelection() ) {
+      return SWT.RIGHT_TO_LEFT;
+    }
+    return SWT.NONE;
+  }
+
   /**
    * Adds a control to the list of registered controls. Registered controls can
    * be hidden and disabled by the checkbuttons in the property area. This
@@ -598,6 +638,7 @@ abstract class ExampleTab implements Serializable {
   protected void registerControl( final Control control ) {
     controls.add( control );
     control.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         controls.remove( control );
       }
@@ -646,7 +687,7 @@ abstract class ExampleTab implements Serializable {
         }
       }
     }
-    return result;
+    return result | getOrientationStyle();
   }
 
   private void updateVisible( ) {

@@ -115,7 +115,8 @@ rwt.remote.HandlerUtil = {
     "menu",
     "activeKeys",
     "cancelKeys",
-    "data"
+    "data",
+    "direction"
   ],
 
   _controlPropertyHandler : {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1835,6 +1835,26 @@ public class SWT {
    * @since 1.2
    */
   public static final int LEFT_TO_RIGHT = 1 << 25;
+
+  /**
+   * Style constant for right to left orientation (value is 1&lt;&lt;26).
+   * <p>
+   * When orientation is not explicitly specified, orientation is
+   * inherited.  This means that children will be assigned the
+   * orientation of their parent.  To override this behavior and
+   * force an orientation for a child, explicitly set the orientation
+   * of the child when that child is created.
+   * <br>Note that this is a <em>HINT</em>.
+   * </p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * <li><code>Menu</code></li>
+   * <li><code>GC</code></li>
+   * </ul></p>
+   *
+   * @since 3.1
+   */
+  public static final int RIGHT_TO_LEFT = 1 << 26;
 
   /**
    * Style constant for horizontal scrollbar behavior (value is 1&lt;&lt;8).

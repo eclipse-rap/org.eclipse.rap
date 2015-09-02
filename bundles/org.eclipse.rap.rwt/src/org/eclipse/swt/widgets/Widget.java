@@ -21,8 +21,8 @@ import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.scripting.ClientListener;
@@ -1003,18 +1003,19 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     return result;
   }
 
-  // verbatim copy of SWT code
-  void checkOrientation (Widget parent) {
+  void checkOrientation( Widget parent ) {
     //style &= ~SWT.MIRRORED;
-    if ((style & (SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/)) == 0) {
-      if (parent != null) {
-        if ((parent.style & SWT.LEFT_TO_RIGHT) != 0) {
+    if( ( style & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT ) ) == 0 ) {
+      if( parent != null ) {
+        if( ( parent.style & SWT.LEFT_TO_RIGHT ) != 0 ) {
           style |= SWT.LEFT_TO_RIGHT;
-          /*if ((parent.style & SWT.RIGHT_TO_LEFT) != 0) style |= SWT.RIGHT_TO_LEFT;*/
+        }
+        if( ( parent.style & SWT.RIGHT_TO_LEFT ) != 0 ) {
+          style |= SWT.RIGHT_TO_LEFT;
         }
       }
     }
-    style = checkBits (style, SWT.LEFT_TO_RIGHT, 0 /*SWT.RIGHT_TO_LEFT*/, 0, 0, 0, 0);
+    style = checkBits( style, SWT.LEFT_TO_RIGHT, SWT.RIGHT_TO_LEFT, 0, 0, 0, 0 );
   }
 
   void error( int code ) {

@@ -82,7 +82,7 @@ describe( "MultiCellWidget", function() {
   function getBounds( widget ) {
     return widget.$cells.map(function( cell ) {
       return TestUtil.getElementBounds( cell.get( 0 ) );
-    })
+    });
   }
 
 

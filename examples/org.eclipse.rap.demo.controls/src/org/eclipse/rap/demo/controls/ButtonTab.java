@@ -71,6 +71,7 @@ public class ButtonTab extends ExampleTab {
     createStyleButton( "UP", SWT.UP );
     createStyleButton( "DOWN", SWT.DOWN );
     createStyleButton( "WRAP", SWT.WRAP );
+    createOrientationGroup();
     createVisibilityButton();
     createEnablementButton();
     createImageButton( parent );
@@ -120,6 +121,7 @@ public class ButtonTab extends ExampleTab {
     arrowButton.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       Listener listener = new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           log( event.toString() );
         }
@@ -248,6 +250,7 @@ public class ButtonTab extends ExampleTab {
     new Label( composite, SWT.NONE ).setText( "Badge:" );
     final Text text = new Text( composite, SWT.BORDER );
     Listener setBadgeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pushButton.setData( RWT.BADGE, text.getText() );
       }

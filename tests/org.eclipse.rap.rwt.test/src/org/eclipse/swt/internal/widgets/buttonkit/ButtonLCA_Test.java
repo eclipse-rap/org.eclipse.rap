@@ -293,6 +293,25 @@ public class ButtonLCA_Test {
   }
 
   @Test
+  public void testRenderDirection_default() throws IOException {
+    lca.renderInitialization( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( button );
+    assertNull( operation.getProperties().get( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection_RTL() throws IOException {
+    button = new Button( shell, SWT.PUSH | SWT.RIGHT_TO_LEFT );
+
+    lca.renderInitialization( button );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findCreateProperty( button, "direction" ).asString() );
+  }
+
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( button );
 

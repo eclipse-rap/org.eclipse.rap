@@ -667,6 +667,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
+    testRenderDirection : function() {
+      var widget = this._createWidget();
+
+      widget.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "rtl", widget.getDirection() );
+      assertEquals( "rtl", widget.getElement().style.direction );
+      widget.destroy();
+    },
+
     testSetHtmlAttribute_setsHtmlAttribute : function() {
       var widget = this._createWidget();
 
