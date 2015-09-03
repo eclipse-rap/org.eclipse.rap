@@ -152,6 +152,14 @@ rwt.qx.Class.define( "rwt.widgets.Button", {
     },
 
     //overwritten:
+    _applyEnabled : function( value ) {
+      this.base( arguments, value );
+      if( this._mnemonicIndex !== null && !value ) {
+        this._applyText( false );
+      }
+    },
+
+    //overwritten:
     _afterRenderLayout : function() {
       if( this.getFocused() ) {
          this._showFocusIndicator();

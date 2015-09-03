@@ -849,6 +849,20 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.destroy();
     },
 
+    testRemoveMnemonicUnderscoreOnDisable : function() {
+      var button = new rwt.widgets.Button( "push" );
+      button.addToDocument();
+      button.setText( "Foo" );
+      button.setMnemonicIndex( 0 );
+      button._applyText( true );
+      TestUtil.flush();
+
+      button.setEnabled( false );
+
+      assertEquals( "Foo", button.getCellContent( 2 ) );
+      button.destroy();
+    },
+
     createButton : function( id, type ) {
       var button = new rwt.widgets.Button( type );
       button.addState( "rwt_" + type.toUpperCase() );
