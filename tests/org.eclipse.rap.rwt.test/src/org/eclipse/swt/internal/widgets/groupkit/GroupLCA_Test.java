@@ -103,6 +103,25 @@ public class GroupLCA_Test {
   }
 
   @Test
+  public void testRenderDirection_default() throws IOException {
+    lca.renderInitialization( group );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( group );
+    assertNull( operation.getProperties().get( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection_RTL() throws IOException {
+    group = new Group( shell, SWT.RIGHT_TO_LEFT );
+
+    lca.renderInitialization( group );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findCreateProperty( group, "direction" ).asString() );
+  }
+
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.render( group );
 

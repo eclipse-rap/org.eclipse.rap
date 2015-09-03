@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -240,7 +240,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       assertTrue( group.hasState( "foo" ) );
       assertTrue( group._legend.hasState( "foo" ) );
       assertTrue( group._frame.hasState( "foo" ) );
-      group.dispose();
+      group.destroy();
     },
 
     testSetFont : function() {
@@ -250,11 +250,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
 
       assertEquals( "20px Arial", group.getFont().toCss() );
       assertEquals( "20px Arial", group._legend.getFont().toCss() );
-      group.dispose();
+      group.destroy();
     },
 
     testApplyGroupLabelId : function(){
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = TestUtil.createShellByProtocol( "w2" );
       var processor = rwt.remote.MessageProcessor;
 
@@ -273,6 +272,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       assertEquals( "w3-label", widget._legend.getHtmlAttribute( "id" ) );
       shell.destroy();
       rwt.widgets.base.Widget._renderHtmlIds = false;
+    },
+
+    testLegendPosition_LTR : function() {
+      var group = new rwt.widgets.Group();
+      group.setDirection( "ltr" );
+      group.addToDocument();
+      TestUtil.flush();
+
+      assertEquals( 0, group._legend.getTop() );
+      assertEquals( 0, group._legend.getLeft() );
+      group.destroy();
+    },
+
+    testLegendPosition_RTL : function() {
+      var group = new rwt.widgets.Group();
+      group.setDirection( "rtl" );
+      group.addToDocument();
+      TestUtil.flush();
+
+      assertEquals( 0, group._legend.getTop() );
+      assertEquals( 0, group._legend.getRight() );
+      group.destroy();
     }
 
   }

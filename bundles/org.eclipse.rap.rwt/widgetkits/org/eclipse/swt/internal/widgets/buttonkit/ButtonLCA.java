@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import static org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil.renderDirection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -51,7 +52,6 @@ public final class ButtonLCA extends WidgetLCA<Button> {
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_MARKUP_ENABLED = "markupEnabled";
   private static final String PROP_BADGE = "badge";
-  private static final String PROP_DIRECTION = "direction";
 
   private static final String DEFAULT_ALIGNMENT = "center";
 
@@ -72,7 +72,7 @@ public final class ButtonLCA extends WidgetLCA<Button> {
     remoteObject.set( "parent", getId( button.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
     renderProperty( button, PROP_MARKUP_ENABLED, isMarkupEnabledFor( button ), false );
-    renderProperty( button, PROP_DIRECTION, getDirection( button ), "ltr" );
+    renderDirection( button );
   }
 
   @Override
@@ -88,10 +88,6 @@ public final class ButtonLCA extends WidgetLCA<Button> {
     renderProperty( button, PROP_BADGE, getBadge( button ), null );
     renderListenSelection( button );
     renderClientListeners( button );
-  }
-
-  private static String getDirection( Button button ) {
-    return button.getOrientation() == SWT.LEFT_TO_RIGHT ? "ltr" : "rtl";
   }
 
   private static String getAlignment( Button button ) {

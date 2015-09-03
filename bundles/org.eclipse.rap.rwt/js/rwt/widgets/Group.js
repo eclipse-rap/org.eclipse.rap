@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     this._legend = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
     this._legend.setAppearance( "group-box-legend" );
     this.add( this._legend );
+    this.addToQueue( "layoutLegend" );
     this.setOverflow( "hidden" );
     var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
@@ -132,6 +133,18 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       this._frame._layoutPost( changes );
+      this._layoutLegend( changes );
+    },
+
+    _layoutLegend : function( changes ) {
+      if( changes[ "layoutLegend" ] ) {
+        this._legend.setTop( 0 );
+        if( this.getDirection() === "rtl" ) {
+          this._legend.setRight( 0 );
+        } else {
+          this._legend.setLeft( 0 );
+        }
+      }
     },
 
     //////////////////
