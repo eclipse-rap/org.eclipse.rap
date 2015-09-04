@@ -222,6 +222,24 @@ public class CComboLCA_Test {
     assertEquals( getId( ccombo.getParent() ), getParent( operation ) );
   }
 
+  @Test
+  public void testRenderDirection_default() throws IOException {
+    lca.render( ccombo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertNull( operation.getProperties().get( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection_RTL() throws IOException {
+    ccombo = new CCombo( shell, SWT.RIGHT_TO_LEFT );
+
+    lca.render( ccombo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findCreateProperty( ccombo, "direction" ).asString() );
+  }
 
   @Test
   public void testRenderFlatStyle() throws IOException {

@@ -619,10 +619,10 @@ abstract class ExampleTab implements Serializable {
   }
 
   private int getOrientationStyle() {
-    if( ltrButton != null && ltrButton.getSelection() ) {
+    if( ltrButton != null && !ltrButton.isDisposed() && ltrButton.getSelection() ) {
       return SWT.LEFT_TO_RIGHT;
     }
-    if( rtlButton != null && rtlButton.getSelection() ) {
+    if( rtlButton != null && !rtlButton.isDisposed() && rtlButton.getSelection() ) {
       return SWT.RIGHT_TO_LEFT;
     }
     return SWT.NONE;

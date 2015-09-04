@@ -135,6 +135,9 @@
         </description>
       </property>
 
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the combo is oriented right to left." />
+
       <state name="hover"
           description="Applies while the user hovers over the combo button." />
 

@@ -212,6 +212,25 @@ public class ComboLCA_Test {
   }
 
   @Test
+  public void testRenderDirection_default() throws IOException {
+    lca.render( combo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertNull( operation.getProperties().get( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection_RTL() throws IOException {
+    combo = new Combo( shell, SWT.RIGHT_TO_LEFT );
+
+    lca.render( combo );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findCreateProperty( combo, "direction" ).asString() );
+  }
+
+  @Test
   public void testRenderItemHeightUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( combo );

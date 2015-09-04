@@ -359,6 +359,11 @@ Combo-Button {
   width: 30px;
 }
 
+Combo-Button[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
+}
+
 Combo-Button:disabled {
   background-image: none;
   background-color: transparent;
@@ -2271,6 +2276,11 @@ CCombo-Button {
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   width: 30px;
+}
+
+CCombo-Button[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
 }
 
 CCombo-Button:disabled {

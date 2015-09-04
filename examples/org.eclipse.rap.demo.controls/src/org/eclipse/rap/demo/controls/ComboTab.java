@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,7 @@ public class ComboTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "FLAT", SWT.FLAT );
+    createOrientationGroup();
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();
@@ -166,6 +167,7 @@ public class ComboTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_MODIFY_LISTENER ) ) {
       firstCombo.addModifyListener( new ModifyListener() {
+        @Override
         public void modifyText( ModifyEvent event ) {
           log( event.toString() );
         }
@@ -189,6 +191,7 @@ public class ComboTab extends ExampleTab {
     verifyCombo.add( "2" );
     verifyCombo.add( "3" );
     verifyCombo.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
@@ -208,10 +211,13 @@ public class ComboTab extends ExampleTab {
     viewerCombo.setLayoutData( createGridDataWithSpan( SWT.NONE, 2 ) );
     ComboViewer viewer = new ComboViewer( viewerCombo );
     viewer.setContentProvider( new IStructuredContentProvider() {
+      @Override
       public void dispose() {
       }
+      @Override
       public void inputChanged( Viewer viewer, Object oldIn, Object newIn ) {
       }
+      @Override
       public Object[] getElements( Object inputElement ) {
         return ( Object[] )inputElement;
       }
@@ -219,6 +225,7 @@ public class ComboTab extends ExampleTab {
     viewer.setLabelProvider( new LabelProvider() );
     viewer.setInput( ITEMS );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
+      @Override
       public void selectionChanged( SelectionChangedEvent event ) {
         String message = "Selected item: " + event.getSelection().toString();
         Shell shell = parent.getShell();

@@ -31,6 +31,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this._field.setAppearance( appearance + "-field" );
     this._button.setAppearance( appearance + "-button" );
     this._registerListeners();
+    this.addToQueue( "layoutSubWidgets" );
   },
 
   destruct : function() {
@@ -89,14 +90,39 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
 
     addState : function( state ) {
       this.base( arguments, state );
-      if( state === "rwt_FLAT" ) {
+      if( state === "rwt_FLAT" || state === "rwt_RIGHT_TO_LEFT" ) {
         this._field.addState( state );
         this._button.addState( state );
       }
     },
 
+    setCustomVariant : function( value ) {
+      this.base( arguments, value );
+      this.addToQueue( "layoutSubWidgets" );
+    },
+
     _getSubWidgets : function() {
       return [ this._field, this._button, this._list ];
+    },
+
+    _layoutPost : function( changes ) {
+      this.base( arguments, changes );
+      if( changes[ "layoutSubWidgets" ] ) {
+        var buttonWidth = this._button.getWidth();
+        this._button.setTop( 0 );
+        this._button.setBottom( 0 );
+        this._field.setTop( 0 );
+        this._field.setBottom( 0 );
+        if( this.getDirection() === "rtl" ) {
+          this._button.setLeft( 0 );
+          this._field.setLeft( buttonWidth );
+          this._field.setRight( 0 );
+        } else {
+          this._button.setRight( 0 );
+          this._field.setRight( buttonWidth );
+          this._field.setLeft( 0 );
+        }
+      }
     },
 
     _registerListeners : function() {
@@ -415,6 +441,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this.base( arguments, id );
       this._list.applyObjectId( id + "-listbox" );
     }
+
   }
 
 } );

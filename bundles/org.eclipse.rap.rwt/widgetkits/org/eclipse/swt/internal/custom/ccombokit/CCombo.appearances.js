@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,12 +86,6 @@ var appearances = {
       var cssPadding = tv.getCssBoxDimensions( "CCombo-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
-      result.width = null;
-      result.height = null;
-      result.left = 0;
-      result.right = tv.getCssDimension( "CCombo-Button", "width" );
-      result.top = 0;
-      result.bottom = 0;
       result.textColor = tv.getCssColor( "CCombo", "color" );
       result.textShadow = tv.getCssShadow( "CCombo", "text-shadow" );
       return result;
@@ -102,14 +96,8 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      var border = tv.getCssBorder( "CCombo-Button", "border" );
-      var borderLeft = tv.getCssBorder( "CCombo-Button", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "CCombo-Button", "border" );
       result.width = tv.getCssDimension( "CCombo-Button", "width" );
-      result.height = null;
-      result.top = 0;
-      result.bottom = 0;
-      result.right = 0;
       result.icon = tv.getCssSizedImage( "CCombo-Button-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE_SIZED ) {
         result.icon = tv.getCssSizedImage( "CCombo-Button", "background-image" );
