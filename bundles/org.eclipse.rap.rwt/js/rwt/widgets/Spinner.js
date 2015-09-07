@@ -79,6 +79,20 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
       this.setMax( max );
     },
 
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state === "rwt_RIGHT_TO_LEFT" ) {
+        this._upbutton.addState( state );
+        this._downbutton.addState( state );
+        this._textfield.addState( state );
+      }
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.setReverseChildrenOrder( true );
+    },
+
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );
       if( value ) {

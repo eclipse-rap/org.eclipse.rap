@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,10 +35,6 @@ var appearances = {
       var cssPadding = tv.getCssBoxDimensions( "Spinner-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
-      result.top = 0;
-      result.left = 0;
-      result.right = 0;
-      result.bottom = 0;
       result.textColor = tv.getCssColor( "Spinner", "color" );
       result.textShadow = tv.getCssShadow( "Spinner", "text-shadow" );
       return result;
@@ -49,9 +45,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      var border = tv.getCssBorder( "Spinner-UpButton", "border" );
-      var borderLeft = tv.getCssBorder( "Spinner-UpButton", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
       result.icon = tv.getCssSizedImage( "Spinner-UpButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
@@ -70,9 +64,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      var border = tv.getCssBorder( "Spinner-DownButton", "border" );
-      var borderLeft = tv.getCssBorder( "Spinner-DownButton", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
       result.icon = tv.getCssSizedImage( "Spinner-DownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {

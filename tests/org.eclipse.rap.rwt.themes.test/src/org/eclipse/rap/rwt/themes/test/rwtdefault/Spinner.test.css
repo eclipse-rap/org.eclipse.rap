@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,22 @@ Spinner-UpButton {
   cursor: default;
 }
 
+Spinner-UpButton[RIGHT_TO_LEFT] {
+  background-color: #efefef;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #efefef )
+  );
+  width: 30px;
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  border-right: 1px solid #bdbdbd;
+  border-radius: 0px 2px 0px 0px;
+  cursor: default;
+}
+
 Spinner-UpButton:disabled {
   background-image: none;
   background-color: transparent;
@@ -88,6 +104,22 @@ Spinner-DownButton {
   border-right: none;
   border-bottom: none;
   border-left: 1px solid #bdbdbd;
+  border-radius: 0px 0px 2px 0px;
+  cursor: default;
+}
+
+Spinner-DownButton[RIGHT_TO_LEFT] {
+  background-color: #efefef;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #efefef ),
+    to( #e4e4e4 )
+  );
+  width: 30px;
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  border-right: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
 }

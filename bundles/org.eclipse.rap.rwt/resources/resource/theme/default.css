@@ -990,6 +990,11 @@ Spinner-UpButton {
   cursor: default;
 }
 
+Spinner-UpButton[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
+}
+
 Spinner-UpButton:disabled {
   background-image: none;
   background-color: transparent;
@@ -1015,6 +1020,11 @@ Spinner-DownButton {
   border-left: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
+}
+
+Spinner-DownButton[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
 }
 
 Spinner-DownButton:disabled {

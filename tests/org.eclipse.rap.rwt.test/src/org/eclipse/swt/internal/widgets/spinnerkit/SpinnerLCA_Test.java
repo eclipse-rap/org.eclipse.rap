@@ -183,6 +183,25 @@ public class SpinnerLCA_Test {
   }
 
   @Test
+  public void testRenderDirection_default() throws IOException {
+    lca.render( spinner );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( spinner );
+    assertNull( operation.getProperties().get( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection_RTL() throws IOException {
+    spinner = new Spinner( shell, SWT.RIGHT_TO_LEFT );
+
+    lca.render( spinner );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findCreateProperty( spinner, "direction" ).asString() );
+  }
+
+  @Test
   public void testRenderInitialMinimum() throws IOException {
     lca.render( spinner );
 
