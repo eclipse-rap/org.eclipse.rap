@@ -14,7 +14,11 @@ package org.eclipse.swt.internal.widgets.menukit;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -329,6 +333,52 @@ public class MenuLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( menu, "enabled" ) );
+  }
+
+  @Test
+  public void testRenderDirection_onBar() throws IOException {
+    Menu menu = new Menu( shell, SWT.BAR | SWT.RIGHT_TO_LEFT );
+
+    lca.renderChanges( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findSetProperty( menu, "direction" ).asString() );
+  }
+
+  @Test
+  public void testRenderInitialDirection() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+
+    lca.render( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( menu );
+    assertFalse( operation.getProperties().names().contains( "direction" ) );
+  }
+
+  @Test
+  public void testRenderDirection() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+
+    menu.setOrientation( SWT.RIGHT_TO_LEFT );
+    lca.renderChanges( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "rtl", message.findSetProperty( menu, "direction" ).asString() );
+  }
+
+  @Test
+  public void testRenderDirectionUnchanged() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menu );
+
+    menu.setOrientation( SWT.RIGHT_TO_LEFT );
+    Fixture.preserveWidgets();
+    lca.renderChanges( menu );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( menu, "direction" ) );
   }
 
   @Test

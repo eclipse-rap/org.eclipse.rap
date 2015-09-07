@@ -561,6 +561,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuBarTest", {
       TestUtil.flush();
 
       assertFalse( menu.isSeeable() );
+    },
+
+    testSetDirection_setsReverseChildrenOrder : function() {
+      createMenuBar();
+
+      menuBar.setDirection( "rtl" );
+
+      assertTrue( menuBar.getReverseChildrenOrder() );
+    },
+
+    testSetDirection_setsHorizontalChildrenAlign : function() {
+      createMenuBar();
+
+      menuBar.setDirection( "rtl" );
+
+      assertEquals( "right", menuBar.getHorizontalChildrenAlign() );
     }
 
   }

@@ -1011,7 +1011,8 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     direction : {
       check : "String",
       init : "ltr",
-      apply : "_applyDirection"
+      apply : "_applyDirection",
+      event : "changeDirection"
     },
 
     /*

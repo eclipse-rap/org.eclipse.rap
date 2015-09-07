@@ -758,7 +758,11 @@ MenuItem-RadioIcon {
 }
 
 MenuItem-CascadeIcon {
-  background-image: url( resource/widget/rap/menu/arrow.gif );
+  background-image: url( resource/widget/rap/menu/arrow-right.gif );
+}
+
+MenuItem-CascadeIcon[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/menu/arrow-left.gif );
 }
 
 /* ProgressBar default theme */

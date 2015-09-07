@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -411,11 +411,14 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
         subMenu.setOpener( item );
         var itemNode = item.getElement();
         var thisNode = this.getElement();
+        var thisNodeLeft = rwt.html.Location.getLeft( thisNode );
         // the position is relative to the document, therefore we need helper
         subMenu.setTop( rwt.html.Location.getTop( itemNode ) - 2 );
-        subMenu.setLeft(   rwt.html.Location.getLeft( thisNode )
-                         + thisNode.offsetWidth
-                         - 3 );
+        if( this.getDirection() === "rtl" ) {
+          subMenu.setRight( window.innerWidth - thisNodeLeft - 3 );
+        } else {
+          subMenu.setLeft( thisNodeLeft + thisNode.offsetWidth - 3 );
+        }
         subMenu.setMnemonics( byMnemonic === true );
         subMenu.show();
         if( byMnemonic ) {

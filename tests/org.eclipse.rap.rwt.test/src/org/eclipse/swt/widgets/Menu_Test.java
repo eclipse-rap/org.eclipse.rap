@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,34 +22,29 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Menu_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -96,11 +91,13 @@ public class Menu_Test {
   @Test
   public void testStyle() {
     Menu menuBar = new Menu( shell, SWT.BAR );
-    assertEquals( SWT.BAR, menuBar.getStyle() );
+    assertEquals( SWT.BAR | SWT.LEFT_TO_RIGHT, menuBar.getStyle() );
+
     Menu menuDropDown = new Menu( shell, SWT.DROP_DOWN );
-    assertEquals( SWT.DROP_DOWN, menuDropDown.getStyle() );
+    assertEquals( SWT.DROP_DOWN | SWT.LEFT_TO_RIGHT, menuDropDown.getStyle() );
+
     Menu menuPopup = new Menu( shell, SWT.POP_UP );
-    assertEquals( SWT.POP_UP, menuPopup.getStyle() );
+    assertEquals( SWT.POP_UP | SWT.LEFT_TO_RIGHT, menuPopup.getStyle() );
   }
 
   @Test
@@ -177,6 +174,7 @@ public class Menu_Test {
   public void testUntypedShowEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -203,8 +201,32 @@ public class Menu_Test {
   }
 
   @Test
-  public void testOrientation() {
+  public void testGetOrientation_default() {
     Menu menu = new Menu( shell, SWT.POP_UP );
+    assertEquals( SWT.LEFT_TO_RIGHT, menu.getOrientation() );
+  }
+
+  @Test
+  public void testGetOrientation_RTL() {
+    Menu menu = new Menu( shell, SWT.POP_UP | SWT.RIGHT_TO_LEFT );
+    assertEquals( SWT.RIGHT_TO_LEFT, menu.getOrientation() );
+  }
+
+  @Test
+  public void testGetOrientation_onPopupMenu() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+
+    menu.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertEquals( SWT.RIGHT_TO_LEFT, menu.getOrientation() );
+  }
+
+  @Test
+  public void testGetOrientation_onDropDownMenu() {
+    Menu menu = new Menu( shell, SWT.DROP_DOWN );
+
+    menu.setOrientation( SWT.RIGHT_TO_LEFT );
+
     assertEquals( SWT.LEFT_TO_RIGHT, menu.getOrientation() );
   }
 
@@ -306,4 +328,5 @@ public class Menu_Test {
     assertFalse( menu.isListening( SWT.Show ) );
     assertFalse( menu.isListening( SWT.Hide ) );
   }
+
 }

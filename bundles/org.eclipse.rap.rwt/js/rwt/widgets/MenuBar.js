@@ -118,9 +118,14 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
         item.setSubMenuOpen( true );
         subMenu.setOpener( item );
         var itemNode = item.getElement();
+        var itemNodeLeft = rwt.html.Location.getLeft( itemNode );
         // the position is relative to the document, therefore we need helper
         subMenu.setTop( rwt.html.Location.getTop( itemNode ) + itemNode.offsetHeight );
-        subMenu.setLeft( rwt.html.Location.getLeft( itemNode ) );
+        if( this.getDirection() === "rtl" ) {
+          subMenu.setRight( window.innerWidth - itemNode.offsetWidth - itemNodeLeft );
+        } else {
+          subMenu.setLeft( itemNodeLeft );
+        }
         subMenu.setMnemonics( byMnemonic === true );
         subMenu.show();
       } else {
@@ -166,6 +171,12 @@ rwt.qx.Class.define( "rwt.widgets.MenuBar", {
 
     getAutoHide : rwt.util.Functions.returnTrue,
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      var isRTL = value === "rtl";
+      this.setReverseChildrenOrder( isRTL );
+      this.setHorizontalChildrenAlign( isRTL ? "right" : "left" );
+    },
 
     _activate : function() {
       rwt.widgets.util.MenuManager.getInstance().add( this );

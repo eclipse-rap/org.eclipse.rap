@@ -164,6 +164,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu.destroy();
     },
 
+    testAccelerator_HasTextAlignLeft_withRTL : function() {
+      var menu = createPopUpMenuByProtocol( "w3" );
+      menu.setDirection( "rtl" );
+      var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+
+      TestUtil.protocolSet( "w4", { "text" : "foo\tac&c" } );
+      menu.show();
+      TestUtil.flush();
+
+      assertEquals( "left", item.getCellNode( 3 ).style.textAlign );
+      menu.destroy();
+    },
+
     testDestroyMenuItemWithPopupMenuByProtocol : function() {
       var menu = createPopUpMenuByProtocol( "w3" );
       var item = createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
@@ -1785,6 +1798,34 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( menu.isFocusRoot() );
       assertNull( menu.getFocusRoot() );
       menu.destroy();
+    },
+
+    testSetDirection_changesItemsDirection_beforeItemIsAdded : function() {
+      menu = new Menu();
+      ObjectRegistry.add( "w3", menu, menuHandler );
+      menuItem = new MenuItem( "push" );
+      ObjectRegistry.add( "w4", menuItem, menuItemHandler );
+
+      menu.setDirection( "rtl" );
+      menu.addMenuItemAt( menuItem, 0 );
+      menu.show();
+
+      assertEquals( "rtl", menuItem.getDirection() );
+      assertEquals( "right", menuItem.getHorizontalChildrenAlign() );
+    },
+
+    testSetDirection_changesItemsDirection_afterItemIsAdded : function() {
+      menu = new Menu();
+      ObjectRegistry.add( "w3", menu, menuHandler );
+      menuItem = new MenuItem( "push" );
+      ObjectRegistry.add( "w4", menuItem, menuItemHandler );
+
+      menu.addMenuItemAt( menuItem, 0 );
+      menu.setDirection( "rtl" );
+      menu.show();
+
+      assertEquals( "rtl", menuItem.getDirection() );
+      assertEquals( "right", menuItem.getHorizontalChildrenAlign() );
     }
 
   }

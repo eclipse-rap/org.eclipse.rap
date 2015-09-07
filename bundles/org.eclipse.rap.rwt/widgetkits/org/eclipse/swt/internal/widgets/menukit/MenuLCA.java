@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.menukit;
 
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
+import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenHelp;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
@@ -47,16 +48,19 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   };
 
   private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_DIRECTION = "direction";
   private static final String PROP_SHOW_LISTENER = "Show";
   private static final String PROP_HIDE_LISTENER = "Hide";
   private static final String METHOD_UNHIDE_ITEMS = "unhideItems";
   private static final String METHOD_SHOW_MENU = "showMenu";
 
   private static final Rectangle DEFAULT_BOUNDS = new Rectangle( 0, 0, 0, 0 );
+  private static final Integer DEFAULT_DIRECTION = Integer.valueOf( SWT.LEFT_TO_RIGHT );
 
   @Override
   public void preserveValues( Menu menu ) {
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
+    preserveProperty( menu, PROP_DIRECTION, menu.getOrientation() );
   }
 
   @Override
@@ -74,6 +78,7 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   @Override
   public void renderChanges( Menu menu ) throws IOException {
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
+    renderDirection( menu );
     if( !isMenuBar( menu ) ) {
       renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER );
     }
@@ -88,6 +93,14 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   public void renderDispose( Menu menu ) throws IOException {
     // TODO [tb] : The menu can currently not be destroyed automatically on the client
     getRemoteObject( menu ).destroy();
+  }
+
+  private static void renderDirection( Menu menu ) {
+    int orientation = menu.getOrientation();
+    if( hasChanged( menu, PROP_DIRECTION, Integer.valueOf( orientation ), DEFAULT_DIRECTION ) ) {
+      String value = orientation == SWT.LEFT_TO_RIGHT ?  "ltr" : "rtl";
+      getRemoteObject( menu ).set( PROP_DIRECTION, value );
+    }
   }
 
   private static void renderBounds( Menu menu ) {

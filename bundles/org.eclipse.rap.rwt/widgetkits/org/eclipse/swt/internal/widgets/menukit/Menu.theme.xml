@@ -167,6 +167,9 @@
         </description>
       </property>
 
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the menu is oriented right to left." />
+
       <state name="disabled"
           description="Applies when the menu is disabled." />
 

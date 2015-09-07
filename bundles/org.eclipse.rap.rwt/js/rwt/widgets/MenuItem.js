@@ -142,7 +142,8 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     _afterRenderLayout : function( changes ) {
       if( changes.createContent && this.getCellNode( 3 ) ) {
-        this.getCellNode( 3 ).style.textAlign = "right";
+        var isRTL = this.getDirection() === "rtl";
+        this.getCellNode( 3 ).style.textAlign = isRTL ? "left" : "right";
       }
     },
 
@@ -173,6 +174,10 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     setParentMenu : function( menu ) {
       this._parentMenu = menu;
+      if( menu ) {
+        this._applyParentMenuDirection();
+        menu.addEventListener( "changeDirection", this._applyParentMenuDirection, this );
+      }
     },
 
     getParentMenu : function() {
@@ -190,6 +195,12 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
     getMenu : function() {
       return this._subMenu;
+    },
+
+    _applyParentMenuDirection : function() {
+      var direction = this._parentMenu.getDirection();
+      this.setDirection( direction );
+      this.setHorizontalChildrenAlign( direction === "rtl" ? "right" : "left" );
     },
 
     _applySelectionIndicator : function( value ) {
