@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil.renderDirection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -57,7 +56,6 @@ public class GroupLCA extends WidgetLCA<Group> {
     remoteObject.setHandler( new GroupOperationHandler( group ) );
     remoteObject.set( "parent", getId( group.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( group, ALLOWED_STYLES ) ) );
-    renderDirection( group );
   }
 
   @Override

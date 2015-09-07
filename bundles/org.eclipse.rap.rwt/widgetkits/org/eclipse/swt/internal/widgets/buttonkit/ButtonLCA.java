@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil.renderDirection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.hasChanged;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
@@ -72,7 +71,6 @@ public final class ButtonLCA extends WidgetLCA<Button> {
     remoteObject.set( "parent", getId( button.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( button, ALLOWED_STYLES ) ) );
     renderProperty( button, PROP_MARKUP_ENABLED, isMarkupEnabledFor( button ), false );
-    renderDirection( button );
   }
 
   @Override

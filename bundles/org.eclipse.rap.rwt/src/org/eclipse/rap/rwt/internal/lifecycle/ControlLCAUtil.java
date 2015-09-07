@@ -15,7 +15,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
@@ -96,6 +95,7 @@ public class ControlLCAUtil {
     renderFont( control );
     renderCursor( control );
     renderData( control );
+    renderDirection( control );
     ActiveKeysUtil.renderActiveKeys( control );
     ActiveKeysUtil.renderCancelKeys( control );
     renderListenActivate( control );
@@ -376,9 +376,11 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void renderDirection( Control control ) {
-    String direction = control.getOrientation() == SWT.LEFT_TO_RIGHT ? "ltr" : "rtl";
-    renderProperty( control, PROP_DIRECTION, direction, "ltr" );
+  private static void renderDirection( Control control ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.isInitialized() && control.getOrientation() == SWT.RIGHT_TO_LEFT ) {
+      getRemoteObject( control ).set( PROP_DIRECTION, "rtl" );
+    }
   }
 
   private static void renderListenActivate( Control control ) {
