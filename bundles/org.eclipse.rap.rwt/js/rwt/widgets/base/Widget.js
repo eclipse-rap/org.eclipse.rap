@@ -3181,8 +3181,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _applyDirection : function( value ) {
       if( value === "rtl" ) {
+        this.addState( "rwt_RIGHT_TO_LEFT" );
         this.setStyleProperty( "direction", "rtl" );
       } else {
+        this.removeState( "rwt_RIGHT_TO_LEFT" );
         this.setStyleProperty( "direction", "ltr" );
       }
     },
