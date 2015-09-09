@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,7 @@ public class ProgressBarTab extends ExampleTab {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
     createStyleButton( "VERTICAL", SWT.VERTICAL, false );
     createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
+    createOrientationGroup();
     createVisibilityButton();
     createEnablementButton();
     createBgImageButton();
@@ -110,6 +111,7 @@ public class ProgressBarTab extends ExampleTab {
     final int maximum = progressBar.getMaximum();
     final Display display = progressBar.getDisplay();
     Runnable result = new Runnable() {
+      @Override
       public void run() {
         final Composite panel[] = new Composite[ 1 ];
         for( int i = 0; i <= maximum; i++ ) {
@@ -124,6 +126,7 @@ public class ProgressBarTab extends ExampleTab {
             // perform process bar update
             display.syncExec( new Runnable() {
 
+              @Override
               public void run() {
                 if( !progressBar.isDisposed() ) {
                   progressBar.setSelection( selection );

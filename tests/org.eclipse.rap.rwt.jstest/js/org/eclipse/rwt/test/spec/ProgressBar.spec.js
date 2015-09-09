@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,20 @@ describe( "ProgressBar", function() {
       createBar().setIndicatorOpacity( 0.7 );
 
       expect( indicator.style.opacity ).toBe( "0.7" );
+    } );
+
+    it( "sets left property with LTR direction", function() {
+      createBar().setDirection( "ltr" );
+      selection( 50, 0, 100 );
+
+      expect( indicator.style.left ).toEqual( "0px" );
+    } );
+
+    it( "sets right property with RTL direction", function() {
+      createBar().setDirection( "rtl" );
+      selection( 50, 0, 100 );
+
+      expect( indicator.style.right ).toEqual( "0px" );
     } );
 
     describe( "with vertical orientation", function() {
