@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    setUp : function() {
+      shell = TestUtil.createShellByProtocol( "w2" );
+    },
+
+    tearDown : function() {
+      shell.destroy();
+      shell = null;
+    },
 
     testTabFolderHandlerEventsList : function() {
       var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.CTabFolder" );
@@ -463,17 +472,39 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       folder.destroy();
     },
 
+    testSetDirection_setsReverseChildrenOrder : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+
+      folder.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertTrue( folder.getBar().getReverseChildrenOrder() );
+      folder.destroy();
+    },
+
+    testSetDirection_setsAlignTabsToLeft : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+
+      folder.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertFalse( folder.getAlignTabsToLeft() );
+      folder.destroy();
+    },
+
+    testCreateTabItem_setsDirection : function() {
+      var folder = this._createTabFolderByProtocol( "w3", "w2" );
+      folder.setDirection( "rtl" );
+
+      var item = this._createTabItemByProtocol( "w4", "w3" );
+      TestUtil.flush();
+
+      assertEquals( "rtl", item.getDirection() );
+      folder.destroy();
+    },
+
     //////////////////
     // Helping methods
-
-    setUp : function() {
-      shell = TestUtil.createShellByProtocol( "w2" );
-    },
-
-    tearDown : function() {
-      shell.destroy();
-      shell = null;
-    },
 
     _createTabFolderByProtocol : function( id, parentId ) {
       Processor.processOperation( {

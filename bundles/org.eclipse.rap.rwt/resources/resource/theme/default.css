@@ -1078,10 +1078,18 @@ TabItem {
   border-bottom: none;
 }
 
+TabItem[RIGHT_TO_LEFT] {
+  margin: 6px 0px 1px 1px;
+}
+
 TabItem:bottom {
   margin: 1px 1px 6px 0px;
   border: 1px solid #bdbdbd;
   border-top: none;
+}
+
+TabItem[RIGHT_TO_LEFT]:bottom {
+  margin: 1px 0px 6px 1px;
 }
 
 TabItem:selected {
@@ -1096,6 +1104,10 @@ TabItem:selected {
   border-bottom: none;
 }
 
+TabItem[RIGHT_TO_LEFT]:selected {
+  margin: 3px -2px 0px -1px;
+}
+
 TabItem:bottom:selected {
   margin: 0px -1px 3px -2px;
   border: 1px solid #bdbdbd;
@@ -1103,12 +1115,24 @@ TabItem:bottom:selected {
   border-bottom: 3px solid #5882b5;
 }
 
+TabItem[RIGHT_TO_LEFT]:bottom:selected {
+  margin: 0px -2px 3px -1px;
+}
+
 TabItem:selected:first {
   margin: 3px -1px 0px 0px;
 }
 
+TabItem[RIGHT_TO_LEFT]:selected:first {
+  margin: 3px 0px 0px -1px;
+}
+
 TabItem:bottom:selected:first {
   margin: 0px -1px 3px 0px;
+}
+
+TabItem[RIGHT_TO_LEFT]:bottom:selected:first {
+  margin: 0px 0px 3px -1px;
 }
 
 /* Table default theme */

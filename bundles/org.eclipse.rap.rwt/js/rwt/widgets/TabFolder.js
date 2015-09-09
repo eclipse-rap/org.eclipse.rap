@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,18 +14,9 @@
 /**
  * @appearance tab-view
  */
-rwt.qx.Class.define("rwt.widgets.TabFolder",
-{
+rwt.qx.Class.define("rwt.widgets.TabFolder", {
+
   extend : rwt.widgets.base.BoxLayout,
-
-
-
-
-  /*
-  *****************************************************************************
-     CONSTRUCTOR
-  *****************************************************************************
-  */
 
   construct : function() {
     this.base( arguments );
@@ -36,117 +27,68 @@ rwt.qx.Class.define("rwt.widgets.TabFolder",
     this.add( this._bar, this._pane );
   },
 
+  properties : {
 
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
-    appearance :
-    {
+    appearance : {
       refine : true,
       init : "tab-view"
     },
 
-    orientation :
-    {
+    orientation : {
       refine : true,
       init : "vertical"
     },
 
-    alignTabsToLeft :
-    {
+    alignTabsToLeft : {
       check : "Boolean",
       init : true,
       apply : "_applyAlignTabsToLeft"
     },
 
-    placeBarOnTop :
-    {
+    placeBarOnTop : {
       check : "Boolean",
       init : true,
       apply : "_applyPlaceBarOnTop"
     }
+
   },
 
+  members : {
 
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {AbstractPane} TODOC
-     */
     getPane : function() {
       return this._pane;
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {AbstractBar} TODOC
-     */
     getBar : function() {
       return this._bar;
     },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyAlignTabsToLeft : function(value)
-    {
-      var vBar = this._bar;
-
-      vBar.setHorizontalChildrenAlign(value ? "left" : "right");
-
-      // force re-apply of states for all tabs
-      vBar._addChildrenToStateQueue();
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      var isRTL = value === "rtl";
+      this._bar.setReverseChildrenOrder( isRTL );
+      this.setAlignTabsToLeft( !isRTL );
     },
 
+    _applyAlignTabsToLeft : function( value ) {
+      this._bar.setHorizontalChildrenAlign( value ? "left" : "right" );
+      // force re-apply of states for all tabs
+      this._bar._addChildrenToStateQueue();
+    },
 
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyPlaceBarOnTop : function(value)
-    {
+    _applyPlaceBarOnTop : function( value ) {
       // This does not work if we use flexible zones
       // this.setReverseChildrenOrder(!value);
-      var vBar = this._bar;
-
       // move bar around
-      if (value) {
-        vBar.moveSelfToBegin();
+      if( value ) {
+        this._bar.moveSelfToBegin();
       } else {
-        vBar.moveSelfToEnd();
+        this._bar.moveSelfToEnd();
       }
-
       // force re-apply of states for all tabs
-      vBar._addChildrenToStateQueue();
+      this._bar._addChildrenToStateQueue();
     }
+
   },
 
   destruct : function() {

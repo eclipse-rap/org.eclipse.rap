@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       var tabItem = new rwt.widgets.TabItem();
       tabItem.setTabIndex( null );
       tabItem.setEnableElementFocus( false );
+      tabItem.setDirection( tabFolder.getDirection() );
       tabItem.addEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
       tabItem.addEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
       tabItem.addEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );

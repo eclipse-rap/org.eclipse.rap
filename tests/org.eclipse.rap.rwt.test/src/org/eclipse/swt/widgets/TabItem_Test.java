@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,6 +90,17 @@ public class TabItem_Test {
     assertEquals( new Rectangle( 0, 368, 74, 32 ), folder.getItem( 0 ).getBounds() );
     assertEquals( new Rectangle( 74, 368, 74, 29 ), folder.getItem( 1 ).getBounds() );
     assertEquals( new Rectangle( 149, 368, 74, 29 ), folder.getItem( 2 ).getBounds() );
+  }
+
+  @Test
+  public void testGetBounds_RTL() {
+    folder = new TabFolder( shell, SWT.RIGHT_TO_LEFT );
+    folder.setSize( 400, 400 );
+    createItems( folder, 3 );
+
+    assertEquals( new Rectangle( 326, 0, 74, 32 ), folder.getItem( 0 ).getBounds() );
+    assertEquals( new Rectangle( 252, 3, 74, 29 ), folder.getItem( 1 ).getBounds() );
+    assertEquals( new Rectangle( 177, 3, 74, 29 ), folder.getItem( 2 ).getBounds() );
   }
 
   @Test
