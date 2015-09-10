@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,8 +119,8 @@ rwt.remote.DNDSupport.prototype = {
     event[ "widget" ] = this._getDragSource( widget );
     event[ "eventName" ] = type;
     event[ "param" ] = {
-      "x" : x,
-      "y" : y,
+      "x" : Math.round( x ),
+      "y" : Math.round( y ),
       "time" : rwt.remote.EventUtil.eventTimestamp()
     };
     this._eventQueue[ type ] = event;
@@ -229,8 +229,8 @@ rwt.remote.DNDSupport.prototype = {
     event[ "widget" ] = this._getDropTarget( widget );
     event[ "eventName" ] = type;
     event[ "param" ] = {
-      "x" : x,
-      "y" : y,
+      "x" : Math.round( x ),
+      "y" : Math.round( y ),
       "item" : itemId,
       "operation" : operation,
       "feedback" : this._dropFeedbackFlags,
