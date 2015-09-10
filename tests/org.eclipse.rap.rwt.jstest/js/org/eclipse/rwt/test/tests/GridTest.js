@@ -928,9 +928,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var sample = tree._rowContainer.getRow( 5 ).$el.get( 0 );
       var bounds = getElementBounds( sample );
       assertEquals( 0, bounds.left );
-      assertEquals( 140, bounds.top );
+      assertTrue( bounds.top === 140 || bounds.top === 145 );
       assertEquals( 500, bounds.width );
-      assertEquals( 28, bounds.height );
+      assertTrue( bounds.height === 28 || bounds.height === 29 );
       tree.destroy();
     },
 
