@@ -262,19 +262,18 @@ describe( "Style", function() {
       Style.setBackgroundColor( element, "#f1f2f3" );
 
       var background = element.style.background.toLowerCase();
-      var colorOffset = background.indexOf( "rgb(241, 242, 243)" );
       var imageOffset = background.indexOf( "url(" );
       var gradientOffset = background.indexOf( "gradient" );
+      var colorOffset = background.indexOf( "rgb(241, 242, 243)" );
       if( colorOffset === -1 ) {
         colorOffset = background.indexOf( "#f1f2f3" );
       }
       if( Client.isWebkit() || Client.isBlink() ) {
         expect( imageOffset ).toBeLessThan( gradientOffset );
-        expect( gradientOffset ).toBeLessThan( colorOffset );
       } else {
-        expect( imageOffset ).toBeLessThan( colorOffset );
         expect( gradientOffset ).toBe( -1 );
       }
+      expect( imageOffset ).toBeLessThan( colorOffset );
     } );
 
     it( "clears background property if set to null", function() {
@@ -361,9 +360,9 @@ describe( "Style", function() {
 
   describe( "setTransition", function() {
 
-    if(!Client.isTrident() || !Client.getVersion() < 10) {
-      it("sets transition with or without vendor prefix", function() {
-        Style.setTransition( element, "opacity 1s");
+    if( !Client.isTrident() || Client.getVersion() >= 10 ) {
+      it( "sets transition with or without vendor prefix", function() {
+        Style.setTransition( element, "opacity 1s" );
 
         var style = element.style;
         var transition = style.transition || style.webkitTransition || style.MozTransition;
