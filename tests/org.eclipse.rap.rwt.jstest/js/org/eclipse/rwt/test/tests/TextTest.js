@@ -973,7 +973,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
       assertEquals( 3, label.offsetLeft );
       assertEquals( 93, label.offsetWidth );
-      assertEquals( 9, label.offsetTop );
+      assertTrue( label.offsetTop === 8 || label.offsetTop === 9 );
     },
 
     testMessageLabelResize : function() {
@@ -1004,9 +1004,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setHeight( 50 );
       TestUtil.flush();
 
-      var style = text._getTargetNode().firstChild.style;
-      assertEquals( "113px", style.width );
-      assertEquals( "19px", style.top );
+      var label = text._getTargetNode().firstChild;
+      assertEquals( 113, label.offsetWidth );
+      assertTrue( label.offsetTop === 18 || label.offsetTop === 19 );
     },
 
     testMessageAppearsOnBlur : function() {
