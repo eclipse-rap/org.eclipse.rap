@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -57,6 +58,7 @@ import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.internal.widgets.IFormTextAdapter;
+import org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextLCA;
 // RAP [if] Clipboard not supported - no internal menu (copy message) needed
 //import org.eclipse.ui.internal.forms.Messages;
 import org.eclipse.ui.internal.forms.widgets.ControlSegment;
@@ -162,1636 +164,1649 @@ import org.eclipse.ui.internal.forms.widgets.SelectionData;
  * @since 1.2
  */
 public class FormText extends Canvas {
-	/**
-	 * The object ID to be used when registering action to handle URL hyperlinks
-	 * (those that should result in opening the web browser). Value is
-	 * "urlHandler".
-	 */
-	public static final String URL_HANDLER_ID = "urlHandler"; //$NON-NLS-1$
+  /**
+   * The object ID to be used when registering action to handle URL hyperlinks
+   * (those that should result in opening the web browser). Value is
+   * "urlHandler".
+   */
+  public static final String URL_HANDLER_ID = "urlHandler"; //$NON-NLS-1$
 
-	/**
-	 * Value of the horizontal margin (default is 0).
-	 */
-	public int marginWidth = 0;
+  /**
+   * Value of the horizontal margin (default is 0).
+   */
+  public int marginWidth = 0;
 
-	/**
-	 * Value of tue vertical margin (default is 1).
-	 */
-	public int marginHeight = 1;
+  /**
+   * Value of tue vertical margin (default is 1).
+   */
+  public int marginHeight = 1;
 
-	// RAP [if] Adapter to reach into widget implementation from within LCA
-	private transient IFormTextAdapter formTextAdapter;
-	// RAP [if] Need to instruct LCA to relayout the segments to the client
-	private boolean hasLayoutChanged = false;
+  // RAP [if] Adapter to reach into widget implementation from within LCA
+  private transient IFormTextAdapter formTextAdapter;
+  // RAP [if] Need to instruct LCA to relayout the segments to the client
+  private boolean hasLayoutChanged = false;
 
-	// private fields
-	private static final boolean DEBUG_TEXT = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXT));
-	private static final boolean DEBUG_TEXTSIZE = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXTSIZE));
+  // private fields
+  private static final boolean DEBUG_TEXT = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXT));
+  private static final boolean DEBUG_TEXTSIZE = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXTSIZE));
 
-	private static final boolean DEBUG_FOCUS = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_FOCUS));
+  private static final boolean DEBUG_FOCUS = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_FOCUS));
 
-	private boolean hasFocus;
+  private boolean hasFocus;
 
-	private boolean paragraphsSeparated = true;
+  private boolean paragraphsSeparated = true;
 
-	private FormTextModel model;
+  private FormTextModel model;
 
-	private ListenerList listeners;
+  private ListenerList listeners;
 
-	private Hashtable resourceTable = new Hashtable();
+  private Hashtable resourceTable = new Hashtable();
 
-	private IHyperlinkSegment entered;
+  private IHyperlinkSegment entered;
 
-	private IHyperlinkSegment armed;
+  private IHyperlinkSegment armed;
 
-	private boolean mouseFocus = false;
+  private boolean mouseFocus = false;
 
-	private boolean controlFocusTransfer = false;
+  private boolean controlFocusTransfer = false;
 
-	private boolean inSelection = false;
+  private boolean inSelection = false;
 
-	private SelectionData selData;
+  private SelectionData selData;
 
 // RAP [if] Clipboard not supported - no internal menu needed
-//	private static final String INTERNAL_MENU = "__internal_menu__"; //$NON-NLS-1$
+//  private static final String INTERNAL_MENU = "__internal_menu__"; //$NON-NLS-1$
 
-	private static final String CONTROL_KEY = "__segment__"; //$NON-NLS-1$
+  private static final String CONTROL_KEY = "__segment__"; //$NON-NLS-1$
 
-	private class FormTextLayout extends Layout implements ILayoutExtension {
+  private class FormTextLayout extends Layout implements ILayoutExtension {
 
-		public int computeMaximumWidth(Composite parent, boolean changed) {
-			return computeSize(parent, SWT.DEFAULT, SWT.DEFAULT, changed).x;
-		}
+    @Override
+    public int computeMaximumWidth(Composite parent, boolean changed) {
+      return computeSize(parent, SWT.DEFAULT, SWT.DEFAULT, changed).x;
+    }
 
-		public int computeMinimumWidth(Composite parent, boolean changed) {
-			return computeSize(parent, 5, SWT.DEFAULT, true).x;
-		}
+    @Override
+    public int computeMinimumWidth(Composite parent, boolean changed) {
+      return computeSize(parent, 5, SWT.DEFAULT, true).x;
+    }
 
-		/*
-		 * @see Layout#computeSize(Composite, int, int, boolean)
-		 */
-		@Override
+    /*
+     * @see Layout#computeSize(Composite, int, int, boolean)
+     */
+    @Override
     public Point computeSize(Composite composite, int wHint, int hHint,
-				boolean changed) {
-			long start = 0;
+        boolean changed) {
+      long start = 0;
 
-			if (DEBUG_TEXT)
-				start = System.currentTimeMillis();
-			int innerWidth = wHint;
-			if (innerWidth != SWT.DEFAULT)
-				innerWidth -= marginWidth * 2;
-			Point textSize = computeTextSize(innerWidth);
-			int textWidth = textSize.x + 2 * marginWidth;
-			int textHeight = textSize.y + 2 * marginHeight;
-			Point result = new Point(textWidth, textHeight);
-			if (DEBUG_TEXT) {
-				long stop = System.currentTimeMillis();
-				System.out.println("FormText computeSize: " + (stop - start) //$NON-NLS-1$
-						+ "ms"); //$NON-NLS-1$
-			}
-			if (DEBUG_TEXTSIZE) {
-				System.out.println("FormText ("+model.getAccessibleText()+"), computeSize: wHint="+wHint+", result="+result); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			}
-			return result;
-		}
+      if (DEBUG_TEXT)
+        start = System.currentTimeMillis();
+      int innerWidth = wHint;
+      if (innerWidth != SWT.DEFAULT)
+        innerWidth -= marginWidth * 2;
+      Point textSize = computeTextSize(innerWidth);
+      int textWidth = textSize.x + 2 * marginWidth;
+      int textHeight = textSize.y + 2 * marginHeight;
+      Point result = new Point(textWidth, textHeight);
+      if (DEBUG_TEXT) {
+        long stop = System.currentTimeMillis();
+        System.out.println("FormText computeSize: " + (stop - start) //$NON-NLS-1$
+            + "ms"); //$NON-NLS-1$
+      }
+      if (DEBUG_TEXTSIZE) {
+        System.out.println("FormText ("+model.getAccessibleText()+"), computeSize: wHint="+wHint+", result="+result); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      }
+      return result;
+    }
 
-		private Point computeTextSize(int wHint) {
-			Paragraph[] paragraphs = model.getParagraphs();
-			GC gc = new GC(FormText.this);
-			gc.setFont(getFont());
-			Locator loc = new Locator();
-			int width = wHint != SWT.DEFAULT ? wHint : 0;
-			FontMetrics fm = gc.getFontMetrics();
-			int lineHeight = fm.getHeight();
-			boolean selectableInTheLastRow = false;
-			for (int i = 0; i < paragraphs.length; i++) {
-				Paragraph p = paragraphs[i];
-				if (i > 0 && getParagraphsSeparated()
-						&& p.getAddVerticalSpace())
-					loc.y += getParagraphSpacing(lineHeight);
-				loc.rowHeight = 0;
-				loc.indent = p.getIndent();
-				loc.x = p.getIndent();
-				ParagraphSegment[] segments = p.getSegments();
-				if (segments.length > 0) {
-					selectableInTheLastRow = false;
-					int pwidth = 0;
-					for (int j = 0; j < segments.length; j++) {
-						ParagraphSegment segment = segments[j];
-						segment.advanceLocator(gc, wHint, loc, resourceTable, false);
-						if (wHint != SWT.DEFAULT) {
-							width = Math.max(width, loc.width);
-						} else {
-							pwidth = Math.max(pwidth, loc.width);
-						}
-						if (segment instanceof IFocusSelectable)
-							selectableInTheLastRow = true;
-					}
-					if (wHint == SWT.DEFAULT)
-						width = Math.max(width, pwidth);
-					loc.y += loc.rowHeight;
-				} else {
-					// empty new line
-					loc.y += lineHeight;
-				}
-			}
-			gc.dispose();
-			if (selectableInTheLastRow)
-				loc.y += 1;
-			return new Point(width, loc.y);
-		}
-
-		@Override
-        protected void layout(Composite composite, boolean flushCache) {
-		    // RAP [if] Workaround for the text size determination
-		    if( TextSizeUtil.isTemporaryResize() ) {
-		      model.clearCache( null );
-		    }
-
-			long start = 0;
-
-			if (DEBUG_TEXT) {
-				start = System.currentTimeMillis();
-			}
-			selData = null;
-			Rectangle carea = composite.getClientArea();
-			if (DEBUG_TEXTSIZE) {
-				System.out.println("FormText layout ("+model.getAccessibleText()+"), carea="+carea); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
-			GC gc = new GC(composite);
-			gc.setFont(getFont());
-			ensureBoldFontPresent(getFont());
-			gc.setForeground(getForeground());
-			gc.setBackground(getBackground());
-
-			Locator loc = new Locator();
-			loc.marginWidth = marginWidth;
-			loc.marginHeight = marginHeight;
-			loc.y = marginHeight;
-			FontMetrics fm = gc.getFontMetrics();
-			int lineHeight = fm.getHeight();
-
-			Paragraph[] paragraphs = model.getParagraphs();
-			IHyperlinkSegment selectedLink = getSelectedLink();
-			for (int i = 0; i < paragraphs.length; i++) {
-				Paragraph p = paragraphs[i];
-				if (i > 0 && paragraphsSeparated && p.getAddVerticalSpace())
-					loc.y += getParagraphSpacing(lineHeight);
-				loc.indent = p.getIndent();
-				loc.resetCaret();
-				loc.rowHeight = 0;
-				p.layout(gc, carea.width, loc, lineHeight, resourceTable,
-						selectedLink);
-			}
-			gc.dispose();
-			if (DEBUG_TEXT) {
-				long stop = System.currentTimeMillis();
-				System.out.println("FormText.layout: " + (stop - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-	}
-
-	/**
-	 * Contructs a new form text widget in the provided parent and using the
-	 * styles.
-	 * <p>
-	 * The only valid style bit for <code>FormText</code> is <code>SWT.NO_FOCUS</code>.
-	 * This will cause the widget to always refuse focus.
-	 *
-	 * @param parent
-	 *            form text parent control
-	 * @param style
-	 *            the widget style
-	 */
-	public FormText(Composite parent, int style) {
-// RAP [ih] SWT.NO_BACKGROUND not supported
-//	    super(parent, SWT.NO_BACKGROUND | SWT.WRAP | style);
-	    super(parent, SWT.WRAP | style);
-		setLayout(new FormTextLayout());
-		model = new FormTextModel();
-		addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				model.dispose();
-				disposeResourceTable(true);
-			}
-		});
-//RAP [if] PaintListener not supported
-//		addPaintListener(new PaintListener() {
-//			public void paintControl(PaintEvent e) {
-//				paint(e);
-//			}
-//		});
-		addListener(SWT.KeyDown, new Listener() {
-			public void handleEvent(Event e) {
-				if (e.character == '\r') {
-					activateSelectedLink();
-					return;
-				}
-			}
-		});
-		addListener(SWT.Traverse, new Listener() {
-			public void handleEvent(Event e) {
-				if (DEBUG_FOCUS)
-					System.out.println("Traversal: " + e); //$NON-NLS-1$
-// RAP [if] TRAVERSE_PAGE/TRAVERSE_ARROW not supported
-//				switch (e.detail) {
-//				case SWT.TRAVERSE_PAGE_NEXT:
-//				case SWT.TRAVERSE_PAGE_PREVIOUS:
-//				case SWT.TRAVERSE_ARROW_NEXT:
-//				case SWT.TRAVERSE_ARROW_PREVIOUS:
-//					e.doit = false;
-//					return;
-//				}
-				if (!model.hasFocusSegments()) {
-					e.doit = true;
-					return;
-				}
-				if (e.detail == SWT.TRAVERSE_TAB_NEXT)
-					e.doit = advance(true);
-				else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS)
-					e.doit = advance(false);
-				else if (e.detail != SWT.TRAVERSE_RETURN)
-					e.doit = true;
-			}
-		});
-		addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-				if (!hasFocus) {
-					hasFocus = true;
-					if (DEBUG_FOCUS) {
-						System.out.println("FormText: focus gained"); //$NON-NLS-1$
-					}
-					if (!mouseFocus && !controlFocusTransfer) {
-						handleFocusChange();
-					}
-				}
-			}
-
-			public void focusLost(FocusEvent e) {
-				if (DEBUG_FOCUS) {
-					System.out.println("FormText: focus lost"); //$NON-NLS-1$
-				}
-				if (hasFocus) {
-					hasFocus = false;
-					if (!controlFocusTransfer)
-						handleFocusChange();
-				}
-			}
-		});
-		addMouseListener(new MouseListener() {
-			public void mouseDoubleClick(MouseEvent e) {
-			}
-
-			public void mouseDown(MouseEvent e) {
-				// select a link
-				handleMouseClick(e, true);
-			}
-
-			public void mouseUp(MouseEvent e) {
-				// activate a link
-				handleMouseClick(e, false);
-			}
-		});
-// RAP [if] MouseTrackListener not supported
-//		addMouseTrackListener(new MouseTrackListener() {
-//			public void mouseEnter(MouseEvent e) {
-//				handleMouseMove(e);
-//			}
-//
-//			public void mouseExit(MouseEvent e) {
-//				if (entered != null) {
-//					exitLink(entered, e.stateMask);
-//					paintLinkHover(entered, false);
-//					entered = null;
-//					setCursor(null);
-//				}
-//			}
-//
-//			public void mouseHover(MouseEvent e) {
-//				handleMouseHover(e);
-//			}
-//		});
-// RAP [if] MouseMoveListener not supported
-//		addMouseMoveListener(new MouseMoveListener() {
-//			public void mouseMove(MouseEvent e) {
-//				handleMouseMove(e);
-//			}
-//		});
-// RAP [if] accessibility not supported
-//		initAccessible();
-		ensureBoldFontPresent(getFont());
-// RAP [if] Clipboard not supported - no internal menu needed
-//		createMenu();
-		// we will handle traversal of controls, if any
-		setTabList(new Control[] {});
-	}
-
-	// RAP [if] getAdapter implementation
-	@Override
-  public Object getAdapter( final Class adapter ) {
-	  Object result;
-	  if( adapter == IFormTextAdapter.class ) {
-	    if( formTextAdapter == null ) {
-	      formTextAdapter = new IFormTextAdapter() {
-
-            public Paragraph[] getParagraphs() {
-              Paragraph[] paragraphs = model.getParagraphs();
-              return ( Paragraph[] )paragraphs.clone();
+    private Point computeTextSize(int wHint) {
+      Paragraph[] paragraphs = model.getParagraphs();
+      GC gc = new GC(FormText.this);
+      gc.setFont(getFont());
+      Locator loc = new Locator();
+      int width = wHint != SWT.DEFAULT ? wHint : 0;
+      FontMetrics fm = gc.getFontMetrics();
+      int lineHeight = fm.getHeight();
+      boolean selectableInTheLastRow = false;
+      for (int i = 0; i < paragraphs.length; i++) {
+        Paragraph p = paragraphs[i];
+        if (i > 0 && getParagraphsSeparated()
+            && p.getAddVerticalSpace())
+          loc.y += getParagraphSpacing(lineHeight);
+        loc.rowHeight = 0;
+        loc.indent = p.getIndent();
+        loc.x = p.getIndent();
+        ParagraphSegment[] segments = p.getSegments();
+        if (segments.length > 0) {
+          selectableInTheLastRow = false;
+          int pwidth = 0;
+          for (int j = 0; j < segments.length; j++) {
+            ParagraphSegment segment = segments[j];
+            segment.advanceLocator(gc, wHint, loc, resourceTable, false);
+            if (wHint != SWT.DEFAULT) {
+              width = Math.max(width, loc.width);
+            } else {
+              pwidth = Math.max(pwidth, loc.width);
             }
-
-            public Hashtable getResourceTable() {
-              return ( Hashtable )resourceTable.clone();
-            }
-
-            public boolean hasLayoutChanged() {
-              boolean layoutChanged = hasLayoutChanged;
-              hasLayoutChanged = false;
-              return layoutChanged;
-            }
-
-	      };
+            if (segment instanceof IFocusSelectable)
+              selectableInTheLastRow = true;
+          }
+          if (wHint == SWT.DEFAULT)
+            width = Math.max(width, pwidth);
+          loc.y += loc.rowHeight;
+        } else {
+          // empty new line
+          loc.y += lineHeight;
         }
-	    result = formTextAdapter;
-	  } else {
-	    result = super.getAdapter( adapter );
-	  }
-	  return result;
-	}
+      }
+      gc.dispose();
+      if (selectableInTheLastRow)
+        loc.y += 1;
+      return new Point(width, loc.y);
+    }
 
-	/**
-	 * Test for focus.
-	 *
-	 * @return <samp>true </samp> if the widget has focus.
-	 */
-	public boolean getFocus() {
-		return hasFocus;
-	}
+    @Override
+        protected void layout(Composite composite, boolean flushCache) {
+        // RAP [if] Workaround for the text size determination
+        if( TextSizeUtil.isTemporaryResize() ) {
+          model.clearCache( null );
+        }
 
-	/**
-	 * Test if the widget is currently processing the text it is about to
-	 * render.
-	 *
-	 * @return <samp>true </samp> if the widget is still loading the text,
-	 *         <samp>false </samp> otherwise.
-	 * @deprecated not used any more - returns <code>false</code>
-	 */
-	public boolean isLoading() {
-		return false;
-	}
+      long start = 0;
 
-	/**
-	 * Returns the text that will be shown in the control while the real content
-	 * is loading.
-	 *
-	 * @return loading text message
-	 * @deprecated loading text is not used since 3.1
-	 */
-	public String getLoadingText() {
-		return null;
-	}
+      if (DEBUG_TEXT) {
+        start = System.currentTimeMillis();
+      }
+      selData = null;
+      Rectangle carea = composite.getClientArea();
+      if (DEBUG_TEXTSIZE) {
+        System.out.println("FormText layout ("+model.getAccessibleText()+"), carea="+carea); //$NON-NLS-1$ //$NON-NLS-2$
+      }
 
-	/**
-	 * Sets the text that will be shown in the control while the real content is
-	 * loading. This is significant when content to render is loaded from the
-	 * input stream that was created from a remote URL, and the time to load the
-	 * entire content is nontrivial.
-	 *
-	 * @param loadingText
-	 *            loading text message
-	 * @deprecated use setText(loadingText, false, false);
-	 */
-	public void setLoadingText(String loadingText) {
-		setText(loadingText, false, false);
-	}
+      GC gc = new GC(composite);
+      gc.setFont(getFont());
+      ensureBoldFontPresent(getFont());
+      gc.setForeground(getForeground());
+      gc.setBackground(getBackground());
 
-	/**
-	 * If paragraphs are separated, spacing will be added between them.
-	 * Otherwise, new paragraphs will simply start on a new line with no
-	 * spacing.
-	 *
-	 * @param value
-	 *            <samp>true </samp> if paragraphs are separated, </samp> false
-	 *            </samp> otherwise.
-	 */
-	public void setParagraphsSeparated(boolean value) {
-		paragraphsSeparated = value;
-	}
+      Locator loc = new Locator();
+      loc.marginWidth = marginWidth;
+      loc.marginHeight = marginHeight;
+      loc.y = marginHeight;
+      FontMetrics fm = gc.getFontMetrics();
+      int lineHeight = fm.getHeight();
 
-	/**
-	 * Tests if there is some inter-paragraph spacing.
-	 *
-	 * @return <samp>true </samp> if paragraphs are separated, <samp>false
-	 *         </samp> otherwise.
-	 */
-	public boolean getParagraphsSeparated() {
-		return paragraphsSeparated;
-	}
+      Paragraph[] paragraphs = model.getParagraphs();
+      IHyperlinkSegment selectedLink = getSelectedLink();
+      for (int i = 0; i < paragraphs.length; i++) {
+        Paragraph p = paragraphs[i];
+        if (i > 0 && paragraphsSeparated && p.getAddVerticalSpace())
+          loc.y += getParagraphSpacing(lineHeight);
+        loc.indent = p.getIndent();
+        loc.resetCaret();
+        loc.rowHeight = 0;
+        p.layout(gc, carea.width, loc, lineHeight, resourceTable,
+            selectedLink);
+      }
+      gc.dispose();
+      if (DEBUG_TEXT) {
+        long stop = System.currentTimeMillis();
+        System.out.println("FormText.layout: " + (stop - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+      }
+    }
+  }
 
-	/**
-	 * Registers the image referenced by the provided key.
-	 * <p>
-	 * For <samp>img </samp> tags, an object of a type <samp>Image </samp> must
-	 * be registered using the key equivalent to the value of the <samp>href
-	 * </samp> attribute used in the tag.
-	 *
-	 * @param key
-	 *            unique key that matches the value of the <samp>href </samp>
-	 *            attribute.
-	 * @param image
-	 *            an object of a type <samp>Image </samp>.
-	 */
-	public void setImage(String key, Image image) {
-		resourceTable.put("i." + key, image); //$NON-NLS-1$
-	}
-
-	/**
-	 * Registers the color referenced by the provided key.
-	 * <p>
-	 * For <samp>span </samp> tags, an object of a type <samp>Color </samp> must
-	 * be registered using the key equivalent to the value of the <samp>color
-	 * </samp> attribute.
-	 *
-	 * @param key
-	 *            unique key that matches the value of the <samp>color </samp>
-	 *            attribute.
-	 * @param color
-	 *            an object of the type <samp>Color </samp> or <samp>null</samp>
-	 *            if the key needs to be cleared.
-	 */
-	public void setColor(String key, Color color) {
-		String fullKey = "c." + key; //$NON-NLS-1$
-		if (color == null)
-			resourceTable.remove(fullKey);
-		else
-			resourceTable.put(fullKey, color);
-	}
-
-	/**
-	 * Registers the font referenced by the provided key.
-	 * <p>
-	 * For <samp>span </samp> tags, an object of a type <samp>Font </samp> must
-	 * be registered using the key equivalent to the value of the <samp>font
-	 * </samp> attribute.
-	 *
-	 * @param key
-	 *            unique key that matches the value of the <samp>font </samp>
-	 *            attribute.
-	 * @param font
-	 *            an object of the type <samp>Font </samp> or <samp>null</samp>
-	 *            if the key needs to be cleared.
-	 */
-	public void setFont(String key, Font font) {
-		String fullKey = "f." + key; //$NON-NLS-1$
-		if (font == null)
-			resourceTable.remove(fullKey);
-		else
-			resourceTable.put(fullKey, font);
-		model.clearCache(fullKey);
-	}
-
-	/**
-	 * Registers the control referenced by the provided key.
-	 * <p>
-	 * For <samp>control</samp> tags, an object of a type <samp>Control</samp>
-	 * must be registered using the key equivalent to the value of the
-	 * <samp>control</samp> attribute.
-	 *
-	 * @param key
-	 *            unique key that matches the value of the <samp>control</samp>
-	 *            attribute.
-	 * @param control
-	 *            an object of the type <samp>Control</samp> or <samp>null</samp>
-	 *            if the existing control at the specified key needs to be
-	 *            removed.
-	 * @since 3.1
-	 */
-	public void setControl(String key, Control control) {
-		String fullKey = "o." + key; //$NON-NLS-1$
-		if (control == null)
-			resourceTable.remove(fullKey);
-		else
-			resourceTable.put(fullKey, control);
-	}
-
-	/**
-	 * Sets the font to use to render the default text (text that does not have
-	 * special font property assigned). Bold font will be constructed from this
-	 * font.
-	 *
-	 * @param font
-	 *            the default font to use
-	 */
-	@Override
-  public void setFont(Font font) {
-		super.setFont(font);
-		model.clearCache(null);
-		Font boldFont = (Font) resourceTable.get(FormTextModel.BOLD_FONT_ID);
-		if (boldFont != null) {
-			FormFonts.getInstance().markFinished(boldFont);
-			resourceTable.remove(FormTextModel.BOLD_FONT_ID);
-		}
-		ensureBoldFontPresent(getFont());
-	}
-
-	/**
-	 * Sets the provided text. Text can be rendered as-is, or by parsing the
-	 * formatting tags. Optionally, sections of text starting with http:// will
-	 * be converted to hyperlinks.
-	 *
-	 * @param text
-	 *            the text to render
-	 * @param parseTags
-	 *            if <samp>true </samp>, formatting tags will be parsed.
-	 *            Otherwise, text will be rendered as-is.
-	 * @param expandURLs
-	 *            if <samp>true </samp>, URLs found in the untagged text will be
-	 *            converted into hyperlinks.
-	 */
-	public void setText(String text, boolean parseTags, boolean expandURLs) {
-		disposeResourceTable(false);
-		entered = null;
-		if (parseTags)
-			model.parseTaggedText(text, expandURLs);
-		else
-			model.parseRegularText(text, expandURLs);
-		hookControlSegmentFocus();
-		hasLayoutChanged = true;
-		layout();
-		redraw();
-	}
-
-	/**
-	 * Sets the contents of the stream. Optionally, URLs in untagged text can be
-	 * converted into hyperlinks. The caller is responsible for closing the
-	 * stream.
-	 *
-	 * @param is
-	 *            stream to render
-	 * @param expandURLs
-	 *            if <samp>true </samp>, URLs found in untagged text will be
-	 *            converted into hyperlinks.
-	 */
-	public void setContents(InputStream is, boolean expandURLs) {
-		entered = null;
-		disposeResourceTable(false);
-		model.parseInputStream(is, expandURLs);
-		hookControlSegmentFocus();
-		hasLayoutChanged = true;
-		layout();
-		redraw();
-	}
-
-	private void hookControlSegmentFocus() {
-		Paragraph[] paragraphs = model.getParagraphs();
-		if (paragraphs == null)
-			return;
-		Listener listener = new Listener() {
-			public void handleEvent(Event e) {
-				switch (e.type) {
-				case SWT.FocusIn:
-					if (!controlFocusTransfer)
-						syncControlSegmentFocus((Control) e.widget);
-					break;
-				case SWT.Traverse:
-					if (DEBUG_FOCUS)
-						System.out.println("Control traversal: " + e); //$NON-NLS-1$
+  /**
+   * Contructs a new form text widget in the provided parent and using the
+   * styles.
+   * <p>
+   * The only valid style bit for <code>FormText</code> is <code>SWT.NO_FOCUS</code>.
+   * This will cause the widget to always refuse focus.
+   *
+   * @param parent
+   *            form text parent control
+   * @param style
+   *            the widget style
+   */
+  public FormText(Composite parent, int style) {
+// RAP [ih] SWT.NO_BACKGROUND not supported
+//      super(parent, SWT.NO_BACKGROUND | SWT.WRAP | style);
+      super(parent, SWT.WRAP | style);
+    setLayout(new FormTextLayout());
+    model = new FormTextModel();
+    addDisposeListener(new DisposeListener() {
+      @Override
+      public void widgetDisposed(DisposeEvent e) {
+        model.dispose();
+        disposeResourceTable(true);
+      }
+    });
+//RAP [if] PaintListener not supported
+//    addPaintListener(new PaintListener() {
+//      public void paintControl(PaintEvent e) {
+//        paint(e);
+//      }
+//    });
+    addListener(SWT.KeyDown, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (e.character == '\r') {
+          activateSelectedLink();
+          return;
+        }
+      }
+    });
+    addListener(SWT.Traverse, new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        if (DEBUG_FOCUS)
+          System.out.println("Traversal: " + e); //$NON-NLS-1$
 // RAP [if] TRAVERSE_PAGE/TRAVERSE_ARROW not supported
-//					switch (e.detail) {
-//					case SWT.TRAVERSE_PAGE_NEXT:
-//					case SWT.TRAVERSE_PAGE_PREVIOUS:
-//					case SWT.TRAVERSE_ARROW_NEXT:
-//					case SWT.TRAVERSE_ARROW_PREVIOUS:
-//						e.doit = false;
-//						return;
-//					}
-					Control c = (Control) e.widget;
-					ControlSegment segment = (ControlSegment) c
-							.getData(CONTROL_KEY);
-					if (e.detail == SWT.TRAVERSE_TAB_NEXT)
-						e.doit = advanceControl(c, segment, true);
-					else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS)
-						e.doit = advanceControl(c, segment, false);
-					if (!e.doit)
-						e.detail = SWT.TRAVERSE_NONE;
-					break;
-				}
-			}
-		};
-		for (int i = 0; i < paragraphs.length; i++) {
-			Paragraph p = paragraphs[i];
-			ParagraphSegment[] segments = p.getSegments();
-			for (int j = 0; j < segments.length; j++) {
-				if (segments[j] instanceof ControlSegment) {
-					ControlSegment cs = (ControlSegment) segments[j];
-					Control c = cs.getControl(resourceTable);
-					if (c != null) {
-						if (c.getData(CONTROL_KEY) == null) {
-							// first time - hook
-							c.setData(CONTROL_KEY, cs);
-							attachTraverseListener(c, listener);
-						}
-					}
-				}
-			}
-		}
-	}
+//        switch (e.detail) {
+//        case SWT.TRAVERSE_PAGE_NEXT:
+//        case SWT.TRAVERSE_PAGE_PREVIOUS:
+//        case SWT.TRAVERSE_ARROW_NEXT:
+//        case SWT.TRAVERSE_ARROW_PREVIOUS:
+//          e.doit = false;
+//          return;
+//        }
+        if (!model.hasFocusSegments()) {
+          e.doit = true;
+          return;
+        }
+        if (e.detail == SWT.TRAVERSE_TAB_NEXT)
+          e.doit = advance(true);
+        else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS)
+          e.doit = advance(false);
+        else if (e.detail != SWT.TRAVERSE_RETURN)
+          e.doit = true;
+      }
+    });
+    addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        if (!hasFocus) {
+          hasFocus = true;
+          if (DEBUG_FOCUS) {
+            System.out.println("FormText: focus gained"); //$NON-NLS-1$
+          }
+          if (!mouseFocus && !controlFocusTransfer) {
+            handleFocusChange();
+          }
+        }
+      }
 
-	private void attachTraverseListener(Control c, Listener listener) {
-		if (c instanceof Composite) {
-			Composite parent = (Composite) c;
-			Control[] children = parent.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				attachTraverseListener(children[i], listener);
-			}
-			if (c instanceof Canvas) {
-				// If Canvas, the control iteself can accept
-				// traverse events and should be monitored
-				c.addListener(SWT.Traverse, listener);
-				c.addListener(SWT.FocusIn, listener);
-			}
-		} else {
-			c.addListener(SWT.Traverse, listener);
-			c.addListener(SWT.FocusIn, listener);
-		}
-	}
+      @Override
+      public void focusLost(FocusEvent e) {
+        if (DEBUG_FOCUS) {
+          System.out.println("FormText: focus lost"); //$NON-NLS-1$
+        }
+        if (hasFocus) {
+          hasFocus = false;
+          if (!controlFocusTransfer)
+            handleFocusChange();
+        }
+      }
+    });
+    addMouseListener(new MouseListener() {
+      @Override
+      public void mouseDoubleClick(MouseEvent e) {
+      }
 
-	/**
-	 * If we click on the control randomly, our internal book-keeping will be
-	 * off. We need to update the model and mark the control segment and
-	 * currently selected. Hyperlink that may have had focus must also be
-	 * exited.
-	 *
-	 * @param control
-	 *            the control that got focus
-	 */
-	private void syncControlSegmentFocus(Control control) {
-		ControlSegment cs = null;
+      @Override
+      public void mouseDown(MouseEvent e) {
+        // select a link
+        handleMouseClick(e, true);
+      }
 
-		while (control != null) {
-			cs = (ControlSegment) control.getData(CONTROL_KEY);
-			if (cs != null)
-				break;
-			control = control.getParent();
-		}
-		if (cs == null)
-			return;
-		IFocusSelectable current = model.getSelectedSegment();
-		// If the model and the control match, all is well
-		if (current == cs)
-			return;
-		IHyperlinkSegment oldLink = null;
-		if (current != null && current instanceof IHyperlinkSegment) {
-			oldLink = (IHyperlinkSegment) current;
-			exitLink(oldLink, SWT.NULL);
-		}
-		if (DEBUG_FOCUS)
-			System.out.println("Sync control: " + cs + ", oldLink=" + oldLink); //$NON-NLS-1$ //$NON-NLS-2$
-		model.select(cs);
+      @Override
+      public void mouseUp(MouseEvent e) {
+        // activate a link
+        handleMouseClick(e, false);
+      }
+    });
+// RAP [if] MouseTrackListener not supported
+//    addMouseTrackListener(new MouseTrackListener() {
+//      public void mouseEnter(MouseEvent e) {
+//        handleMouseMove(e);
+//      }
+//
+//      public void mouseExit(MouseEvent e) {
+//        if (entered != null) {
+//          exitLink(entered, e.stateMask);
+//          paintLinkHover(entered, false);
+//          entered = null;
+//          setCursor(null);
+//        }
+//      }
+//
+//      public void mouseHover(MouseEvent e) {
+//        handleMouseHover(e);
+//      }
+//    });
+// RAP [if] MouseMoveListener not supported
+//    addMouseMoveListener(new MouseMoveListener() {
+//      public void mouseMove(MouseEvent e) {
+//        handleMouseMove(e);
+//      }
+//    });
+// RAP [if] accessibility not supported
+//    initAccessible();
+    ensureBoldFontPresent(getFont());
+// RAP [if] Clipboard not supported - no internal menu needed
+//    createMenu();
+    // we will handle traversal of controls, if any
+    setTabList(new Control[] {});
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == IFormTextAdapter.class ) {
+      if( formTextAdapter == null ) {
+        formTextAdapter = new IFormTextAdapter() {
+          @Override
+          public Paragraph[] getParagraphs() {
+            Paragraph[] paragraphs = model.getParagraphs();
+            return paragraphs.clone();
+          }
+          @Override
+          public Hashtable getResourceTable() {
+            return ( Hashtable )resourceTable.clone();
+          }
+          @Override
+          public boolean hasLayoutChanged() {
+            boolean layoutChanged = hasLayoutChanged;
+            hasLayoutChanged = false;
+            return layoutChanged;
+          }
+        };
+      }
+      return ( T )formTextAdapter;
+    } else if( adapter == WidgetLCA.class ) {
+      return ( T )FormTextLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
+  }
+
+  /**
+   * Test for focus.
+   *
+   * @return <samp>true </samp> if the widget has focus.
+   */
+  public boolean getFocus() {
+    return hasFocus;
+  }
+
+  /**
+   * Test if the widget is currently processing the text it is about to
+   * render.
+   *
+   * @return <samp>true </samp> if the widget is still loading the text,
+   *         <samp>false </samp> otherwise.
+   * @deprecated not used any more - returns <code>false</code>
+   */
+  @Deprecated
+  public boolean isLoading() {
+    return false;
+  }
+
+  /**
+   * Returns the text that will be shown in the control while the real content
+   * is loading.
+   *
+   * @return loading text message
+   * @deprecated loading text is not used since 3.1
+   */
+  @Deprecated
+  public String getLoadingText() {
+    return null;
+  }
+
+  /**
+   * Sets the text that will be shown in the control while the real content is
+   * loading. This is significant when content to render is loaded from the
+   * input stream that was created from a remote URL, and the time to load the
+   * entire content is nontrivial.
+   *
+   * @param loadingText
+   *            loading text message
+   * @deprecated use setText(loadingText, false, false);
+   */
+  @Deprecated
+  public void setLoadingText(String loadingText) {
+    setText(loadingText, false, false);
+  }
+
+  /**
+   * If paragraphs are separated, spacing will be added between them.
+   * Otherwise, new paragraphs will simply start on a new line with no
+   * spacing.
+   *
+   * @param value
+   *            <samp>true </samp> if paragraphs are separated, </samp> false
+   *            </samp> otherwise.
+   */
+  public void setParagraphsSeparated(boolean value) {
+    paragraphsSeparated = value;
+  }
+
+  /**
+   * Tests if there is some inter-paragraph spacing.
+   *
+   * @return <samp>true </samp> if paragraphs are separated, <samp>false
+   *         </samp> otherwise.
+   */
+  public boolean getParagraphsSeparated() {
+    return paragraphsSeparated;
+  }
+
+  /**
+   * Registers the image referenced by the provided key.
+   * <p>
+   * For <samp>img </samp> tags, an object of a type <samp>Image </samp> must
+   * be registered using the key equivalent to the value of the <samp>href
+   * </samp> attribute used in the tag.
+   *
+   * @param key
+   *            unique key that matches the value of the <samp>href </samp>
+   *            attribute.
+   * @param image
+   *            an object of a type <samp>Image </samp>.
+   */
+  public void setImage(String key, Image image) {
+    resourceTable.put("i." + key, image); //$NON-NLS-1$
+  }
+
+  /**
+   * Registers the color referenced by the provided key.
+   * <p>
+   * For <samp>span </samp> tags, an object of a type <samp>Color </samp> must
+   * be registered using the key equivalent to the value of the <samp>color
+   * </samp> attribute.
+   *
+   * @param key
+   *            unique key that matches the value of the <samp>color </samp>
+   *            attribute.
+   * @param color
+   *            an object of the type <samp>Color </samp> or <samp>null</samp>
+   *            if the key needs to be cleared.
+   */
+  public void setColor(String key, Color color) {
+    String fullKey = "c." + key; //$NON-NLS-1$
+    if (color == null)
+      resourceTable.remove(fullKey);
+    else
+      resourceTable.put(fullKey, color);
+  }
+
+  /**
+   * Registers the font referenced by the provided key.
+   * <p>
+   * For <samp>span </samp> tags, an object of a type <samp>Font </samp> must
+   * be registered using the key equivalent to the value of the <samp>font
+   * </samp> attribute.
+   *
+   * @param key
+   *            unique key that matches the value of the <samp>font </samp>
+   *            attribute.
+   * @param font
+   *            an object of the type <samp>Font </samp> or <samp>null</samp>
+   *            if the key needs to be cleared.
+   */
+  public void setFont(String key, Font font) {
+    String fullKey = "f." + key; //$NON-NLS-1$
+    if (font == null)
+      resourceTable.remove(fullKey);
+    else
+      resourceTable.put(fullKey, font);
+    model.clearCache(fullKey);
+  }
+
+  /**
+   * Registers the control referenced by the provided key.
+   * <p>
+   * For <samp>control</samp> tags, an object of a type <samp>Control</samp>
+   * must be registered using the key equivalent to the value of the
+   * <samp>control</samp> attribute.
+   *
+   * @param key
+   *            unique key that matches the value of the <samp>control</samp>
+   *            attribute.
+   * @param control
+   *            an object of the type <samp>Control</samp> or <samp>null</samp>
+   *            if the existing control at the specified key needs to be
+   *            removed.
+   * @since 3.1
+   */
+  public void setControl(String key, Control control) {
+    String fullKey = "o." + key; //$NON-NLS-1$
+    if (control == null)
+      resourceTable.remove(fullKey);
+    else
+      resourceTable.put(fullKey, control);
+  }
+
+  /**
+   * Sets the font to use to render the default text (text that does not have
+   * special font property assigned). Bold font will be constructed from this
+   * font.
+   *
+   * @param font
+   *            the default font to use
+   */
+  @Override
+  public void setFont(Font font) {
+    super.setFont(font);
+    model.clearCache(null);
+    Font boldFont = (Font) resourceTable.get(FormTextModel.BOLD_FONT_ID);
+    if (boldFont != null) {
+      FormFonts.getInstance().markFinished(boldFont);
+      resourceTable.remove(FormTextModel.BOLD_FONT_ID);
+    }
+    ensureBoldFontPresent(getFont());
+  }
+
+  /**
+   * Sets the provided text. Text can be rendered as-is, or by parsing the
+   * formatting tags. Optionally, sections of text starting with http:// will
+   * be converted to hyperlinks.
+   *
+   * @param text
+   *            the text to render
+   * @param parseTags
+   *            if <samp>true </samp>, formatting tags will be parsed.
+   *            Otherwise, text will be rendered as-is.
+   * @param expandURLs
+   *            if <samp>true </samp>, URLs found in the untagged text will be
+   *            converted into hyperlinks.
+   */
+  public void setText(String text, boolean parseTags, boolean expandURLs) {
+    disposeResourceTable(false);
+    entered = null;
+    if (parseTags)
+      model.parseTaggedText(text, expandURLs);
+    else
+      model.parseRegularText(text, expandURLs);
+    hookControlSegmentFocus();
+    hasLayoutChanged = true;
+    layout();
+    redraw();
+  }
+
+  /**
+   * Sets the contents of the stream. Optionally, URLs in untagged text can be
+   * converted into hyperlinks. The caller is responsible for closing the
+   * stream.
+   *
+   * @param is
+   *            stream to render
+   * @param expandURLs
+   *            if <samp>true </samp>, URLs found in untagged text will be
+   *            converted into hyperlinks.
+   */
+  public void setContents(InputStream is, boolean expandURLs) {
+    entered = null;
+    disposeResourceTable(false);
+    model.parseInputStream(is, expandURLs);
+    hookControlSegmentFocus();
+    hasLayoutChanged = true;
+    layout();
+    redraw();
+  }
+
+  private void hookControlSegmentFocus() {
+    Paragraph[] paragraphs = model.getParagraphs();
+    if (paragraphs == null)
+      return;
+    Listener listener = new Listener() {
+      @Override
+      public void handleEvent(Event e) {
+        switch (e.type) {
+        case SWT.FocusIn:
+          if (!controlFocusTransfer)
+            syncControlSegmentFocus((Control) e.widget);
+          break;
+        case SWT.Traverse:
+          if (DEBUG_FOCUS)
+            System.out.println("Control traversal: " + e); //$NON-NLS-1$
+// RAP [if] TRAVERSE_PAGE/TRAVERSE_ARROW not supported
+//          switch (e.detail) {
+//          case SWT.TRAVERSE_PAGE_NEXT:
+//          case SWT.TRAVERSE_PAGE_PREVIOUS:
+//          case SWT.TRAVERSE_ARROW_NEXT:
+//          case SWT.TRAVERSE_ARROW_PREVIOUS:
+//            e.doit = false;
+//            return;
+//          }
+          Control c = (Control) e.widget;
+          ControlSegment segment = (ControlSegment) c
+              .getData(CONTROL_KEY);
+          if (e.detail == SWT.TRAVERSE_TAB_NEXT)
+            e.doit = advanceControl(c, segment, true);
+          else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS)
+            e.doit = advanceControl(c, segment, false);
+          if (!e.doit)
+            e.detail = SWT.TRAVERSE_NONE;
+          break;
+        }
+      }
+    };
+    for (int i = 0; i < paragraphs.length; i++) {
+      Paragraph p = paragraphs[i];
+      ParagraphSegment[] segments = p.getSegments();
+      for (int j = 0; j < segments.length; j++) {
+        if (segments[j] instanceof ControlSegment) {
+          ControlSegment cs = (ControlSegment) segments[j];
+          Control c = cs.getControl(resourceTable);
+          if (c != null) {
+            if (c.getData(CONTROL_KEY) == null) {
+              // first time - hook
+              c.setData(CONTROL_KEY, cs);
+              attachTraverseListener(c, listener);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void attachTraverseListener(Control c, Listener listener) {
+    if (c instanceof Composite) {
+      Composite parent = (Composite) c;
+      Control[] children = parent.getChildren();
+      for (int i = 0; i < children.length; i++) {
+        attachTraverseListener(children[i], listener);
+      }
+      if (c instanceof Canvas) {
+        // If Canvas, the control iteself can accept
+        // traverse events and should be monitored
+        c.addListener(SWT.Traverse, listener);
+        c.addListener(SWT.FocusIn, listener);
+      }
+    } else {
+      c.addListener(SWT.Traverse, listener);
+      c.addListener(SWT.FocusIn, listener);
+    }
+  }
+
+  /**
+   * If we click on the control randomly, our internal book-keeping will be
+   * off. We need to update the model and mark the control segment and
+   * currently selected. Hyperlink that may have had focus must also be
+   * exited.
+   *
+   * @param control
+   *            the control that got focus
+   */
+  private void syncControlSegmentFocus(Control control) {
+    ControlSegment cs = null;
+
+    while (control != null) {
+      cs = (ControlSegment) control.getData(CONTROL_KEY);
+      if (cs != null)
+        break;
+      control = control.getParent();
+    }
+    if (cs == null)
+      return;
+    IFocusSelectable current = model.getSelectedSegment();
+    // If the model and the control match, all is well
+    if (current == cs)
+      return;
+    IHyperlinkSegment oldLink = null;
+    if (current != null && current instanceof IHyperlinkSegment) {
+      oldLink = (IHyperlinkSegment) current;
+      exitLink(oldLink, SWT.NULL);
+    }
+    if (DEBUG_FOCUS)
+      System.out.println("Sync control: " + cs + ", oldLink=" + oldLink); //$NON-NLS-1$ //$NON-NLS-2$
+    model.select(cs);
 // RAP [if] paintFocusTransfer unnecessary
-//		if (oldLink != null)
-//			paintFocusTransfer(oldLink, null);
-		// getAccessible().setFocus(model.getSelectedSegmentIndex());
-	}
+//    if (oldLink != null)
+//      paintFocusTransfer(oldLink, null);
+    // getAccessible().setFocus(model.getSelectedSegmentIndex());
+  }
 
-	private boolean advanceControl(Control c, ControlSegment segment,
-			boolean next) {
-		Composite parent = c.getParent();
-		if (parent == this) {
-			// segment-level control
-			IFocusSelectable nextSegment = model.getNextFocusSegment(next);
-			if (nextSegment != null) {
-				controlFocusTransfer = true;
-				super.forceFocus();
-				controlFocusTransfer = false;
-				model.select(segment);
-				return advance(next);
-			}
-			// nowhere to go
-			return setFocusToNextSibling(this, next);
-		}
-		if (setFocusToNextSibling(c, next))
-			return true;
-		// still here - must go one level up
-		segment = (ControlSegment) parent.getData(CONTROL_KEY);
-		return advanceControl(parent, segment, next);
-	}
+  private boolean advanceControl(Control c, ControlSegment segment,
+      boolean next) {
+    Composite parent = c.getParent();
+    if (parent == this) {
+      // segment-level control
+      IFocusSelectable nextSegment = model.getNextFocusSegment(next);
+      if (nextSegment != null) {
+        controlFocusTransfer = true;
+        super.forceFocus();
+        controlFocusTransfer = false;
+        model.select(segment);
+        return advance(next);
+      }
+      // nowhere to go
+      return setFocusToNextSibling(this, next);
+    }
+    if (setFocusToNextSibling(c, next))
+      return true;
+    // still here - must go one level up
+    segment = (ControlSegment) parent.getData(CONTROL_KEY);
+    return advanceControl(parent, segment, next);
+  }
 
-	private boolean setFocusToNextSibling(Control c, boolean next) {
-		Composite parent = c.getParent();
-		Control[] children = parent.getTabList();
-		for (int i = 0; i < children.length; i++) {
-			Control child = children[i];
-			if (child == c) {
-				// here
-				if (next) {
-					for (int j = i + 1; j < children.length; j++) {
-						Control nc = children[j];
-						if (nc.setFocus())
-							return false;
-					}
-				} else {
-					for (int j = i - 1; j >= 0; j--) {
-						Control pc = children[j];
-						if (pc.setFocus())
-							return false;
-					}
-				}
-			}
-		}
-		return false;
-	}
+  private boolean setFocusToNextSibling(Control c, boolean next) {
+    Composite parent = c.getParent();
+    Control[] children = parent.getTabList();
+    for (int i = 0; i < children.length; i++) {
+      Control child = children[i];
+      if (child == c) {
+        // here
+        if (next) {
+          for (int j = i + 1; j < children.length; j++) {
+            Control nc = children[j];
+            if (nc.setFocus())
+              return false;
+          }
+        } else {
+          for (int j = i - 1; j >= 0; j--) {
+            Control pc = children[j];
+            if (pc.setFocus())
+              return false;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
-	/**
-	 * Controls whether whitespace inside paragraph and list items is
-	 * normalized. Note that the new value will not affect the current text in
-	 * the control, only subsequent calls to <code>setText</code> or
-	 * <code>setContents</code>.
-	 * <p>
-	 * If normalized:
-	 * <ul>
-	 * <li>all white space characters will be condensed into at most one when
-	 * between words.</li>
-	 * <li>new line characters will be ignored and replaced with one white
-	 * space character</li>
-	 * <li>white space characters after the opening tags and before the closing
-	 * tags will be trimmed</li>
-	 *
-	 * @param value
-	 *            <code>true</code> if whitespace is normalized,
-	 *            <code>false</code> otherwise.
-	 */
-	public void setWhitespaceNormalized(boolean value) {
-		model.setWhitespaceNormalized(value);
-	}
+  /**
+   * Controls whether whitespace inside paragraph and list items is
+   * normalized. Note that the new value will not affect the current text in
+   * the control, only subsequent calls to <code>setText</code> or
+   * <code>setContents</code>.
+   * <p>
+   * If normalized:
+   * <ul>
+   * <li>all white space characters will be condensed into at most one when
+   * between words.</li>
+   * <li>new line characters will be ignored and replaced with one white
+   * space character</li>
+   * <li>white space characters after the opening tags and before the closing
+   * tags will be trimmed</li>
+   *
+   * @param value
+   *            <code>true</code> if whitespace is normalized,
+   *            <code>false</code> otherwise.
+   */
+  public void setWhitespaceNormalized(boolean value) {
+    model.setWhitespaceNormalized(value);
+  }
 
-	/**
-	 * Tests whether whitespace inside paragraph and list item is normalized.
-	 *
-	 * @see #setWhitespaceNormalized(boolean)
-	 * @return <code>true</code> if whitespace is normalized,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean isWhitespaceNormalized() {
-		return model.isWhitespaceNormalized();
-	}
+  /**
+   * Tests whether whitespace inside paragraph and list item is normalized.
+   *
+   * @see #setWhitespaceNormalized(boolean)
+   * @return <code>true</code> if whitespace is normalized,
+   *         <code>false</code> otherwise.
+   */
+  public boolean isWhitespaceNormalized() {
+    return model.isWhitespaceNormalized();
+  }
 
 // RAP [if] Clipboard not supported - no internal menu needed
-//	/**
-//	 * Disposes the internal menu if created and sets the menu provided as a
-//	 * parameter.
-//	 *
-//	 * @param menu
-//	 *            the menu to associate with this text control
-//	 */
-//	public void setMenu(Menu menu) {
-//		Menu currentMenu = super.getMenu();
-//		if (currentMenu != null && INTERNAL_MENU.equals(currentMenu.getData())) {
-//			// internal menu set
-//			if (menu != null) {
-//				currentMenu.dispose();
-//				super.setMenu(menu);
-//			}
-//		} else
-//			super.setMenu(menu);
-//	}
+//  /**
+//   * Disposes the internal menu if created and sets the menu provided as a
+//   * parameter.
+//   *
+//   * @param menu
+//   *            the menu to associate with this text control
+//   */
+//  public void setMenu(Menu menu) {
+//    Menu currentMenu = super.getMenu();
+//    if (currentMenu != null && INTERNAL_MENU.equals(currentMenu.getData())) {
+//      // internal menu set
+//      if (menu != null) {
+//        currentMenu.dispose();
+//        super.setMenu(menu);
+//      }
+//    } else
+//      super.setMenu(menu);
+//  }
 //
-//	private void createMenu() {
-//		Menu menu = new Menu(this);
-//		final MenuItem copyItem = new MenuItem(menu, SWT.PUSH);
-//		copyItem.setText(Messages.FormText_copy);
+//  private void createMenu() {
+//    Menu menu = new Menu(this);
+//    final MenuItem copyItem = new MenuItem(menu, SWT.PUSH);
+//    copyItem.setText(Messages.FormText_copy);
 //
-//		SelectionListener listener = new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				if (e.widget == copyItem) {
-//					copy();
-//				}
-//			}
-//		};
-//		copyItem.addSelectionListener(listener);
-//		menu.addMenuListener(new MenuListener() {
-//			public void menuShown(MenuEvent e) {
-//				copyItem.setEnabled(canCopy());
-//			}
+//    SelectionListener listener = new SelectionAdapter() {
+//      public void widgetSelected(SelectionEvent e) {
+//        if (e.widget == copyItem) {
+//          copy();
+//        }
+//      }
+//    };
+//    copyItem.addSelectionListener(listener);
+//    menu.addMenuListener(new MenuListener() {
+//      public void menuShown(MenuEvent e) {
+//        copyItem.setEnabled(canCopy());
+//      }
 //
-//			public void menuHidden(MenuEvent e) {
-//			}
-//		});
-//		menu.setData(INTERNAL_MENU);
-//		super.setMenu(menu);
-//	}
+//      public void menuHidden(MenuEvent e) {
+//      }
+//    });
+//    menu.setData(INTERNAL_MENU);
+//    super.setMenu(menu);
+//  }
 
-	/**
-	 * Returns the hyperlink settings that are in effect for this control.
-	 *
-	 * @return current hyperlinks settings
-	 */
-	public HyperlinkSettings getHyperlinkSettings() {
-		return model.getHyperlinkSettings();
-	}
+  /**
+   * Returns the hyperlink settings that are in effect for this control.
+   *
+   * @return current hyperlinks settings
+   */
+  public HyperlinkSettings getHyperlinkSettings() {
+    return model.getHyperlinkSettings();
+  }
 
-	/**
-	 * Sets the hyperlink settings to be used for this control. Settings will
-	 * affect things like hyperlink color, rendering style, cursor etc.
-	 *
-	 * @param settings
-	 *            hyperlink settings for this control
-	 */
-	public void setHyperlinkSettings(HyperlinkSettings settings) {
-		model.setHyperlinkSettings(settings);
-	}
+  /**
+   * Sets the hyperlink settings to be used for this control. Settings will
+   * affect things like hyperlink color, rendering style, cursor etc.
+   *
+   * @param settings
+   *            hyperlink settings for this control
+   */
+  public void setHyperlinkSettings(HyperlinkSettings settings) {
+    model.setHyperlinkSettings(settings);
+  }
 
-	/**
-	 * Adds a listener that will handle hyperlink events.
-	 *
-	 * @param listener
-	 *            the listener to add
-	 */
-	public void addHyperlinkListener(IHyperlinkListener listener) {
-		if (listeners == null)
-			listeners = new ListenerList();
-		listeners.add(listener);
-	}
+  /**
+   * Adds a listener that will handle hyperlink events.
+   *
+   * @param listener
+   *            the listener to add
+   */
+  public void addHyperlinkListener(IHyperlinkListener listener) {
+    if (listeners == null)
+      listeners = new ListenerList();
+    listeners.add(listener);
+  }
 
-	/**
-	 * Removes the hyperlink listener.
-	 *
-	 * @param listener
-	 *            the listener to remove
-	 */
-	public void removeHyperlinkListener(IHyperlinkListener listener) {
-		if (listeners == null)
-			return;
-		listeners.remove(listener);
-	}
+  /**
+   * Removes the hyperlink listener.
+   *
+   * @param listener
+   *            the listener to remove
+   */
+  public void removeHyperlinkListener(IHyperlinkListener listener) {
+    if (listeners == null)
+      return;
+    listeners.remove(listener);
+  }
 
-	/**
-	 * Adds a selection listener. A Selection event is sent by the widget when
-	 * the selection has changed.
-	 * <p>
-	 * <code>widgetDefaultSelected</code> is not called for FormText.
-	 * </p>
-	 *
-	 * @param listener
-	 *            the listener
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 * @exception IllegalArgumentException
-	 *                <ul>
-	 *                <li>ERROR_NULL_ARGUMENT when listener is null</li>
-	 *                </ul>
-	 * @since 3.1
-	 */
-	public void addSelectionListener(SelectionListener listener) {
-	    checkWidget();
-	    checkWidget();
-	    if( listener == null ) {
-	      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-	    }
-	    TypedListener typedListener = new TypedListener( listener );
-	    addListener( SWT.Selection, typedListener );
-	}
+  /**
+   * Adds a selection listener. A Selection event is sent by the widget when
+   * the selection has changed.
+   * <p>
+   * <code>widgetDefaultSelected</code> is not called for FormText.
+   * </p>
+   *
+   * @param listener
+   *            the listener
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT when listener is null</li>
+   *                </ul>
+   * @since 3.1
+   */
+  public void addSelectionListener(SelectionListener listener) {
+      checkWidget();
+      checkWidget();
+      if( listener == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      TypedListener typedListener = new TypedListener( listener );
+      addListener( SWT.Selection, typedListener );
+  }
 
-	/**
-	 * Removes the specified selection listener.
-	 * <p>
-	 *
-	 * @param listener
-	 *            the listener
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 * @exception IllegalArgumentException
-	 *                <ul>
-	 *                <li>ERROR_NULL_ARGUMENT when listener is null</li>
-	 *                </ul>
-	 * @since 3.1
-	 */
-	public void removeSelectionListener(SelectionListener listener) {
-	    checkWidget();
-	    checkWidget();
-	    if( listener == null ) {
-	      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-	    }
-	    removeListener( SWT.Selection, listener );
-	}
+  /**
+   * Removes the specified selection listener.
+   * <p>
+   *
+   * @param listener
+   *            the listener
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT when listener is null</li>
+   *                </ul>
+   * @since 3.1
+   */
+  public void removeSelectionListener(SelectionListener listener) {
+      checkWidget();
+      checkWidget();
+      if( listener == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      removeListener( SWT.Selection, listener );
+  }
 
 // RAP [if] Selection not supported
-//	/**
-//	 * Returns the selected text.
-//	 * <p>
-//	 *
-//	 * @return selected text, or an empty String if there is no selection.
-//	 * @exception SWTException
-//	 *                <ul>
-//	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-//	 *                disposed</li>
-//	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-//	 *                thread that created the receiver</li>
-//	 *                </ul>
-//	 * @since 3.1
-//	 */
+//  /**
+//   * Returns the selected text.
+//   * <p>
+//   *
+//   * @return selected text, or an empty String if there is no selection.
+//   * @exception SWTException
+//   *                <ul>
+//   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+//   *                disposed</li>
+//   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+//   *                thread that created the receiver</li>
+//   *                </ul>
+//   * @since 3.1
+//   */
 //
-//	public String getSelectionText() {
-//		checkWidget();
-//		if (selData != null)
-//			return selData.getSelectionText();
-//		return ""; //$NON-NLS-1$
-//	}
+//  public String getSelectionText() {
+//    checkWidget();
+//    if (selData != null)
+//      return selData.getSelectionText();
+//    return ""; //$NON-NLS-1$
+//  }
 
 // RAP [if] Clipboard not supported
-//	/**
-//	 * Tests if the text is selected and can be copied into the clipboard.
-//	 *
-//	 * @return <code>true</code> if the selected text can be copied into the
-//	 *         clipboard, <code>false</code> otherwise.
-//	 * @since 3.1
-//	 */
-//	public boolean canCopy() {
-//		return selData != null && selData.canCopy();
-//	}
+//  /**
+//   * Tests if the text is selected and can be copied into the clipboard.
+//   *
+//   * @return <code>true</code> if the selected text can be copied into the
+//   *         clipboard, <code>false</code> otherwise.
+//   * @since 3.1
+//   */
+//  public boolean canCopy() {
+//    return selData != null && selData.canCopy();
+//  }
 //
-//	/**
-//	 * Copies the selected text into the clipboard. Does nothing if no text is
-//	 * selected or the text cannot be copied for any other reason.
-//	 *
-//	 * @since 3.1
-//	 */
+//  /**
+//   * Copies the selected text into the clipboard. Does nothing if no text is
+//   * selected or the text cannot be copied for any other reason.
+//   *
+//   * @since 3.1
+//   */
 //
-//	public void copy() {
-//		if (!canCopy())
-//			return;
-//		Clipboard clipboard = new Clipboard(getDisplay());
-//		Object[] o = new Object[] { getSelectionText() };
-//		Transfer[] t = new Transfer[] { TextTransfer.getInstance() };
-//		clipboard.setContents(o, t);
-//		clipboard.dispose();
-//	}
+//  public void copy() {
+//    if (!canCopy())
+//      return;
+//    Clipboard clipboard = new Clipboard(getDisplay());
+//    Object[] o = new Object[] { getSelectionText() };
+//    Transfer[] t = new Transfer[] { TextTransfer.getInstance() };
+//    clipboard.setContents(o, t);
+//    clipboard.dispose();
+//  }
 
-	/**
-	 * Returns the reference of the hyperlink that currently has keyboard focus,
-	 * or <code>null</code> if there are no hyperlinks in the receiver or no
-	 * hyperlink has focus at the moment.
-	 *
-	 * @return href of the selected hyperlink or <code>null</code> if none
-	 *         selected.
-	 * @since 3.1
-	 */
-	public Object getSelectedLinkHref() {
-		IHyperlinkSegment link = getSelectedLink();
-		return link != null ? link.getHref() : null;
-	}
+  /**
+   * Returns the reference of the hyperlink that currently has keyboard focus,
+   * or <code>null</code> if there are no hyperlinks in the receiver or no
+   * hyperlink has focus at the moment.
+   *
+   * @return href of the selected hyperlink or <code>null</code> if none
+   *         selected.
+   * @since 3.1
+   */
+  public Object getSelectedLinkHref() {
+    IHyperlinkSegment link = getSelectedLink();
+    return link != null ? link.getHref() : null;
+  }
 
-	/**
-	 * Returns the text of the hyperlink that currently has keyboard focus, or
-	 * <code>null</code> if there are no hyperlinks in the receiver or no
-	 * hyperlink has focus at the moment.
-	 *
-	 * @return text of the selected hyperlink or <code>null</code> if none
-	 *         selected.
-	 * @since 3.1
-	 */
-	public String getSelectedLinkText() {
-		IHyperlinkSegment link = getSelectedLink();
-		return link != null ? link.getText() : null;
-	}
+  /**
+   * Returns the text of the hyperlink that currently has keyboard focus, or
+   * <code>null</code> if there are no hyperlinks in the receiver or no
+   * hyperlink has focus at the moment.
+   *
+   * @return text of the selected hyperlink or <code>null</code> if none
+   *         selected.
+   * @since 3.1
+   */
+  public String getSelectedLinkText() {
+    IHyperlinkSegment link = getSelectedLink();
+    return link != null ? link.getText() : null;
+  }
 
-	private IHyperlinkSegment getSelectedLink() {
-		IFocusSelectable segment = model.getSelectedSegment();
-		if (segment != null && segment instanceof IHyperlinkSegment)
-			return (IHyperlinkSegment) segment;
-		return null;
-	}
+  private IHyperlinkSegment getSelectedLink() {
+    IFocusSelectable segment = model.getSelectedSegment();
+    if (segment != null && segment instanceof IHyperlinkSegment)
+      return (IHyperlinkSegment) segment;
+    return null;
+  }
 
 // RAP [if] accessibility not supported
-//	private void initAccessible() {
-//		Accessible accessible = getAccessible();
-//		accessible.addAccessibleListener(new AccessibleAdapter() {
-//			public void getName(AccessibleEvent e) {
-//				if (e.childID == ACC.CHILDID_SELF)
-//					e.result = model.getAccessibleText();
-//				else {
-//					int linkCount = model.getHyperlinkCount();
-//					if (e.childID >= 0 && e.childID < linkCount) {
-//						IHyperlinkSegment link = model.getHyperlink(e.childID);
-//						e.result = link.getText();
-//					}
-//				}
-//			}
+//  private void initAccessible() {
+//    Accessible accessible = getAccessible();
+//    accessible.addAccessibleListener(new AccessibleAdapter() {
+//      public void getName(AccessibleEvent e) {
+//        if (e.childID == ACC.CHILDID_SELF)
+//          e.result = model.getAccessibleText();
+//        else {
+//          int linkCount = model.getHyperlinkCount();
+//          if (e.childID >= 0 && e.childID < linkCount) {
+//            IHyperlinkSegment link = model.getHyperlink(e.childID);
+//            e.result = link.getText();
+//          }
+//        }
+//      }
 //
-//			public void getHelp(AccessibleEvent e) {
-//				e.result = getToolTipText();
-//				int linkCount = model.getHyperlinkCount();
-//				if (e.result == null && e.childID >= 0 && e.childID < linkCount) {
-//					IHyperlinkSegment link = model.getHyperlink(e.childID);
-//					e.result = link.getText();
-//				}
-//			}
-//		});
-//		accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
-//			public void getChildAtPoint(AccessibleControlEvent e) {
-//				Point pt = toControl(new Point(e.x, e.y));
-//				IHyperlinkSegment link = model.findHyperlinkAt(pt.x, pt.y);
-//				if (link != null)
-//					e.childID = model.indexOf(link);
-//				else
-//					e.childID = ACC.CHILDID_SELF;
-//			}
+//      public void getHelp(AccessibleEvent e) {
+//        e.result = getToolTipText();
+//        int linkCount = model.getHyperlinkCount();
+//        if (e.result == null && e.childID >= 0 && e.childID < linkCount) {
+//          IHyperlinkSegment link = model.getHyperlink(e.childID);
+//          e.result = link.getText();
+//        }
+//      }
+//    });
+//    accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
+//      public void getChildAtPoint(AccessibleControlEvent e) {
+//        Point pt = toControl(new Point(e.x, e.y));
+//        IHyperlinkSegment link = model.findHyperlinkAt(pt.x, pt.y);
+//        if (link != null)
+//          e.childID = model.indexOf(link);
+//        else
+//          e.childID = ACC.CHILDID_SELF;
+//      }
 //
-//			public void getLocation(AccessibleControlEvent e) {
-//				Rectangle location = null;
-//				if (e.childID != ACC.CHILDID_SELF
-//						&& e.childID != ACC.CHILDID_NONE) {
-//					int index = e.childID;
-//					IHyperlinkSegment link = model.getHyperlink(index);
-//					if (link != null) {
-//						location = link.getBounds();
-//					}
-//				}
-//				if (location == null) {
-//					location = getBounds();
-//				}
-//				Point pt = toDisplay(new Point(location.x, location.y));
-//				e.x = pt.x;
-//				e.y = pt.y;
-//				e.width = location.width;
-//				e.height = location.height;
-//			}
+//      public void getLocation(AccessibleControlEvent e) {
+//        Rectangle location = null;
+//        if (e.childID != ACC.CHILDID_SELF
+//            && e.childID != ACC.CHILDID_NONE) {
+//          int index = e.childID;
+//          IHyperlinkSegment link = model.getHyperlink(index);
+//          if (link != null) {
+//            location = link.getBounds();
+//          }
+//        }
+//        if (location == null) {
+//          location = getBounds();
+//        }
+//        Point pt = toDisplay(new Point(location.x, location.y));
+//        e.x = pt.x;
+//        e.y = pt.y;
+//        e.width = location.width;
+//        e.height = location.height;
+//      }
 //
-//			public void getFocus(AccessibleControlEvent e) {
-//				int childID = ACC.CHILDID_NONE;
+//      public void getFocus(AccessibleControlEvent e) {
+//        int childID = ACC.CHILDID_NONE;
 //
-//				if (isFocusControl()) {
-//					int selectedIndex = model.getSelectedSegmentIndex();
-//					if (selectedIndex == -1) {
-//						childID = ACC.CHILDID_SELF;
-//					} else {
-//						childID = selectedIndex;
-//					}
-//				}
-//				e.childID = childID;
-//			}
+//        if (isFocusControl()) {
+//          int selectedIndex = model.getSelectedSegmentIndex();
+//          if (selectedIndex == -1) {
+//            childID = ACC.CHILDID_SELF;
+//          } else {
+//            childID = selectedIndex;
+//          }
+//        }
+//        e.childID = childID;
+//      }
 //
-//			public void getDefaultAction (AccessibleControlEvent e) {
-//				if (model.getHyperlinkCount() > 0) {
-//				    e.result = SWT.getMessage ("SWT_Press"); //$NON-NLS-1$
-//				}
-//			}
+//      public void getDefaultAction (AccessibleControlEvent e) {
+//        if (model.getHyperlinkCount() > 0) {
+//            e.result = SWT.getMessage ("SWT_Press"); //$NON-NLS-1$
+//        }
+//      }
 //
-//			public void getChildCount(AccessibleControlEvent e) {
-//				e.detail = model.getHyperlinkCount();
-//			}
+//      public void getChildCount(AccessibleControlEvent e) {
+//        e.detail = model.getHyperlinkCount();
+//      }
 //
-//			public void getRole(AccessibleControlEvent e) {
-//				int role = 0;
-//				int childID = e.childID;
-//				int linkCount = model.getHyperlinkCount();
-//				if (childID == ACC.CHILDID_SELF) {
-//					if (linkCount > 0) {
-//					    role = ACC.ROLE_LINK;
-//					} else {
-//						role = ACC.ROLE_TEXT;
-//					}
-//				} else if (childID >= 0 && childID < linkCount) {
-//					role = ACC.ROLE_LINK;
-//				}
-//				e.detail = role;
-//			}
+//      public void getRole(AccessibleControlEvent e) {
+//        int role = 0;
+//        int childID = e.childID;
+//        int linkCount = model.getHyperlinkCount();
+//        if (childID == ACC.CHILDID_SELF) {
+//          if (linkCount > 0) {
+//              role = ACC.ROLE_LINK;
+//          } else {
+//            role = ACC.ROLE_TEXT;
+//          }
+//        } else if (childID >= 0 && childID < linkCount) {
+//          role = ACC.ROLE_LINK;
+//        }
+//        e.detail = role;
+//      }
 //
-//			public void getSelection(AccessibleControlEvent e) {
-//				int selectedIndex = model.getSelectedSegmentIndex();
-//				e.childID = (selectedIndex == -1) ? ACC.CHILDID_NONE
-//						: selectedIndex;
-//			}
+//      public void getSelection(AccessibleControlEvent e) {
+//        int selectedIndex = model.getSelectedSegmentIndex();
+//        e.childID = (selectedIndex == -1) ? ACC.CHILDID_NONE
+//            : selectedIndex;
+//      }
 //
-//			public void getState(AccessibleControlEvent e) {
-//				int linkCount = model.getHyperlinkCount();
-//				int selectedIndex = model.getSelectedSegmentIndex();
-//				int state = 0;
-//				int childID = e.childID;
-//				if (childID == ACC.CHILDID_SELF) {
-//					state = ACC.STATE_NORMAL;
-//				} else if (childID >= 0 && childID < linkCount) {
-//					state = ACC.STATE_SELECTABLE;
-//					if (isFocusControl()) {
-//						state |= ACC.STATE_FOCUSABLE;
-//					}
-//					if (selectedIndex == childID) {
-//						state |= ACC.STATE_SELECTED;
-//						if (isFocusControl()) {
-//							state |= ACC.STATE_FOCUSED;
-//						}
-//					}
-//				}
-//				state |= ACC.STATE_READONLY;
-//				e.detail = state;
-//			}
+//      public void getState(AccessibleControlEvent e) {
+//        int linkCount = model.getHyperlinkCount();
+//        int selectedIndex = model.getSelectedSegmentIndex();
+//        int state = 0;
+//        int childID = e.childID;
+//        if (childID == ACC.CHILDID_SELF) {
+//          state = ACC.STATE_NORMAL;
+//        } else if (childID >= 0 && childID < linkCount) {
+//          state = ACC.STATE_SELECTABLE;
+//          if (isFocusControl()) {
+//            state |= ACC.STATE_FOCUSABLE;
+//          }
+//          if (selectedIndex == childID) {
+//            state |= ACC.STATE_SELECTED;
+//            if (isFocusControl()) {
+//              state |= ACC.STATE_FOCUSED;
+//            }
+//          }
+//        }
+//        state |= ACC.STATE_READONLY;
+//        e.detail = state;
+//      }
 //
-//			public void getChildren(AccessibleControlEvent e) {
-//				int linkCount = model.getHyperlinkCount();
-//				Object[] children = new Object[linkCount];
-//				for (int i = 0; i < linkCount; i++) {
-//					children[i] = new Integer(i);
-//				}
-//				e.children = children;
-//			}
+//      public void getChildren(AccessibleControlEvent e) {
+//        int linkCount = model.getHyperlinkCount();
+//        Object[] children = new Object[linkCount];
+//        for (int i = 0; i < linkCount; i++) {
+//          children[i] = new Integer(i);
+//        }
+//        e.children = children;
+//      }
 //
-//			public void getValue(AccessibleControlEvent e) {
-//				// e.result = model.getAccessibleText();
-//			}
-//		});
-//	}
+//      public void getValue(AccessibleControlEvent e) {
+//        // e.result = model.getAccessibleText();
+//      }
+//    });
+//  }
 
-	private void startSelection(MouseEvent e) {
-		inSelection = true;
-		selData = new SelectionData(e);
-		redraw();
-		Form form = FormUtil.getForm(this);
-		if (form != null)
-			form.setSelectionText(this);
-	}
+  private void startSelection(MouseEvent e) {
+    inSelection = true;
+    selData = new SelectionData(e);
+    redraw();
+    Form form = FormUtil.getForm(this);
+    if (form != null)
+      form.setSelectionText(this);
+  }
 
-	private void endSelection(MouseEvent e) {
-		inSelection = false;
-		if (selData != null) {
-			if (!selData.isEnclosed())
-				selData = null;
-			else
-				computeSelection();
-		}
-		notifySelectionChanged();
-	}
+  private void endSelection(MouseEvent e) {
+    inSelection = false;
+    if (selData != null) {
+      if (!selData.isEnclosed())
+        selData = null;
+      else
+        computeSelection();
+    }
+    notifySelectionChanged();
+  }
 
-	private void computeSelection() {
-		GC gc = new GC(this);
-		Paragraph[] paragraphs = model.getParagraphs();
-		IHyperlinkSegment selectedLink = getSelectedLink();
-		if (getDisplay().getFocusControl() != this)
-			selectedLink = null;
-		for (int i = 0; i < paragraphs.length; i++) {
-			Paragraph p = paragraphs[i];
-			if (i > 0)
-				selData.markNewLine();
-			p.computeSelection(gc, resourceTable, selectedLink, selData);
-		}
-		gc.dispose();
-	}
+  private void computeSelection() {
+    GC gc = new GC(this);
+    Paragraph[] paragraphs = model.getParagraphs();
+    IHyperlinkSegment selectedLink = getSelectedLink();
+    if (getDisplay().getFocusControl() != this)
+      selectedLink = null;
+    for (int i = 0; i < paragraphs.length; i++) {
+      Paragraph p = paragraphs[i];
+      if (i > 0)
+        selData.markNewLine();
+      p.computeSelection(gc, resourceTable, selectedLink, selData);
+    }
+    gc.dispose();
+  }
 
-	void clearSelection() {
-		selData = null;
-		if (!isDisposed()) {
-			redraw();
-			notifySelectionChanged();
-		}
-	}
+  void clearSelection() {
+    selData = null;
+    if (!isDisposed()) {
+      redraw();
+      notifySelectionChanged();
+    }
+  }
 
-	private void notifySelectionChanged() {
-		Event event = new Event();
-		event.widget = this;
-		event.display = this.getDisplay();
-		event.type = SWT.Selection;
-		notifyListeners(SWT.Selection, event);
-		// A listener could have caused the widget to be disposed
-		if (!isDisposed()) {
-		    getAccessible().selectionChanged();
-		}
-	}
+  private void notifySelectionChanged() {
+    Event event = new Event();
+    event.widget = this;
+    event.display = this.getDisplay();
+    event.type = SWT.Selection;
+    notifyListeners(SWT.Selection, event);
+    // A listener could have caused the widget to be disposed
+    if (!isDisposed()) {
+        getAccessible().selectionChanged();
+    }
+  }
 
 // RAP [if] MouseMoveListener not supported
-//	private void handleDrag(MouseEvent e) {
-//		if (selData != null) {
-//			ScrolledComposite scomp = FormUtil.getScrolledComposite(this);
-//			if (scomp != null) {
-//				FormUtil.ensureVisible(scomp, this, e);
-//			}
-//			selData.update(e);
-//			redraw();
-//		}
-//	}
+//  private void handleDrag(MouseEvent e) {
+//    if (selData != null) {
+//      ScrolledComposite scomp = FormUtil.getScrolledComposite(this);
+//      if (scomp != null) {
+//        FormUtil.ensureVisible(scomp, this, e);
+//      }
+//      selData.update(e);
+//      redraw();
+//    }
+//  }
 
-	private void handleMouseClick(MouseEvent e, boolean down) {
-		if (DEBUG_FOCUS)
-			System.out.println("FormText: mouse click(" + down + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (down) {
-			// select a hyperlink
-			mouseFocus = true;
-			IHyperlinkSegment segmentUnder = model.findHyperlinkAt(e.x, e.y);
-			if (segmentUnder != null) {
+  private void handleMouseClick(MouseEvent e, boolean down) {
+    if (DEBUG_FOCUS)
+      System.out.println("FormText: mouse click(" + down + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+    if (down) {
+      // select a hyperlink
+      mouseFocus = true;
+      IHyperlinkSegment segmentUnder = model.findHyperlinkAt(e.x, e.y);
+      if (segmentUnder != null) {
 // RAP [if] unnecessary
-//				IHyperlinkSegment oldLink = getSelectedLink();
-				if (getDisplay().getFocusControl() != this) {
-					setFocus();
-				}
-				model.selectLink(segmentUnder);
-				enterLink(segmentUnder, e.stateMask);
-// RAP [if]	paintFocusTransfer unnecessary
-//				paintFocusTransfer(oldLink, segmentUnder);
-			}
-			if (e.button == 1) {
-				startSelection(e);
-				armed = segmentUnder;
-			}
-			else {
-			}
-		} else {
-			if (e.button == 1) {
-				endSelection(e);
-				if (isDisposed()) return;
-				IHyperlinkSegment segmentUnder = model
-						.findHyperlinkAt(e.x, e.y);
-				if (segmentUnder != null && armed == segmentUnder && selData == null) {
-					activateLink(segmentUnder, e.stateMask);
-					armed = null;
-				}
-			}
-			mouseFocus = false;
-		}
-	}
+//        IHyperlinkSegment oldLink = getSelectedLink();
+        if (getDisplay().getFocusControl() != this) {
+          setFocus();
+        }
+        model.selectLink(segmentUnder);
+        enterLink(segmentUnder, e.stateMask);
+// RAP [if]  paintFocusTransfer unnecessary
+//        paintFocusTransfer(oldLink, segmentUnder);
+      }
+      if (e.button == 1) {
+        startSelection(e);
+        armed = segmentUnder;
+      }
+      else {
+      }
+    } else {
+      if (e.button == 1) {
+        endSelection(e);
+        if (isDisposed()) return;
+        IHyperlinkSegment segmentUnder = model
+            .findHyperlinkAt(e.x, e.y);
+        if (segmentUnder != null && armed == segmentUnder && selData == null) {
+          activateLink(segmentUnder, e.stateMask);
+          armed = null;
+        }
+      }
+      mouseFocus = false;
+    }
+  }
 
 // RAP [if] MouseTrackListener not supported
-//	private void handleMouseHover(MouseEvent e) {
-//	}
+//  private void handleMouseHover(MouseEvent e) {
+//  }
 
 // RAP [if] unnecessary
-//	private void updateTooltipText(ParagraphSegment segment) {
-//		String tooltipText = null;
-//		if (segment != null) {
-//			tooltipText = segment.getTooltipText();
-//		}
-//		String currentTooltipText = getToolTipText();
+//  private void updateTooltipText(ParagraphSegment segment) {
+//    String tooltipText = null;
+//    if (segment != null) {
+//      tooltipText = segment.getTooltipText();
+//    }
+//    String currentTooltipText = getToolTipText();
 //
-//		if ((currentTooltipText != null && tooltipText == null)
-//				|| (currentTooltipText == null && tooltipText != null))
-//			setToolTipText(tooltipText);
-//	}
+//    if ((currentTooltipText != null && tooltipText == null)
+//        || (currentTooltipText == null && tooltipText != null))
+//      setToolTipText(tooltipText);
+//  }
 
 // RAP [if] MouseMoveListener not supported
-//	private void handleMouseMove(MouseEvent e) {
-//		if (inSelection) {
-//			handleDrag(e);
-//			return;
-//		}
-//		ParagraphSegment segmentUnder = model.findSegmentAt(e.x, e.y);
-//		updateTooltipText(segmentUnder);
-//		if (segmentUnder == null) {
-//			if (entered != null) {
-//				exitLink(entered, e.stateMask);
-//				paintLinkHover(entered, false);
-//				entered = null;
-//			}
-//			setCursor(null);
-//		} else {
-//			if (segmentUnder instanceof IHyperlinkSegment) {
-//				IHyperlinkSegment linkUnder = (IHyperlinkSegment) segmentUnder;
-//				if (entered!=null && linkUnder!=entered) {
-//					// Special case: links are so close that there are 0 pixels between.
-//					// Must exit the link before entering the next one.
-//					exitLink(entered, e.stateMask);
-//					paintLinkHover(entered, false);
-//					entered = null;
-//				}
-//				if (entered == null) {
-//					entered = linkUnder;
-//					enterLink(linkUnder, e.stateMask);
-//					paintLinkHover(entered, true);
-//					setCursor(model.getHyperlinkSettings().getHyperlinkCursor());
-//				}
-//			} else {
-//				if (entered != null) {
-//					exitLink(entered, e.stateMask);
-//					paintLinkHover(entered, false);
-//					entered = null;
-//				}
-//				if (segmentUnder instanceof TextSegment)
-//					setCursor(model.getHyperlinkSettings().getTextCursor());
-//				else
-//					setCursor(null);
-//			}
-//		}
-//	}
+//  private void handleMouseMove(MouseEvent e) {
+//    if (inSelection) {
+//      handleDrag(e);
+//      return;
+//    }
+//    ParagraphSegment segmentUnder = model.findSegmentAt(e.x, e.y);
+//    updateTooltipText(segmentUnder);
+//    if (segmentUnder == null) {
+//      if (entered != null) {
+//        exitLink(entered, e.stateMask);
+//        paintLinkHover(entered, false);
+//        entered = null;
+//      }
+//      setCursor(null);
+//    } else {
+//      if (segmentUnder instanceof IHyperlinkSegment) {
+//        IHyperlinkSegment linkUnder = (IHyperlinkSegment) segmentUnder;
+//        if (entered!=null && linkUnder!=entered) {
+//          // Special case: links are so close that there are 0 pixels between.
+//          // Must exit the link before entering the next one.
+//          exitLink(entered, e.stateMask);
+//          paintLinkHover(entered, false);
+//          entered = null;
+//        }
+//        if (entered == null) {
+//          entered = linkUnder;
+//          enterLink(linkUnder, e.stateMask);
+//          paintLinkHover(entered, true);
+//          setCursor(model.getHyperlinkSettings().getHyperlinkCursor());
+//        }
+//      } else {
+//        if (entered != null) {
+//          exitLink(entered, e.stateMask);
+//          paintLinkHover(entered, false);
+//          entered = null;
+//        }
+//        if (segmentUnder instanceof TextSegment)
+//          setCursor(model.getHyperlinkSettings().getTextCursor());
+//        else
+//          setCursor(null);
+//      }
+//    }
+//  }
 
-	private boolean advance(boolean next) {
-		if (DEBUG_FOCUS)
-			System.out.println("Advance: next=" + next); //$NON-NLS-1$
-		IFocusSelectable current = model.getSelectedSegment();
-		if (current != null && current instanceof IHyperlinkSegment)
-			exitLink((IHyperlinkSegment) current, SWT.NULL);
-		IFocusSelectable newSegment = null;
-		boolean valid = false;
-		// get the next segment that can accept focus. Links
-		// can always accept focus but controls may not
-		while (!valid) {
-			if (!model.traverseFocusSelectableObjects(next))
-				break;
-			newSegment = model.getSelectedSegment();
-			if (newSegment == null)
-				break;
-			valid = setControlFocus(next, newSegment);
-		}
-		IHyperlinkSegment newLink = newSegment instanceof IHyperlinkSegment ? (IHyperlinkSegment) newSegment
-				: null;
-		if (valid)
-			enterLink(newLink, SWT.NULL);
+  private boolean advance(boolean next) {
+    if (DEBUG_FOCUS)
+      System.out.println("Advance: next=" + next); //$NON-NLS-1$
+    IFocusSelectable current = model.getSelectedSegment();
+    if (current != null && current instanceof IHyperlinkSegment)
+      exitLink((IHyperlinkSegment) current, SWT.NULL);
+    IFocusSelectable newSegment = null;
+    boolean valid = false;
+    // get the next segment that can accept focus. Links
+    // can always accept focus but controls may not
+    while (!valid) {
+      if (!model.traverseFocusSelectableObjects(next))
+        break;
+      newSegment = model.getSelectedSegment();
+      if (newSegment == null)
+        break;
+      valid = setControlFocus(next, newSegment);
+    }
+    IHyperlinkSegment newLink = newSegment instanceof IHyperlinkSegment ? (IHyperlinkSegment) newSegment
+        : null;
+    if (valid)
+      enterLink(newLink, SWT.NULL);
 // RAP [if] paintFocusTransfer unnecessary
-//		IHyperlinkSegment oldLink = current instanceof IHyperlinkSegment ? (IHyperlinkSegment) current
-//				: null;
-//		if (oldLink != null || newLink != null)
-//			paintFocusTransfer(oldLink, newLink);
-		if (newLink != null)
-			ensureVisible(newLink);
+//    IHyperlinkSegment oldLink = current instanceof IHyperlinkSegment ? (IHyperlinkSegment) current
+//        : null;
+//    if (oldLink != null || newLink != null)
+//      paintFocusTransfer(oldLink, newLink);
+    if (newLink != null)
+      ensureVisible(newLink);
 // RAP [if] accessibility not supported
-//		if (newLink != null)
-//			getAccessible().setFocus(model.getSelectedSegmentIndex());
-		return !valid;
-	}
+//    if (newLink != null)
+//      getAccessible().setFocus(model.getSelectedSegmentIndex());
+    return !valid;
+  }
 
-	private boolean setControlFocus(boolean next, IFocusSelectable selectable) {
-		controlFocusTransfer = true;
-		boolean result = selectable.setFocus(resourceTable, next);
-		controlFocusTransfer = false;
-		return result;
-	}
+  private boolean setControlFocus(boolean next, IFocusSelectable selectable) {
+    controlFocusTransfer = true;
+    boolean result = selectable.setFocus(resourceTable, next);
+    controlFocusTransfer = false;
+    return result;
+  }
 
-	private void handleFocusChange() {
-		if (DEBUG_FOCUS) {
-			System.out.println("Handle focus change: hasFocus=" + hasFocus //$NON-NLS-1$
-					+ ", mouseFocus=" + mouseFocus); //$NON-NLS-1$
-		}
-		if (hasFocus) {
-			boolean advance = true;
-			if (!mouseFocus) {
-				// if (model.restoreSavedLink() == false)
-				boolean valid = false;
-				IFocusSelectable selectable = null;
-				while (!valid) {
-					if (!model.traverseFocusSelectableObjects(advance))
-						break;
-					selectable = model.getSelectedSegment();
-					if (selectable == null)
-						break;
-					valid = setControlFocus(advance, selectable);
-				}
-				if (selectable != null)
-					ensureVisible(selectable);
-				if (selectable instanceof IHyperlinkSegment) {
-					enterLink((IHyperlinkSegment) selectable, SWT.NULL);
+  private void handleFocusChange() {
+    if (DEBUG_FOCUS) {
+      System.out.println("Handle focus change: hasFocus=" + hasFocus //$NON-NLS-1$
+          + ", mouseFocus=" + mouseFocus); //$NON-NLS-1$
+    }
+    if (hasFocus) {
+      boolean advance = true;
+      if (!mouseFocus) {
+        // if (model.restoreSavedLink() == false)
+        boolean valid = false;
+        IFocusSelectable selectable = null;
+        while (!valid) {
+          if (!model.traverseFocusSelectableObjects(advance))
+            break;
+          selectable = model.getSelectedSegment();
+          if (selectable == null)
+            break;
+          valid = setControlFocus(advance, selectable);
+        }
+        if (selectable != null)
+          ensureVisible(selectable);
+        if (selectable instanceof IHyperlinkSegment) {
+          enterLink((IHyperlinkSegment) selectable, SWT.NULL);
 // RAP [if] paint not supported
-//					paintFocusTransfer(null, (IHyperlinkSegment) selectable);
-				}
-			}
-		} else {
+//          paintFocusTransfer(null, (IHyperlinkSegment) selectable);
+        }
+      }
+    } else {
 // RAP [if] paint not supported
-//			paintFocusTransfer(getSelectedLink(), null);
-			model.selectLink(null);
-		}
-		if (!model.hasFocusSegments())
-			redraw();
-	}
+//      paintFocusTransfer(getSelectedLink(), null);
+      model.selectLink(null);
+    }
+    if (!model.hasFocusSegments())
+      redraw();
+  }
 
-	private void enterLink(IHyperlinkSegment link, int stateMask) {
-		if (link == null || listeners == null)
-			return;
-		int size = listeners.size();
-		HyperlinkEvent he = new HyperlinkEvent(this, link.getHref(), link
-				.getText(), stateMask);
-		Object [] listenerList = listeners.getListeners();
-		for (int i = 0; i < size; i++) {
-			IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
-			listener.linkEntered(he);
-		}
-	}
+  private void enterLink(IHyperlinkSegment link, int stateMask) {
+    if (link == null || listeners == null)
+      return;
+    int size = listeners.size();
+    HyperlinkEvent he = new HyperlinkEvent(this, link.getHref(), link
+        .getText(), stateMask);
+    Object [] listenerList = listeners.getListeners();
+    for (int i = 0; i < size; i++) {
+      IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
+      listener.linkEntered(he);
+    }
+  }
 
-	private void exitLink(IHyperlinkSegment link, int stateMask) {
-		if (link == null || listeners == null)
-			return;
-		int size = listeners.size();
-		HyperlinkEvent he = new HyperlinkEvent(this, link.getHref(), link
-				.getText(), stateMask);
-		Object [] listenerList = listeners.getListeners();
-		for (int i = 0; i < size; i++) {
-			IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
-			listener.linkExited(he);
-		}
-	}
+  private void exitLink(IHyperlinkSegment link, int stateMask) {
+    if (link == null || listeners == null)
+      return;
+    int size = listeners.size();
+    HyperlinkEvent he = new HyperlinkEvent(this, link.getHref(), link
+        .getText(), stateMask);
+    Object [] listenerList = listeners.getListeners();
+    for (int i = 0; i < size; i++) {
+      IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
+      listener.linkExited(he);
+    }
+  }
 
 // RAP [if]
-//	private void paintLinkHover(IHyperlinkSegment link, boolean hover) {
-//		GC gc = new GC(this);
-//		HyperlinkSettings settings = getHyperlinkSettings();
-//		Color newFg = hover ? settings.getActiveForeground() : settings
-//				.getForeground();
-//		if (newFg != null)
-//			gc.setForeground(newFg);
-//		gc.setBackground(getBackground());
-//		gc.setFont(getFont());
-//		boolean selected = (link == getSelectedLink());
-//		((ParagraphSegment) link).paint(gc, hover, resourceTable, selected,
-//				selData, null);
-//		gc.dispose();
-//	}
+//  private void paintLinkHover(IHyperlinkSegment link, boolean hover) {
+//    GC gc = new GC(this);
+//    HyperlinkSettings settings = getHyperlinkSettings();
+//    Color newFg = hover ? settings.getActiveForeground() : settings
+//        .getForeground();
+//    if (newFg != null)
+//      gc.setForeground(newFg);
+//    gc.setBackground(getBackground());
+//    gc.setFont(getFont());
+//    boolean selected = (link == getSelectedLink());
+//    ((ParagraphSegment) link).paint(gc, hover, resourceTable, selected,
+//        selData, null);
+//    gc.dispose();
+//  }
 
-	private void activateSelectedLink() {
-		IHyperlinkSegment link = getSelectedLink();
-		if (link != null)
-			activateLink(link, SWT.NULL);
-	}
+  private void activateSelectedLink() {
+    IHyperlinkSegment link = getSelectedLink();
+    if (link != null)
+      activateLink(link, SWT.NULL);
+  }
 
-	private void activateLink(IHyperlinkSegment link, int stateMask) {
-// RAP [if]	Cursor is set on the client
-//		setCursor(model.getHyperlinkSettings().getBusyCursor());
-		if (listeners != null) {
-			int size = listeners.size();
-			HyperlinkEvent e = new HyperlinkEvent(this, link.getHref(), link
-					.getText(), stateMask);
-			Object [] listenerList = listeners.getListeners();
-			for (int i = 0; i < size; i++) {
-				IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
-				listener.linkActivated(e);
-			}
-		}
+  private void activateLink(IHyperlinkSegment link, int stateMask) {
+// RAP [if]  Cursor is set on the client
+//    setCursor(model.getHyperlinkSettings().getBusyCursor());
+    if (listeners != null) {
+      int size = listeners.size();
+      HyperlinkEvent e = new HyperlinkEvent(this, link.getHref(), link
+          .getText(), stateMask);
+      Object [] listenerList = listeners.getListeners();
+      for (int i = 0; i < size; i++) {
+        IHyperlinkListener listener = (IHyperlinkListener) listenerList[i];
+        listener.linkActivated(e);
+      }
+    }
 // RAP [if] Cursor is set on the client
-//		if (!isDisposed() && model.linkExists(link)) {
-//			setCursor(model.getHyperlinkSettings().getHyperlinkCursor());
-//		}
-	}
+//    if (!isDisposed() && model.linkExists(link)) {
+//      setCursor(model.getHyperlinkSettings().getHyperlinkCursor());
+//    }
+  }
 
-	private void ensureBoldFontPresent(Font regularFont) {
-		Font boldFont = (Font) resourceTable.get(FormTextModel.BOLD_FONT_ID);
-		if (boldFont != null)
-			return;
-		boldFont = FormFonts.getInstance().getBoldFont(getDisplay(), regularFont);
-		resourceTable.put(FormTextModel.BOLD_FONT_ID, boldFont);
-	}
-
-// RAP [if]
-//	private void paint(PaintEvent e) {
-//		GC gc = e.gc;
-//		gc.setFont(getFont());
-//		ensureBoldFontPresent(getFont());
-//		gc.setForeground(getForeground());
-//		gc.setBackground(getBackground());
-//		repaint(gc, e.x, e.y, e.width, e.height);
-//	}
-//
-//	private void repaint(GC gc, int x, int y, int width, int height) {
-//		Image textBuffer = new Image(getDisplay(), width, height);
-//		Color bg = getBackground();
-//		Color fg = getForeground();
-//		if (!getEnabled()) {
-//			bg = getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-//			fg = getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
-//		}
-//		GC textGC = new GC(textBuffer, gc.getStyle());
-//		textGC.setForeground(fg);
-//		textGC.setBackground(bg);
-//		textGC.setFont(getFont());
-//		textGC.fillRectangle(0, 0, width, height);
-//		Rectangle repaintRegion = new Rectangle(x, y, width, height);
-//
-//		Paragraph[] paragraphs = model.getParagraphs();
-//		IHyperlinkSegment selectedLink = getSelectedLink();
-//		if (getDisplay().getFocusControl() != this)
-//			selectedLink = null;
-//		for (int i = 0; i < paragraphs.length; i++) {
-//			Paragraph p = paragraphs[i];
-//			p
-//					.paint(textGC, repaintRegion, resourceTable, selectedLink,
-//							selData);
-//		}
-//		textGC.dispose();
-//		gc.drawImage(textBuffer, x, y);
-//		textBuffer.dispose();
-//	}
-
-	private int getParagraphSpacing(int lineHeight) {
-		return lineHeight / 2;
-	}
+  private void ensureBoldFontPresent(Font regularFont) {
+    Font boldFont = (Font) resourceTable.get(FormTextModel.BOLD_FONT_ID);
+    if (boldFont != null)
+      return;
+    boldFont = FormFonts.getInstance().getBoldFont(getDisplay(), regularFont);
+    resourceTable.put(FormTextModel.BOLD_FONT_ID, boldFont);
+  }
 
 // RAP [if]
-//	private void paintFocusTransfer(IHyperlinkSegment oldLink,
-//			IHyperlinkSegment newLink) {
-//		GC gc = new GC(this);
-//		Color bg = getBackground();
-//		Color fg = getForeground();
-//		gc.setFont(getFont());
-//		if (oldLink != null) {
-//			gc.setBackground(bg);
-//			gc.setForeground(fg);
-//			oldLink.paintFocus(gc, bg, fg, false, null);
-//		}
-//		if (newLink != null) {
-//			// ensureVisible(newLink);
-//			gc.setBackground(bg);
-//			gc.setForeground(fg);
-//			newLink.paintFocus(gc, bg, fg, true, null);
-//		}
-//		gc.dispose();
-//	}
+//  private void paint(PaintEvent e) {
+//    GC gc = e.gc;
+//    gc.setFont(getFont());
+//    ensureBoldFontPresent(getFont());
+//    gc.setForeground(getForeground());
+//    gc.setBackground(getBackground());
+//    repaint(gc, e.x, e.y, e.width, e.height);
+//  }
+//
+//  private void repaint(GC gc, int x, int y, int width, int height) {
+//    Image textBuffer = new Image(getDisplay(), width, height);
+//    Color bg = getBackground();
+//    Color fg = getForeground();
+//    if (!getEnabled()) {
+//      bg = getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+//      fg = getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
+//    }
+//    GC textGC = new GC(textBuffer, gc.getStyle());
+//    textGC.setForeground(fg);
+//    textGC.setBackground(bg);
+//    textGC.setFont(getFont());
+//    textGC.fillRectangle(0, 0, width, height);
+//    Rectangle repaintRegion = new Rectangle(x, y, width, height);
+//
+//    Paragraph[] paragraphs = model.getParagraphs();
+//    IHyperlinkSegment selectedLink = getSelectedLink();
+//    if (getDisplay().getFocusControl() != this)
+//      selectedLink = null;
+//    for (int i = 0; i < paragraphs.length; i++) {
+//      Paragraph p = paragraphs[i];
+//      p
+//          .paint(textGC, repaintRegion, resourceTable, selectedLink,
+//              selData);
+//    }
+//    textGC.dispose();
+//    gc.drawImage(textBuffer, x, y);
+//    textBuffer.dispose();
+//  }
 
-	private void ensureVisible(IFocusSelectable segment) {
-		if (mouseFocus) {
-			mouseFocus = false;
-			return;
-		}
-		if (segment == null)
-			return;
-		Rectangle bounds = segment.getBounds();
-		ScrolledComposite scomp = FormUtil.getScrolledComposite(this);
-		if (scomp == null)
-			return;
-		Point origin = FormUtil.getControlLocation(scomp, this);
-		origin.x += bounds.x;
-		origin.y += bounds.y;
-		FormUtil.ensureVisible(scomp, origin, new Point(bounds.width,
-				bounds.height));
-	}
+  private int getParagraphSpacing(int lineHeight) {
+    return lineHeight / 2;
+  }
 
-	/**
-	 * Overrides the method by fully trusting the layout manager (computed width
-	 * or height may be larger than the provider width or height hints). Callers
-	 * should be prepared that the computed width is larger than the provided
-	 * wHint.
-	 *
-	 * @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean)
-	 */
-	@Override
+// RAP [if]
+//  private void paintFocusTransfer(IHyperlinkSegment oldLink,
+//      IHyperlinkSegment newLink) {
+//    GC gc = new GC(this);
+//    Color bg = getBackground();
+//    Color fg = getForeground();
+//    gc.setFont(getFont());
+//    if (oldLink != null) {
+//      gc.setBackground(bg);
+//      gc.setForeground(fg);
+//      oldLink.paintFocus(gc, bg, fg, false, null);
+//    }
+//    if (newLink != null) {
+//      // ensureVisible(newLink);
+//      gc.setBackground(bg);
+//      gc.setForeground(fg);
+//      newLink.paintFocus(gc, bg, fg, true, null);
+//    }
+//    gc.dispose();
+//  }
+
+  private void ensureVisible(IFocusSelectable segment) {
+    if (mouseFocus) {
+      mouseFocus = false;
+      return;
+    }
+    if (segment == null)
+      return;
+    Rectangle bounds = segment.getBounds();
+    ScrolledComposite scomp = FormUtil.getScrolledComposite(this);
+    if (scomp == null)
+      return;
+    Point origin = FormUtil.getControlLocation(scomp, this);
+    origin.x += bounds.x;
+    origin.y += bounds.y;
+    FormUtil.ensureVisible(scomp, origin, new Point(bounds.width,
+        bounds.height));
+  }
+
+  /**
+   * Overrides the method by fully trusting the layout manager (computed width
+   * or height may be larger than the provider width or height hints). Callers
+   * should be prepared that the computed width is larger than the provided
+   * wHint.
+   *
+   * @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean)
+   */
+  @Override
   public Point computeSize(int wHint, int hHint, boolean changed) {
-		checkWidget();
-		Point size;
-		FormTextLayout layout = (FormTextLayout) getLayout();
-		if (wHint == SWT.DEFAULT || hHint == SWT.DEFAULT) {
-			size = layout.computeSize(this, wHint, hHint, changed);
-			// RAP [if] Last line of text is cutoff, increase the height with 2px
-	        // TODO: Find proper solution
-			size.y += 2;
-		} else {
-			size = new Point(wHint, hHint);
-		}
-		Rectangle trim = computeTrim(0, 0, size.x, size.y );
-		if (DEBUG_TEXTSIZE)
-			System.out.println("FormText Computed size: "+trim); //$NON-NLS-1$
-		return new Point(trim.width, trim.height);
-	}
+    checkWidget();
+    Point size;
+    FormTextLayout layout = (FormTextLayout) getLayout();
+    if (wHint == SWT.DEFAULT || hHint == SWT.DEFAULT) {
+      size = layout.computeSize(this, wHint, hHint, changed);
+      // RAP [if] Last line of text is cutoff, increase the height with 2px
+          // TODO: Find proper solution
+      size.y += 2;
+    } else {
+      size = new Point(wHint, hHint);
+    }
+    Rectangle trim = computeTrim(0, 0, size.x, size.y );
+    if (DEBUG_TEXTSIZE)
+      System.out.println("FormText Computed size: "+trim); //$NON-NLS-1$
+    return new Point(trim.width, trim.height);
+  }
 
-	private void disposeResourceTable(boolean disposeBoldFont) {
-		if (disposeBoldFont) {
-			Font boldFont = (Font) resourceTable
-					.get(FormTextModel.BOLD_FONT_ID);
-			if (boldFont != null) {
-				FormFonts.getInstance().markFinished(boldFont);
-				resourceTable.remove(FormTextModel.BOLD_FONT_ID);
-			}
-		}
-		ArrayList imagesToRemove = new ArrayList();
-		for (Enumeration enm = resourceTable.keys(); enm.hasMoreElements();) {
-			String key = (String) enm.nextElement();
-			if (key.startsWith(ImageSegment.SEL_IMAGE_PREFIX)) {
-				Object obj = resourceTable.get(key);
-				if (obj instanceof Image) {
+  private void disposeResourceTable(boolean disposeBoldFont) {
+    if (disposeBoldFont) {
+      Font boldFont = (Font) resourceTable
+          .get(FormTextModel.BOLD_FONT_ID);
+      if (boldFont != null) {
+        FormFonts.getInstance().markFinished(boldFont);
+        resourceTable.remove(FormTextModel.BOLD_FONT_ID);
+      }
+    }
+    ArrayList imagesToRemove = new ArrayList();
+    for (Enumeration enm = resourceTable.keys(); enm.hasMoreElements();) {
+      String key = (String) enm.nextElement();
+      if (key.startsWith(ImageSegment.SEL_IMAGE_PREFIX)) {
+        Object obj = resourceTable.get(key);
+        if (obj instanceof Image) {
 // RAP [if] unnecessary
-//					Image image = (Image) obj;
-//					if (!image.isDisposed()) {
-//						image.dispose();
-						imagesToRemove.add(key);
-//					}
-				}
-			}
-		}
-		for (int i = 0; i < imagesToRemove.size(); i++) {
-			resourceTable.remove(imagesToRemove.get(i));
-		}
-	}
+//          Image image = (Image) obj;
+//          if (!image.isDisposed()) {
+//            image.dispose();
+            imagesToRemove.add(key);
+//          }
+        }
+      }
+    }
+    for (int i = 0; i < imagesToRemove.size(); i++) {
+      resourceTable.remove(imagesToRemove.get(i));
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
-	 */
-	@Override
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
+   */
+  @Override
   public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-		redraw();
-	}
+    super.setEnabled(enabled);
+    redraw();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.swt.widgets.Control#setFocus()
-	 */
-	@Override
+  /* (non-Javadoc)
+   * @see org.eclipse.swt.widgets.Control#setFocus()
+   */
+  @Override
   public boolean setFocus() {
-		mouseFocus = true;
-		FormUtil.setFocusScrollingEnabled(this, false);
-		boolean result = super.setFocus();
-		mouseFocus = false;
-		FormUtil.setFocusScrollingEnabled(this, true);
-		return result;
-	}
+    mouseFocus = true;
+    FormUtil.setFocusScrollingEnabled(this, false);
+    boolean result = super.setFocus();
+    mouseFocus = false;
+    FormUtil.setFocusScrollingEnabled(this, true);
+    return result;
+  }
+
 }

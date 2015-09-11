@@ -21,6 +21,8 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 public class ImageHyperlinkLCA extends HyperlinkLCA {
 
+  public static final ImageHyperlinkLCA INSTANCE = new ImageHyperlinkLCA();
+
   private static final String PROP_IMAGE = "image"; //$NON-NLS-1$
 
   @Override

@@ -30,6 +30,8 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 @SuppressWarnings("restriction")
 public class HyperlinkLCA extends WidgetLCA<Hyperlink> {
 
+  public static final HyperlinkLCA INSTANCE = new HyperlinkLCA();
+
   private static final String TYPE = "forms.widgets.Hyperlink"; //$NON-NLS-1$
   private static final String[] ALLOWED_STYLES = new String[] { "WRAP" }; //$NON-NLS-1$
 

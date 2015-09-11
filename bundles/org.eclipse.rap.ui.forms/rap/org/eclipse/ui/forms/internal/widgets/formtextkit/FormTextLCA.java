@@ -36,6 +36,8 @@ import org.eclipse.ui.internal.forms.widgets.*;
 @SuppressWarnings("restriction")
 public class FormTextLCA extends WidgetLCA<FormText> {
 
+  public static final FormTextLCA INSTANCE = new FormTextLCA();
+
   private static final String TYPE = "forms.widgets.FormText"; //$NON-NLS-1$
 
   private static final Pattern FONT_NAME_FILTER_PATTERN

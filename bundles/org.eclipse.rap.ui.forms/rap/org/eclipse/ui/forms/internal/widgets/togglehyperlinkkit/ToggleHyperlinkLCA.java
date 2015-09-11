@@ -35,6 +35,8 @@ import org.eclipse.ui.forms.widgets.*;
 @SuppressWarnings("restriction")
 public final class ToggleHyperlinkLCA extends WidgetLCA<ToggleHyperlink> {
 
+  public static final ToggleHyperlinkLCA INSTANCE = new ToggleHyperlinkLCA();
+
   private static final String TYPE = "forms.widgets.ToggleHyperlink"; //$NON-NLS-1$
 
   private static final String PROP_IMAGES = "images"; //$NON-NLS-1$
@@ -74,13 +76,6 @@ public final class ToggleHyperlinkLCA extends WidgetLCA<ToggleHyperlink> {
     renderListenDefaultSelection( hyperlink );
   }
 
-  //////////////////
-  // Helping methods
-
-  /* (intentiaonally non-JavaDoc'ed)
-   * Returns four images for:
-   *   collapsedNormal, collapsedHover, expandedNormal, expandedHover
-   */
   private static Image[] getImages( ToggleHyperlink hyperlink ) {
     Display display = hyperlink.getDisplay();
     Image[] result;
@@ -104,7 +99,7 @@ public final class ToggleHyperlinkLCA extends WidgetLCA<ToggleHyperlink> {
     return result;
   }
 
-  public static Image getImage( Device device, String path ) {
+  private static Image getImage( Device device, String path ) {
     ClassLoader classLoader = ToggleHyperlinkLCA.class.getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream( path );
     Image result = null;
