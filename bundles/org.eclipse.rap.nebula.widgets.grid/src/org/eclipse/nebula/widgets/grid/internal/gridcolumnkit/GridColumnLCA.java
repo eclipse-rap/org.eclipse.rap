@@ -34,6 +34,8 @@ import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 @SuppressWarnings( "restriction" )
 public class GridColumnLCA extends WidgetLCA<GridColumn> {
 
+  public static final GridColumnLCA INSTANCE = new GridColumnLCA();
+
   private static final String TYPE = "rwt.widgets.GridColumn";
 
   private static final String PROP_INDEX = "index";

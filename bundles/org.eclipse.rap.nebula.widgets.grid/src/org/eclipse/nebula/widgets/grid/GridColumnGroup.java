@@ -13,6 +13,8 @@ package org.eclipse.nebula.widgets.grid;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.nebula.widgets.grid.internal.gridcolumngroupkit.GridColumnGroupLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeListener;
@@ -294,6 +296,15 @@ public class GridColumnGroup extends Item {
   public boolean getHeaderWordWrap() {
     checkWidget();
     return headerWordWrap;
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )GridColumnGroupLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   void newColumn( GridColumn column ) {

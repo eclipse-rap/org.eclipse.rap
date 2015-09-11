@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.nebula.widgets.grid.internal.griditemkit.GridItemLCA;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -36,15 +38,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-@SuppressWarnings( {
-  "deprecation", "restriction"
-} )
+@SuppressWarnings( "restriction" )
 public class GridItem_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -53,18 +56,11 @@ public class GridItem_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     grid = new Grid( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     grid.setSize( 200, 200 );
     eventLog = new ArrayList<Event>();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -1498,17 +1494,19 @@ public class GridItem_Test {
     assertEquals( 1, grid.getItem( 2 ).index );
   }
 
-  //////////////////
-  // Helping methods
+  @Test
+  public void testGetAdapter_LCA() {
+    GridItem gridItem = new GridItem( grid, SWT.NONE );
+    assertTrue( gridItem.getAdapter( WidgetLCA.class ) instanceof GridItemLCA );
+    assertSame( gridItem.getAdapter( WidgetLCA.class ), gridItem.getAdapter( WidgetLCA.class ) );
+  }
 
   private void fakeSpacing( Grid grid, int spacing ) {
     grid.layoutCache.cellSpacing = spacing;
   }
 
-  //////////////////
-  // Helping classes
-
   private class LoggingListener implements Listener {
+    @Override
     public void handleEvent( Event event ) {
       eventLog.add( event );
     }

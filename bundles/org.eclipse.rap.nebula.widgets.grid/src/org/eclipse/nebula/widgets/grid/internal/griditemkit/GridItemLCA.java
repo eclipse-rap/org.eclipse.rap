@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Widget;
 @SuppressWarnings("restriction")
 public class GridItemLCA extends WidgetLCA<GridItem> {
 
+  public static final GridItemLCA INSTANCE = new GridItemLCA();
+
   private static final String TYPE = "rwt.widgets.GridItem";
 
   private static final String PROP_INDEX = "index";

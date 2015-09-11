@@ -19,6 +19,8 @@ import java.util.List;
 import org.eclipse.nebula.widgets.grid.internal.GridItemData;
 import org.eclipse.nebula.widgets.grid.internal.GridItemData.CellData;
 import org.eclipse.nebula.widgets.grid.internal.IGridItemAdapter;
+import org.eclipse.nebula.widgets.grid.internal.griditemkit.GridItemLCA;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -1300,10 +1302,9 @@ public class GridItem extends Item {
     return result;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if(    adapter == IWidgetFontAdapter.class
         || adapter == IWidgetColorAdapter.class
         || adapter == IGridItemAdapter.class )
@@ -1311,11 +1312,11 @@ public class GridItem extends Item {
       if( gridItemAdapter == null ) {
         gridItemAdapter = new GridItemAdapter();
       }
-      result = ( T )gridItemAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )gridItemAdapter;
+    } else if( adapter == WidgetLCA.class ) {
+      return ( T )GridItemLCA.INSTANCE;
     }
-    return result;
+    return super.getAdapter( adapter );
   }
 
   boolean isVisible() {
@@ -1576,27 +1577,33 @@ public class GridItem extends Item {
     implements IGridItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
 
+    @Override
     public boolean isParentDisposed() {
       Widget itemParent = parentItem == null ? parent : parentItem;
       return itemParent.isDisposed();
     }
 
+    @Override
     public boolean isCached() {
       return GridItem.this.isCached();
     }
 
+    @Override
     public Color getUserBackground() {
       return getItemData().defaultBackground;
     }
 
+    @Override
     public Color getUserForeground() {
       return getItemData().defaultForeground;
     }
 
+    @Override
     public Font getUserFont() {
       return getItemData().defaultFont;
     }
 
+    @Override
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -1606,6 +1613,7 @@ public class GridItem extends Item {
       return result;
     }
 
+    @Override
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -1615,6 +1623,7 @@ public class GridItem extends Item {
       return result;
     }
 
+    @Override
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Font[] result = new Font[ columnCount ];
@@ -1623,6 +1632,7 @@ public class GridItem extends Item {
       }
       return result;
     }
+
   }
 
 }

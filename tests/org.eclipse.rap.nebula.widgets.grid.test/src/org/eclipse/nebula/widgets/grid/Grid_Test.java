@@ -33,8 +33,10 @@ import java.util.List;
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.NullScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
+import org.eclipse.nebula.widgets.grid.internal.gridkit.GridLCA;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -55,15 +57,16 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-@SuppressWarnings({
-  "restriction", "deprecation"
-})
+@SuppressWarnings( "restriction" )
 public class Grid_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -74,8 +77,6 @@ public class Grid_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     grid = new Grid( shell, SWT.H_SCROLL | SWT.V_SCROLL );
@@ -83,11 +84,6 @@ public class Grid_Test {
     verticalBar = grid.getVerticalBar();
     horizontalBar = grid.getHorizontalBar();
     eventLog = new ArrayList<Event>();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -590,6 +586,7 @@ public class Grid_Test {
     // Mark SetData event as fired
     items[ 0 ].getText();
     grid.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         GridItem item = ( GridItem )event.item;
         item.setText( "bar" );
@@ -2826,6 +2823,7 @@ public class Grid_Test {
     grid.setSize( 200, 100 );
     grid.setItemCount( 100 );
     grid.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         GridItem item = ( GridItem )event.item;
         if( event.index == 0 && item.getParentItem() == null ) {
@@ -2851,6 +2849,7 @@ public class Grid_Test {
     grid.setSize( 200, 100 );
     grid.setItemCount( 100 );
     grid.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         GridItem item = ( GridItem )event.item;
         if( event.index == 0 && item.getParentItem() == null ) {
@@ -2877,6 +2876,7 @@ public class Grid_Test {
     createGridItems( grid, 5, 0 );
     for( GridItem item : grid.getItems() ) {
       item.addDisposeListener( new DisposeListener() {
+        @Override
         public void widgetDisposed( DisposeEvent event ) {
           GridItem item = ( GridItem )event.getSource();
           log.add( item.getText() );
@@ -2896,6 +2896,7 @@ public class Grid_Test {
     createGridItems( grid, 5, 0 );
     for( GridItem item : grid.getItems() ) {
       item.addDisposeListener( new DisposeListener() {
+        @Override
         public void widgetDisposed( DisposeEvent event ) {
           GridItem item = ( GridItem )event.getSource();
           log.add( item.getText() );
@@ -2970,8 +2971,11 @@ public class Grid_Test {
     assertEquals( 95, imageWidth );
   }
 
-  //////////////////
-  // Helping methods
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( grid.getAdapter( WidgetLCA.class ) instanceof GridLCA );
+    assertSame( grid.getAdapter( WidgetLCA.class ), grid.getAdapter( WidgetLCA.class ) );
+  }
 
   private int countResolvedGridItems() {
     int counter = 0;
@@ -2996,11 +3000,9 @@ public class Grid_Test {
     return grid.getAdapter( IGridAdapter.class ).getCheckBoxOffset( index );
   }
 
-  //////////////////
-  // Helping classes
-
   private class LoggingListener implements Listener {
 
+    @Override
     public void handleEvent( Event event ) {
       eventLog.add( event );
     }

@@ -35,6 +35,8 @@ import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 @SuppressWarnings( "restriction" )
 public class GridColumnGroupLCA extends WidgetLCA<GridColumnGroup> {
 
+  public static final GridColumnGroupLCA INSTANCE = new GridColumnGroupLCA();
+
   private static final String TYPE = "rwt.widgets.GridColumnGroup";
   private static final String[] ALLOWED_STYLES = new String[] { "TOGGLE" };
 

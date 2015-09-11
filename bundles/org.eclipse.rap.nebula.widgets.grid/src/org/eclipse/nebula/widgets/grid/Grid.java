@@ -20,8 +20,10 @@ import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.IScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.NullScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
+import org.eclipse.nebula.widgets.grid.internal.gridkit.GridLCA;
 import org.eclipse.nebula.widgets.grid.internal.gridkit.GridThemeAdapter;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
@@ -2239,20 +2241,19 @@ public class Grid extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
         itemHolder = new CompositeItemHolder();
       }
-      result = ( T )itemHolder;
+      return ( T )itemHolder;
     } else if( adapter == IGridAdapter.class ) {
-      result = ( T )gridAdapter;
+      return ( T )gridAdapter;
     } else if( adapter == ICellToolTipAdapter.class ) {
-      result = ( T )gridAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )gridAdapter;
+    } else if( adapter == WidgetLCA.class ) {
+      return ( T )GridLCA.INSTANCE;
     }
-    return result;
+    return super.getAdapter( adapter );
   }
 
   @Override
@@ -2571,12 +2572,14 @@ public class Grid extends Composite {
 
   private void initListeners() {
     resizeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         onResize();
       }
     };
     addListener( SWT.Resize, resizeListener );
     disposeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         onDispose( event );
       }
@@ -3104,18 +3107,22 @@ public class Grid extends Composite {
   }
 
   private final class CompositeItemHolder implements IItemHolderAdapter<Item> {
+    @Override
     public void add( Item item ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void insert( Item item, int index ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void remove( Item item ) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Item[] getItems() {
       GridItem[] items = getResolvedItems();
       GridColumn[] columns = getColumns();
@@ -3138,76 +3145,94 @@ public class Grid extends Composite {
       provider = new CellToolTipProvider();
     }
 
+    @Override
     public void invalidateTopIndex() {
       invalidateTopBottomIndex();
       redraw();
     }
 
+    @Override
     public int getIndentationWidth() {
       return Grid.this.getIndentationWidth();
     }
 
+    @Override
     public int getCellLeft( int index ) {
       return Grid.this.getCellLeft( index );
     }
 
+    @Override
     public int getCellWidth( int index ) {
       return Grid.this.getCellWidth( index );
     }
 
+    @Override
     public int getCheckBoxOffset( int index ) {
       return Grid.this.getCheckBoxOffset( index );
     }
 
+    @Override
     public int getCheckBoxWidth( int index ) {
       return Grid.this.getCheckBoxWidth( index );
     }
 
+    @Override
     public int getImageOffset( int index ) {
       return Grid.this.getImageOffset( index );
     }
 
+    @Override
     public int getImageWidth( int index ) {
       return Grid.this.getImageWidth( index );
     }
 
+    @Override
     public int getTextOffset( int index ) {
       return Grid.this.getTextOffset( index );
     }
 
+    @Override
     public int getTextWidth( int index ) {
       return Grid.this.getTextWidth( index );
     }
 
+    @Override
     public int getItemIndex( GridItem item ) {
       return item.index;
     }
 
+    @Override
     public ICellToolTipProvider getCellToolTipProvider() {
       return provider;
     }
 
+    @Override
     public void setCellToolTipProvider( ICellToolTipProvider provider ) {
       this.provider = provider;
     }
 
+    @Override
     public String getCellToolTipText() {
       return toolTipText;
     }
 
+    @Override
     public void setCellToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
     }
 
+    @Override
     public void doRedraw() {
       Grid.this.doRedraw();
     }
+
   }
 
   private final class CellToolTipProvider
     implements ICellToolTipProvider, SerializableCompatibility
   {
 
+    @Override
     public void getToolTipText( Item item, int columnIndex ) {
       String toolTipText = ( ( GridItem )item ).getToolTipText( columnIndex );
       getAdapter( ICellToolTipAdapter.class ).setCellToolTipText( toolTipText );
@@ -3311,5 +3336,7 @@ public class Grid extends Composite {
       invalidateCheckBoxImageSize();
       invalidateIndentationWidth();
     }
+
   }
+
 }

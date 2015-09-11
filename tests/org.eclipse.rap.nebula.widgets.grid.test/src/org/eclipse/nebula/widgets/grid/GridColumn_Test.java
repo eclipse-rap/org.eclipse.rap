@@ -24,10 +24,12 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.nebula.widgets.grid.internal.gridcolumnkit.GridColumnLCA;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -43,15 +45,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
-@SuppressWarnings({
-  "restriction", "deprecation"
-})
+@SuppressWarnings( "restriction" )
 public class GridColumn_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -61,18 +64,11 @@ public class GridColumn_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     grid = new Grid( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     column = new GridColumn( grid, SWT.NONE );
     eventLog = new ArrayList<Event>();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -142,6 +138,7 @@ public class GridColumn_Test {
   public void testSendDisposeEvent() {
     final List<DisposeEvent> log = new ArrayList<DisposeEvent>();
     column.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         log.add( event );
       }
@@ -157,6 +154,7 @@ public class GridColumn_Test {
   public void testSendDisposeEventOnGridDispose() {
     final List<DisposeEvent> log = new ArrayList<DisposeEvent>();
     column.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         log.add( event );
       }
@@ -895,8 +893,11 @@ public class GridColumn_Test {
     assertEquals( Integer.valueOf( 3 ), columns[ 1 ].getData( FOOTER_SPAN ) );
   }
 
-  //////////////////
-  // Helping methods
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( column.getAdapter( WidgetLCA.class ) instanceof GridColumnLCA );
+    assertSame( column.getAdapter( WidgetLCA.class ), column.getAdapter( WidgetLCA.class ) );
+  }
 
   private void markTemporaryResize( boolean value ) {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
@@ -904,10 +905,8 @@ public class GridColumn_Test {
     serviceStore.setAttribute( key, Boolean.valueOf( value ) );
   }
 
-  //////////////////
-  // Helping classes
-
   private class LoggingListener implements Listener {
+    @Override
     public void handleEvent( Event event ) {
       eventLog.add( event );
     }

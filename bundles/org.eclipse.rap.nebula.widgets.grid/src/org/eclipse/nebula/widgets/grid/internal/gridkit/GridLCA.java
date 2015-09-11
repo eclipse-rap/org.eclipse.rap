@@ -43,6 +43,8 @@ import org.eclipse.swt.widgets.ScrollBar;
 @SuppressWarnings("restriction")
 public class GridLCA extends WidgetLCA<Grid> {
 
+  public static final GridLCA INSTANCE = new GridLCA();
+
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = new String[] {
     "SINGLE",
