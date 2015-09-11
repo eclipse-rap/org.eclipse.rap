@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2015 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,18 +21,23 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.tooltipkit.ToolTipLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ToolTip_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -40,15 +45,9 @@ public class ToolTip_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     toolTip = new ToolTip( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test( expected = IllegalArgumentException.class )
@@ -249,6 +248,12 @@ public class ToolTip_Test {
     toolTip.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     assertEquals( Boolean.TRUE, toolTip.getData( RWT.MARKUP_ENABLED ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( toolTip.getAdapter( WidgetLCA.class ) instanceof ToolTipLCA );
+    assertSame( toolTip.getAdapter( WidgetLCA.class ), toolTip.getAdapter( WidgetLCA.class ) );
   }
 
   private static IToolTipAdapter getToolTipAdapter( ToolTip toolTip ) {

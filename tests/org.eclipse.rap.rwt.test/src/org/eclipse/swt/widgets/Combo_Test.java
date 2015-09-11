@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.ser
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -33,8 +36,9 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.combokit.ComboLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -46,6 +50,9 @@ import org.junit.Test;
  */
 public class Combo_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   protected boolean listenerCalled;
   private Display display;
   private Shell shell;
@@ -53,15 +60,9 @@ public class Combo_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     combo = new Combo( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -936,6 +937,12 @@ public class Combo_Test {
 
     assertFalse( combo.isListening( SWT.Selection ) );
     assertFalse( combo.isListening( SWT.DefaultSelection ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( combo.getAdapter( WidgetLCA.class ) instanceof ComboLCA );
+    assertSame( combo.getAdapter( WidgetLCA.class ), combo.getAdapter( WidgetLCA.class ) );
   }
 
 }

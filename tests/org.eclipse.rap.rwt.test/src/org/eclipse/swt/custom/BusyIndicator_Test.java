@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,49 +11,49 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.widgets.Display;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public final class BusyIndicator_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    display = new Display();
   }
 
   @Test
   public void testShowWhile() {
-    final boolean[] executed = new boolean[]{ false };
-    Runnable runnable = new Runnable() {
-      public void run() {
-        executed[ 0 ] = true;
-      }
-    };
-    Display display = new Display();
-    // Test runnable execution
-    executed[ 0 ] = false;
+    Runnable runnable = mock( Runnable.class );
+
     BusyIndicator.showWhile( display, runnable );
-    assertTrue( executed[ 0 ] );
-    executed[ 0 ] = false;
+
+    verify( runnable ).run();
+  }
+
+  @Test
+  public void testShowWhile_withNullDisplay() {
+    Runnable runnable = mock( Runnable.class );
+
     BusyIndicator.showWhile( null, runnable );
-    assertTrue( executed[ 0 ] );
-    // Test illegal arguments
-    try {
-      BusyIndicator.showWhile( null, null );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+
+    verify( runnable ).run();
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testShowWhile_failsWithNullRunnable() {
+    BusyIndicator.showWhile( null, null );
   }
 
 }

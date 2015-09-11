@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource.
+ * Copyright (c) 2013, 2015 EclipseSource.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.scripting.ClientListener;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -48,8 +49,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -57,41 +58,33 @@ import org.mockito.stubbing.Answer;
 
 public class DropDown_Test {
 
-  private static final String[] FOUR_ITEMS = new String[] {
-    "a",
-    "b",
-    "c",
-    "d"
-  };
+  @Rule
+  public TestContext context = new TestContext();
+
+  private static final String[] FOUR_ITEMS = { "a", "b", "c", "d" };
   private Text text;
-  private DropDown dropdown;
+  private DropDown dropDown;
   private RemoteObject remoteObject;
   private Connection connection;
   private OperationHandler handler;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     Display display = new Display();
     Shell shell = new Shell( display );
     text = new Text( shell, SWT.NONE );
-    Fixture.fakeNewRequest();
     remoteObject = mock( RemoteObject.class );
     connection = mock( Connection.class );
     when( connection.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
     Fixture.fakeConnection( connection );
     doAnswer( new Answer<Object>(){
+      @Override
       public Object answer( InvocationOnMock invocation ) throws Throwable {
         handler = ( OperationHandler )invocation.getArguments()[ 0 ];
         return null;
       }
     } ).when( remoteObject ).setHandler( any( OperationHandler.class ) );
-    dropdown = new DropDown( text );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    dropDown = new DropDown( text );
   }
 
   @Test
@@ -106,24 +99,24 @@ public class DropDown_Test {
 
   @Test( expected = SWTException.class )
   public void testGetParent_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.getParent();
+    dropDown.dispose();
+    dropDown.getParent();
   }
 
   @Test
   public void testGetParent_ReturnsParent() {
-    assertSame( text, dropdown.getParent() );
+    assertSame( text, dropDown.getParent() );
   }
 
   @Test
   public void testDipose_RendersDetroy() {
-    dropdown.dispose();
+    dropDown.dispose();
     verify( remoteObject ).destroy();
   }
 
   @Test
   public void testDipose_RemovesParentListener() {
-    dropdown.dispose();
+    dropDown.dispose();
 
     assertFalse( text.isListening( SWT.Dispose ) );
   }
@@ -132,9 +125,9 @@ public class DropDown_Test {
   public void testDispose_FiresDispose() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Listener listener = mock( Listener.class );
-    dropdown.addListener( SWT.Dispose, listener );
+    dropDown.addListener( SWT.Dispose, listener );
 
-    dropdown.dispose();
+    dropDown.dispose();
 
     verify( listener ).handleEvent( any( Event.class ) );
   }
@@ -150,171 +143,171 @@ public class DropDown_Test {
 
   @Test( expected = SWTException.class )
   public void testSetVisible_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.setVisible( true );
+    dropDown.dispose();
+    dropDown.setVisible( true );
   }
 
   @Test
   public void testSetVisible_SetsVisibility() {
-    dropdown.setVisible( true );
+    dropDown.setVisible( true );
 
-    assertTrue( dropdown.getVisible() );
+    assertTrue( dropDown.getVisible() );
   }
 
   @Test
   public void testSetVisible_RendersVisibleTrue() {
-    dropdown.setVisible( true );
+    dropDown.setVisible( true );
     verify( remoteObject ).set( "visible", true );
   }
 
   @Test
   public void testVisible_SetToTrueTwiceRenderVisibleOnce() {
-    dropdown.setVisible( true );
-    dropdown.setVisible( true );
+    dropDown.setVisible( true );
+    dropDown.setVisible( true );
 
     verify( remoteObject, times( 1 ) ).set( "visible", true );
   }
 
   @Test
   public void testHide_SetsVisible() {
-    dropdown.setVisible( true );
-    dropdown.setVisible( false );
+    dropDown.setVisible( true );
+    dropDown.setVisible( false );
 
-    assertFalse( dropdown.getVisible() );
+    assertFalse( dropDown.getVisible() );
   }
 
   @Test
   public void testHide_RendersVisibleFalse() {
-    dropdown.setVisible( true );
+    dropDown.setVisible( true );
 
-    dropdown.setVisible( false );
+    dropDown.setVisible( false );
 
     verify( remoteObject ).set( "visible", false );
   }
 
   @Test( expected = SWTException.class )
   public void testGetVisible_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.getVisible();
+    dropDown.dispose();
+    dropDown.getVisible();
   }
 
   @Test
   public void testGetVisible_InitialValueIsFalse() {
-    assertFalse( dropdown.getVisible() );
+    assertFalse( dropDown.getVisible() );
   }
 
   @Test( expected = SWTException.class )
   public void testGetSelectionIndex_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.getSelectionIndex();
+    dropDown.dispose();
+    dropDown.getSelectionIndex();
   }
 
   @Test( expected = SWTException.class )
   public void testSetSelectionIndex_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.setSelectionIndex( 1 );
+    dropDown.dispose();
+    dropDown.setSelectionIndex( 1 );
   }
 
   @Test
   public void testGetSelectionIndex_InitialValue() {
-    assertEquals( -1, dropdown.getSelectionIndex() );
+    assertEquals( -1, dropDown.getSelectionIndex() );
   }
 
   @Test
   public void testSetSelectionIndex_SetsSelection() {
-    dropdown.setItems( FOUR_ITEMS );
+    dropDown.setItems( FOUR_ITEMS );
 
-    dropdown.setSelectionIndex( 2 );
+    dropDown.setSelectionIndex( 2 );
 
-    assertEquals( 2, dropdown.getSelectionIndex() );
+    assertEquals( 2, dropDown.getSelectionIndex() );
   }
 
   @Test
   public void testSetSelectionIndex_RendersSelection() {
-    dropdown.setItems( FOUR_ITEMS );
+    dropDown.setItems( FOUR_ITEMS );
 
-    dropdown.setSelectionIndex( 2 );
+    dropDown.setSelectionIndex( 2 );
 
     verify( remoteObject ).set( "selectionIndex", 2 );
   }
 
   @Test
   public void testSetSelectionIndex_ResetsSelection() {
-    dropdown.setItems( FOUR_ITEMS );
-    dropdown.setSelectionIndex( 2 );
+    dropDown.setItems( FOUR_ITEMS );
+    dropDown.setSelectionIndex( 2 );
 
-    dropdown.setSelectionIndex( -1 );
+    dropDown.setSelectionIndex( -1 );
 
-    assertEquals( -1, dropdown.getSelectionIndex() );
+    assertEquals( -1, dropDown.getSelectionIndex() );
   }
 
   @Test
   public void testSetSelectionIndex_IgnoredForTooSmallValue() {
-    dropdown.setItems( FOUR_ITEMS );
-    dropdown.setSelectionIndex( 2 );
+    dropDown.setItems( FOUR_ITEMS );
+    dropDown.setSelectionIndex( 2 );
 
-    dropdown.setSelectionIndex( -2 );
+    dropDown.setSelectionIndex( -2 );
 
-    assertEquals( 2, dropdown.getSelectionIndex() );
+    assertEquals( 2, dropDown.getSelectionIndex() );
   }
 
   @Test
   public void testSetSelectionIndex_IgnoredForTooBigValue() {
-    dropdown.setItems( FOUR_ITEMS );
-    dropdown.setSelectionIndex( 2 );
+    dropDown.setItems( FOUR_ITEMS );
+    dropDown.setSelectionIndex( 2 );
 
-    dropdown.setSelectionIndex( 4 );
+    dropDown.setSelectionIndex( 4 );
 
-    assertEquals( 2, dropdown.getSelectionIndex() );
+    assertEquals( 2, dropDown.getSelectionIndex() );
   }
 
   @Test( expected = SWTException.class )
   public void testSetItems_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.setItems( new String[]{ "a", "b", "c" } );
+    dropDown.dispose();
+    dropDown.setItems( new String[]{ "a", "b", "c" } );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testSetItems_ThrowsExceptionForNullArgument() {
-    dropdown.setItems( null );
+    dropDown.setItems( null );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testSetItems_ThrowsExceptionForNullItem() {
-    dropdown.setItems( new String[]{ "a", null, "b" } );
+    dropDown.setItems( new String[]{ "a", null, "b" } );
   }
 
   @Test
   public void testGetItems_returnsItems() {
     String[] items = new String[]{ "a", "b", "c" };
-    dropdown.setItems( items );
+    dropDown.setItems( items );
 
-    assertTrue( Arrays.equals( items, dropdown.getItems() ) );
+    assertTrue( Arrays.equals( items, dropDown.getItems() ) );
   }
 
   @Test
   public void testGetItems_returnsSaveCopy() {
     String[] items = new String[]{ "a", "b", "c" };
-    dropdown.setItems( items );
+    dropDown.setItems( items );
 
-    dropdown.getItems()[ 1 ] = "x";
+    dropDown.getItems()[ 1 ] = "x";
 
-    assertEquals( "b", dropdown.getItems()[ 1 ] );
+    assertEquals( "b", dropDown.getItems()[ 1 ] );
   }
 
   @Test
   public void testSetItems_storesSaveCopy() {
     String[] items = new String[]{ "a", "b", "c" };
-    dropdown.setItems( items );
+    dropDown.setItems( items );
 
     items[ 1 ] = "x";
 
-    assertEquals( "b", dropdown.getItems()[ 1 ] );
+    assertEquals( "b", dropDown.getItems()[ 1 ] );
   }
 
   @Test
   public void testSetItems_RenderItems() {
-    dropdown.setItems( new String[]{ "a", "b", "c" } );
+    dropDown.setItems( new String[]{ "a", "b", "c" } );
 
     JsonArray expected = JsonUtil.createJsonArray( new String[]{ "a", "b", "c" } );
     verify( remoteObject ).set( eq( "items" ), eq( expected ) );
@@ -323,53 +316,53 @@ public class DropDown_Test {
   @Test
   public void testSetItems_ResetsSelectionIndex() {
     handler.handleSet( new JsonObject().add( "selectionIndex", 7) );
-    dropdown.setItems( new String[]{ "a" } );
+    dropDown.setItems( new String[]{ "a" } );
 
-    assertEquals( -1, dropdown.getSelectionIndex() );
+    assertEquals( -1, dropDown.getSelectionIndex() );
   }
 
   @Test( expected = SWTException.class )
   public void testSetVisibleItemCount_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.setVisibleItemCount( 7 );
+    dropDown.dispose();
+    dropDown.setVisibleItemCount( 7 );
   }
 
   @Test
   public void testSetVisibleItemCount_RendersVisibleItemCount() {
-    dropdown.setVisibleItemCount( 7 );
+    dropDown.setVisibleItemCount( 7 );
     verify( remoteObject ).set( "visibleItemCount", 7 );
   }
 
   @Test
   public void testSetVisibleItemCount_DoesNotRenderVisibleItemCountIfUnchanged() {
-    dropdown.setVisibleItemCount( 7 );
-    dropdown.setVisibleItemCount( 7 );
+    dropDown.setVisibleItemCount( 7 );
+    dropDown.setVisibleItemCount( 7 );
 
     verify( remoteObject, times( 1 ) ).set( "visibleItemCount", 7 );
   }
 
   @Test( expected = SWTException.class )
   public void testGetVisibleItemCount_ThrowsExceptionIfDisposed() {
-    dropdown.dispose();
-    dropdown.getVisibleItemCount();
+    dropDown.dispose();
+    dropDown.getVisibleItemCount();
   }
 
   @Test
   public void testGetVisibleItemCount_ReturnInitialValue() {
-    assertEquals( 5, dropdown.getVisibleItemCount() );
+    assertEquals( 5, dropDown.getVisibleItemCount() );
   }
 
   @Test
   public void testGetVisibleItemCount_ReturnUserValue() {
-    dropdown.setVisibleItemCount( 23 );
+    dropDown.setVisibleItemCount( 23 );
 
-    assertEquals( 23, dropdown.getVisibleItemCount() );
+    assertEquals( 23, dropDown.getVisibleItemCount() );
   }
 
   @Test( expected = SWTException.class )
   public void testSetData_ThrowsExceptionIfDiposed() {
-    dropdown.dispose();
-    dropdown.setData( "foo", "bar" );
+    dropDown.dispose();
+    dropDown.setData( "foo", "bar" );
   }
 
   @Test
@@ -377,7 +370,7 @@ public class DropDown_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
     WidgetUtil.registerDataKeys( "foo", "bar" );
-    dropdown.setData( "foo", "bar" );
+    dropDown.setData( "foo", "bar" );
 
     verify( remoteObject ).set( eq( "data" ), eq( new JsonObject().add( "foo", "bar" ) ) );
   }
@@ -386,7 +379,7 @@ public class DropDown_Test {
   public void testSetData_RendersMarkupEnabled() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
-    dropdown.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+    dropDown.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     verify( remoteObject ).set( eq( "markupEnabled" ), eq( true ) );
   }
@@ -395,7 +388,7 @@ public class DropDown_Test {
   public void testSetData_RendersColumns() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
-    dropdown.setData( "columns", new int[]{ 10, 20 } );
+    dropDown.setData( "columns", new int[]{ 10, 20 } );
 
     verify( remoteObject ).set( eq( "columns" ), eq( new JsonArray().add( 10 ).add( 20 ) ) );
   }
@@ -404,7 +397,7 @@ public class DropDown_Test {
   public void testSetData_RendersIncorrectTypeAsNull() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
-    dropdown.setData( "columns", Boolean.TRUE );
+    dropDown.setData( "columns", Boolean.TRUE );
 
     verify( remoteObject ).set( eq( "columns" ), eq( JsonValue.NULL ) );
   }
@@ -414,7 +407,7 @@ public class DropDown_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
 
     WidgetUtil.registerDataKeys( "foo", "bar" );
-    dropdown.setData( "fool", "bar" );
+    dropDown.setData( "fool", "bar" );
 
     verify( remoteObject, never() ).set( eq( "data" ), any( JsonObject.class ) );
   }
@@ -423,7 +416,7 @@ public class DropDown_Test {
   public void testAddListener_SelectionRenderListenTrue() {
     Listener listener = mock( Listener.class );
 
-    dropdown.addListener( SWT.Selection, listener );
+    dropDown.addListener( SWT.Selection, listener );
 
     verify( remoteObject ).listen( eq( "Selection" ), eq( true ) );
   }
@@ -432,22 +425,22 @@ public class DropDown_Test {
   public void testAddListener_DefaultSelectionRenderListenTrue() {
     Listener listener = mock( Listener.class );
 
-    dropdown.addListener( SWT.DefaultSelection, listener );
+    dropDown.addListener( SWT.DefaultSelection, listener );
 
     verify( remoteObject ).listen( eq( "DefaultSelection" ), eq( true ) );
   }
 
   @Test
   public void testAddListener_Selection_doesNotSendListenTwice() {
-    dropdown.addListener( SWT.Selection, mock( Listener.class ) );
-    dropdown.addListener( SWT.Selection, mock( Listener.class ) );
+    dropDown.addListener( SWT.Selection, mock( Listener.class ) );
+    dropDown.addListener( SWT.Selection, mock( Listener.class ) );
 
     verify( remoteObject, times( 1 ) ).listen( eq( "Selection" ), eq( true ) );
   }
 
   @Test
   public void testAddListener_Selection_doesNotSendListenForClientListener() {
-    dropdown.addListener( SWT.Selection, new ClientListener( "foo" ) );
+    dropDown.addListener( SWT.Selection, new ClientListener( "foo" ) );
 
     verify( remoteObject, times( 0 ) ).listen( eq( "Selection" ), eq( true ) );
   }
@@ -457,7 +450,7 @@ public class DropDown_Test {
     ClientListener listener = new ClientListener( "" );
     String listenerId = ClientListenerUtil.getRemoteId( listener );
 
-    dropdown.addListener( SWT.Show, listener );
+    dropDown.addListener( SWT.Show, listener );
 
     JsonObject expectedParameters
       = new JsonObject().add( "eventType", "Show" ).add( "listenerId", listenerId );
@@ -467,9 +460,9 @@ public class DropDown_Test {
   @Test
   public void testRemoveListener_SelectionRenderListenFalse() {
     Listener listener = mock( Listener.class );
-    dropdown.addListener( SWT.Selection, listener );
+    dropDown.addListener( SWT.Selection, listener );
     //Mockito.reset( remoteObject );
-    dropdown.removeListener( SWT.Selection, listener );
+    dropDown.removeListener( SWT.Selection, listener );
 
     verify( remoteObject ).listen( eq( "Selection" ), eq( false ) );
   }
@@ -477,8 +470,8 @@ public class DropDown_Test {
   @Test
   public void testRemoveListener_DefaultSelectionRenderListenFalse() {
     Listener listener = mock( Listener.class );
-    dropdown.addListener( SWT.DefaultSelection, listener );
-    dropdown.removeListener( SWT.DefaultSelection, listener );
+    dropDown.addListener( SWT.DefaultSelection, listener );
+    dropDown.removeListener( SWT.DefaultSelection, listener );
 
     verify( remoteObject ).listen( eq( "DefaultSelection" ), eq( false ) );
   }
@@ -488,7 +481,7 @@ public class DropDown_Test {
     ClientListener listener = new ClientListener( "" );
     String listenerId = ClientListenerUtil.getRemoteId( listener );
 
-    dropdown.removeListener( SWT.Show, listener );
+    dropDown.removeListener( SWT.Show, listener );
 
     JsonObject expectedParameters
       = new JsonObject().add( "eventType", "Show" ).add( "listenerId", listenerId );
@@ -499,16 +492,16 @@ public class DropDown_Test {
   public void testProcessSetVisible_ValueIsTrue() {
     handler.handleSet( new JsonObject().add( "visible", true ) );
 
-    assertTrue( dropdown.getVisible() );
+    assertTrue( dropDown.getVisible() );
   }
 
   @Test
   public void testProcessSetVisible_ValueIsFalse() {
-    dropdown.setVisible( true );
+    dropDown.setVisible( true );
 
     handler.handleSet( new JsonObject().add( "visible", false ) );
 
-    assertFalse( dropdown.getVisible() );
+    assertFalse( dropDown.getVisible() );
   }
 
   @Test
@@ -522,14 +515,15 @@ public class DropDown_Test {
   public void testProcessSetSelectionIndex() {
     handler.handleSet( new JsonObject().add( "selectionIndex", 7) );
 
-    assertEquals( 7, dropdown.getSelectionIndex() );
+    assertEquals( 7, dropDown.getSelectionIndex() );
   }
 
   @Test
   public void testFireSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Event> log = new ArrayList<Event>();
-    dropdown.addListener( SWT.Selection, new Listener() {
+    dropDown.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }
@@ -549,7 +543,8 @@ public class DropDown_Test {
   public void testFireDefaultSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final List<Event> log = new ArrayList<Event>();
-    dropdown.addListener( SWT.DefaultSelection, new Listener() {
+    dropDown.addListener( SWT.DefaultSelection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event );
       }

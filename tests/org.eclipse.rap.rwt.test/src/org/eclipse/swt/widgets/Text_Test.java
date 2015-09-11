@@ -22,8 +22,8 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,12 +35,16 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.textkit.TextLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Text_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -48,16 +52,9 @@ public class Text_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     text = new Text( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -153,6 +150,7 @@ public class Text_Test {
   public void testModifyEvent() {
     final StringBuilder log = new StringBuilder();
     text.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         log.append( "modifyEvent|" );
         assertSame( text, event.getSource() );
@@ -172,11 +170,13 @@ public class Text_Test {
     VerifyListener verifyListener;
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
     text.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     text.addVerifyListener( new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         assertEquals( '\0', event.character );
         assertEquals( 0, event.keyCode );
@@ -195,6 +195,7 @@ public class Text_Test {
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
@@ -210,6 +211,7 @@ public class Text_Test {
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
@@ -303,40 +305,40 @@ public class Text_Test {
     } catch( IllegalArgumentException e ) {
       assertEquals( "oldText", text.getText() );
     }
-	}
+  }
 
   // TODO [bm] extend testcase with newline chars for SWT.MULTI
   @Test
   public void testAppend() {
-		Text text = new Text(shell, SWT.SINGLE);
+    Text text = new Text(shell, SWT.SINGLE);
 
-		try {
-			text.append(null);
-			fail("No exception thrown for string == null");
-		} catch (IllegalArgumentException e) {
-		}
+    try {
+      text.append(null);
+      fail("No exception thrown for string == null");
+    } catch (IllegalArgumentException e) {
+    }
 
-		text = new Text(shell, SWT.SINGLE);
+    text = new Text(shell, SWT.SINGLE);
 
-		try {
-			text.append(null);
-			fail("No exception thrown on string == null");
-		} catch (IllegalArgumentException e) {
-		}
+    try {
+      text.append(null);
+      fail("No exception thrown on string == null");
+    } catch (IllegalArgumentException e) {
+    }
 
-		// tests a SINGLE line text editor
-		text = new Text(shell, SWT.SINGLE);
+    // tests a SINGLE line text editor
+    text = new Text(shell, SWT.SINGLE);
 
-		text.setText("01");
-		text.append("23");
-		assertEquals("0123", text.getText());
-		text.append("45");
-		assertEquals("012345", text.getText());
-		text.setSelection(0);
-		text.append("67");
-		assertEquals("01234567", text.getText());
+    text.setText("01");
+    text.append("23");
+    assertEquals("0123", text.getText());
+    text.append("45");
+    assertEquals("012345", text.getText());
+    text.setSelection(0);
+    text.append("67");
+    assertEquals("01234567", text.getText());
 
-	}
+  }
 
   @Test
   public void testInsertWithModifyListener() {
@@ -344,6 +346,7 @@ public class Text_Test {
     Text text = new Text( shell, SWT.SINGLE );
     text.setBounds( 0, 0, 100, 20 );
     text.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
@@ -677,6 +680,12 @@ public class Text_Test {
 
     assertFalse( text.isListening( SWT.Selection ) );
     assertFalse( text.isListening( SWT.DefaultSelection ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( text.getAdapter( WidgetLCA.class ) instanceof TextLCA );
+    assertSame( text.getAdapter( WidgetLCA.class ), text.getAdapter( WidgetLCA.class ) );
   }
 
 }

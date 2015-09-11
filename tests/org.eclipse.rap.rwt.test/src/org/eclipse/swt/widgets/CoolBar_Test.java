@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,70 +22,65 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class CoolBar_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private CoolBar coolBar;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    coolBar = new CoolBar( shell, SWT.NONE );
   }
 
   @Test
   public void testHierarchy() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
+    assertTrue( Composite.class.isAssignableFrom( coolBar.getClass() ) );
+    assertSame( shell, coolBar.getParent() );
+    assertSame( display, coolBar.getDisplay() );
 
-    assertTrue( Composite.class.isAssignableFrom( bar.getClass() ) );
-    assertSame( shell, bar.getParent() );
-    assertSame( display, bar.getDisplay() );
-
-    CoolItem item = new CoolItem( bar, SWT.NONE );
-    assertEquals( 1, bar.getItemCount() );
+    CoolItem item = new CoolItem( coolBar, SWT.NONE );
+    assertEquals( 1, coolBar.getItemCount() );
     assertSame( display, item.getDisplay() );
-    assertSame( bar, item.getParent() );
+    assertSame( coolBar, item.getParent() );
   }
 
   @Test
   public void testItems() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    assertEquals( 0, bar.getItemCount() );
-    assertTrue( Arrays.equals( new CoolItem[ 0 ], bar.getItems() ) );
+    assertEquals( 0, coolBar.getItemCount() );
+    assertTrue( Arrays.equals( new CoolItem[ 0 ], coolBar.getItems() ) );
 
-    CoolItem item = new CoolItem( bar, SWT.NONE );
-    assertEquals( 1, bar.getItemCount() );
-    assertSame( item, bar.getItems()[ 0 ] );
-    assertSame( item, bar.getItem( 0 ) );
-    assertEquals( 0, bar.indexOf( item ) );
+    CoolItem item = new CoolItem( coolBar, SWT.NONE );
+    assertEquals( 1, coolBar.getItemCount() );
+    assertSame( item, coolBar.getItems()[ 0 ] );
+    assertSame( item, coolBar.getItem( 0 ) );
+    assertEquals( 0, coolBar.indexOf( item ) );
 
     CoolBar anotherBar = new CoolBar( shell, SWT.NONE );
     CoolItem anotherItem = new CoolItem( anotherBar, SWT.NONE );
-    assertEquals( -1, bar.indexOf( anotherItem ) );
+    assertEquals( -1, coolBar.indexOf( anotherItem ) );
   }
 
   @Test
   public void testIndexOnCreation() {
-    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
     coolItem.setText( "1" );
     assertSame( coolItem, coolBar.getItem( 0 ) );
@@ -96,46 +91,44 @@ public class CoolBar_Test {
 
   @Test
   public void testStyle() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.NO_FOCUS );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.NO_FOCUS );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.H_SCROLL );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.H_SCROLL );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.FLAT | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.FLAT );
+    assertEquals( SWT.NO_FOCUS | SWT.FLAT | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.VERTICAL );
-    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.VERTICAL );
+    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.VERTICAL | SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.VERTICAL | SWT.FLAT );
+    assertEquals( SWT.NO_FOCUS | SWT.VERTICAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.HORIZONTAL );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.HORIZONTAL );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
 
-    bar = new CoolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
-    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, bar.getStyle() );
+    coolBar = new CoolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
+    assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.FLAT | SWT.LEFT_TO_RIGHT, coolBar.getStyle() );
   }
 
   @Test
   public void testIndexOf() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    CoolItem item = new CoolItem( bar, SWT.NONE );
-    assertEquals( 0, bar.indexOf( item ) );
+    CoolItem item = new CoolItem( coolBar, SWT.NONE );
+    assertEquals( 0, coolBar.indexOf( item ) );
 
     item.dispose();
     try {
-      bar.indexOf( item );
+      coolBar.indexOf( item );
       fail( "indexOf must not answer for a disposed item" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
-      bar.indexOf( null );
+      coolBar.indexOf( null );
       fail( "indexOf must not answer for null item" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -146,85 +139,83 @@ public class CoolBar_Test {
   public void testDispose() {
     final java.util.List<Object> log = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         log.add( event.getSource() );
       }
     };
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    bar.addDisposeListener( disposeListener );
-    CoolItem item1 = new CoolItem( bar, SWT.NONE );
+    coolBar.addDisposeListener( disposeListener );
+    CoolItem item1 = new CoolItem( coolBar, SWT.NONE );
     item1.addDisposeListener( disposeListener );
-    CoolItem item2 = new CoolItem( bar, SWT.NONE );
+    CoolItem item2 = new CoolItem( coolBar, SWT.NONE );
     item2.addDisposeListener( disposeListener );
 
     item1.dispose();
     assertTrue( item1.isDisposed() );
-    assertEquals( 1, bar.getItemCount() );
+    assertEquals( 1, coolBar.getItemCount() );
 
-    bar.dispose();
-    assertTrue( bar.isDisposed() );
+    coolBar.dispose();
+    assertTrue( coolBar.isDisposed() );
     assertTrue( item2.isDisposed() );
 
     assertSame( item1, log.get( 0 ) );
     assertSame( item2, log.get( 1 ) );
-    assertSame( bar, log.get( 2 ) );
+    assertSame( coolBar, log.get( 2 ) );
   }
 
   @Test
   public void testLocked() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    assertFalse( bar.getLocked() );
-    bar.setLocked( true );
-    assertTrue( bar.getLocked() );
+    assertFalse( coolBar.getLocked() );
+    coolBar.setLocked( true );
+    assertTrue( coolBar.getLocked() );
   }
 
   @Test
   public void testItemOrder() {
-    CoolBar bar = new CoolBar( shell, SWT.NONE );
-    new CoolItem( bar, SWT.NONE );
-    new CoolItem( bar, SWT.NONE );
+    new CoolItem( coolBar, SWT.NONE );
+    new CoolItem( coolBar, SWT.NONE );
 
     // Test initial itemOrder -> matches the order in which the items are added
-    assertEquals( 0, bar.getItemOrder()[ 0 ] );
-    assertEquals( 1, bar.getItemOrder()[ 1 ] );
+    assertEquals( 0, coolBar.getItemOrder()[ 0 ] );
+    assertEquals( 1, coolBar.getItemOrder()[ 1 ] );
 
     // Test setItemOrder with legal arguments
-    bar.setItemOrder( new int[] { 1, 0 } );
-    assertEquals( 0, bar.getItemOrder()[ 1 ] );
-    assertEquals( 1, bar.getItemOrder()[ 0 ] );
+    coolBar.setItemOrder( new int[] { 1, 0 } );
+    assertEquals( 0, coolBar.getItemOrder()[ 1 ] );
+    assertEquals( 1, coolBar.getItemOrder()[ 0 ] );
 
     // Test setItemOrder with illegal arguments
-    int[] expectedItemOrder = bar.getItemOrder();
+    int[] expectedItemOrder = coolBar.getItemOrder();
     try {
-      bar.setItemOrder( null );
+      coolBar.setItemOrder( null );
       fail( "setItemOrder must not allow null-argument" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, coolBar.getItemOrder() );
     }
     try {
-      bar.setItemOrder( new int[] { 0, 5 } );
+      coolBar.setItemOrder( new int[] { 0, 5 } );
       fail( "setItemOrder must not allow argument with indics out of range" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, coolBar.getItemOrder() );
     }
     try {
-      bar.setItemOrder( new int[] { 0, 0 } );
+      coolBar.setItemOrder( new int[] { 0, 0 } );
       fail( "setItemOrder must not allow argument with duplicate indices" );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, coolBar.getItemOrder() );
     }
     try {
-      bar.setItemOrder( new int[] { 1 } );
+      coolBar.setItemOrder( new int[] { 1 } );
       String msg
         = "setItemOrder must not allow argument whose length doesn't match "
         + "the number of items";
       fail( msg );
     } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
-      assertArrayEquals( expectedItemOrder, bar.getItemOrder() );
+      assertArrayEquals( expectedItemOrder, coolBar.getItemOrder() );
     }
   }
 
@@ -254,12 +245,12 @@ public class CoolBar_Test {
 
   @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
-    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
     coolBar.setFont( font );
     coolBar.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         font.dispose();
       }
@@ -269,12 +260,17 @@ public class CoolBar_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     new CoolItem( coolBar, SWT.NONE );
 
     CoolBar deserializedCoolBar = serializeAndDeserialize( coolBar );
 
     assertEquals( 1, deserializedCoolBar.getItemCount() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( coolBar.getAdapter( WidgetLCA.class ) instanceof CoolBarLCA );
+    assertSame( coolBar.getAdapter( WidgetLCA.class ), coolBar.getAdapter( WidgetLCA.class ) );
   }
 
   private static CoolItem createItem( CoolBar coolBar ) {

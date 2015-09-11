@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,39 +13,39 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.groupkit.GroupLCA;
 import org.eclipse.swt.layout.FillLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Group_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Shell shell;
+  private Group group;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display , SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    group = new Group( shell, SWT.NONE );
   }
 
   @Test
   public void testText() {
-    Group group = new Group( shell, SWT.NONE );
     assertEquals( "", group.getText() );
     group.setText( "xyz" );
     assertEquals( "xyz", group.getText() );
@@ -59,7 +59,6 @@ public class Group_Test {
 
   @Test
   public void testComputeSize() {
-    Group group = new Group( shell, SWT.NONE );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
@@ -84,7 +83,6 @@ public class Group_Test {
 
   @Test
   public void testComputeTrim() {
-    Group group = new Group( shell, SWT.NONE );
     // trimmings = 3, 17, 6, 20
     Rectangle expected = new Rectangle( -19, -36, 38, 55 );
     assertEquals( expected, group.computeTrim( 0, 0, 0, 0 ) );
@@ -95,7 +93,6 @@ public class Group_Test {
 
   @Test
   public void testClientArea() {
-    Group group = new Group( shell, SWT.NONE );
     group.setText( "This is a very long group title." );
     group.setSize( 100, 100 );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
@@ -110,12 +107,17 @@ public class Group_Test {
   @Test
   public void testIsSerializable() throws Exception {
     String groupText = "text";
-    Group group = new Group( shell, SWT.NONE );
     group.setText( groupText );
 
     Group deserializedGroup = serializeAndDeserialize( group );
 
     assertEquals( groupText, deserializedGroup.getText() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( group.getAdapter( WidgetLCA.class ) instanceof GroupLCA );
+    assertSame( group.getAdapter( WidgetLCA.class ), group.getAdapter( WidgetLCA.class ) );
   }
 
 }

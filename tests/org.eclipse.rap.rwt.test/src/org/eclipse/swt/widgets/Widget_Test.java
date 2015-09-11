@@ -39,6 +39,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.scripting.ClientListenerOperation;
 import org.eclipse.rap.rwt.scripting.ClientListener;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -52,8 +53,8 @@ import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -62,22 +63,18 @@ import org.mockito.InOrder;
 @SuppressWarnings( "deprecation" )
 public class Widget_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private Widget widget;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     widget = new Widget( shell, SWT.NONE ) {};
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test

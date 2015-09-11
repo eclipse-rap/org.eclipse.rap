@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
+import static org.eclipse.rap.rwt.application.Application.OperationMode.JEE_COMPATIBILITY;
+import static org.eclipse.rap.rwt.application.Application.OperationMode.SWT_COMPATIBILITY;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
@@ -25,16 +27,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
+import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.internal.browser.browserkit.BrowserLCA;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -42,26 +48,22 @@ import org.mockito.InOrder;
 
 public class Browser_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private Browser browser;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    browser = new Browser( shell, SWT.NONE );
   }
 
   @Test
   public void testInitialValues() {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     assertEquals( "", browser.getUrl() );
     assertEquals( "", getText( browser ) );
   }
@@ -90,8 +92,6 @@ public class Browser_Test {
 
   @Test
   public void testUrlAndText() {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     browser.setUrl( "http://eclipse.org/rap" );
     assertEquals( "", getText( browser ) );
     browser.setText( "<html></head>..." );
@@ -115,8 +115,6 @@ public class Browser_Test {
 
   @Test
   public void testAddLocationListenerRegistersUntypedListeners() {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     browser.addLocationListener( mock( LocationListener.class ) );
 
     assertTrue( browser.isListening( EventTypes.LOCALTION_CHANGING ) );
@@ -125,7 +123,6 @@ public class Browser_Test {
 
   @Test
   public void testRemoveLocationListenerRegistersUntypedListeners() {
-    Browser browser = new Browser( shell, SWT.NONE );
     LocationListener locationListener = mock( LocationListener.class );
     browser.addLocationListener( locationListener );
 
@@ -137,8 +134,6 @@ public class Browser_Test {
 
   @Test
   public void testAddProgressListenerRegistersUntypedListeners() {
-    Browser browser = new Browser( shell, SWT.NONE );
-
     browser.addProgressListener( mock( ProgressListener.class ) );
 
     assertTrue( browser.isListening( EventTypes.PROGRESS_CHANGED ) );
@@ -147,7 +142,6 @@ public class Browser_Test {
 
   @Test
   public void testRemoveProgressListenerRegistersUntypedListeners() {
-    Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener progressListener = mock( ProgressListener.class );
     browser.addProgressListener( progressListener );
 
@@ -159,7 +153,6 @@ public class Browser_Test {
 
   @Test
   public void testSetTextWithNonVetoingLocationListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
 
@@ -175,7 +168,6 @@ public class Browser_Test {
 
   @Test
   public void testSetUrlWithNonVetoingLocationListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
 
@@ -192,7 +184,6 @@ public class Browser_Test {
 
   @Test
   public void testLocationListenerOrderInSetText() {
-    Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = mock( LocationListener.class );
     browser.addLocationListener( listener );
 
@@ -207,13 +198,14 @@ public class Browser_Test {
   public void testLocationEvent() {
     final StringBuilder log = new StringBuilder();
     final String[] expectedLocation = new String[ 1 ];
-    final Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = new LocationListener() {
+      @Override
       public void changing( LocationEvent event ) {
         log.append( "changing" + event.location + "|" );
         assertEquals( expectedLocation[ 0 ], event.location );
         assertFalse( event.top );
       }
+      @Override
       public void changed( LocationEvent event ) {
         log.append( "changed" + event.location );
         assertSame( browser, event.getSource() );
@@ -254,7 +246,6 @@ public class Browser_Test {
   @Test
   public void testSetUrlWithVetoingLocationListener() {
     String oldUrl = "OLD_URL";
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( oldUrl );
     browser.addLocationListener( new VetoingLocationListener() );
 
@@ -266,7 +257,6 @@ public class Browser_Test {
   @Test
   public void testSetTextWithVetoingLocationListener() {
     String oldText = "OLD_TEXT";
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setText( oldText );
     browser.addLocationListener( new VetoingLocationListener() );
 
@@ -277,7 +267,6 @@ public class Browser_Test {
 
   @Test
   public void testSetTextWithProgressListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
 
@@ -289,7 +278,6 @@ public class Browser_Test {
 
   @Test
   public void testVetoedSetTextWithProgressListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
     browser.addLocationListener( new VetoingLocationListener() );
@@ -302,7 +290,6 @@ public class Browser_Test {
 
   @Test
   public void testSetUrlWithProgressListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
 
@@ -314,7 +301,6 @@ public class Browser_Test {
 
   @Test
   public void testVetoedSetUrlWithProgressListener() {
-    Browser browser = new Browser( shell, SWT.NONE );
     ProgressListener listener = mock( ProgressListener.class );
     browser.addProgressListener( listener );
     browser.addLocationListener( new VetoingLocationListener() );
@@ -327,13 +313,11 @@ public class Browser_Test {
 
   @Test
   public void testGetWebBrowser() {
-    Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
   }
 
   @Test
   public void testIsSerializable() throws Exception {
-    Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
 
     Browser deserializedBrowser = serializeAndDeserialize( browser );
@@ -343,8 +327,9 @@ public class Browser_Test {
 
   @Test
   public void testExecuteReturnsAfterDispose() {
-    final Browser browser = new Browser( shell, SWT.NONE );
+    ensureOperationMode( SWT_COMPATIBILITY );
     display.asyncExec( new Runnable() {
+      @Override
       public void run() {
         browser.dispose();
       }
@@ -357,11 +342,7 @@ public class Browser_Test {
 
   @Test
   public void testExecute_JEE_COMPATIBILITY() {
-    // Activate SimpleLifeCycle
-    getApplicationContext().getLifeCycleFactory().deactivate();
-    getApplicationContext().getLifeCycleFactory().activate();
-    Browser browser = new Browser( shell, SWT.NONE );
-
+    ensureOperationMode( JEE_COMPATIBILITY );
     try {
       browser.execute( "var x = 2;" );
       fail();
@@ -372,17 +353,19 @@ public class Browser_Test {
 
   @Test
   public void testEvaluate_JEE_COMPATIBILITY() {
-    // Activate SimpleLifeCycle
-    getApplicationContext().getLifeCycleFactory().deactivate();
-    getApplicationContext().getLifeCycleFactory().activate();
-    Browser browser = new Browser( shell, SWT.NONE );
-
+    ensureOperationMode( JEE_COMPATIBILITY );
     try {
       browser.evaluate( "var x = 2;" );
       fail();
     } catch( UnsupportedOperationException expected ) {
       assertEquals( "Method not supported in JEE_COMPATIBILITY mode.", expected.getMessage() );
     }
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( browser.getAdapter( WidgetLCA.class ) instanceof BrowserLCA );
+    assertSame( browser.getAdapter( WidgetLCA.class ), browser.getAdapter( WidgetLCA.class ) );
   }
 
   private static String getText( Browser browser ) {
@@ -392,12 +375,23 @@ public class Browser_Test {
   }
 
   private static class VetoingLocationListener implements LocationListener {
+    @Override
     public void changing( LocationEvent event ) {
       event.doit = false;
     }
 
+    @Override
     public void changed( LocationEvent event ) {
     }
+  }
+
+  private static void ensureOperationMode( OperationMode operationMode ) {
+    LifeCycleFactory lifeCycleFactory = getApplicationContext().getLifeCycleFactory();
+    lifeCycleFactory.deactivate();
+    if( SWT_COMPATIBILITY.equals( operationMode ) ) {
+      lifeCycleFactory.configure( RWTLifeCycle.class );
+    }
+    lifeCycleFactory.activate();
   }
 
 }

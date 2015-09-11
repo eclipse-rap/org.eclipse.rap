@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,15 @@ import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.DROP_DOWN_BUTTON
 import static org.eclipse.swt.internal.widgets.IDateTimeAdapter.SPINNER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -31,28 +32,25 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class DateTime_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Shell shell;
   private DateTime dateTime;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display, SWT.NONE );
     dateTime = new DateTime( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -364,6 +362,12 @@ public class DateTime_Test {
     shell.setBackgroundMode( SWT.INHERIT_FORCE );
 
     assertTrue( adapter.getBackgroundTransparency() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( dateTime.getAdapter( WidgetLCA.class ) instanceof DateTimeLCA );
+    assertSame( dateTime.getAdapter( WidgetLCA.class ), dateTime.getAdapter( WidgetLCA.class ) );
   }
 
   private IDateTimeAdapter getAdapter( DateTime dateTime ) {

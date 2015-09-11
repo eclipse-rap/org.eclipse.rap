@@ -31,10 +31,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.template.Template;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -51,12 +52,16 @@ import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Tree_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -64,16 +69,9 @@ public class Tree_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     tree = new Tree( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -2236,6 +2234,12 @@ public class Tree_Test {
     assertEquals( 200, countResolvedItems( tree ) );
   }
 
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( tree.getAdapter( WidgetLCA.class ) instanceof TreeLCA );
+    assertSame( tree.getAdapter( WidgetLCA.class ), tree.getAdapter( WidgetLCA.class ) );
+  }
+
   private Tree createFixedColumnsTree() {
     Tree result = new Tree( shell, SWT.NONE );
     result.setData( RWT.FIXED_COLUMNS, new Integer( 2 ) );
@@ -2317,4 +2321,5 @@ public class Tree_Test {
     String key = "org.eclipse.rap.rwt.internal.textsize.TextSizeRecalculation#temporaryResize";
     serviceStore.setAttribute( key, Boolean.TRUE );
   }
+
 }

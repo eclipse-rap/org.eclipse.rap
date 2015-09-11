@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,40 +14,38 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.scalekit.ScaleLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Scale_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Shell shell;
+  private Scale scale;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    scale = new Scale( shell, SWT.NONE );
   }
 
   @Test
   public void testInitialValues() {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     assertEquals( 0, scale.getMinimum() );
     assertEquals( 100, scale.getMaximum() );
     assertEquals( 0, scale.getSelection() );
@@ -57,8 +55,6 @@ public class Scale_Test {
 
   @Test
   public void testValues() {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.setSelection( 34 );
     assertEquals( 34, scale.getSelection() );
     scale.setMinimum( 10 );
@@ -101,7 +97,6 @@ public class Scale_Test {
   @Test
   public void testStyle() {
     // Test SWT.NONE
-    Scale scale = new Scale( shell, SWT.NONE );
     assertTrue( ( scale.getStyle() & SWT.HORIZONTAL ) != 0 );
     // Test SWT.BORDER
     scale = new Scale( shell, SWT.BORDER );
@@ -118,7 +113,6 @@ public class Scale_Test {
 
   @Test
   public void testDispose() {
-    Scale scale = new Scale( shell, SWT.NONE );
     scale.dispose();
     assertTrue( scale.isDisposed() );
   }
@@ -147,7 +141,6 @@ public class Scale_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    Scale scale = new Scale( shell, SWT.HORIZONTAL );
     scale.setSelection( 12 );
 
     Scale deserializedScale = serializeAndDeserialize( scale );
@@ -157,17 +150,19 @@ public class Scale_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Scale scale = new Scale( shell, SWT.NONE );
-
     scale.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( scale.isListening( SWT.Selection ) );
     assertTrue( scale.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddSelectionListener_withNullArgument() {
+    scale.addSelectionListener( null );
+  }
+
   @Test
   public void testRemoveSelectionListener() {
-    Scale scale = new Scale( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     scale.addSelectionListener( listener );
 
@@ -177,24 +172,15 @@ public class Scale_Test {
     assertFalse( scale.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
-  public void testAddSelectionListenerWithNullArgument() {
-    Scale scale = new Scale( shell, SWT.NONE );
-
-    try {
-      scale.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListener_withNullArgument() {
+    scale.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Scale scale = new Scale( shell, SWT.NONE );
-
-    try {
-      scale.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( scale.getAdapter( WidgetLCA.class ) instanceof ScaleLCA );
+    assertSame( scale.getAdapter( WidgetLCA.class ), scale.getAdapter( WidgetLCA.class ) );
   }
 
 }

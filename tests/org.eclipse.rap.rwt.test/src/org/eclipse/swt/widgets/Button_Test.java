@@ -24,20 +24,26 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Button_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Composite shell;
@@ -45,15 +51,9 @@ public class Button_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     button = new Button( shell, SWT.PUSH );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -469,6 +469,12 @@ public class Button_Test {
     radio.setData( RWT.BADGE, "11" );
 
     assertNull( radio.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( button.getAdapter( WidgetLCA.class ) instanceof ButtonLCA );
+    assertSame( button.getAdapter( WidgetLCA.class ), button.getAdapter( WidgetLCA.class ) );
   }
 
 }

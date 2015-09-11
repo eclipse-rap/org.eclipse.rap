@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
 import org.eclipse.rap.rwt.template.Template;
@@ -54,6 +55,7 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCA;
 import org.eclipse.swt.layout.FillLayout;
 import org.junit.Before;
 import org.junit.Rule;
@@ -2871,6 +2873,12 @@ public class Table_Test {
 
     // all items preloaded
     assertEquals( 200, countResolvedItems( table ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( table.getAdapter( WidgetLCA.class ) instanceof TableLCA );
+    assertSame( table.getAdapter( WidgetLCA.class ), table.getAdapter( WidgetLCA.class ) );
   }
 
   private Image createImage50x100() throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,33 +13,36 @@ package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ProgressBar_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Composite shell;
+  private ProgressBar progressBar;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    Display display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    progressBar = new ProgressBar( shell, SWT.NONE );
   }
 
   @Test
   public void testRangeOperations() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     assertEquals( 0, progressBar.getMinimum() );
     assertEquals( 100, progressBar.getMaximum() );
 
@@ -62,9 +65,6 @@ public class ProgressBar_Test {
 
   @Test
   public void testSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     assertEquals( 0, progressBar.getSelection() );
 
     progressBar.setMinimum( 10 );
@@ -82,9 +82,6 @@ public class ProgressBar_Test {
 
   @Test
   public void testState() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     assertEquals( SWT.NORMAL, progressBar.getState() );
     progressBar.setState( SWT.PAUSED );
     assertEquals( SWT.PAUSED, progressBar.getState() );
@@ -97,9 +94,6 @@ public class ProgressBar_Test {
 
   @Test
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
     Point expected = new Point( 162, 18 );
     assertEquals( expected, bar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -119,14 +113,17 @@ public class ProgressBar_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
-    bar.setSelection( 54 );
+    progressBar.setSelection( 54 );
 
-    ProgressBar deserializedBar = serializeAndDeserialize( bar );
+    ProgressBar deserializedBar = serializeAndDeserialize( progressBar );
 
-    assertEquals( bar.getSelection(), deserializedBar.getSelection() );
+    assertEquals( progressBar.getSelection(), deserializedBar.getSelection() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( progressBar.getAdapter( WidgetLCA.class ) instanceof ProgressBarLCA );
+    assertSame( progressBar.getAdapter( WidgetLCA.class ), progressBar.getAdapter( WidgetLCA.class ) );
   }
 
 }

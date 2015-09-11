@@ -14,106 +14,94 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA;
 import org.eclipse.swt.layout.GridLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ExpandItem_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private ExpandBar expandBar;
+  private ExpandItem expandItem;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     expandBar = new ExpandBar( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    expandItem = new ExpandItem( expandBar, SWT.NONE );
   }
 
   @Test
-  public void testCreation() {
-    // Add one item
-    ExpandItem item1 = new ExpandItem( expandBar, SWT.NONE, 0 );
+  public void testCreation_addsItemToParent() {
     assertEquals( 1, expandBar.getItemCount() );
-    assertSame( item1, expandBar.getItem( 0 ) );
-    // Insert an item before first item
-    ExpandItem item0 = new ExpandItem( expandBar, SWT.NONE, 0 );
+    assertSame( expandItem, expandBar.getItem( 0 ) );
+  }
+
+  @Test
+  public void testCreation_insertsItemBeforeFirstItem() {
+    ExpandItem insertedItem = new ExpandItem( expandBar, SWT.NONE, 0 );
+
     assertEquals( 2, expandBar.getItemCount() );
-    assertSame( item0, expandBar.getItem( 0 ) );
-    // Try to add an item whit an index which is out of bounds
-    try {
-      new ExpandItem( expandBar, SWT.NONE, expandBar.getItemCount() + 8 );
-      String msg = "Index out of bounds expected when creating an item with "
-                   + "index > itemCount";
-      fail( msg );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+    assertSame( insertedItem, expandBar.getItem( 0 ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testCreation_failsWithIndexOutOfBounds() {
+    new ExpandItem( expandBar, SWT.NONE, expandBar.getItemCount() + 1 );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testCreation_failsWithNullParent() {
+    new ExpandItem( null, SWT.NONE );
   }
 
   @Test
-  public void testParent() {
-    // Test creating with valid parent
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
-    assertSame( expandBar, item.getParent() );
-    // Test creating column without parent
-    try {
-      new ExpandItem( null, SWT.NONE );
-      fail( "Must not allow to create ExpandItem with null-parent." );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
+  public void testGetParent() {
+    assertSame( expandBar, expandItem.getParent() );
   }
 
   @Test
-  public void testDispose() {
-    for( int i = 0; i < 10; i++ ) {
-      new ExpandItem( expandBar, SWT.NONE );
-    }
-    // force item to dispose it
-    ExpandItem item = expandBar.getItem( 0 );
-    item.dispose();
-    assertEquals( 9, expandBar.getItemCount() );
+  public void testDispose_removesItemFromParent() {
+    expandItem.dispose();
+
+    assertEquals( 0, expandBar.getItemCount() );
   }
 
   @Test
   public void testText() throws IOException {
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
-    assertEquals( "", item.getText() );
-    item.setText( "abc" );
-    assertEquals( "abc", item.getText() );
-    item = new ExpandItem( expandBar, SWT.NONE );
-    item.setImage( createImage( display, Fixture.IMAGE1 ) );
-    assertEquals( "", item.getText() );
+    assertEquals( "", expandItem.getText() );
+    expandItem.setText( "abc" );
+    assertEquals( "abc", expandItem.getText() );
+    expandItem = new ExpandItem( expandBar, SWT.NONE );
+    expandItem.setImage( createImage( display, Fixture.IMAGE1 ) );
+    assertEquals( "", expandItem.getText() );
   }
 
   @Test
   public void testImage() throws IOException {
     Image image = createImage( display, Fixture.IMAGE1 );
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
-    assertEquals( null, item.getImage() );
-    item.setImage( image );
-    assertSame( image, item.getImage() );
+    ExpandItem expandItem = new ExpandItem( expandBar, SWT.NONE );
+    assertEquals( null, expandItem.getImage() );
+    expandItem.setImage( image );
+    assertSame( image, expandItem.getImage() );
   }
 
   @Test
@@ -124,24 +112,28 @@ public class ExpandItem_Test {
     new Button( composite, SWT.RADIO ).setText( "SWT.RADIO" );
     new Button( composite, SWT.CHECK ).setText( "SWT.CHECK" );
     new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
-    item.setText( "What is your favorite button?" );
-    item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
-    item.setControl( composite );
-    BoxDimensions itemBorder = item.getItemBorder();
-    assertEquals( composite.getSize().y + itemBorder.top + itemBorder.bottom, item.getHeight() );
+    expandItem.setText( "What is your favorite button?" );
+    expandItem.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
+    expandItem.setControl( composite );
+    BoxDimensions itemBorder = expandItem.getItemBorder();
+    assertEquals( composite.getSize().y + itemBorder.top + itemBorder.bottom, expandItem.getHeight() );
   }
 
   @Test
   public void testHeaderHeight() {
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
-    item.setText( "What is your favorite button?" );
-    assertEquals( 24, item.getHeaderHeight() );
-    item.setImage( display.getSystemImage( SWT.ICON_WARNING ) );
-    assertEquals( 32, item.getHeaderHeight() );
+    expandItem.setText( "What is your favorite button?" );
+    assertEquals( 24, expandItem.getHeaderHeight() );
+    expandItem.setImage( display.getSystemImage( SWT.ICON_WARNING ) );
+    assertEquals( 32, expandItem.getHeaderHeight() );
     Font font = new Font( display, "font", 30, SWT.BOLD );
     expandBar.setFont( font );
-    assertEquals( 34, item.getHeaderHeight() );
+    assertEquals( 34, expandItem.getHeaderHeight() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( expandItem.getAdapter( WidgetLCA.class ) instanceof ExpandItemLCA );
+    assertSame( expandItem.getAdapter( WidgetLCA.class ), expandItem.getAdapter( WidgetLCA.class ) );
   }
 
 }

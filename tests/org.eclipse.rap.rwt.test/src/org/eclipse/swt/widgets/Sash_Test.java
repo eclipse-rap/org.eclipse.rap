@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,36 +13,37 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.sashkit.SashLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Sash_Test {
 
-  private Shell shell;
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Composite shell;
+  private Sash sash;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     Display display = new Display();
     shell = new Shell( display, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    sash = new Sash( shell, SWT.NONE );
   }
 
   @Test
   public void testIsSerializable() throws Exception {
-    Sash sash = new Sash( shell, SWT.NONE );
     sash.setSize( 1, 2 );
 
     Sash deserializedSash = serializeAndDeserialize( sash );
@@ -52,17 +53,19 @@ public class Sash_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Sash sash = new Sash( shell, SWT.NONE );
-
     sash.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( sash.isListening( SWT.Selection ) );
     assertTrue( sash.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddSelectionListener_withNullArgument() {
+    sash.addSelectionListener( null );
+  }
+
   @Test
   public void testRemoveSelectionListener() {
-    Sash sash = new Sash( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     sash.addSelectionListener( listener );
 
@@ -72,24 +75,15 @@ public class Sash_Test {
     assertFalse( sash.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
-  public void testAddSelectionListenerWithNullArgument() {
-    Sash sash = new Sash( shell, SWT.NONE );
-
-    try {
-      sash.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListener_withNullArgument() {
+    sash.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Sash sash = new Sash( shell, SWT.NONE );
-
-    try {
-      sash.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( sash.getAdapter( WidgetLCA.class ) instanceof SashLCA );
+    assertSame( sash.getAdapter( WidgetLCA.class ), sash.getAdapter( WidgetLCA.class ) );
   }
 
 }

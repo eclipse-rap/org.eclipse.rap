@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,24 +21,30 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class CTabItem_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -47,16 +53,10 @@ public class CTabItem_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     folder = new CTabFolder( shell, SWT.NONE );
     item = new CTabItem( folder, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -304,6 +304,12 @@ public class CTabItem_Test {
     item.setData( "foo", "bar" );
 
     assertEquals( "bar", item.getData( "foo" ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( item.getAdapter( WidgetLCA.class ) instanceof CTabItemLCA );
+    assertSame( item.getAdapter( WidgetLCA.class ), item.getAdapter( WidgetLCA.class ) );
   }
 
 }

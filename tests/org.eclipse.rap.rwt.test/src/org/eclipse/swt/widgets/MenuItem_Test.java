@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,8 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestUtil;
 import org.eclipse.swt.SWT;
@@ -33,13 +34,17 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 public class MenuItem_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -49,19 +54,12 @@ public class MenuItem_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     menu = new Menu( shell, SWT.POP_UP );
     menuItem = new MenuItem( menu, SWT.PUSH );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -389,6 +387,12 @@ public class MenuItem_Test {
     menuItem.handleAcceleratorActivation();
 
     verify( listener ).widgetSelected( any( SelectionEvent.class ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( menuItem.getAdapter( WidgetLCA.class ) instanceof MenuItemLCA );
+    assertSame( menuItem.getAdapter( WidgetLCA.class ), menuItem.getAdapter( WidgetLCA.class ) );
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import java.util.Locale;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,28 +34,29 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Spinner_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Shell shell;
+  private Spinner spinner;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
+    spinner = new Spinner( shell, SWT.NONE );
   }
 
   @Test
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     assertEquals( 0, spinner.getSelection() );
     assertEquals( 0, spinner.getMinimum() );
     assertEquals( 100, spinner.getMaximum() );
@@ -72,10 +75,6 @@ public class Spinner_Test {
 
   @Test
   public void testMinMax() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     // it is allowed to set min and max to the same value
     spinner.setMinimum( 1 );
     spinner.setMaximum( 1 );
@@ -103,10 +102,6 @@ public class Spinner_Test {
 
   @Test
   public void testIncrementAndPageIncrement() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     // ignore illegal values
     spinner.setIncrement( 0 );
     assertEquals( 1, spinner.getIncrement() );
@@ -120,12 +115,9 @@ public class Spinner_Test {
 
   @Test
   public void testModifyAndSelectionEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Spinner spinner = new Spinner( shell, SWT.NONE );
     spinner.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         assertSame( spinner, event.getSource() );
         log.append( "modifyEvent" );
@@ -155,10 +147,6 @@ public class Spinner_Test {
 
   @Test
   public void testAddModifyListener() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.addModifyListener( mock( ModifyListener.class ) );
 
     assertTrue( spinner.isListening( SWT.Modify ) );
@@ -166,9 +154,6 @@ public class Spinner_Test {
 
   @Test
   public void testRemoveModifyListener() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     ModifyListener listener = mock( ModifyListener.class );
     spinner.addModifyListener( listener );
 
@@ -179,10 +164,6 @@ public class Spinner_Test {
 
   @Test
   public void testAddModifyListenerWithNullArgument() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     try {
       spinner.addModifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -191,10 +172,6 @@ public class Spinner_Test {
 
   @Test
   public void testRemoveModifyListenerWithNullArgument() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     try {
       spinner.removeModifyListener( null );
     } catch( IllegalArgumentException expected ) {
@@ -204,9 +181,6 @@ public class Spinner_Test {
   @Test
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Point expected = new Point( 100, 28 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -233,10 +207,6 @@ public class Spinner_Test {
 
   @Test
   public void testComputeTrim() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     Rectangle expected = new Rectangle( 0, 0, 130, 100 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
 
@@ -247,9 +217,6 @@ public class Spinner_Test {
 
   @Test
   public void testGetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     spinner.setSelection( 5 );
     assertEquals( "5", spinner.getText() );
 
@@ -263,9 +230,6 @@ public class Spinner_Test {
 
   @Test
   public void testTextLimit() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     assertEquals( Spinner.LIMIT, spinner.getTextLimit() );
     spinner.setTextLimit( 1 );
     assertEquals( 1, spinner.getTextLimit() );
@@ -279,9 +243,6 @@ public class Spinner_Test {
 
   @Test
   public void testDigits() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     assertEquals( 0, spinner.getDigits() );
     spinner.setDigits( 1 );
     assertEquals( 1, spinner.getDigits() );
@@ -295,10 +256,6 @@ public class Spinner_Test {
 
   @Test
   public void testSetValuesValid() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setValues( 50, 40, 60, 2, 5, 10 );
     assertEquals( 50, spinner.getSelection() );
     assertEquals( 40, spinner.getMinimum() );
@@ -310,10 +267,6 @@ public class Spinner_Test {
 
   @Test
   public void testSetValuesInvalid() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setValues( 5, 6, 4, 5, 1, 2 );
     assertEquals( 0, spinner.getSelection() );
     assertEquals( 0, spinner.getMinimum() );
@@ -349,10 +302,6 @@ public class Spinner_Test {
 
   @Test
   public void testSetValuesWithNonCrossedRanges() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.setValues( 500, 400, 600, 2, 5, 10 );
     assertEquals( 500, spinner.getSelection() );
     assertEquals( 400, spinner.getMinimum() );
@@ -372,9 +321,6 @@ public class Spinner_Test {
 
   @Test
   public void testIsSerializable() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.HORIZONTAL );
     spinner.setSelection( 2 );
 
     Spinner deserializedSpinner = serializeAndDeserialize( spinner );
@@ -384,10 +330,6 @@ public class Spinner_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
     spinner.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( spinner.isListening( SWT.Selection ) );
@@ -396,9 +338,6 @@ public class Spinner_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     spinner.addSelectionListener( listener );
 
@@ -408,28 +347,20 @@ public class Spinner_Test {
     assertFalse( spinner.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
+    spinner.addSelectionListener( null );
+  }
 
-    try {
-      spinner.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListenerWithNullArgument() {
+    spinner.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Spinner spinner = new Spinner( shell, SWT.NONE );
-
-    try {
-      spinner.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( spinner.getAdapter( WidgetLCA.class ) instanceof SpinnerLCA );
+    assertSame( spinner.getAdapter( WidgetLCA.class ), spinner.getAdapter( WidgetLCA.class ) );
   }
 
 }

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
@@ -35,6 +36,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -46,12 +48,12 @@ import org.mockito.InOrder;
 
 public class Composite_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private Composite composite;
-
-  @Rule
-  public TestContext context = new TestContext();
 
   @Before
   public void setUp() {
@@ -253,6 +255,12 @@ public class Composite_Test {
     order.verify( parentListener ).handleEvent( any( Event.class ) );
     order.verify( childListener ).handleEvent( any( Event.class ) );
     order.verifyNoMoreInteractions();
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( composite.getAdapter( WidgetLCA.class ) instanceof CompositeLCA );
+    assertSame( composite.getAdapter( WidgetLCA.class ), composite.getAdapter( WidgetLCA.class ) );
   }
 
 }

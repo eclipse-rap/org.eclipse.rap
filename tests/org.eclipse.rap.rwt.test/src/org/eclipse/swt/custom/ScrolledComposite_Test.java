@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,12 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -30,31 +32,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ScrolledComposite_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private ScrolledComposite sc;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    sc = new ScrolledComposite( shell, SWT.NONE );
   }
 
   @Test
   public void testCreation() {
-    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
     assertNull( sc.getHorizontalBar() );
     assertNull( sc.getVerticalBar() );
     sc = new ScrolledComposite( shell, SWT.V_SCROLL );
@@ -265,6 +265,12 @@ public class ScrolledComposite_Test {
 
     assertTrue( deserializedSC.getContent() instanceof Label );
     assertTrue( deserializedSC.getLayout() instanceof ScrolledCompositeLayout );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( sc.getAdapter( WidgetLCA.class ) instanceof ScrolledCompositeLCA );
+    assertSame( sc.getAdapter( WidgetLCA.class ), sc.getAdapter( WidgetLCA.class ) );
   }
 
 }

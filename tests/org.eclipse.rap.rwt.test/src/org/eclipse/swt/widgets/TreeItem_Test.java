@@ -29,8 +29,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -41,35 +42,34 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 
 public class TreeItem_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private Tree tree;
 
+  private TreeItem item;
+
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     tree = new Tree( shell, SWT.SINGLE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    item = new TreeItem( tree, SWT.NONE );
   }
 
   @Test
   public void testConstructor() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( display, item.getDisplay() );
     assertEquals( "", item.getText() );
     assertSame( item, tree.getItem( tree.getItemCount() - 1 ) );
@@ -153,7 +153,6 @@ public class TreeItem_Test {
 
   @Test
   public void testChecked() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     Tree checkedTree = new Tree( shell, SWT.CHECK );
     TreeItem checkedItem = new TreeItem( checkedTree, SWT.NONE );
     // Ensure that checked-property on a treeItem cannot be changed when tree
@@ -170,20 +169,18 @@ public class TreeItem_Test {
 
   @Test
   public void testGetExpanded() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    treeItem.setExpanded( true );
-    assertFalse( treeItem.getExpanded() );
+    item.setExpanded( true );
+    assertFalse( item.getExpanded() );
     // there must be at least one subitem before you can set expanded true
-    new TreeItem( treeItem, 0 );
-    treeItem.setExpanded( true );
-    assertTrue( treeItem.getExpanded() );
-    treeItem.setExpanded( false );
-    assertFalse( treeItem.getExpanded() );
+    new TreeItem( item, 0 );
+    item.setExpanded( true );
+    assertTrue( item.getExpanded() );
+    item.setExpanded( false );
+    assertFalse( item.getExpanded() );
   }
 
   @Test
   public void testBackgroundColor() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     // initial background color should match the parents one
     assertEquals( tree.getBackground(), item.getBackground() );
     // change the colors
@@ -194,7 +191,6 @@ public class TreeItem_Test {
 
   @Test
   public void testForegroundColor() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     // initial foreground color should match the parents one
     assertEquals( tree.getForeground(), item.getForeground() );
     // change the colors
@@ -540,38 +536,37 @@ public class TreeItem_Test {
 
   @Test
   public void testSetForegroundI() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     // no columns
-    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
-    assertEquals( treeItem.getForeground(), treeItem.getForeground( 0 ) );
-    treeItem.setForeground( 0, red );
-    assertEquals( red, treeItem.getForeground( 0 ) );
+    assertEquals( tree.getForeground(), item.getForeground( 0 ) );
+    assertEquals( item.getForeground(), item.getForeground( 0 ) );
+    item.setForeground( 0, red );
+    assertEquals( red, item.getForeground( 0 ) );
     // index beyond range - no error
-    treeItem.setForeground( 10, red );
-    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
+    item.setForeground( 10, red );
+    assertEquals( item.getForeground(), item.getForeground( 10 ) );
     // with columns
     new TreeColumn( tree, SWT.LEFT );
     new TreeColumn( tree, SWT.LEFT );
     // index beyond range - no error
-    treeItem.setForeground( 10, red );
-    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
-    treeItem.setForeground( 0, red );
-    assertEquals( red, treeItem.getForeground( 0 ) );
-    treeItem.setForeground( 0, null );
-    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
-    treeItem.setForeground( 0, blue );
-    treeItem.setForeground( red );
-    assertEquals( blue, treeItem.getForeground( 0 ) );
-    treeItem.setForeground( 0, null );
-    assertEquals( red, treeItem.getForeground( 0 ) );
-    treeItem.setForeground( null );
-    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+    item.setForeground( 10, red );
+    assertEquals( item.getForeground(), item.getForeground( 10 ) );
+    item.setForeground( 0, red );
+    assertEquals( red, item.getForeground( 0 ) );
+    item.setForeground( 0, null );
+    assertEquals( tree.getForeground(), item.getForeground( 0 ) );
+    item.setForeground( 0, blue );
+    item.setForeground( red );
+    assertEquals( blue, item.getForeground( 0 ) );
+    item.setForeground( 0, null );
+    assertEquals( red, item.getForeground( 0 ) );
+    item.setForeground( null );
+    assertEquals( tree.getForeground(), item.getForeground( 0 ) );
     Color color2 = new Color(display, 255, 0, 0);
     color2.dispose();
     try {
-      treeItem.setForeground( 0, color2 );
+      item.setForeground( 0, color2 );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException expected ) {
       // expected
@@ -580,39 +575,38 @@ public class TreeItem_Test {
 
   @Test
   public void testSetFontI() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Font font = new Font( display, "Helvetica", 10, SWT.NORMAL );
     // no columns
-    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
-    assertTrue( treeItem.getFont().equals( treeItem.getFont( 0 ) ) );
-    treeItem.setFont( 0, font );
-    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
+    assertTrue( tree.getFont().equals( item.getFont( 0 ) ) );
+    assertTrue( item.getFont().equals( item.getFont( 0 ) ) );
+    item.setFont( 0, font );
+    assertTrue( font.equals( item.getFont( 0 ) ) );
     // index beyond range - no error
-    treeItem.setFont( 10, font );
-    assertTrue( treeItem.getFont().equals( treeItem.getFont( 10 ) ) );
+    item.setFont( 10, font );
+    assertTrue( item.getFont().equals( item.getFont( 10 ) ) );
     // with columns
     new TreeColumn( tree, SWT.LEFT );
     new TreeColumn( tree, SWT.LEFT );
     // index beyond range - no error
-    treeItem.setFont( 10, font );
-    assertTrue( treeItem.getFont().equals( treeItem.getFont( 10 ) ) );
-    treeItem.setFont( 0, font );
-    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
-    treeItem.setFont( 0, null );
-    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+    item.setFont( 10, font );
+    assertTrue( item.getFont().equals( item.getFont( 10 ) ) );
+    item.setFont( 0, font );
+    assertTrue( font.equals( item.getFont( 0 ) ) );
+    item.setFont( 0, null );
+    assertTrue( tree.getFont().equals( item.getFont( 0 ) ) );
     Font font2 = new Font( display, "Helvetica", 20, SWT.NORMAL );
-    treeItem.setFont( 0, font );
-    treeItem.setFont( font2 );
-    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
-    treeItem.setFont( 0, null );
-    assertTrue( font2.equals( treeItem.getFont( 0 ) ) );
-    treeItem.setFont( null );
-    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+    item.setFont( 0, font );
+    item.setFont( font2 );
+    assertTrue( font.equals( item.getFont( 0 ) ) );
+    item.setFont( 0, null );
+    assertTrue( font2.equals( item.getFont( 0 ) ) );
+    item.setFont( null );
+    assertTrue( tree.getFont().equals( item.getFont( 0 ) ) );
     // Test with a disposed font
     Font font3 = new Font( display, "Testfont", 10, SWT.BOLD );
     font3.dispose();
     try {
-      treeItem.setFont( 0, font3 );
+      item.setFont( 0, font3 );
       fail( "Disposed font must not be set." );
     } catch( IllegalArgumentException expected ) {
       // expected
@@ -643,39 +637,38 @@ public class TreeItem_Test {
 
   @Test
   public void testSetBackgroundI() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     // no columns
-    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
-    assertEquals( treeItem.getBackground(), treeItem.getBackground( 0 ) );
-    treeItem.setBackground( 0, red );
-    assertEquals( red, treeItem.getBackground( 0 ) );
+    assertEquals( tree.getBackground(), item.getBackground( 0 ) );
+    assertEquals( item.getBackground(), item.getBackground( 0 ) );
+    item.setBackground( 0, red );
+    assertEquals( red, item.getBackground( 0 ) );
     // index beyond range - no error
-    treeItem.setBackground( 10, red );
-    assertEquals( treeItem.getBackground(), treeItem.getBackground( 10 ) );
+    item.setBackground( 10, red );
+    assertEquals( item.getBackground(), item.getBackground( 10 ) );
     // with columns
     new TreeColumn( tree, SWT.LEFT );
     new TreeColumn( tree, SWT.LEFT );
     // index beyond range - no error
-    treeItem.setBackground( 10, red );
-    assertEquals( treeItem.getBackground(), treeItem.getBackground( 10 ) );
-    treeItem.setBackground( 0, red );
-    assertEquals( red, treeItem.getBackground( 0 ) );
-    treeItem.setBackground( 0, null );
-    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
-    treeItem.setBackground( 0, blue );
-    treeItem.setBackground( red );
-    assertEquals( blue, treeItem.getBackground( 0 ) );
-    treeItem.setBackground( 0, null );
-    assertEquals( red, treeItem.getBackground( 0 ) );
-    treeItem.setBackground( null );
-    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
+    item.setBackground( 10, red );
+    assertEquals( item.getBackground(), item.getBackground( 10 ) );
+    item.setBackground( 0, red );
+    assertEquals( red, item.getBackground( 0 ) );
+    item.setBackground( 0, null );
+    assertEquals( tree.getBackground(), item.getBackground( 0 ) );
+    item.setBackground( 0, blue );
+    item.setBackground( red );
+    assertEquals( blue, item.getBackground( 0 ) );
+    item.setBackground( 0, null );
+    assertEquals( red, item.getBackground( 0 ) );
+    item.setBackground( null );
+    assertEquals( tree.getBackground(), item.getBackground( 0 ) );
     // Test for the case that the argument has been disposed
     Color color = new Color( display, 0, 255, 0 );
     color.dispose();
     try {
-      treeItem.setBackground( 0, color );
+      item.setBackground( 0, color );
       fail( "Disposed color must not be set." );
     } catch( IllegalArgumentException expected ) {
       // expected
@@ -854,20 +847,19 @@ public class TreeItem_Test {
 
   @Test
   public void testBoundsSubItemBug219374() {
-    TreeItem root = new TreeItem( tree, SWT.NONE );
-    TreeItem root2 = new TreeItem( tree, SWT.NONE );
-    TreeItem sub1 = new TreeItem( root, SWT.NONE );
-    TreeItem sub2 = new TreeItem( root2, SWT.NONE );
-    root2.setExpanded( true );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    TreeItem sub1 = new TreeItem( item, SWT.NONE );
+    TreeItem sub2 = new TreeItem( item2, SWT.NONE );
+    item2.setExpanded( true );
     // default height is 16
-    assertEquals( 0, root.getBounds().y );
+    assertEquals( 0, item.getBounds().y );
     assertEquals( 0, sub1.getBounds().y ); // not expanded
-    assertEquals( 27, root2.getBounds().y );
+    assertEquals( 27, item2.getBounds().y );
     assertEquals( 54, sub2.getBounds().y );
     // default indent for each level is 16
-    assertEquals( 16, root.getBounds().x );
+    assertEquals( 16, item.getBounds().x );
     assertEquals( 0, sub1.getBounds().x ); // not expanded
-    assertEquals( 16, root2.getBounds().x );
+    assertEquals( 16, item2.getBounds().x );
     assertEquals( 32, sub2.getBounds().x );
   }
 
@@ -923,14 +915,12 @@ public class TreeItem_Test {
 
   @Test
   public void testGetImageBoundsInvalidIndex() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getImageBounds( 1 ) );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getImageBounds( -1 ) );
   }
 
   @Test
   public void testGetImageBoundsColumns() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn c1 = new TreeColumn( tree, SWT.NONE );
     c1.setWidth( 100 );
     TreeColumn c2 = new TreeColumn( tree, SWT.NONE );
@@ -977,7 +967,6 @@ public class TreeItem_Test {
 
   @Test
   public void testGetImageBoundsIndexOutOfBoundsBug() throws IOException {
-    new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -1051,7 +1040,6 @@ public class TreeItem_Test {
 
   @Test
   public void testTextBounds() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.setWidth( 50 );
     TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
@@ -1066,7 +1054,6 @@ public class TreeItem_Test {
 
   @Test
   public void testTextBoundsWithInvalidIndex() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "abc" );
     // without columns
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
@@ -1077,7 +1064,6 @@ public class TreeItem_Test {
 
   @Test
   public void testTextBoundsWithImageAndColumns() throws IOException {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setWidth( 200 );
 
@@ -1090,7 +1076,6 @@ public class TreeItem_Test {
 
   @Test
   public void testTextBoundsWithChangedFont() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "abc" );
     Rectangle origBounds = item.getTextBounds( 0 );
     item.setFont( new Font( display, "Helvetica", 50, SWT.BOLD ) );
@@ -1130,12 +1115,12 @@ public class TreeItem_Test {
 
   @Test
   public void testNewItemWithIndex() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    treeItem.setText( "1" );
-    TreeItem treeItem2 = new TreeItem( tree, SWT.NONE, 0 );
-    treeItem2.setText( "2" );
-    assertEquals( 1, tree.indexOf( treeItem ) );
-    assertEquals( 0, tree.indexOf( treeItem2 ) );
+    item.setText( "1" );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE, 0 );
+    item2.setText( "2" );
+
+    assertEquals( 1, tree.indexOf( item ) );
+    assertEquals( 0, tree.indexOf( item2 ) );
     // Try to add an item with an index which is out of bounds
     try {
       new TreeItem( tree, SWT.NONE, tree.getItemCount() + 8 );
@@ -1160,15 +1145,15 @@ public class TreeItem_Test {
 
   @Test
   public void testNewItemWithIndexAsChild() {
-    TreeItem root = new TreeItem( tree, SWT.NONE );
-    root.setText( "root" );
-    TreeItem treeItem = new TreeItem( root, SWT.NONE );
-    treeItem.setText( "1" );
-    TreeItem treeItem2 = new TreeItem( root, SWT.NONE, 0 );
-    treeItem2.setText( "2" );
-    assertEquals( 0, tree.indexOf( root ) );
-    assertEquals( 1, root.indexOf( treeItem ) );
-    assertEquals( 0, root.indexOf( treeItem2 ) );
+    item.setText( "root" );
+    TreeItem subItem1 = new TreeItem( item, SWT.NONE );
+    subItem1.setText( "1" );
+    TreeItem subItem2 = new TreeItem( item, SWT.NONE, 0 );
+    subItem2.setText( "2" );
+
+    assertEquals( 0, tree.indexOf( item ) );
+    assertEquals( 1, item.indexOf( subItem1 ) );
+    assertEquals( 0, item.indexOf( subItem2 ) );
   }
 
   //////////
@@ -1207,6 +1192,7 @@ public class TreeItem_Test {
     final Font font = new Font( display, new FontData( "serif", 10, 0 ) );
     final Image image = display.getSystemImage( SWT.ICON_ERROR );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( ( TreeItem )event.item );
         item.setBackground( color );
@@ -1402,12 +1388,11 @@ public class TreeItem_Test {
 
   @Test
   public void testVirtualSetExpandedWithoutSetItemCount() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    treeItem.setExpanded( true );
-    assertFalse( treeItem.getExpanded() );
-    treeItem.setItemCount( 3 );
-    treeItem.setExpanded( true );
-    assertTrue( treeItem.getExpanded() );
+    item.setExpanded( true );
+    assertFalse( item.getExpanded() );
+    item.setItemCount( 3 );
+    item.setExpanded( true );
+    assertTrue( item.getExpanded() );
   }
 
   @Test
@@ -1514,6 +1499,7 @@ public class TreeItem_Test {
   public void testVirtualGetBackground() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -1548,6 +1534,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setBackground( 1, display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -1582,6 +1569,7 @@ public class TreeItem_Test {
   public void testVirtualGetForeground() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -1616,6 +1604,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setForeground( 1, display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -1650,6 +1639,7 @@ public class TreeItem_Test {
   public void testVirtualGetText() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( "foo" );
@@ -1684,6 +1674,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( 1, "foo" );
@@ -1718,6 +1709,7 @@ public class TreeItem_Test {
   public void testVirtualGetFont() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setFont( new Font( display, "Times", 10, SWT.BOLD ) );
@@ -1752,6 +1744,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setFont( 1, new Font( display, "Times", 10, SWT.BOLD ) );
@@ -1787,6 +1780,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     final Image image = new Image( display, 100, 100 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setImage( image );
@@ -1822,6 +1816,7 @@ public class TreeItem_Test {
     createColumns( tree, 3 );
     final Image image = new Image( display, 100, 100 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setImage( 1, image );
@@ -1856,6 +1851,7 @@ public class TreeItem_Test {
   public void testVirtualGetBoundsMaterializeItems() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( "Very long long long long long text" );
@@ -1889,6 +1885,7 @@ public class TreeItem_Test {
   public void testVirtualGetImageBoundsMaterializeItems() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         Image image = display.getSystemImage( SWT.ICON_ERROR );
@@ -1923,6 +1920,7 @@ public class TreeItem_Test {
   public void testVirtualGetTextBoundsMaterializeItems() {
     tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( 0, "Very long long long long long text" );
@@ -1957,6 +1955,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setItemCount( 1 );
@@ -1992,6 +1991,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setChecked( true );
@@ -2027,6 +2027,7 @@ public class TreeItem_Test {
     tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setGrayed( true );
@@ -2101,12 +2102,11 @@ public class TreeItem_Test {
 
   @Test
   public void testUpdateFlatIndicesOnItemDispose() {
-    TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item2, SWT.NONE );
     item2.setExpanded( true );
 
-    item1.dispose();
+    item.dispose();
 
     assertEquals( 1, subItem.getFlatIndex() );
   }
@@ -2126,7 +2126,6 @@ public class TreeItem_Test {
 
   @Test
   public void testUpdateSelectionOnRemoveAll() {
-    TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
     tree.setSelection( subItem );
 
@@ -2144,6 +2143,7 @@ public class TreeItem_Test {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "item" );
     tree.addListener( SWT.SetData, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         int i = item.getParent().indexOf( item );
@@ -2174,15 +2174,14 @@ public class TreeItem_Test {
 
   @Test
   public void testSelectionOnItemCollapse_Single() {
-    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
-    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
-    rootItem.setExpanded( true );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    item.setExpanded( true );
     tree.setSelection( new TreeItem[] { subItem } );
 
-    rootItem.setExpanded( false );
+    item.setExpanded( false );
 
     assertEquals( 1, tree.getSelectionCount() );
-    assertSame( rootItem, tree.getSelection()[ 0 ] );
+    assertSame( item, tree.getSelection()[ 0 ] );
   }
 
   @Test
@@ -2202,18 +2201,20 @@ public class TreeItem_Test {
 
   @Test
   public void testClearPreferredWidthBuffersRecursive() {
-    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
-    TreeItem subItem = new TreeItem( rootItem, SWT.NONE );
-    rootItem.setExpanded( true );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    item.setExpanded( true );
 
     tree.changed( new Control[ 0 ] );
 
-    assertFalse( rootItem.hasPreferredWidthBuffer( 0 ) );
+    assertFalse( item.hasPreferredWidthBuffer( 0 ) );
     assertFalse( subItem.hasPreferredWidthBuffer( 0 ) );
   }
 
-  //////////////////
-  // Helping methods
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( item.getAdapter( WidgetLCA.class ) instanceof TreeItemLCA );
+    assertSame( item.getAdapter( WidgetLCA.class ), item.getAdapter( WidgetLCA.class ) );
+  }
 
   private static TreeColumn[] createColumns( Tree tree, int count ) {
     TreeColumn[] result = new TreeColumn[ count ];
@@ -2228,9 +2229,12 @@ public class TreeItem_Test {
 
   private final static class DisposingSetDataListener implements Listener {
 
+    @Override
     public void handleEvent( Event event ) {
       TreeItem item = ( TreeItem )event.item;
       item.dispose();
     }
+
   }
+
 }

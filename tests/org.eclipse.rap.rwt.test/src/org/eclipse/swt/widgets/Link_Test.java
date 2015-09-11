@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,47 +14,45 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.linkkit.LinkLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Link_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Shell shell;
+  private Link link;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display , SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    link = new Link( shell, SWT.NONE );
   }
 
   @Test
   public void testInitialValues() {
-    Link link = new Link( shell, SWT.NONE );
     assertEquals( "", link.getText() );
   }
 
   @Test
   public void testText() {
-    Link link = new Link( shell, SWT.NONE );
     String text
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
       + "the <a>SWT</a> homepage.";
@@ -70,7 +68,6 @@ public class Link_Test {
 
   @Test
   public void testAdapter() {
-    Link link = new Link( shell, SWT.NONE );
     String text
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
       + "the <a>SWT</a> homepage.";
@@ -86,7 +83,6 @@ public class Link_Test {
 
   @Test
   public void testComputeSize() {
-    Link link = new Link( shell, SWT.NONE );
     Point expected = new Point( 4, 4 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -120,7 +116,6 @@ public class Link_Test {
   @Test
   public void testIsSerializable() throws Exception {
     String text = "text";
-    Link link = new Link( shell, SWT.NONE );
     link.getAdapter( ILinkAdapter.class );
     link.setText( text );
 
@@ -131,8 +126,6 @@ public class Link_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Link link = new Link( shell, SWT.NONE );
-
     link.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( link.isListening( SWT.Selection ) );
@@ -141,7 +134,6 @@ public class Link_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Link link = new Link( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     link.addSelectionListener( listener );
 
@@ -151,24 +143,20 @@ public class Link_Test {
     assertFalse( link.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    Link link = new Link( shell, SWT.NONE );
+    link.addSelectionListener( null );
+  }
 
-    try {
-      link.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListenerWithNullArgument() {
+    link.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Link link = new Link( shell, SWT.NONE );
-
-    try {
-      link.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( link.getAdapter( WidgetLCA.class ) instanceof LinkLCA );
+    assertSame( link.getAdapter( WidgetLCA.class ), link.getAdapter( WidgetLCA.class ) );
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,8 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -39,12 +40,16 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemHolder;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class TabFolder_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -52,16 +57,9 @@ public class TabFolder_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     folder = new TabFolder( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -356,6 +354,7 @@ public class TabFolder_Test {
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
     folder.setFont( font );
     folder.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         font.dispose();
       }
@@ -504,6 +503,12 @@ public class TabFolder_Test {
     folder.dispose();
 
     verify( listener, times( 0 ) ).handleEvent( any( Event.class ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( folder.getAdapter( WidgetLCA.class ) instanceof TabFolderLCA );
+    assertSame( folder.getAdapter( WidgetLCA.class ), folder.getAdapter( WidgetLCA.class ) );
   }
 
   private void createItems( TabFolder folder, int number ) {

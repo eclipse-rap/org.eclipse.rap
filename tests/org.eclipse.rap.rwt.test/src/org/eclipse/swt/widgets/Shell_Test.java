@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -44,29 +44,26 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.layout.FillLayout;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InOrder;
 
 
 public class Shell_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -162,6 +159,7 @@ public class Shell_Test {
     final Shell[] backgroundShell = { null };
     final boolean[] failed = { false };
     Thread thread = new Thread( new Runnable() {
+      @Override
       public void run() {
         try {
           backgroundShell[ 0 ] = new Shell();
@@ -437,9 +435,11 @@ public class Shell_Test {
     Button button = new Button( shell, SWT.PUSH );
     Combo combo = new Combo( shell, SWT.NONE );
     button.addFocusListener( new FocusListener() {
+      @Override
       public void focusGained( FocusEvent e ) {
         log.add( shell.getDefaultButton() );
       }
+      @Override
       public void focusLost( FocusEvent e ) {
         log.add( shell.getDefaultButton() );
       }
@@ -578,6 +578,7 @@ public class Shell_Test {
       }
     } );
     button.addListener( SWT.Activate, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( "buttonActivated" );
       }
@@ -776,9 +777,11 @@ public class Shell_Test {
     Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( shellBounds );
     shell.addControlListener( new ControlListener() {
+      @Override
       public void controlMoved( ControlEvent event ) {
         log.add( "controlMoved" );
       }
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( "controlResized" );
       }
@@ -1001,6 +1004,12 @@ public class Shell_Test {
   public void testMoveBelow_doesNotThrowExeption() {
     // see bug 229265
     shell.moveBelow( null );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( shell.getAdapter( WidgetLCA.class ) instanceof ShellLCA );
+    assertSame( shell.getAdapter( WidgetLCA.class ), shell.getAdapter( WidgetLCA.class ) );
   }
 
 }

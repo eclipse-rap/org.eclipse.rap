@@ -13,45 +13,48 @@ package org.eclipse.swt.widgets;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionListener;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ScrollBar_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private ScrollBar scrollBar;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
-    shell = new Shell( display , SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    shell = new Shell( display, SWT.NONE );
+    scrollBar = new ScrollBar( shell, SWT.NONE );
   }
 
   @Test
   public void testAddSelectionListener() {
-    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
-
     scrollBar.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( scrollBar.isListening( SWT.Selection ) );
     assertTrue( scrollBar.isListening( SWT.DefaultSelection ) );
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testAddSelectionListener_withNullArgument() {
+    scrollBar.addSelectionListener( null );
+  }
+
   @Test
   public void testRemoveSelectionListener() {
-    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     scrollBar.addSelectionListener( listener );
 
@@ -61,24 +64,9 @@ public class ScrollBar_Test {
     assertFalse( scrollBar.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
-  public void testAddSelectionListenerWithNullArgument() {
-    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
-
-    try {
-      scrollBar.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    ScrollBar scrollBar = new ScrollBar( shell, SWT.NONE );
-
-    try {
-      scrollBar.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListener_withNullArgument() {
+    scrollBar.removeSelectionListener( null );
   }
 
   @Test
@@ -101,6 +89,12 @@ public class ScrollBar_Test {
 
     assertNotNull( parent.getHorizontalBar() );
     assertNull( parent.getVerticalBar() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( scrollBar.getAdapter( WidgetLCA.class ) instanceof ScrollBarLCA );
+    assertSame( scrollBar.getAdapter( WidgetLCA.class ), scrollBar.getAdapter( WidgetLCA.class ) );
   }
 
 }

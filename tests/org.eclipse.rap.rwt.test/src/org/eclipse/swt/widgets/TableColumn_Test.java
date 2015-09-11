@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -34,12 +35,16 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class TableColumn_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -48,17 +53,10 @@ public class TableColumn_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
     column = new TableColumn( table, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -235,6 +233,7 @@ public class TableColumn_Test {
   public void testPackWithVirtual() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.add( event.item );
       }
@@ -269,9 +268,11 @@ public class TableColumn_Test {
   public void testResizeEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     column.addControlListener( new ControlListener() {
+      @Override
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
       }
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }
@@ -296,18 +297,22 @@ public class TableColumn_Test {
   public void testMoveEvent() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     column.addControlListener( new ControlListener() {
+      @Override
       public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
       }
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );
     final TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.addControlListener( new ControlListener() {
+      @Override
       public void controlMoved( ControlEvent event ) {
         log.add( event );
       }
+      @Override
       public void controlResized( ControlEvent event ) {
         fail( "unexpected event: controlResized" );
       }
@@ -496,4 +501,11 @@ public class TableColumn_Test {
     }
     return result;
   }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( column.getAdapter( WidgetLCA.class ) instanceof TableColumnLCA );
+    assertSame( column.getAdapter( WidgetLCA.class ), column.getAdapter( WidgetLCA.class ) );
+  }
+
 }

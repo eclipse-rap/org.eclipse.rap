@@ -21,8 +21,11 @@ import static org.mockito.Mockito.mock;
 
 import java.io.InputStream;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
+import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -33,26 +36,23 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class FileUpload_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Composite shell;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -296,6 +296,13 @@ public class FileUpload_Test {
     // fixed size
     expected = new Point( 102, 102 );
     assertEquals( expected, upload.computeSize( 100, 100 ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    FileUpload upload = new FileUpload( shell, SWT.NONE );
+    assertTrue( upload.getAdapter( WidgetLCA.class ) instanceof FileUploadLCA );
+    assertSame( upload.getAdapter( WidgetLCA.class ), upload.getAdapter( WidgetLCA.class ) );
   }
 
   @SuppressWarnings( "resource" )

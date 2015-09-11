@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -28,32 +29,30 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ToolBar_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private ToolBar toolBar;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    toolBar = new ToolBar( shell, SWT.NONE );
   }
 
   @Test
   public void testCreation() throws IOException {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     assertEquals( 0, toolBar.getItemCount() );
     assertEquals( 0, toolBar.getItems().length );
     ToolItem item0 = new ToolItem( toolBar, SWT.CHECK );
@@ -137,7 +136,6 @@ public class ToolBar_Test {
 
   @Test
   public void testDispose() {
-    ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     assertEquals( 0, toolBar.getItemCount() );
     assertEquals( 0, toolBar.getItems().length );
     ToolItem item0 = new ToolItem( toolBar, SWT.CHECK );
@@ -151,34 +149,33 @@ public class ToolBar_Test {
 
   @Test
   public void testDisposeWithFontDisposeInDisposeListener() {
-    ToolBar folder = new ToolBar( shell, SWT.NONE );
-    new ToolItem( folder, SWT.NONE );
-    new ToolItem( folder, SWT.NONE );
+    new ToolItem( toolBar, SWT.NONE );
+    new ToolItem( toolBar, SWT.NONE );
     final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
-    folder.setFont( font );
-    folder.addDisposeListener( new DisposeListener() {
+    toolBar.setFont( font );
+    toolBar.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         font.dispose();
       }
     } );
-    folder.dispose();
+    toolBar.dispose();
   }
 
   @Test
   public void testIndexOf() {
-    ToolBar bar = new ToolBar( shell, SWT.NONE );
-    ToolItem item = new ToolItem( bar, SWT.NONE );
-    assertEquals( 0, bar.indexOf( item ) );
+    ToolItem item = new ToolItem( toolBar, SWT.NONE );
+    assertEquals( 0, toolBar.indexOf( item ) );
 
     item.dispose();
     try {
-      bar.indexOf( item );
+      toolBar.indexOf( item );
       fail( "indexOf must not answer for a disposed item" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
-      bar.indexOf( null );
+      toolBar.indexOf( null );
       fail( "indexOf must not answer for null item" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -187,31 +184,35 @@ public class ToolBar_Test {
 
   @Test
   public void testComputeSize() {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    assertEquals( new Point( 24, 22 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 24, 22 ), toolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    ToolItem toolItem1 = new ToolItem( toolbar, SWT.PUSH );
+    ToolItem toolItem1 = new ToolItem( toolBar, SWT.PUSH );
     toolItem1.setText( "Item 1" );
-    new ToolItem( toolbar, SWT.SEPARATOR );
-    new ToolItem( toolbar, SWT.CHECK );
-    ToolItem toolItem2 = new ToolItem( toolbar, SWT.PUSH );
+    new ToolItem( toolBar, SWT.SEPARATOR );
+    new ToolItem( toolBar, SWT.CHECK );
+    ToolItem toolItem2 = new ToolItem( toolBar, SWT.PUSH );
     toolItem2.setText( "Item 2" );
-    ToolItem separator = new ToolItem( toolbar, SWT.SEPARATOR );
-    separator.setControl( new Text( toolbar, SWT.NONE ) );
-    ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
+    ToolItem separator = new ToolItem( toolBar, SWT.SEPARATOR );
+    separator.setControl( new Text( toolBar, SWT.NONE ) );
+    ToolItem toolItem3 = new ToolItem( toolBar, SWT.DROP_DOWN );
     toolItem3.setText( "Item 3" );
-    assertEquals( new Point( 208, 30 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
+    assertEquals( new Point( 208, 30 ), toolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 100, 100 ), toolBar.computeSize( 100, 100 ) );
   }
 
   @Test
   public void testIsSerializable() throws Exception {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     new ToolItem( toolBar, SWT.PUSH );
 
     ToolBar deserializedToolBar = serializeAndDeserialize( toolBar );
 
     assertEquals( 1, deserializedToolBar.getItemCount() );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( toolBar.getAdapter( WidgetLCA.class ) instanceof ToolBarLCA );
+    assertSame( toolBar.getAdapter( WidgetLCA.class ), toolBar.getAdapter( WidgetLCA.class ) );
   }
 
 }

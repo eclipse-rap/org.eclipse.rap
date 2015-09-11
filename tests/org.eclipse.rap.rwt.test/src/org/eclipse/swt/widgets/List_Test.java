@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.mock;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,32 +31,30 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.listkit.ListLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class List_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
+  private List list;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    list = new List( shell, SWT.NONE );
   }
 
   @Test
   public void testGetItemsAndGetItemCount() {
-    List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItemCount() );
     assertEquals( 0, list.getItems().length );
     // add(String)
@@ -104,8 +102,6 @@ public class List_Test {
 
   @Test
   public void testAdd() {
-    List list = new List( shell, SWT.NONE );
-
     // add item at end of list
     list.add( "test" );
     assertEquals( "test", list.getItem( 0 ) );
@@ -156,7 +152,6 @@ public class List_Test {
 
   @Test
   public void testRemove() {
-    List list = new List( shell, SWT.NONE );
     list.add( "item1" );
 
     // Test remove at specific position
@@ -867,8 +862,6 @@ public class List_Test {
 
   @Test
   public void testSetItem() {
-    List list = new List( shell, SWT.NONE );
-
     // Test setItem
     list.add( "itemX" );
     list.add( "item1" );
@@ -897,8 +890,6 @@ public class List_Test {
 
   @Test
   public void testSetItems() {
-    List list = new List( shell, SWT.NONE );
-
     // Test setItems on empty list
     String[] itemsToSet = new String[] { "a", "b", "c" };
     list.setItems( itemsToSet );
@@ -932,8 +923,6 @@ public class List_Test {
 
   @Test
   public void testGetItem() {
-    List list = new List( shell, SWT.NONE );
-
     // Test getItem for existing item
     list.add( "item0" );
     assertEquals( "item0", list.getItem( 0 ) );
@@ -955,7 +944,6 @@ public class List_Test {
 
   @Test
   public void testGetItems() {
-    List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItems().length );
     list.add( "item1" );
     assertTrue( Arrays.equals( new String[] { "item1" }, list.getItems() ) );
@@ -963,8 +951,7 @@ public class List_Test {
 
   @Test
   public void testStyle() {
-    List list1 = new List( shell, SWT.NONE );
-    assertTrue( ( list1.getStyle() & SWT.SINGLE ) != 0 );
+    assertTrue( ( list.getStyle() & SWT.SINGLE ) != 0 );
 
     List list2 = new List( shell, SWT.SINGLE );
     assertTrue( ( list2.getStyle() & SWT.SINGLE ) != 0 );
@@ -1088,7 +1075,6 @@ public class List_Test {
 
   @Test
   public void testTopIndex() {
-    List list = new List( shell, SWT.NONE );
     list.add( "item0" );
     list.add( "item1" );
     list.add( "item2" );
@@ -1120,7 +1106,6 @@ public class List_Test {
 
   @Test
   public void testDispose() {
-    List list = new List( shell, SWT.NONE );
     list.add( "test" );
     list.dispose();
     assertTrue( list.isDisposed() );
@@ -1128,7 +1113,6 @@ public class List_Test {
 
   @Test
   public void testComputeSize() {
-    List list = new List( shell, SWT.NONE );
     Point expected = new Point( 64, 64 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -1165,7 +1149,6 @@ public class List_Test {
 
   @Test
   public void testShowSelectionEmptyList() {
-    List list = new List( shell, SWT.NONE );
     list.showSelection();
     list.add( "1" );
     list.add( "2" );
@@ -1180,7 +1163,6 @@ public class List_Test {
 
   @Test
   public void testShowSelectionBottom() {
-    List list = new List( shell, SWT.NONE );
     list.setSize( 100, 26 );
     list.add( "1" );
     list.add( "2" );
@@ -1194,7 +1176,6 @@ public class List_Test {
 
   @Test
   public void testShowSelectionTop() {
-    List list = new List( shell, SWT.NONE );
     list.setSize( 100, 20 );
     list.add( "1" );
     list.add( "2" );
@@ -1208,7 +1189,6 @@ public class List_Test {
 
   @Test
   public void testHasScrollBar() {
-    List list = new List( shell, SWT.NONE );
     list.setSize( 10, 10 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     assertFalse( list.hasVScrollBar() );
@@ -1390,7 +1370,6 @@ public class List_Test {
   @Test
   public void testIsSerialized() throws Exception {
     String listItem = "listItem";
-    List list = new List( shell, SWT.NONE  );
     list.add( listItem );
 
     List deserializedList = serializeAndDeserialize( list );
@@ -1432,7 +1411,6 @@ public class List_Test {
 
     list.setSelection( new String[] { "text1", "text1", "text2" } );
 
-
     assertFalse( hasDuplicateIndices( list.getSelectionIndices() ) );
   }
 
@@ -1448,7 +1426,6 @@ public class List_Test {
 
   @Test
   public void testSetCustomItemHeight() {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     assertEquals( 123, list.getItemHeight() );
   }
@@ -1456,7 +1433,6 @@ public class List_Test {
   @Test
   public void testGetCustomItemHeight() {
     Integer itemHeight = new Integer( 123 );
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.CUSTOM_ITEM_HEIGHT, itemHeight );
 
     Object returnedItemHeight = list.getData( RWT.CUSTOM_ITEM_HEIGHT );
@@ -1466,7 +1442,6 @@ public class List_Test {
 
   @Test
   public void testResetCustomItemHeight() {
-    List list = new List( shell, SWT.NONE );
     int calculatedItemHeight = list.getItemHeight();
     list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( 123 ) );
     list.setData( RWT.CUSTOM_ITEM_HEIGHT, null );
@@ -1475,33 +1450,21 @@ public class List_Test {
 
   @Test
   public void testDefaultCustomItemHeight() {
-    List list = new List( shell, SWT.NONE );
     assertEquals( 26, list.getItemHeight() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetCustomItemHeightWithNegativeValue() {
-    List list = new List( shell, SWT.NONE );
-    try {
-      list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Integer( -1 ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetCustomItemHeightWithNonIntegerValue() {
-    List list = new List( shell, SWT.NONE );
-    try {
-      list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    list.setData( RWT.CUSTOM_ITEM_HEIGHT, new Object() );
   }
 
   @Test
   public void testMarkupTextWithoutMarkupEnabled() {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
 
     try {
@@ -1511,21 +1474,15 @@ public class List_Test {
     }
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testMarkupTextWithMarkupEnabled() {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
-    try {
-      list.setItems( new String[] { "invalid xhtml: <<&>>" } );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    list.setItems( new String[] { "invalid xhtml: <<&>>" } );
   }
 
   @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
     list.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
 
@@ -1538,7 +1495,6 @@ public class List_Test {
 
   @Test
   public void testDisableMarkupIsIgnored() {
-    List list = new List( shell, SWT.NONE );
     list.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
 
     list.setData( RWT.MARKUP_ENABLED, Boolean.FALSE );
@@ -1548,8 +1504,6 @@ public class List_Test {
 
   @Test
   public void testAddSelectionListener() {
-    List list = new List( shell, SWT.NONE );
-
     list.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( list.isListening( SWT.Selection ) );
@@ -1558,7 +1512,6 @@ public class List_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    List list = new List( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     list.addSelectionListener( listener );
 
@@ -1568,24 +1521,20 @@ public class List_Test {
     assertFalse( list.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    List list = new List( shell, SWT.NONE );
+    list.addSelectionListener( null );
+  }
 
-    try {
-      list.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListenerWithNullArgument() {
+    list.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    List list = new List( shell, SWT.NONE );
-
-    try {
-      list.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( list.getAdapter( WidgetLCA.class ) instanceof ListLCA );
+    assertSame( list.getAdapter( WidgetLCA.class ), list.getAdapter( WidgetLCA.class ) );
   }
 
   private boolean hasDuplicateIndices( int[] indices ) {
@@ -1599,4 +1548,5 @@ public class List_Test {
     }
     return result;
   }
+
 }

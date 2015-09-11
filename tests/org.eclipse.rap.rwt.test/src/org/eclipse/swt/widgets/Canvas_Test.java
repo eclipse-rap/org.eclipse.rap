@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,19 +20,23 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.internal.events.EventList;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Canvas_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private java.util.List<PaintEvent> paintEventLog;
   private Display display;
@@ -40,22 +44,16 @@ public class Canvas_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     paintEventLog = new ArrayList<PaintEvent>();
     display = new Display();
     Shell shell = new Shell( display );
     canvas = new Canvas( shell, SWT.NONE );
   }
 
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
-  }
-
   @Test
   public void testPaintEvent() {
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
       }
@@ -76,6 +74,7 @@ public class Canvas_Test {
   @Test
   public void testResize() {
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
       }
@@ -87,6 +86,7 @@ public class Canvas_Test {
   @Test
   public void testMultiplePaintEvents() {
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
         event.gc.drawLine( 1, 2, 3, 4 );
@@ -154,6 +154,12 @@ public class Canvas_Test {
     canvas.addPaintListener( mock( PaintListener.class ) );
 
     assertEquals( 0, EventList.getInstance().getAll().length );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( canvas.getAdapter( WidgetLCA.class ) instanceof CanvasLCA );
+    assertSame( canvas.getAdapter( WidgetLCA.class ), canvas.getAdapter( WidgetLCA.class ) );
   }
 
 }

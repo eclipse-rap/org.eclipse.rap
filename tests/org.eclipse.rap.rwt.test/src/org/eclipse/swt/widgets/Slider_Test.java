@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,39 +14,38 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.sliderkit.SliderLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Slider_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Shell shell;
+  private Slider slider;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     shell = new Shell( display );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    slider = new Slider( shell, SWT.NONE );
   }
 
   @Test
   public void testInitialValues() {
-    Slider slider = new Slider( shell, SWT.NONE );
     assertEquals( 0, slider.getMinimum() );
     assertEquals( 100, slider.getMaximum() );
     assertEquals( 0, slider.getSelection() );
@@ -57,8 +56,6 @@ public class Slider_Test {
 
   @Test
   public void testValues() {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.setSelection( 34 );
     assertEquals( 34, slider.getSelection() );
     slider.setMinimum( 10 );
@@ -116,7 +113,6 @@ public class Slider_Test {
   @Test
   public void testStyle() {
     // Test SWT.NONE
-    Slider slider = new Slider( shell, SWT.NONE );
     assertTrue( ( slider.getStyle() & SWT.HORIZONTAL ) != 0 );
     // Test SWT.BORDER
     slider = new Slider( shell, SWT.BORDER );
@@ -133,8 +129,8 @@ public class Slider_Test {
 
   @Test
   public void testDispose() {
-    Slider slider = new Slider( shell, SWT.NONE );
     slider.dispose();
+
     assertTrue( slider.isDisposed() );
   }
 
@@ -164,8 +160,6 @@ public class Slider_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Slider slider = new Slider( shell, SWT.NONE );
-
     slider.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( slider.isListening( SWT.Selection ) );
@@ -174,7 +168,6 @@ public class Slider_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Slider slider = new Slider( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     slider.addSelectionListener( listener );
 
@@ -184,24 +177,20 @@ public class Slider_Test {
     assertFalse( slider.isListening( SWT.DefaultSelection ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    Slider slider = new Slider( shell, SWT.NONE );
+    slider.addSelectionListener( null );
+  }
 
-    try {
-      slider.addSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  @Test( expected = IllegalArgumentException.class )
+  public void testRemoveSelectionListenerWithNullArgument() {
+    slider.removeSelectionListener( null );
   }
 
   @Test
-  public void testRemoveSelectionListenerWithNullArgument() {
-    Slider slider = new Slider( shell, SWT.NONE );
-
-    try {
-      slider.removeSelectionListener( null );
-    } catch( IllegalArgumentException expected ) {
-    }
+  public void testGetAdapter_LCA() {
+    assertTrue( slider.getAdapter( WidgetLCA.class ) instanceof SliderLCA );
+    assertSame( slider.getAdapter( WidgetLCA.class ), slider.getAdapter( WidgetLCA.class ) );
   }
 
 }

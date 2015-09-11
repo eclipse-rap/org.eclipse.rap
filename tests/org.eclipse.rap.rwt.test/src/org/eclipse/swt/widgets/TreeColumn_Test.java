@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,19 +25,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class TreeColumn_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -47,18 +52,11 @@ public class TreeColumn_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
     column = new TreeColumn( tree, SWT.NONE );
     eventLog = new ArrayList<Event>();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -415,10 +413,14 @@ public class TreeColumn_Test {
     assertEquals( "bar", column.getData( "foo" ) );
   }
 
-  //////////////////
-  // Helping classes
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( column.getAdapter( WidgetLCA.class ) instanceof TreeColumnLCA );
+    assertSame( column.getAdapter( WidgetLCA.class ), column.getAdapter( WidgetLCA.class ) );
+  }
 
   private class LoggingListener implements Listener {
+    @Override
     public void handleEvent( Event event ) {
       eventLog.add( event );
     }

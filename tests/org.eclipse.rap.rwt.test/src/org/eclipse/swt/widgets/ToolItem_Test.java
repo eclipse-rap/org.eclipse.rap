@@ -19,34 +19,33 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class ToolItem_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
   private Display display;
   private Shell shell;
   private ToolBar toolbar;
-  private ToolItem item;
+  private ToolItem toolItem;
 
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     toolbar = new ToolBar( shell, SWT.NONE );
-    item = new ToolItem( toolbar, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
+    toolItem = new ToolItem( toolbar, SWT.NONE );
   }
 
   @Test
@@ -56,10 +55,10 @@ public class ToolItem_Test {
     String text1 = "text1";
 
     // Test 'normal' tool item
-    item.setText( text0 );
-    assertEquals( text0, item.getText() );
-    item.setText( text1 );
-    assertEquals( text1, item.getText() );
+    toolItem.setText( text0 );
+    assertEquals( text0, toolItem.getText() );
+    toolItem.setText( text1 );
+    assertEquals( text1, toolItem.getText() );
     // Test separator tool item
     assertEquals( "", separator.getText() );
     separator.setText( text1 );
@@ -68,8 +67,8 @@ public class ToolItem_Test {
 
   @Test
   public void testImage() {
-    item.setImage( null );
-    assertEquals( null, item.getImage() );
+    toolItem.setImage( null );
+    assertEquals( null, toolItem.getImage() );
   }
 
   @Test
@@ -78,19 +77,19 @@ public class ToolItem_Test {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
 
     // ToolItem must be enabled initially
-    assertTrue( item.getEnabled() );
+    assertTrue( toolItem.getEnabled() );
 
     // Test enabled ToolItem on disabled ToolBar
     toolbar.setEnabled( false );
-    item.setEnabled( true );
-    assertTrue( item.getEnabled() );
-    assertFalse( item.isEnabled() );
+    toolItem.setEnabled( true );
+    assertTrue( toolItem.getEnabled() );
+    assertFalse( toolItem.isEnabled() );
 
     // Test disabled ToolItem on disabled ToolBar
     toolbar.setEnabled( false );
-    item.setEnabled( false );
-    assertFalse( item.getEnabled() );
-    assertFalse( item.isEnabled() );
+    toolItem.setEnabled( false );
+    assertFalse( toolItem.getEnabled() );
+    assertFalse( toolItem.isEnabled() );
 
     // Test SEPARATOR ToolItem
     separator.setEnabled( false );
@@ -103,8 +102,8 @@ public class ToolItem_Test {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
 
     // Using control property on ToolItem without SEPARATOR style has no effect
-    item.setControl( new Text( toolbar, SWT.NONE ) );
-    assertEquals( null, item.getControl() );
+    toolItem.setControl( new Text( toolbar, SWT.NONE ) );
+    assertEquals( null, toolItem.getControl() );
 
     // Setting a valid control on a SEPARATOR ToolItem
     Control control = new Text( toolbar, SWT.NONE );
@@ -248,39 +247,39 @@ public class ToolItem_Test {
 
   @Test
   public void testAddSelectionListener() {
-    item.addSelectionListener( mock( SelectionListener.class ) );
+    toolItem.addSelectionListener( mock( SelectionListener.class ) );
 
-    assertTrue( item.isListening( SWT.Selection ) );
-    assertTrue( item.isListening( SWT.DefaultSelection ) );
+    assertTrue( toolItem.isListening( SWT.Selection ) );
+    assertTrue( toolItem.isListening( SWT.DefaultSelection ) );
   }
 
   @Test
   public void testRemoveSelectionListener() {
     SelectionListener listener = mock( SelectionListener.class );
-    item.addSelectionListener( listener );
+    toolItem.addSelectionListener( listener );
 
-    item.removeSelectionListener( listener );
+    toolItem.removeSelectionListener( listener );
 
-    assertFalse( item.isListening( SWT.Selection ) );
-    assertFalse( item.isListening( SWT.DefaultSelection ) );
+    assertFalse( toolItem.isListening( SWT.Selection ) );
+    assertFalse( toolItem.isListening( SWT.DefaultSelection ) );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testAddSelectionListenerWithNullArgument() {
-    item.addSelectionListener( null );
+    toolItem.addSelectionListener( null );
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testRemoveSelectionListenerWithNullArgument() {
-    item.removeSelectionListener( null );
+    toolItem.removeSelectionListener( null );
   }
 
   @Test
   public void testMarkupToolTipTextWithoutMarkupEnabled() {
-    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
 
     try {
-      item.setToolTipText( "invalid xhtml: <<&>>" );
+      toolItem.setToolTipText( "invalid xhtml: <<&>>" );
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
@@ -288,18 +287,18 @@ public class ToolItem_Test {
 
   @Test( expected = IllegalArgumentException.class )
   public void testMarkupToolTipTextWithMarkupEnabled() {
-    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
-    item.setToolTipText( "invalid xhtml: <<&>>" );
+    toolItem.setToolTipText( "invalid xhtml: <<&>>" );
   }
 
   @Test
   public void testMarkupTextWithMarkupEnabled_ValidationDisabled() {
-    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
-    item.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    toolItem.setData( MarkupValidator.MARKUP_VALIDATION_DISABLED, Boolean.TRUE );
 
     try {
-      item.setToolTipText( "invalid xhtml: <<&>>" );
+      toolItem.setToolTipText( "invalid xhtml: <<&>>" );
     } catch( IllegalArgumentException notExpected ) {
       fail();
     }
@@ -307,63 +306,69 @@ public class ToolItem_Test {
 
   @Test
   public void testDisableMarkupIsIgnored() {
-    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.TRUE );
 
-    item.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
+    toolItem.setData( RWT.TOOLTIP_MARKUP_ENABLED, Boolean.FALSE );
 
-    assertEquals( Boolean.TRUE, item.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
+    assertEquals( Boolean.TRUE, toolItem.getData( RWT.TOOLTIP_MARKUP_ENABLED ) );
   }
 
   @Test
   public void testSetData() {
-    item.setData( "foo", "bar" );
+    toolItem.setData( "foo", "bar" );
 
-    assertEquals( "bar", item.getData( "foo" ) );
+    assertEquals( "bar", toolItem.getData( "foo" ) );
   }
 
   @Test
   public void testBadge_isSetForPush() {
-    item = new ToolItem( toolbar, SWT.PUSH );
+    toolItem = new ToolItem( toolbar, SWT.PUSH );
 
-    item.setData( RWT.BADGE, "11" );
+    toolItem.setData( RWT.BADGE, "11" );
 
-    assertEquals( "11", item.getData( RWT.BADGE ) );
+    assertEquals( "11", toolItem.getData( RWT.BADGE ) );
   }
 
   @Test
   public void testBadge_isNotSetForCheck() {
-    item = new ToolItem( toolbar, SWT.CHECK );
+    toolItem = new ToolItem( toolbar, SWT.CHECK );
 
-    item.setData( RWT.BADGE, "11" );
+    toolItem.setData( RWT.BADGE, "11" );
 
-    assertNull( item.getData( RWT.BADGE ) );
+    assertNull( toolItem.getData( RWT.BADGE ) );
   }
 
   @Test
   public void testBadge_isNotSetForRadio() {
-    item = new ToolItem( toolbar, SWT.RADIO );
+    toolItem = new ToolItem( toolbar, SWT.RADIO );
 
-    item.setData( RWT.BADGE, "11" );
+    toolItem.setData( RWT.BADGE, "11" );
 
-    assertNull( item.getData( RWT.BADGE ) );
+    assertNull( toolItem.getData( RWT.BADGE ) );
   }
 
   @Test
   public void testBadge_isNotSetForSeparator() {
-    item = new ToolItem( toolbar, SWT.SEPARATOR );
+    toolItem = new ToolItem( toolbar, SWT.SEPARATOR );
 
-    item.setData( RWT.BADGE, "11" );
+    toolItem.setData( RWT.BADGE, "11" );
 
-    assertNull( item.getData( RWT.BADGE ) );
+    assertNull( toolItem.getData( RWT.BADGE ) );
   }
 
   @Test
   public void testBadge_isNotSetForDropDown() {
-    item = new ToolItem( toolbar, SWT.DROP_DOWN );
+    toolItem = new ToolItem( toolbar, SWT.DROP_DOWN );
 
-    item.setData( RWT.BADGE, "11" );
+    toolItem.setData( RWT.BADGE, "11" );
 
-    assertNull( item.getData( RWT.BADGE ) );
+    assertNull( toolItem.getData( RWT.BADGE ) );
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( toolItem.getAdapter( WidgetLCA.class ) instanceof ToolItemLCA );
+    assertSame( toolItem.getAdapter( WidgetLCA.class ), toolItem.getAdapter( WidgetLCA.class ) );
   }
 
 }

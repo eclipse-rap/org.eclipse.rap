@@ -21,18 +21,23 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.tabitemkit.TabItemLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class TabItem_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -41,17 +46,10 @@ public class TabItem_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
     folder = new TabFolder( shell, SWT.NONE );
     item = new TabItem( folder, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -253,6 +251,12 @@ public class TabItem_Test {
       TabItem item = new TabItem( folder, SWT.NONE );
       item.setText( "TabItem " + i );
     }
+  }
+
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( item.getAdapter( WidgetLCA.class ) instanceof TabItemLCA );
+    assertSame( item.getAdapter( WidgetLCA.class ), item.getAdapter( WidgetLCA.class ) );
   }
 
 }

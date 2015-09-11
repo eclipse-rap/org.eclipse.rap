@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,15 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.custom;
+package org.eclipse.swt.dnd;
 
-import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.dnd.droptargetkit.DropTargetLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
@@ -22,32 +24,24 @@ import org.junit.Rule;
 import org.junit.Test;
 
 
-public class CBanner_Test {
+public class DropTarget_Test {
 
   @Rule
   public TestContext context = new TestContext();
 
-  private Display display;
-  private Shell shell;
-
-  private CBanner banner;
+  private DropTarget dropTarget;
 
   @Before
   public void setUp() {
-    display = new Display();
-    shell = new Shell( display, SWT.NONE );
-    banner = new CBanner( shell, SWT.NONE );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    dropTarget = new DropTarget( shell, SWT.NONE );
   }
 
   @Test
-  public void testIsSerializable() throws Exception {
-    banner.setLeft( new CCombo( banner, SWT.NONE ) );
-    banner.setRight( new CCombo( banner, SWT.NONE ) );
-
-    CBanner deserializedBanner = serializeAndDeserialize( banner );
-
-    assertNotNull( deserializedBanner.getLeft() );
-    assertNotNull( deserializedBanner.getRight() );
+  public void testGetAdapter_LCA() {
+    assertTrue( dropTarget.getAdapter( WidgetLCA.class ) instanceof DropTargetLCA );
+    assertSame( dropTarget.getAdapter( WidgetLCA.class ), dropTarget.getAdapter( WidgetLCA.class ) );
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,18 +23,23 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
-import org.junit.After;
+import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 public class Label_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
 
   private Display display;
   private Shell shell;
@@ -42,16 +47,9 @@ public class Label_Test {
 
   @Before
   public void setUp() {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     label = new Label( shell, SWT.NONE );
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -63,13 +61,13 @@ public class Label_Test {
   @Test
   public void testText() {
     label.setText( "abc" );
+
     assertEquals( "abc", label.getText() );
-    try {
-      label.setText( null );
-      fail( "Must not allow to set null-text." );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testText_failsWithNull() {
+    label.setText( null );
   }
 
   @Test
@@ -262,10 +260,17 @@ public class Label_Test {
     assertEquals( "bar", label.getData( "foo" ) );
   }
 
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( label.getAdapter( WidgetLCA.class ) instanceof LabelLCA );
+    assertSame( label.getAdapter( WidgetLCA.class ), label.getAdapter( WidgetLCA.class ) );
+  }
+
   private Image createImage() throws IOException {
     InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
     Image result = new Image( display, stream );
     stream.close();
     return result;
   }
+
 }
