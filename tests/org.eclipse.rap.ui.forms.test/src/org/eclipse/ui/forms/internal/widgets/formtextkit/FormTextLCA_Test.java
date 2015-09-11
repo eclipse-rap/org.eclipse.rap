@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.forms.internal.widgets.formtextkit;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -23,29 +24,36 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.FormText;
-import org.junit.Test;
+import org.junit.*;
 
 
 @SuppressWarnings( "restriction" )
-public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
+public class FormTextLCA_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
   private FormText formText;
   private FormTextLCA lca;
 
-  @Override
-  protected void setUp() {
-    super.setUp();
+  @Before
+  public void setUp() {
+    display = new Display();
+    Shell shell = new Shell( display );
     formText = new FormText( shell, SWT.NONE );
     lca = new FormTextLCA();
-    Fixture.fakeNewRequest();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( formText );
 
@@ -74,6 +82,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     verify( handler ).handleNotifyHelp( formText, new JsonObject() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( formText );
 
@@ -82,6 +91,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( getId( formText.getParent() ), getParent( operation ) );
   }
 
+  @Test
   public void testRenderHyperlinkSettings() throws IOException {
     HyperlinkSettings settings = new HyperlinkSettings( display );
     settings.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -105,6 +115,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( 255, activeForeground.get( 3 ).asInt() );
   }
 
+  @Test
   public void testRenderHyperlinkSettingsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
@@ -120,6 +131,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( formText, "hyperlinkSettings" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
@@ -152,6 +164,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "Second paragraph", actual.get( 7 ).asArray().get( 1 ).asString() );
   }
 
+  @Test
   public void testRenderTextWithChangedResourceTable() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
@@ -161,8 +174,6 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     formText.setSize( 300, 300 );
     formText.setColor( "foo", display.getSystemColor( SWT.COLOR_RED ) );
     formText.setText( text, true, false );
-    Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
     formText.setColor( "foo", display.getSystemColor( SWT.COLOR_BLUE ) );
@@ -175,6 +186,7 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "[0,0,255,255]", actual.get( 0 ).asArray().get( 4 ).toString() );
   }
 
+  @Test
   public void testRenderTextWithChangedBounds() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( formText );
@@ -183,8 +195,6 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
                 + "</form>";
     formText.setSize( 300, 300 );
     formText.setText( text, true, false );
-    Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest();
     Fixture.preserveWidgets();
 
     formText.setSize( 200, 400 );

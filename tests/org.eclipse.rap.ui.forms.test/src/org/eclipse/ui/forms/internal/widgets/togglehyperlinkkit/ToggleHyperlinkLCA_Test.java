@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -23,29 +24,34 @@ import org.eclipse.rap.json.*;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.widgets.Twistie;
-import org.junit.Test;
+import org.junit.*;
 
 
 @SuppressWarnings("restriction")
-public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
+public class ToggleHyperlinkLCA_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
   private Twistie twistie;
   private ToggleHyperlinkLCA lca;
 
-  @Override
-  protected void setUp() {
-    super.setUp();
+  @Before
+  public void setUp() {
+    display = new Display();
+    Shell shell = new Shell( display );
     twistie = new Twistie( shell, SWT.NONE );
     lca = new ToggleHyperlinkLCA();
-    Fixture.fakeNewRequest();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( twistie );
 
@@ -74,6 +80,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     verify( handler ).handleNotifyHelp( twistie, new JsonObject() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( twistie );
 
@@ -82,6 +89,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( getId( twistie.getParent() ), getParent( operation ) );
   }
 
+  @Test
   public void testRenderImages() throws IOException {
     lca.renderInitialization( twistie );
 
@@ -94,6 +102,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNotNull( images.get( 3 ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     lca.renderChanges( twistie );
 
@@ -101,6 +110,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( JsonValue.TRUE, message.findListenProperty( twistie, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
     Fixture.markInitialized( twistie );
@@ -114,6 +124,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findListenOperation( twistie, "DefaultSelection" ) );
   }
 
+  @Test
   public void testRenderInitialExpanded() throws IOException {
     lca.renderChanges( twistie );
 
@@ -121,6 +132,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( twistie, "expanded" ) );
   }
 
+  @Test
   public void testRenderExpanded() throws IOException {
     twistie.setExpanded( true );
     lca.renderChanges( twistie );
@@ -129,6 +141,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( JsonValue.TRUE, message.findSetProperty( twistie, "expanded" ) );
   }
 
+  @Test
   public void testRenderExpandedUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( twistie );

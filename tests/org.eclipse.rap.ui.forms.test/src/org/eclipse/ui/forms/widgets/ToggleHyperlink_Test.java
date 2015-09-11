@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,58 +10,65 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkLCA;
+import org.junit.*;
 
-public class ToggleHyperlink_Test extends TestCase {
 
+public class ToggleHyperlink_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
+  private Composite shell;
+  private Twistie twistie;
+
+  @Before
+  public void setUp() {
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    twistie = new Twistie( shell, SWT.NONE );
+  }
+
+  @Test
   public void testColors() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Twistie twistie = new Twistie( shell, SWT.NONE );
     Color decorationColor =new Color( display, 255, 0, 0 );
     twistie.setDecorationColor( decorationColor );
+
     assertEquals( decorationColor, twistie.getDecorationColor() );
+
     Color hoverColor =new Color( display, 0, 255, 0 );
     twistie.setHoverDecorationColor( hoverColor );
+
     assertEquals( hoverColor, twistie.getHoverDecorationColor() );
   }
 
+  @Test
   public void testExpanded() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Twistie twistie = new Twistie( shell, SWT.NONE );
     twistie.setExpanded( true );
+
     assertTrue( twistie.isExpanded() );
   }
 
+  @Test
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Twistie twistie = new Twistie( shell, SWT.NONE );
-    Point expected = new Point( 11, 11 );
-    assertEquals( expected, twistie.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 11, 11 ), twistie.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
-    expected = new Point( 11, 11 );
-    assertEquals( expected, twistie.computeSize( 50, 50 ) );
+    assertEquals( new Point( 11, 11 ), twistie.computeSize( 50, 50 ) );
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( twistie.getAdapter( WidgetLCA.class ) instanceof ToggleHyperlinkLCA );
+    assertSame( twistie.getAdapter( WidgetLCA.class ), twistie.getAdapter( WidgetLCA.class ) );
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

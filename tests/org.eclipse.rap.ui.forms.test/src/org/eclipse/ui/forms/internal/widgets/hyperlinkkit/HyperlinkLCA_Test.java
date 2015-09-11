@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getStyles;
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -23,32 +24,37 @@ import org.eclipse.rap.json.*;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.junit.Test;
+import org.junit.*;
 
 
 @SuppressWarnings("restriction")
-public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
+public class HyperlinkLCA_Test {
 
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
+  private Shell shell;
   private Hyperlink hyperlink;
   private HyperlinkLCA lca;
 
-  @Override
-  protected void setUp() {
-    super.setUp();
+  @Before
+  public void setUp() {
+    display = new Display();
+    shell = new Shell( display );
     hyperlink = new Hyperlink( shell, SWT.NONE );
     lca = new HyperlinkLCA();
-    Fixture.fakeNewRequest();
   }
 
+  @Test
   public void testRenderCreate() throws IOException {
     lca.renderInitialization( hyperlink );
 
@@ -57,6 +63,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "forms.widgets.Hyperlink", operation.getType() );
   }
 
+  @Test
   public void testRenderCreateWithWrap() throws IOException {
     hyperlink = new Hyperlink( shell, SWT.WRAP );
 
@@ -88,6 +95,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     verify( handler ).handleNotifyHelp( hyperlink, new JsonObject() );
   }
 
+  @Test
   public void testRenderParent() throws IOException {
     lca.renderInitialization( hyperlink );
 
@@ -96,6 +104,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( getId( hyperlink.getParent() ), getParent( operation ) );
   }
 
+  @Test
   public void testRenderInitialText() throws IOException {
     lca.renderChanges( hyperlink );
 
@@ -103,6 +112,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "text" ) );
   }
 
+  @Test
   public void testRenderText() throws IOException {
     hyperlink.setText( "test" );
     lca.renderChanges( hyperlink );
@@ -111,6 +121,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( "test", message.findSetProperty( hyperlink, "text" ).asString() );
   }
 
+  @Test
   public void testRenderTextUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
@@ -123,6 +134,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "text" ) );
   }
 
+  @Test
   public void testRenderInitialUnderlined() throws IOException {
     lca.renderChanges( hyperlink );
 
@@ -130,6 +142,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "underlined" ) );
   }
 
+  @Test
   public void testRenderUnderlined() throws IOException {
     hyperlink.setUnderlined( true );
     lca.renderChanges( hyperlink );
@@ -138,6 +151,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( JsonValue.TRUE, message.findSetProperty( hyperlink, "underlined" ) );
   }
 
+  @Test
   public void testRenderUnderlinedUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
@@ -150,6 +164,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "underlined" ) );
   }
 
+  @Test
   public void testRenderInitialUnderlineMode() throws IOException {
     lca.renderChanges( hyperlink );
 
@@ -157,6 +172,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "underlineMode" ) );
   }
 
+  @Test
   public void testRenderUnderlineMode() throws IOException {
     getAdapter( hyperlink ).setUnderlineMode( HyperlinkSettings.UNDERLINE_HOVER );
     lca.renderChanges( hyperlink );
@@ -165,6 +181,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( 2, message.findSetProperty( hyperlink, "underlineMode" ).asInt() );
   }
 
+  @Test
   public void testRenderUnderlineModeUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
@@ -177,6 +194,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "underlineMode" ) );
   }
 
+  @Test
   public void testRenderInitialActiveBackground() throws IOException {
     lca.render( hyperlink );
 
@@ -185,6 +203,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertFalse( operation.getProperties().names().contains( "activeBackground" ) );
   }
 
+  @Test
   public void testRenderActiveBackground() throws IOException {
     getAdapter( hyperlink ).setActiveBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
@@ -197,6 +216,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( 255, actual.get( 3 ).asInt() );
   }
 
+  @Test
   public void testRenderActiveBackgroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
@@ -209,6 +229,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "activeBackground" ) );
   }
 
+  @Test
   public void testRenderInitialActiveForeground() throws IOException {
     lca.render( hyperlink );
 
@@ -217,6 +238,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertFalse( operation.getProperties().names().contains( "activeForeground" ) );
   }
 
+  @Test
   public void testRenderActiveForeground() throws IOException {
     getAdapter( hyperlink ).setActiveForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     lca.renderChanges( hyperlink );
@@ -229,6 +251,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( 255, actual.get( 3 ).asInt() );
   }
 
+  @Test
   public void testRenderActiveForegroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( hyperlink );
@@ -241,6 +264,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertNull( message.findSetOperation( hyperlink, "activeForeground" ) );
   }
 
+  @Test
   public void testRenderAddSelectionListener() throws Exception {
     lca.renderChanges( hyperlink );
 
@@ -248,6 +272,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     assertEquals( JsonValue.TRUE, message.findListenProperty( hyperlink, "DefaultSelection" ) );
   }
 
+  @Test
   @SuppressWarnings("serial")
   public void testRenderSelectionListenerUnchanged() throws Exception {
     Fixture.markInitialized( display );
@@ -255,6 +280,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
 
     hyperlink.addListener( SWT.DefaultSelection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
       }
     } );

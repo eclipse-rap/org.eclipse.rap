@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,107 +10,97 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkLCA;
+import org.junit.*;
 
-public class Hyperlink_Test extends TestCase {
 
-  public void testText() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    shell.setLayout( new FillLayout() );
-    FormToolkit toolkit = new FormToolkit( shell.getDisplay() );
-    Form form = toolkit.createForm( shell );
+public class Hyperlink_Test {
+
+  @Rule
+  public TestContext context = new TestContext();
+
+  private Display display;
+  private Composite parent;
+  private FormToolkit toolkit;
+  private Form form;
+  private Hyperlink hyperlink;
+
+  @Before
+  public void setUp() {
+    display = new Display();
+    parent = new Shell( display, SWT.NONE );
+    parent.setLayout( new FillLayout() );
+    toolkit = new FormToolkit( display );
+    form = toolkit.createForm( parent );
     form.getBody().setLayout( new TableWrapLayout() );
-    String text = "This is a hyperlink!";
-    Hyperlink hyperlink
-      = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
-    assertNotNull( hyperlink );
-    assertEquals( text, hyperlink.getText() );
-    hyperlink.setText( null );
-    assertEquals( "", hyperlink.getText() );
-    text = "Click me!";
-    hyperlink.setText( text );
-    assertEquals( text, hyperlink.getText() );
+    hyperlink = toolkit.createHyperlink( form.getBody(), "hyperlink text", SWT.NONE );
   }
 
-  public void testUnderline() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    shell.setLayout( new FillLayout() );
-    FormToolkit toolkit = new FormToolkit( shell.getDisplay() );
-    Form form = toolkit.createForm( shell );
-    form.getBody().setLayout( new TableWrapLayout() );
-    String text = "This is a hyperlink!";
-    Hyperlink hyperlink
-      = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
+  @Test
+  public void testCreated() {
     assertNotNull( hyperlink );
+    assertEquals( "hyperlink text", hyperlink.getText() );
     assertTrue( hyperlink.isUnderlined() );
+    assertNull( hyperlink.getToolTipText() );
+    assertNull( hyperlink.getHref() );
+  }
+
+  @Test
+  public void testText() {
+    hyperlink.setText( "bar" );
+
+    assertEquals( "bar", hyperlink.getText() );
+  }
+
+  @Test
+  public void testText_null() {
+    hyperlink.setText( null );
+
+    assertEquals( "", hyperlink.getText() );
+  }
+
+  @Test
+  public void testUnderline() {
     hyperlink.setUnderlined( false );
+
     assertFalse( hyperlink.isUnderlined() );
   }
 
+  @Test
   public void testToolTipText() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    shell.setLayout( new FillLayout() );
-    FormToolkit toolkit = new FormToolkit( shell.getDisplay() );
-    Form form = toolkit.createForm( shell );
-    form.getBody().setLayout( new TableWrapLayout() );
-    String text = "This is a hyperlink!";
-    Hyperlink hyperlink
-      = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
-    assertNotNull( hyperlink );
-    assertNull( hyperlink.getToolTipText() );
-    String toolTip = "Click me!";
-    hyperlink.setToolTipText( toolTip );
-    assertEquals( toolTip, hyperlink.getToolTipText() );
+    hyperlink.setToolTipText( "foo" );
+
+    assertEquals( "foo", hyperlink.getToolTipText() );
   }
 
+  @Test
   public void testHref() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    shell.setLayout( new FillLayout() );
-    FormToolkit toolkit = new FormToolkit( shell.getDisplay() );
-    Form form = toolkit.createForm( shell );
-    form.getBody().setLayout( new TableWrapLayout() );
-    String text = "This is a hyperlink!";
-    Hyperlink hyperlink
-      = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
-    assertNotNull( hyperlink );
-    assertNull( hyperlink.getHref() );
     String href = "http://www.eclipse.org";
+
     hyperlink.setHref( href );
+
     assertEquals( href, hyperlink.getHref() );
   }
 
+  @Test
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    shell.setLayout( new FillLayout() );
-    FormToolkit toolkit = new FormToolkit( shell.getDisplay() );
-    Form form = toolkit.createForm( shell );
-    form.getBody().setLayout( new TableWrapLayout() );
-    String text = "This is a hyperlink!";
-    Hyperlink hyperlink = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
-    assertNotNull( hyperlink );
-    assertEquals( new Point( 136, 20 ), hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 96, 20 ), hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
     assertEquals( new Point( 50, 20 ), hyperlink.computeSize( 50, 50 ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  @Test
+  public void testGetAdapter_LCA() {
+    assertTrue( hyperlink.getAdapter( WidgetLCA.class ) instanceof HyperlinkLCA );
+    assertSame( hyperlink.getAdapter( WidgetLCA.class ), hyperlink.getAdapter( WidgetLCA.class ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }
