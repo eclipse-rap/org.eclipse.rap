@@ -305,7 +305,30 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
       }
     },
 
+    _applyWidth : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._layoutX();
+    },
 
+    _applyHeight : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._layoutY();
+    },
+
+    _applyBorder : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._layoutX();
+      this._layoutY();
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._layoutX();
+    },
+
+    _layoutX : function() {},
+
+    _layoutY : function() {},
 
 
     /*
@@ -1321,6 +1344,7 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
         this[s] = new Function(rwt.widgets.base.Parent.prototype._remapStart + s + rwt.widgets.base.Parent.prototype._remapStop);
       }
     }
+
   },
 
 

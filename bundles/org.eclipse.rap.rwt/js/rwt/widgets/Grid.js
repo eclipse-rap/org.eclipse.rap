@@ -1225,22 +1225,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._rowContainer.setBackgroundImage( newValue );
     },
 
-    _applyWidth : function( newValue, oldValue ) {
-      this.base( arguments, newValue, oldValue );
-      this._layoutX();
-    },
-
-    _applyHeight : function( newValue, oldValue ) {
-      this.base( arguments, newValue, oldValue );
-      this._layoutY();
-    },
-
-    _applyBorder : function( newValue, oldValue ) {
-      this.base( arguments, newValue, oldValue );
-      this._layoutX();
-      this._layoutY();
-    },
-
     _layoutX : function() {
       var width = Math.max( 0, this.getWidth() - this.getFrameWidth() );
       if( this._header ) {

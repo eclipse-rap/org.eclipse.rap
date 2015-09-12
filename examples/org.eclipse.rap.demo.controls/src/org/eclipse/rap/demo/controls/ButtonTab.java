@@ -71,7 +71,7 @@ public class ButtonTab extends ExampleTab {
     createStyleButton( "UP", SWT.UP );
     createStyleButton( "DOWN", SWT.DOWN );
     createStyleButton( "WRAP", SWT.WRAP );
-    createOrientationGroup();
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createImageButton( parent );

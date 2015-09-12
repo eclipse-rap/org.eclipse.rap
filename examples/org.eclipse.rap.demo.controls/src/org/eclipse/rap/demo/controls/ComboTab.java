@@ -73,7 +73,7 @@ public class ComboTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "FLAT", SWT.FLAT );
-    createOrientationGroup();
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();

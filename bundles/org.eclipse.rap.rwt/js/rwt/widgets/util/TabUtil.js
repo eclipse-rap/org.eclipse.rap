@@ -23,6 +23,9 @@ rwt.qx.Class.define( "rwt.widgets.util.TabUtil", {
       tabItem.addEventListener( "changeFocused", rwt.widgets.util.TabUtil._onTabItemChangeFocus );
       tabItem.addEventListener( "changeChecked", rwt.widgets.util.TabUtil._onTabItemSelected );
       tabItem.addEventListener( "click", rwt.widgets.util.TabUtil._onTabItemClick );
+      tabFolder.addEventListener( "changeDirection", function() {
+        tabItem.setDirection( tabFolder.getDirection() );
+      } );
       tabFolder.getBar().addAt( tabItem, index );
       var tabViewPage = new rwt.widgets.base.TabFolderPage( tabItem );
       tabFolder.getPane().add( tabViewPage );

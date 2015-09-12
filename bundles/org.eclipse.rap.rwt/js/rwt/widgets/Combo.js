@@ -10,7 +10,8 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.Combo", {
-  extend : rwt.widgets.base.Parent,
+
+  extend : rwt.widgets.base.HorizontalBoxLayout,
 
   construct : function( isCCombo ) {
     this.base( arguments );
@@ -20,9 +21,13 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this._field = new rwt.widgets.base.BasicText();
     this._field.setTabIndex( null );
     this._field.setAllowStretchY( true );
+    this._field.setTop( 0 );
+    this._field.setWidth( "1*" );
+    this._field.setHeight( "100%" );
     this.add( this._field );
     this._button = new rwt.widgets.base.BasicButton( "push", true );
     this._button.setTabIndex( null );
+    this._button.setTop( 0 );
     this._button.setHeight( "100%" );
     this.add( this._button );
     this.setHideFocus( true );
@@ -31,7 +36,6 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     this._field.setAppearance( appearance + "-field" );
     this._button.setAppearance( appearance + "-button" );
     this._registerListeners();
-    this.addToQueue( "layoutSubWidgets" );
   },
 
   destruct : function() {
@@ -96,33 +100,21 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       }
     },
 
-    setCustomVariant : function( value ) {
-      this.base( arguments, value );
-      this.addToQueue( "layoutSubWidgets" );
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state === "rwt_RIGHT_TO_LEFT" ) {
+        this._field.removeState( state );
+        this._button.removeState( state );
+      }
     },
 
     _getSubWidgets : function() {
       return [ this._field, this._button, this._list ];
     },
 
-    _layoutPost : function( changes ) {
-      this.base( arguments, changes );
-      if( changes[ "layoutSubWidgets" ] ) {
-        var buttonWidth = this._button.getWidth();
-        this._button.setTop( 0 );
-        this._button.setBottom( 0 );
-        this._field.setTop( 0 );
-        this._field.setBottom( 0 );
-        if( this.getDirection() === "rtl" ) {
-          this._button.setLeft( 0 );
-          this._field.setLeft( buttonWidth );
-          this._field.setRight( 0 );
-        } else {
-          this._button.setRight( 0 );
-          this._field.setRight( buttonWidth );
-          this._field.setLeft( 0 );
-        }
-      }
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.setReverseChildrenOrder( value === "rtl" );
     },
 
     _registerListeners : function() {

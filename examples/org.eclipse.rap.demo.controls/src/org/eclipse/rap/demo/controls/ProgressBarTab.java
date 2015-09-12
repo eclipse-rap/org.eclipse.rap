@@ -80,7 +80,7 @@ public class ProgressBarTab extends ExampleTab {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
     createStyleButton( "VERTICAL", SWT.VERTICAL, false );
     createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
-    createOrientationGroup();
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createBgImageButton();

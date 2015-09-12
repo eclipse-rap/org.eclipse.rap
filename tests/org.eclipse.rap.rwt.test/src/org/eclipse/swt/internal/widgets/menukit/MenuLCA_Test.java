@@ -346,7 +346,7 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderInitialDirection() throws IOException {
+  public void testRenderInitialOrientation() throws IOException {
     Menu menu = new Menu( shell, SWT.POP_UP );
 
     lca.render( menu );
@@ -357,7 +357,7 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderDirection() throws IOException {
+  public void testRenderOrientation() throws IOException {
     Menu menu = new Menu( shell, SWT.POP_UP );
 
     menu.setOrientation( SWT.RIGHT_TO_LEFT );
@@ -368,7 +368,7 @@ public class MenuLCA_Test {
   }
 
   @Test
-  public void testRenderDirectionUnchanged() throws IOException {
+  public void testRenderOrientationUnchanged() throws IOException {
     Menu menu = new Menu( shell, SWT.POP_UP );
     Fixture.markInitialized( display );
     Fixture.markInitialized( menu );

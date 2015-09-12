@@ -52,7 +52,7 @@ public class SpinnerTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "WRAP", SWT.WRAP );
-    createOrientationGroup();
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createRangeControls( parent );

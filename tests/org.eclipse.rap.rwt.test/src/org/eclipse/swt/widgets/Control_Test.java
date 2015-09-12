@@ -924,12 +924,8 @@ public class Control_Test {
     }
   }
 
-  /**
-   * each Control has to inherit the orientation from its parent (or sets the
-   * orientation to SWT.LEFT_TO_RIGHT
-   */
   @Test
-  public void testOrientation() {
+  public void testGetOrientation() {
     Composite childDefault = new Composite( shell, SWT.NONE );
     assertTrue( "default orientation: SWT.LEFT_TO_RIGHT",
                 ( shell.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
@@ -937,6 +933,15 @@ public class Control_Test {
     assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
                 ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
     assertEquals( SWT.LEFT_TO_RIGHT, childDefault.getOrientation() );
+  }
+
+  @Test
+  public void testSetOrientation() {
+    Control control = new Button( shell, SWT.NONE );
+
+    control.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertEquals( SWT.RIGHT_TO_LEFT, control.getOrientation() );
   }
 
   @Test

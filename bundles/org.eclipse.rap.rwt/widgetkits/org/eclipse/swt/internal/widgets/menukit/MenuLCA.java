@@ -50,7 +50,7 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   };
 
   private static final String PROP_ENABLED = "enabled";
-  private static final String PROP_DIRECTION = "direction";
+  private static final String PROP_ORIENTATION = "direction";
   private static final String PROP_SHOW_LISTENER = "Show";
   private static final String PROP_HIDE_LISTENER = "Hide";
   private static final String METHOD_UNHIDE_ITEMS = "unhideItems";
@@ -62,7 +62,7 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   @Override
   public void preserveValues( Menu menu ) {
     preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
-    preserveProperty( menu, PROP_DIRECTION, menu.getOrientation() );
+    preserveProperty( menu, PROP_ORIENTATION, menu.getOrientation() );
   }
 
   @Override
@@ -80,7 +80,7 @@ public final class MenuLCA extends WidgetLCA<Menu> {
   @Override
   public void renderChanges( Menu menu ) throws IOException {
     renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
-    renderDirection( menu );
+    renderOrientation( menu );
     if( !isMenuBar( menu ) ) {
       renderListener( menu, SWT.Hide, PROP_HIDE_LISTENER );
     }
@@ -97,11 +97,11 @@ public final class MenuLCA extends WidgetLCA<Menu> {
     getRemoteObject( menu ).destroy();
   }
 
-  private static void renderDirection( Menu menu ) {
+  private static void renderOrientation( Menu menu ) {
     int orientation = menu.getOrientation();
-    if( hasChanged( menu, PROP_DIRECTION, Integer.valueOf( orientation ), DEFAULT_DIRECTION ) ) {
+    if( hasChanged( menu, PROP_ORIENTATION, Integer.valueOf( orientation ), DEFAULT_DIRECTION ) ) {
       String value = orientation == SWT.LEFT_TO_RIGHT ?  "ltr" : "rtl";
-      getRemoteObject( menu ).set( PROP_DIRECTION, value );
+      getRemoteObject( menu ).set( PROP_ORIENTATION, value );
     }
   }
 

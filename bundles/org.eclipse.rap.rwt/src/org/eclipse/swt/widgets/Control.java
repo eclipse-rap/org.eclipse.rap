@@ -2194,9 +2194,6 @@ public abstract class Control extends Widget implements Drawable {
   /**
    * Sets the orientation of the receiver, which must be one
    * of the constants <code>SWT.LEFT_TO_RIGHT</code> or <code>SWT.RIGHT_TO_LEFT</code>.
-   * <p>
-   * Note: Currently RWT does not support SWT.RIGHT_TO_LEFT.
-   * </p>
    *
    * @param orientation new orientation style
    *
@@ -2209,6 +2206,13 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void setOrientation( int orientation ) {
     checkWidget();
+    int flags = SWT.RIGHT_TO_LEFT | SWT.LEFT_TO_RIGHT;
+    if( ( orientation & flags ) == 0 || ( orientation & flags ) == flags ) {
+      return;
+    }
+    ControlLCAUtil.preserveOrientation( this, ( style & flags ) );
+    style &= ~flags;
+    style |= orientation & flags;
   }
 
   /**

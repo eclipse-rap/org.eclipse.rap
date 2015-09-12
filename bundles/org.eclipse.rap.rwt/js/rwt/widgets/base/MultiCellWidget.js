@@ -298,6 +298,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget", {
       }
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.addToQueue( "layoutX" );
+    },
+
     _createSubElements : function() {
       for( var i = 0; i < this.__cellCount; i++ ) {
         var hasContent = this._cellHasContent( i );

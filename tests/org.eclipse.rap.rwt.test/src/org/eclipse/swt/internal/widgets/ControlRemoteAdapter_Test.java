@@ -18,6 +18,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -109,6 +110,14 @@ public class ControlRemoteAdapter_Test {
 
     assertTrue( adapter.hasPreservedEnabled() );
     assertTrue( adapter.getPreservedEnabled() );
+  }
+
+  @Test
+  public void testPreserveOrientation() {
+    adapter.preserveOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertTrue( adapter.hasPreservedOrientation() );
+    assertEquals( SWT.RIGHT_TO_LEFT, adapter.getPreservedOrientation() );
   }
 
   @Test
@@ -263,6 +272,8 @@ public class ControlRemoteAdapter_Test {
     assertFalse( adapter.getPreservedVisible() );
     assertFalse( adapter.hasPreservedEnabled() );
     assertFalse( adapter.getPreservedEnabled() );
+    assertFalse( adapter.hasPreservedOrientation() );
+    assertEquals( SWT.LEFT_TO_RIGHT, adapter.getPreservedOrientation() );
     assertFalse( adapter.hasPreservedForeground() );
     assertNull( adapter.getPreservedForeground() );
     assertFalse( adapter.hasPreservedBackground() );

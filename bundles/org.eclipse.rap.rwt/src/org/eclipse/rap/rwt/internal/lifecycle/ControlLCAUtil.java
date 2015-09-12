@@ -55,12 +55,12 @@ public class ControlLCAUtil {
   private static final String PROP_MENU = "menu";
   private static final String PROP_VISIBLE = "visibility";
   private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_ORIENTATION = "direction";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_FONT = "font";
   private static final String PROP_CURSOR = "cursor";
-  private static final String PROP_DIRECTION = "direction";
   private static final String PROP_ACTIVATE_LISTENER = "Activate";
   private static final String PROP_DEACTIVATE_LISTENER = "Deactivate";
   private static final String PROP_FOCUS_IN_LISTENER = "FocusIn";
@@ -89,13 +89,13 @@ public class ControlLCAUtil {
     renderMenu( control );
     renderVisible( control );
     renderEnabled( control );
+    renderOrientation( control );
     renderForeground( control );
     renderBackground( control );
     renderBackgroundImage( control );
     renderFont( control );
     renderCursor( control );
     renderData( control );
-    renderDirection( control );
     ActiveKeysUtil.renderActiveKeys( control );
     ActiveKeysUtil.renderCancelKeys( control );
     renderListenActivate( control );
@@ -376,10 +376,22 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void renderDirection( Control control ) {
+  public static void preserveOrientation( Control control, int orientation ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.isInitialized() && control.getOrientation() == SWT.RIGHT_TO_LEFT ) {
-      getRemoteObject( control ).set( PROP_DIRECTION, "rtl" );
+    if( !remoteAdapter.hasPreservedOrientation() ) {
+      remoteAdapter.preserveOrientation( orientation );
+    }
+  }
+
+  private static void renderOrientation( Control control ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( !remoteAdapter.isInitialized() || remoteAdapter.hasPreservedOrientation() ) {
+      int actual = control.getOrientation();
+      int preserved = remoteAdapter.getPreservedOrientation();
+      if( changed( control, actual, preserved, SWT.LEFT_TO_RIGHT ) ) {
+        String orientation = control.getOrientation() == SWT.RIGHT_TO_LEFT ? "rtl" : "ltr";
+        getRemoteObject( control ).set( PROP_ORIENTATION, orientation );
+      }
     }
   }
 

@@ -45,6 +45,7 @@ public class ShellTab extends ExampleTab {
   private int shellCounter;
   private final ShellAdapter confirmCloseListener;
   private Image shellImage;
+  private Button createRTLButton;
   private Button createInvisibleButton;
   private Button createAsDialogButton;
   private Button createWithMenuButton;
@@ -84,7 +85,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "TOOL", SWT.TOOL );
     createStyleButton( "SHEET", SWT.SHEET );
     createStyleButton( "ON_TOP", SWT.ON_TOP );
-    createOrientationGroup();
+    createRTLButton = createOrientationButton();
     createInvisibleButton = createPropertyButton( "Create invisible" );
     createAsDialogButton = createPropertyButton( "Create as dialog" );
     createWithMenuButton = createPropertyButton( "Add menu" );
@@ -220,6 +221,9 @@ public class ShellTab extends ExampleTab {
       shell = new Shell( getShell(), getStyle() );
     } else {
       shell = new Shell( getShell().getDisplay(), getStyle() );
+    }
+    if( createRTLButton.getSelection() ) {
+      shell.setOrientation( SWT.RIGHT_TO_LEFT );
     }
     shell.setLocation( getNextShellLocation() );
     createShellContents( shell );

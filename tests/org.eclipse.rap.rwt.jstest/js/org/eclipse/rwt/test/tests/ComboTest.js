@@ -879,53 +879,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertFalse( hasFocusIndicator( combo ) );
     },
 
-    testSubWidgetsPosition_LTR : function() {
-      var combo = this._createDefaultCombo( false );
-
-      assertEquals( 0, button.getTop() );
-      assertEquals( 0, button.getBottom() );
-      assertEquals( 0, button.getRight() );
-      assertEquals( 0, field.getTop() );
-      assertEquals( 0, field.getBottom() );
-      assertEquals( 0, field.getLeft() );
-      assertEquals( button.getWidth(), field.getRight() );
-      combo.destroy();
-    },
-
-    testSubWidgetsPosition_RTL : function() {
-      var combo = this._createDefaultCombo( true );
-
-      assertEquals( 0, button.getTop() );
-      assertEquals( 0, button.getBottom() );
-      assertEquals( 0, button.getLeft() );
-      assertEquals( 0, field.getTop() );
-      assertEquals( 0, field.getBottom() );
-      assertEquals( 0, field.getRight() );
-      assertEquals( button.getWidth(), field.getLeft() );
-      combo.destroy();
-    },
-
-    testSetCustomVariant_relayoutsSubWidgets : function() {
-      button.setSpace( 1, 2, 3, 4 );
-      field.setSpace( 1, 2, 3, 4 );
-
-      combo.setCustomVariant( "variant_foo" );
-      TestUtil.flush();
-
-      assertEquals( 0, button.getTop() );
-      assertEquals( 0, button.getBottom() );
-      assertEquals( 0, button.getRight() );
-      assertEquals( 0, field.getTop() );
-      assertEquals( 0, field.getBottom() );
-      assertEquals( 0, field.getLeft() );
-      assertEquals( button.getWidth(), field.getRight() );
-    },
-
     testDirectionAddsStateToSubWidgets : function() {
       var combo = this._createDefaultCombo( true );
 
       assertTrue( button.hasState( "rwt_RIGHT_TO_LEFT" ) );
       assertTrue( field.hasState( "rwt_RIGHT_TO_LEFT" ) );
+      combo.destroy();
+    },
+
+    testSetDirection_setsReverseChildrenOrder : function() {
+      var combo = this._createDefaultCombo();
+
+      combo.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertTrue( combo.getReverseChildrenOrder() );
       combo.destroy();
     },
 

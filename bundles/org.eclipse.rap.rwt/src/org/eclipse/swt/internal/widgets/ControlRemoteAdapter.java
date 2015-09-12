@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -37,6 +38,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int ACTIVE_KEYS = 23;
   private static final int CANCEL_KEYS = 24;
   private static final int TAB_INDEX = 25;
+  private static final int ORIENTATION = 26;
 
   private transient Composite parent;
   private transient Control[] children;
@@ -46,6 +48,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private transient Menu menu;
   private transient boolean visible;
   private transient boolean enabled;
+  private transient boolean rtl;
   private transient Color foreground;
   private transient Color background;
   private transient boolean backgroundTransparency;
@@ -163,6 +166,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     return enabled;
   }
 
+  public void preserveOrientation( int orientation ) {
+    markPreserved( ORIENTATION );
+    this.rtl = orientation == SWT.RIGHT_TO_LEFT;
+  }
+
+  public boolean hasPreservedOrientation() {
+    return hasPreserved( ORIENTATION );
+  }
+
+  public int getPreservedOrientation() {
+    return rtl ? SWT.RIGHT_TO_LEFT : SWT.LEFT_TO_RIGHT;
+  }
+
   public void preserveForeground( Color foreground ) {
     markPreserved( FOREGROUND );
     this.foreground = foreground;
@@ -274,6 +290,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     menu = null;
     visible = false;
     enabled = false;
+    rtl = false;
     foreground = null;
     background = null;
     backgroundTransparency = false;

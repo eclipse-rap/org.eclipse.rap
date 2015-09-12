@@ -45,11 +45,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -82,13 +80,13 @@ abstract class ExampleTab implements Serializable {
 
   private boolean visible = true;
   private boolean enabled = true;
+  private int orientation = SWT.LEFT_TO_RIGHT;
   private Text text;
   private final StringBuffer content = new StringBuffer();
   private FontDialog fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
-  private Button ltrButton, rtlButton;
   private int[] horizontalWeights = new int[] { 50, 50 };
   private final Set<String> properties = new HashSet<String>();
   private Object data;
@@ -162,6 +160,7 @@ abstract class ExampleTab implements Serializable {
     createExampleControls( exampleComp );
     updateVisible();
     updateEnabled();
+    updateOrientation();
     if( fgColorChooser != null ) {
       updateFgColor();
     }
@@ -591,41 +590,18 @@ abstract class ExampleTab implements Serializable {
     } );
   }
 
-  protected void createOrientationGroup() {
-    Group orientationGroup = new Group( styleComp, SWT.NONE );
-    orientationGroup.setLayout( new GridLayout() );
-    orientationGroup.setText( "Orientation" );
-    Button defaultOrietationButton = new Button( orientationGroup, SWT.RADIO );
-    defaultOrietationButton.setText( "Default" );
-    defaultOrietationButton.setSelection( true );
-    ltrButton = new Button( orientationGroup, SWT.RADIO );
-    ltrButton.setText( "LEFT_TO_RIGHT" );
-    ltrButton.setData( "style", Integer.valueOf( SWT.LEFT_TO_RIGHT ) );
-    rtlButton = new Button( orientationGroup, SWT.RADIO );
-    rtlButton.setText( "RIGHT_TO_LEFT" );
-    rtlButton.setData( "style", Integer.valueOf( SWT.RIGHT_TO_LEFT ) );
-    Listener listener = new Listener() {
+  protected Button createOrientationButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "RIGHT_TO_LEFT orientation" );
+    button.setSelection( orientation == SWT.RIGHT_TO_LEFT );
+    button.addSelectionListener( new SelectionAdapter() {
       @Override
-      public void handleEvent( Event event ) {
-        Button button = ( Button )event.widget;
-        if( button.getSelection() ) {
-          createNew();
-        }
+      public void widgetSelected( SelectionEvent event ) {
+        orientation = button.getSelection() ? SWT.RIGHT_TO_LEFT : SWT.LEFT_TO_RIGHT;
+        updateOrientation();
       }
-    };
-    defaultOrietationButton.addListener( SWT.Selection, listener );
-    ltrButton.addListener( SWT.Selection, listener );
-    rtlButton.addListener( SWT.Selection, listener );
-  }
-
-  private int getOrientationStyle() {
-    if( ltrButton != null && !ltrButton.isDisposed() && ltrButton.getSelection() ) {
-      return SWT.LEFT_TO_RIGHT;
-    }
-    if( rtlButton != null && !rtlButton.isDisposed() && rtlButton.getSelection() ) {
-      return SWT.RIGHT_TO_LEFT;
-    }
-    return SWT.NONE;
+    } );
+    return button;
   }
 
   /**
@@ -687,7 +663,7 @@ abstract class ExampleTab implements Serializable {
         }
       }
     }
-    return result | getOrientationStyle();
+    return result;
   }
 
   private void updateVisible( ) {
@@ -703,6 +679,14 @@ abstract class ExampleTab implements Serializable {
     while( iter.hasNext() ) {
       Control control = iter.next();
       control.setEnabled( enabled );
+    }
+  }
+
+  private void updateOrientation() {
+    Iterator<Control> iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = iter.next();
+      control.setOrientation( orientation );
     }
   }
 

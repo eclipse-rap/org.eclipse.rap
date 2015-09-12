@@ -45,7 +45,7 @@ public class TabFolderTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "TOP", SWT.TOP );
     createStyleButton( "BOTTOM", SWT.BOTTOM );
-    createOrientationGroup();
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createOnDemandButton( parent );

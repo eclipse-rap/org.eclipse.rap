@@ -435,6 +435,34 @@ public class ControlLCAUtil_Test {
   }
 
   @Test
+  public void testRenderOrientation_initial() {
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "direction" ) );
+  }
+
+  @Test
+  public void testRenderOrientation_unchanged() {
+    Fixture.markInitialized( control );
+    control.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    Fixture.clearPreserved();
+    ControlLCAUtil.renderChanges( control );
+
+    assertNull( getProtocolMessage().findSetOperation( control, "direction" ) );
+  }
+
+  @Test
+  public void testRenderOrientation_changed() {
+    Fixture.markInitialized( control );
+
+    control.setOrientation( SWT.RIGHT_TO_LEFT );
+    ControlLCAUtil.renderChanges( control );
+
+    assertEquals( "rtl", getProtocolMessage().findSetProperty( control, "direction" ).asString() );
+  }
+
+  @Test
   public void testRenderForeground_initial() {
     ControlLCAUtil.renderChanges( control );
 

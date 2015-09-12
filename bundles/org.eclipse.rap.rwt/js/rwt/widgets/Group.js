@@ -22,13 +22,13 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     this._legend = new rwt.widgets.base.MultiCellWidget( [ "label" ] );
     this._legend.setAppearance( "group-box-legend" );
     this.add( this._legend );
-    this.addToQueue( "layoutLegend" );
     this.setOverflow( "hidden" );
     var themeValues = new rwt.theme.ThemeValues( {} );
     this._themeBackgroundColor = themeValues.getCssColor( "Group-Label", "background-color" );
     themeValues.dispose();
     this._legend.addEventListener( "mouseover", this._onMouseOver, this );
     this._legend.addEventListener( "mouseout", this._onMouseOut, this );
+    this._legend.setTop( 0 );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
   },
@@ -133,17 +133,15 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       this._frame._layoutPost( changes );
-      this._layoutLegend( changes );
     },
 
-    _layoutLegend : function( changes ) {
-      if( changes[ "layoutLegend" ] ) {
-        this._legend.setTop( 0 );
-        if( this.getDirection() === "rtl" ) {
-          this._legend.setRight( 0 );
-        } else {
-          this._legend.setLeft( 0 );
-        }
+    _layoutX : function() {
+      if( this.getDirection() === "rtl" ) {
+        this._legend.setLeft( null );
+        this._legend.setRight( 0 );
+      } else {
+        this._legend.setLeft( 0 );
+        this._legend.setRight( null );
       }
     },
 
