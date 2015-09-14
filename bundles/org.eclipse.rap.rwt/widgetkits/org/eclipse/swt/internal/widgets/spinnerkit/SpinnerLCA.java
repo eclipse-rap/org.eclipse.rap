@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Spinner;
 
 public final class SpinnerLCA extends WidgetLCA<Spinner> {
 
+  public static final SpinnerLCA INSTANCE = new SpinnerLCA();
+
   private static final String TYPE = "rwt.widgets.Spinner";
   private static final String[] ALLOWED_STYLES = { "READ_ONLY", "WRAP", "BORDER" };
 
@@ -150,6 +152,10 @@ public final class SpinnerLCA extends WidgetLCA<Spinner> {
   private static String getDecimalSeparator() {
     DecimalFormatSymbols symbols = new DecimalFormatSymbols( RWT.getLocale() );
     return String.valueOf( symbols.getDecimalSeparator() );
+  }
+
+  private SpinnerLCA() {
+    // prevent instantiation
   }
 
 }

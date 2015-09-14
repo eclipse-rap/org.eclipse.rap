@@ -69,7 +69,7 @@ public class TreeColumnLCA_Test {
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
     column = new TreeColumn( tree, SWT.NONE );
-    lca = new TreeColumnLCA();
+    lca = TreeColumnLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

@@ -53,7 +53,7 @@ public class ToolBarLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     toolBar = new ToolBar( shell, SWT.NONE );
-    lca = new ToolBarLCA();
+    lca = ToolBarLCA.INSTANCE;
   }
 
   @After

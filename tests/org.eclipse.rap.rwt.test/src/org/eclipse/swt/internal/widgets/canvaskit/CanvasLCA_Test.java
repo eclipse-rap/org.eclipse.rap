@@ -64,7 +64,7 @@ public class CanvasLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    lca = new CanvasLCA();
+    lca = CanvasLCA.INSTANCE;
     canvas = new Canvas( shell, SWT.NONE );
   }
 
@@ -131,7 +131,7 @@ public class CanvasLCA_Test {
     GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
 
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( 50, init.getParameters().get( "width" ).asInt() );
@@ -157,7 +157,7 @@ public class CanvasLCA_Test {
 
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
     assertEquals( 8, draw.getParameters().get( "operations" ).asArray().size() );
@@ -181,7 +181,7 @@ public class CanvasLCA_Test {
     gc = new GC( canvas );
     gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
     gc.dispose();
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
@@ -202,7 +202,7 @@ public class CanvasLCA_Test {
     adapter.addGCOperation( new SetProperty( font.getFontData()[ 0 ] ) );
     SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
     assertEquals( 8, draw.getParameters().get( "operations" ).asArray().size() );
@@ -222,7 +222,7 @@ public class CanvasLCA_Test {
     adapter.addGCOperation( new SetProperty( font.getFontData()[ 0 ] ) );
     SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     assertNull( getGCOperation( canvas, "draw" ) );
     assertEquals( 0, adapter.getGCOperations().length );
@@ -237,6 +237,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         event.gc.drawLine( 1, 2, 3, 4 );
         event.gc.drawLine( 5, 6, 7, 8 );
@@ -244,7 +245,7 @@ public class CanvasLCA_Test {
     } );
     Fixture.fakeResponseWriter();
 
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
@@ -260,6 +261,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         event.gc.drawLine( 1, 2, 3, 4 );
         event.gc.drawLine( 5, 6, 7, 8 );
@@ -268,7 +270,7 @@ public class CanvasLCA_Test {
     Fixture.fakeResponseWriter();
 
     canvas.setSize( 150, 150 );
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( 150, init.getParameters().get( "width" ).asInt() );
@@ -286,6 +288,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
         event.gc.drawLine( 1, 2, 3, 4 );
         event.gc.drawLine( 5, 6, 7, 8 );
@@ -294,7 +297,7 @@ public class CanvasLCA_Test {
     Fixture.fakeResponseWriter();
 
     canvas.redraw();
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     CallOperation draw = getGCOperation( canvas, "draw" );
     assertEquals( 8, draw.getParameters().get( "operations" ).asArray().size() );
@@ -310,13 +313,14 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
+      @Override
       public void paintControl( PaintEvent event ) {
       }
     } );
     Fixture.fakeResponseWriter();
 
     canvas.redraw();
-    new CanvasLCA().renderChanges( canvas );
+    lca.renderChanges( canvas );
 
     assertNotNull( getGCOperation( canvas, "init" ) );
     assertNull( getGCOperation( canvas, "draw" ) );
@@ -326,7 +330,7 @@ public class CanvasLCA_Test {
   public void testRenderClientArea() {
     canvas.setSize( 110, 120 );
 
-    lca.renderClientArea( canvas );
+    CanvasLCA.renderClientArea( canvas );
 
     TestMessage message = Fixture.getProtocolMessage();
     Rectangle clientArea = canvas.getClientArea();
@@ -337,7 +341,7 @@ public class CanvasLCA_Test {
   public void testRenderClientArea_SizeZero() {
     canvas.setSize( 0, 0 );
 
-    lca.renderClientArea( canvas );
+    CanvasLCA.renderClientArea( canvas );
 
     TestMessage message = Fixture.getProtocolMessage();
     Rectangle clientArea = new Rectangle( 0, 0, 0, 0 );
@@ -350,7 +354,7 @@ public class CanvasLCA_Test {
     canvas.setSize( 110, 120 );
 
     lca.preserveValues( canvas );
-    lca.renderClientArea( canvas );
+    CanvasLCA.renderClientArea( canvas );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( canvas, "clientArea" ) );

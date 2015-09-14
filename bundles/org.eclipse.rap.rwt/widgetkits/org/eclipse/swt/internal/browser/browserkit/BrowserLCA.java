@@ -47,6 +47,8 @@ import org.eclipse.swt.widgets.Display;
 
 public final class BrowserLCA extends WidgetLCA<Browser> {
 
+  public static final BrowserLCA INSTANCE = new BrowserLCA();
+
   private static final String TYPE = "rwt.widgets.Browser";
   private static final String[] ALLOWED_STYLES = { "BORDER" };
 
@@ -211,6 +213,10 @@ public final class BrowserLCA extends WidgetLCA<Browser> {
   private static boolean hasProgressListener( Browser browser ) {
     return isListening( browser, EventTypes.PROGRESS_CHANGED )
         || isListening( browser, EventTypes.PROGRESS_COMPLETED );
+  }
+
+  private BrowserLCA() {
+    // prevent instantiation
   }
 
 }

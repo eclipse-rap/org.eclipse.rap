@@ -66,7 +66,7 @@ public class ShellLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    lca = new ShellLCA();
+    lca = ShellLCA.INSTANCE;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     image = createImage( display, Fixture.IMAGE1 );
   }

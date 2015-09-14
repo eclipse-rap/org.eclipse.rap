@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Scale;
 
 public final class ScaleLCA extends WidgetLCA<Scale> {
 
+  public static final ScaleLCA INSTANCE = new ScaleLCA();
+
   private static final String TYPE = "rwt.widgets.Scale";
   private static final String[] ALLOWED_STYLES = { "HORIZONTAL", "VERTICAL", "BORDER" };
 
@@ -75,6 +77,10 @@ public final class ScaleLCA extends WidgetLCA<Scale> {
     renderProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement(), DEFAULT_PAGE_INCREMENT );
     renderListenSelection( scale );
     renderClientListeners( scale );
+  }
+
+  private ScaleLCA() {
+    // prevent instantiation
   }
 
 }

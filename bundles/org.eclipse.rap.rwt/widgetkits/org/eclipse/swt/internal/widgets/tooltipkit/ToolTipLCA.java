@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.ToolTip;
 
 public final class ToolTipLCA extends WidgetLCA<ToolTip> {
 
+  public static final ToolTipLCA INSTANCE = new ToolTipLCA();
+
   private static final String TYPE = "rwt.widgets.ToolTip";
   private static final String[] ALLOWED_STYLES = {
     "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING"
@@ -81,6 +83,10 @@ public final class ToolTipLCA extends WidgetLCA<ToolTip> {
 
   private static Point getLocation( ToolTip toolTip ) {
     return toolTip.getAdapter( IToolTipAdapter.class ).getLocation();
+  }
+
+  private ToolTipLCA() {
+    // prevent instantiation
   }
 
 }

@@ -51,7 +51,7 @@ public class GroupLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     group = new Group( shell, SWT.NONE );
-    lca = new GroupLCA();
+    lca = GroupLCA.INSTANCE;
   }
 
   @After

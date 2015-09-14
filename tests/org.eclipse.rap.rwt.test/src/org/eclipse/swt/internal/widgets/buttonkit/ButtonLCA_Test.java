@@ -81,7 +81,7 @@ public class ButtonLCA_Test {
     display = new Display();
     shell = new Shell( display );
     button = new Button( shell, SWT.PUSH );
-    lca = new ButtonLCA();
+    lca = ButtonLCA.INSTANCE;
   }
 
   @After

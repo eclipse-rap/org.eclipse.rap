@@ -47,7 +47,7 @@ public class ScrollBarLCA_Test {
     shell = new Shell( display );
     Scrollable scrollable = new ScrolledComposite( shell, SWT.H_SCROLL );
     scrollBar = scrollable.getHorizontalBar();
-    lca = new ScrollBarLCA();
+    lca = ScrollBarLCA.INSTANCE;
   }
 
   @After

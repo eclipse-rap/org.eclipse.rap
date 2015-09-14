@@ -67,7 +67,7 @@ public class ScrolledCompositeLCA_Test {
     sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     hScroll = sc.getHorizontalBar();
     vScroll = sc.getVerticalBar();
-    lca = new ScrolledCompositeLCA();
+    lca = ScrolledCompositeLCA.INSTANCE;
   }
 
   @After

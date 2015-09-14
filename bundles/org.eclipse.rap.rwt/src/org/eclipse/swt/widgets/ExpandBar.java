@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarLCA;
 
 
 /**
@@ -56,11 +58,13 @@ public class ExpandBar extends Composite {
 
   private final class ExpandBarAdapter implements IExpandBarAdapter {
 
+    @Override
     public Rectangle getBounds( ExpandItem item ) {
       int index = indexOf( item );
       return getItem( index ).getBounds();
     }
 
+    @Override
     public Rectangle getBottomSpacingBounds() {
       return ExpandBar.this.getBottomSpacingBounds();
     }
@@ -115,7 +119,7 @@ public class ExpandBar extends Composite {
     spacing = 4;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
-    itemHolder = new ItemHolder<ExpandItem>( ExpandItem.class );
+    itemHolder = new ItemHolder<>( ExpandItem.class );
   }
 
   /**
@@ -503,18 +507,19 @@ public class ExpandBar extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )itemHolder;
-    } else if( adapter == IExpandBarAdapter.class ) {
+      return ( T )itemHolder;
+    }
+    if( adapter == IExpandBarAdapter.class ) {
       if( expandBarAdapter == null ) {
         expandBarAdapter = new ExpandBarAdapter();
       }
-      result = ( T )expandBarAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )expandBarAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ExpandBarLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /////////////////////

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -25,6 +26,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
+import org.eclipse.swt.internal.widgets.combokit.ComboLCA;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 
 
@@ -1055,7 +1057,6 @@ public class Combo extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == ITextAdapter.class ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
@@ -1068,11 +1069,12 @@ public class Combo extends Composite {
           }
         };
       }
-      result = ( T )textAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )textAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ComboLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

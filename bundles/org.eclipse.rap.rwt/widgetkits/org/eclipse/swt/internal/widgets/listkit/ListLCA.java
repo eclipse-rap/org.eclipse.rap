@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.List;
 
 public class ListLCA extends WidgetLCA<List> {
 
+  public static final ListLCA INSTANCE = new ListLCA();
+
   private static final String TYPE = "rwt.widgets.List";
   private static final String[] ALLOWED_STYLES = { "SINGLE", "MULTI", "BORDER" };
 
@@ -87,15 +89,16 @@ public class ListLCA extends WidgetLCA<List> {
                     DEFAULT_ITEM_DIMENSIONS );
   }
 
-  //////////////////
-  // Helping methods
-
   private static Point getItemDimensions( List list ) {
     return getAdapter( list ).getItemDimensions();
   }
 
   private static IListAdapter getAdapter( List list ) {
     return list.getAdapter( IListAdapter.class );
+  }
+
+  private ListLCA() {
+    // prevent instantiation
   }
 
 }

@@ -57,7 +57,7 @@ public class ProgressBarLCA_Test {
     display = new Display();
     shell = new Shell( display );
     progressBar = new ProgressBar( shell, SWT.NONE );
-    lca = new ProgressBarLCA();
+    lca = ProgressBarLCA.INSTANCE;
   }
 
   @After

@@ -67,7 +67,7 @@ public class SpinnerLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     spinner = new Spinner( shell, SWT.NONE );
-    lca = new SpinnerLCA();
+    lca = SpinnerLCA.INSTANCE;
   }
 
   @After

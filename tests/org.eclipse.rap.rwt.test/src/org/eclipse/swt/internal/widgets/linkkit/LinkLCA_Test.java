@@ -59,7 +59,7 @@ public class LinkLCA_Test {
     display = new Display();
     shell = new Shell( display );
     link = new Link( shell, SWT.NONE );
-    lca = new LinkLCA();
+    lca = LinkLCA.INSTANCE;
   }
 
   @After

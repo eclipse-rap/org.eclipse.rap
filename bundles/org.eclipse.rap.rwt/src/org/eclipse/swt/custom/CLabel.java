@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -28,7 +29,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.custom.clabelkit.CLabelLCA;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
@@ -61,9 +62,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class CLabel extends Canvas {
 
-	private class LabelDisposeListener implements DisposeListener, SerializableCompatibility  {
+  private class LabelDisposeListener implements DisposeListener  {
+    @Override
     public void widgetDisposed( DisposeEvent event ) {
-      onDispose( event );
+      onDispose();
     }
   }
 
@@ -254,7 +256,7 @@ public class CLabel extends Canvas {
     return appToolTipText;
   }
 
-  void onDispose( DisposeEvent event ) {
+  private void onDispose() {
     backgroundImage = null;
     text = null;
     image = null;
@@ -683,6 +685,15 @@ public class CLabel extends Canvas {
     if( !RWT.MARKUP_ENABLED.equals( key ) || !isMarkupEnabledFor( this ) ) {
       super.setData( key, value );
     }
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CLabelLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private void initMargins() {

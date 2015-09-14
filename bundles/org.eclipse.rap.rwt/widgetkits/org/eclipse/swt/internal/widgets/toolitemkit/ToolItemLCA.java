@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.ToolItem;
 
 public final class ToolItemLCA extends WidgetLCA<ToolItem> {
 
+  public static final ToolItemLCA INSTANCE = new ToolItemLCA();
+
   private static final String TYPE = "rwt.widgets.ToolItem";
   private static final String[] ALLOWED_STYLES = {
     "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN"
@@ -142,6 +144,10 @@ public final class ToolItemLCA extends WidgetLCA<ToolItem> {
 
   private static String getBadge( ToolItem item ) {
     return ( String )item.getData( RWT.BADGE );
+  }
+
+  private ToolItemLCA() {
+    // prevent instantiation
   }
 
 }

@@ -69,7 +69,7 @@ public class ExpandItemLCA_Test {
     shell = new Shell( display );
     expandBar = new ExpandBar( shell, SWT.NONE );
     expandItem = new ExpandItem( expandBar, SWT.NONE );
-    lca = new ExpandItemLCA();
+    lca = ExpandItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

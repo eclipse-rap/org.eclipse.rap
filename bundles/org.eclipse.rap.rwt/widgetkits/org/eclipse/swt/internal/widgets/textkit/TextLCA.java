@@ -33,7 +33,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 
+
 public final class TextLCA extends WidgetLCA<Text> {
+
+  public static final TextLCA INSTANCE = new TextLCA();
 
   private static final String TYPE = "rwt.widgets.Text";
   private static final String[] ALLOWED_STYLES = {
@@ -114,9 +117,6 @@ public final class TextLCA extends WidgetLCA<Text> {
     }
   }
 
-  //////////////////
-  // Helping methods
-
   private static String[] getAllowedStyles( Text text ) {
     return ( text.getStyle() & SWT.SEARCH ) != 0 ? ALLOWED_STYLES_WITH_SEARCH : ALLOWED_STYLES;
   }
@@ -132,6 +132,10 @@ public final class TextLCA extends WidgetLCA<Text> {
 
   private static String getEchoChar( Text text ) {
     return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
+  }
+
+  private TextLCA() {
+    // prevent instantiation
   }
 
 }

@@ -72,7 +72,7 @@ public class ComboLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     combo = new Combo( shell, SWT.NONE );
-    lca = new ComboLCA();
+    lca = ComboLCA.INSTANCE;
   }
 
   @After

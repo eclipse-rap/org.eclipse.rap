@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.CoolItem;
 
 public class CoolItemLCA extends WidgetLCA<CoolItem> {
 
+  public static final CoolItemLCA INSTANCE = new CoolItemLCA();
+
   private static final String TYPE = "rwt.widgets.CoolItem";
   private static final String[] ALLOWED_STYLES = { "DROP_DOWN", "VERTICAL" };
 
@@ -58,6 +60,10 @@ public class CoolItemLCA extends WidgetLCA<CoolItem> {
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
+  }
+
+  private CoolItemLCA() {
+    // prevent instantiation
   }
 
 }

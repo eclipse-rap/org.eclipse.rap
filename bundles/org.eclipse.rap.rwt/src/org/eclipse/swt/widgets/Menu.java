@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.HelpListener;
@@ -20,6 +21,7 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MenuHolder;
+import org.eclipse.swt.internal.widgets.menukit.MenuLCA;
 
 
 /**
@@ -217,10 +219,10 @@ public class Menu extends Widget {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )itemHolder;
-    } else if( adapter == IMenuAdapter.class ) {
+      return ( T )itemHolder;
+    }
+    if( adapter == IMenuAdapter.class ) {
       if( menuAdapter == null ) {
         menuAdapter = new IMenuAdapter() {
           @Override
@@ -229,11 +231,12 @@ public class Menu extends Widget {
           }
         };
       }
-      result = ( T )menuAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )menuAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )MenuLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /**

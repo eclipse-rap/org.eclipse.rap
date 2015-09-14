@@ -18,6 +18,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.Size;
@@ -40,6 +41,7 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCA;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -373,20 +375,19 @@ public class Table extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
         itemHolder = new CompositeItemHolder();
       }
-      result = ( T )itemHolder;
-    } else if( adapter == ITableAdapter.class ) {
-      result = ( T )tableAdapter;
-    } else if( adapter == ICellToolTipAdapter.class ) {
-      result = ( T )tableAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )itemHolder;
     }
-    return result;
+    if( adapter == ITableAdapter.class || adapter == ICellToolTipAdapter.class ) {
+      return ( T )tableAdapter;
+    }
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TableLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -30,6 +31,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.listkit.ListLCA;
 import org.eclipse.swt.internal.widgets.listkit.ListThemeAdapter;
 
 
@@ -114,24 +116,26 @@ public class List extends Scrollable {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IListAdapter.class ) {
       if( listAdapter == null ) {
         listAdapter = new IListAdapter() {
+          @Override
           public void setFocusIndex( int focusIndex ) {
             List.this.setFocusIndex( focusIndex );
           }
 
+          @Override
           public Point getItemDimensions() {
             return List.this.getItemDimensions();
           }
         };
       }
-      result = ( T )listAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )listAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ListLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   ///////////////////////////////

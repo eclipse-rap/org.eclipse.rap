@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -26,6 +27,7 @@ import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA;
 
 
 /**
@@ -49,18 +51,22 @@ public class TableItem extends Item {
     implements ITableItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
 
+    @Override
     public Color getUserBackground() {
       return background;
     }
 
+    @Override
     public Color getUserForeground() {
       return foreground;
     }
 
+    @Override
     public Font getUserFont() {
       return font;
     }
 
+    @Override
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -74,6 +80,7 @@ public class TableItem extends Item {
       return result;
     }
 
+    @Override
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Color[] result = new Color[ columnCount ];
@@ -87,6 +94,7 @@ public class TableItem extends Item {
       return result;
     }
 
+    @Override
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
       Font[] result = new Font[ columnCount ];
@@ -204,7 +212,6 @@ public class TableItem extends Item {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if(    adapter == IWidgetFontAdapter.class
         || adapter == IWidgetColorAdapter.class
         || adapter == ITableItemAdapter.class )
@@ -212,11 +219,12 @@ public class TableItem extends Item {
       if( tableItemAdapter == null ) {
         tableItemAdapter = new TableItemAdapter();
       }
-      result = ( T )tableItemAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )tableItemAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TableItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /**

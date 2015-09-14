@@ -29,12 +29,12 @@ import org.eclipse.swt.widgets.ExpandItem;
 
 public final class ExpandItemLCA extends WidgetLCA<ExpandItem> {
 
+  public static final ExpandItemLCA INSTANCE = new ExpandItemLCA();
+
   private static final String TYPE = "rwt.widgets.ExpandItem";
-
-  public static final String PROP_EXPANDED = "expanded";
-  public static final String PROP_HEADER_HEIGHT = "headerHeight";
-
-  public static final int DEFAULT_HEADER_HEIGHT = 24;
+  private static final String PROP_EXPANDED = "expanded";
+  private static final String PROP_HEADER_HEIGHT = "headerHeight";
+  private static final int DEFAULT_HEADER_HEIGHT = 24;
 
   @Override
   public void preserveValues( ExpandItem item ) {
@@ -60,15 +60,16 @@ public final class ExpandItemLCA extends WidgetLCA<ExpandItem> {
     renderProperty( item, PROP_HEADER_HEIGHT, item.getHeaderHeight(), DEFAULT_HEADER_HEIGHT );
   }
 
-  //////////////////
-  // Helping methods
-
   private static Rectangle getBounds( ExpandItem item ) {
     return getExpandBarAdapter( item ).getBounds( item );
   }
 
   private static IExpandBarAdapter getExpandBarAdapter( ExpandItem item ) {
     return item.getParent().getAdapter( IExpandBarAdapter.class );
+  }
+
+  private ExpandItemLCA() {
+    // prevent instantiation
   }
 
 }

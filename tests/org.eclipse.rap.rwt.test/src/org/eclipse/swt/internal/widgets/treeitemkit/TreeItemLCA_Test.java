@@ -72,7 +72,7 @@ public class TreeItemLCA_Test {
     shell = new Shell( display );
     tree = new Tree( shell, SWT.NONE );
     item = new TreeItem( tree, SWT.NONE );
-    lca = new TreeItemLCA();
+    lca = TreeItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

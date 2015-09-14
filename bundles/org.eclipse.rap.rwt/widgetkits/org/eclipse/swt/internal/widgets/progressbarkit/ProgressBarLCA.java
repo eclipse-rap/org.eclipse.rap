@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.ProgressBar;
 
 public class ProgressBarLCA extends WidgetLCA<ProgressBar> {
 
+  public static final ProgressBarLCA INSTANCE = new ProgressBarLCA();
+
   private static final String TYPE = "rwt.widgets.ProgressBar";
   private static final String[] ALLOWED_STYLES = {
     "SMOOTH", "HORIZONTAL", "VERTICAL", "INDETERMINATE", "BORDER"
@@ -74,9 +76,6 @@ public class ProgressBarLCA extends WidgetLCA<ProgressBar> {
     renderClientListeners( progressBar );
   }
 
-  //////////////////
-  // Helping methods
-
   private static String getState( ProgressBar progressBar ) {
     String result = "normal";
     int state = progressBar.getState();
@@ -86,6 +85,10 @@ public class ProgressBarLCA extends WidgetLCA<ProgressBar> {
       result = "paused";
     }
     return result;
+  }
+
+  private ProgressBarLCA() {
+    // prevent instantiation
   }
 
 }

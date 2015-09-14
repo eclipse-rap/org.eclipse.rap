@@ -71,7 +71,7 @@ public class TableItemLCA_Test {
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
     item = new TableItem( table, SWT.NONE );
-    lca = new TableItemLCA();
+    lca = TableItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 
@@ -192,11 +192,10 @@ public class TableItemLCA_Test {
     // Ensure that even though there are no columns, the first text of an item
     // will be rendered
     Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
     Fixture.markInitialized( item );
-    tableItemLCA.preserveValues( item );
+    lca.preserveValues( item );
     item.setText( "newText" );
-    tableItemLCA.renderChanges( item );
+    lca.renderChanges( item );
     TestMessage message = Fixture.getProtocolMessage();
     JsonArray expected = new JsonArray().add( "newText" );
     assertEquals( expected, message.findSetProperty( item, "texts" ) );
@@ -230,13 +229,13 @@ public class TableItemLCA_Test {
   public void testDispose() throws IOException {
     table = new Table( shell, SWT.CHECK );
     item = new TableItem( table, SWT.NONE );
-    WidgetLCA lca = WidgetUtil.getLCA( item );
+    WidgetLCA<TableItem> itemLCA = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
     Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();
 
     item.dispose();
-    lca.renderDispose( item );
+    itemLCA.renderDispose( item );
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNotNull( message.findDestroyOperation( item ) );
@@ -246,13 +245,13 @@ public class TableItemLCA_Test {
   public void testDisposeTable() throws IOException {
     table = new Table( shell, SWT.CHECK );
     item = new TableItem( table, SWT.NONE );
-    WidgetLCA lca = WidgetUtil.getLCA( item );
+    WidgetLCA<TableItem> itemLCA = WidgetUtil.getLCA( item );
     Fixture.markInitialized( table );
     Fixture.markInitialized( item );
     Fixture.fakeResponseWriter();
 
     table.dispose();
-    lca.renderDispose( item );
+    itemLCA.renderDispose( item );
 
     // when the whole table is disposed of, the tableitem's dispose must not be rendered
     TestMessage message = Fixture.getProtocolMessage();
@@ -268,7 +267,6 @@ public class TableItemLCA_Test {
     // cached was false and remains unchanged while processing the life cycle
     TableItem item = table.getItem( 0 );
     table.clear( 0 );
-    TableItemLCA lca = new TableItemLCA();
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( item );
     // Ensure that nothing else than the 'index' and 'cached' property gets preserved

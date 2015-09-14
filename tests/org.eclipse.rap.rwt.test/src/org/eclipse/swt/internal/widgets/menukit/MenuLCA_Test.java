@@ -64,7 +64,7 @@ public class MenuLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
-    lca = new MenuLCA();
+    lca = MenuLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

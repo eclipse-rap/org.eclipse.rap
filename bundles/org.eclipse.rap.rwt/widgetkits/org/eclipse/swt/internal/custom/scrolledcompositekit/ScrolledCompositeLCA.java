@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
 
+  public static final ScrolledCompositeLCA INSTANCE = new ScrolledCompositeLCA();
+
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
   private static final String[] ALLOWED_STYLES = { "H_SCROLL", "V_SCROLL", "BORDER" };
 
@@ -69,9 +71,6 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
                     false );
   }
 
-  //////////////////
-  // Helping methods
-
   private static Point getOrigin( ScrolledComposite composite ) {
     Point result = new Point( 0, 0 );
     ScrollBar horizontalBar = composite.getHorizontalBar();
@@ -83,6 +82,10 @@ public final class ScrolledCompositeLCA extends WidgetLCA<ScrolledComposite> {
       result.y = verticalBar.getSelection();
     }
     return result;
+  }
+
+  private ScrolledCompositeLCA() {
+    // prevent instantiation
   }
 
 }

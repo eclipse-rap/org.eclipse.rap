@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public class LabelLCA extends WidgetLCA<Label> {
 
-  private static final AbstractLabelLCADelegate SEPARATOR_LCA = new SeparatorLabelLCA();
-  private static final AbstractLabelLCADelegate LABEL_LCA = new StandardLabelLCA();
+  public static final LabelLCA INSTANCE = new LabelLCA();
 
   @Override
   public void preserveValues( Label label ) {
@@ -40,13 +39,14 @@ public class LabelLCA extends WidgetLCA<Label> {
   }
 
   private static AbstractLabelLCADelegate getDelegate( Widget widget ) {
-    AbstractLabelLCADelegate result;
     if( ( widget.getStyle() & SWT.SEPARATOR ) != 0 ) {
-      result = SEPARATOR_LCA;
-    } else {
-      result = LABEL_LCA;
+      return SeparatorLabelLCA.INSTANCE;
     }
-    return result;
+    return StandardLabelLCA.INSTANCE;
+  }
+
+  private LabelLCA() {
+    // prevent instantiation
   }
 
 }

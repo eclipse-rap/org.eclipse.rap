@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarLCA;
 import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
@@ -519,6 +521,15 @@ public class ScrollBar extends Widget {
     }
     removeListener( SWT.Selection, listener );
     removeListener( SWT.DefaultSelection, listener );
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ScrollBarLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

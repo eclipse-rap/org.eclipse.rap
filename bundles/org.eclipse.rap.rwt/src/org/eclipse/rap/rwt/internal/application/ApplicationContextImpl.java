@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.internal.client.ClientSelector;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseListenerManager;
 import org.eclipse.rap.rwt.internal.remote.MessageChainElement;
@@ -85,7 +84,6 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final LifeCycleFactory lifeCycleFactory;
   private final MessageChainReference messageChainReference;
   private final EntryPointManager entryPointManager;
-  private final LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private final SettingStoreManager settingStoreManager;
   private final ServiceManagerImpl serviceManager;
   private final ResourceRegistry resourceRegistry;
@@ -125,7 +123,6 @@ public class ApplicationContextImpl implements ApplicationContext {
     internalImageFactory = new InternalImageFactory();
     imageDataFactory = new ImageDataFactory( resourceManager );
     fontDataFactory = new FontDataFactory();
-    lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     settingStoreManager = new SettingStoreManager();
     resourceRegistry = new ResourceRegistry( getResourceManager() );
     startupPage = new StartupPage( this );
@@ -256,10 +253,6 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   public PhaseListenerManager getPhaseListenerManager() {
     return phaseListenerManager;
-  }
-
-  public LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
-    return lifeCycleAdapterFactory;
   }
 
   public ResourceRegistry getResourceRegistry() {

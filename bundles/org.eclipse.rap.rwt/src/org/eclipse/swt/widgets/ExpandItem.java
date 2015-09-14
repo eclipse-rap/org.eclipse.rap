@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -21,6 +22,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
+import org.eclipse.swt.internal.widgets.expanditemkit.ExpandItemLCA;
 
 
 /**
@@ -414,6 +416,15 @@ public class ExpandItem extends Item {
       super.setText( string );
       updateBounds();
     }
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ExpandItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private void updateBounds() {

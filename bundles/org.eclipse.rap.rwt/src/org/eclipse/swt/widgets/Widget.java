@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetDataUtil;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
@@ -187,9 +186,6 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
       }
       return (T) widgetGraphicsAdapter;
-    }
-    if ( adapter == WidgetLCA.class ) {
-      return (T) getApplicationContext().getLifeCycleAdapterFactory().getWidgetLCA( this );
     }
     return null;
   }

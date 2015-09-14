@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -30,6 +31,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
+import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
 
 
@@ -601,16 +603,16 @@ public class DateTime extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IDateTimeAdapter.class ) {
       if( dateTimeAdapter == null ) {
         dateTimeAdapter = new DateTimeAdapter();
       }
-      result = ( T )dateTimeAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )dateTimeAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )DateTimeLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

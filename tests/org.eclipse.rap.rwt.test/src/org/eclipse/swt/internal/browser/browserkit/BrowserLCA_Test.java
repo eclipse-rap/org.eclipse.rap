@@ -63,7 +63,7 @@ public class BrowserLCA_Test {
     display = new Display();
     shell = new Shell( display );
     browser = new Browser( shell, SWT.NONE );
-    lca = new BrowserLCA();
+    lca = BrowserLCA.INSTANCE;
   }
 
   @After
@@ -147,7 +147,6 @@ public class BrowserLCA_Test {
     browser.setUrl( "http://eclipse.org/rap" );
     Fixture.fakeResponseWriter();
 
-    BrowserLCA lca = new BrowserLCA();
     lca.renderChanges( browser );
 
     assertFalse( getAdapter( browser).hasUrlChanged() );
@@ -160,7 +159,6 @@ public class BrowserLCA_Test {
     browser.setUrl( "http://eclipse.org/rap" );
     Fixture.fakeResponseWriter();
 
-    BrowserLCA lca = new BrowserLCA();
     lca.renderChanges( browser );
 
     assertFalse( getAdapter( browser).hasUrlChanged() );
@@ -281,8 +279,10 @@ public class BrowserLCA_Test {
   @Test
   public void testCallEvaluate() {
     BrowserCallback browserCallback = new BrowserCallback() {
+      @Override
       public void evaluationSucceeded( Object result ) {
       }
+      @Override
       public void evaluationFailed( Exception exception ) {
       }
     };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCAUtil.SubWidgetBou
 import org.eclipse.swt.widgets.DateTime;
 
 final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
+
+  static final DateTimeTimeLCA INSTANCE = new DateTimeTimeLCA();
 
   private static final String PROP_HOURS = "hours";
   private static final String PROP_MINUTES = "minutes";
@@ -62,6 +64,10 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
       DateTimeLCAUtil.getSubWidgetBounds( dateTime, IDateTimeAdapter.SECONDS_TEXTFIELD ),
       DateTimeLCAUtil.getSubWidgetBounds( dateTime, IDateTimeAdapter.SPINNER )
     };
+  }
+
+  private DateTimeTimeLCA() {
+    // prevent instantiation
   }
 
 }

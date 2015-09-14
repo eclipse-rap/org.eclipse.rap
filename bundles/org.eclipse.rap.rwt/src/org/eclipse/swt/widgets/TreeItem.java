@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
@@ -31,6 +32,7 @@ import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA;
 
 
 /**
@@ -285,24 +287,25 @@ public class TreeItem extends Item {
     }
   }
 
-  @SuppressWarnings("unchecked")
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )new CompositeItemHolder();
-    } else if(    adapter == IWidgetFontAdapter.class
-               || adapter == IWidgetColorAdapter.class
-               || adapter == ITreeItemAdapter.class )
+      return ( T )new CompositeItemHolder();
+    }
+    if(    adapter == IWidgetFontAdapter.class
+        || adapter == IWidgetColorAdapter.class
+        || adapter == ITreeItemAdapter.class )
     {
       if( treeItemAdapter == null ) {
         treeItemAdapter = new TreeItemAdapter();
       }
-      result = ( T )treeItemAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )treeItemAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TreeItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   //////////////////////////

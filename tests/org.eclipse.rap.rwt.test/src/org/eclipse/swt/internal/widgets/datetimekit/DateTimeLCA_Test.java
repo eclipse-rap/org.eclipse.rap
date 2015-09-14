@@ -56,7 +56,7 @@ public class DateTimeLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display, SWT.NONE );
-    lca = new DateTimeLCA();
+    lca = DateTimeLCA.INSTANCE;
   }
 
   @After

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
@@ -25,6 +26,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
+import org.eclipse.swt.internal.widgets.textkit.TextLCA;
 import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 
@@ -1025,7 +1027,6 @@ public class Text extends Scrollable {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == ITextAdapter.class ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
@@ -1038,11 +1039,12 @@ public class Text extends Scrollable {
           }
         };
       }
-      result = ( T )textAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )textAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TextLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

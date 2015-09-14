@@ -58,7 +58,7 @@ public class SliderLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     slider = new Slider( shell, SWT.NONE );
-    lca = new SliderLCA();
+    lca = SliderLCA.INSTANCE;
   }
 
   @After

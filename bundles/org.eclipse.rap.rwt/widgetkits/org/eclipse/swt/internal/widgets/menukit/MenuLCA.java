@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.Menu;
 
 public final class MenuLCA extends WidgetLCA<Menu> {
 
+  public static final MenuLCA INSTANCE = new MenuLCA();
+
   private static final String TYPE = "rwt.widgets.Menu";
   private static final String[] ALLOWED_STYLES = {
     "BAR", "DROP_DOWN", "POP_UP", "NO_RADIO_GROUP"
@@ -159,6 +161,10 @@ public final class MenuLCA extends WidgetLCA<Menu> {
 
   private static boolean isDropDownMenu( Menu menu ) {
     return ( menu.getStyle() & SWT.DROP_DOWN ) != 0;
+  }
+
+  private MenuLCA() {
+    // prevent instantiation
   }
 
 }

@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.Label;
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
+  static final StandardLabelLCA INSTANCE = new StandardLabelLCA();
+
   private static final String TYPE = "rwt.widgets.Label";
   private static final String[] ALLOWED_STYLES = { "WRAP", "BORDER" };
 
@@ -71,9 +73,6 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
   }
 
-  //////////////////
-  // Helping methods
-
   private static String getAlignment( Label label ) {
     int alignment = label.getAlignment();
     String result;
@@ -110,6 +109,10 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
         }
       }
     }
+  }
+
+  public StandardLabelLCA() {
+    // prevent instantiation
   }
 
 }

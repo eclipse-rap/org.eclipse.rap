@@ -57,7 +57,7 @@ public class TabFolderLCA_Test {
     display = new Display();
     shell = new Shell( display );
     folder = new TabFolder( shell, SWT.NONE );
-    lca = new TabFolderLCA();
+    lca = TabFolderLCA.INSTANCE;
   }
 
   @After

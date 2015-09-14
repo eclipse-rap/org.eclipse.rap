@@ -53,7 +53,7 @@ public class CompositeLCA_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    lca = new CompositeLCA();
+    lca = CompositeLCA.INSTANCE;
     composite = new Composite( shell, SWT.BORDER );
   }
 

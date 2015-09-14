@@ -60,7 +60,7 @@ public class FileUploadLCA_Test {
     display = new Display();
     shell = new Shell( display );
     fileUpload = new FileUpload( shell, SWT.NONE );
-    lca = new FileUploadLCA();
+    lca = FileUploadLCA.INSTANCE;
   }
 
   @After

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -19,6 +20,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TypedListener;
@@ -43,6 +45,7 @@ public class ControlDecorator extends Decorator {
     showHover = true;
     parent = getParent( control, composite );
     addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( DisposeEvent event ) {
         removeFocusListener();
       }
@@ -207,8 +210,14 @@ public class ControlDecorator extends Decorator {
     removeListener( SWT.DefaultSelection, listener );
   }
 
-  //////////////////
-  // Helping methods
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ControlDecoratorLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
+  }
 
   private static int checkStyle( int style ) {
     int result = SWT.NONE;
@@ -238,9 +247,11 @@ public class ControlDecorator extends Decorator {
   private void addFocusListener() {
     if( focusListener == null ) {
       focusListener = new FocusListener() {
+        @Override
         public void focusGained( FocusEvent event ) {
           hasFocus = true;
         }
+        @Override
         public void focusLost( FocusEvent event ) {
           hasFocus = false;
         }
@@ -258,4 +269,5 @@ public class ControlDecorator extends Decorator {
       control.removeFocusListener( focusListener );
     }
   }
+
 }

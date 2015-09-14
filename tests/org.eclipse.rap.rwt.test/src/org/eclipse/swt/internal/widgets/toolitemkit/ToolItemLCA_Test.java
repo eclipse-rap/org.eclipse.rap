@@ -66,7 +66,7 @@ public class ToolItemLCA_Test {
     shell = new Shell( display );
     toolbar = new ToolBar( shell, SWT.NONE );
     toolitem = new ToolItem( toolbar, SWT.PUSH );
-    lca = new ToolItemLCA();
+    lca = ToolItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

@@ -60,7 +60,7 @@ public class TextLCA_Test {
   @Before
   public void setUp() {
     Fixture.setUp();
-    lca = new TextLCA();
+    lca = TextLCA.INSTANCE;
     display = new Display();
     shell = new Shell( display );
     text = new Text( shell, SWT.NONE );

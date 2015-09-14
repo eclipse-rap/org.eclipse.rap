@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Canvas;
 
 public final class CanvasLCA extends WidgetLCA<Canvas> {
 
+  public static final CanvasLCA INSTANCE = new CanvasLCA();
+
   private static final String TYPE = "rwt.widgets.Canvas";
   private static final String TYPE_GC = "rwt.widgets.GC";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
@@ -82,6 +84,10 @@ public final class CanvasLCA extends WidgetLCA<Canvas> {
 
   public static void renderClientArea( Canvas canvas ) {
     renderProperty( canvas, PROP_CLIENT_AREA, canvas.getClientArea(), null );
+  }
+
+  private CanvasLCA() {
+    // prevent instantiation
   }
 
 }

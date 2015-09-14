@@ -55,7 +55,7 @@ public class ListLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    lca = new ListLCA();
+    lca = ListLCA.INSTANCE;
   }
 
   @After

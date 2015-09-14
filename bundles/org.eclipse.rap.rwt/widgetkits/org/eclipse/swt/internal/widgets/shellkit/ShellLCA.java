@@ -43,6 +43,8 @@ import org.eclipse.swt.widgets.Shell;
 
 public final class ShellLCA extends WidgetLCA<Shell> {
 
+  public static final ShellLCA INSTANCE = new ShellLCA();
+
   private static final String TYPE = "rwt.widgets.Shell";
   private static final String[] ALLOWED_STYLES = {
     "CLOSE",
@@ -223,6 +225,10 @@ public final class ShellLCA extends WidgetLCA<Shell> {
       IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
       getAdapter( menuBar ).preserve( Props.BOUNDS, shellAdapter.getMenuBounds() );
     }
+  }
+
+  private ShellLCA() {
+    // prevent instantiation
   }
 
 }

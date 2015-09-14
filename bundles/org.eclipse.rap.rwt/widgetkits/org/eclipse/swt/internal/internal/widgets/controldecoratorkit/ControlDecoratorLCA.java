@@ -28,6 +28,8 @@ import org.eclipse.swt.internal.widgets.ControlDecorator;
 
 public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
 
+  public static final ControlDecoratorLCA INSTANCE = new ControlDecoratorLCA();
+
   private static final String TYPE = "rwt.widgets.ControlDecorator";
   private static final String[] ALLOWED_STYLES = {
     "TOP", "BOTTOM", "LEFT", "RIGHT", "CENTER"
@@ -69,6 +71,10 @@ public class ControlDecoratorLCA extends WidgetLCA<ControlDecorator> {
   @Override
   public void renderDispose( ControlDecorator decorator ) throws IOException {
     getRemoteObject( decorator ).destroy();
+  }
+
+  private ControlDecoratorLCA() {
+    // prevent instantiation
   }
 
 }

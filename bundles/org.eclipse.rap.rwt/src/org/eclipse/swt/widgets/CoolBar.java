@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA;
 
 /**
  * Instances of this class provide an area for dynamically positioning the items
@@ -55,7 +57,7 @@ public class CoolBar extends Composite {
     }
   }
 
-  private class CoolBarItemHolder implements IItemHolderAdapter {
+  private class CoolBarItemHolder implements IItemHolderAdapter<Item> {
 
     @Override
     public void add( Item item ) {
@@ -87,7 +89,7 @@ public class CoolBar extends Composite {
   static final int DEFAULT_COOLBAR_WIDTH = 0;
   static final int DEFAULT_COOLBAR_HEIGHT = 0;
 
-  private transient IItemHolderAdapter itemHolder;
+  private transient IItemHolderAdapter<Item> itemHolder;
   private transient ICoolBarAdapter coolBarAdapter;
 
   /**
@@ -139,7 +141,7 @@ public class CoolBar extends Composite {
       public void handleEvent( Event event ) {
         switch (event.type) {
         case SWT.Dispose:
-          onDispose( event );
+          onDispose();
           break;
         // case SWT.MouseDown: onMouseDown(event); break;
         // case SWT.MouseExit: onMouseExit(); break;
@@ -689,7 +691,7 @@ public class CoolBar extends Composite {
     }
   }
 
-  void onDispose( Event event ) {
+  void onDispose() {
     /*
      * Usually when an item is disposed, destroyItem will change the size of the
      * items array and reset the bounds of all the remaining cool items. Since
@@ -1382,21 +1384,22 @@ public class CoolBar extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if ( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
         itemHolder = new CoolBarItemHolder();
       }
-      result = ( T )itemHolder;
-    } else if ( adapter == ICoolBarAdapter.class ) {
+      return ( T )itemHolder;
+    }
+    if ( adapter == ICoolBarAdapter.class ) {
       if( coolBarAdapter == null ) {
         coolBarAdapter = new CoolBarAdapter();
       }
-      result = ( T )coolBarAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )coolBarAdapter;
     }
-    return result;
+    if ( adapter == WidgetLCA.class ) {
+      return ( T )CoolBarLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   ///////////////////

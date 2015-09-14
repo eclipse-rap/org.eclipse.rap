@@ -46,6 +46,8 @@ import org.eclipse.swt.dnd.Transfer;
 
 public final class DropTargetLCA extends WidgetLCA<DropTarget> {
 
+  public static final DropTargetLCA INSTANCE = new DropTargetLCA();
+
   private static final String TYPE = "rwt.widgets.DropTarget";
   private static final String PROP_TRANSFER = "transfer";
   private static final String PROP_DRAG_ENTER_LISTENER = "DragEnter";
@@ -188,6 +190,10 @@ public final class DropTargetLCA extends WidgetLCA<DropTarget> {
       }
     }
     return false;
+  }
+
+  private DropTargetLCA() {
+    // prevent instantiation
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintListener;
@@ -18,6 +19,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA;
 
 
 /**
@@ -82,27 +84,19 @@ public class Canvas extends Composite {
     super( parent, style );
   }
 
-  /**
-   * Implementation of the <code>Adaptable</code> interface.
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IGCAdapter.class ) {
       if( gcAdapter == null ) {
         gcAdapter = new GCAdapter();
       }
-      result = ( T )gcAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )gcAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CanvasLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /**

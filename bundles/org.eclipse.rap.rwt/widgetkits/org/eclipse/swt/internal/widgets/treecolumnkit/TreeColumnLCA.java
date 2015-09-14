@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.TreeColumn;
 
 public final class TreeColumnLCA extends WidgetLCA<TreeColumn> {
 
+  public static final TreeColumnLCA INSTANCE = new TreeColumnLCA();
+
   private static final String TYPE = "rwt.widgets.GridColumn";
 
   static final String PROP_INDEX = "index";
@@ -115,6 +117,10 @@ public final class TreeColumnLCA extends WidgetLCA<TreeColumn> {
   private static boolean isFixed( TreeColumn column ) {
     ITreeAdapter adapter = column.getParent().getAdapter( ITreeAdapter.class );
     return adapter.isFixedColumn( column );
+  }
+
+  private TreeColumnLCA() {
+    // prevent instantiation
   }
 
 }

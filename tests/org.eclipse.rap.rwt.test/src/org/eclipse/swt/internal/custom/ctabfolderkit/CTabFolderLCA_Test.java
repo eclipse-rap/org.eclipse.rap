@@ -76,7 +76,7 @@ public class CTabFolderLCA_Test {
     display = new Display();
     shell = new Shell( display );
     folder = new CTabFolder( shell, SWT.NONE );
-    lca = new CTabFolderLCA();
+    lca = CTabFolderLCA.INSTANCE;
   }
 
   @After

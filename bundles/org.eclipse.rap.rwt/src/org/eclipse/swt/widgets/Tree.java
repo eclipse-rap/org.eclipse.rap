@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
@@ -45,6 +46,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
 
@@ -221,17 +223,16 @@ public class Tree extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )new CompositeItemHolder();
-    } else if( adapter == ITreeAdapter.class ) {
-      result = ( T )treeAdapter;
-    } else if( adapter == ICellToolTipAdapter.class ) {
-      result = ( T )treeAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )new CompositeItemHolder();
     }
-    return result;
+    if( adapter == ITreeAdapter.class || adapter == ICellToolTipAdapter.class ) {
+      return ( T )treeAdapter;
+    }
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TreeLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.TableColumn;
 
 public final class TableColumnLCA extends WidgetLCA<TableColumn> {
 
+  public static final TableColumnLCA INSTANCE = new TableColumnLCA();
+
   private static final String TYPE = "rwt.widgets.GridColumn";
 
   static final String PROP_INDEX = "index";
@@ -116,6 +118,10 @@ public final class TableColumnLCA extends WidgetLCA<TableColumn> {
 
   private static ITableAdapter getTableAdapter( TableColumn column ) {
     return column.getParent().getAdapter( ITableAdapter.class );
+  }
+
+  private TableColumnLCA() {
+    // prevent instantiation
   }
 
 }

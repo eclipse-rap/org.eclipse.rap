@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,10 @@ import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCAUtil.SubWidgetBounds;
 import org.eclipse.swt.widgets.DateTime;
 
+
 final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
+
+  static final DateTimeDateLCA INSTANCE = new DateTimeDateLCA();
 
   private static final String PROP_YEAR = "year";
   private static final String PROP_MONTH = "month";
@@ -71,6 +74,10 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
       DateTimeLCAUtil.getSubWidgetBounds( dateTime, IDateTimeAdapter.SPINNER ),
       DateTimeLCAUtil.getSubWidgetBounds( dateTime, IDateTimeAdapter.DROP_DOWN_BUTTON )
     };
+  }
+
+  private DateTimeDateLCA() {
+    // prevent instantiation
   }
 
 }

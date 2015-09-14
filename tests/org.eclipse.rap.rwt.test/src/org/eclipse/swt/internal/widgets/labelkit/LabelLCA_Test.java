@@ -65,7 +65,7 @@ public class LabelLCA_Test {
     display = new Display();
     shell = new Shell( display );
     label = new Label( shell, SWT.NONE );
-    lca = new LabelLCA();
+    lca = LabelLCA.INSTANCE;
   }
 
   @After
@@ -185,9 +185,8 @@ public class LabelLCA_Test {
   @Test
   public void testRenderDispose() throws IOException {
     label.dispose();
-    LabelLCA labelLCA = new LabelLCA();
 
-    labelLCA.renderDispose( label );
+    lca.renderDispose( label );
 
     TestMessage message = Fixture.getProtocolMessage();
     DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );

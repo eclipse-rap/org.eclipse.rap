@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.text.NumberFormat;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -24,6 +25,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
 
 
@@ -645,6 +647,15 @@ public class Spinner extends Composite {
     }
     removeListener( SWT.Selection, listener );
     removeListener( SWT.DefaultSelection, listener );
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )SpinnerLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   //////////////////

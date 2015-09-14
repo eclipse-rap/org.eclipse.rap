@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -19,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
+import org.eclipse.swt.internal.widgets.linkkit.LinkLCA;
 
 
 /**
@@ -242,7 +244,6 @@ public class Link extends Control {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == ILinkAdapter.class ) {
       if( linkAdapter == null ) {
         linkAdapter = new ILinkAdapter() {
@@ -260,11 +261,12 @@ public class Link extends Control {
           }
         };
       }
-      result = ( T )linkAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )linkAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )LinkLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   @Override

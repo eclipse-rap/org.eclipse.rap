@@ -11,11 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarLCA;
 import org.eclipse.swt.internal.widgets.progressbarkit.ProgressBarThemeAdapter;
 
 /**
@@ -278,6 +280,15 @@ public class ProgressBar extends Control {
   public int getState() {
     checkWidget();
     return state;
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ProgressBarLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private int getProgressBarWidth() {

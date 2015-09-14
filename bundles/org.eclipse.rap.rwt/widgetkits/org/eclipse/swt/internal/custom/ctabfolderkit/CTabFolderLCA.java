@@ -40,6 +40,8 @@ import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 
 public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
 
+  public static final CTabFolderLCA INSTANCE = new CTabFolderLCA();
+
   private static final String TYPE = "rwt.widgets.CTabFolder";
   private static final String[] ALLOWED_STYLES = {
     "CLOSE", "FLAT", "SINGLE", "MULTI", "NO_RADIO_GROUP", "BORDER"
@@ -247,6 +249,10 @@ public final class CTabFolderLCA extends WidgetLCA<CTabFolder> {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabFolder folder ) {
     return folder.getAdapter( ICTabFolderAdapter.class );
+  }
+
+  private CTabFolderLCA() {
+    // prevent instantiation
   }
 
 }

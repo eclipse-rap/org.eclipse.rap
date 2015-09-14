@@ -73,7 +73,7 @@ public class MenuItemLCA_Test {
     shell = new Shell( display );
     menuBar = new Menu( shell, SWT.BAR );
     menu = new Menu( shell, SWT.POP_UP );
-    lca = new MenuItemLCA();
+    lca = MenuItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

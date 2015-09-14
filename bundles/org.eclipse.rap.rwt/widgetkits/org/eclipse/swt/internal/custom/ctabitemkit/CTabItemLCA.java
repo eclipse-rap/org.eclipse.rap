@@ -36,6 +36,8 @@ import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 
 public final class CTabItemLCA extends WidgetLCA<CTabItem> {
 
+  public static final CTabItemLCA INSTANCE = new CTabItemLCA();
+
   private static final String TYPE = "rwt.widgets.CTabItem";
   private static final String[] ALLOWED_STYLES = { "CLOSE" };
 
@@ -83,9 +85,6 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
     renderProperty( item, PROP_SHOW_CLOSE, item.getShowClose(), false );
   }
 
-  ////////////////////////////////////////////
-  // Helping methods to obtain item properties
-
   private static void renderText( CTabItem item ) {
     String newValue = getText( item );
     if( hasChanged( item, PROP_TEXT, newValue, "" ) ) {
@@ -118,6 +117,10 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabItem item ) {
     return item.getParent().getAdapter( ICTabFolderAdapter.class );
+  }
+
+  private CTabItemLCA() {
+    // prevent instantiation
   }
 
 }

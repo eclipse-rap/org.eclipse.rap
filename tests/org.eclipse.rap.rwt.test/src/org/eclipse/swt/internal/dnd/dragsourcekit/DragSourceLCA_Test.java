@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class DragSourceLCA_Test {
     shell = new Shell( display );
     control = new Label( shell, SWT.NONE );
     source = new DragSource( control, DND.DROP_MOVE | DND.DROP_COPY );
-    lca = new DragSourceLCA();
+    lca = DragSourceLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Sash;
 
 public final class SashLCA extends WidgetLCA<Sash> {
 
+  public static final SashLCA INSTANCE = new SashLCA();
+
   private static final String TYPE = "rwt.widgets.Sash";
   private static final String[] ALLOWED_STYLES = {
     "HORIZONTAL", "VERTICAL", "SMOOTH", "BORDER"
@@ -49,6 +51,10 @@ public final class SashLCA extends WidgetLCA<Sash> {
     ControlLCAUtil.renderChanges( sash );
     WidgetLCAUtil.renderCustomVariant( sash );
     renderListenSelection( sash );
+  }
+
+  private SashLCA() {
+    // prevent instantiation
   }
 
 }

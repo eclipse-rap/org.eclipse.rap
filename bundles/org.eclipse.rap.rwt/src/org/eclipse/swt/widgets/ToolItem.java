@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
@@ -28,6 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
+import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA;
 
 
 /**
@@ -809,7 +811,6 @@ public class ToolItem extends Item {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if ( adapter == IToolItemAdapter.class ) {
       if( toolItemAdapter == null ) {
         toolItemAdapter = new IToolItemAdapter() {
@@ -819,11 +820,12 @@ public class ToolItem extends Item {
           }
         };
       }
-      result = ( T )toolItemAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )toolItemAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ToolItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   void resizeControl() {

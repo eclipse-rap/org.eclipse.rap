@@ -38,6 +38,8 @@ import org.eclipse.swt.widgets.Button;
 
 public final class ButtonLCA extends WidgetLCA<Button> {
 
+  public static final ButtonLCA INSTANCE = new ButtonLCA();
+
   private static final String TYPE = "rwt.widgets.Button";
   private static final String[] ALLOWED_STYLES = {
     "ARROW", "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "BORDER"
@@ -127,6 +129,10 @@ public final class ButtonLCA extends WidgetLCA<Button> {
         getRemoteObject( button ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
+  }
+
+  private ButtonLCA() {
+    // prevent instantiation
   }
 
 }

@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -22,6 +23,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Control;
@@ -135,20 +137,21 @@ public class CTabItem extends Item {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IWidgetFontAdapter.class ) {
       if( widgetFontAdapter == null ) {
         widgetFontAdapter = new IWidgetFontAdapter() {
+          @Override
           public Font getUserFont() {
             return CTabItem.this.font;
           }
         };
       }
-      result = ( T )widgetFontAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )widgetFontAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CTabItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /**

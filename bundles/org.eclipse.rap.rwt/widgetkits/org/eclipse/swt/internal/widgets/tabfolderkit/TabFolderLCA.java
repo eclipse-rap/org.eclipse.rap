@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.TabFolder;
 
 public class TabFolderLCA extends WidgetLCA<TabFolder> {
 
+  public static final TabFolderLCA INSTANCE = new TabFolderLCA();
+
   private static final String TYPE = "rwt.widgets.TabFolder";
   private static final String[] ALLOWED_STYLES = { "TOP", "BOTTOM", "NO_RADIO_GROUP", "BORDER" };
 
@@ -58,9 +60,6 @@ public class TabFolderLCA extends WidgetLCA<TabFolder> {
     renderProperty( folder, PROP_SELECTION, getSelection( folder ), null );
   }
 
-  //////////////////
-  // Helping methods
-
   private static String getSelection( TabFolder folder ) {
     String selection = null;
     int selectionIndex = folder.getSelectionIndex();
@@ -68,6 +67,10 @@ public class TabFolderLCA extends WidgetLCA<TabFolder> {
       selection = getId( folder.getItem( selectionIndex ) );
     }
     return selection;
+  }
+
+  private TabFolderLCA() {
+    // prevent instantiation
   }
 
 }

@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Slider;
 
 public class SliderLCA extends WidgetLCA<Slider> {
 
+  public static final SliderLCA INSTANCE = new SliderLCA();
+
   private static final String TYPE = "rwt.widgets.Slider";
   private static final String[] ALLOWED_STYLES = {
     "HORIZONTAL", "VERTICAL", "BORDER"
@@ -79,6 +81,10 @@ public class SliderLCA extends WidgetLCA<Slider> {
     renderProperty( slider, PROP_PAGE_INCREMENT, slider.getPageIncrement(), DEFAULT_PINCREMENT );
     renderProperty( slider, PROP_THUMB, slider.getThumb(), DEFAULT_THUMB );
     renderListenSelection( slider );
+  }
+
+  private SliderLCA() {
+    // prevent instantiation
   }
 
 }

@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,6 +23,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tooltipkit.ToolTipLCA;
 
 
 /**
@@ -105,20 +107,20 @@ public class ToolTip extends Widget {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IToolTipAdapter.class ) {
       if( toolTipAdapter == null ) {
         toolTipAdapter = new IToolTipAdapter() {
+          @Override
           public Point getLocation() {
             return new Point( ToolTip.this.x, ToolTip.this.y );
           }
         };
       }
-      result = ( T )toolTipAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )toolTipAdapter;
+    } else if( adapter == WidgetLCA.class ) {
+      return ( T )ToolTipLCA.INSTANCE;
     }
-    return result;
+    return super.getAdapter( adapter );
   }
 
   /**

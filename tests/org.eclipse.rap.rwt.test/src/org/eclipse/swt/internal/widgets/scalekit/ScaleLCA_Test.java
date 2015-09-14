@@ -61,7 +61,7 @@ public class ScaleLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     scale = new Scale( shell, SWT.NONE );
-    lca = new ScaleLCA();
+    lca = ScaleLCA.INSTANCE;
   }
 
   @After

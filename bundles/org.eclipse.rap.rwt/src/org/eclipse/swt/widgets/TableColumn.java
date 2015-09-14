@@ -15,6 +15,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -27,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA;
 
 
 /**
@@ -501,13 +503,13 @@ public class TableColumn extends Item {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result = null;
     if( adapter == IColumnAdapter.class ) {
-      result = ( T )columnAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )columnAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TableColumnLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   ////////////////////

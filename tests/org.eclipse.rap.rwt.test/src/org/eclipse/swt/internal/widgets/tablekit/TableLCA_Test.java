@@ -85,7 +85,7 @@ public class TableLCA_Test {
     display = new Display();
     shell = new Shell( display );
     table = new Table( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    lca = new TableLCA();
+    lca = TableLCA.INSTANCE;
   }
 
   @After

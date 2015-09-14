@@ -21,9 +21,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class DateTimeLCA extends WidgetLCA<DateTime> {
 
-  private static final AbstractDateTimeLCADelegate DATE_LCA = new DateTimeDateLCA();
-  private static final AbstractDateTimeLCADelegate TIME_LCA = new DateTimeTimeLCA();
-  private static final AbstractDateTimeLCADelegate CALENDAR_LCA = new DateTimeCalendarLCA();
+  public static final DateTimeLCA INSTANCE = new DateTimeLCA();
 
   @Override
   public void preserveValues( DateTime dateTime ) {
@@ -41,15 +39,17 @@ public final class DateTimeLCA extends WidgetLCA<DateTime> {
   }
 
   private static AbstractDateTimeLCADelegate getDelegate( Widget widget ) {
-    AbstractDateTimeLCADelegate result;
     if( ( widget.getStyle() & SWT.DATE ) != 0 ) {
-      result = DATE_LCA;
-    } else if( ( widget.getStyle() & SWT.TIME ) != 0 ) {
-      result = TIME_LCA;
-    } else {
-      result = CALENDAR_LCA;
+      return DateTimeDateLCA.INSTANCE;
     }
-    return result;
+    if( ( widget.getStyle() & SWT.TIME ) != 0 ) {
+      return DateTimeTimeLCA.INSTANCE;
+    }
+    return DateTimeCalendarLCA.INSTANCE;
+  }
+
+  private DateTimeLCA() {
+    // prevent instantiation
   }
 
 }

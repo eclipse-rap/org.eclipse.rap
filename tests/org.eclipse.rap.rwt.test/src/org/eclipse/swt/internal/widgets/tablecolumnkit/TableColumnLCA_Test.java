@@ -71,7 +71,7 @@ public class TableColumnLCA_Test {
     shell = new Shell( display );
     table = new Table( shell, SWT.NONE );
     column = new TableColumn( table, SWT.NONE );
-    lca = new TableColumnLCA();
+    lca = TableColumnLCA.INSTANCE;
     Fixture.fakeNewRequest();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }

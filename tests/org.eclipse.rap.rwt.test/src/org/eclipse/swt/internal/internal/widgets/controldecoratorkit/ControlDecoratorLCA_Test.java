@@ -61,7 +61,7 @@ public class ControlDecoratorLCA_Test {
     shell = new Shell( display );
     control = new Button( shell, SWT.PUSH );
     decorator = new ControlDecorator( control, SWT.NONE, null );
-    lca = new ControlDecoratorLCA();
+    lca = ControlDecoratorLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

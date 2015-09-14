@@ -38,6 +38,8 @@ import org.eclipse.swt.widgets.Combo;
 
 public class ComboLCA extends WidgetLCA<Combo> {
 
+  public static final ComboLCA INSTANCE = new ComboLCA();
+
   private static final String TYPE = "rwt.widgets.Combo";
   private static final String[] ALLOWED_STYLES = { "DROP_DOWN", "SIMPLE", "BORDER" };
 
@@ -145,9 +147,6 @@ public class ComboLCA extends WidgetLCA<Combo> {
     renderProperty( combo, PROP_TEXT_LIMIT, getTextLimit( combo ), null );
   }
 
-  //////////////////
-  // Helping methods
-
   private static boolean isEditable( Combo combo ) {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
@@ -158,6 +157,10 @@ public class ComboLCA extends WidgetLCA<Combo> {
       result = null;
     }
     return result;
+  }
+
+  private ComboLCA() {
+    // prevent instantiation
   }
 
 }

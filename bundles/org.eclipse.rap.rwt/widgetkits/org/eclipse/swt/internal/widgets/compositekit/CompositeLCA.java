@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CompositeLCA extends WidgetLCA<Composite> {
 
+  public static final CompositeLCA INSTANCE = new CompositeLCA();
+
   private static final String TYPE = "rwt.widgets.Composite";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
   private static final String PROP_CLIENT_AREA = "clientArea";
@@ -60,6 +62,10 @@ public class CompositeLCA extends WidgetLCA<Composite> {
 
   public void renderClientArea( Composite composite ) {
     renderProperty( composite, PROP_CLIENT_AREA, composite.getClientArea(), null );
+  }
+
+  private CompositeLCA() {
+    // prevent instantiation
   }
 
 }

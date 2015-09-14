@@ -83,7 +83,7 @@ public class TreeLCA_Test {
     display = new Display();
     shell = new Shell( display );
     tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    lca = new TreeLCA();
+    lca = TreeLCA.INSTANCE;
   }
 
   @After

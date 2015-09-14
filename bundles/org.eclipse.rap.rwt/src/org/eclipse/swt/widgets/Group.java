@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -19,6 +20,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.groupkit.GroupLCA;
 import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
 
 
@@ -180,6 +182,15 @@ public class Group extends Composite {
       result.x = Math.max( result.x, headerWidth );
     }
     return result;
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )GroupLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private GroupThemeAdapter getThemeAdapter() {

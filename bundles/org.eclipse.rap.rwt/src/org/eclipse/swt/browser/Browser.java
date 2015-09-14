@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
@@ -28,7 +29,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SWTEventListener;
-import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.browser.browserkit.BrowserLCA;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
@@ -114,7 +115,7 @@ public class Browser extends Composite {
     }
     html = "";
     url = "";
-    functions = new ArrayList<BrowserFunction>();
+    functions = new ArrayList<>();
     addDisposeListener( new BrowserDisposeListener() );
   }
 
@@ -452,16 +453,16 @@ public class Browser extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
-    if( IBrowserAdapter.class.equals( adapter ) ) {
+    if( adapter == IBrowserAdapter.class ) {
       if( browserAdapter == null ) {
         browserAdapter = new BrowserAdapter();
       }
-      result = ( T )browserAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )browserAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )BrowserLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /**
@@ -531,7 +532,7 @@ public class Browser extends Composite {
     super.checkWidget();
   }
 
-  private void checkOperationMode() {
+  private static void checkOperationMode() {
     if( getApplicationContext().getLifeCycleFactory().getLifeCycle() instanceof SimpleLifeCycle ) {
       throw new UnsupportedOperationException( "Method not supported in JEE_COMPATIBILITY mode." );
     }
@@ -574,6 +575,7 @@ public class Browser extends Composite {
 
   private void setExecuteResult( final boolean success, final Object result ) {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         executeResult = Boolean.valueOf( success );
         evaluateResult = result;
@@ -609,7 +611,8 @@ public class Browser extends Composite {
   ////////////////
   // Inner classes
 
-  private class BrowserDisposeListener implements DisposeListener, SerializableCompatibility  {
+  private class BrowserDisposeListener implements DisposeListener  {
+    @Override
     public void widgetDisposed( DisposeEvent event ) {
       onDispose();
     }
@@ -617,38 +620,47 @@ public class Browser extends Composite {
 
   private final class BrowserAdapter implements IBrowserAdapter {
 
+    @Override
     public String getText() {
       return html;
     }
 
+    @Override
     public String getExecuteScript() {
       return executeScript;
     }
 
+    @Override
     public void setExecuteResult( boolean success, Object result ) {
       Browser.this.setExecuteResult( success, result );
     }
 
+    @Override
     public void setExecutePending( boolean executePending ) {
       Browser.this.executePending = executePending;
     }
 
+    @Override
     public boolean getExecutePending() {
       return executePending;
     }
 
+    @Override
     public BrowserFunction[] getBrowserFunctions() {
       return Browser.this.getBrowserFunctions();
     }
 
+    @Override
     public boolean hasUrlChanged() {
       return urlChanged;
     }
 
+    @Override
     public void resetUrlChanged() {
       urlChanged = false;
     }
 
+    @Override
     public void evaluateNonBlocking( String script, BrowserCallback browserCallback ) {
       Browser.this.evaluateNonBlocking( script, browserCallback );
     }

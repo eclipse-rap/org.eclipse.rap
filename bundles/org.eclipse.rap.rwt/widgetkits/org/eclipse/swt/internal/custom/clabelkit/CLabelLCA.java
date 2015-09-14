@@ -36,6 +36,8 @@ import org.eclipse.swt.custom.CLabel;
 
 public final class CLabelLCA extends WidgetLCA<CLabel> {
 
+  public static final CLabelLCA INSTANCE = new CLabelLCA();
+
   private static final String TYPE = "rwt.widgets.Label";
   private static final String[] ALLOWED_STYLES = {
     "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
@@ -142,6 +144,10 @@ public final class CLabelLCA extends WidgetLCA<CLabel> {
 
   private static CLabelThemeAdapter getThemeAdapter( CLabel clabel ) {
     return ( CLabelThemeAdapter )clabel.getAdapter( ThemeAdapter.class );
+  }
+
+  private CLabelLCA() {
+    // prevent instantiation
   }
 
 }

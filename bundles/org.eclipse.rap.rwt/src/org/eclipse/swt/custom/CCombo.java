@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -21,6 +22,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.custom.ccombokit.CComboLCA;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -1058,7 +1060,6 @@ public class CCombo extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == ITextAdapter.class ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
@@ -1071,11 +1072,12 @@ public class CCombo extends Composite {
           }
         };
       }
-      result = ( T )textAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )textAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CComboLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private void updateText() {

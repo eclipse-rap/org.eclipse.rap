@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 public final class TableLCA extends WidgetLCA<Table> {
 
+  public static final TableLCA INSTANCE = new TableLCA();
+
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = {
     "SINGLE",
@@ -341,6 +343,10 @@ public final class TableLCA extends WidgetLCA<Table> {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );
     }
+  }
+
+  private TableLCA() {
+    // prevent instantiation
   }
 
 }

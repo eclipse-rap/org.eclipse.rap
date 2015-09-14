@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Label;
 
 final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
+  static final SeparatorLabelLCA INSTANCE = new SeparatorLabelLCA();
+
   private static final String TYPE = "rwt.widgets.Separator";
   private static final String[] ALLOWED_STYLES = {
     "SEPARATOR", "HORIZONTAL", "VERTICAL", "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
@@ -47,6 +49,10 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void renderChanges( Label label ) throws IOException {
     ControlLCAUtil.renderChanges( label );
     WidgetLCAUtil.renderCustomVariant( label );
+  }
+
+  private SeparatorLabelLCA() {
+    // prevent instantiation
   }
 
 }

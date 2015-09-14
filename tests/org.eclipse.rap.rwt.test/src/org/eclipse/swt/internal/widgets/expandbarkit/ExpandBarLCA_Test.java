@@ -60,7 +60,7 @@ public class ExpandBarLCA_Test {
     display = new Display();
     shell = new Shell( display );
     expandBar = new ExpandBar( shell, SWT.NONE );
-    lca = new ExpandBarLCA();
+    lca = ExpandBarLCA.INSTANCE;
   }
 
   @After

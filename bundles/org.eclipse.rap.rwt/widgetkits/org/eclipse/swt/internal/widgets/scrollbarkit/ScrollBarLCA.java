@@ -30,11 +30,10 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 public final class ScrollBarLCA extends WidgetLCA<ScrollBar> {
 
-  private static final String TYPE = "rwt.widgets.ScrollBar";
-  private static final String[] ALLOWED_STYLES = new String[] {
-    "HORIZONTAL", "VERTICAL"
-  };
+  public static final ScrollBarLCA INSTANCE = new ScrollBarLCA();
 
+  private static final String TYPE = "rwt.widgets.ScrollBar";
+  private static final String[] ALLOWED_STYLES = { "HORIZONTAL", "VERTICAL" };
   private static final String PROP_VISIBILITY = "visibility";
 
   @Override
@@ -61,6 +60,10 @@ public final class ScrollBarLCA extends WidgetLCA<ScrollBar> {
     // Client scrollbars are part of the scrollable widget, they cannot be destroyed
     RemoteObjectImpl remoteObject = ( RemoteObjectImpl )getRemoteObject( widget );
     remoteObject.markDestroyed();
+  }
+
+  private ScrollBarLCA() {
+    // prevent instantiation
   }
 
 }

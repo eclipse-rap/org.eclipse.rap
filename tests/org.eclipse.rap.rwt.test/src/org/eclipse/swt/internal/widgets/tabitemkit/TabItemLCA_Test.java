@@ -59,7 +59,7 @@ public class TabItemLCA_Test {
     shell = new Shell( display, SWT.NONE );
     folder = new TabFolder( shell, SWT.NONE );
     item = new TabItem( folder, SWT.NONE );
-    lca = new TabItemLCA();
+    lca = TabItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
   }
 

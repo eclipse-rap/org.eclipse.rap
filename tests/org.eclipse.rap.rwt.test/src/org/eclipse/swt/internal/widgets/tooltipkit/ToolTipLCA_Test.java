@@ -62,7 +62,7 @@ public class ToolTipLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     toolTip = new ToolTip( shell, SWT.NONE );
-    lca = new ToolTipLCA();
+    lca = ToolTipLCA.INSTANCE;
     Fixture.markInitialized( display );
     Fixture.fakeNewRequest();
   }

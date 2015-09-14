@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ArmListener;
@@ -21,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA;
 
 
 /**
@@ -603,6 +605,15 @@ public class MenuItem extends Item {
   public void removeArmListener( ArmListener listener ) {
     checkWidget();
     removeListener( SWT.Arm, listener );
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )MenuItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   //////////////////

@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
+import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadLCA;
 import org.eclipse.rap.rwt.internal.widgets.fileuploadkit.FileUploadThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -350,13 +352,13 @@ public class FileUpload extends Canvas {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IFileUploadAdapter.class ) {
-      result = ( T )fileUploadAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )fileUploadAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )FileUploadLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   private static int checkStyle( int style ) {

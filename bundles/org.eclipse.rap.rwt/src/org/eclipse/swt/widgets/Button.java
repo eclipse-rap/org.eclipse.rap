@@ -17,6 +17,7 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.Size;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -29,6 +30,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
 
 
@@ -444,9 +446,6 @@ public class Button extends Control {
     return new Point( width, height );
   }
 
-  ///////////////////////////////////////
-  // Listener registration/deregistration
-
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is selected, by sending
@@ -517,8 +516,14 @@ public class Button extends Control {
     super.setData( key, value );
   }
 
-  //////////////////////////
-  // Default Button handling
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ButtonLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
+  }
 
   void setDefault( boolean isDefault ) {
     this.isDefault = isDefault;
@@ -527,9 +532,6 @@ public class Button extends Control {
   boolean getDefault() {
     return isDefault;
   }
-
-  ///////////////////
-  // Widget overrides
 
   @Override
   boolean isTabGroup() {
@@ -540,9 +542,6 @@ public class Button extends Control {
   String getNameText() {
     return getText();
   }
-
-  //////////////////
-  // Helping methods
 
   private static int checkStyle( int style ) {
     int result = checkBits( style,

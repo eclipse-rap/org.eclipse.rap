@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.MenuItem;
 
 public final class MenuItemLCA extends WidgetLCA<MenuItem> {
 
+  public static final MenuItemLCA INSTANCE = new MenuItemLCA();
+
   private static final String TYPE = "rwt.widgets.MenuItem";
   private static final String[] ALLOWED_STYLES = {
     "CHECK", "CASCADE", "PUSH", "RADIO", "SEPARATOR"
@@ -97,6 +99,10 @@ public final class MenuItemLCA extends WidgetLCA<MenuItem> {
         }
       }
     }
+  }
+
+  private MenuItemLCA() {
+    // prevent instantiation
   }
 
 }

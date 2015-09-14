@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 public final class TableItemLCA extends WidgetLCA<TableItem> {
 
+  public static final TableItemLCA INSTANCE = new TableItemLCA();
+
   private static interface IRenderRunnable {
     void run() throws IOException;
   }
@@ -234,6 +236,10 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
   private static void setInitialized( TableItem item, boolean initialized ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( item );
     adapter.setInitialized( initialized );
+  }
+
+  private TableItemLCA() {
+    // prevent instantiation
   }
 
 }

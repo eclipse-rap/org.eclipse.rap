@@ -10,26 +10,29 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.widgets.fileuploadkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenSelection;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonObject;
-import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
+import org.eclipse.rap.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 
 
 public final class FileUploadLCA extends WidgetLCA<FileUpload> {
+
+  public static final FileUploadLCA INSTANCE = new FileUploadLCA();
 
   private static final String TYPE = "rwt.widgets.FileUpload";
   private static final String[] ALLOWED_STYLES = { "BORDER", "MULTI" };
@@ -61,14 +64,15 @@ public final class FileUploadLCA extends WidgetLCA<FileUpload> {
     renderSubmit( fileUpload );
   }
 
-  /////////
-  // Helper
-
   private static void renderSubmit( FileUpload fileUpload ) {
     String url = fileUpload.getAdapter( IFileUploadAdapter.class ).getAndResetUrl();
     if( url != null ) {
       getRemoteObject( fileUpload ).call( "submit", new JsonObject().add( "url", url ) );
     }
+  }
+
+  private FileUploadLCA() {
+    // prevent instantiation
   }
 
 }

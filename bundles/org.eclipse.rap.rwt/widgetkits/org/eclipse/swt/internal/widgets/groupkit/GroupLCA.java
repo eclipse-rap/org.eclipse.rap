@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Group;
 
 public class GroupLCA extends WidgetLCA<Group> {
 
+  public static final GroupLCA INSTANCE = new GroupLCA();
+
   private static final String TYPE = "rwt.widgets.Group";
   private static final String[] ALLOWED_STYLES = {
     "SHADOW_ETCHED_IN",
@@ -66,9 +68,6 @@ public class GroupLCA extends WidgetLCA<Group> {
     renderMnemonicIndex( group );
   }
 
-  //////////////////
-  // Helping methods
-
   private static void renderText( Group group ) {
     String newValue = group.getText();
     if( hasChanged( group, PROP_TEXT, newValue, "" ) ) {
@@ -85,6 +84,10 @@ public class GroupLCA extends WidgetLCA<Group> {
         getRemoteObject( group ).set( PROP_MNEMONIC_INDEX, mnemonicIndex );
       }
     }
+  }
+
+  private GroupLCA() {
+    // prevent instantiation
   }
 
 }

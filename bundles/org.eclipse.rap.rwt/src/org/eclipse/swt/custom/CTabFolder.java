@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -32,6 +33,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
 import org.eclipse.swt.internal.events.EventTypes;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -1348,18 +1350,19 @@ public class CTabFolder extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )itemHolder;
-    } else if( adapter == ICTabFolderAdapter.class ) {
+      return ( T )itemHolder;
+    }
+    if( adapter == ICTabFolderAdapter.class ) {
       if( tabFolderAdapter == null ) {
         tabFolderAdapter = new CTabFolderAdapter();
       }
-      result = ( T )tabFolderAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )tabFolderAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CTabFolderLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   ////////////////////

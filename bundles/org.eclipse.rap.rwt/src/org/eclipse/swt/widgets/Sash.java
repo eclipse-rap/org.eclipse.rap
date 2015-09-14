@@ -11,12 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.sashkit.SashLCA;
 
 
 /**
@@ -168,8 +170,14 @@ public class Sash extends Control {
     removeListener( SWT.DefaultSelection, listener );
   }
 
-  //////////////////
-  // Helping methods
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )SashLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
+  }
 
   private static int checkStyle( int style ) {
     int result = SWT.NONE;

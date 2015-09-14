@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -23,6 +24,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderLCA;
 import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderThemeAdapter;
 
 /**
@@ -101,13 +103,13 @@ public class TabFolder extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = ( T )itemHolder;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )itemHolder;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )TabFolderLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   //////////////////

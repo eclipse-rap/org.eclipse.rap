@@ -62,7 +62,7 @@ public class CoolItemLCA_Test {
     shell = new Shell( display, SWT.NONE );
     bar = new CoolBar( shell, SWT.FLAT );
     item = new CoolItem( bar, SWT.NONE );
-    lca = new CoolItemLCA();
+    lca = CoolItemLCA.INSTANCE;
     Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
   }

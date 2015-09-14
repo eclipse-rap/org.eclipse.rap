@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.TabItem;
 
 public class TabItemLCA extends WidgetLCA<TabItem> {
 
+  public static final TabItemLCA INSTANCE = new TabItemLCA();
+
   private static final String TYPE = "rwt.widgets.TabItem";
 
   private static final String PROP_TEXT = "text";
@@ -93,6 +95,10 @@ public class TabItemLCA extends WidgetLCA<TabItem> {
 
   private static String getBadge( TabItem item ) {
     return ( String )item.getData( RWT.BADGE );
+  }
+
+  private TabItemLCA() {
+    // prevent instantiation
   }
 
 }

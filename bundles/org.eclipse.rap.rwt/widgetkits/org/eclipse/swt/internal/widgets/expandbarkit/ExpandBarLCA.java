@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.ExpandItem;
 
 public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
 
+  public static final ExpandBarLCA INSTANCE = new ExpandBarLCA();
+
   private static final String TYPE = "rwt.widgets.ExpandBar";
   private static final String[] ALLOWED_STYLES = { "NO_RADIO_GROUP", "BORDER" };
 
@@ -70,9 +72,6 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
     renderProperty( expandBar, PROP_VSCROLLBAR_MAX, getVScrollBarMax( expandBar ), 0 );
   }
 
-  //////////////////
-  // Helping methods
-
   private static Rectangle getBottomSpacingBounds( ExpandBar bar ) {
     return getExpandBarAdapter( bar ).getBottomSpacingBounds();
   }
@@ -92,6 +91,10 @@ public final class ExpandBarLCA extends WidgetLCA<ExpandBar> {
 
   public static IExpandBarAdapter getExpandBarAdapter( ExpandBar bar ) {
     return bar.getAdapter( IExpandBarAdapter.class );
+  }
+
+  private ExpandBarLCA() {
+    // prevent instantiation
   }
 
 }

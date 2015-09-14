@@ -34,6 +34,8 @@ import org.eclipse.swt.dnd.Transfer;
 
 public final class DragSourceLCA extends WidgetLCA<DragSource> {
 
+  public static final DragSourceLCA INSTANCE = new DragSourceLCA();
+
   private static final String TYPE = "rwt.widgets.DragSource";
   private static final String PROP_TRANSFER = "transfer";
   private static final String PROP_DRAG_START_LISTENER = "DragStart";
@@ -89,6 +91,10 @@ public final class DragSourceLCA extends WidgetLCA<DragSource> {
     if( isCanceled() ) {
       getRemoteObject( dragSource ).call( "cancel", null );
     }
+  }
+
+  private DragSourceLCA() {
+    // prevent instantiation
   }
 
 }

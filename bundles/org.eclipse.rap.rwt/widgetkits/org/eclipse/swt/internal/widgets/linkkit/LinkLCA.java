@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Link;
 
 public class LinkLCA extends WidgetLCA<Link> {
 
+  public static final LinkLCA INSTANCE = new LinkLCA();
+
   private static final String TYPE = "rwt.widgets.Link";
   private static final String[] ALLOWED_STYLES = { "BORDER" };
 
@@ -60,18 +62,12 @@ public class LinkLCA extends WidgetLCA<Link> {
     renderListenSelection( link );
   }
 
-  ///////////////////////////////////////////////////
-  // Helping methods to render the changed properties
-
   private static void renderText( Link link ) {
     String newValue = link.getText();
     if( hasChanged( link, PROP_TEXT, newValue, "" ) ) {
       getRemoteObject( link ).set( PROP_TEXT, getTextObject( link ) );
     }
   }
-
-  //////////////////
-  // Helping methods
 
   private static JsonArray getTextObject( Link link ) {
     ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
@@ -100,6 +96,10 @@ public class LinkLCA extends WidgetLCA<Link> {
                                  .add( JsonValue.NULL ) );
     }
     return result;
+  }
+
+  private LinkLCA() {
+    // prevent instantiation
   }
 
 }

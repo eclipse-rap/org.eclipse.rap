@@ -16,12 +16,14 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
+import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 
 
 /**
@@ -126,6 +128,9 @@ public class Composite extends Scrollable {
   public <T> T getAdapter( Class<T> adapter ) {
     if( adapter == ICompositeAdapter.class ) {
       return ( T )compositeAdapter;
+    }
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CompositeLCA.INSTANCE;
     }
     return super.getAdapter( adapter );
   }

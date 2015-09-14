@@ -56,7 +56,7 @@ public class SashLCA_Test {
     display = new Display();
     shell = new Shell( display );
     sash = new Sash( shell, SWT.NONE );
-    lca = new SashLCA();
+    lca = SashLCA.INSTANCE;
   }
 
   @After

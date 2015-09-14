@@ -13,6 +13,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.CssBoxDimensions;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
@@ -24,6 +25,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.MenuHolder;
+import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 
 /**
@@ -633,16 +635,16 @@ public class Shell extends Decorations {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
     if( adapter == IShellAdapter.class ) {
       if( shellAdapter == null ) {
         shellAdapter = new ShellAdapter();
       }
-      result = ( T )shellAdapter;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )shellAdapter;
     }
-    return result;
+    if( adapter == WidgetLCA.class ) {
+      return ( T )ShellLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   /////////////

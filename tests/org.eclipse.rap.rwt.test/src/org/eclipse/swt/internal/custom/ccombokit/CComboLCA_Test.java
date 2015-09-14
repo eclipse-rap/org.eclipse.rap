@@ -73,7 +73,7 @@ public class CComboLCA_Test {
     display = new Display();
     shell = new Shell( display, SWT.NONE );
     ccombo = new CCombo( shell, SWT.NONE );
-    lca = new CComboLCA();
+    lca = CComboLCA.INSTANCE;
   }
 
   @After

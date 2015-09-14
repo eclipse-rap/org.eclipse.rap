@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.ToolBar;
 
 public class ToolBarLCA extends WidgetLCA<ToolBar> {
 
+  public static final ToolBarLCA INSTANCE = new ToolBarLCA();
+
   private static final String TYPE = "rwt.widgets.ToolBar";
   private static final String[] ALLOWED_STYLES = {
     "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER", "RIGHT"
@@ -48,6 +50,10 @@ public class ToolBarLCA extends WidgetLCA<ToolBar> {
   public void renderChanges( ToolBar toolBar ) throws IOException {
     ControlLCAUtil.renderChanges( toolBar );
     WidgetLCAUtil.renderCustomVariant( toolBar );
+  }
+
+  private ToolBarLCA() {
+    // prevent instantiation
   }
 
 }

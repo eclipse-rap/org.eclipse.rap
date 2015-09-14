@@ -38,6 +38,8 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class TreeItemLCA extends WidgetLCA<TreeItem> {
 
+  public static final TreeItemLCA INSTANCE = new TreeItemLCA();
+
   private static final String TYPE = "rwt.widgets.GridItem";
 
   static final String PROP_INDEX = "index";
@@ -242,6 +244,10 @@ public final class TreeItemLCA extends WidgetLCA<TreeItem> {
   private static void setInitialized( TreeItem item, boolean initialized ) {
     WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )WidgetUtil.getAdapter( item );
     adapter.setInitialized( initialized );
+  }
+
+  private TreeItemLCA() {
+    // prevent instantiation
   }
 
 }

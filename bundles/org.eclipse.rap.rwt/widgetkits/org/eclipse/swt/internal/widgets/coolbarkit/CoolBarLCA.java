@@ -30,7 +30,9 @@ import org.eclipse.swt.widgets.CoolBar;
 
 public class CoolBarLCA extends WidgetLCA<CoolBar> {
 
-  public static final String TYPE = "rwt.widgets.CoolBar";
+  public static final CoolBarLCA INSTANCE = new CoolBarLCA();
+
+  private static final String TYPE = "rwt.widgets.CoolBar";
   private static final String[] ALLOWED_STYLES = {
     "FLAT", "HORIZONTAL", "VERTICAL", "NO_RADIO_GROUP", "BORDER"
   };
@@ -56,6 +58,10 @@ public class CoolBarLCA extends WidgetLCA<CoolBar> {
     ControlLCAUtil.renderChanges( coolBar );
     renderProperty( coolBar, PROP_LOCKED ,coolBar.getLocked(), false );
     WidgetLCAUtil.renderCustomVariant( coolBar );
+  }
+
+  private CoolBarLCA() {
+    // prevent instantiation
   }
 
 }

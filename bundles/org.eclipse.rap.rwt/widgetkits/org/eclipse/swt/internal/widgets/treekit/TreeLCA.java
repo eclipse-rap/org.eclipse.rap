@@ -47,6 +47,8 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public final class TreeLCA extends WidgetLCA<Tree> {
 
+  public static final TreeLCA INSTANCE = new TreeLCA();
+
   private static final String TYPE = "rwt.widgets.Grid";
   private static final String[] ALLOWED_STYLES = {
     "SINGLE",
@@ -330,6 +332,10 @@ public final class TreeLCA extends WidgetLCA<Tree> {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );
     }
+  }
+
+  private TreeLCA() {
+    // prevent instantiation
   }
 
 }

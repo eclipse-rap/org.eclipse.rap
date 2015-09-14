@@ -13,6 +13,8 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,6 +23,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.coolitemkit.CoolItemLCA;
 
 
 /**
@@ -764,6 +767,15 @@ public class CoolItem extends Item {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     setSize( size.x, size.y );
+  }
+
+  @Override
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    if( adapter == WidgetLCA.class ) {
+      return ( T )CoolItemLCA.INSTANCE;
+    }
+    return super.getAdapter( adapter );
   }
 
   // TODO: [bm] current solution works fine for the workbench implementation
