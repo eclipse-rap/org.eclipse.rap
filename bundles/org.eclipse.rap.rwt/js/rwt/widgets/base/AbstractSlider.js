@@ -40,7 +40,9 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     this.add( this._thumb );
     this.add( this._minButton );
     this.add( this._maxButton );
-    this._configureSubwidgets();
+    this._minButton.setTabIndex( null );
+    this._maxButton.setTabIndex( null );
+    this._thumb.setTabIndex( null );
     this._configureAppearance();
     this._setStates();
     this._registerListeners();
@@ -264,21 +266,51 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
     ////////////
     // Internals
 
-    _configureSubwidgets : function() {
+    _layoutX : function() {
       if( this._horizontal ) {
-        this._thumb.setHeight( "100%" );
-        this._minButton.setHeight( "100%" );
-        this._maxButton.setHeight( "100%" );
-        this._maxButton.setRight( 0 );
+        if( this.getDirection() === "rtl" ) {
+          this._minButton.setLeft( null );
+          this._minButton.setRight( 0 );
+          this._maxButton.setRight( null );
+          this._maxButton.setLeft( 0 );
+        } else {
+          this._minButton.setLeft( 0 );
+          this._minButton.setRight( null );
+          this._maxButton.setRight( 0 );
+          this._maxButton.setLeft( null );
+        }
+        this._renderThumbPosition();
       } else {
         this._thumb.setWidth( "100%" );
         this._minButton.setWidth( "100%" );
         this._maxButton.setWidth( "100%" );
+      }
+    },
+
+    _layoutY : function() {
+      if( this._horizontal ) {
+        this._thumb.setHeight( "100%" );
+        this._minButton.setHeight( "100%" );
+        this._maxButton.setHeight( "100%" );
+      } else {
         this._maxButton.setBottom( 0 );
       }
-      this._minButton.setTabIndex( null );
-      this._maxButton.setTabIndex( null );
-      this._thumb.setTabIndex( null );
+    },
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state === "rwt_RIGHT_TO_LEFT" ) {
+        this._minButton.addState( state );
+        this._maxButton.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state === "rwt_RIGHT_TO_LEFT" ) {
+        this._minButton.removeState( state );
+        this._maxButton.removeState( state );
+      }
     },
 
     _setStates : function() {
@@ -383,7 +415,13 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
     _setThumbPositionPx : function( value ) {
       if( this._horizontal ) {
-        this._thumb.setLeft( value );
+        if( this.getDirection() === "rtl" ) {
+          this._thumb.setLeft( null );
+          this._thumb.setRight( value );
+        } else {
+          this._thumb.setLeft( value );
+          this._thumb.setRight( null );
+        }
       } else {
         this._thumb.setTop( value );
       }
@@ -422,23 +460,28 @@ rwt.qx.Class.define( "rwt.widgets.base.AbstractSlider", {
 
     _getMouseOffset : function( mouseEvent ) {
       var location = rwt.html.Location;
-      var result;
       if( this._horizontal ) {
-        result = mouseEvent.getPageX() - location.getLeft( this.getElement() );
+        var relativeLeft = mouseEvent.getPageX() - location.getLeft( this.getElement() );
+        if( this.getDirection() === "rtl" ) {
+          return this._getSliderSize() - relativeLeft;
+        } else {
+          return relativeLeft;
+        }
       } else {
-        result = mouseEvent.getPageY() - location.getTop( this.getElement() );
+        return mouseEvent.getPageY() - location.getTop( this.getElement() );
       }
-      return result;
     },
 
     _getThumbPosition : function() {
-      var result;
       if( this._horizontal ) {
-        result = this._thumb.getLeft();
+        if( this.getDirection() === "rtl" ) {
+          return this._thumb.getRight();
+        } else {
+          return this._thumb.getLeft();
+        }
       } else {
-        result = this._thumb.getTop();
+        return this._thumb.getTop();
       }
-      return result;
     },
 
     _getLineSize : function() {

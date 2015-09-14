@@ -2217,12 +2217,20 @@ Slider-UpButton-Icon[HORIZONTAL] {
   background-image: url( resource/widget/rap/slider/right.png );
 }
 
+Slider-UpButton-Icon[HORIZONTAL][RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/slider/left.png );
+}
+
 Slider-UpButton-Icon[VERTICAL] {
   background-image: url( resource/widget/rap/slider/down.png );
 }
 
 Slider-DownButton-Icon[HORIZONTAL] {
   background-image: url( resource/widget/rap/slider/left.png );
+}
+
+Slider-DownButton-Icon[HORIZONTAL][RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/slider/right.png );
 }
 
 Slider-DownButton-Icon[VERTICAL] {

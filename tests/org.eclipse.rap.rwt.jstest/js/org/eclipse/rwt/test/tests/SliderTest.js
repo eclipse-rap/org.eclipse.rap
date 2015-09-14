@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -260,6 +260,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
 
     testBasicLayoutHorizontal : function() {
       var widget = this._createSlider( true );
+
       var slider = TestUtil.getElementLayout( widget.getElement() );
       var min = TestUtil.getElementLayout( widget._minButton.getElement() );
       var max = TestUtil.getElementLayout ( widget._maxButton.getElement() );
@@ -268,6 +269,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( [ 0, 0, 16, 20 ], min );
       assertEquals( [ 84, 0, 16, 20 ], max );
       assertEquals( [ 16, 0, 7, 20 ], thumb );
+      widget.destroy();
+    },
+
+    testBasicLayoutHorizontal_RTL : function() {
+      var widget = this._createSlider( true );
+
+      widget.setDirection( "rtl" );
+      TestUtil.flush();
+
+      var slider = TestUtil.getElementLayout( widget.getElement() );
+      var min = TestUtil.getElementLayout( widget._minButton.getElement() );
+      var max = TestUtil.getElementLayout ( widget._maxButton.getElement() );
+      var thumb = TestUtil.getElementLayout( widget._thumb.getElement() );
+      assertEquals( [ 10, 10, 100, 20 ], slider );
+      assertEquals( [ 84, 0, 16, 20 ], min );
+      assertEquals( [ 0, 0, 16, 20 ], max );
+      assertEquals( [ 77, 0, 7, 20 ], thumb );
       widget.destroy();
     },
 
@@ -570,22 +588,45 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testClickLineHorizontal : function() {
       var slider = this._createSlider( true );
       slider.setSelection( 2 );
-      assertEquals( 2, slider._selection );
       var node = slider.getElement();
-      var left = rwt.event.MouseEvent.buttons.left;
-      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 50, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 50, 11 );
-      assertEquals( 12, slider._selection );
-      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 1, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 1, 11 );
-      assertEquals( 2, slider._selection );
-      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 1, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 1, 11 );
-      assertEquals( 0, slider._selection );
-      slider.setSelection( 85 );
-      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 84 - 1, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 84 - 1, 11 );
-      assertEquals( 90, slider._selection );
+      var button = rwt.event.MouseEvent.buttons.left;
+      var minPageX = 10 + 16;
+      var positions = [];
+
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 50, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 50, 11 );
+      positions.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 1, 11 );
+      positions.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 1, 11 );
+      positions.push( slider._selection );
+
+      assertEquals( [ 12, 2, 0 ], positions );
+      slider.destroy();
+    },
+
+    testClickLineHorizontal_RTL : function() {
+      var slider = this._createSlider( true );
+      slider.setDirection( "rtl" );
+      slider.setSelection( 2 );
+      var node = slider.getElement();
+      var button = rwt.event.MouseEvent.buttons.left;
+      var minPageX = 10 + 100 - 16;
+      var positions = [];
+
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 50, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 50, 11 );
+      positions.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 1, 11 );
+      positions.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 1, 11 );
+      positions.push( slider._selection );
+
+      assertEquals( [ 12, 2, 0 ], positions );
       slider.destroy();
     },
 
@@ -766,21 +807,42 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var left = rwt.event.MouseEvent.buttons.left;
       var slider = this._createSlider( true );
       var node = slider._thumb.getElement();
-      assertEquals( 0, slider._selection );
-      assertEquals( 16, TestUtil.getElementBounds( node ).left );
-      // Note: 10 pixel = 14.7 units
-      TestUtil.fakeMouseEventDOM( node, "mouseover", left, 10 + 16, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 10, 11 );
-      assertEquals( 16 + 10, TestUtil.getElementBounds( node ).left );
-      assertEquals( 15, slider._selection );
-      TestUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 5, 11 );
-      assertEquals( 16 + 5, TestUtil.getElementBounds( node ).left );
-      assertEquals( 7, slider._selection );
-      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 5, 11 );
-      TestUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 10, 11 );
-      assertEquals( 16 + 5, TestUtil.getElementBounds( node ).left );
-      assertEquals( 7, slider._selection );
+      var selections = [];
+      var minPageX = 10 + 16;
+
+      TestUtil.fakeMouseEventDOM( node, "mouseover", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 10, 11 );
+      selections.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 5, 11 );
+      selections.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", left, minPageX + 5, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 10, 11 );
+      selections.push( slider._selection );
+
+      assertEquals( [ 15, 7, 7 ], selections );
+      slider.destroy();
+    },
+
+    testDragThumb_RTL : function() {
+      var left = rwt.event.MouseEvent.buttons.left;
+      var slider = this._createSlider( true );
+      slider.setDirection( "rtl" );
+      var node = slider._thumb.getElement();
+      var selections = [];
+      var minPageX = 10 + 100 - 16;
+
+      TestUtil.fakeMouseEventDOM( node, "mouseover", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 10, 11 );
+      selections.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 5, 11 );
+      selections.push( slider._selection );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", left, minPageX - 5, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 10, 11 );
+      selections.push( slider._selection );
+
+      assertEquals( [ 15, 7, 7 ], selections );
       slider.destroy();
     },
 
@@ -840,6 +902,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertTrue( minButton.isDisposed() );
       assertTrue( maxButton.isDisposed() );
       assertTrue( timer.isDisposed() );
+    },
+
+    testDirectionAddsStateToSubWidgets : function() {
+      var slider = this._createSlider( true );
+
+      slider.setDirection( "rtl" );
+
+      assertTrue( slider._minButton.hasState( "rwt_RIGHT_TO_LEFT" ) );
+      assertTrue( slider._maxButton.hasState( "rwt_RIGHT_TO_LEFT" ) );
+      slider.destroy();
     },
 
     /////////

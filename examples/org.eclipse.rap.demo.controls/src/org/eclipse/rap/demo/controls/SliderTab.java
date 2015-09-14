@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class SliderTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
     createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createBgColorButton();
@@ -54,6 +55,7 @@ public class SliderTab extends ExampleTab {
                                            0, 100000, 0 );
     minimumSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int minimum = minimumSpinner.getSelection();
         slider.setMinimum( minimum );
@@ -63,6 +65,7 @@ public class SliderTab extends ExampleTab {
                                            0, 100000, 100 );
     maximumSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int maximum = maximumSpinner.getSelection();
         slider.setMaximum( maximum );
@@ -72,6 +75,7 @@ public class SliderTab extends ExampleTab {
                                              0, 100000, 0 );
     selectionSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int selection = selectionSpinner.getSelection();
         slider.setSelection( selection );
@@ -81,6 +85,7 @@ public class SliderTab extends ExampleTab {
                                              1, 100000, 10 );
     thumbSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int thumb = thumbSpinner.getSelection();
         slider.setThumb( thumb );
@@ -90,6 +95,7 @@ public class SliderTab extends ExampleTab {
                                              0, 100000, 1 );
     incrementSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int increment = incrementSpinner.getSelection();
         slider.setIncrement( increment );
@@ -99,6 +105,7 @@ public class SliderTab extends ExampleTab {
                                                  0, 100000, 10 );
     pageIncrementSpinner.addModifyListener( new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         int pageIncrement = pageIncrementSpinner.getSelection();
         slider.setPageIncrement( pageIncrement );
@@ -132,12 +139,14 @@ public class SliderTab extends ExampleTab {
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       slider.addSelectionListener( new SelectionListener() {
 
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "Slider WidgetSelected! Current selection: " + slider.getSelection();
           log( message );
           selectionSpinner.setSelection( slider.getSelection() );
         }
 
+        @Override
         public void widgetDefaultSelected( final SelectionEvent event ) {
           String message = "Slider WidgetDefaultSelected! Current selection: " + slider.getSelection();
           log( message );
