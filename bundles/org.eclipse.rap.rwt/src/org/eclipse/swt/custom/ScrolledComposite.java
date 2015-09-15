@@ -568,9 +568,7 @@ public class ScrolledComposite extends Composite {
     if( !contains( control ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    Rectangle itemRect = getDisplay().map( control.getParent(),
-                                           this,
-                                           control.getBounds() );
+    Rectangle itemRect = getDisplay().map( control.getParent(), this, control.getBounds() );
     Rectangle area = getClientArea();
     Point origin = getOrigin();
     if( itemRect.x < 0 ) {
@@ -679,8 +677,9 @@ public class ScrolledComposite extends Composite {
       = SWT.H_SCROLL
       | SWT.V_SCROLL
       | SWT.BORDER
-      | SWT.LEFT_TO_RIGHT;
-//      | SWT.RIGHT_TO_LEFT;
+      | SWT.LEFT_TO_RIGHT
+      | SWT.RIGHT_TO_LEFT;
     return style & mask;
   }
+
 }

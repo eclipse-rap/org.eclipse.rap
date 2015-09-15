@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER, true );
     createStyleButton( "H_SCROLL", SWT.H_SCROLL, true );
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createBgColorButton();
@@ -57,10 +58,7 @@ public final class ScrolledCompositeTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     composite = new ScrolledComposite( parent, getStyle() );
-    composite.setLayoutData( new GridData( GridData.FILL,
-                                           GridData.FILL,
-                                           true,
-                                           true ) );
+    composite.setLayoutData( new GridData( GridData.FILL, GridData.FILL, true, true ) );
     content = new Composite( composite, SWT.NONE );
     content.setLayout( new GridLayout( 5, true ) );
     for( int i = 0; i < 100; i++ ) {
@@ -81,7 +79,6 @@ public final class ScrolledCompositeTab extends ExampleTab {
     }
     composite.setMinSize( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     composite.addControlListener( new ControlAdapter() {
-
       @Override
       public void controlResized( ControlEvent e ) {
         composite.setMinSize( content.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -92,10 +89,9 @@ public final class ScrolledCompositeTab extends ExampleTab {
   }
 
   private void createShowControlButton() {
-    Button btnA = new Button( styleComp, SWT.PUSH );
-    btnA.setText( "Show Button 89" );
-    btnA.addSelectionListener( new SelectionAdapter() {
-
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Show Button 89" );
+    button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         composite.showControl( content.getChildren()[ 89 ] );
@@ -104,10 +100,9 @@ public final class ScrolledCompositeTab extends ExampleTab {
   }
 
   private void createFocusControlButton() {
-    Button btnA = new Button( styleComp, SWT.PUSH );
-    btnA.setText( "Focus Button 89" );
-    btnA.addSelectionListener( new SelectionAdapter() {
-
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Focus Button 89" );
+    button.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         content.getChildren()[ 89 ].setFocus();
@@ -169,4 +164,5 @@ public final class ScrolledCompositeTab extends ExampleTab {
       }
     } );
   }
+
 }
