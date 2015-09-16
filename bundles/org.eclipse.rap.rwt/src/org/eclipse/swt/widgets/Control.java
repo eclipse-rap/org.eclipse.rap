@@ -2213,6 +2213,7 @@ public abstract class Control extends Widget implements Drawable {
     ControlLCAUtil.preserveOrientation( this, ( style & flags ) );
     style &= ~flags;
     style |= orientation & flags;
+    updateOrientation();
   }
 
   /**
@@ -2231,6 +2232,10 @@ public abstract class Control extends Widget implements Drawable {
   public int getOrientation() {
     checkWidget();
     return style & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
+  }
+
+  void updateOrientation() {
+    // subclasses may override
   }
 
   ////////////////

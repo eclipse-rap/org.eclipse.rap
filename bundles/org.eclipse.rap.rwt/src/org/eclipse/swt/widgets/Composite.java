@@ -697,6 +697,15 @@ public class Composite extends Scrollable {
   }
 
   @Override
+  void updateOrientation () {
+    int orientation = style & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
+    super.updateOrientation();
+    for( Control child : children ) {
+      child.setOrientation( orientation );
+    }
+  }
+
+  @Override
   public boolean setFocus() {
     checkWidget();
     for( Control child : children ) {

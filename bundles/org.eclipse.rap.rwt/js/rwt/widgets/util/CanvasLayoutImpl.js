@@ -26,6 +26,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
 
   construct : function(vWidget) {
     this.base(arguments, vWidget);
+    this._mirror = false;
   },
 
 
@@ -39,6 +40,12 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
 
   members :
   {
+
+    setMirror : function( value ) {
+      this._mirror = value;
+      this.getWidget()._addChildrenToLayoutQueue( "left" );
+    },
+
     /*
     ---------------------------------------------------------------------------
       [01] COMPUTE BOX DIMENSIONS FOR AN INDIVIDUAL CHILD
@@ -318,6 +325,14 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
      * @return {void}
      */
     layoutChild_locationX : function( vChild, vJobs ) {
+      if( this._mirror ) {
+        this.layoutChild_locationX_mirror( vChild, vJobs );
+      } else {
+        this.layoutChild_locationX_nomirror( vChild, vJobs );
+      }
+    },
+
+    layoutChild_locationX_nomirror : function( vChild, vJobs ) {
       var vWidget = this.getWidget();
       if( vJobs.initial || vJobs.left || vJobs.parentPaddingLeft ) {
         if( vChild._computedLeftTypeNull ) {
@@ -343,6 +358,31 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
       }
     },
 
+    layoutChild_locationX_mirror : function( vChild, vJobs ) {
+      var vWidget = this.getWidget();
+      if( vJobs.initial || vJobs.left || vJobs.parentPaddingLeft ) {
+        if( vChild._computedLeftTypeNull ) {
+          if( vChild._computedRightTypeNull && vWidget.getPaddingLeft() > 0 ) {
+            vChild._renderRuntimeRight( vWidget.getPaddingLeft() );
+          } else {
+            vChild._resetRuntimeRight();
+          }
+        } else {
+          vChild._renderRuntimeRight( vChild.getLeftValue() + vWidget.getPaddingLeft() );
+        }
+      }
+      if( vJobs.initial || vJobs.right || vJobs.parentPaddingRight ) {
+        if( vChild._computedRightTypeNull ) {
+          if( vChild._computedLeftTypeNull && vWidget.getPaddingRight() > 0 ) {
+            vChild._renderRuntimeLeft( vWidget.getPaddingRight() );
+          } else {
+            vChild._resetRuntimeLeft();
+          }
+        } else {
+          vChild._renderRuntimeLeft( vChild.getRightValue() + vWidget.getPaddingRight() );
+        }
+      }
+    },
 
     /**
      * TODOC

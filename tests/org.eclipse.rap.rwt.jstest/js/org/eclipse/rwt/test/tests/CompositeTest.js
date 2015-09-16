@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
   members : {
 
     testCreateCompositeByProtocol : function() {
-      var processor = rwt.remote.MessageProcessor;
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w2",
         "action" : "create",
         "type" : "rwt.widgets.Shell",
@@ -31,7 +30,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
           "style" : [ "BORDER" ]
         }
       } );
-      processor.processOperation( {
+      MessageProcessor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Composite",
@@ -118,6 +117,52 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       assertFalse( composite.hasState( "over" ) );
 
       composite.destroy();
+    },
+
+    testSetDirection_mirrorsChildControlPosition : function() {
+      var composite = new rwt.widgets.Composite();
+      composite.addToDocument();
+      var child = new rwt.widgets.base.Terminator();
+      child.setParent( composite );
+      child.setSpace( 1, 2, 3, 4 );
+
+      composite.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "1px", child.getElement().style.right );
+      composite.destroy();
+    },
+
+    testSetBoundsByProtocol_onParentDirectionRTL : function() {
+      var parent = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.protocolSet( "w2", { "direction" : "rtl" } );
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "bounds" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      TestUtil.flush();
+
+      var child = ObjectRegistry.getObject( "w3" );
+      assertEquals( "1px", child.getElement().style.right );
+      parent.destroy();
+    },
+
+    testSetBoundsByProtocol_onParentDirectionLTR : function() {
+      var parent = TestUtil.createShellByProtocol( "w2" );
+      TestUtil.protocolSet( "w2", { "direction" : "ltr" } );
+      MessageProcessor.processOperationArray( [ "create", "w3", "rwt.widgets.Composite", {
+          "style" : [ "BORDER" ],
+          "parent" : "w2",
+          "bounds" : [ 1, 2, 3, 4 ]
+        }
+      ] );
+      TestUtil.flush();
+
+      var child = ObjectRegistry.getObject( "w3" );
+      assertEquals( "1px", child.getElement().style.left );
+      parent.destroy();
     }
 
   }

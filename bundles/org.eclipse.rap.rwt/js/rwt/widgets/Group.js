@@ -29,6 +29,7 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
     this._legend.addEventListener( "mouseover", this._onMouseOver, this );
     this._legend.addEventListener( "mouseout", this._onMouseOut, this );
     this._legend.setTop( 0 );
+    this._legend.setLeft( 0 );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
   },
@@ -130,19 +131,14 @@ rwt.qx.Class.define( "rwt.widgets.Group", {
       this._frame.removeState( "over" );
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.getLayoutImpl().setMirror( value === "rtl" );
+    },
+
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       this._frame._layoutPost( changes );
-    },
-
-    _layoutX : function() {
-      if( this.getDirection() === "rtl" ) {
-        this._legend.setLeft( null );
-        this._legend.setRight( 0 );
-      } else {
-        this._legend.setLeft( 0 );
-        this._legend.setRight( null );
-      }
     },
 
     //////////////////

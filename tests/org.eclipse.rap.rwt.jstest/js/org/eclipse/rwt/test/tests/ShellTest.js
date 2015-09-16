@@ -547,6 +547,41 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
+    testSetDirection_mirrorsChildControlPosition : function() {
+      var shell = this._createDefaultShell( {} );
+      var child = new rwt.widgets.base.Terminator();
+      child.setParent( shell );
+      child.setSpace( 1, 2, 3, 4 );
+
+      shell.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "1px", child.getElement().style.right );
+      shell.destroy();
+    },
+
+    testSetDirection_setsCaptionBarReverseChildrenOrder : function() {
+      var shell = new rwt.widgets.Shell( {} );
+      shell.addToDocument();
+
+      shell.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertTrue( shell.getCaptionBar().getReverseChildrenOrder() );
+      shell.destroy();
+    },
+
+    testSetDirection_setsCaptionBarHorizontalChildrenAlign : function() {
+      var shell = new rwt.widgets.Shell( {} );
+      shell.addToDocument();
+
+      shell.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "right", shell.getCaptionBar().getHorizontalChildrenAlign() );
+      shell.destroy();
+    },
+
     /////////
     // Helper
 

@@ -263,4 +263,13 @@ public class Composite_Test {
     assertSame( composite.getAdapter( WidgetLCA.class ), composite.getAdapter( WidgetLCA.class ) );
   }
 
+  @Test
+  public void testSetOrientation_updatesChildrenOrientation() {
+    Button child = new Button( composite, SWT.PUSH );
+
+    composite.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertEquals( SWT.RIGHT_TO_LEFT, child.getOrientation() );
+  }
+
 }

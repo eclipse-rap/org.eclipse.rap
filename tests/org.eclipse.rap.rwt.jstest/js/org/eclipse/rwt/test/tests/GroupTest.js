@@ -280,8 +280,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       group.addToDocument();
       TestUtil.flush();
 
-      assertEquals( 0, group._legend.getTop() );
-      assertEquals( 0, group._legend.getLeft() );
+      var style = group._legend.getElement().style;
+      assertEquals( "0px", style.top );
+      assertEquals( "0px", style.left );
       group.destroy();
     },
 
@@ -291,8 +292,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GroupTest", {
       group.addToDocument();
       TestUtil.flush();
 
-      assertEquals( 0, group._legend.getTop() );
-      assertEquals( 0, group._legend.getRight() );
+      var style = group._legend.getElement().style;
+      assertEquals( "0px", style.top );
+      assertEquals( "0px", style.right );
+      group.destroy();
+    },
+
+    testSetDirection_mirrorsChildControlPosition : function() {
+      var group = new rwt.widgets.Group();
+      group.addToDocument();
+      var child = new rwt.widgets.base.Terminator();
+      child.setParent( group );
+      child.setSpace( 1, 2, 3, 4 );
+
+      group.setDirection( "rtl" );
+      TestUtil.flush();
+
+      var style = child.getElement().style;
+      assertEquals( "1px", style.right );
       group.destroy();
     }
 
