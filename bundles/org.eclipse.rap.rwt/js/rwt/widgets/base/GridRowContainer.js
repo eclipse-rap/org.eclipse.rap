@@ -12,6 +12,7 @@
 (function( $ ){
 
 rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
+
   extend : rwt.widgets.base.VerticalBoxLayout,
 
   construct : function() {
@@ -284,7 +285,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       var left = this._config.itemLeft[ column ] + width - 1;
       if( width > 0 ) {
         var line = this._getVerticalGridline( column );
-        line.style.left = left + "px";
+        if( this.getDirection() === "rtl" ) {
+          line.style.right = left + "px";
+        } else {
+          line.style.left = left + "px";
+        }
         line.style.height = this.getHeight() + "px";
       } else {
         this._removeGridLine( column );
@@ -513,6 +518,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     _applyHeight : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
       this._updateRowCount();
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      var isRTL = this.getDirection() === "rtl";
+      this.$rows.css( {
+        "left" : isRTL ? "" : 0,
+        "right" : isRTL ? 0 : ""
+      } );
     },
 
     _afterAppear : function() {

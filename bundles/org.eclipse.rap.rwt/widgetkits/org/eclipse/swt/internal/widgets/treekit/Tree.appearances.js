@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,11 +99,11 @@ var appearances = {
         var tvGrid = new rwt.theme.ThemeValues( gridLineStates );
         var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-        borderColors[ 1 ] = gridColor;
-        borderWidths[ 1 ] = 1;
+        borderColors[ states.rwt_RIGHT_TO_LEFT ? 3 : 1 ] = gridColor;
+        borderWidths[ states.rwt_RIGHT_TO_LEFT ? 3 : 1 ] = 1;
         if( states.moving ) {
-          borderColors[ 3 ] = gridColor;
-          borderWidths[ 3 ] = 1;
+          borderColors[ states.rwt_RIGHT_TO_LEFT ? 1 : 3 ] = gridColor;
+          borderWidths[ states.rwt_RIGHT_TO_LEFT ? 1 : 3 ] = 1;
         }
       }
       var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );

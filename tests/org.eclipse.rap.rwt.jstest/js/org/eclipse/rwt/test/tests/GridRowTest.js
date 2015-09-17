@@ -259,6 +259,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 45, node.childNodes[ 1 ].offsetWidth );
     },
 
+    testLabelBoundsTree_RTL : function() {
+      tree.setDirection( "rtl" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 );
+      assertEquals( 2, node.childNodes.length );
+      assertEquals( 6, node.childNodes[ 1 ].offsetTop );
+      assertEquals( 334, node.childNodes[ 1 ].offsetLeft );
+      assertEquals( "auto", node.childNodes[ 1 ].style.height );
+      assertEquals( 45, node.childNodes[ 1 ].offsetWidth );
+    },
+
     testLabelBoundsTable : function() {
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
@@ -270,6 +285,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 1, node.childNodes.length );
       assertEquals( 6, node.childNodes[ 0 ].offsetTop );
       assertEquals( 5, node.childNodes[ 0 ].offsetLeft );
+      assertEquals( "auto", node.childNodes[ 0 ].style.height );
+      assertEquals( 45, node.childNodes[ 0 ].offsetWidth );
+    },
+
+    testLabelBoundsTable_RTL : function() {
+      tree.setDirection( "rtl" );
+      tree.setTreeColumn( -1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 );
+      assertEquals( 1, node.childNodes.length );
+      assertEquals( 6, node.childNodes[ 0 ].offsetTop );
+      assertEquals( 350, node.childNodes[ 0 ].offsetLeft );
       assertEquals( "auto", node.childNodes[ 0 ].style.height );
       assertEquals( 45, node.childNodes[ 0 ].offsetWidth );
     },
@@ -668,7 +699,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var parent3 = this._createItem( parent2, false, true );
       var item = this._createItem( parent3, true, false );
       item.setTexts( [ "Test" ] );
+
       row.renderItem( item, tree._config, false, null );
+
       var nodes = row.$el.get( 0 ).childNodes;
       assertEquals( 0, nodes[ 2 ].offsetTop );
       assertEquals( 0, nodes[ 1 ].offsetTop );
@@ -676,6 +709,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 0, nodes[ 2 ].offsetLeft );
       assertEquals( 32, nodes[ 1 ].offsetLeft );
       assertEquals( 48, nodes[ 0 ].offsetLeft );
+    },
+
+    testIndentSymbolsPosition_RTL : function() {
+      tree.setDirection( "rtl" );
+      var parent1 = this._createItem( tree, false, true );
+      var parent2 = this._createItem( parent1, false, false );
+      var parent3 = this._createItem( parent2, false, true );
+      var item = this._createItem( parent3, true, false );
+      item.setTexts( [ "Test" ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var nodes = row.$el.get( 0 ).childNodes;
+      assertEquals( 0, nodes[ 2 ].offsetTop );
+      assertEquals( 0, nodes[ 1 ].offsetTop );
+      assertEquals( 0, nodes[ 0 ].offsetTop );
+      assertEquals( 384, nodes[ 2 ].offsetLeft );
+      assertEquals( 352, nodes[ 1 ].offsetLeft );
+      assertEquals( 336, nodes[ 0 ].offsetLeft );
     },
 
     testIndentSymbolsNotEnoughSpace : function() {
@@ -957,11 +1009,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
       item.setCellBackgrounds( [ "red" ] );
+
       row.renderItem( item, tree._config, false, null );
+
       var node = row.$el.get( 0 ).childNodes[ 1 ];
       assertEquals( "red", node.style.backgroundColor );
       var bounds = getElementBounds( node );
       assertEquals( 4, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+    },
+
+    testRenderCellBackgroundBounds_RTL : function() {
+      tree.setDirection( "rtl" );
+      row.setHeight( 15 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      item.setCellBackgrounds( [ "red" ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      assertEquals( "red", node.style.backgroundColor );
+      var bounds = getElementBounds( node );
+      assertEquals( 330, bounds.left );
       assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
       assertEquals( 0, bounds.top );
@@ -1025,12 +1097,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "" ] );
       item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
+
       row.renderItem( item, tree._config, false, null );
+
       var node = row.$el.get( 0 );
       assertEquals( 2, node.childNodes.length );
       var style = node.childNodes[ 1 ].style;
       assertEquals( 0, parseInt( style.top, 10 ) );
       assertEquals( 40, parseInt( style.left, 10 ) );
+      assertEquals( "100%", style.height );
+      assertEquals( 10, parseInt( style.width, 10 ) );
+    },
+
+    testImageBounds_RTL : function() {
+      tree.setDirection( "rtl" );
+      row.setHeight( 15 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "" ] );
+      item.setImages( [ [ "bla.jpg", 10, 10 ] ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 );
+      assertEquals( 2, node.childNodes.length );
+      var style = node.childNodes[ 1 ].style;
+      assertEquals( 0, parseInt( style.top, 10 ) );
+      assertEquals( 40, parseInt( style.right, 10 ) );
       assertEquals( "100%", style.height );
       assertEquals( 10, parseInt( style.width, 10 ) );
     },
@@ -1574,6 +1666,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 18, bounds1.left );
       assertEquals( 8, bounds1.width );
       assertEquals( 42, bounds2.left );
+      assertEquals( 8, bounds2.width );
+    },
+
+    testRenderCellCheckBoxBounds_RTL : function() {
+      tree.setDirection( "rtl" );
+      tree.setColumnCount( 3 );
+      tree.setItemMetrics( 0, 0, 30, 20, 0, 20, 10, 2, 8 );
+      tree.setItemMetrics( 1, 30, 10, 30, 0, 30, 10, -1, -1 );
+      tree.setItemMetrics( 2, 40, 20, 50, 0, 50, 10, 42, 8 );
+      tree.setCellCheck( 0, true );
+      tree.setCellCheck( 2, true );
+      var item = this._createItem( tree );
+      this._setCheckBox( "mycheckbox.gif" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      assertEquals( 3, row.$el.get( 0 ).childNodes.length );
+      var node1 = row.$el.get( 0 ).childNodes[ 1 ];
+      var node2 = row.$el.get( 0 ).childNodes[ 2 ];
+      var bounds1 = getElementBounds( node1 );
+      var bounds2 = getElementBounds( node2 );
+      assertEquals( 374, bounds1.left );
+      assertEquals( 8, bounds1.width );
+      assertEquals( 350, bounds2.left );
       assertEquals( 8, bounds2.width );
     },
 
@@ -2379,12 +2495,30 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = this._createItem( tree );
       item.setTexts( [ "Test", "Test" ] );
       tree.setAlignment( 0, "center" );
+
       row.renderItem( item, tree._config, false, null );
+
       var node = row.$el.get( 0 ).childNodes[ 0 ];
       assertEquals( "center", node.style.textAlign );
       tree.setAlignment( 0, "right" );
       row.renderItem( item, tree._config, false, null );
       assertEquals( "right", node.style.textAlign );
+    },
+
+    testRenderLabelAlignment_RTL : function() {
+      tree.setDirection( "rtl" );
+      tree.setTreeColumn( 1 );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test", "Test" ] );
+      tree.setAlignment( 0, "center" );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 0 ];
+      assertEquals( "center", node.style.textAlign );
+      tree.setAlignment( 0, "right" );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( "left", node.style.textAlign );
     },
 
     testSelectionBackgroundLayout : function() {

@@ -67,6 +67,19 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
         document.body.removeChild( dummy );
       }
       return this._nativeWidth;
+    },
+
+    adjustScrollLeft : function( widget, scrollLeft ) {
+      var Client = rwt.client.Client;
+      var horzScrollBar = widget.getHorizontalBar();
+      if( widget.getDirection() === "rtl" ) {
+        if( Client.isGecko() ) {
+          return - scrollLeft;
+        } else if( horzScrollBar && ( Client.isWebkit() || Client.isBlink() ) ) {
+          return horzScrollBar.getMaximum() - horzScrollBar.getThumb() - scrollLeft;
+        }
+      }
+      return scrollLeft;
     }
 
   },
@@ -342,16 +355,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     },
 
     _adjustScrollLeft : function( scrollLeft ) {
-      if( this.getDirection() === "rtl" ) {
-        if( rwt.client.Client.isGecko() ) {
-          return - scrollLeft;
-        } else if( rwt.client.Client.isTrident() ) {
-          return scrollLeft;
-        } else {
-          return this._horzScrollBar.getMaximum() - this._horzScrollBar.getThumb() - scrollLeft;
-        }
-      }
-      return scrollLeft;
+      return rwt.widgets.base.Scrollable.adjustScrollLeft( this, scrollLeft );
     }
 
   }

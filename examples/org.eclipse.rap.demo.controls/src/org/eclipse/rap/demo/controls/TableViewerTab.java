@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ public class TableViewerTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
+    createOrientationButton();
     createAddItemsButton();
     createSelectYoungestPersonButton();
     createRemoveButton();
@@ -124,6 +125,7 @@ public class TableViewerTab extends ExampleTab {
     txtFilter.setEnabled( ( getStyle() & SWT.VIRTUAL ) == 0 );
     txtFilter.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
     txtFilter.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
@@ -165,6 +167,7 @@ public class TableViewerTab extends ExampleTab {
     viewer.setItemCount( persons.size() );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
+      @Override
       public void selectionChanged( SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
         lblSelection.getParent().layout( new Control[] { lblSelection } );
@@ -412,10 +415,12 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class PersonContentProvider implements IStructuredContentProvider {
     Object[] elements;
+    @Override
     public Object[] getElements( Object inputElement ) {
       return elements;
     }
 
+    @Override
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       if( newInput == null ) {
         elements = new Object[ 0 ];
@@ -424,6 +429,7 @@ public class TableViewerTab extends ExampleTab {
         elements = personList.toArray();
       }
     }
+    @Override
     public void dispose() {
       // do nothing
     }
@@ -433,13 +439,16 @@ public class TableViewerTab extends ExampleTab {
     private TableViewer tableViewer;
     private List<?> elements;
 
+    @Override
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       tableViewer = ( TableViewer )viewer;
       elements = ( List<?> )newInput;
     }
+    @Override
     public void updateElement( int index ) {
       tableViewer.replace( elements.get( index ), index );
     }
+    @Override
     public void dispose() {
       // do nothing
     }
@@ -540,6 +549,7 @@ public class TableViewerTab extends ExampleTab {
       return true;
     }
 
+    @Override
     public int compare( Person person1, Person person2 ) {
       int result = 0;
       if( property == COL_FIRST_NAME ) {
@@ -676,6 +686,7 @@ public class TableViewerTab extends ExampleTab {
       super( viewer );
       editor = new TextCellEditor( viewer.getTable() );
       editor.setValidator( new ICellEditorValidator() {
+        @Override
         public String isValid( Object value ) {
           String result = null;
           try {

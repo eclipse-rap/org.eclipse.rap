@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,7 @@ public class TreeTab extends ExampleTab {
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createStyleButton( "FULL_SELECTION", SWT.FULL_SELECTION );
     createStyleButton( "NO_SCROLL", SWT.NO_SCROLL );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();
@@ -119,6 +120,7 @@ public class TreeTab extends ExampleTab {
     tree = new Tree( parent, style );
     if( ( style & SWT.VIRTUAL ) != 0 ) {
       tree.addListener( SWT.SetData, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           final TreeItem item = ( TreeItem )event.item;
           if( updateVirtualItemsDelayed ) {
@@ -128,6 +130,7 @@ public class TreeTab extends ExampleTab {
               @Override
               protected IStatus run( IProgressMonitor monitor ) {
                 display.asyncExec( new Runnable() {
+                  @Override
                   public void run() {
                     updateItem( item );
                     pushSession.stop();
@@ -155,6 +158,7 @@ public class TreeTab extends ExampleTab {
       column.setWidth( 150 );
       column.setMoveable( columnsMoveable );
       column.addListener( SWT.Selection, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           Tree tree = column.getParent();
           if( tree.getSortColumn() == column ) {
@@ -190,6 +194,7 @@ public class TreeTab extends ExampleTab {
     Menu treeMenu = new Menu( tree );
     MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem item = tree.getSelection()[ 0 ];
         String itemText = "null";
@@ -203,16 +208,19 @@ public class TreeTab extends ExampleTab {
     treeMenuItem.setText( "TreeContextMenuItem" );
     tree.setMenu( treeMenu );
     tree.addTreeListener( new TreeListener() {
+      @Override
       public void treeCollapsed( TreeEvent event ) {
         Item item = ( Item )event.item;
         lblTreeEvent.setText( "Collapsed: "  + item.getText() );
       }
+      @Override
       public void treeExpanded( TreeEvent event ) {
         Item item = ( Item )event.item;
         lblTreeEvent.setText( "Expanded: "  + item.getText() );
       }
     } );
     tree.addSelectionListener( new SelectionListener() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         String msg = "Selected: ";
         TreeItem item = ( TreeItem )event.item;
@@ -230,6 +238,7 @@ public class TreeTab extends ExampleTab {
         }
         lblTreeEvent.setText( msg );
       }
+      @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
         String title = "Widget Default Selected";
         Item item = ( Item )event.item;
@@ -242,12 +251,15 @@ public class TreeTab extends ExampleTab {
     tree.setLinesVisible( linesVisible );
     if( addMouseListener ) {
       MouseListener listener = new MouseListener(  ) {
+        @Override
         public void mouseDoubleClick( MouseEvent e ) {
           log( "mouseDoubleClick: " + e );
         }
+        @Override
         public void mouseDown( MouseEvent e ) {
           log( "mouseDown: " + e );
         }
+        @Override
         public void mouseUp( MouseEvent e ) {
           log( "mouseUp: " + e );
         }
@@ -294,6 +306,7 @@ public class TreeTab extends ExampleTab {
     button.setText( "headerVisible" );
     button.setSelection( headerVisible );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         headerVisible = button.getSelection();
         tree.setHeaderVisible( headerVisible );
@@ -306,6 +319,7 @@ public class TreeTab extends ExampleTab {
     button.setText( "linesVisible" );
     button.setSelection( linesVisible );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         linesVisible = button.getSelection();
         tree.setLinesVisible( linesVisible );
@@ -318,6 +332,7 @@ public class TreeTab extends ExampleTab {
     button.setText( "Show Images" );
     button.setSelection( showImages );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         showImages = button.getSelection();
         changeImage( tree, showImages ? treeImage : null );
@@ -329,6 +344,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Add child item" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
@@ -352,6 +368,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
@@ -365,6 +382,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select All" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         tree.selectAll();
       }
@@ -375,6 +393,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect All" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         tree.deselectAll();
       }
@@ -385,6 +404,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select second node" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 1 ) {
           tree.select( tree.getItem( 1 ) );
@@ -397,6 +417,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect second node" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 1 ) {
           tree.deselect( tree.getItem( 1 ) );
@@ -409,6 +430,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Set selection to first node" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           tree.setSelection( tree.getItem( 0 ) );
@@ -430,6 +452,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Show" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         try {
           int index = Integer.parseInt( text.getText() );
@@ -452,6 +475,7 @@ public class TreeTab extends ExampleTab {
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Change" );
     btnChange.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         int itemCount = -1;
         try {
@@ -473,6 +497,7 @@ public class TreeTab extends ExampleTab {
     cbDelayedUpdate.setLayoutData( gridData );
     cbDelayedUpdate.setText( "Update virtual items delayed" );
     cbDelayedUpdate.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         updateVirtualItemsDelayed = cbDelayedUpdate.getSelection();
       }
@@ -483,6 +508,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "ClearAll" );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         tree.clearAll( true );
       }
@@ -508,6 +534,7 @@ public class TreeTab extends ExampleTab {
   private void createSetSelectionAsTopItemButton() {
     final Button button = createPropertyButton( "Set selection as topItem", SWT.PUSH );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeItem[] item = tree.getSelection();
         if( item.length > 0 ) {
@@ -520,6 +547,7 @@ public class TreeTab extends ExampleTab {
   private void createQueryTopItemButton() {
     final Button button = createPropertyButton( "Query topItem", SWT.PUSH );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         String message = "Current topItem: " + tree.getTopItem().toString();
         MessageDialog.openInformation( tree.getShell(), "Information", message );
@@ -530,6 +558,7 @@ public class TreeTab extends ExampleTab {
   private void createAddMouseListenerButton() {
     final Button button = createPropertyButton( "Attach MouseListener", SWT.CHECK );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         addMouseListener = !addMouseListener;
         createNew();
@@ -540,6 +569,7 @@ public class TreeTab extends ExampleTab {
   private void createGrayOutButton() {
     final Button button = createPropertyButton( "Gray out 2nd item", SWT.CHECK );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         tree.getItem( 1 ).setGrayed( button.getSelection() );
       }
@@ -549,6 +579,7 @@ public class TreeTab extends ExampleTab {
   private void createColumnsAlignmentButton() {
     final Button button = createPropertyButton( "Change columns alignment", SWT.PUSH );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         TreeColumn col1 = tree.getColumn( 1 );
         if( col1.getAlignment() == SWT.RIGHT ) {
@@ -569,6 +600,7 @@ public class TreeTab extends ExampleTab {
   private void createPackAllColumnsButton() {
     final Button button = createPropertyButton( "Pack all columns", SWT.PUSH );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         for( TreeColumn column : tree.getColumns() ) {
           column.pack();
@@ -580,6 +612,7 @@ public class TreeTab extends ExampleTab {
   private void createItemForegroundControl() {
     final Button button = createPropertyButton( "Item 0 Foreground", SWT.TOGGLE );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Color color = button.getSelection() ? fgColors[ FG_COLOR_ORANGE ]  : null;
@@ -592,6 +625,7 @@ public class TreeTab extends ExampleTab {
   private void createItemBackgroundControl() {
     final Button button = createPropertyButton( "Item 0 Background", SWT.TOGGLE );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Color color = button.getSelection() ? bgColors[ BG_COLOR_BROWN ]  : null;
@@ -605,6 +639,7 @@ public class TreeTab extends ExampleTab {
     final Button button = createPropertyButton( "Item 0 Font", SWT.TOGGLE );
     final Font customFont = new Font( button.getDisplay(), "Courier", 11, SWT.BOLD );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Font font = button.getSelection() ? customFont : null;
@@ -617,6 +652,7 @@ public class TreeTab extends ExampleTab {
   private void createCellForegroundControl() {
     final Button button = createPropertyButton( "Cell 0,0 Foreground", SWT.TOGGLE );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Color color = button.getSelection() ? fgColors[ FG_COLOR_RED ]  : null;
@@ -629,6 +665,7 @@ public class TreeTab extends ExampleTab {
   private void createCellBackgroundControl() {
     final Button button = createPropertyButton( "Cell 0,0 Background", SWT.TOGGLE );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Color color = button.getSelection() ? bgColors[ BG_COLOR_GREEN ]  : null;
@@ -642,6 +679,7 @@ public class TreeTab extends ExampleTab {
     final Button button = createPropertyButton( "Cell 0,0 Font", SWT.TOGGLE );
     final Font cellFont = new Font( button.getDisplay(), "Times", 13, SWT.ITALIC );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( tree.getItemCount() > 0 ) {
           Font font = button.getSelection() ? cellFont : null;
@@ -655,6 +693,7 @@ public class TreeTab extends ExampleTab {
     final Button button = createPropertyButton( "Moveable Columns", SWT.CHECK );
     button.setSelection( columnsMoveable );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         columnsMoveable = button.getSelection();
         for( TreeColumn column : tree.getColumns() ) {
@@ -668,6 +707,7 @@ public class TreeTab extends ExampleTab {
     final Button button = createPropertyButton( "Column images", SWT.CHECK );
     button.setSelection( columnImages );
     button.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         columnImages = button.getSelection();
         TreeColumn[] columns = tree.getColumns();

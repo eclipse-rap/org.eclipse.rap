@@ -15,6 +15,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var MessageProcessor = rwt.remote.MessageProcessor;
+var Client = rwt.client.Client;
 
 var gridHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Grid" );
 var itemHandler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.GridItem" );
@@ -2976,13 +2977,48 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testHeaderDirection : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setHeaderVisible( true );
+      tree.setFooterVisible( true );
+
+      tree.setItemMetrics( 3, 500, 700, 0, 0, 0, 500 );
+      tree.setColumnCount( 4 );
+
+      assertEquals( "rtl", tree.getTableHeader().getDirection() );
+      assertEquals( "rtl", tree.getFooter().getDirection() );
+      tree.destroy();
+    },
+
     testScrollHorizontal : function() {
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 2, 500, 600, 0, 0, 0, 500 );
       tree.setColumnCount( 3 );
       TestUtil.flush();
+
       tree._horzScrollBar.setValue( 400 );
+
       assertEquals( 400, tree._rowContainer.getScrollLeft() );
+      tree.destroy();
+    },
+
+    testScrollHorizontal_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setItemMetrics( 2, 500, 600, 0, 0, 0, 500 );
+      tree.setColumnCount( 3 );
+      TestUtil.flush();
+
+      tree._horzScrollBar.setValue( 400 );
+
+      var expected = 400;
+      if( Client.isGecko() ) {
+        expected = -400;
+      } else if( Client.isWebkit() || Client.isBlink() ) {
+        expected = 200;
+      }
+      assertEquals( expected, tree._rowContainer.getScrollLeft() );
       tree.destroy();
     },
 
@@ -3232,6 +3268,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testDummyColumnDirection : function() {
+      var tree = this._createDefaultTree( false, true );
+      tree.setDirection( "rtl" );
+      rwt.remote.EventUtil.setSuspended( true );
+      var column = new rwt.widgets.GridColumn( tree );
+      column.setLeft( 0 );
+      column.setWidth( 500 );
+      tree.setWidth( 600 );
+      tree.setHeaderVisible( true );
+      rwt.remote.EventUtil.setSuspended( false );
+      TestUtil.flush();
+
+      var dummy = tree._header._dummyColumn;
+      assertEquals( "rtl", dummy.getDirection() );
+      tree.destroy();
+    },
+
     testDontShowDummyColumn : function() {
       var tree = this._createDefaultTree();
       rwt.remote.EventUtil.setSuspended( true );
@@ -3317,8 +3370,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       columnX.setLeft( 0 );
       columnX.setWidth( 1100 );
       TestUtil.flush();
+
       tree._horzScrollBar.setValue( 400 );
+
       assertEquals( 400, tree._header.getScrollLeft() );
+      tree.destroy();
+    },
+
+    testScrollHeaderHorizontal_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setItemMetrics( 2, 500, 600, 0, 0, 0, 500 );
+      tree.setColumnCount( 3 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      var columnX = new rwt.widgets.GridColumn( tree );
+      ObjectRegistry.add( "wCol", columnX, columnHandler );
+      columnX.setLeft( 0 );
+      columnX.setWidth( 1100 );
+      TestUtil.flush();
+
+      tree._horzScrollBar.setValue( 400 );
+
+      var expected = 400;
+      if( Client.isGecko() ) {
+        expected = -400;
+      } else if( Client.isWebkit() || Client.isBlink() ) {
+        expected = 200;
+      }
+      assertEquals( expected, tree._header.getScrollLeft() );
       tree.destroy();
     },
 
@@ -3437,6 +3517,39 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testResizeColumn_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      rwt.remote.EventUtil.setSuspended( true );
+      tree.setHeaderVisible( true );
+      var column = new rwt.widgets.GridColumn( tree );
+      tree.setItemCount( 1 );
+      this._createItem( tree.getRootItem(), 0 );
+      rwt.remote.ObjectRegistry.add( "w11", column, columnHandler );
+      column.setLeft( 100 );
+      column.setWidth( 100 );
+      column.setMoveable( true );
+      rwt.remote.EventUtil.setSuspended( false );
+      TestUtil.flush();
+      TestUtil.initRequestLog();
+      var left = rwt.event.MouseEvent.buttons.left;
+      var node = this._getColumnLabel( tree, column )._getTargetNode();
+
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, 300, 0 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, 295, 0 );
+
+      assertEquals( "table-column-resizer", tree._resizeLine.getAppearance() );
+      var line = tree._resizeLine._getTargetNode();
+      assertIdentical( tree._getTargetNode(), line.parentNode );
+      assertEquals( 203, parseInt( line.style.right, 10 ) );
+      assertEquals( "", tree._resizeLine.getStyleProperty( "visibility" ) );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", left, 295, 0 );
+
+      assertNotNull( TestUtil.getMessageObject().findCallOperation( "w11", "resize" ) );
+      assertEquals( "hidden", tree._resizeLine.getStyleProperty( "visibility" ) );
+      tree.destroy();
+    },
+
     testSetAlignment : function() {
       var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
       tree.addToDocument();
@@ -3459,6 +3572,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       assertEquals( "left", this._getColumnLabel( tree, column1 ).getHorizontalChildrenAlign() );
       assertEquals( "center", this._getColumnLabel( tree, column2 ).getHorizontalChildrenAlign() );
       assertEquals( "right", this._getColumnLabel( tree, column3 ).getHorizontalChildrenAlign() );
+      tree.destroy();
+    },
+
+    testSetAlignment_RTL : function() {
+      var tree = new rwt.widgets.Grid( { "appearance": "tree" } );
+      tree.setDirection( "rtl" );
+      tree.addToDocument();
+      tree.setHeaderVisible( true );
+      var column1 = new rwt.widgets.GridColumn( tree );
+      column1.setIndex( 0 );
+      var column2 = new rwt.widgets.GridColumn( tree );
+      column2.setIndex( 1 );
+      var column3 = new rwt.widgets.GridColumn( tree );
+      column3.setIndex( 2 );
+
+      column1.setAlignment( "left" );
+      column2.setAlignment( "center" );
+      column3.setAlignment( "right" );
+      TestUtil.flush();
+
+      assertEquals( "left", tree.getRenderConfig().alignment[ 0 ] );
+      assertEquals( "center", tree.getRenderConfig().alignment[ 1 ] );
+      assertEquals( "right", tree.getRenderConfig().alignment[ 2 ] );
+      assertEquals( "right", this._getColumnLabel( tree, column1 ).getHorizontalChildrenAlign() );
+      assertEquals( "center", this._getColumnLabel( tree, column2 ).getHorizontalChildrenAlign() );
+      assertEquals( "left", this._getColumnLabel( tree, column3 ).getHorizontalChildrenAlign() );
       tree.destroy();
     },
 
@@ -3748,12 +3887,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
       tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
       TestUtil.flush();
+
       var line1 = tree._rowContainer.$el.prop( "childNodes" )[ 1 ];
       var line2 = tree._rowContainer.$el.prop( "childNodes" )[ 2 ];
       var line3 = tree._rowContainer.$el.prop( "childNodes" )[ 3 ];
       assertEquals( 201, parseInt( line1.style.left, 10 ) );
       assertEquals( 304, parseInt( line2.style.left, 10 ) );
       assertEquals( 359, parseInt( line3.style.left, 10 ) );
+      tree.destroy();
+    },
+
+    testGridLinesVerticalPositionX_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setColumnCount( 3 );
+      tree.setLinesVisible( true );
+      tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
+      tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
+      tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
+      TestUtil.flush();
+
+      var line1 = tree._rowContainer.$el.prop( "childNodes" )[ 1 ];
+      var line2 = tree._rowContainer.$el.prop( "childNodes" )[ 2 ];
+      var line3 = tree._rowContainer.$el.prop( "childNodes" )[ 3 ];
+      assertEquals( 201, parseInt( line1.style.right, 10 ) );
+      assertEquals( 304, parseInt( line2.style.right, 10 ) );
+      assertEquals( 359, parseInt( line3.style.right, 10 ) );
       tree.destroy();
     },
 

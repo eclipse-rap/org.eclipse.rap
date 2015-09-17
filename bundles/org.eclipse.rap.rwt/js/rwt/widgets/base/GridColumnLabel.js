@@ -22,7 +22,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     this._feedbackVisible = false;
     this._inMove = false;
     this._hoverEffect = false;
-    this._offsetX = 0;
     this._initialLeft = 0;
     this._chevron = null;
     this.setAppearance( baseAppearance + "-column" );
@@ -143,7 +142,6 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         } else if( this._allowMove() ) {
           this._inMove = true;
           this.setCapture( true );
-          this._offsetX = evt.getPageX() - this.getLeft();
           this._initialLeft = evt.getPageX();
           evt.stopPropagation();
           evt.preventDefault();
@@ -162,7 +160,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         this.dispatchSimpleEvent( "showResizeLine", { "position" : position }, true );
       } else if( this._inMove ) {
         this.addState( "mouseover" );
-        var left = evt.getPageX() - this._offsetX;
+        var left = this.getLeft() + this._getMouseOffset( evt );
         this.dispatchSimpleEvent( "showDragFeedback", { "target" : this, "position" : left } );
         this._feedbackVisible = true;
       } else {
@@ -199,10 +197,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         if( Math.abs( evt.getPageX() - this._initialLeft ) > 1 ) {
           this._wasResizeOrMoveEvent = true;
           // Fix for bugzilla 306842
-          this.dispatchSimpleEvent( "moveEnd", {
-            "target" : this,
-            "position" : evt.getPageX() - this._offsetX
-          } );
+          var left = this.getLeft() + this._getMouseOffset( evt );
+          this.dispatchSimpleEvent( "moveEnd", { "target" : this, "position" : left } );
         } else {
           this._hideDragFeedback( false );
         }
@@ -210,6 +206,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
         evt.preventDefault();
         widgetUtil._fakeMouseEvent( evt.getTarget(), "mouseover" );
       }
+    },
+
+    _getMouseOffset : function( mouseEvent ) {
+      if( this.getDirection() === "rtl" ) {
+        return this._initialLeft - mouseEvent.getPageX();
+      }
+      return mouseEvent.getPageX() - this._initialLeft;
     },
 
     _onClick : function( evt ) {
@@ -259,17 +262,20 @@ rwt.qx.Class.define( "rwt.widgets.base.GridColumnLabel", {
     /** Returns whether the given pageX is within the right 5 pixels of this
      * column */
     _isResizeLocation : function( pageX ) {
-      var result = false;
-      var columnRight = rwt.html.Location.getLeft( this.getElement() ) + this.getWidth();
-      if( pageX >= columnRight - 5 && pageX <= columnRight ) {
-        result = true;
+      var columnEdge = rwt.html.Location.getLeft( this.getElement() );
+      if( this.getDirection() === "rtl" ) {
+        return pageX <= columnEdge + 5 && pageX >= columnEdge;
       }
-      return result;
+      columnEdge += this.getWidth();
+      return pageX >= columnEdge - 5 && pageX <= columnEdge;
     },
 
     /** Returns the width of the column that is currently being resized */
     _getResizeWidth : function( pageX ) {
       var delta = this._resizeStartX - pageX;
+      if( this.getDirection() === "rtl" ) {
+        return this.getWidth() + delta;
+      }
       return this.getWidth() - delta;
     }
 

@@ -1857,6 +1857,70 @@ Tree-Indent:first:last:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
+Tree-Indent[RIGHT_TO_LEFT]:collapsed {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:expanded {
+  background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:collapsed {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:expanded {
+  background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:last:collapsed {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:last:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:last:expanded {
+  background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:last:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded {
+  background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
+}
+
+Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
+}
+
 /* Scale default theme */
 
 Scale {

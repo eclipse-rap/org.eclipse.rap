@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       }
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      for( var i = 0; i < this._children.length; i++ ) {
+        var column = this._getColumnByLabel( this._children[ i ] );
+        this._children[ i ].setDirection( value );
+        this._children[ i ].setHorizontalChildrenAlign( this._getAlignment( column ) );
+      }
+      this.getLayoutImpl().setMirror( value === "rtl" );
+    },
+
     _onColumnDispose : function( event ) {
       var column = event.target;
       var label = this._getLabelByColumn( column );
@@ -97,7 +107,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
         this._renderHeaderLabel( label, column );
       }
       label.setCustomVariant( column.getCustomVariant() );
-      label.setHorizontalChildrenAlign( column.getAlignment() );
+      label.setHorizontalChildrenAlign( this._getAlignment( column ) );
       label.setWordWrap( column.getHeaderWordWrap() );
     },
 
@@ -150,11 +160,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
     },
 
     _renderLabelLeft : function( label, column ) {
-      var offset = column.isFixed() ? this._scrollLeft : 0;
+      var offset = column.isFixed() ? this._adjustScrollLeft( this._scrollLeft ) : 0;
       label.setLeft( column.getLeft() + offset );
     },
 
     _onDummyRendered : function() {
+      this.setScrollLeft( this._scrollLeft );
+    },
+
+    _flushChildrenQueue: function() {
+      this.base( arguments );
       this.setScrollLeft( this._scrollLeft );
     },
 
@@ -242,6 +257,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       return result;
     },
 
+    _getAlignment : function( column ) {
+      var alignment = column ? column.getAlignment() : "left";
+      if( this.getDirection() === "rtl" ) {
+        if( alignment === "left" ) {
+          return "right";
+        } else if( alignment === "right" ) {
+          return "left";
+        }
+      }
+      return alignment;
+    },
+
     _getDragFeedback : function( column ) {
       if( this._feedbackLabel === null ) {
         this._feedbackLabel = this._createFeedbackColumn();
@@ -253,7 +280,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
         this._feedbackLabel.setText( column.getText() );
         this._feedbackLabel.setImage( column.getImage() );
         this._feedbackLabel.setSortIndicator( column.getSortDirection() );
-        this._feedbackLabel.setHorizontalChildrenAlign( column.getAlignment() );
+        this._feedbackLabel.setHorizontalChildrenAlign( this._getAlignment( column ) );
         this._feedbackLabel.setDisplay( true );
         this._feedbackLabel.dispatchSimpleEvent( "cancelAnimations" );
         this._currentDragColumn = column;
@@ -273,6 +300,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       }
       label.setTop( 0 );
       label.setHeight( "100%" );
+      label.setDirection( this.getDirection() );
       this.add( label );
       this._labelToColumnMap[ label.toHashCode() ] = column;
       this._columnToLabelMap[ column.toHashCode() ] = label;
@@ -294,8 +322,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       }
       dummyColumn.setTop( 0 );
       dummyColumn.setHeight( "100%" );
+      dummyColumn.setDirection( this.getDirection() );
       dummyColumn.addState( "dummy" );
-      dummyColumn.addEventListener( "flush", this._onDummyRendered, this );
       dummyColumn.addEventListener( "appear", this._onDummyRendered, this );
       dummyColumn.setEnabled( false );
       this.add( dummyColumn );
@@ -307,11 +335,16 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       feedback.addState( "moving" );
       feedback.setTop( 0 );
       feedback.setHeight( "100%" );
+      feedback.setDirection( this.getDirection() );
       feedback.setEnabled( false );
       feedback.setZIndex( 1e8 );
       feedback.addState( "mouseover" ); // to make the label more visible, not ideal
       this.add( feedback );
       return feedback;
+    },
+
+    _adjustScrollLeft : function( scrollLeft ) {
+      return rwt.widgets.base.Scrollable.adjustScrollLeft( this.getParent(), scrollLeft );
     }
 
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -363,12 +363,18 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( hoverTarget && hoverTarget[ 0 ] === "expandIcon" ) {
         states.over = true;
       }
+      if( config.rtl ) {
+        states.rwt_RIGHT_TO_LEFT = true;
+      }
       return this._getImageFromAppearance( "indent", states );
     },
 
     _getLineSymbol : function( item, config ) {
       var states = this._getParentStates( config );
       states.line = true;
+      if( config.rtl ) {
+        states.rwt_RIGHT_TO_LEFT = true;
+      }
       return this._getImageFromAppearance( "indent", states );
     },
 
@@ -397,7 +403,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var width = nextLevelOffset - offset;
         var element = this._getIndentImage();
         this._setImage( element, source, config.enabled );
-        element.css( { "left" : offset, "top" : 0, "width" : width, "height" : "100%" } );
+        element.css( {
+          "left" : config.rtl ? "" : offset,
+          "right" : config.rtl ? offset : "",
+          "top" : 0,
+          "width" : width,
+          "height" : "100%"
+        } );
         result = element;
       }
       return result;
@@ -421,7 +433,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         if( config.treeColumn !== -1 || !contentOnly ) {
           var left = this._getCheckBoxLeft( item, config );
           var width = this._getCheckBoxWidth( item, config );
-          this.$checkBox.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
+          this.$checkBox.css( {
+            "left" : config.rtl ? "" : left,
+            "right" : config.rtl ? left : "",
+            "top" : 0,
+            "width" : width,
+            "height" : "100%"
+          } );
         }
       }
     },
@@ -487,7 +505,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var visualWidth  = this._getVisualTextWidth( item, cell, config );
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
-        element.css( { "left" : left, "width" : width } );
+        element.css( {
+          "left" : config.rtl ? "" : left,
+          "right" : config.rtl ? left : "",
+          "width" : width
+        } );
       }
     },
 
@@ -512,7 +534,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( element ) {
         var left = this._getItemLeft( item, cell, config );
         var width = this._getItemWidth( item, cell, config );
-        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
+        element.css( {
+          "left" : config.rtl ? "" : left,
+          "right" : config.rtl ? left : "",
+          "top" : 0,
+          "width" : width,
+          "height" : "100%"
+        } );
       }
     },
 
@@ -544,7 +572,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( element ) {
         var left = this._getCellCheckLeft( item, cell, config );
         var width = this._getCellCheckWidth( item, cell, config );
-        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
+        element.css( {
+          "left" : config.rtl ? "" : left,
+          "right" : config.rtl ? left : "",
+          "top" : 0,
+          "width" : width,
+          "height" : "100%"
+        } );
       }
     },
 
@@ -572,7 +606,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( element ) {
         var left = this._getItemImageLeft( item, cell, config );
         var width = this._getItemImageWidth( item, cell, config );
-        element.css( { "left" : left, "top" : 0, "width" : width, "height" : "100%" } );
+        element.css( {
+          "left" : config.rtl ? "" : left,
+          "right" : config.rtl ? left : "",
+          "top" : 0,
+          "width" : width,
+          "height" : "100%"
+        } );
       }
     },
 
@@ -587,7 +627,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         element = this._getTextElement( cell );
         this._renderElementContent( element, item, cell, config );
         if( renderBounds ) {
-          element.css( "textAlign", isTreeColumn ? "left" : this._getAlignment( cell, config ) );
+          var treeColumnAlignment = config.rtl ? "right" : "left";
+          var columnAlignment = this._getAlignment( cell, config );
+          element.css( "textAlign", isTreeColumn ? treeColumnAlignment : columnAlignment );
         }
         this._styleLabel( element, item, cell, config );
       } else if( this.$cellLabels[ cell ] ) {
@@ -609,7 +651,13 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var top = this._getCellPadding( config )[ 0 ];
         // TODO : for vertical center rendering line-height should also be set,
         //        but not otherwise. Also not sure about bottom alignment.
-        element.css( { "left" : left, "top" : top, "width" : width, "height" : "auto" } );
+        element.css( {
+          "left" : config.rtl ? "" : left,
+          "right" : config.rtl ? left : "",
+          "top" : top,
+          "width" : width,
+          "height" : "auto"
+        } );
       }
     },
 
@@ -1039,7 +1087,15 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     },
 
     _getAlignment : function( column, config ) {
-      return config.alignment[ column ] ? config.alignment[ column ] : "left";
+      var alignment = config.alignment[ column ] ? config.alignment[ column ] : "left";
+      if( config.rtl ) {
+        if( alignment === "left" ) {
+          return "right";
+        } else if( alignment === "right" ) {
+          return "left";
+        }
+      }
+      return alignment;
     },
 
     _getIndentionOffset : function( level, config ) {

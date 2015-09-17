@@ -83,8 +83,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._header.addEventListener( "showResizeLine", this._onShowResizeLine, this );
       this._header.addEventListener( "hideResizeLine", this._onHideResizeLine, this );
       this._header.setTop( 0 );
-      this._header.setLeft( 0 );
-      this._header.setScrollLeft( this._horzScrollBar.getValue() );
+      this._header.setScrollLeft( this._adjustScrollLeft( this._horzScrollBar.getValue() ) );
+      this._header.setDirection( this.getDirection() );
       this._scheduleColumnUpdate();
     },
 
@@ -95,8 +95,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         "footer" : true
       } );
       this.add( this._footer );
-      this._footer.setLeft( 0 );
-      this._footer.setScrollLeft( this._horzScrollBar.getValue() );
+      this._footer.setScrollLeft( this._adjustScrollLeft( this._horzScrollBar.getValue() ) );
+      this._footer.setDirection( this.getDirection() );
       this._scheduleColumnUpdate();
     },
 
@@ -104,7 +104,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var dragBlocker = function( event ) { event.stopPropagation(); };
       this._horzScrollBar.setZIndex( 1e8 );
       this._horzScrollBar.setVisibility( false );
-      this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
@@ -122,6 +121,9 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this.addEventListener( "focusin", this._onFocusIn, this );
       this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
+      this._horzScrollBar.addEventListener( "changeMaximum",
+                                            this._onHorzScrollBarChangeMaximum,
+                                            this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
       this._rowContainer.addEventListener( "appear", this._onChangeSeeable );
@@ -495,14 +497,22 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onHorzScrollBarChangeValue : function() {
-      this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
+      this._setScrollLeft( this._adjustScrollLeft( this._horzScrollBar.getValue() ) );
+      this.dispatchSimpleEvent( "scrollLeftChanged" );
+    },
+
+    _onHorzScrollBarChangeMaximum : function() {
+      this._setScrollLeft( this._adjustScrollLeft( this._horzScrollBar.getValue() ) );
+    },
+
+    _setScrollLeft : function( scrollLeft ) {
+      this._rowContainer.setScrollLeft( scrollLeft );
       if( this._header ) {
-        this._header.setScrollLeft( this._horzScrollBar.getValue() );
+        this._header.setScrollLeft( scrollLeft );
       }
       if( this._footer ) {
-        this._footer.setScrollLeft( this._horzScrollBar.getValue() );
+        this._footer.setScrollLeft( scrollLeft );
       }
-      this.dispatchSimpleEvent( "scrollLeftChanged" );
     },
 
     _onMouseDown : function( event ) {
@@ -682,7 +692,6 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       }
     },
 
-    // TODO [tb] : handle by event via TableHeader instead of direct call
     _onShowResizeLine : function( event ) {
       var x = event.position;
       if( this._resizeLine === null ) {
@@ -694,7 +703,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       var top = this._rowContainer.getTop();
       this._resizeLine._renderRuntimeTop( top );
       var left = x - 2 - this._horzScrollBar.getValue();
-      this._resizeLine._renderRuntimeLeft( left );
+      if( this.getDirection() === "rtl" ) {
+        this._resizeLine._renderRuntimeRight( left );
+      } else {
+        this._resizeLine._renderRuntimeLeft( left );
+      }
       this._resizeLine._renderRuntimeHeight( this._rowContainer.getHeight() );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
@@ -1225,17 +1238,36 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._rowContainer.setBackgroundImage( newValue );
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._config.rtl = value === "rtl";
+      this.getLayoutImpl().setMirror( value === "rtl" );
+      this._rowContainer.setDirection( value );
+      this._horzScrollBar.setDirection( value );
+      if( this._header ) {
+        this._header.setDirection( value );
+      }
+      if( this._footer ) {
+        this._footer.setDirection( value );
+      }
+      this._onHorzScrollBarChangeValue();
+      this._scheduleUpdate();
+    },
+
     _layoutX : function() {
       var width = Math.max( 0, this.getWidth() - this.getFrameWidth() );
       if( this._header ) {
+        this._header.setLeft( 0 );
         this._header.setWidth( width );
       }
       if( this._footer ) {
+        this._footer.setLeft( 0 );
         this._footer.setWidth( width );
       }
       if( this._vertScrollBar.getVisibility() ) {
         this._vertScrollBar.setLeft( width - this._vertScrollBar.getWidth() );
       }
+      this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.setWidth( width - this._getVerticalBarWidth() );
       this._rowContainer.setWidth( width );
       this._updateScrollWidth();
@@ -1313,6 +1345,10 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     _getClientAreaHeight : function() {
       var height = this._rowContainer.getHeight();
       return this._footer ? height : height - this._getHorizontalBarHeight();
+    },
+
+    _adjustScrollLeft : function( scrollLeft ) {
+      return rwt.widgets.base.Scrollable.adjustScrollLeft( this, scrollLeft );
     },
 
     ////////////////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public final class CompositeTab extends ExampleTab {
   @Override
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
+    createOrientationButton();
     cteateRoundedBorderGroup();
     createVisibilityButton();
     createEnablementButton();
@@ -72,12 +73,15 @@ public final class CompositeTab extends ExampleTab {
     composite = new Composite( parent, getStyle() );
     if( addMouseListener ) {
       MouseListener listener = new MouseListener(  ) {
+        @Override
         public void mouseDoubleClick( MouseEvent e ) {
           log( "mouseDoubleClick: " + e );
         }
+        @Override
         public void mouseDown( MouseEvent e ) {
           log( "mouseDown: " + e );
         }
+        @Override
         public void mouseUp( MouseEvent e ) {
           log( "mouseUp: " + e );
         }
@@ -143,4 +147,5 @@ public final class CompositeTab extends ExampleTab {
     forceButton.addSelectionListener( selectionAdapter );
     noneButton.setSelection( true );
   }
+
 }
