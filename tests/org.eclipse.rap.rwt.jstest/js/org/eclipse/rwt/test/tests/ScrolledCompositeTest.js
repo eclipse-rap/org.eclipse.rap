@@ -14,6 +14,7 @@
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var ObjectRegistry = rwt.remote.ObjectRegistry;
 var MessageProcessor = rwt.remote.MessageProcessor;
+var Client = rwt.client.Client;
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
 
@@ -259,7 +260,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isTrident() && rwt.client.Client.getMajor() === 9 ) {
+      if( Client.isTrident() && Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {
@@ -332,7 +333,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.setHBarSelection( 10 );
       composite.setVBarSelection( 20 );
       var position = this._getScrollPosition( composite );
-      assertEquals( [ 100, 20 ], position );
+      if( Client.isGecko() ) {
+        assertEquals( [ -10, 20 ], position );
+      } else if( Client.isTrident() ) {
+        assertEquals( [ 10, 20 ], position );
+      } else {
+        assertEquals( [ 100, 20 ], position );
+      }
       composite.destroy();
     },
 
@@ -434,9 +441,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testBlockScrolling : function() {
-      if(    !rwt.client.Client.isAndroidBrowser()
-          && !rwt.client.Client.isMobileSafari() )
-      {
+      if( !Client.isAndroidBrowser() && !Client.isMobileSafari() ) {
         var composite = this._createComposite();
         this._setScrollDimension( composite, 200, 200 );
         composite.setHBarSelection( 10 );
@@ -548,7 +553,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = TestUtil.getElementBounds( client.getElement() );
       var targetBounds = TestUtil.getElementBounds( client._getTargetNode() );
-      if( rwt.client.Client.isTrident()  && rwt.client.Client.getMajor() === 9 ) {
+      if( Client.isTrident()  && Client.getMajor() === 9 ) {
         assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
         assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
       } else {
