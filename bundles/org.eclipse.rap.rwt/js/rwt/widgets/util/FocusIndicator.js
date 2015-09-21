@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,7 +130,7 @@ rwt.qx.Class.define( "rwt.widgets.util.FocusIndicator", {
       var bounds = [];
       if( theme[ "padding" ] != null ) {
         var padding = theme[ "padding" ];
-        bounds[ 0 ] = parseInt( focusElement.style.left, 10 ) - padding[ 3 ];
+        bounds[ 0 ] = focusElement.offsetLeft - padding[ 3 ];
         bounds[ 1 ] = parseInt( focusElement.style.top, 10 ) - padding[ 0 ];
         bounds[ 2 ] = parseInt( focusElement.style.width, 10 ) + padding[ 1 ] + padding[ 3 ];
         bounds[ 3 ] = parseInt( focusElement.style.height, 10 ) + padding[ 2 ] + padding[ 0 ];
