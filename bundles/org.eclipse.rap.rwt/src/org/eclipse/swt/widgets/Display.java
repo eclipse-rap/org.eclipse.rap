@@ -478,12 +478,7 @@ public class Display extends Device implements Adaptable {
     if( rectangle == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return map( from,
-                to,
-                rectangle.x,
-                rectangle.y,
-                rectangle.width,
-                rectangle.height );
+    return map( from, to, rectangle.x, rectangle.y, rectangle.width, rectangle.height );
   }
 
   /**
@@ -528,13 +523,13 @@ public class Display extends Device implements Adaptable {
     int newY = y;
     if( from != null ) {
       Point fromOrigin = getAbsoluteOrigin( from );
-      newX += fromOrigin.x;
-      newY += fromOrigin.y;
+      newX = fromOrigin.x + applyMirror( from, newX, width );
+      newY = fromOrigin.y + newY;
     }
     if( to != null ) {
       Point toOrigin = getAbsoluteOrigin( to );
-      newX -= toOrigin.x;
-      newY -= toOrigin.y;
+      newX = applyMirror( to, newX - toOrigin.x, width );
+      newY = newY - toOrigin.y;
     }
     return new Rectangle( newX, newY, width, height );
   }
@@ -548,7 +543,7 @@ public class Display extends Device implements Adaptable {
     Point absolute = new Point( 0, 0 );
     while( currentControl != null ) {
       Point origin = getOrigin( currentControl );
-      absolute.x += origin.x;
+      absolute.x += applyMirror( currentControl.getParent(), origin.x, currentControl.getSize().x );
       absolute.y += origin.y;
       if( currentControl instanceof Shell ) {
         currentControl = null;
@@ -571,11 +566,21 @@ public class Display extends Device implements Adaptable {
     // Since only composites can contain child widgets, only they need this
     // correction. This implementation seems to be a good fit with SWT.
     if( control instanceof Composite ) {
+      boolean rtl = control.getOrientation() == SWT.RIGHT_TO_LEFT;
       BoxDimensions borderWidth = control.getBorder();
-      result.x += borderWidth.left;
+      result.x += rtl ? borderWidth.right : borderWidth.left;
       result.y += borderWidth.top;
     }
     return result;
+  }
+
+  private static int applyMirror( Control control, int x, int width ) {
+    if( control != null && control.getOrientation() == SWT.RIGHT_TO_LEFT ) {
+      BoxDimensions border = control.getBorder();
+      int innerWidth = control.getSize().x - border.left - border.right;
+      return innerWidth - x - width;
+    }
+    return x;
   }
 
   ///////////
@@ -1202,7 +1207,7 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private boolean executeNextEvent() {
+  private static boolean executeNextEvent() {
     boolean result = false;
     Event[] events = EventList.getInstance().getAll();
     while( !result && events.length > 0 ) {
@@ -1321,9 +1326,9 @@ public class Display extends Device implements Adaptable {
   private boolean executeNextRedraw() {
     boolean result = false;
     if( redrawControls != null ) {
-      Iterator iterator = redrawControls.iterator();
+      Iterator<Control> iterator = redrawControls.iterator();
       if( iterator.hasNext() ) {
-        Control control = ( Control )iterator.next();
+        Control control = iterator.next();
         WidgetUtil.getLCA( control ).doRedrawFake( control );
         redrawControls.remove( control );
         result = true;
@@ -2217,7 +2222,7 @@ public class Display extends Device implements Adaptable {
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
-      WeakReference[] displays = getDisplays();
+      WeakReference<Display>[] displays = getDisplays();
       for( int i = 0; !registered && i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
           displays[ i ] = new WeakReference<>( this );
@@ -2233,12 +2238,12 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  private boolean canDisplayRefBeReplaced( WeakReference displayRef ) {
+  private boolean canDisplayRefBeReplaced( WeakReference<Display> displayRef ) {
     boolean result = false;
     if( displayRef == null ) {
       result = true;
     } else {
-      Display display = ( Display )displayRef.get();
+      Display display = displayRef.get();
       if( display == null || display.thread == thread ) {
         result = true;
       }
@@ -2248,9 +2253,9 @@ public class Display extends Device implements Adaptable {
 
   private void deregister() {
     synchronized( Device.class ) {
-      WeakReference[] displays = getDisplays();
+      WeakReference<Display>[] displays = getDisplays();
       for( int i = 0; i < displays.length; i++ ) {
-        WeakReference current = displays[ i ];
+        WeakReference<Display> current = displays[ i ];
         if( current != null && this == current.get() ) {
           displays[ i ] = null;
         }
@@ -2269,7 +2274,8 @@ public class Display extends Device implements Adaptable {
   /////////////////////
   // Consistency checks
 
-  static boolean isValidClass( Class clazz ) {
+  @SuppressWarnings( "unused" )
+  static boolean isValidClass( Class<?> clazz ) {
 //    String name = clazz.getName();
 //    int index = name.lastIndexOf( '.' );
 //    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
@@ -2323,9 +2329,11 @@ public class Display extends Device implements Adaptable {
   // Inner classes
 
   private static class WakeRunnable implements Runnable, SerializableCompatibility {
+
     @Override
     public void run() {
     }
+
   }
 
   private static final class ControlFinder {
@@ -2378,11 +2386,12 @@ public class Display extends Device implements Adaptable {
       return result;
     }
 
-    private Rectangle getAbsoluteBounds( Control control ) {
+    private static Rectangle getAbsoluteBounds( Control control ) {
       Rectangle bounds = control.getBounds();
       Point origin = getAbsoluteOrigin( control );
       return new Rectangle( origin.x, origin.y, bounds.width, bounds.height );
     }
+
   }
 
   private final class DisplayAdapter implements IDisplayAdapter {

@@ -54,7 +54,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -71,10 +70,13 @@ import org.mockito.ArgumentCaptor;
 @SuppressWarnings( "deprecation" )
 public class Display_Test {
 
+  private Display display;
+
   @Before
   public void setUp() {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
   }
 
   @After
@@ -84,8 +86,6 @@ public class Display_Test {
 
   @Test
   public void testGetAdapter_forDisplayAdapter() {
-    Display display = new Display();
-
     Object adapter = display.getAdapter( IDisplayAdapter.class );
 
     assertTrue( adapter instanceof IDisplayAdapter );
@@ -93,8 +93,6 @@ public class Display_Test {
 
   @Test
   public void testGetAdapter_forRemoteAdapter() {
-    Display display = new Display();
-
     Object adapter = display.getAdapter( RemoteAdapter.class );
 
     assertTrue( adapter instanceof RemoteAdapter );
@@ -102,8 +100,6 @@ public class Display_Test {
 
   @Test
   public void testGetAdapter_forRemoteAdapter_returnsSameInstance() {
-    Display display = new Display();
-
     Object adapter1 = display.getAdapter( RemoteAdapter.class );
     Object adapter2 = display.getAdapter( RemoteAdapter.class );
 
@@ -112,7 +108,6 @@ public class Display_Test {
 
   @Test
   public void testGetAdapter_forRemoteAdapter_returnsDifferentInstanceForNewDisplay() {
-    Display display = new Display();
     RemoteAdapter adapter1 = display.getAdapter( RemoteAdapter.class );
     display.dispose();
     display = new Display();
@@ -124,8 +119,6 @@ public class Display_Test {
 
   @Test
   public void testCreation_preventsMultipleDisplays() {
-    new Display();
-
     try {
       new Display();
       fail();
@@ -136,7 +129,6 @@ public class Display_Test {
 
   @Test
   public void testCreation_createsAnotherDisplayAfterDispose() {
-    Device display = new Display();
     display.dispose();
 
     Device secondDisplay = new Display();
@@ -145,19 +137,18 @@ public class Display_Test {
 
   @Test
   public void testGetCurrent_returnsNullWithoutDisplay() {
+    display.dispose();
+
     assertNull( Display.getCurrent() );
   }
 
   @Test
   public void testGetCurrent_returnsCreatedDisplay() {
-    Device display = new Display();
-
     assertSame( Display.getCurrent(), display );
   }
 
   @Test
   public void testGetCurrent_returnsNullOnBackgroundThread() throws Throwable {
-    final Display display = new Display();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
     runInThread( new Runnable() {
@@ -172,7 +163,6 @@ public class Display_Test {
 
   @Test
   public void testGetCurrent_returnsNullOnBackgroundThreadWithContext() throws Throwable {
-    final Display display = new Display();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>( display );
 
     runInThread( new Runnable() {
@@ -215,14 +205,11 @@ public class Display_Test {
 
   @Test
   public void testGetDefault_withExistingDisplayFromUIThread() {
-    Display display = new Display();
-
     assertSame( display, Display.getDefault() );
   }
 
   @Test
   public void testGetDefault_fromBackgroundThreadWithoutContext() throws Throwable {
-    new Display();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>();
 
     Runnable runnable = new Runnable() {
@@ -255,7 +242,6 @@ public class Display_Test {
   @Test
   public void testGetDefault_fromBackgroundThreadWithContext() throws Throwable {
     final Display[] backgroundDisplay = { null };
-    final Display display = new Display();
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
@@ -278,7 +264,6 @@ public class Display_Test {
     IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
     when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
     LifeCycleUtil.setUIThread( RWT.getUISession(), uiThreadHolder );
-    Display display = new Display();
     display.dispose();
 
     Display newDisplay = Display.getDefault();
@@ -288,8 +273,6 @@ public class Display_Test {
 
   @Test
   public void testGetThread_fromUIThread() {
-    Display display = new Display();
-
     Thread thread = display.getThread();
 
     assertSame( Thread.currentThread(), thread );
@@ -297,7 +280,6 @@ public class Display_Test {
 
   @Test
   public void testGetThread_fromBackgroundThread() throws Throwable {
-    final Display display = new Display();
     final AtomicReference<Thread> resultCaptor = new AtomicReference<Thread>();
 
     runInThread( new Runnable() {
@@ -312,7 +294,6 @@ public class Display_Test {
 
   @Test
   public void testDetachThread() {
-    Display display = new Display();
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
 
     adapter.detachThread();
@@ -322,7 +303,6 @@ public class Display_Test {
 
   @Test
   public void testAttachThread() {
-    Display display = new Display();
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.detachThread();
 
@@ -333,7 +313,6 @@ public class Display_Test {
 
   @Test
   public void testGetShells() {
-    Display display = new Display();
     assertEquals( 0, display.getShells().length );
     Composite shell1 = new Shell( display , SWT.NONE );
     assertSame( shell1, display.getShells()[ 0 ] );
@@ -344,7 +323,6 @@ public class Display_Test {
 
   @Test
   public void testProperties() {
-    Display display = new Display();
     assertEquals( 0, display.getShells().length );
     Rectangle bounds = display.getBounds();
     assertNotNull( bounds );
@@ -354,7 +332,6 @@ public class Display_Test {
 
   @Test
   public void testBounds() {
-    Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     Rectangle expectedBounds = new Rectangle( 0, 10, 60, 99 );
@@ -366,7 +343,6 @@ public class Display_Test {
 
   @Test
   public void testClientArea() {
-    Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     Rectangle testRect = new Rectangle( 1, 2, 3, 4 );
@@ -378,7 +354,6 @@ public class Display_Test {
 
   @Test
   public void testMap() {
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Rectangle shellBounds = new Rectangle( 10, 10, 400, 400 );
     int shellBorder = shell.getBorderWidth();
@@ -417,7 +392,6 @@ public class Display_Test {
 
   @Test
   public void testMap_withChildShell() {
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     shell.setBounds( 100, 100, 800, 600 );
     Shell childShell1 = new Shell( shell, SWT.NONE );
@@ -440,7 +414,6 @@ public class Display_Test {
 
   @Test
   public void testMap_withDifferentBorders() {
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     shell.setBounds( 100, 100, 800, 600 );
     Composite comp1 = new Composite( shell, SWT.BORDER );
@@ -478,6 +451,72 @@ public class Display_Test {
     assertEquals( expected, actual );
   }
 
+  @Test
+  public void testMap_displayToRTLComposite() {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    shell.setBounds( 0, 0, 1000, 1000 );
+    Composite composite = new Composite( shell, SWT.RIGHT_TO_LEFT );
+    composite.setBounds( 10, 10, 200, 200 );
+
+    Rectangle actual = display.map( null, composite, 30, 30, 10, 10 );
+
+    assertEquals( new Rectangle( 170, 20, 10, 10 ), actual );
+  }
+
+  @Test
+  public void testMap_rtlCompositeToDisplay() {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    shell.setBounds( 0, 0, 1000, 1000 );
+    Composite composite = new Composite( shell, SWT.RIGHT_TO_LEFT );
+    composite.setBounds( 10, 10, 200, 200 );
+
+    Rectangle actual = display.map( composite, null, 30, 30, 10, 10 );
+
+    assertEquals( new Rectangle( 170, 40, 10, 10 ), actual );
+  }
+
+  @Test
+  public void testMap_ltrCompositeToRTLComposite() {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    shell.setBounds( 0, 0, 1000, 1000 );
+    Composite composite1 = new Composite( shell, SWT.LEFT_TO_RIGHT );
+    composite1.setBounds( 10, 10, 200, 200 );
+    Composite composite2 = new Composite( composite1, SWT.RIGHT_TO_LEFT );
+    composite2.setBounds( 5, 5, 100, 100 );
+
+    Rectangle actual = display.map( composite1, composite2, 30, 30, 10, 10 );
+
+    assertEquals( new Rectangle( 65, 25, 10, 10 ), actual );
+  }
+
+  @Test
+  public void testMap_rtlCompositeToLTRComposite() {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    shell.setBounds( 0, 0, 1000, 1000 );
+    Composite composite1 = new Composite( shell, SWT.RIGHT_TO_LEFT );
+    composite1.setBounds( 10, 10, 200, 200 );
+    Composite composite2 = new Composite( composite1, SWT.LEFT_TO_RIGHT );
+    composite2.setBounds( 5, 5, 100, 100 );
+
+    Rectangle actual = display.map( composite2, composite1, 30, 30, 10, 10 );
+
+    assertEquals( new Rectangle( 65, 35, 10, 10 ), actual );
+  }
+
+  @Test
+  public void testMap_rtlCompositeToRTLComposite() {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    shell.setBounds( 0, 0, 1000, 1000 );
+    Composite composite1 = new Composite( shell, SWT.RIGHT_TO_LEFT );
+    composite1.setBounds( 10, 10, 200, 200 );
+    Composite composite2 = new Composite( composite1, SWT.RIGHT_TO_LEFT );
+    composite2.setBounds( 5, 5, 100, 100 );
+
+    Rectangle actual = display.map( composite1, composite2, 30, 30, 10, 10 );
+
+    assertEquals( new Rectangle( 25, 25, 10, 10 ), actual );
+  }
+
   ////////////////////////////
   // SWT Tests for Display#map
 
@@ -486,7 +525,6 @@ public class Display_Test {
    */
   @Test
   public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlII() {
-    Display display = new Display();
     try {
       Shell shell = new Shell(display, SWT.NO_TRIM);
       Button button1 = new Button(shell, SWT.PUSH);
@@ -552,7 +590,6 @@ public class Display_Test {
    */
   @Test
   public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlIIII() {
-    Display display = new Display();
     try {
       Shell shell = new Shell(display, SWT.NO_TRIM);
       Button button1 = new Button(shell, SWT.PUSH);
@@ -618,7 +655,6 @@ public class Display_Test {
    */
   @Test
   public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_graphics_Point() {
-    Display display = new Display();
     try {
       Shell shell = new Shell(display, SWT.NO_TRIM);
       Button button1 = new Button(shell, SWT.PUSH);
@@ -692,7 +728,6 @@ public class Display_Test {
    */
   @Test
   public void test_mapLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_widgets_ControlLorg_eclipse_swt_graphics_Rectangle() {
-    Display display = new Display();
     try {
       Shell shell = new Shell(display, SWT.NO_TRIM);
       Button button1 = new Button(shell, SWT.PUSH);
@@ -764,7 +799,6 @@ public class Display_Test {
 
   @Test
   public void testActiveShell() {
-    Display display = new Display();
     assertNull( display.getActiveShell() );
     Shell shell1 = new Shell( display, SWT.NONE );
     assertNull( display.getActiveShell() );
@@ -797,8 +831,6 @@ public class Display_Test {
 
   @Test
   public void testGetFontList_returnsEmptyListForScalable() {
-    Display display = new Display();
-
     FontData[] result = display.getFontList( null, false );
 
     assertEquals( 0, result.length );
@@ -806,8 +838,6 @@ public class Display_Test {
 
   @Test
   public void testGetFontList_returnsNonEmptyListForNonScalable() {
-    Display display = new Display();
-
     FontData[] result = display.getFontList( null, true );
 
     assertTrue( result.length > 0 );
@@ -815,7 +845,6 @@ public class Display_Test {
 
   @Test
   public void testGetFontList() {
-    Display display = new Display();
     FontData[] fontList = display.getFontList( null, true );
     String firstFontName = fontList[ 0 ].getName();
 
@@ -827,25 +856,16 @@ public class Display_Test {
 
   @Test
   public void testGetFontList_returnsEmptyListForUnknownName() {
-    Display display = new Display();
-
-    FontData[] result = display.getFontList( "not existing font", true );
-
-    assertEquals( 0, result.length );
+    assertEquals( 0, display.getFontList( "not existing font", true ).length );
   }
 
   @Test
   public void testGetSystemFont() {
-    Display display = new Display();
-
-    Font result = display.getSystemFont();
-
-    assertNotNull( result );
+    assertNotNull( display.getSystemFont() );
   }
 
   @Test
   public void testGetSystemImage_returns32x32Images() {
-    Display display = new Display();
     Rectangle expected = new Rectangle( 0, 0, 32, 32 );
 
     Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
@@ -863,16 +883,11 @@ public class Display_Test {
 
   @Test
   public void testGetSystemImage_returnsNullForInvalidId() {
-    Display display = new Display();
-
-    Image result = display.getSystemImage( SWT.VERTICAL );
-
-    assertNull( result );
+    assertNull( display.getSystemImage( SWT.VERTICAL ) );
   }
 
   @Test
   public void testGetSystemImage_returnsSharedInstances() {
-    Display display = new Display();
     Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
     assertSame( errorImage, display.getSystemImage( SWT.ICON_ERROR ) );
     Image infoImage = display.getSystemImage( SWT.ICON_INFORMATION );
@@ -885,7 +900,6 @@ public class Display_Test {
 
   @Test
   public void testGetSystemColor_returnsColorsFromDefaultTheme() {
-    Display display = new Display();
     assertEquals( new RGB( 167, 166, 170 ),
                   display.getSystemColor( SWT.COLOR_WIDGET_NORMAL_SHADOW ).getRGB() );
     assertEquals( new RGB( 133, 135, 140 ),
@@ -928,7 +942,6 @@ public class Display_Test {
 
   @Test
   public void testGetSystemColor_returnsFixedColors() {
-    Display display = new Display();
     assertEquals( new RGB( 0, 0, 0 ),
                   display.getSystemColor( SWT.COLOR_BLACK ).getRGB() );
     assertEquals( new RGB( 0, 0, 255 ),
@@ -965,14 +978,11 @@ public class Display_Test {
 
   @Test
   public void testGetSystemColor_returnsSameInstance() {
-    Display display = new Display();
-
     assertSame( display.getSystemColor( SWT.COLOR_RED ), display.getSystemColor( SWT.COLOR_RED ) );
   }
 
   @Test
   public void testAddFilter() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     Listener listener = mock( Listener.class );
 
@@ -985,19 +995,13 @@ public class Display_Test {
     assertEquals( SWT.Close, event.type );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddFilter_failsWithNullArgument() {
-    Display display = new Display();
-    try {
-      display.addFilter( SWT.Dispose, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    display.addFilter( SWT.Dispose, null );
   }
 
   @Test
   public void testRemoveFilter() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     Listener listener = mock( Listener.class );
     display.addFilter( SWT.Close, listener );
@@ -1008,27 +1012,18 @@ public class Display_Test {
     verify( listener, times( 0 ) ).handleEvent( any( Event.class ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testRemoveFilter_failsWithNullArgument() {
-    Display display = new Display();
-
-    try {
-      display .removeFilter( SWT.Dispose, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    display .removeFilter( SWT.Dispose, null );
   }
 
   @Test
   public void testRemoveFilter_toleratesUnknownListener() {
-    Display display = new Display();
-
     display.removeFilter( SWT.Selection, mock( Listener.class ) );
   }
 
   @Test
   public void testGetData_returnsSetData() {
-    Display display = new Display();
     Object object = new Object();
     display.setData( object );
 
@@ -1039,7 +1034,6 @@ public class Display_Test {
 
   @Test
   public void testGetData_returnsSetDataByKey() {
-    Display display = new Display();
     Object value1 = new Object();
     Object value2 = new Object();
     display.setData( "key1", value1 );
@@ -1052,21 +1046,13 @@ public class Display_Test {
     assertSame( value2, result2 );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testGetData_failsWithNullKey() {
-    Display display = new Display();
-
-    try {
-      display.getData( null );
-      fail();
-    } catch ( IllegalArgumentException exception ) {
-      assertEquals( "Argument cannot be null", exception.getMessage() );
-    }
+    display.getData( null );
   }
 
   @Test
   public void testSetData_withNullRemovesValue() {
-    Display display = new Display();
     display.setData( "key", new Object() );
 
     display.setData( "key", null );
@@ -1075,31 +1061,18 @@ public class Display_Test {
     assertNull( result );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testSetData_failsNullKey() {
-    Display display = new Display();
-
-    try {
-      display.setData( null, new Object() );
-      fail();
-    } catch ( IllegalArgumentException exception ) {
-    }
+    display.setData( null, new Object() );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testTimerExec_failsWithNullArgument() {
-    Display display = new Display();
-    try {
-      display.timerExec( 0, null );
-      fail();
-    } catch( IllegalArgumentException exception ) {
-      assertEquals( "Argument cannot be null", exception.getMessage() );
-    }
+    display.timerExec( 0, null );
   }
 
   @Test
   public void testTimerExec_failsFromBackgroundThread() throws Throwable {
-    final Display display = new Display();
     try {
       runInThread( new Runnable() {
         @Override
@@ -1143,8 +1116,6 @@ public class Display_Test {
 
   @Test
   public void testGetMonitors() {
-    Display display = new Display();
-
     Monitor[] monitors = display.getMonitors();
 
     assertNotNull( monitors );
@@ -1155,8 +1126,6 @@ public class Display_Test {
 
   @Test
   public void testGetPrimaryMonitor() {
-    Display display = new Display();
-
     Monitor monitor = display.getPrimaryMonitor();
 
     assertNotNull( monitor );
@@ -1165,7 +1134,6 @@ public class Display_Test {
 
   @Test
   public void testDisposeExecWithNullArgument() {
-    Display display = new Display();
     display.disposeExec( null );
 
     display.dispose();
@@ -1175,8 +1143,6 @@ public class Display_Test {
 
   @Test
   public void testDispose() {
-    Display display = new Display();
-
     assertFalse( display.isDisposed() );
 
     display.dispose();
@@ -1190,7 +1156,6 @@ public class Display_Test {
 
   @Test
   public void testDisposeNotificationsOrder() {
-    Display display = new Display();
     // 1. display dispose listener
     // 2. shell dispose listeners
     // 3. disposeRunnable(s)
@@ -1227,7 +1192,6 @@ public class Display_Test {
 
   @Test
   public void testSystemCursor() {
-    Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
     Cursor cross = display.getSystemCursor( SWT.CURSOR_CROSS );
     assertNotNull( arrow );
@@ -1241,8 +1205,6 @@ public class Display_Test {
 
   @Test
   public void testCloseWithoutListeners() {
-    Display display = new Display();
-
     display.close();
 
     assertTrue( display.isDisposed() );
@@ -1250,7 +1212,6 @@ public class Display_Test {
 
   @Test
   public void testCloseWithListener() {
-    Display display = new Display();
     final List<Event> log = new ArrayList<Event>();
     display.addListener( SWT.Close, new Listener() {
       @Override
@@ -1267,7 +1228,6 @@ public class Display_Test {
 
   @Test
   public void testCloseWithExceptionInListener() {
-    Display display = new Display();
     final String exceptionMessage = "exception in close event";
     display.addListener( SWT.Close, new Listener() {
       @Override
@@ -1285,13 +1245,11 @@ public class Display_Test {
 
   @Test
   public void testGetDismissalAlignment() {
-    Display display = new Display();
     assertEquals( SWT.LEFT, display.getDismissalAlignment() );
   }
 
   @Test
   public void testCloseWithVetoingListener() {
-    Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
       @Override
       public void handleEvent( Event event ) {
@@ -1304,7 +1262,6 @@ public class Display_Test {
 
   @Test
   public void testCheckDevice() throws Throwable {
-    final Display display = new Display();
     try {
       runInThread( new Runnable() {
         @Override
@@ -1321,7 +1278,6 @@ public class Display_Test {
 
   @Test
   public void testFilterWithoutListener() {
-    Display display = new Display();
     Listener filter = mock( Listener.class );
     display.addFilter( SWT.Resize, filter );
     Widget widget = new Shell( display );
@@ -1333,7 +1289,6 @@ public class Display_Test {
 
   @Test
   public void testCloseEventFilter() {
-    Display display = new Display();
     final StringBuilder order = new StringBuilder();
     final List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Close, new Listener() {
@@ -1366,7 +1321,6 @@ public class Display_Test {
 
   @Test
   public void testDisposeEventFilter() {
-    Display display = new Display();
     final StringBuilder order = new StringBuilder();
     final List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Dispose, new Listener() {
@@ -1396,8 +1350,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withNoControl() {
-    Display display = new Display();
-
     setCursorLocation( display, 234, 345 );
 
     assertNull( display.getCursorControl() );
@@ -1405,7 +1357,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withVisibleControl() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Control control = new Shell( display );
     control.setBounds( 100, 100, 500, 500 );
@@ -1416,7 +1367,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withNestedControl() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1429,7 +1379,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withTwiceNestedControl() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1444,7 +1393,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withInvisibleNestedControl() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1460,7 +1408,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withOverlappingControls() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1477,7 +1424,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withOverlappingAndHiddenControls() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1495,7 +1441,6 @@ public class Display_Test {
 
   @Test
   public void testGetCursorControl_withDisposedControl() {
-    Display display = new Display();
     setCursorLocation( display, 234, 345 );
     Shell shell = new Shell( display );
     shell.setBounds( 100, 100, 500, 500 );
@@ -1544,34 +1489,24 @@ public class Display_Test {
 
   @Test
   public void testFindDisplay_returnsDisplayForUIThread() {
-    Display display = new Display();
-
-    Display result = Display.findDisplay( display.getThread() );
-
-    assertSame( display, result );
+    assertSame( display, Display.findDisplay( display.getThread() ) );
   }
 
   @Test
   public void testFindDisplay_returnsNullForNullParameter() {
-    Display result = Display.findDisplay( null );
-
-    assertNull( result );
+    assertNull( Display.findDisplay( null ) );
   }
 
   @Test
   public void testFindDisplay_returnsNullWhenDisplayIsDisposed() {
-    Display display = new Display();
     Thread displayThread = display.getThread();
     display.dispose();
 
-    Display result = Display.findDisplay( displayThread );
-
-    assertNull( result );
+    assertNull( Display.findDisplay( displayThread ) );
   }
 
   @Test
   public void testFindDisplay_worksFromAnotherSession() throws Throwable {
-    Display display = new Display();
     final Thread uiThread = Thread.currentThread();
     final AtomicReference<Display> resultCaptor = new AtomicReference<Display>();
 
@@ -1588,46 +1523,34 @@ public class Display_Test {
 
   @Test
   public void testFindDisplay_forReCreatedDisplay() {
-    Display display = new Display();
     display.dispose();
     Display reCreatedDisplay = new Display();
 
-    Display result = Display.findDisplay( reCreatedDisplay.getThread() );
-
-    assertSame( reCreatedDisplay, result );
+    assertSame( reCreatedDisplay, Display.findDisplay( reCreatedDisplay.getThread() ) );
   }
 
   @Test
   public void testGetSystemTray() {
-    Display display = new Display();
-
     assertNull( display.getSystemTray() );
   }
 
   @Test
   public void testGetMenuBar() {
-    Display display = new Display();
-
     assertNull( display.getMenuBar() );
   }
 
   @Test
   public void testGetSystemTaskBar() {
-    Display display = new Display();
-
     assertNull( display.getSystemTaskBar() );
   }
 
   @Test
   public void testGetSystemMenu() {
-    Display display = new Display();
-
     assertNull( display.getSystemMenu() );
   }
 
   @Test
   public void testAsyncExec_delegatesToSynchronizer() {
-    Display display = new Display();
     Synchronizer synchronizer = mock( Synchronizer.class );
     display.setSynchronizer( synchronizer );
     Runnable runnable = mock( Runnable.class );
@@ -1639,7 +1562,6 @@ public class Display_Test {
 
   @Test
   public void testAsyncExec_failsWhenDisplayIsDisposed() {
-    Display display = new Display();
     Synchronizer synchronizer = mock( Synchronizer.class );
     display.setSynchronizer( synchronizer );
     display.dispose();
@@ -1654,7 +1576,6 @@ public class Display_Test {
 
   @Test
   public void testAsyncExec_wrapsExceptionsInSWTException() {
-    Display display = new Display();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final RuntimeException exception = new RuntimeException( "bad things happen" );
     display.asyncExec( new Runnable() {
@@ -1675,7 +1596,6 @@ public class Display_Test {
 
   @Test
   public void testSyncExec_delegatesToSynchronizer() {
-    Display display = new Display();
     Synchronizer synchronizer = mock( Synchronizer.class );
     display.setSynchronizer( synchronizer );
     Runnable runnable = mock( Runnable.class );
@@ -1687,7 +1607,6 @@ public class Display_Test {
 
   @Test
   public void testSyncExec_failsWhenDisplayIsDisposed() {
-    Display display = new Display();
     Synchronizer synchronizer = mock( Synchronizer.class );
     display.setSynchronizer( synchronizer );
     display.dispose();
@@ -1702,7 +1621,6 @@ public class Display_Test {
 
   @Test
   public void testSyncExecIsReleasedOnSessionTimeout() throws Exception {
-    final Display display = new Display();
     final AtomicBoolean executed = new AtomicBoolean( false );
     Thread thread = new Thread( new Runnable() {
       @Override
@@ -1730,7 +1648,6 @@ public class Display_Test {
 
   @Test
   public void testRemoveShell_VisibleActiveShell() {
-    Display display = new Display();
     Shell visibleShell = new Shell( display );
     visibleShell.open();
     Shell invisibleShell = new Shell( display );
@@ -1745,7 +1662,6 @@ public class Display_Test {
 
   @Test
   public void testRemoveShell_NoActiveShell() {
-    Display display = new Display();
     Shell invisibleShell = new Shell( display );
     Shell shell = new Shell( display );
     shell.open();
@@ -1759,7 +1675,6 @@ public class Display_Test {
   @Test
   public void testDispose_failsWhenInDisposal() {
     // See bug 389384
-    final Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
       @Override
@@ -1778,7 +1693,6 @@ public class Display_Test {
 
   @Test
   public void testReadAndDispatchIgnoresEventsFromDisposedWidgets() {
-    Display display = new Display();
     Fixture.fakePhase( PhaseId.READ_DATA );
     Widget widget = new Shell( display );
     Listener listener = mock( Listener.class );
@@ -1791,31 +1705,18 @@ public class Display_Test {
     verify( listener, never() ).handleEvent( any( Event.class ) );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testAddListener_withNullArgument() {
-    Display display = new Display();
-
-    try {
-      display.addListener( 123, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    display.addListener( 123, null );
   }
 
-  @Test
+  @Test( expected = IllegalArgumentException.class )
   public void testRemoveListener_withNullArgument() {
-    Display display = new Display();
-
-    try {
-      display.removeListener( 123, null );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
+    display.removeListener( 123, null );
   }
 
   @Test
   public void testAddListener() {
-    Display display = new Display();
     Listener listener = mock( Listener.class );
 
     display.addListener( 123, listener );
@@ -1827,7 +1728,6 @@ public class Display_Test {
 
   @Test
   public void testRemoveListener() {
-    Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
 
@@ -1839,7 +1739,6 @@ public class Display_Test {
 
   @Test
   public void testSendEvent() {
-    Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
 
@@ -1854,7 +1753,6 @@ public class Display_Test {
 
   @Test
   public void testSendEvent_withPredefinedTime() {
-    Display display = new Display();
     Listener listener = mock( Listener.class );
     display.addListener( 123, listener );
 
@@ -1871,7 +1769,6 @@ public class Display_Test {
 
   @Test
   public void testRemoveListenerWithoutAddingListener() {
-    Display display = new Display();
     Listener listener = mock( Listener.class );
 
     display.removeListener( 123, listener );
@@ -1882,6 +1779,7 @@ public class Display_Test {
 
   @Test
   public void testReadInitialBounds() {
+    display.dispose();
     Fixture.fakeSetProperty( "w1", "bounds", createJsonArray( 1, 2, 3, 4 ) );
 
     Display display = new Display();
@@ -1895,6 +1793,8 @@ public class Display_Test {
 
   @Test
   public void testReadDPI() {
+    display.dispose();
+
     Fixture.fakeSetProperty( "w1", "dpi", createJsonArray( 1, 2 ) );
 
     Display display = new Display();
@@ -1906,6 +1806,7 @@ public class Display_Test {
 
   @Test
   public void testReadColorDepth() {
+    display.dispose();
     Fixture.fakeSetProperty( "w1", "colorDepth", 32 );
 
     Display display = new Display();
@@ -1915,6 +1816,7 @@ public class Display_Test {
 
   @Test
   public void testBoundsDPIAndColorDepthIsSerializable() throws Exception {
+    display.dispose();
     Fixture.fakeSetProperty( "w1", "bounds", createJsonArray( 1, 2, 3, 4 ) );
     Fixture.fakeSetProperty( "w1", "dpi", createJsonArray( 1, 2 ) );
     Fixture.fakeSetProperty( "w1", "colorDepth", 32 );
