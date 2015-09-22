@@ -156,7 +156,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
           this._applyText( false );
         break;
         case "trigger":
-          if( this._rawText ) {
+          if( this._rawText && this._mnemonicIndex !== null ) {
             var charCode = this._rawText.toUpperCase().charCodeAt( this._mnemonicIndex );
             if( event.charCode === charCode ) {
               if( this.hasState( "cascade" ) ) {
