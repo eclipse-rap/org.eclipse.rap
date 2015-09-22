@@ -100,6 +100,7 @@ rwt.qx.Class.define( "rwt.widgets.Spinner", {
     _applyDirection : function( value ) {
       this.base( arguments, value );
       this.setReverseChildrenOrder( value === "rtl" );
+      this.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
     },
 
     _applyCursor : function( value, old ) {

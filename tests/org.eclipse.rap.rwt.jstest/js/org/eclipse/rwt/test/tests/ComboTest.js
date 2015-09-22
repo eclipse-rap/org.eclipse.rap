@@ -897,6 +897,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testSetDirection_setsHorizontalChildrenAlign : function() {
+      var combo = this._createDefaultCombo();
+
+      combo.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "right", combo.getHorizontalChildrenAlign() );
+      combo.destroy();
+    },
+
     //////////
     // Helpers
 

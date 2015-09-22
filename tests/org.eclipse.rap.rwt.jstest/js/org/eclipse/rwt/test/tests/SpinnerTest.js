@@ -332,6 +332,16 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       spinner.destroy();
     },
 
+    testSetDirection_setsHorizontalChildrenAlign : function() {
+      var spinner = this._createDefaultSpinner();
+
+      spinner.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "right", spinner.getHorizontalChildrenAlign() );
+      spinner.destroy();
+    },
+
     testSetDirection_addsStateToSubWidgets : function() {
       var spinner = this._createDefaultSpinner();
 

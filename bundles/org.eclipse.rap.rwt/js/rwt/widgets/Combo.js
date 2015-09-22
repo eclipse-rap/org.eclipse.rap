@@ -115,6 +115,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
     _applyDirection : function( value ) {
       this.base( arguments, value );
       this.setReverseChildrenOrder( value === "rtl" );
+      this.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
     },
 
     _registerListeners : function() {
