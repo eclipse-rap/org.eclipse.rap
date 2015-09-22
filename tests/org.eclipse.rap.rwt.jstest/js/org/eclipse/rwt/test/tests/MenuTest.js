@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -555,6 +555,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         subMenuItem.getCellContent( 2 )
       );
       subMenu.destroy();
+    },
+
+    // See 477959: Multiple menu items get triggered via keyboard if items have no mnemonics
+    testMenuWithMnemonic_DoesNotExecuteMenuItemWithoutMnemonic : function() {
+      createMenuBar( "push" );
+      menuBarItem.setText( "foo" );
+      menuBarItem.setMnemonicIndex( 1 );
+      menuItem.setText( "foo" );
+      var logger = TestUtil.getLogger();
+      menuItem.addEventListener( "execute", logger.log );
+      rwt.remote.ObjectRegistry.add( "w3", menuItem, menuItemHandler );
+      TestUtil.fakeListener( menuItem, "Selection", true );
+      TestUtil.flush();
+
+      rwt.widgets.util.MnemonicHandler.getInstance().activate();
+      rwt.widgets.util.MnemonicHandler.getInstance().trigger( 79 );
+      TestUtil.flush();
+      TestUtil.press( menu, "f", true );
+      TestUtil.flush();
+
+      assertEquals( 0, logger.getLog().length );
     },
 
     testOpenMenuAsContextmenu : function() {
