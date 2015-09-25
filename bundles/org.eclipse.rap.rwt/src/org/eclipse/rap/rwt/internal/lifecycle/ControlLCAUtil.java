@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
 import java.lang.reflect.Field;
@@ -33,7 +34,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -46,10 +46,8 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ControlLCAUtil {
 
-  // Property names to preserve widget property values
   private static final String PROP_PARENT = "parent";
   private static final String PROP_CHILDREN = "children";
-  private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
   private static final String PROP_MENU = "menu";
@@ -82,7 +80,7 @@ public class ControlLCAUtil {
   public static void renderChanges( Control control ) {
     renderParent( control );
     renderChildren( control );
-    renderBounds( control );
+    getRemoteAdapter( control ).renderBounds( getControlAdapter( control ) );
     renderTabIndex( control );
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
@@ -140,24 +138,6 @@ public class ControlLCAUtil {
       Control[] preserved = remoteAdapter.getPreservedChildren();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_CHILDREN, getIdsAsJson( actual ) );
-      }
-    }
-  }
-
-  public static void preserveBounds( Control control, Rectangle bounds ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedBounds() ) {
-      remoteAdapter.preserveBounds( bounds );
-    }
-  }
-
-  private static void renderBounds( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.isInitialized() || remoteAdapter.hasPreservedBounds() ) {
-      Rectangle actual = ControlUtil.getControlAdapter( control ).getBounds();
-      Rectangle preserved = remoteAdapter.getPreservedBounds();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_BOUNDS, toJson( actual ) );
       }
     }
   }

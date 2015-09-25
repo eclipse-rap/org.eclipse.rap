@@ -2504,7 +2504,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   void _setBounds( Rectangle rectangle ) {
-    ControlLCAUtil.preserveBounds( this, bounds );
+    getRemoteAdapter().preserveBounds( bounds );
     bounds = rectangle;
     bounds.width = Math.max( 0, bounds.width );
     bounds.height = Math.max( 0, bounds.height );
@@ -2673,6 +2673,10 @@ public abstract class Control extends Widget implements Drawable {
     if( menu != null ) {
       menu.removeListener( SWT.Dispose, menuDisposeListener );
     }
+  }
+
+  private ControlRemoteAdapter getRemoteAdapter() {
+    return ( ControlRemoteAdapter )getAdapter( RemoteAdapter.class );
   }
 
 }

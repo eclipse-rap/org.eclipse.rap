@@ -78,6 +78,26 @@ public class WidgetRemoteAdapter_Test {
   }
 
   @Test
+  public void testMarkPreserved() {
+    adapter.markPreserved( 3 );
+
+    // bit logic does not affect other properties
+    assertFalse( adapter.hasPreserved( 0 ) );
+    assertFalse( adapter.hasPreserved( 1 ) );
+    assertFalse( adapter.hasPreserved( 2 ) );
+    assertTrue( adapter.hasPreserved( 3 ) );
+  }
+
+  @Test
+  public void testMarkPreserved_isCleared() {
+    adapter.markPreserved( 3 );
+
+    adapter.clearPreserved();
+
+    assertFalse( adapter.hasPreserved( 3 ) );
+  }
+
+  @Test
   public void testPreserveProperty() {
     Object value = new Object();
 

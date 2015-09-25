@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.swt.SWT;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -19,6 +21,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.SWT;
 
 
 public class ControlRemoteAdapter extends WidgetRemoteAdapter {
@@ -39,6 +42,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int CANCEL_KEYS = 24;
   private static final int TAB_INDEX = 25;
   private static final int ORIENTATION = 26;
+
+  private static final String PROP_BOUNDS = "bounds";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -89,16 +94,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBounds( Rectangle bounds ) {
-    markPreserved( BOUNDS );
-    this.bounds = bounds;
+    if( !hasPreserved( BOUNDS ) ) {
+      markPreserved( BOUNDS );
+      this.bounds = bounds;
+    }
   }
 
-  public boolean hasPreservedBounds() {
-    return hasPreserved( BOUNDS );
-  }
-
-  public Rectangle getPreservedBounds() {
-    return bounds;
+  public void renderBounds( IControlAdapter controlAdapter ) {
+    if( !isInitialized() || hasPreserved( BOUNDS ) ) {
+      Rectangle actual = controlAdapter.getBounds();
+      if( changed( actual, bounds, null ) ) {
+        getRemoteObject( getId() ).set( PROP_BOUNDS, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveTabIndex( int tabIndex ) {
@@ -304,6 +312,14 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private Object readResolve() {
     initialize();
     return this;
+  }
+
+  private boolean changed( Object actualValue, Object preservedValue, Object defaultValue ) {
+    return !equals( actualValue, isInitialized() ? preservedValue : defaultValue );
+  }
+
+  private static boolean equals( Object o1, Object o2 ) {
+    return o1 == o2 || o1 != null && o1.equals( o2 );
   }
 
 }
