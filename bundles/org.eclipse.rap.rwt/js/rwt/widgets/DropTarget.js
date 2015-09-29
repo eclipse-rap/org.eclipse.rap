@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,8 +78,8 @@ namespace( "rwt.widgets" );
     _sendDropAccept : function( event ) {
       var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
       remoteObject.notify( "DropAccept", {
-        "x" : event.pageX,
-        "y" : event.pageY,
+        "x" : Math.round( event.pageX ),
+        "y" : Math.round( event.pageY ),
         "time" : rwt.remote.EventUtil.eventTimestamp(),
         "operation" : "move",
         "feedback" : 0,
