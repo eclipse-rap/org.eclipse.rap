@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,16 +17,13 @@ import static org.eclipse.rap.rwt.engine.RWTServletContextListener.RWT_SERVLET_N
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -35,8 +32,6 @@ import org.eclipse.rap.rwt.internal.lifecycle.TestEntryPoint;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 
 public class RWTServletContextListener_Test {
@@ -124,10 +119,10 @@ public class RWTServletContextListener_Test {
   public void testConfigurationWithThreadContextClassLoader() throws ClassNotFoundException {
     // See bug 367033
     // use a class name that cannot be found by RWT's class loader
-    servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, "not.Existing" );
+    servletContext.setInitParameter( ApplicationConfiguration.CONFIGURATION_PARAM, "foo.Config" );
     final ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
     // set a context class loader that can find the class
-    ClassLoader contextClassLoader = mockClassLoader( "not.Existing", TestConfiguration.class );
+    ClassLoader contextClassLoader = mockClassLoader( "foo.Config", TestConfiguration.class );
 
     Thread.currentThread().setContextClassLoader( contextClassLoader );
     try {
@@ -136,22 +131,19 @@ public class RWTServletContextListener_Test {
       Thread.currentThread().setContextClassLoader( previousContextClassLoader );
     }
 
-    verify( contextClassLoader ).loadClass( "not.Existing" );
+    verify( contextClassLoader ).loadClass( "foo.Config" );
   }
 
-  private ClassLoader mockClassLoader( final String className, final Class clazz )
-    throws ClassNotFoundException
-  {
-    ClassLoader contextClassLoader = mock( ClassLoader.class );
-    Answer answer = new Answer<Object>() {
-      public Object answer( InvocationOnMock invocation ) throws Throwable {
-        String name = ( String )invocation.getArguments()[ 0 ];
-        ClassLoader parent = RWT.class.getClassLoader();
-        return className.equals( name ) ? clazz : parent.loadClass( name );
+  private static ClassLoader mockClassLoader( final String className, final Class clazz ) {
+    return spy( new ClassLoader() {
+      @Override
+      protected Class<?> findClass( String name ) throws ClassNotFoundException {
+        if( className.equals( name ) ) {
+          return clazz;
+        }
+        return super.findClass( name );
       }
-    };
-    doAnswer( answer ).when( contextClassLoader ).loadClass( anyString() );
-    return contextClassLoader;
+    } );
   }
 
   private void assertResourceManagerIsRegistered() {
@@ -178,6 +170,7 @@ public class RWTServletContextListener_Test {
   }
 
   private static class TestConfiguration implements ApplicationConfiguration {
+    @Override
     public void configure( Application application ) {
       application.addEntryPoint( "/test", TestEntryPoint.class, null );
     }
