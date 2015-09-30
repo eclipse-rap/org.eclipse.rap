@@ -168,6 +168,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
 
     _applyDirection : function( value ) {
       this.base( arguments, value );
+      this.getLayoutImpl().setMirror( value === "rtl" );
       this._horzScrollBar.setDirection( value );
       this._syncSpacer();
       if( this._isCreated ) {
@@ -178,19 +179,9 @@ rwt.qx.Class.define( "rwt.widgets.base.Scrollable", {
     _layoutX : function() {
       var clientWidth = this.getWidth() - this.getFrameWidth();
       this._clientArea.setWidth( clientWidth );
-      if( this.getDirection() === "rtl" ) {
-        this._clientArea.setLeft( null );
-        this._clientArea.setRight( 0 );
-        this._vertScrollBar.setLeft( 0 );
-        this._horzScrollBar.setLeft( null );
-        this._horzScrollBar.setRight( 0 );
-      } else {
-        this._clientArea.setLeft( 0 );
-        this._clientArea.setRight( null );
-        this._vertScrollBar.setLeft( clientWidth - this._vertScrollBar.getWidth() );
-        this._horzScrollBar.setLeft( 0 );
-        this._horzScrollBar.setRight( null );
-      }
+      this._clientArea.setLeft( 0 );
+      this._vertScrollBar.setLeft( clientWidth - this._vertScrollBar.getWidth() );
+      this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.setWidth( clientWidth - this.getVerticalBarWidth() );
     },
 

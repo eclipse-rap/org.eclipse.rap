@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -12,6 +12,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.List", {
+
   extend : rwt.widgets.base.Scrollable,
 
   construct : function( multiSelection ) {
@@ -261,6 +262,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
           oldItems[ i ].setLabel( items[ i ] );
         } else {
           var item = new rwt.widgets.ListItem();
+          item.setDirection( this.getDirection() );
           item.addEventListener( "mouseover", this._onListItemMouseOver, this );
           item.addEventListener( "mouseout", this._onListItemMouseOut, this );
           // prevent items from being drawn outside the list
@@ -456,6 +458,14 @@ rwt.qx.Class.define( "rwt.widgets.List", {
 
     _isRWTHyperlink : function( hyperlink ) {
       return hyperlink.getAttribute( "target" ) === "_rwt";
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._clientArea.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
+      this._clientArea.forEachChild( function() {
+        this.setDirection( value );
+      } );
     }
 
   }

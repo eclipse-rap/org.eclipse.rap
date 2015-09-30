@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,7 @@ public class ListTab extends ExampleTab {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "H_SCROLL", SWT.H_SCROLL );
     createStyleButton( "V_SCROLL", SWT.V_SCROLL );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createMarkupButton();
@@ -113,6 +114,7 @@ public class ListTab extends ExampleTab {
     listViewer.setLabelProvider( new LabelProvider() );
     listViewer.setInput( ELEMENTS );
     list.addListener( SWT.DefaultSelection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         String item = list.getItem( list.getSelectionIndex() );
         String message = "Selected Item: " + item;
@@ -136,6 +138,7 @@ public class ListTab extends ExampleTab {
       list2.add( "This RWT Hyperlik <a href='http://eclipse.org/rap' "
                + "target='_rwt'>has an <i>URL</i></a>" );
       list2.addListener( SWT.Selection, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           if( event.detail == RWT.HYPERLINK ) {
             log( "Clicked link \"" + event.text + "\"" );

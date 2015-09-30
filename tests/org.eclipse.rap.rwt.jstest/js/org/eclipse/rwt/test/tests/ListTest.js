@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1025,6 +1025,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertTrue( items[ 2 ].hasState( "variant_other" ) );
       shell.destroy();
       widget.destroy();
+    },
+
+    testSetDirection : function() {
+      list.setDirection( "rtl" );
+
+      assertEquals( "rtl", list.getDirection() );
+      assertEquals( "right", list._clientArea.getHorizontalChildrenAlign() );
+    },
+
+    testSetDirection_beforeItemsAreAdded : function() {
+      list.setDirection( "rtl" );
+      this._addItems( list, 1 );
+
+      var items = this._getItems( list );
+      assertEquals( "rtl", items[ 0 ].getDirection() );
+      assertEquals( "right", items[ 0 ].getHorizontalChildrenAlign() );
+    },
+
+    testSetDirection_afterItemsAreAdded : function() {
+      this._addItems( list, 1 );
+      list.setDirection( "rtl" );
+
+      var items = this._getItems( list );
+      assertEquals( "rtl", items[ 0 ].getDirection() );
+      assertEquals( "right", items[ 0 ].getHorizontalChildrenAlign() );
     },
 
     //////////

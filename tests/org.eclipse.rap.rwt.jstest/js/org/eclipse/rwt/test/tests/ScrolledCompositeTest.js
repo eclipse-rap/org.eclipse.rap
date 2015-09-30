@@ -225,7 +225,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     },
 
     testBasicLayout_RTL : function() {
-      var composite = this._createComposite();
+      var composite = this._createComposite( true );
       composite.setDirection( "rtl" );
       TestUtil.flush();
       var client = composite._clientArea;

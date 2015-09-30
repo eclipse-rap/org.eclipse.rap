@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -72,7 +72,13 @@ rwt.qx.Class.define("rwt.widgets.ListItem", {
     // overwritten:
     getCellWidth : function() {
       return this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
     }
 
   }
+
 } );
