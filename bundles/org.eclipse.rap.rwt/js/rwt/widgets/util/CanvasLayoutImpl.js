@@ -44,6 +44,7 @@ rwt.qx.Class.define("rwt.widgets.util.CanvasLayoutImpl",
     setMirror : function( value ) {
       this._mirror = value;
       this.getWidget()._addChildrenToLayoutQueue( "left" );
+      this.getWidget()._addChildrenToLayoutQueue( "right" );
     },
 
     /*

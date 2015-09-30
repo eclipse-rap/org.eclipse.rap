@@ -129,6 +129,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       composite.setDirection( "rtl" );
       TestUtil.flush();
 
+      assertEquals( "", child.getElement().style.left );
       assertEquals( "1px", child.getElement().style.right );
       composite.destroy();
     },
@@ -145,6 +146,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       TestUtil.flush();
 
       var child = ObjectRegistry.getObject( "w3" );
+      assertEquals( "", child.getElement().style.left );
       assertEquals( "1px", child.getElement().style.right );
       parent.destroy();
     },
@@ -162,6 +164,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
 
       var child = ObjectRegistry.getObject( "w3" );
       assertEquals( "1px", child.getElement().style.left );
+      assertEquals( "", child.getElement().style.right );
       parent.destroy();
     }
 
