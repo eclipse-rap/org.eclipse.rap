@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,6 +117,18 @@ public class WidgetTreeVisitor_Test {
     ScrollBar vScroll = table.getVerticalBar();
     assertEquals( asList( table, column1, column2, item1, item2, hScroll, vScroll, child ),
                   visited );
+  }
+
+  @Test
+  public void testAccept_withList() {
+    org.eclipse.swt.widgets.List list
+      = new org.eclipse.swt.widgets.List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+
+    WidgetTreeVisitor.accept( list, loggingVisitor );
+
+    ScrollBar hScroll = list.getHorizontalBar();
+    ScrollBar vScroll = list.getVerticalBar();
+    assertEquals( asList( list, hScroll, vScroll ), visited );
   }
 
   @Test

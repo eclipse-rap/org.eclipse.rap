@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Widget;
 
@@ -50,7 +51,7 @@ public class WidgetTreeVisitor {
         handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
         handleItems( root, visitor );
-        handleScrollBars( composite, visitor );
+        handleScrollBars( root, visitor );
         handleChildren( composite, visitor );
         handleToolTips( root, visitor );
       }
@@ -59,11 +60,13 @@ public class WidgetTreeVisitor {
         handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
         handleItems( root, visitor );
+        handleScrollBars( root, visitor );
       }
     } else {
       if( visitor.visit( root ) ) {
         handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
+        handleScrollBars( root, visitor );
       }
     }
   }
@@ -129,14 +132,17 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleScrollBars( Composite composite, WidgetTreeVisitor visitor ) {
-    ScrollBar horizontalBar = composite.getHorizontalBar();
-    if( horizontalBar != null ) {
-      accept( horizontalBar, visitor );
-    }
-    ScrollBar verticalBar = composite.getVerticalBar();
-    if( verticalBar != null ) {
-      accept( verticalBar, visitor );
+  private static void handleScrollBars( Widget root, WidgetTreeVisitor visitor ) {
+    if( root instanceof Scrollable ) {
+      Scrollable scrollable = ( Scrollable )root;
+      ScrollBar horizontalBar = scrollable.getHorizontalBar();
+      if( horizontalBar != null ) {
+        accept( horizontalBar, visitor );
+      }
+      ScrollBar verticalBar = scrollable.getVerticalBar();
+      if( verticalBar != null ) {
+        accept( verticalBar, visitor );
+      }
     }
   }
 
