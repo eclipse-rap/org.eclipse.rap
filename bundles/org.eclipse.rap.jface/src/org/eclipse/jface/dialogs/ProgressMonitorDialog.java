@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,18 +7,23 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     EclipseSource - adaptation to RAP
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
+
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.internal.JeeProgressRunner;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -26,6 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -55,7 +61,7 @@ import org.eclipse.swt.graphics.Cursor;
  *    
  *   
  * </pre>
- * 
+ *
  * </p>
  * <p>
  * Note that the ProgressMonitorDialog is not intended to be used with multiple
@@ -497,21 +503,49 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * runnable will run in the UI thread and it is the runnable's
 	 * responsibility to call <code>Display.readAndDispatch()</code> to ensure
 	 * UI responsiveness.
+	 * <p>
+	 * Note (RAP): For compatibility reasons, this dialog can be used in JEE mode.
+	 * In this case, the following changes to the contract apply:
+	 * 1. The dialog must be set to non-blocking
+	 * (<code>setBlockOnOpen(false)</code> before this method is called.<br/>
+	 * 2. This method will not block, but return immediately.<br/>
+	 * 3. Regardless of the value of <code>fork</code>, the runnable will be
+	 * executed in a background thread.
+	 * 4. Exceptions that occur in the runnable can't be thrown by this method.
+	 * Application code must therefore ensure that all exceptions are handled
+	 * within the runnable.
+	 * </p>
 	 */
-	public void run(boolean fork, boolean cancelable,
-			IRunnableWithProgress runnable) throws InvocationTargetException,
-			InterruptedException {
-		setCancelable(cancelable);
-		try {
-			aboutToRun();
-			// Let the progress monitor know if they need to update in UI Thread
-			progressMonitor.forked = fork;
-			ModalContext.run(runnable, fork, getProgressMonitor(), getShell()
-					.getDisplay());
-		} finally {
-			finishedRun();
-		}
-	}
+    @Override
+    public void run( boolean fork, boolean cancelable, IRunnableWithProgress runnable )
+      throws InvocationTargetException, InterruptedException
+    {
+      setCancelable( cancelable );
+      if( isSwtMode() ) {
+        try {
+          aboutToRun();
+          // Let the progress monitor know if they need to update in UI Thread
+          progressMonitor.forked = fork;
+          ModalContext.run( runnable, fork, getProgressMonitor(), getShell().getDisplay() );
+        } finally {
+          finishedRun();
+        }
+      } else {
+        aboutToRun();
+        progressMonitor.forked = true;
+        JeeProgressRunner runner = new JeeProgressRunner( getShell().getDisplay() );
+        runner.run( runnable, getProgressMonitor(), new Runnable() {
+          @Override
+          public void run() {
+            finishedRun();
+          }
+        } );
+      }
+    }
+
+    private static boolean isSwtMode() {
+      return getApplicationContext().getLifeCycleFactory().getLifeCycle() instanceof RWTLifeCycle;
+    }
 
 	/**
 	 * Returns whether the dialog should be opened before the operation is run.
