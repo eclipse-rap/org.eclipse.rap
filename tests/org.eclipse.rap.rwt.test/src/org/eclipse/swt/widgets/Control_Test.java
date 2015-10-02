@@ -945,6 +945,38 @@ public class Control_Test {
   }
 
   @Test
+  public void testMirrored_inital() {
+    Control control = new Button( shell, SWT.NONE );
+
+    assertTrue( ( control.getStyle() & SWT.MIRRORED ) == 0 );
+  }
+
+  @Test
+  public void testMirrored_RTL() {
+    Control control = new Button( shell, SWT.RIGHT_TO_LEFT );
+
+    assertTrue( ( control.getStyle() & SWT.MIRRORED ) != 0 );
+  }
+
+  @Test
+  public void testMirrored_afterOrientationChangeToRTL() {
+    Control control = new Button( shell, SWT.NONE );
+
+    control.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertTrue( ( control.getStyle() & SWT.MIRRORED ) != 0 );
+  }
+
+  @Test
+  public void testMirrored_afterOrientationChangeToLTR() {
+    Control control = new Button( shell, SWT.RIGHT_TO_LEFT );
+
+    control.setOrientation( SWT.LEFT_TO_RIGHT );
+
+    assertTrue( ( control.getStyle() & SWT.MIRRORED ) == 0 );
+  }
+
+  @Test
   public void testShowEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {

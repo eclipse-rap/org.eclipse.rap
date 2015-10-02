@@ -1000,7 +1000,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
   void checkOrientation( Widget parent ) {
-    //style &= ~SWT.MIRRORED;
+    style &= ~SWT.MIRRORED;
     if( ( style & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT ) ) == 0 ) {
       if( parent != null ) {
         if( ( parent.style & SWT.LEFT_TO_RIGHT ) != 0 ) {

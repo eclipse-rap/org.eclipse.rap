@@ -1857,6 +1857,17 @@ public class SWT {
   public static final int RIGHT_TO_LEFT = 1 << 26;
 
   /**
+   * Style constant to indicate coordinate mirroring (value is 1&lt;&lt;27).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * <li><code>Menu</code></li>
+   * </ul></p>
+   *
+   * @since 3.1
+   */
+  public static final int MIRRORED = 1 << 27;
+
+  /**
    * Style constant for horizontal scrollbar behavior (value is 1&lt;&lt;8).
    * <p><b>Used By:</b><ul>
    * <li><code>Scrollable</code> and subclasses</li>

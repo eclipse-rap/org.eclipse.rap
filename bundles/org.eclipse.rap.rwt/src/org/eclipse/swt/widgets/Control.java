@@ -203,6 +203,7 @@ public abstract class Control extends Widget implements Drawable {
   void createWidget () {
     initState();
     checkOrientation( parent );
+    checkMirrored();
     checkBackground();
     updateBackground();
   }
@@ -660,6 +661,12 @@ public abstract class Control extends Widget implements Drawable {
       result = parent.findBackgroundControl();
     }
     return result;
+  }
+
+  void checkMirrored() {
+    if( ( style & SWT.RIGHT_TO_LEFT ) != 0 ) {
+      style |= SWT.MIRRORED;
+    }
   }
 
   /////////
@@ -2211,9 +2218,11 @@ public abstract class Control extends Widget implements Drawable {
       return;
     }
     ControlLCAUtil.preserveOrientation( this, ( style & flags ) );
+    style &= ~SWT.MIRRORED;
     style &= ~flags;
     style |= orientation & flags;
     updateOrientation();
+    checkMirrored();
   }
 
   /**
