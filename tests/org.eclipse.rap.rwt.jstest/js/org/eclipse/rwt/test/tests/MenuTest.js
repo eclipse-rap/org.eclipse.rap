@@ -73,6 +73,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       } );
       assertTrue( widget.getVisibility() );
       assertEquals( 10, widget.getLeft() );
+      assertNull( widget.getRight() );
+      assertEquals( 20, widget.getTop() );
+      widget.destroy();
+    },
+
+    testCallShowMenuByProtocol_RTL : function() {
+      var widget = createPopUpMenuByProtocol( "w3" );
+      widget.setDirection( "rtl" );
+      MessageProcessor.processOperation( {
+        "target" : "w3",
+        "action" : "call",
+        "method" : "showMenu",
+        "properties" : {
+          "x" : 10,
+          "y" : 20
+        }
+      } );
+      assertTrue( widget.getVisibility() );
+      assertNull( widget.getLeft() );
+      assertEquals( window.innerWidth - 10, widget.getRight() );
       assertEquals( 20, widget.getTop() );
       widget.destroy();
     },

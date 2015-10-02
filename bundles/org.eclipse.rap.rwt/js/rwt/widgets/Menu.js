@@ -648,7 +648,14 @@ rwt.qx.Class.define( "rwt.widgets.Menu", {
     showMenu : function( menu, x, y ) {
       if( menu != null ) {
         menu._renderAppearance();
-        menu.setLocation( x, y );
+        if( menu.getDirection() === "rtl" ) {
+          menu.setLeft( null );
+          menu.setRight( window.innerWidth - x );
+        } else {
+          menu.setLeft( x );
+          menu.setRight( null );
+        }
+        menu.setTop( y );
         menu.show();
       }
     }

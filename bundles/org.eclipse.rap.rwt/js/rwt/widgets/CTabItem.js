@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     this.updateBackgroundImage();
     this.updateBackgroundGradient();
     this.setTabPosition( parent.getTabPosition() );
+    this.setDirection( parent.getDirection() );
     this.updateCloseButton( false );
     this.addEventListener( "elementOver", this._onElementOver, this );
     this.addEventListener( "elementOut", this._onElementOut, this );

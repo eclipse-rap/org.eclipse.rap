@@ -56,6 +56,7 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
 
   destruct : function() {
     this.setMnemonicIndex( null );
+    this.setParentMenu( null );
     this._disposeFields( "_parentMenu", "_subMenu" );
   },
 
@@ -173,10 +174,14 @@ rwt.qx.Class.define("rwt.widgets.MenuItem",  {
     },
 
     setParentMenu : function( menu ) {
+      var listener = this._applyParentMenuDirection;
+      if( this._parentMenu ) {
+        this._parentMenu.removeEventListener( "changeDirection", listener, this );
+      }
       this._parentMenu = menu;
-      if( menu ) {
+      if( this._parentMenu ) {
         this._applyParentMenuDirection();
-        menu.addEventListener( "changeDirection", this._applyParentMenuDirection, this );
+        this._parentMenu.addEventListener( "changeDirection", listener, this );
       }
     },
 

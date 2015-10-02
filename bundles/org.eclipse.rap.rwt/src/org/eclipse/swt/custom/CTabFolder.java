@@ -2252,6 +2252,7 @@ CTabItem[] items = itemHolder.getItems();
         menuItems[ i ].dispose();
       }
     }
+    showMenu.setOrientation( getOrientation() );
     final String id = "CTabFolder_showList_Index"; //$NON-NLS-1$
     for( int i = 0; i < items.length; i++ ) {
       CTabItem tab = items[ i ];

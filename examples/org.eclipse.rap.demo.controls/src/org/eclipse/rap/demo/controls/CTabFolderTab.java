@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,7 @@ public class CTabFolderTab extends ExampleTab {
     createStyleButton( "CLOSE", SWT.CLOSE );
     createStyleButton( "SINGLE", SWT.SINGLE );
     createStyleButton( "MULTI", SWT.MULTI );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
@@ -276,6 +277,7 @@ public class CTabFolderTab extends ExampleTab {
     spinner.setMinimum( 0 );
     spinner.setMaximum( 100 );
     spinner.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         tabHeight = spinner.getSelection();
         folder.setTabHeight( tabHeight );

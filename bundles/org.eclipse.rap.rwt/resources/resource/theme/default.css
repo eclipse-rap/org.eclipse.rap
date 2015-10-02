@@ -507,6 +507,14 @@ CTabFolder-DropDownButton-Icon:hover {
   background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown-hover.png );
 }
 
+CTabFolder-DropDownButton-Icon[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown-left.png );
+}
+
+CTabFolder-DropDownButton-Icon[RIGHT_TO_LEFT]:hover {
+  background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown-left-hover.png );
+}
+
 /* Group default theme */
 
 Group {

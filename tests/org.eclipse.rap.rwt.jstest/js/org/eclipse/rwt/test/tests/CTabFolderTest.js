@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -646,6 +646,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       TestUtil.mouseOut( item1 );
 
       assertNull( item1.getCellContent( 2 ) );
+      folder.destroy();
+    },
+
+    testSetDirection_beforeCreate : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      folder.setDirection( "rtl" );
+
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      folder.showChevron();
+      TestUtil.flush();
+
+      assertEquals( "rtl", item.getDirection() );
+      assertEquals( "rtl", folder._chevron.getDirection() );
+      folder.destroy();
+    },
+
+    testSetDirection_afterCreate : function() {
+      var folder = this._createCTabFolderByProtocol( "w3", "w2" );
+      var item = this._createCTabItemByProtocol( "w4", "w3" );
+      folder.showChevron();
+
+      folder.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "rtl", item.getDirection() );
+      assertEquals( "rtl", folder._chevron.getDirection() );
       folder.destroy();
     },
 

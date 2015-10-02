@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function() {
@@ -141,6 +142,17 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
       this._updateLayout();
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.getLayoutImpl().setMirror( value === "rtl" );
+      if( this._chevron != null ) {
+        this._chevron.setDirection( value );
+      }
+      this._mapItems( function( item ) {
+        item.setDirection( value );
+      } );
+    },
+
     _applyTextColor : function( value, old ) {
       this.base( arguments, value, old );
       this._mapItems( function( item ) {
@@ -253,6 +265,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabFolder", {
         this._chevron = new rwt.widgets.base.BasicButton( "push", true );
         this._chevron.setAppearance( "ctabfolder-drop-down-button" );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
+        this._chevron.setDirection( this.getDirection() );
         var wm = rwt.remote.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, rwt.widgets.CTabFolder.CHEVRON_TOOLTIP );
         this.add( this._chevron );

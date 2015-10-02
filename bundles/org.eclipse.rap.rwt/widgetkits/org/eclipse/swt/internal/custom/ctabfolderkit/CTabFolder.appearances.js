@@ -114,10 +114,10 @@ var appearances = {
       var rounded = radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0;
       var borderWidths = [ 0, 0, 0, 0 ];
       if( !states.nextSelected ) {
-        borderWidths[ 1 ] = 1;
+        borderWidths[ states.rwt_RIGHT_TO_LEFT ? 3 : 1 ] = 1;
       }
       if( states.selected ) {
-        borderWidths[ 3 ] = 1;
+        borderWidths[ states.rwt_RIGHT_TO_LEFT ? 1 : 3 ] = 1;
         if( states.barTop ) {
           borderWidths[ 0 ] = 1;
         } else {
@@ -125,7 +125,7 @@ var appearances = {
         }
       }
       if( states.firstItem && states.rwt_BORDER && !rounded ) {
-        borderWidths[ 3 ] = 1;
+        borderWidths[ states.rwt_RIGHT_TO_LEFT ? 1 : 3 ] = 1;
       }
       if( rounded && states.selected ) {
         result.border = new rwt.html.Border( borderWidths, "solid", color, radii );
