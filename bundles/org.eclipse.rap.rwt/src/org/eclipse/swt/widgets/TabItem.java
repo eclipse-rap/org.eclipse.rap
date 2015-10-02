@@ -247,29 +247,17 @@ public class TabItem extends Item {
         result.y = parent.getBounds().height - ( border.top + border.bottom ) - result.height;
         result.y -= margin.bottom;
       }
-      result.x = isRightToLeft() ? parent.getSize().x - result.width : 0;
       if( index > 0 ) {
         TabItem prevItem = parent.getItem( index - 1 );
         Rectangle prevItemBounds = prevItem.getBounds();
         int selectionIndex = parent.getSelectionIndex();
-        if( isRightToLeft() ) {
-          result.x = prevItemBounds.x - TABS_SPACING - result.width;
-          if( index == selectionIndex || index - 1 == selectionIndex ) {
-            result.x += TABS_SPACING;
-          }
-        } else {
-          result.x = prevItemBounds.x + prevItemBounds.width + TABS_SPACING;
-          if( index == selectionIndex || index - 1 == selectionIndex ) {
-            result.x -= TABS_SPACING;
-          }
+        result.x = prevItemBounds.x + prevItemBounds.width + TABS_SPACING;
+        if( index == selectionIndex || index - 1 == selectionIndex ) {
+          result.x -= TABS_SPACING;
         }
       }
     }
     return result;
-  }
-
-  private boolean isRightToLeft() {
-    return ( parent.getStyle() & SWT.RIGHT_TO_LEFT ) != 0;
   }
 
   private boolean isBarTop() {

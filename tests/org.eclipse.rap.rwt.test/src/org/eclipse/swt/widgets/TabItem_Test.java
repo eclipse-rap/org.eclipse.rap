@@ -92,13 +92,14 @@ public class TabItem_Test {
 
   @Test
   public void testGetBounds_RTL() {
-    folder = new TabFolder( shell, SWT.RIGHT_TO_LEFT );
+    folder.setOrientation( SWT.RIGHT_TO_LEFT );
     folder.setSize( 400, 400 );
-    createItems( folder, 3 );
+    item.setText( "TabItem 0" );
+    createItems( folder, 2 );
 
-    assertEquals( new Rectangle( 326, 0, 74, 32 ), folder.getItem( 0 ).getBounds() );
-    assertEquals( new Rectangle( 252, 3, 74, 29 ), folder.getItem( 1 ).getBounds() );
-    assertEquals( new Rectangle( 177, 3, 74, 29 ), folder.getItem( 2 ).getBounds() );
+    assertEquals( new Rectangle( 0, 0, 74, 32 ), folder.getItem( 0 ).getBounds() );
+    assertEquals( new Rectangle( 74, 3, 74, 29 ), folder.getItem( 1 ).getBounds() );
+    assertEquals( new Rectangle( 149, 3, 74, 29 ), folder.getItem( 2 ).getBounds() );
   }
 
   @Test
