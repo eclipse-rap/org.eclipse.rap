@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,12 +74,14 @@ public class TextTab extends ExampleTab {
     };
     blockingVerifyListener = new VerifyListener() {
 
+      @Override
       public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
     };
     numberOnlyVerifyListener = new VerifyListener() {
 
+      @Override
       public void verifyText( VerifyEvent event ) {
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
@@ -93,6 +95,7 @@ public class TextTab extends ExampleTab {
     };
     modifyListener = new ModifyListener() {
 
+      @Override
       public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         textLabel.setText( text.getText() );
@@ -116,6 +119,7 @@ public class TextTab extends ExampleTab {
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "CENTER", SWT.CENTER );
     createStyleButton( "RIGHT", SWT.RIGHT );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createEditableButton();
@@ -363,6 +367,7 @@ public class TextTab extends ExampleTab {
     Button resetButton = new Button( composite, SWT.PUSH );
     resetButton.setText( "Reset" );
     Listener changeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         try {
           text.setTextLimit( Integer.parseInt( limitText.getText() ) );

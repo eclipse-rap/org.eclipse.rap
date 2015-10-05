@@ -1231,6 +1231,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
       text = ObjectRegistry.getObject( "w3" );
       assertEquals( "19px", text._inputElement.style.marginLeft );
+      assertEquals( "0px", text._inputElement.style.marginRight );
+      assertEquals( "42px", text._inputElement.style.width );
+    },
+
+    testFieldLayoutWithSearchIcons_RTL : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "direction" : "rtl"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectRegistry.getObject( "w3" );
+      assertEquals( "0px", text._inputElement.style.marginLeft );
+      assertEquals( "19px", text._inputElement.style.marginRight );
       assertEquals( "42px", text._inputElement.style.width );
     },
 
@@ -1244,6 +1266,27 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2",
           "bounds" : [ 0, 0, 100, 20 ],
           "message" : "foo"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectRegistry.getObject( "w3" );
+      assertEquals( "29px", text._messageElement.style.left );
+      assertEquals( "42px", text._messageElement.style.width );
+    },
+
+    testMessageLayoutWithSearchIcons_RTL : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "message" : "foo",
+          "direction" : "rtl"
         }
       } );
 
@@ -1291,12 +1334,44 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text = ObjectRegistry.getObject( "w3" );
       var style = text._searchIconElement.style;
       assertEquals( "2px", style.top );
-      assertEquals( "", style.left );
+      assertEquals( "10px", style.left );
+      assertEquals( "", style.right );
       assertEquals( "16px", style.width );
       assertEquals( "16px", style.height );
       style = text._cancelIconElement.style;
       assertEquals( "2px", style.top );
-      assertEquals( "74px", style.left );
+      assertEquals( "", style.left );
+      assertEquals( "10px", style.right );
+      assertEquals( "16px", style.width );
+      assertEquals( "16px", style.height );
+    },
+
+    testSearchIconsLayout_RTL : function() {
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SEARCH", "ICON_SEARCH", "ICON_CANCEL" ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 20 ],
+          "direction" : "rtl"
+        }
+      } );
+
+      TestUtil.flush();
+
+      text = ObjectRegistry.getObject( "w3" );
+      var style = text._searchIconElement.style;
+      assertEquals( "2px", style.top );
+      assertEquals( "", style.left );
+      assertEquals( "10px", style.right );
+      assertEquals( "16px", style.width );
+      assertEquals( "16px", style.height );
+      style = text._cancelIconElement.style;
+      assertEquals( "2px", style.top );
+      assertEquals( "10px", style.left );
+      assertEquals( "", style.right );
       assertEquals( "16px", style.width );
       assertEquals( "16px", style.height );
     },

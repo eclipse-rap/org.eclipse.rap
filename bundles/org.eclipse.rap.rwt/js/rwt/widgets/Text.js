@@ -258,14 +258,25 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
 
     // overrided
     _syncFieldWidth : function() {
-      var width =   this.getInnerWidth()
-                  - this._getIconOuterWidth( "search" )
-                  - this._getIconOuterWidth( "cancel" );
-      this._inputElement.style.width = Math.max( 2, width ) + "px";
+      if( this._inputElement ) {
+        var width =   this.getInnerWidth()
+                    - this._getIconOuterWidth( "search" )
+                    - this._getIconOuterWidth( "cancel" );
+        this._inputElement.style.width = Math.max( 2, width ) + "px";
+      }
     },
 
     _syncFieldLeft : function() {
-      this._inputElement.style.marginLeft = this._getIconOuterWidth( "search" ) + "px";
+      if( this._inputElement ) {
+        var style = this._inputElement.style;
+        if( this.getDirection() === "rtl" ) {
+          style.marginLeft = "0";
+          style.marginRight = this._getIconOuterWidth( "search" ) + "px";
+        } else {
+          style.marginLeft = this._getIconOuterWidth( "search" ) + "px";
+          style.marginRight = "0";
+        }
+      }
     },
 
     _updateAllIcons : function() {
@@ -301,17 +312,18 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       if( element ) {
         var style = element.style;
         var image = this._getIconImage( iconId );
-        style.width = image ? image[ 1 ] + "px" : 0;
-        style.height = image ? image[ 2 ] + "px" : 0;
-        var iconHeight = parseInt( style.height, 10 );
+        var iconWidth = image ? image[ 1 ] : 0;
+        var iconHeight = image ? image[ 2 ] : 0;
+        var styleMap = this._getMessageStyle();
+        style.width = iconWidth + "px";
+        style.height = iconHeight + "px";
         style.top = Math.round( this.getInnerHeight() / 2 - iconHeight / 2 ) + "px";
         if( this._getIconPosition( iconId ) === "right" ) {
-          var styleMap = this._getMessageStyle();
-          var iconWidth = parseInt( style.width, 10 );
-          style.left = (   this.getBoxWidth()
-                         - this._cachedBorderRight
-                         - styleMap.paddingRight
-                         - iconWidth ) + "px";
+          style.left = "";
+          style.right = styleMap.paddingRight + "px";
+        } else {
+          style.left = styleMap.paddingLeft + "px";
+          style.right = "";
         }
       }
     },
@@ -329,12 +341,11 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getIconOuterWidth : function( iconId ) {
-      var result = 0;
       var image = this._getIconImage( iconId );
       if( this._hasIcon( iconId ) && image != null ) {
-        result = image[ 1 ] + this._getIconSpacing( iconId );
+        return image[ 1 ] + this._getIconSpacing( iconId );
       }
-      return result;
+      return 0;
     },
 
     _hasIcon : function( iconId ) {
@@ -346,7 +357,10 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
     },
 
     _getIconPosition : function( iconId ) {
-      return iconId === "search" ? "left" : "right";
+      var rtl = this.getDirection() === "rtl";
+      var searchPos = rtl ? "right" : "left";
+      var cancelPos = rtl ? "left" : "right";
+      return iconId === "search" ? searchPos : cancelPos;
     },
 
     _getIconSpacing : function( iconId ) {
@@ -433,6 +447,14 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
       this._updateMessageFont();
     },
 
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._applyTextAlign();
+      this._syncFieldLeft();
+      this._layoutAllIcons();
+      this._layoutMessageX();
+    },
+
     // Overwritten
     _preventEnter : function( event ) {
       if( !this._isTextArea() ) {
@@ -448,9 +470,9 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           style.position = "absolute";
           style.outline = "none";
           style.overflow = "hidden";
+          style.whiteSpace = "nowrap";
           var styleMap = this._getMessageStyle();
           style.color = styleMap.textColor || "";
-          style.left = styleMap.paddingLeft + "px";
           rwt.html.Style.setTextShadow( this._messageElement, styleMap.textShadow );
           this._getTargetNode().insertBefore( this._messageElement, this._inputElement );
         }
@@ -485,7 +507,8 @@ rwt.qx.Class.define( "rwt.widgets.Text", {
           // The text-area padding is hard codded in the appearances
           style.left = "3px";
         } else {
-          style.left = ( this._getIconOuterWidth( "search" ) + styleMap.paddingLeft ) + "px";
+          var leftIcon = this.getDirection() === "rtl" ? "cancel" : "search";
+          style.left = ( this._getIconOuterWidth( leftIcon ) + styleMap.paddingLeft ) + "px";
         }
       }
     },

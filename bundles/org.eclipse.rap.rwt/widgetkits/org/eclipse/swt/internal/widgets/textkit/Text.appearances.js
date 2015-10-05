@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,6 @@ var appearances = {
       var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
-      result.horizontalChildrenAlign = "left";
       result.textShadow = tv.getCssShadow( "Text-Message", "text-shadow" );
       return result;
     }
@@ -63,10 +62,14 @@ var appearances = {
 
   "text-area" : {
     include : "text-field",
-    style : function() {
-      return {
-        padding : [ 0, 0, 0, 3 ]
-      };
+    style : function( states ) {
+      var result = {};
+      if( states.rwt_RIGHT_TO_LEFT ) {
+        result.padding = [ 0, 3, 0, 0 ];
+      } else {
+        result.padding = [ 0, 0, 0, 3 ];
+      }
+      return result;
     }
   }
 

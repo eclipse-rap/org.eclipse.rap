@@ -334,7 +334,15 @@ rwt.qx.Class.define( "rwt.widgets.base.BasicText", {
     },
 
     _renderTextAlign : function() {
-      this._inputElement.style.textAlign = this.getTextAlign() || "";
+      var textAlign = this.getTextAlign();
+      if( this.getDirection() === "rtl" ) {
+        if( textAlign === "left" ) {
+          textAlign = "right";
+        } else if( textAlign === "right" ) {
+          textAlign = "left";
+        }
+      }
+      this._inputElement.style.textAlign = textAlign || "";
     },
 
     _applyEnabled : function( value, old ) {
