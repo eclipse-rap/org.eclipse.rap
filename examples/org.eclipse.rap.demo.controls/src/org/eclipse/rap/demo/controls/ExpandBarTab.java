@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ class ExpandBarTab extends ExampleTab {
   protected void createStyleControls( Composite parent ) {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL, true );
     createStyleButton( "BORDER", SWT.BORDER, true );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     spinner = createSpacingControl( parent );
@@ -85,6 +86,7 @@ class ExpandBarTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_EXPAND_LISTENER ) ) {
       expandBar.addExpandListener( new ExpandListener() {
+        @Override
         public void itemCollapsed( ExpandEvent event ) {
           int index = 0;
           int itemCount = expandBar.getItemCount();
@@ -99,6 +101,7 @@ class ExpandBarTab extends ExampleTab {
                                          message );
         }
 
+        @Override
         public void itemExpanded( ExpandEvent event ) {
           int index = 0;
           int itemCount = expandBar.getItemCount();
@@ -163,6 +166,7 @@ class ExpandBarTab extends ExampleTab {
     spinner.setMinimum( 0 );
     spinner.setMaximum( 20 );
     spinner.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         int spacing = spinner.getSelection();
         expandBar.setSpacing( spacing );

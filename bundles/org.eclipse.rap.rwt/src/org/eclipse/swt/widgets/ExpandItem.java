@@ -122,11 +122,10 @@ public class ExpandItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ExpandItem( ExpandBar parent, int style, int index )
-  {
+  public ExpandItem( ExpandBar parent, int style, int index ) {
     super( parent, style );
     this.parent = parent;
-    parent.createItem( this, style, index );
+    parent.createItem( this, index );
   }
 
   static ExpandBar checkNull( ExpandBar control ) {
@@ -256,16 +255,12 @@ public class ExpandItem extends Item {
   }
 
   Rectangle getBounds() {
-    Rectangle result;
-    int headerHeight = getHeaderHeight();
     BoxDimensions itemBorder = getItemBorder();
-    int itemBorderHeight = itemBorder.top + itemBorder.bottom;
+    int itemHeight = getHeaderHeight() + itemBorder.top + itemBorder.bottom;
     if( expanded ) {
-      result = new Rectangle( x, y, width, headerHeight + itemBorderHeight + height );
-    } else {
-      result = new Rectangle( x, y, width, headerHeight + itemBorderHeight );
+      itemHeight += height;
     }
-    return result;
+    return new Rectangle( x, y, width, itemHeight );
   }
 
   void setBounds( int x, int y, int width, int height, boolean move, boolean size ) {
@@ -381,7 +376,7 @@ public class ExpandItem extends Item {
     if( height >= 0 ) {
       setBounds( 0, 0, width, height, false, true );
       if( expanded ) {
-        parent.layoutItems( parent.indexOf( this ) + 1, true );
+        parent.layoutItems( parent.indexOf( this ) + 1 );
       }
     }
   }
@@ -402,7 +397,7 @@ public class ExpandItem extends Item {
       imageHeight = imageWidth = 0;
     }
     if( oldImageHeight != imageHeight ) {
-      parent.layoutItems( parent.indexOf( this ), true );
+      parent.layoutItems( parent.indexOf( this ) );
     }
   }
 

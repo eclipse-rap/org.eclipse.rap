@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( parent ) {
@@ -29,6 +30,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     this.add( this._header );
     // Set the appearance after _header is created
     this.setAppearance( "expand-item" );
+    this.setDirection( parent.getDirection() );
   },
 
   destruct : function() {
@@ -57,6 +59,11 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
       } else {
         this._header.setCellContent( 2, null );
       }
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._header.setDirection( value );
     },
 
     setExpanded : function( expanded ) {

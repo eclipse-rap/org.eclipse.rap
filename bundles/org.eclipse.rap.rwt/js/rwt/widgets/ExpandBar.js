@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
+
   extend : rwt.widgets.base.Scrollable,
 
   construct : function() {
@@ -28,6 +29,15 @@ rwt.qx.Class.define( "rwt.widgets.ExpandBar", {
   },
 
   members : {
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this._clientArea.forEachChild( function() {
+        if( this instanceof rwt.widgets.ExpandItem ) {
+          this.setDirection( value );
+        }
+      } );
+    },
 
     addWidget : function( widget ) {
       this._clientArea.add( widget );

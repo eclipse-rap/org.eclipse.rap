@@ -73,7 +73,7 @@ public class ExpandBar extends Composite {
   private final class ResizeListener extends ControlAdapter {
     @Override
     public void controlResized( ControlEvent event ) {
-      layoutItems( 0, true );
+      layoutItems( 0 );
     }
   }
 
@@ -220,12 +220,12 @@ public class ExpandBar extends Composite {
     return new Point( width, height );
   }
 
-  void createItem( ExpandItem item, int style, int index ) {
+  void createItem( ExpandItem item, int index ) {
     itemHolder.insert( item, index );
     if( focusItem == null ) {
       focusItem = item;
     }
-    layoutItems( index, true );
+    layoutItems( index );
   }
 
   void destroyItem( ExpandItem item ) {
@@ -248,7 +248,7 @@ public class ExpandBar extends Composite {
         }
       }
       itemHolder.remove( item );
-      layoutItems( index, true );
+      layoutItems( index );
     }
   }
 
@@ -373,7 +373,7 @@ public class ExpandBar extends Composite {
     return itemHolder.indexOf( item );
   }
 
-  void layoutItems( int index, boolean setScrollbar ) {
+  void layoutItems( int index ) {
     int itemCount = getItemCount();
     if( index < itemCount ) {
       int y = spacing;
@@ -407,12 +407,16 @@ public class ExpandBar extends Composite {
     int scrollBarWidth = getVScrollBarWidth();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
+      Rectangle itemBounds = item.getBounds();
       if( isVScrollBarVisible() ) {
+        if( this.getOrientation() == SWT.RIGHT_TO_LEFT ) {
+          itemBounds.x = spacing + scrollBarWidth;
+        }
         int width = bounds.width - scrollBarWidth - ( border.left + border.right ) - 2 * spacing;
-        item.setBounds( 0, 0, width, item.height, false, true );
+        item.setBounds( itemBounds.x, itemBounds.y, width, item.height, true, true );
       } else {
         int width = bounds.width - ( border.left + border.right ) - 2 * spacing;
-        item.setBounds( 0, 0, width, item.height, false, true );
+        item.setBounds( spacing, itemBounds.y, width, item.height, true, true );
       }
     }
   }
@@ -456,9 +460,15 @@ public class ExpandBar extends Composite {
     if( spacing >= 0 ) {
       if( spacing != this.spacing ) {
         this.spacing = spacing;
-        layoutItems( 0, true );
+        layoutItems( 0 );
       }
     }
+  }
+
+  @Override
+  public void setOrientation( int orientation ) {
+    super.setOrientation( orientation );
+    layoutItems( 0 );
   }
 
   void showItem( ExpandItem item ) {
@@ -467,7 +477,7 @@ public class ExpandBar extends Composite {
       control.setVisible( item.expanded );
     }
     int index = indexOf( item );
-    layoutItems( index + 1, true );
+    layoutItems( index + 1 );
   }
 
   @Override
