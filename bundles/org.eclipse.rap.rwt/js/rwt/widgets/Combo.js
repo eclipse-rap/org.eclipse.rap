@@ -116,6 +116,9 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
       this.base( arguments, value );
       this.setReverseChildrenOrder( value === "rtl" );
       this.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
+      if( this._list ) {
+        this._list.setDirection( value );
+      }
     },
 
     _registerListeners : function() {
@@ -134,6 +137,7 @@ rwt.qx.Class.define( "rwt.widgets.Combo", {
         var appearance = this.getAppearance() + "-list";
         this._list = new rwt.widgets.DropDown( this, false, appearance );
         this._list.setSelectionWrapping( false );
+        this._list.setDirection( this.getDirection() );
         var that = this;
         this._list.addListener( "Show", function( event ) {
           that._onListVisibleChanged( event );

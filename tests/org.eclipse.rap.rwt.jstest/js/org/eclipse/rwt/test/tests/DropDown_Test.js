@@ -1593,6 +1593,12 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
       assertTrue( typeof filter === "undefined" );
     },
 
+    testSetDirection : function() {
+      dropdown.setDirection( "rtl" );
+
+      assertEquals( "rtl", grid.getDirection() );
+    },
+
     ///////////
     // Helper
 

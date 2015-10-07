@@ -163,6 +163,10 @@
       this._.grid.setCustomVariant( value );
     },
 
+    setDirection : function( value ) {
+      this._.grid.setDirection( value );
+    },
+
     show : function() {
       checkDisposed( this );
       if( !this._.visibility ) {
