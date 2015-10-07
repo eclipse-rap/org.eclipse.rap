@@ -51,60 +51,48 @@ public class SliderTab extends ExampleTab {
     createEnablementButton();
     createBgColorButton();
     createBgImageButton();
-    minimumSpinner = createSpinnerControl( parent, "Minimum",
-                                           0, 100000, 0 );
+    minimumSpinner = createSpinnerControl( parent, "Minimum", 0, 100000, 0 );
     minimumSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int minimum = minimumSpinner.getSelection();
         slider.setMinimum( minimum );
       }
     } );
-    maximumSpinner = createSpinnerControl( parent, "Maximum",
-                                           0, 100000, 100 );
+    maximumSpinner = createSpinnerControl( parent, "Maximum", 0, 100000, 100 );
     maximumSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int maximum = maximumSpinner.getSelection();
         slider.setMaximum( maximum );
       }
     } );
-    selectionSpinner = createSpinnerControl( parent, "Selection",
-                                             0, 100000, 0 );
+    selectionSpinner = createSpinnerControl( parent, "Selection", 0, 100000, 0 );
     selectionSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int selection = selectionSpinner.getSelection();
         slider.setSelection( selection );
       }
     } );
-    thumbSpinner = createSpinnerControl( parent, "Thumb",
-                                             1, 100000, 10 );
+    thumbSpinner = createSpinnerControl( parent, "Thumb", 1, 100000, 10 );
     thumbSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int thumb = thumbSpinner.getSelection();
         slider.setThumb( thumb );
       }
     } );
-    incrementSpinner = createSpinnerControl( parent, "Increment",
-                                             0, 100000, 1 );
+    incrementSpinner = createSpinnerControl( parent, "Increment", 0, 100000, 1 );
     incrementSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int increment = incrementSpinner.getSelection();
         slider.setIncrement( increment );
       }
     } );
-    pageIncrementSpinner = createSpinnerControl( parent, "Page Increment",
-                                                 0, 100000, 10 );
+    pageIncrementSpinner = createSpinnerControl( parent, "Page Increment", 0, 100000, 10 );
     pageIncrementSpinner.addModifyListener( new ModifyListener() {
-
       @Override
       public void modifyText( ModifyEvent event ) {
         int pageIncrement = pageIncrementSpinner.getSelection();
@@ -120,17 +108,15 @@ public class SliderTab extends ExampleTab {
     parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
     slider = new Slider( parent, style );
+    slider.setToolTipText( "foo" );
     if( hasCreateProperty( PROP_CONTEXT_MENU ) ) {
       Menu sliderMenu = new Menu( slider );
       MenuItem sliderMenuItem = new MenuItem( sliderMenu, SWT.PUSH );
       sliderMenuItem.addSelectionListener( new SelectionAdapter() {
-
         @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the Slider";
-          MessageDialog.openInformation( slider.getShell(),
-                                         "Information",
-                                         message );
+          MessageDialog.openInformation( slider.getShell(), "Information", message );
         }
       } );
       sliderMenuItem.setText( "Slider context menu item" );
@@ -138,12 +124,12 @@ public class SliderTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       slider.addSelectionListener( new SelectionListener() {
-
         @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "Slider WidgetSelected! Current selection: " + slider.getSelection();
           log( message );
           selectionSpinner.setSelection( slider.getSelection() );
+          slider.setToolTipText( String.valueOf( slider.getSelection() ) );
         }
 
         @Override
@@ -151,6 +137,7 @@ public class SliderTab extends ExampleTab {
           String message = "Slider WidgetDefaultSelected! Current selection: " + slider.getSelection();
           log( message );
           selectionSpinner.setSelection( slider.getSelection() );
+          slider.setToolTipText( String.valueOf( slider.getSelection() ) );
         }
       } );
     }
@@ -184,7 +171,6 @@ public class SliderTab extends ExampleTab {
     Button button = new Button( parent, buttonStyle );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
-
       @Override
       public void widgetSelected( final SelectionEvent event ) {
         createNew();
@@ -210,4 +196,5 @@ public class SliderTab extends ExampleTab {
     spinner.setMaximum( maximum );
     return spinner;
   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,6 +265,147 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
 
       assertIdentical( scale, fired );
       scale.destroy();
+    },
+
+    testBasicLayoutVertical : function() {
+      var widget = this._createScale( false );
+      var scale = TestUtil.getElementLayout( widget.getElement() );
+      var thumb = TestUtil.getElementLayout( widget._thumb.getElement() );
+      assertEquals( [ 10, 10, 41, 100 ], scale );
+      assertEquals( [ 9, 8, 21, 11 ], thumb );
+      widget.destroy();
+    },
+
+    testBasicLayoutHorizontal : function() {
+      var widget = this._createScale( true );
+
+      var scale = TestUtil.getElementLayout( widget.getElement() );
+      var thumb = TestUtil.getElementLayout( widget._thumb.getElement() );
+      assertEquals( [ 10, 10, 100, 41 ], scale );
+      assertEquals( [ 8, 9, 11, 21 ], thumb );
+      widget.destroy();
+    },
+
+    testBasicLayoutHorizontal_RTL : function() {
+      var widget = this._createScale( true );
+
+      widget.setDirection( "rtl" );
+      TestUtil.flush();
+
+      var scale = TestUtil.getElementLayout( widget.getElement() );
+      var thumb = TestUtil.getElementLayout( widget._thumb.getElement() );
+      assertEquals( [ 10, 10, 100, 41 ], scale );
+      assertEquals( [ 81, 9, 11, 21 ], thumb );
+      widget.destroy();
+    },
+
+    testClickLineHorizontal : function() {
+      var scale = this._createScale( true );
+      scale.setSelection( 2 );
+      var node = scale._line.getElement();
+      var button = rwt.event.MouseEvent.buttons.left;
+      var minPageX = 10;
+      var positions = [];
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 50, 21 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 50, 21 );
+      positions.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 1, 21 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 1, 21 );
+      positions.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX + 1, 21 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX + 1, 21 );
+      positions.push( scale._selection );
+
+      assertEquals( [ 12, 2, 0 ], positions );
+      scale.destroy();
+    },
+
+    testClickLineHorizontal_RTL : function() {
+      var scale = this._createScale( true );
+      scale.setDirection( "rtl" );
+      scale.setSelection( 2 );
+      var node = scale._line.getElement();
+      var button = rwt.event.MouseEvent.buttons.left;
+      var minPageX = 10 + 100;
+      var positions = [];
+
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 50, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 50, 11 );
+      positions.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 1, 11 );
+      positions.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", button, minPageX - 1, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", button, minPageX - 1, 11 );
+      positions.push( scale._selection );
+
+      assertEquals( [ 12, 2, 0 ], positions );
+      scale.destroy();
+    },
+
+    testDragThumb : function() {
+      var left = rwt.event.MouseEvent.buttons.left;
+      var scale = this._createScale( true );
+      var node = scale._thumb.getElement();
+      var selections = [];
+      var minPageX = 10;
+
+      TestUtil.fakeMouseEventDOM( node, "mouseover", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 10, 11 );
+      selections.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 5, 11 );
+      selections.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", left, minPageX + 5, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX + 10, 11 );
+      selections.push( scale._selection );
+
+      assertEquals( [ 14, 7, 7 ], selections );
+      scale.destroy();
+    },
+
+    testDragThumb_RTL : function() {
+      var left = rwt.event.MouseEvent.buttons.left;
+      var scale = this._createScale( true );
+      scale.setDirection( "rtl" );
+      var node = scale._thumb.getElement();
+      var selections = [];
+      var minPageX = 10 + 100;
+
+      TestUtil.fakeMouseEventDOM( node, "mouseover", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousedown", left, minPageX, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 10, 11 );
+      selections.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 5, 11 );
+      selections.push( scale._selection );
+      TestUtil.fakeMouseEventDOM( node, "mouseup", left, minPageX - 5, 11 );
+      TestUtil.fakeMouseEventDOM( node, "mousemove", left, minPageX - 10, 11 );
+      selections.push( scale._selection );
+
+      assertEquals( [ 14, 7, 7 ], selections );
+      scale.destroy();
+    },
+
+    /////////
+    // Helper
+
+    _createScale : function( horizontal ) {
+      var result = new rwt.widgets.Scale( horizontal );
+      var handler = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Scale" );
+      ObjectManager.add( "w3", result, handler );
+      result.addToDocument();
+      result.setLeft( 10 );
+      result.setTop( 10 );
+      if( horizontal ) {
+        result.setWidth( 100 );
+        result.setHeight( 41 );
+      } else {
+        result.setWidth( 41 );
+        result.setHeight( 100 );
+      }
+      result.setIncrement( 5 );
+      TestUtil.flush();
+      return result;
     }
 
   }

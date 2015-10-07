@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,33 +15,25 @@
  * rwt.widgets.Scale.
  */
 rwt.qx.Class.define( "rwt.widgets.Scale", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( isHorizontal ) {
     this.base( arguments );
-    this.setAppearance( "scale" );
     this._horizontal = isHorizontal;
-
-    // Flag indicates that the next request can be sent
     this._readyToSendChanges = true;
-
-    // Default values
     this._selection = 0;
     this._minimum = 0;
     this._maximum = 100;
     this._increment = 1;
     this._pageIncrement = 10;
     this._pxStep = 1.34;
-
-    // Base line
     this._line = new rwt.widgets.base.Image();
     this._line.addState( this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL" );
     this._line.setAppearance( "scale-line" );
     this._line.setResizeToInner( true );
     this._line.addEventListener( "mousedown", this._onLineMouseDown, this );
     this.add( this._line );
-
-    // Thumb
     this._thumb = new rwt.widgets.base.BasicButton( "push", true );
     this._thumb.addState( this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL" );
     this._thumb.setAppearance( "scale-thumb" );
@@ -49,10 +41,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
     this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
     this.add( this._thumb );
-    // Thumb offset
     this._thumbOffset = 0;
-
-    // Add events listeners
     if( this._horizontal ) {
       this.addEventListener( "changeWidth", this._onChangeWidth, this );
     } else {
@@ -61,6 +50,7 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
+    this.setAppearance( "scale" );
   },
 
   destruct : function() {
@@ -197,50 +187,30 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
       }
     },
 
-    _onLineMouseDown : function( evt ) {
-      var pxSel;
-      var mousePos;
-      var sel;
-      if( evt.isLeftButtonPressed() ){
-        if( this._horizontal ) {
-          pxSel = this._thumb.getLeft() + rwt.widgets.Scale.HALF_THUMB;
-          mousePos = evt.getPageX() - rwt.html.Location.getLeft( this.getElement() );
-        } else {
-          pxSel = this._thumb.getTop() + rwt.widgets.Scale.HALF_THUMB;
-          mousePos = evt.getPageY() - rwt.html.Location.getTop( this.getElement() );
-        }
+    _onLineMouseDown : function( event ) {
+      if( event.isLeftButtonPressed() ) {
+        var mousePos = this._getMouseOffset( event );
+        var pxSel = this._getThumbPosition() + rwt.widgets.Scale.HALF_THUMB;
         if( mousePos > pxSel ) {
-          sel = this._selection + this._pageIncrement;
+          this.setSelection( this._selection + this._pageIncrement );
         } else {
-          sel = this._selection - this._pageIncrement;
+          this.setSelection( this._selection - this._pageIncrement );
         }
-        this.setSelection( sel );
         this._scheduleSendChanges();
       }
     },
 
-    _onThumbMouseDown : function( evt ) {
-      var mousePos;
-      if( evt.isLeftButtonPressed() ) {
-        if( this._horizontal ) {
-          mousePos = evt.getPageX() - rwt.html.Location.getLeft( this.getElement() );
-          this._thumbOffset = mousePos - this._thumb.getLeft();
-        } else {
-          mousePos = evt.getPageY() - rwt.html.Location.getTop( this.getElement() );
-          this._thumbOffset = mousePos - this._thumb.getTop();
-        }
+    _onThumbMouseDown : function( event ) {
+      if( event.isLeftButtonPressed() ) {
+        var mousePos = this._getMouseOffset( event );
+        this._thumbOffset = mousePos - this._getThumbPosition();
         this._thumb.setCapture(true);
       }
     },
 
-    _onThumbMouseMove : function( evt ) {
-      var mousePos;
+    _onThumbMouseMove : function( event ) {
       if( this._thumb.getCapture() ) {
-        if( this._horizontal ) {
-          mousePos = evt.getPageX() - rwt.html.Location.getLeft( this.getElement() );
-        } else {
-          mousePos = evt.getPageY() - rwt.html.Location.getTop( this.getElement() );
-        }
+        var mousePos = this._getMouseOffset( event );
         var sel = this._getSelectionFromThumbPosition( mousePos - this._thumbOffset );
         if( this._selection != sel ) {
           this.setSelection( sel );
@@ -253,9 +223,22 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
       this._thumb.setCapture( false );
     },
 
+    _getMouseOffset : function( mouseEvent ) {
+      var location = rwt.html.Location;
+      if( this._horizontal ) {
+        var relativeLeft = mouseEvent.getPageX() - location.getLeft( this.getElement() );
+        if( this.getDirection() === "rtl" ) {
+          return this.getWidth() - relativeLeft;
+        } else {
+          return relativeLeft;
+        }
+      } else {
+        return mouseEvent.getPageY() - location.getTop( this.getElement() );
+      }
+    },
+
     _updateStep : function() {
-      var padding =   rwt.widgets.Scale.PADDING
-                    + rwt.widgets.Scale.HALF_THUMB;
+      var padding = rwt.widgets.Scale.PADDING + rwt.widgets.Scale.HALF_THUMB;
       if( this._horizontal ) {
         this._pxStep = ( this.getWidth() - 2 * padding ) / ( this._maximum - this._minimum );
       } else {
@@ -264,14 +247,35 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     },
 
     _updateThumbPosition : function() {
-      var pos =   rwt.widgets.Scale.PADDING
-                + this._pxStep * ( this._selection - this._minimum );
-      if( this._horizontal ) {
-        this._thumb.setLeft( Math.round( pos ) );
-      } else {
-        this._thumb.setTop( Math.round( pos ) );
-      }
+      var pos = rwt.widgets.Scale.PADDING + this._pxStep * ( this._selection - this._minimum );
+      this._setThumbPosition( Math.round( pos ) );
       this.dispatchSimpleEvent( "updateToolTip", this );
+    },
+
+    _getThumbPosition : function() {
+      if( this._horizontal ) {
+        if( this.getDirection() === "rtl" ) {
+          return this._thumb.getRight();
+        } else {
+          return this._thumb.getLeft();
+        }
+      } else {
+        return this._thumb.getTop();
+      }
+    },
+
+    _setThumbPosition : function( value ) {
+      if( this._horizontal ) {
+        if( this.getDirection() === "rtl" ) {
+          this._thumb.setLeft( null );
+          this._thumb.setRight( value );
+        } else {
+          this._thumb.setLeft( value );
+          this._thumb.setRight( null );
+        }
+      } else {
+        this._thumb.setTop( value );
+      }
     },
 
     _getSelectionFromThumbPosition : function( position ) {
@@ -299,7 +303,8 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
 
     _sendChanges : function() {
       if( !rwt.remote.EventUtil.getSuspended() ) {
-        rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", this._selection );
+        var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+        remoteObject.set( "selection", this._selection );
         rwt.remote.EventUtil.notifySelected( this );
         this._readyToSendChanges = true;
       }
@@ -334,8 +339,11 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     },
 
     getToolTipTargetBounds : function() {
+      var xOffset = this._horizontal && this.getDirection() === "rtl"
+                  ? this.getWidth() - this._thumb.getRight() - this._thumb.getWidth()
+                  : this._thumb.getLeft();
       return {
-        "left" : this._cachedBorderLeft + ( this._thumb.getLeft() || 0 ),
+        "left" : this._cachedBorderLeft + ( xOffset || 0 ),
         "top" : this._cachedBorderLeft + ( this._thumb.getTop() || 0 ),
         "width" : this._thumb.getBoxWidth(),
         "height" : this._thumb.getBoxHeight()
@@ -352,7 +360,12 @@ rwt.qx.Class.define( "rwt.widgets.Scale", {
     _visualizeBlur : function() {
       this.base( arguments );
       this._thumb.removeState( "focused" );
+    },
+
+    _layoutX : function() {
+      this._updateThumbPosition();
     }
 
   }
+
 } );

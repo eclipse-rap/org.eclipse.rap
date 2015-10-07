@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
  * rwt.widgets.Slider.
  */
 rwt.qx.Class.define( "rwt.widgets.Slider", {
+
   extend : rwt.widgets.base.AbstractSlider,
 
   construct : function( isHorizontal ) {
@@ -59,8 +60,11 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
     },
 
     getToolTipTargetBounds : function() {
+      var xOffset = this._horizontal && this.getDirection() === "rtl"
+                  ? this.getWidth() - this._thumb.getRight() - this._thumb.getWidth()
+                  : this._thumb.getLeft();
       return {
-        "left" : this._cachedBorderLeft + ( this._thumb.getLeft() || 0 ),
+        "left" : this._cachedBorderLeft + ( xOffset || 0 ),
         "top" : this._cachedBorderLeft + ( this._thumb.getTop() || 0 ),
         "width" : this._thumb.getBoxWidth(),
         "height" : this._thumb.getBoxHeight()
@@ -161,9 +165,7 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
           if( this._readyToSendChanges ) {
             this._readyToSendChanges = false;
             // Send changes
-            rwt.client.Timer.once( this._sendChanges,
-                                  this,
-                                  rwt.widgets.Slider.SEND_DELAY );
+            rwt.client.Timer.once( this._sendChanges, this, rwt.widgets.Slider.SEND_DELAY );
           }
         }
       }
@@ -186,16 +188,15 @@ rwt.qx.Class.define( "rwt.widgets.Slider", {
         if( !this._requestScheduled ) {
           this._requestScheduled = true;
           // Send changes
-          rwt.client.Timer.once( this._sendChanges,
-                                this,
-                                rwt.widgets.Slider.SEND_DELAY );
+          rwt.client.Timer.once( this._sendChanges, this, rwt.widgets.Slider.SEND_DELAY );
 
         }
       }
     },
 
     _sendChanges : function() {
-      rwt.remote.Connection.getInstance().getRemoteObject( this ).set( "selection", this._selection );
+      var remoteObject = rwt.remote.Connection.getInstance().getRemoteObject( this );
+      remoteObject.set( "selection", this._selection );
       rwt.remote.EventUtil.notifySelected( this );
       this._requestScheduled = false;
     }

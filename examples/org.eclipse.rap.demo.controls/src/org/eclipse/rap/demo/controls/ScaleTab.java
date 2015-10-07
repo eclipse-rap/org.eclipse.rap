@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,51 +47,47 @@ public class ScaleTab extends ExampleTab {
     createStyleButton( parent, "HORIZONTAL", SWT.HORIZONTAL, SWT.RADIO, true );
     createStyleButton( parent, "VERTICAL", SWT.VERTICAL, SWT.RADIO, false );
     createStyleButton( "BORDER", SWT.BORDER );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createBgColorButton();
     createBgImageButton();
     createCursorCombo();
-    minimumSpinner = createSpinnerControl( parent, "Minimum",
-                                           0, 100000, 0 );
+    minimumSpinner = createSpinnerControl( parent, "Minimum", 0, 100000, 0 );
     minimumSpinner.addModifyListener( new ModifyListener() {
-
+      @Override
       public void modifyText( ModifyEvent event ) {
         int minimum = minimumSpinner.getSelection();
         scale.setMinimum( minimum );
       }
     } );
-    maximumSpinner = createSpinnerControl( parent, "Maximum",
-                                           0, 100000, 100 );
+    maximumSpinner = createSpinnerControl( parent, "Maximum", 0, 100000, 100 );
     maximumSpinner.addModifyListener( new ModifyListener() {
-
+      @Override
       public void modifyText( ModifyEvent event ) {
         int maximum = maximumSpinner.getSelection();
         scale.setMaximum( maximum );
       }
     } );
-    selectionSpinner = createSpinnerControl( parent, "Selection",
-                                             0, 100000, 0 );
+    selectionSpinner = createSpinnerControl( parent, "Selection", 0, 100000, 0 );
     selectionSpinner.addModifyListener( new ModifyListener() {
-
+      @Override
       public void modifyText( ModifyEvent event ) {
         int selection = selectionSpinner.getSelection();
         scale.setSelection( selection );
       }
     } );
-    incrementSpinner = createSpinnerControl( parent, "Increment",
-                                             0, 100000, 1 );
+    incrementSpinner = createSpinnerControl( parent, "Increment", 0, 100000, 1 );
     incrementSpinner.addModifyListener( new ModifyListener() {
-
+      @Override
       public void modifyText( ModifyEvent event ) {
         int increment = incrementSpinner.getSelection();
         scale.setIncrement( increment );
       }
     } );
-    pageIncrementSpinner = createSpinnerControl( parent, "Page Increment",
-                                                 0, 100000, 10 );
+    pageIncrementSpinner = createSpinnerControl( parent, "Page Increment", 0, 100000, 10 );
     pageIncrementSpinner.addModifyListener( new ModifyListener() {
-
+      @Override
       public void modifyText( ModifyEvent event ) {
         int pageIncrement = pageIncrementSpinner.getSelection();
         scale.setPageIncrement( pageIncrement );
@@ -110,13 +106,10 @@ public class ScaleTab extends ExampleTab {
       Menu scaleMenu = new Menu( scale );
       MenuItem scaleMenuItem = new MenuItem( scaleMenu, SWT.PUSH );
       scaleMenuItem.addSelectionListener( new SelectionAdapter() {
-
         @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "You requested a context menu for the Scale";
-          MessageDialog.openInformation( scale.getShell(),
-                                         "Information",
-                                         message );
+          MessageDialog.openInformation( scale.getShell(), "Information", message );
         }
       } );
       scaleMenuItem.setText( "Scale context menu item" );
@@ -124,17 +117,20 @@ public class ScaleTab extends ExampleTab {
     }
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       scale.addSelectionListener( new SelectionListener() {
-
+        @Override
         public void widgetSelected( final SelectionEvent event ) {
           String message = "Scale WidgetSelected! Current selection: " + scale.getSelection();
           log( message );
           selectionSpinner.setSelection( scale.getSelection() );
+          scale.setToolTipText( String.valueOf( scale.getSelection() ) );
         }
 
+        @Override
         public void widgetDefaultSelected( final SelectionEvent event ) {
           String message = "Scale WidgetDefaultSelected! Current selection: " + scale.getSelection();
           log( message );
           selectionSpinner.setSelection( scale.getSelection() );
+          scale.setToolTipText( String.valueOf( scale.getSelection() ) );
         }
       } );
     }
@@ -191,4 +187,5 @@ public class ScaleTab extends ExampleTab {
     spinner.setMaximum( maximum );
     return spinner;
   }
+
 }
