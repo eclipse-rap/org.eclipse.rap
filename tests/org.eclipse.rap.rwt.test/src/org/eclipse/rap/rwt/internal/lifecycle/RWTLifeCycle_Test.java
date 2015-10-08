@@ -25,6 +25,8 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,14 +137,17 @@ public class RWTLifeCycle_Test {
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void afterPhase( PhaseEvent event ) {
         log.append( AFTER + event.getPhaseId() + "|" );
       }
 
+      @Override
       public void beforePhase( PhaseEvent event ) {
         log.append( BEFORE + event.getPhaseId() + "|" );
       }
 
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.ANY;
       }
@@ -198,14 +203,17 @@ public class RWTLifeCycle_Test {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void afterPhase( PhaseEvent event ) {
         log.append( AFTER + event.getPhaseId() + "|" );
       }
 
+      @Override
       public void beforePhase( PhaseEvent event ) {
         log.append( BEFORE + event.getPhaseId() + "|" );
       }
 
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
@@ -274,14 +282,17 @@ public class RWTLifeCycle_Test {
   @Test
   public void testPhaseListenerRegistration() throws IOException {
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
-    final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
+    final AtomicReference<PhaseListener> callbackHandler = new AtomicReference<>();
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
+      @Override
       public void beforePhase( PhaseEvent event ) {
-        callbackHandler[ 0 ] = this;
+        callbackHandler.set( this );
       }
+      @Override
       public void afterPhase( PhaseEvent event ) {
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
@@ -290,14 +301,14 @@ public class RWTLifeCycle_Test {
     // Run lifecycle in session one
     RWTLifeCycle lifeCycle1 = getLifeCycle();
     lifeCycle1.execute();
-    assertSame( listener, callbackHandler[ 0 ] );
+    assertSame( listener, callbackHandler.get() );
     // Simulate new session and run lifecycle
     newSession();
     Fixture.fakeResponseWriter();
-    callbackHandler[ 0 ] = null;
+    callbackHandler.set( null );
     RWTLifeCycle lifeCycle2 = getLifeCycle();
     lifeCycle2.execute();
-    assertSame( listener, callbackHandler[ 0 ] );
+    assertSame( listener, callbackHandler.get() );
   }
 
   @Test
@@ -305,12 +316,15 @@ public class RWTLifeCycle_Test {
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
+      @Override
       public void afterPhase( PhaseEvent event ) {
         log.append( "after" + event.getPhaseId() );
       }
+      @Override
       public void beforePhase( PhaseEvent event ) {
         log.append( "before" + event.getPhaseId() );
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.ANY;
       }
@@ -318,19 +332,23 @@ public class RWTLifeCycle_Test {
 
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           fail( "Interruptible phase should never get executed." );
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       },
       new IPhase() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           log.append( "execute" + getPhaseId() );
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.RENDER;
         }
@@ -361,9 +379,11 @@ public class RWTLifeCycle_Test {
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, MainStartup.class, null );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
@@ -391,6 +411,7 @@ public class RWTLifeCycle_Test {
 
     Fixture.fakePhase( PhaseId.READ_DATA );
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         log.append( "executed" );
       }
@@ -416,6 +437,7 @@ public class RWTLifeCycle_Test {
       }
     };
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         log.append( "eventExecuted" );
       }
@@ -443,6 +465,7 @@ public class RWTLifeCycle_Test {
       }
     };
     Listener listener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         display.readAndDispatch();
       }
@@ -461,6 +484,7 @@ public class RWTLifeCycle_Test {
   public void testReadAndDispatchWithAsyncExec() {
     final java.util.List<Runnable> log = new ArrayList<Runnable>();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         log.add( this );
       }
@@ -479,23 +503,24 @@ public class RWTLifeCycle_Test {
   public void testBeginUIThread() throws Throwable {
     ServiceContext originContext = ContextProvider.getContext();
     RWTLifeCycle lifeCycle = getLifeCycle();
-    final boolean[] continueLoop = { true };
-    final ServiceContext[] uiContext = new ServiceContext[ 1 ];
-    final Throwable[] error = { null };
+    final AtomicBoolean continueLoop = new AtomicBoolean( true );
+    final AtomicReference<ServiceContext> uiContext = new AtomicReference<>();
+    final AtomicReference<Throwable> error = new AtomicReference<>();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
-        while( continueLoop[ 0 ] ) {
+        while( continueLoop.get() ) {
           IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
           synchronized( uiThread.getLock() ) {
           }
           uiThread.updateServiceContext();
-          uiContext[ 0 ] = ContextProvider.getContext();
+          uiContext.set( ContextProvider.getContext() );
           log.append( "executedInUIThread" );
           try {
             uiThread.switchThread();
           } catch( Throwable e ) {
             synchronized( error ) {
-              error[ 0 ] = e;
+              error.set( e );
             }
           }
         }
@@ -505,35 +530,35 @@ public class RWTLifeCycle_Test {
     // simulates first request
     lifeCycle.executeUIThread();
     synchronized( error ) {
-      if( error[ 0 ] != null ) {
-        throw error[ 0 ];
+      if( error.get() != null ) {
+        throw error.get();
       }
     }
-    assertSame( originContext, uiContext[ 0 ] );
+    assertSame( originContext, uiContext.get() );
     assertEquals( "executedInUIThread", log.toString() );
     assertTrue( getUIThread().isAlive() );
     // simulates subsequent request
     log.setLength( 0 );
-    uiContext[ 0 ] = null;
+    uiContext.set( null );
     ServiceContext secondContext = newContext( originContext.getUISession() );
     ContextProvider.releaseContextHolder();
     ContextProvider.setContext( secondContext );
     lifeCycle.executeUIThread();
     synchronized( error ) {
-      if( error[ 0 ] != null ) {
-        throw error[ 0 ];
+      if( error.get() != null ) {
+        throw error.get();
       }
     }
-    assertSame( secondContext, uiContext[ 0 ] );
+    assertSame( secondContext, uiContext.get() );
     assertEquals( "executedInUIThread", log.toString() );
     assertTrue( getUIThread().isAlive() );
     // simulates request that ends event loop
     UIThread endingUIThread = getUIThread();
-    continueLoop[ 0 ] = false;
+    continueLoop.set( false );
     lifeCycle.executeUIThread();
     synchronized( error ) {
-      if( error[ 0 ] != null ) {
-        throw error[ 0 ];
+      if( error.get() != null ) {
+        throw error.get();
       }
     }
     assertFalse( endingUIThread.isAlive() );
@@ -566,9 +591,11 @@ public class RWTLifeCycle_Test {
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
@@ -592,50 +619,53 @@ public class RWTLifeCycle_Test {
   @Test
   public void testSleep() throws Throwable {
     final RWTLifeCycle lifeCycle = getLifeCycle();
-    final ServiceContext[] uiContext = { null };
+    final AtomicReference<ServiceContext> uiContext = new AtomicReference<>();
     lifeCycle.addPhaseListener( new LoggingPhaseListener() );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       }
     } );
-    final Throwable[] error = { null };
-    final UIThread[] uiThread = { null };
+    final AtomicReference<Throwable> error = new AtomicReference<>();
+    final AtomicReference<UIThread> uiThread = new AtomicReference<>();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         try {
-          synchronized( uiThread[ 0 ].getLock() ) {
+          synchronized( uiThread.get().getLock() ) {
           }
           IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
           uiThread.updateServiceContext();
           lifeCycle.continueLifeCycle();
           log.setLength( 0 );
           lifeCycle.sleep();
-          uiContext[ 0 ] = ContextProvider.getContext();
+          uiContext.set( ContextProvider.getContext() );
           log.append( "readAndDispatch" );
           lifeCycle.sleep();
           log.append( "readAndDispatch" );
         } catch( Throwable e ) {
-          error[ 0 ] = e;
+          error.set( e );
         }
       }
     };
-    uiThread[ 0 ] = new UIThread( runnable );
-    LifeCycleUtil.setUIThread( ContextProvider.getUISession(), uiThread[ 0 ] );
+    uiThread.set( new UIThread( runnable ) );
+    LifeCycleUtil.setUIThread( ContextProvider.getUISession(), uiThread.get() );
 
-    uiThread[ 0 ].setServiceContext( ContextProvider.getContext() );
-    synchronized( uiThread[ 0 ].getLock() ) {
-      uiThread[ 0 ].start();
-      uiThread[ 0 ].switchThread();
+    uiThread.get().setServiceContext( ContextProvider.getContext() );
+    synchronized( uiThread.get().getLock() ) {
+      uiThread.get().start();
+      uiThread.get().switchThread();
     }
 
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    if( error.get() != null ) {
+      throw error.get();
     }
     String expected = "after" + PhaseId.PREPARE_UI_ROOT;
     assertEquals( expected, log.toString() );
@@ -646,28 +676,32 @@ public class RWTLifeCycle_Test {
     ContextProvider.setContext( expectedContext );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IPhase() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           log.append( "prepare" );
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       },
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PROCESS_ACTION;
         }
       }
     } );
-    uiThread[ 0 ].setServiceContext( expectedContext );
-    uiThread[ 0 ].switchThread();
+    uiThread.get().setServiceContext( expectedContext );
+    uiThread.get().switchThread();
 
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    if( error.get() != null ) {
+      throw error.get();
     }
     expected = "before"
              + PhaseId.PREPARE_UI_ROOT
@@ -680,28 +714,30 @@ public class RWTLifeCycle_Test {
              + "after"
              + PhaseId.PROCESS_ACTION;
     assertEquals( expected, log.toString() );
-    assertSame( expectedContext, uiContext[ 0 ] );
+    assertSame( expectedContext, uiContext.get() );
 
     log.setLength( 0 );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
+        @Override
         public PhaseId execute(Display display) throws IOException {
           return null;
         }
+        @Override
         public PhaseId getPhaseId() {
           return PhaseId.PROCESS_ACTION;
         }
       }
     } );
-    uiThread[ 0 ].switchThread();
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    uiThread.get().switchThread();
+    if( error.get() != null ) {
+      throw error.get();
     }
     expected = "before"
              + PhaseId.PROCESS_ACTION
              + "readAndDispatch";
     assertEquals( expected, log.toString() );
-    assertFalse( uiThread[ 0 ].isAlive() );
+    assertFalse( uiThread.get().isAlive() );
   }
 
   @Test
@@ -734,14 +770,15 @@ public class RWTLifeCycle_Test {
   @Test
   public void testSessionInvalidateWithRunningEventLoop() throws Throwable {
     final UISession uiSession = ContextProvider.getUISession();
-    final String[] invalidateThreadName = { null };
-    final boolean hasContext[] = new boolean[]{ false };
-    final ServiceStore serviceStore[] =  { null };
+    final AtomicReference<String> invalidateThreadName = new AtomicReference<>();
+    final AtomicBoolean hasContext = new AtomicBoolean();
+    final AtomicReference<ServiceStore> serviceStore = new AtomicReference<>();
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
-        invalidateThreadName[ 0 ] = Thread.currentThread().getName();
-        hasContext[ 0 ] = ContextProvider.hasContext();
-        serviceStore[ 0 ] = ContextProvider.getServiceStore();
+        invalidateThreadName.set( Thread.currentThread().getName() );
+        hasContext.set( ContextProvider.hasContext() );
+        serviceStore.set( ContextProvider.getServiceStore() );
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
@@ -757,9 +794,9 @@ public class RWTLifeCycle_Test {
     //
     assertFalse( uiThreadHolder.getThread().isAlive() );
     assertFalse( uiSession.isBound() );
-    assertEquals( invalidateThreadName[ 0 ], uiThreadName );
-    assertTrue( hasContext[ 0 ] );
-    assertNotNull( serviceStore[ 0 ] );
+    assertEquals( invalidateThreadName.get(), uiThreadName );
+    assertTrue( hasContext.get() );
+    assertNotNull( serviceStore.get() );
     assertEquals( "", log.toString() );
   }
 
@@ -781,15 +818,16 @@ public class RWTLifeCycle_Test {
   @Test
   public void testSessionInvalidateWithoutRunningEventLoop() throws Throwable {
     final UISession uiSession = ContextProvider.getUISession();
-    final String[] uiThreadName = { "unknown-ui-thread" };
-    final String[] invalidateThreadName = { "unkown-invalidate-thread" };
-    final boolean hasContext[] = new boolean[]{ false };
-    final ServiceStore serviceStore[] = { null };
+    final AtomicReference<String> uiThreadName = new AtomicReference<>( "unknown" );
+    final AtomicReference<String> invalidateThreadName = new AtomicReference<>( "unkown" );
+    final AtomicBoolean hasContext = new AtomicBoolean();
+    final AtomicReference<ServiceStore> serviceStore = new AtomicReference<>();
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
-        invalidateThreadName[ 0 ] = Thread.currentThread().getName();
-        hasContext[ 0 ] = ContextProvider.hasContext();
-        serviceStore[ 0 ] = ContextProvider.getServiceStore();
+        invalidateThreadName.set( Thread.currentThread().getName() );
+        hasContext.set( ContextProvider.hasContext() );
+        serviceStore.set( ContextProvider.getServiceStore() );
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
@@ -798,11 +836,14 @@ public class RWTLifeCycle_Test {
     RWTLifeCycle lifeCycle = getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
+      @Override
       public void beforePhase( PhaseEvent event ) {
-        uiThreadName[ 0 ] = Thread.currentThread().getName();
+        uiThreadName.set( Thread.currentThread().getName() );
       }
+      @Override
       public void afterPhase( PhaseEvent event ) {
       }
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
@@ -812,9 +853,9 @@ public class RWTLifeCycle_Test {
     invalidateSession( uiSession );
     //
     assertFalse( uiSession.isBound() );
-    assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
-    assertTrue( hasContext[ 0 ] );
-    assertNotNull( serviceStore[ 0 ] );
+    assertEquals( uiThreadName.get(), invalidateThreadName.get() );
+    assertTrue( hasContext.get() );
+    assertNotNull( serviceStore.get() );
   }
 
   @Test
@@ -842,32 +883,27 @@ public class RWTLifeCycle_Test {
 
   @Test
   public void testSwitchThreadCannotBeInterrupted() throws Exception {
-    final Throwable[] errorInUIThread = { new Exception( "did not run" ) };
-    final UIThread[] uiThread = { null };
-    uiThread[ 0 ] = new UIThread( new Runnable() {
+    final AtomicReference<Throwable> errorInUIThread = new AtomicReference<>();
+    errorInUIThread.set( new Exception( "did not run" ) );
+    final AtomicReference<UIThread> uiThread = new AtomicReference<>();
+    uiThread.set( new UIThread( new Runnable() {
+      @Override
       public void run() {
         try {
-          synchronized( errorInUIThread ) {
-            errorInUIThread[ 0 ] = null;
-          }
-          uiThread[ 0 ].switchThread();
+          errorInUIThread.set( null );
+          uiThread.get().switchThread();
         } catch( Throwable t ) {
-          synchronized( errorInUIThread ) {
-            errorInUIThread[ 0 ] = t;
-          }
+          errorInUIThread.set( t );
         }
       }
-    } );
-    uiThread[ 0 ].start();
+    } ) );
+    uiThread.get().start();
     Thread.sleep( 100 );
-    uiThread[ 0 ].interrupt();
-    synchronized( errorInUIThread ) {
-      assertNull( "switchThread must not unblock when thread is interrupted",
-                  errorInUIThread[ 0 ] );
-    }
+    uiThread.get().interrupt();
+    assertNull( "switchThread must not unblock when thread is interrupted", errorInUIThread.get() );
     // unblock ui thread, see bug 351277
-    synchronized( uiThread[ 0 ].getLock() ) {
-      uiThread[ 0 ].getLock().notifyAll();
+    synchronized( uiThread.get().getLock() ) {
+      uiThread.get().getLock().notifyAll();
     }
   }
 
@@ -875,24 +911,27 @@ public class RWTLifeCycle_Test {
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, TestEntryPoint.class, null );
     RWTLifeCycle lifeCycle = new RWTLifeCycle( getApplicationContext() );
-    final Thread[] currentThread = { null };
-    final Thread[] uiThread = { null };
+    final AtomicReference<Thread> currentThread = new AtomicReference<>();
+    final AtomicReference<Thread> uiThread = new AtomicReference<>();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
+      @Override
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
+      @Override
       public void beforePhase( PhaseEvent event ) {
       }
+      @Override
       public void afterPhase( PhaseEvent event ) {
-        currentThread[ 0 ] = Thread.currentThread();
-        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread();
+        currentThread.set( Thread.currentThread() );
+        uiThread.set( LifeCycleUtil.getUIThread( ContextProvider.getUISession() ).getThread() );
       }
     } );
 
     lifeCycle.execute();
 
-    assertSame( currentThread[ 0 ], uiThread[ 0 ] );
+    assertSame( currentThread.get(), uiThread.get() );
   }
 
   @Test
@@ -912,6 +951,7 @@ public class RWTLifeCycle_Test {
 
   private static void invalidateSession( final UISession uiSession ) throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         uiSession.getHttpSession().invalidate();
       }
@@ -947,18 +987,22 @@ public class RWTLifeCycle_Test {
 
   private static class LoggingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
+    @Override
     public void beforePhase( PhaseEvent event ) {
       log.append( "before" + event.getPhaseId() );
     }
+    @Override
     public void afterPhase( PhaseEvent event ) {
       log.append( "after" + event.getPhaseId() );
     }
+    @Override
     public PhaseId getPhaseId() {
       return PhaseId.ANY;
     }
   }
 
   public static final class MainStartup implements EntryPoint {
+    @Override
     public int createUI() {
       log.append( "createUI" );
       return 0;
@@ -966,6 +1010,7 @@ public class RWTLifeCycle_Test {
   }
 
   public static final class ErrorStartup implements EntryPoint {
+    @Override
     public int createUI() {
       throw new RuntimeException( ERR_MSG );
     }
@@ -975,22 +1020,26 @@ public class RWTLifeCycle_Test {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void afterPhase( PhaseEvent event ) {
       log.append( AFTER + event.getPhaseId() + "|" );
       throw new RuntimeException();
     }
 
+    @Override
     public void beforePhase( PhaseEvent event ) {
       log.append( BEFORE + event.getPhaseId() + "|" );
       throw new RuntimeException();
     }
 
+    @Override
     public PhaseId getPhaseId() {
       return PhaseId.PREPARE_UI_ROOT;
     }
   }
 
   public static class TestEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       new Display();
       return 0;
@@ -998,6 +1047,7 @@ public class RWTLifeCycle_Test {
   }
 
   public static class TestPhasesEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       Display display = new Display();
       while( !display.isDisposed() ) {
@@ -1010,6 +1060,7 @@ public class RWTLifeCycle_Test {
   }
 
   public static class TestErrorInLifeCycleEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       String msg = TestErrorInLifeCycleEntryPoint.class.getName();
       throw new RuntimeException( msg );
@@ -1017,6 +1068,7 @@ public class RWTLifeCycle_Test {
   }
 
   public static class TestEntryPointWithLog implements EntryPoint {
+    @Override
     public int createUI() {
       new Display();
       log.append( DISPLAY_CREATED );
@@ -1026,9 +1078,11 @@ public class RWTLifeCycle_Test {
 
   public static class DisposeDisplayOnSessionTimeoutEntryPoint implements EntryPoint
   {
+    @Override
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           log.append( "display disposed" );
         }
@@ -1040,6 +1094,7 @@ public class RWTLifeCycle_Test {
   public static class SessionInvalidateWithEventLoopEntryPoint
     implements EntryPoint
   {
+    @Override
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );
@@ -1057,6 +1112,7 @@ public class RWTLifeCycle_Test {
   public static class SessionInvalidateWithoutEventLoopEntryPoint
     implements EntryPoint
   {
+    @Override
     public int createUI() {
       new Display();
       return 0;
@@ -1102,6 +1158,7 @@ public class RWTLifeCycle_Test {
       }
     }
 
+    @Override
     public int createUI() {
       Display display = new Display();
       Shell shell = new BuggyShell( display );
@@ -1123,15 +1180,18 @@ public class RWTLifeCycle_Test {
   public static final class TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint
     implements EntryPoint
   {
+    @Override
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           log.append( "disposeEvent, " );
         }
       } );
       UISession uiSession = RWT.getUISession();
       uiSession.addUISessionListener( new UISessionListener() {
+        @Override
         public void beforeDestroy( UISessionEvent event ) {
           log.append( "beforeDestroy" );
         }
@@ -1139,4 +1199,5 @@ public class RWTLifeCycle_Test {
       return 0;
     }
   }
+
 }

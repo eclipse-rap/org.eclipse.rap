@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -251,9 +252,10 @@ public class RWTLifeCycle2_Test {
   private static TestResponse runRWTServlet( final HttpServletRequest request )
     throws Exception
   {
-    final Exception[] exception = { null };
+    final AtomicReference<Exception> exception = new AtomicReference<>();
     final TestResponse response = new TestResponse();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         synchronized( this ) {
           //
@@ -263,7 +265,7 @@ public class RWTLifeCycle2_Test {
           initServlet( servlet );
           servlet.service( request, response );
         } catch( Exception e ) {
-          exception[ 0 ] = e;
+          exception.set( e );
         }
       }
     };
@@ -274,8 +276,8 @@ public class RWTLifeCycle2_Test {
       thread.start();
     }
     thread.join();
-    if( exception[ 0 ] != null ) {
-      throw exception[ 0 ];
+    if( exception.get() != null ) {
+      throw exception.get();
     }
     return response;
   }
@@ -311,6 +313,7 @@ public class RWTLifeCycle2_Test {
     ServletContext servletContext = session.getServletContext();
     TestServletContext servletContextImpl = ( TestServletContext )servletContext;
     servletContextImpl.setLogger( new TestLogger() {
+      @Override
       public void log( String message, Throwable throwable ) {
         if( throwable != null ) {
           throwable.printStackTrace();
@@ -327,11 +330,13 @@ public class RWTLifeCycle2_Test {
   }
 
   public static final class ExceptionInReadAndDispatchEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
       try {
         display.addListener( SWT.Dispose, new Listener() {
+          @Override
           public void handleEvent( Event event ) {
             eventLog.add( event );
           }
@@ -364,12 +369,14 @@ public class RWTLifeCycle2_Test {
   }
 
   public static final class ExceptionInCreateUIEntryPoint implements EntryPoint {
+    @Override
     @SuppressWarnings("unused")
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
       try {
         display.addListener( SWT.Dispose, new Listener() {
+          @Override
           public void handleEvent( Event event ) {
             eventLog.add( event );
           }
@@ -395,9 +402,11 @@ public class RWTLifeCycle2_Test {
   }
 
   public static final class StringMeasurementInDisplayDisposeEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           try {
             TextSizeUtil.stringExtent( event.display.getSystemFont(), "foo" );
@@ -421,18 +430,21 @@ public class RWTLifeCycle2_Test {
   }
 
   public static final class EventProcessingOnSessionShutdownEntryPoint implements EntryPoint {
+    @Override
     public int createUI() {
       createUIEntered = true;
       try {
         Display display = new Display();
         final Shell shell = new Shell( display );
         shell.addDisposeListener( new DisposeListener() {
+          @Override
           public void widgetDisposed( DisposeEvent event ) {
             eventLog.add( event );
           }
         } );
         UISession uiSession = RWT.getUISession();
         uiSession.addUISessionListener( new UISessionListener() {
+          @Override
           public void beforeDestroy( UISessionEvent event ) {
             shell.dispose();
           }
@@ -453,11 +465,13 @@ public class RWTLifeCycle2_Test {
   }
 
   public static final class EntryPointWithSynchronizationOnUISession implements EntryPoint {
+    @Override
     public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );
       final UISession uiSession = RWT.getUISession();
       uiSession.addUISessionListener( new UISessionListener() {
+        @Override
         public void beforeDestroy( UISessionEvent event ) {
           synchronized( uiSession ) {
             uiSession.removeAttribute( "foo" );
@@ -477,6 +491,7 @@ public class RWTLifeCycle2_Test {
 
   public static final class TestEntryPoint implements EntryPoint {
 
+    @Override
     public int createUI() {
       createUIEntered = true;
       try {
@@ -500,6 +515,7 @@ public class RWTLifeCycle2_Test {
   public static final class TestSessionInvalidateWithDisposeInFinallyEntryPoint
     implements EntryPoint
   {
+    @Override
     public int createUI() {
       createUIEntered = true;
       Display display = new Display();
@@ -524,4 +540,5 @@ public class RWTLifeCycle2_Test {
       return 0;
     }
   }
+
 }
