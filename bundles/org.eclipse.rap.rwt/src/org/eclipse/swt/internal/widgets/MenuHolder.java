@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,63 +12,40 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Widget;
 
-public final class MenuHolder implements SerializableCompatibility {
 
-  public static interface IMenuHolderAdapter {
-    // marker interface
-  }
-
-  public static boolean isMenuHolder( Widget widget ) {
-    return widget.getAdapter( IMenuHolderAdapter.class ) != null;
-  }
-
-  public static void addMenu( Widget widget, Menu menu ) {
-    getMenuHolder( widget ).addMenu( menu );
-  }
-
-  public static void removeMenu( Widget widget, Menu menu ) {
-    getMenuHolder( widget ).removeMenu( menu );
-  }
-
-  public static int getMenuCount( Widget widget ) {
-    return getMenuHolder( widget ).getMenuCount();
-  }
-
-  public static Menu[] getMenus( Widget widget ) {
-    return getMenuHolder( widget ).getMenus();
-  }
+public final class MenuHolder implements Iterable<Menu>, SerializableCompatibility {
 
   private final List<Menu> menus;
 
   public MenuHolder() {
-    menus = new ArrayList<Menu>();
+    menus = new ArrayList<>();
   }
 
-  private void addMenu( Menu menu ) {
+  public void addMenu( Menu menu ) {
     menus.add( menu );
   }
 
-  private void removeMenu( Menu menu ) {
+  public void removeMenu( Menu menu ) {
     menus.remove( menu );
   }
 
-  private Menu[] getMenus() {
-    return menus.toArray( new Menu[ menus.size() ] );
+  public Menu[] getMenus() {
+    return menus.toArray( new Menu[ 0 ] );
   }
 
-  private int getMenuCount() {
+  public int size() {
     return menus.size();
   }
 
-  private static MenuHolder getMenuHolder( Widget widget ) {
-    Object adapter = widget.getAdapter( IMenuHolderAdapter.class );
-    return ( MenuHolder )adapter;
+  @Override
+  public Iterator<Menu> iterator() {
+    return menus.iterator();
   }
 
 }

@@ -95,9 +95,9 @@ public class WidgetTreeVisitor {
   // Helping methods to visit particular hierarchies
 
   private static void handleMenus( Composite composite, WidgetTreeVisitor visitor ) {
-    if( MenuHolder.isMenuHolder( composite ) ) {
-      Menu[] menus = MenuHolder.getMenus( composite );
-      for( Menu menu : menus ) {
+    MenuHolder menuHolder = composite.getAdapter( MenuHolder.class );
+    if( menuHolder != null ) {
+      for( Menu menu : menuHolder ) {
         accept( menu, visitor );
       }
     }

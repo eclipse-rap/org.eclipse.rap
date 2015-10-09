@@ -160,7 +160,7 @@ public class Menu extends Widget {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     itemHolder = new ItemHolder<>( MenuItem.class );
-    MenuHolder.addMenu( parent, this );
+    parent.getAdapter( MenuHolder.class ).addMenu( this );
     checkOrientation( parent );
   }
 
@@ -652,7 +652,7 @@ public class Menu extends Widget {
 
   @Override
   final void releaseWidget() {
-    MenuHolder.removeMenu( parent, this );
+    parent.getAdapter( MenuHolder.class ).removeMenu( this );
     super.releaseWidget();
   }
 

@@ -18,7 +18,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.MenuHolder;
-import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
 
 
 /**
@@ -49,16 +48,13 @@ public class Decorations extends Canvas {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    T result;
-    if( adapter == IMenuHolderAdapter.class ) {
+    if( adapter == MenuHolder.class ) {
       if( menuHolder == null ) {
         menuHolder = new MenuHolder();
       }
-      result = ( T )menuHolder;
-    } else {
-      result = super.getAdapter( adapter );
+      return ( T )menuHolder;
     }
-    return result;
+    return super.getAdapter( adapter );
   }
 
   /**
@@ -346,6 +342,7 @@ public class Decorations extends Canvas {
   void updateDefaultButton( final Control focusControl, final boolean set ) {
     if( isPushButton( focusControl ) ) {
       ProcessActionRunner.add( new Runnable() {
+        @Override
         public void run() {
           Button defaultButton = ( Button )focusControl;
           updateDefaultButtonFocusListener( defaultButton, set );
@@ -472,6 +469,7 @@ public class Decorations extends Canvas {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
         menuBarDisposeListener = new DisposeListener() {
+          @Override
           public void widgetDisposed( DisposeEvent event ) {
             Decorations.this.menuBar = null;
           }
@@ -504,6 +502,7 @@ public class Decorations extends Canvas {
   private Listener getDefaultButtonFocusListener() {
     if( defaultButtonFocusListener == null ) {
       defaultButtonFocusListener = new Listener() {
+        @Override
         public void handleEvent( Event event ) {
           // dummy listener - see bug 419920
         }
@@ -520,9 +519,7 @@ public class Decorations extends Canvas {
     if( menuBar != null ) {
       menuBar.reskin( flags );
     }
-    Menu[] menus =  MenuHolder.getMenus( this );
-    for( int i = 0; i < menus.length; i++ ) {
-      Menu menu = menus[ i ];
+    for( Menu menu : this.getAdapter( MenuHolder.class ) ) {
       if( menu != null ) {
         menu.reskin( flags );
       }

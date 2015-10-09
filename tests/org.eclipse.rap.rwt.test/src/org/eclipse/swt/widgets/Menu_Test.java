@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serializeAndDeserialize;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -27,8 +28,7 @@ import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.MenuHolder;
 import org.eclipse.swt.internal.widgets.menukit.MenuLCA;
 import org.junit.Before;
 import org.junit.Rule;
@@ -155,23 +155,28 @@ public class Menu_Test {
   }
 
   @Test
-  public void testDispose() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    shell.setMenuBar( menu );
-    MenuItem fileMenuItem = new MenuItem( menu, SWT.CASCADE );
-    final Menu fileMenu = new Menu( fileMenuItem );
+  public void testDispose_disposesItems() {
+    MenuItem menuItem = new MenuItem( menu, SWT.CASCADE );
+    Menu subMenu = new Menu( menuItem );
+    menuItem.setMenu( subMenu );
+
+    menu.dispose();
+
+    assertTrue( menuItem.isDisposed() );
+    assertTrue( subMenu.isDisposed() );
+  }
+
+  @Test
+  public void testDispose_removesFromParent() {
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( menuBar );
+    MenuItem fileMenuItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu fileMenu = new Menu( fileMenuItem );
     fileMenuItem.setMenu( fileMenu );
-    MenuItem exitMenuItem = new MenuItem( fileMenu, SWT.PUSH );
+
     fileMenu.dispose();
-    assertTrue( fileMenu.isDisposed() );
-    assertTrue( exitMenuItem.isDisposed() );
-    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      @Override
-      public boolean doVisit( Widget widget ) {
-        assertTrue( widget != fileMenu );
-        return true;
-      }
-    } );
+
+    assertArrayEquals( new Menu[] { menu, menuBar }, shell.getAdapter( MenuHolder.class ).getMenus() );
   }
 
   @Test

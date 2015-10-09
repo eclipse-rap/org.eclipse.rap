@@ -994,9 +994,9 @@ public class Shell extends Decorations {
     for( int i = 0; i < dialogShells.length; i++ ) {
       dialogShells[ i ].dispose();
     }
-    Menu[] menus = MenuHolder.getMenus( this );
-    for( int i = 0; i < menus.length; i++ ) {
-      menus[ i ].dispose();
+    Menu[] menus = getAdapter( MenuHolder.class ).getMenus();
+    for( Menu menu : menus ) {
+      menu.dispose();
     }
     if( toolTips != null ) {
       for( int i = 0; i < toolTips.length; i++ ) {

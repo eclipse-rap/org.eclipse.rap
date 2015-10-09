@@ -11,12 +11,7 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -24,6 +19,7 @@ import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.MenuHolder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -102,6 +98,15 @@ public class Decorations_Test {
     Decorations decorations = new Shell( display );
 
     assertFalse( decorations.isReparentable() );
+  }
+
+  @Test
+  public void testGetAdapter_returnsMenuHolder() {
+    Object menuHolder1 = shell.getAdapter( MenuHolder.class );
+    Object menuHolder2 = shell.getAdapter( MenuHolder.class );
+
+    assertNotNull( menuHolder1 );
+    assertSame( menuHolder1, menuHolder2 );
   }
 
 }
