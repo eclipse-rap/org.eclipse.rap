@@ -25,6 +25,8 @@ public final class ServletLog {
       if( throwable != null ) {
         throwable.printStackTrace( System.err );
       }
+    } else if( throwable == null ) {
+      servletContext.log( message );
     } else {
       servletContext.log( message, throwable );
     }
