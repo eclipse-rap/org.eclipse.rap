@@ -19,6 +19,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -34,6 +39,7 @@ import org.eclipse.rap.rwt.internal.service.UISessionImpl;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
+import org.eclipse.rap.rwt.service.UIThreadListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
 import org.eclipse.rap.rwt.testfixture.internal.TestRequest;
@@ -42,6 +48,8 @@ import org.eclipse.swt.widgets.Display;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 
 public class SimpleLifeCycle_Test {
@@ -262,6 +270,56 @@ public class SimpleLifeCycle_Test {
     } catch( UnsupportedOperationException expected ) {
       assertTrue( expected.getMessage().contains( "Display#sleep()" ) );
     }
+  }
+
+  @Test
+  public void testNotifyUIThreadListeners() throws IOException {
+    UIThreadListener listener = mock( UIThreadListener.class );
+    ContextProvider.getApplicationContext().addUIThreadListener( listener );
+    new Display();
+    ArgumentCaptor<UISessionEvent> captor = ArgumentCaptor.forClass( UISessionEvent.class );
+    InOrder inOrder = inOrder( listener );
+
+    lifeCycle.execute();
+
+    inOrder.verify( listener ).enterUIThread( captor.capture() );
+    inOrder.verify( listener ).leaveUIThread( captor.capture() );
+    inOrder.verifyNoMoreInteractions();
+    for( UISessionEvent event : captor.getAllValues() ) {
+      assertSame( ContextProvider.getUISession(), event.getUISession() );
+    }
+  }
+
+  @Test
+  public void testNotifyUIThreadListeners_twice() throws IOException {
+    UIThreadListener listener = mock( UIThreadListener.class );
+    ContextProvider.getApplicationContext().addUIThreadListener( listener );
+    new Display();
+
+    lifeCycle.execute();
+    lifeCycle.execute();
+
+    verify( listener, times( 2 ) ).enterUIThread( any( UISessionEvent.class ) );
+    verify( listener, times( 2 ) ).leaveUIThread( any( UISessionEvent.class ) );
+  }
+
+  @Test
+  public void testNotifyUIThreadListeners_haveAccessToUISession() throws IOException {
+    UIThreadListener listener = new UIThreadListener() {
+      @Override
+      public void enterUIThread( UISessionEvent event ) {
+        assertNotNull( RWT.getUISession() );
+      }
+      @Override
+      public void leaveUIThread( UISessionEvent event ) {
+        assertNotNull( RWT.getUISession() );
+      }
+    };
+    ContextProvider.getApplicationContext().addUIThreadListener( listener );
+    new Display();
+
+    lifeCycle.execute();
+    lifeCycle.execute();
   }
 
   @Test

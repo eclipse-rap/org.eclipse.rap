@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getUISession;
+
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,6 +53,9 @@ public class PhaseListenerManager {
   }
 
   void notifyBeforePhase( PhaseId phase, LifeCycle eventSource ) {
+    if( PhaseId.PROCESS_ACTION.equals( phase ) ) {
+      getApplicationContext().notifyEnterUIThread( getUISession() );
+    }
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -65,6 +71,9 @@ public class PhaseListenerManager {
   }
 
   void notifyAfterPhase( PhaseId phase, LifeCycle eventSource ) {
+    if( PhaseId.PROCESS_ACTION.equals( phase ) ) {
+      getApplicationContext().notifyLeaveUIThread( getUISession() );
+    }
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent event = new PhaseEvent( eventSource, phase );
     for( int i = 0; i < phaseListeners.length; i++ ) {

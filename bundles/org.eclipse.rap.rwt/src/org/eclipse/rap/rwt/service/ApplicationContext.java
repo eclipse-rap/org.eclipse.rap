@@ -61,6 +61,26 @@ public interface ApplicationContext {
   void removeAttribute( String name );
 
   /**
+   * Adds a <code>UIThreadListener</code> to this application context. UIThreadListeners are used to
+   * receive a notification before the UIThread is entered and after it is left. If the given
+   * listener was already added the method has no effect.
+   *
+   * @param listener the listener to be added
+   * @since 3.1
+   */
+  void addUIThreadListener( UIThreadListener listener );
+
+  /**
+   * Removes a <code>UIThreadListener</code> from this application context. UIThreadListeners are
+   * used to receive a notification before the UIThread is entered and after it is left. If the
+   * given listener was not added to this application context before, this method has no effect.
+   *
+   * @param listener the listener to be removed
+   * @since 3.1
+   */
+  void removeUIThreadListener( UIThreadListener listener );
+
+  /**
    * Adds an <code>ApplicationContextListener</code> to this application context.
    * ApplicationContextListeners are used to receive a notification before the application context
    * is destroyed. If the given listener was already added the method has no effect.
@@ -79,8 +99,8 @@ public interface ApplicationContext {
   /**
    * Removes an <code>ApplicationContextListener</code> from this application context.
    * ApplicationContextListeners are used to receive a notification before the application context
-   * is destroyed. If the given listener was not added to the session store this method has no
-   * effect.
+   * is destroyed. If the given listener was not added to this application context before, this
+   * method has no effect.
    * <p>
    * If the ApplicationContext is already deactivated or is about to be deactivated, the listener
    * will not be removed and this method will return <code>false</code>. A return value of

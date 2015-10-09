@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
@@ -51,6 +52,9 @@ import org.eclipse.rap.rwt.service.ApplicationContextEvent;
 import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.FileSettingStoreFactory;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UIThreadListener;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ImageDataFactory;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -99,7 +103,8 @@ public class ApplicationContextImpl implements ApplicationContext {
   private final ProbeStore probeStore;
   private final ServletContext servletContext;
   private final ClientSelector clientSelector;
-  private final Set<ApplicationContextListener> listeners;
+  private final Set<ApplicationContextListener> appContextListeners;
+  private final Set<UIThreadListener> uiThreadListeners;
   private final SerializableLock listenersLock;
   private final AtomicReference<State> state;
   private ExceptionHandler exceptionHandler;
@@ -131,9 +136,10 @@ public class ApplicationContextImpl implements ApplicationContext {
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
     clientSelector = new ClientSelector();
-    listeners = new HashSet<>();
+    appContextListeners = new HashSet<>();
     listenersLock = new SerializableLock();
     state = new AtomicReference<>( State.INACTIVE );
+    uiThreadListeners = new CopyOnWriteArraySet<>();
   }
 
   protected ThemeManager createThemeManager() {
@@ -172,13 +178,39 @@ public class ApplicationContextImpl implements ApplicationContext {
   }
 
   @Override
+  public void addUIThreadListener( UIThreadListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    uiThreadListeners.add( listener );
+  }
+
+  @Override
+  public void removeUIThreadListener( UIThreadListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    uiThreadListeners.remove( listener );
+  }
+
+  public void notifyEnterUIThread( UISession uiSession ) {
+    UISessionEvent event = new UISessionEvent( uiSession );
+    for( UIThreadListener listener : uiThreadListeners ) {
+      listener.enterUIThread( event );
+    }
+  }
+
+  public void notifyLeaveUIThread( UISession uiSession ) {
+    UISessionEvent event = new UISessionEvent( uiSession );
+    for( UIThreadListener listener : uiThreadListeners ) {
+      listener.leaveUIThread( event );
+    }
+  }
+
+  @Override
   public boolean addApplicationContextListener( ApplicationContextListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     boolean result = false;
     synchronized( listenersLock ) {
       if( state.get().equals( State.ACTIVE ) ) {
         result = true;
-        listeners.add( listener );
+        appContextListeners.add( listener );
       }
     }
     return result;
@@ -191,7 +223,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     synchronized( listenersLock ) {
       if( state.get().equals( State.ACTIVE ) ) {
         result = true;
-        listeners.remove( listener );
+        appContextListeners.remove( listener );
       }
     }
     return result;
@@ -405,7 +437,7 @@ public class ApplicationContextImpl implements ApplicationContext {
 
   private List<ApplicationContextListener> copyListeners() {
     synchronized( listenersLock ) {
-      return new ArrayList<>( listeners );
+      return new ArrayList<>( appContextListeners );
     }
   }
 

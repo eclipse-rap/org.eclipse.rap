@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -50,12 +51,16 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
+import org.eclipse.rap.rwt.service.UISession;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UIThreadListener;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 
 public class ApplicationContextImpl_Test {
@@ -69,13 +74,15 @@ public class ApplicationContextImpl_Test {
   private SettingStoreFactory settingStoreFactory;
   private ServiceHandler serviceHandler;
   private ApplicationContextImpl applicationContext;
-  private ApplicationContextListener listener;
+  private ApplicationContextListener appContextListener;
+  private UIThreadListener uiThreadListener;
 
   @Before
   public void setUp() {
     settingStoreFactory = mock( SettingStoreFactory.class );
     serviceHandler = mock( ServiceHandler.class );
-    listener = mock( ApplicationContextListener.class );
+    appContextListener = mock( ApplicationContextListener.class );
+    uiThreadListener = mock( UIThreadListener.class );
   }
 
   @Test
@@ -199,6 +206,7 @@ public class ApplicationContextImpl_Test {
   @Test
   public void testActivate_withDefaultSettingStoreFactory() {
     ApplicationConfiguration configuration = new ApplicationConfiguration() {
+      @Override
       public void configure( Application application ) {
         application.addStyleSheet( THEME_ID, STYLE_SHEET );
       }
@@ -238,12 +246,12 @@ public class ApplicationContextImpl_Test {
   public void testDeactivate_calledTwice_doesNotCallListenersTwice() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
     applicationContext.deactivate();
     applicationContext.deactivate();
 
-    verify( listener, times( 1 ) ).beforeDestroy( any( ApplicationContextEvent.class ) );
+    verify( appContextListener, times( 1 ) ).beforeDestroy( any( ApplicationContextEvent.class ) );
   }
 
   @Test
@@ -288,6 +296,71 @@ public class ApplicationContextImpl_Test {
   }
 
   @Test( expected = NullPointerException.class )
+  public void testAddUIThreadListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.addUIThreadListener( null );
+  }
+
+  @Test
+  public void testAddUIThreadListener_addsListener() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.addUIThreadListener( uiThreadListener );
+    UISession uiSession = mock( UISession.class );
+    InOrder inOrder = inOrder( uiThreadListener );
+    ArgumentCaptor<UISessionEvent> captor = ArgumentCaptor.forClass( UISessionEvent.class );
+
+    applicationContext.notifyEnterUIThread( uiSession );
+    applicationContext.notifyLeaveUIThread( uiSession );
+
+    inOrder.verify( uiThreadListener ).enterUIThread( captor.capture() );
+    inOrder.verify( uiThreadListener ).leaveUIThread( captor.capture() );
+    inOrder.verifyNoMoreInteractions();
+    for( UISessionEvent event : captor.getAllValues() ) {
+      assertSame( uiSession, event.getUISession() );
+    }
+  }
+
+  @Test
+  public void testAddUIThreadListener_doesNotAddListenerTwice() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.addUIThreadListener( uiThreadListener );
+    applicationContext.addUIThreadListener( uiThreadListener );
+
+    applicationContext.notifyEnterUIThread( mock( UISession.class ) );
+
+    verify( uiThreadListener ).enterUIThread( any( UISessionEvent.class ) );
+  }
+
+  @Test( expected = NullPointerException.class )
+  public void testRemoveUIThreadListener_failsWithNullArgument() {
+    applicationContext = new ApplicationContextImpl( null, null );
+
+    applicationContext.removeUIThreadListener( null );
+  }
+
+  @Test
+  public void testRemoveUIThreadListener_toleratesMissingListener() {
+    applicationContext = createApplicationContextSpy();
+
+    applicationContext.removeUIThreadListener( uiThreadListener );
+  }
+
+  @Test
+  public void testRemoveUIThreadListener_removesListener() {
+    applicationContext = createApplicationContextSpy();
+    applicationContext.addUIThreadListener( uiThreadListener );
+    applicationContext.addUIThreadListener( uiThreadListener );
+
+    applicationContext.removeUIThreadListener( uiThreadListener );
+    applicationContext.notifyEnterUIThread( mock( UISession.class ) );
+    applicationContext.notifyLeaveUIThread( mock( UISession.class ) );
+
+    verify( uiThreadListener, never() ).enterUIThread( any( UISessionEvent.class ) );
+    verify( uiThreadListener, never() ).leaveUIThread( any( UISessionEvent.class ) );
+  }
+
+  @Test( expected = NullPointerException.class )
   public void testAddApplicationContextListener_failsWithNullArgument() {
     applicationContext = new ApplicationContextImpl( null, null );
 
@@ -298,23 +371,23 @@ public class ApplicationContextImpl_Test {
   public void testAddApplicationContextListener_addsListener() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
     applicationContext.deactivate();
 
-    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+    verify( appContextListener ).beforeDestroy( any( ApplicationContextEvent.class ) );
   }
 
   @Test
   public void testAddApplicationContextListener_doesNotAddListenerTwice() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
     applicationContext.deactivate();
 
-    verify( listener ).beforeDestroy( any( ApplicationContextEvent.class ) );
+    verify( appContextListener ).beforeDestroy( any( ApplicationContextEvent.class ) );
   }
 
   @Test
@@ -322,7 +395,7 @@ public class ApplicationContextImpl_Test {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
 
-    boolean result = applicationContext.addApplicationContextListener( listener );
+    boolean result = applicationContext.addApplicationContextListener( appContextListener );
 
     assertTrue( result );
   }
@@ -331,9 +404,9 @@ public class ApplicationContextImpl_Test {
   public void testAddApplicationContextListener_returnsTrueEvenIfAlreadyAdded() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
-    boolean result = applicationContext.addApplicationContextListener( listener );
+    boolean result = applicationContext.addApplicationContextListener( appContextListener );
 
     assertTrue( result );
   }
@@ -342,7 +415,7 @@ public class ApplicationContextImpl_Test {
   public void testAddApplicationContextListener_returnsFalseWhenInactive() {
     applicationContext = createApplicationContextSpy();
 
-    boolean result = applicationContext.addApplicationContextListener( listener );
+    boolean result = applicationContext.addApplicationContextListener( appContextListener );
 
     assertFalse( result );
   }
@@ -358,28 +431,28 @@ public class ApplicationContextImpl_Test {
   public void testRemoveApplicationContextListener_toleratesMissingListener() {
     applicationContext = createApplicationContextSpy();
 
-    applicationContext.removeApplicationContextListener( listener );
+    applicationContext.removeApplicationContextListener( appContextListener );
   }
 
   @Test
   public void testRemoveApplicationContextListener_removesListener() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
-    applicationContext.removeApplicationContextListener( listener );
+    applicationContext.removeApplicationContextListener( appContextListener );
     applicationContext.deactivate();
 
-    verify( listener, never() ).beforeDestroy( any( ApplicationContextEvent.class ) );
+    verify( appContextListener, never() ).beforeDestroy( any( ApplicationContextEvent.class ) );
   }
 
   @Test
   public void testRemoveApplicationContextListener_returnsTrueWhenActive() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
-    boolean result = applicationContext.removeApplicationContextListener( listener );
+    boolean result = applicationContext.removeApplicationContextListener( appContextListener );
 
     assertTrue( result );
   }
@@ -389,7 +462,7 @@ public class ApplicationContextImpl_Test {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
 
-    boolean result = applicationContext.removeApplicationContextListener( listener );
+    boolean result = applicationContext.removeApplicationContextListener( appContextListener );
 
     assertTrue( result );
   }
@@ -397,9 +470,9 @@ public class ApplicationContextImpl_Test {
   @Test
   public void testRemoveApplicationContextListener_returnsFalseWhenInActive() {
     applicationContext = createApplicationContextSpy();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
-    boolean result = applicationContext.removeApplicationContextListener( listener );
+    boolean result = applicationContext.removeApplicationContextListener( appContextListener );
 
     assertFalse( result );
   }
@@ -408,13 +481,13 @@ public class ApplicationContextImpl_Test {
   public void testBeforeDestroyEvent() {
     applicationContext = createApplicationContextSpy();
     applicationContext.activate();
-    applicationContext.addApplicationContextListener( listener );
+    applicationContext.addApplicationContextListener( appContextListener );
 
     applicationContext.deactivate();
 
     ArgumentCaptor<ApplicationContextEvent> captor
       = ArgumentCaptor.forClass( ApplicationContextEvent.class );
-    verify( listener ).beforeDestroy( captor.capture() );
+    verify( appContextListener ).beforeDestroy( captor.capture() );
     assertSame( applicationContext, captor.getValue().getSource() );
     assertSame( applicationContext, captor.getValue().getApplicationContext() );
   }
@@ -425,6 +498,7 @@ public class ApplicationContextImpl_Test {
     applicationContext.activate();
     final AtomicBoolean applicationContextActive = new AtomicBoolean();
     ApplicationContextListener listener = new ApplicationContextListener() {
+      @Override
       public void beforeDestroy( ApplicationContextEvent event ) {
         boolean active = ( ( ApplicationContextImpl )event.getApplicationContext() ).isActive();
         applicationContextActive.set( active );
@@ -443,6 +517,7 @@ public class ApplicationContextImpl_Test {
     applicationContext = new ApplicationContextImpl( createConfiguration(), servletContext );
     applicationContext.activate();
     applicationContext.addApplicationContextListener( new ApplicationContextListener() {
+      @Override
       public void beforeDestroy( ApplicationContextEvent event ) {
         throw new RuntimeException();
       }
@@ -463,6 +538,7 @@ public class ApplicationContextImpl_Test {
 
   private ApplicationConfiguration createConfiguration() {
     return new ApplicationConfiguration() {
+      @Override
       public void configure( Application application ) {
         application.addEntryPoint( "/entryPoint", TestEntryPoint.class, null );
         DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
@@ -620,6 +696,7 @@ public class ApplicationContextImpl_Test {
   }
 
   private static class TestResourceLoader implements ResourceLoader {
+    @Override
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return mock( InputStream.class );
     }
