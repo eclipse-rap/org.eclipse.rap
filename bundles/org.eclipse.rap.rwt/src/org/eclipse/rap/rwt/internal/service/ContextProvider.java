@@ -41,8 +41,7 @@ import org.eclipse.rap.rwt.service.UISession;
 public class ContextProvider {
 
   // The context mapping mechanism used in standard UI requests from the client
-  private final static ThreadLocal<ServiceContext> CONTEXT_HOLDER
-    = new ThreadLocal<>();
+  private final static ThreadLocal<ServiceContext> CONTEXT_HOLDER = new ThreadLocal<>();
 
   // Used to map contexts to background threads from another thread
   // Note: this map could also be used to replace the CONTEXT_HOLDER, but we prefer the thread
@@ -141,29 +140,22 @@ public class ContextProvider {
   public static void disposeContext( Thread thread ) {
     ParamCheck.notNull( thread, "thread" );
     synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
-      ServiceContext toRemove = CONTEXT_HOLDER_FOR_BG_THREADS.get( thread );
-      if( toRemove != null ) {
-        CONTEXT_HOLDER_FOR_BG_THREADS.remove( thread );
-        toRemove.dispose();
+      ServiceContext removed = CONTEXT_HOLDER_FOR_BG_THREADS.remove( thread );
+      if( removed != null ) {
+        removed.dispose();
       }
     }
   }
 
   public static boolean releaseContextHolder() {
-    boolean result = false;
-    Object object = CONTEXT_HOLDER.get();
-    if( object != null ) {
+    if( CONTEXT_HOLDER.get() != null ) {
       CONTEXT_HOLDER.set( null );
-    } else {
-      synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
-        ServiceContext toRemove = CONTEXT_HOLDER_FOR_BG_THREADS.get( Thread.currentThread() );
-        if( toRemove != null ) {
-          CONTEXT_HOLDER_FOR_BG_THREADS.remove( Thread.currentThread() );
-        }
-      }
-      result = true;
+      return false;
     }
-    return result;
+    synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
+      CONTEXT_HOLDER_FOR_BG_THREADS.remove( Thread.currentThread() );
+    }
+    return true;
   }
 
   private static ServiceContext getContextInternal() {
