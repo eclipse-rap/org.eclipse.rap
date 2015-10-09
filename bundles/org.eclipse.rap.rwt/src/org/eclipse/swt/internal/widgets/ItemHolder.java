@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,37 +18,25 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Widget;
+
 
 public final class ItemHolder<T extends Item>
   implements IItemHolderAdapter<T>, SerializableCompatibility
 {
 
-  @SuppressWarnings("unchecked")
-  public static <T extends Item> IItemHolderAdapter<T> getItemHolder( Widget widget ) {
-    if( !isItemHolder( widget ) ) {
-      String txt = "Widget type does not contain items: " + widget.getClass().getName();
-      throw new IllegalArgumentException( txt );
-    }
-    return widget.getAdapter( IItemHolderAdapter.class );
-  }
-
-  public static boolean isItemHolder( Widget widget ) {
-    return widget.getAdapter( IItemHolderAdapter.class ) != null;
-  }
-
   private final List<T> items;
-  private final Class type;
+  private final Class<T> type;
 
   public ItemHolder( Class<T> type ) {
     this.type = type;
-    this.items = new ArrayList<T>();
+    this.items = new ArrayList<>();
   }
 
   public int size() {
     return items.size();
   }
 
+  @Override
   public void add( T item ) {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -60,6 +48,7 @@ public final class ItemHolder<T extends Item>
     items.add( item );
   }
 
+  @Override
   public void insert( T item, int index ) {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -73,6 +62,7 @@ public final class ItemHolder<T extends Item>
     items.add( index, item );
   }
 
+  @Override
   public void remove( T item ) {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -83,6 +73,7 @@ public final class ItemHolder<T extends Item>
     items.remove( item );
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public T[] getItems() {
     T[] result = ( T[] )Array.newInstance( type, items.size() );

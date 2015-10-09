@@ -39,7 +39,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderLCA;
 import org.junit.Before;
 import org.junit.Rule;
@@ -227,7 +227,7 @@ public class TabFolder_Test {
     folder.dispose();
 
     assertTrue( item.isDisposed() );
-    assertEquals( 0, ItemHolder.getItemHolder( folder ).getItems().length );
+    assertEquals( 0, folder.getAdapter( IItemHolderAdapter.class ).getItems().length );
   }
 
   @Test

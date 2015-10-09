@@ -55,17 +55,11 @@ public class WidgetTreeVisitor {
         handleChildren( composite, visitor );
         handleToolTips( root, visitor );
       }
-    } else if( ItemHolder.isItemHolder( root ) ) {
-      if( visitor.visit( root ) ) {
-        handleDragDrop( root, visitor );
-        handleDecorator( root, visitor );
-        handleItems( root, visitor );
-        handleScrollBars( root, visitor );
-      }
     } else {
       if( visitor.visit( root ) ) {
         handleDragDrop( root, visitor );
         handleDecorator( root, visitor );
+        handleItems( root, visitor );
         handleScrollBars( root, visitor );
       }
     }
@@ -90,9 +84,6 @@ public class WidgetTreeVisitor {
   public boolean visit( Composite composite ) {
     return true;
   }
-
-  ///////////////////////////////////////////////////
-  // Helping methods to visit particular hierarchies
 
   private static void handleMenus( Composite composite, WidgetTreeVisitor visitor ) {
     MenuHolder menuHolder = composite.getAdapter( MenuHolder.class );
@@ -124,9 +115,9 @@ public class WidgetTreeVisitor {
   }
 
   private static void handleItems( Widget root, WidgetTreeVisitor visitor ) {
-    if( ItemHolder.isItemHolder( root ) ) {
-      Item[] items = ItemHolder.getItemHolder( root ).getItems();
-      for( Item item : items ) {
+    IItemHolderAdapter<Item> itemHolder = root.getAdapter( IItemHolderAdapter.class );
+    if( itemHolder != null ) {
+      for( Item item : itemHolder.getItems() ) {
         accept( item, visitor );
       }
     }

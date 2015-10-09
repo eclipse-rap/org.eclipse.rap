@@ -49,7 +49,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -2979,7 +2978,7 @@ public class Grid_Test {
 
   private int countResolvedGridItems() {
     int counter = 0;
-    Item[] items = ItemHolder.getItemHolder( grid ).getItems();
+    Item[] items = grid.getAdapter( IItemHolderAdapter.class ).getItems();
     for( Item item : items ) {
       if( item instanceof GridItem ) {
         counter++;

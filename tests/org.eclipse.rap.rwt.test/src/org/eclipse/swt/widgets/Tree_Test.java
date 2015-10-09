@@ -49,8 +49,8 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.junit.Before;
@@ -144,9 +144,9 @@ public class Tree_Test {
     assertTrue( item.isDisposed() );
     assertTrue( subItem.isDisposed() );
     assertTrue( column.isDisposed() );
-    assertEquals( 0, ItemHolder.getItemHolder( tree ).getItems().length );
-    assertEquals( 0, ItemHolder.getItemHolder( item ).getItems().length );
-    assertEquals( 0, ItemHolder.getItemHolder( subItem ).getItems().length );
+    assertEquals( 0, tree.getAdapter( IItemHolderAdapter.class ).getItems().length );
+    assertEquals( 0, item.getAdapter( IItemHolderAdapter.class ).getItems().length );
+    assertEquals( 0, subItem.getAdapter( IItemHolderAdapter.class ).getItems().length );
   }
 
   @Test

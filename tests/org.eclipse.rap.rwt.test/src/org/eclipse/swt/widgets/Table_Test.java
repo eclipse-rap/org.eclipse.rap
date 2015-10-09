@@ -53,7 +53,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA;
 import org.eclipse.swt.layout.FillLayout;
@@ -1685,12 +1684,12 @@ public class Table_Test {
 
     table.setItemCount( 1 );
     assertEquals( 1, table.getItemCount() );
-    Item[] items = ItemHolder.getItemHolder( table ).getItems();
+    Item[] items = table.getAdapter( IItemHolderAdapter.class ).getItems();
     assertEquals( 0, items.length );
 
     new TableItem( table, SWT.NONE );
     assertEquals( 2, table.getItemCount() );
-    items = ItemHolder.getItemHolder( table ).getItems();
+    items = table.getAdapter( IItemHolderAdapter.class ).getItems();
     assertEquals( 1, items.length );
   }
 
@@ -1795,11 +1794,11 @@ public class Table_Test {
     shell.open();
 
     // Ensure that a virtual item is not "realized" as long as it is invisible
-    assertEquals( 0, ItemHolder.getItemHolder( table ).getItems().length );
+    assertEquals( 0, table.getAdapter( IItemHolderAdapter.class ).getItems().length );
 
     // Enlarge the table so that the item will become visible
     table.setSize( 200, 200 );
-    assertEquals( 1, ItemHolder.getItemHolder( table ).getItems().length );
+    assertEquals( 1, table.getAdapter( IItemHolderAdapter.class ).getItems().length );
   }
 
   @Test

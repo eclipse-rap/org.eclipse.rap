@@ -370,12 +370,12 @@ public class ToolBar extends Composite {
   }
 
   void createItem( ToolItem item, int index ) {
-    ItemHolder.getItemHolder( this ).insert( item, index );
+    itemHolder.insert( item, index );
     layoutItems();
   }
 
   void destroyItem( ToolItem item ) {
-    ItemHolder.getItemHolder( this ).remove( item );
+    itemHolder.remove( item );
     layoutItems();
   }
 

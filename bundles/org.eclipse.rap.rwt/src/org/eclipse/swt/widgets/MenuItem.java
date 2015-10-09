@@ -21,7 +21,7 @@ import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA;
 
 
@@ -87,7 +87,7 @@ public class MenuItem extends Item {
   public MenuItem( Menu parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.getItemHolder( parent ).add( this );
+    parent.getAdapter( IItemHolderAdapter.class ).add( this );
   }
 
   /**
@@ -129,7 +129,7 @@ public class MenuItem extends Item {
   public MenuItem( Menu parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.getItemHolder( parent ).insert( this, index );
+    parent.getAdapter( IItemHolderAdapter.class ).insert( this, index );
   }
 
   /**
@@ -640,7 +640,7 @@ public class MenuItem extends Item {
   @Override
   final void releaseParent() {
     super.releaseParent();
-    ItemHolder.getItemHolder( parent ).remove( this );
+    parent.getAdapter( IItemHolderAdapter.class ).remove( this );
   }
 
   @Override

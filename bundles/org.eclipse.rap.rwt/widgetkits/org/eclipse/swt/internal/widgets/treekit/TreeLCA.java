@@ -36,8 +36,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.CellToolTipUtil;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -254,7 +254,7 @@ public final class TreeLCA extends WidgetLCA<Tree> {
   }
 
   private static void renderAfterItems( Tree tree, Runnable runnable ) {
-    Item[] items = ItemHolder.<Item>getItemHolder( tree ).getItems();
+    Item[] items = tree.getAdapter( IItemHolderAdapter.class ).getItems();
     if( items.length > 0 ) {
       Item lastItem = items[ items.length - 1 ];
       WidgetRemoteAdapter adapter = ( WidgetRemoteAdapter )getAdapter( lastItem );
