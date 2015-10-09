@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
@@ -70,31 +72,35 @@ public class LifeCycleUtil_Test {
 
   @Test
   public void testGetSessionDisplayFromBackgroundThreadWithoutContext() throws Throwable {
-    final Display[] sessionDisplay = { null };
-    Runnable runnable = new Runnable() {
+    final AtomicReference<Display> sessionDisplay = new AtomicReference<>();
+
+    runInThread( new Runnable() {
+      @Override
       public void run() {
-        sessionDisplay[ 0 ] = LifeCycleUtil.getSessionDisplay();
+        sessionDisplay.set( LifeCycleUtil.getSessionDisplay() );
       }
-    };
-    runInThread( runnable );
-    assertNull( sessionDisplay[ 0 ] );
+    } );
+
+    assertNull( sessionDisplay.get() );
   }
 
   @Test
   public void testGetSessionDisplayFromBackgroundThreadWithContext() throws Throwable {
     final Display display = new Display();
-    final Display[] sessionDisplay = { null };
+    final AtomicReference<Display> sessionDisplay = new AtomicReference<>();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         RWT.getUISession( display ).exec( new Runnable() {
+          @Override
           public void run() {
-            sessionDisplay[ 0 ] = LifeCycleUtil.getSessionDisplay();
+            sessionDisplay.set( LifeCycleUtil.getSessionDisplay() );
           }
         } );
       }
     };
     runInThread( runnable );
-    assertSame( display, sessionDisplay[ 0 ] );
+    assertSame( display, sessionDisplay.get() );
   }
 
   @Test

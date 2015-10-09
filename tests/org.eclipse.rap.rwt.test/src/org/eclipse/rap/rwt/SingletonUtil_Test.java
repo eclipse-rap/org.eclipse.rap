@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,6 +170,7 @@ public class SingletonUtil_Test {
     final AtomicReference<Object> instance2 = new AtomicReference<Object>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         Fixture.createServiceContext();
         instance2.set( SingletonUtil.getSessionInstance( TestSingleton.class ) );
@@ -182,16 +183,17 @@ public class SingletonUtil_Test {
   @Test
   public void testGetSessionInstance_returnsInstanceWithFakeContext() throws Throwable {
     final ServiceContext serviceContext = ContextProvider.getContext();
-    final Object[] instance = { null };
+    final AtomicReference<Object> instance = new AtomicReference<>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         ContextProvider.setContext( serviceContext );
-        instance[ 0 ] = SingletonUtil.getSessionInstance( TestSingleton.class );
+        instance.set( SingletonUtil.getSessionInstance( TestSingleton.class ) );
       }
     } );
 
-    assertNotNull( instance[ 0 ] );
+    assertNotNull( instance.get() );
   }
 
   @Test( expected = IllegalStateException.class )

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,14 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -47,22 +49,17 @@ public class ProcessAction_Test {
 
   @Test
   public void testExecute() {
-    final boolean[] wasExecuted = { false };
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
-    shell.addShellListener( new ShellAdapter() {
-      @Override
-      public void shellClosed( ShellEvent event ) {
-        wasExecuted[ 0 ] = true;
-      }
-    } );
-    shell.notifyListeners( SWT.Close, null );
+    ShellListener listener = mock( ShellListener.class );
+    shell.addShellListener( listener );
 
+    shell.notifyListeners( SWT.Close, null );
     PhaseId phaseId = processAction.execute( display );
 
     assertEquals( PhaseId.RENDER, phaseId );
-    assertTrue( wasExecuted[ 0 ] );
+    verify( listener ).shellClosed( any( ShellEvent.class ) );
   }
 
 }

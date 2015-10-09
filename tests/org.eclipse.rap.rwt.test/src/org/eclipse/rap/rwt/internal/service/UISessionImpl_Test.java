@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.service;
 
+import static java.util.Collections.synchronizedList;
 import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.joinThreads;
 import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.runInThread;
 import static org.eclipse.rap.rwt.testfixture.internal.ConcurrencyTestUtil.startThreads;
@@ -27,12 +28,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,9 +59,9 @@ import org.eclipse.rap.rwt.service.ApplicationContextListener;
 import org.eclipse.rap.rwt.service.UISession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
+import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.eclipse.rap.rwt.testfixture.internal.TestLogger;
 import org.eclipse.rap.rwt.testfixture.internal.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.internal.TestHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +91,7 @@ public class UISessionImpl_Test {
     servletLogEntries = new LinkedList<Throwable>();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
     servletContext.setLogger( new TestLogger() {
+      @Override
       public void log( String message, Throwable throwable ) {
         servletLogEntries.add( throwable );
       }
@@ -226,16 +231,12 @@ public class UISessionImpl_Test {
 
   @Test
   public void testSetHttpSession_doesNotTriggerListener() {
-    final boolean[] wasCalled = { false };
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        wasCalled[ 0 ] = true;
-      }
-    } );
+    UISessionListener listener = mock( UISessionListener.class );
+    uiSession.addUISessionListener( listener );
 
-    uiSession.setHttpSession( new TestHttpSession() );
+    uiSession.setHttpSession( mock( HttpSession.class ) );
 
-    assertFalse( wasCalled[ 0 ] );
+    verify( listener, never() ).beforeDestroy( any( UISessionEvent.class ) );
   }
 
   @Test
@@ -308,6 +309,7 @@ public class UISessionImpl_Test {
   public void testSetAttribute_whileDestroyingUISession() {
     final AtomicBoolean resultCaptor = new AtomicBoolean();
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         resultCaptor.set( uiSession.setAttribute( "name", new Object() ) );
       }
@@ -388,9 +390,10 @@ public class UISessionImpl_Test {
   }
 
   @Test
-  public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
-    final Throwable[] exception = { null };
+  public void testGetAttributeNames_isThreadSafe() throws InterruptedException {
+    final List<Throwable> errors = synchronizedList( new ArrayList<Throwable>() );
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         try {
           Object object = new Object();
@@ -400,12 +403,14 @@ public class UISessionImpl_Test {
             attributeNames.nextElement();
           }
         } catch( Throwable e ) {
-          exception[ 0 ] = e;
+          errors.add( e );
         }
       }
     };
+
     joinThreads( startThreads( 100, runnable ) );
-    assertNull( exception[ 0 ] );
+
+    assertEquals( Collections.emptyList(), errors );
   }
 
   @Test
@@ -429,17 +434,18 @@ public class UISessionImpl_Test {
 
   @Test
   public void testAddUISessionListener_whileDestroyingUISession() {
-    final boolean[] aboutUnboundListener = { true };
+    final AtomicBoolean aboutUnboundListener = new AtomicBoolean( true );
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         UISessionListener listener = new EmptyUISessionListener();
-        aboutUnboundListener[ 0 ] = uiSession.addUISessionListener( listener );
+        aboutUnboundListener.set( uiSession.addUISessionListener( listener ) );
       }
     } );
 
     httpSession.invalidate();
 
-    assertFalse( aboutUnboundListener[ 0 ] );
+    assertFalse( aboutUnboundListener.get() );
   }
 
   @Test
@@ -465,6 +471,7 @@ public class UISessionImpl_Test {
   public void testBeforeDestroyEvent_hasServiceContext() {
     final AtomicBoolean resultCaptor = new AtomicBoolean();
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         resultCaptor.set( ContextProvider.hasContext() );
       }
@@ -479,6 +486,7 @@ public class UISessionImpl_Test {
   public void testBeforeDestroyEvent_details() {
     final List<UISessionEvent> eventLog = new LinkedList<UISessionEvent>();
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         eventLog.add( event );
       }
@@ -493,11 +501,13 @@ public class UISessionImpl_Test {
   @Test
   public void testExceptionHandlingInUISessionListeners() {
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         throw new RuntimeException();
       }
     } );
     uiSession.addUISessionListener( new UISessionListener() {
+      @Override
       public void beforeDestroy( UISessionEvent event ) {
         throw new RuntimeException();
       }
@@ -510,34 +520,22 @@ public class UISessionImpl_Test {
 
   @Test
   public void testShutdownCallback() {
-    final boolean[] interceptShutdownWasCalled = { false };
-    final Runnable[] shutdownCallback = { null };
-    final boolean[] listenerWasCalled = { false };
-    uiSession.addUISessionListener( new UISessionListener() {
-      public void beforeDestroy( UISessionEvent event ) {
-        listenerWasCalled[ 0 ] = true;
-      }
-    } );
-    uiSession.setShutdownAdapter( new ISessionShutdownAdapter() {
-      public void setUISession( UISession uiSession ) {
-      }
-      public void setShutdownCallback( Runnable callback ) {
-        shutdownCallback[ 0 ] = callback;
-      }
-      public void interceptShutdown() {
-        interceptShutdownWasCalled[ 0 ] = true;
-      }
-      public void processShutdown() {
-      }
-    } );
+    ArgumentCaptor<Runnable> shutdownCallbackCaptor = ArgumentCaptor.forClass( Runnable.class );
+    UISessionListener listener = mock( UISessionListener.class );
+    ISessionShutdownAdapter adapter = mock( ISessionShutdownAdapter.class );
+    uiSession.addUISessionListener( listener );
+    uiSession.setShutdownAdapter( adapter );
 
     uiSession.shutdown();
 
-    assertTrue( interceptShutdownWasCalled[ 0 ] );
+    verify( adapter ).interceptShutdown();
+    verify( adapter ).setShutdownCallback( shutdownCallbackCaptor.capture() );
+    verify( listener, never() ).beforeDestroy( any( UISessionEvent.class ) );
     assertTrue( uiSession.isBound() );
-    assertFalse( listenerWasCalled[ 0 ] );
-    shutdownCallback[ 0 ].run();
-    assertTrue( listenerWasCalled[ 0 ] );
+
+    shutdownCallbackCaptor.getValue().run();
+
+    verify( listener ).beforeDestroy( any( UISessionEvent.class ) );
     assertFalse( uiSession.isBound() );
   }
 
@@ -654,6 +652,7 @@ public class UISessionImpl_Test {
     final AtomicReference<Locale> localeCaptor = new AtomicReference<Locale>();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         localeCaptor.set( uiSession.getLocale() );
       }
@@ -733,6 +732,7 @@ public class UISessionImpl_Test {
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         uiSession.exec( runnable );
       }
@@ -748,6 +748,7 @@ public class UISessionImpl_Test {
     final ContextTrackerRunnable runnable = new ContextTrackerRunnable();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         HttpServletRequest request = mock( HttpServletRequest.class );
         HttpServletResponse response = mock( HttpServletResponse.class );
@@ -838,6 +839,7 @@ public class UISessionImpl_Test {
   }
 
   private static class EmptyUISessionListener implements UISessionListener {
+    @Override
     public void beforeDestroy( UISessionEvent event ) {
     }
   }
@@ -847,6 +849,7 @@ public class UISessionImpl_Test {
     private final AtomicReference<ServiceContext> context = new AtomicReference<ServiceContext>();
     private final AtomicReference<UISession> uiSession = new AtomicReference<UISession>();
 
+    @Override
     public void run() {
       context.set( ContextProvider.getContext() );
       uiSession.set( ContextProvider.getContext().getUISession() );

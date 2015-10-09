@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
@@ -86,27 +87,28 @@ public class ServerPushManager_Test {
 
   @Test
   public void testWakeClient() throws InterruptedException {
-    final Throwable[] serverPushServiceHandlerThrowable = { null };
-    final ServiceContext context[] = { ContextProvider.getContext() };
+    final AtomicReference<Throwable> serverPushServiceHandlerThrowable = new AtomicReference<>();
+    final ServiceContext context = ContextProvider.getContext();
     Thread thread = new Thread( new Runnable() {
+      @Override
       public void run() {
-        ContextProvider.setContext( context[ 0 ] );
+        ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
         ServerPushServiceHandler pushServiceHandler = new ServerPushServiceHandler();
         try {
           manager.activateServerPushFor( HANDLE_1 );
           pushServiceHandler.service( ContextProvider.getRequest(), ContextProvider.getResponse() );
         } catch( Throwable thr ) {
-          serverPushServiceHandlerThrowable[ 0 ] = thr;
+          serverPushServiceHandlerThrowable.set( thr );
         }
       }
     } );
     thread.start();
     Thread.sleep( SLEEP_TIME );
-    if( serverPushServiceHandlerThrowable[ 0 ] != null ) {
-      serverPushServiceHandlerThrowable[ 0 ].printStackTrace();
+    if( serverPushServiceHandlerThrowable.get() != null ) {
+      serverPushServiceHandlerThrowable.get().printStackTrace();
     }
-    assertNull( serverPushServiceHandlerThrowable[ 0 ] );
+    assertNull( serverPushServiceHandlerThrowable.get() );
     assertTrue( manager.isCallBackRequestBlocked() );
 
     manager.setHasRunnables( true );
@@ -334,6 +336,7 @@ public class ServerPushManager_Test {
     final ServiceContext context = ContextProvider.getContext();
     // the code in bgRunnable simulates a bg-thread that calls Display#addSync
     Runnable bgRunnable = new Runnable() {
+      @Override
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
@@ -374,10 +377,12 @@ public class ServerPushManager_Test {
     // the code in bgRunnable simulates a bg-thread that calls Display#addSync
     // and causes an exception in the runnable
     Runnable bgRunnable = new Runnable() {
+      @Override
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
         Runnable causeException = new Runnable() {
+          @Override
           public void run() {
             throw new RuntimeException( "Exception in sync-runnable" );
           }
@@ -434,16 +439,17 @@ public class ServerPushManager_Test {
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     manager.activateServerPushFor( HANDLE_1 );
-    final boolean[] otherSession = new boolean[ 1 ];
+    final AtomicBoolean otherSession = new AtomicBoolean();
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         Fixture.createServiceContext();
         new Display();
-        otherSession[ 0 ] = ServerPushManager.getInstance().needsActivation();
+        otherSession.set( ServerPushManager.getInstance().needsActivation() );
       }
     };
     runInThread( runnable );
-    assertFalse( otherSession[ 0 ] );
+    assertFalse( otherSession.get() );
   }
 
   @Test
@@ -548,6 +554,7 @@ public class ServerPushManager_Test {
 
   private void simulateBackgroundAddition( final ServiceContext serviceContext ) throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         ContextProvider.setContext( serviceContext );
         display.asyncExec( new AsyncExecRunnable() );
@@ -559,8 +566,10 @@ public class ServerPushManager_Test {
 
   private void simulateAsyncExecDuringLifeCycle() {
     ProcessActionRunner.add( new Runnable() {
+      @Override
       public void run() {
         Runnable target = new Runnable() {
+          @Override
           public void run() {
             display.asyncExec( new AsyncExecRunnable() );
           }
@@ -576,6 +585,7 @@ public class ServerPushManager_Test {
 
   private void callDisplayWake() throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         display.wake();
       }
@@ -599,6 +609,7 @@ public class ServerPushManager_Test {
   }
 
   private class AsyncExecRunnable implements Runnable {
+    @Override
     public void run() {
       log += RUN_ASYNC_EXEC;
     }
@@ -619,6 +630,7 @@ public class ServerPushManager_Test {
 
     void sendRequest() throws InterruptedException {
       requestThread = new Thread( new Runnable() {
+        @Override
         public void run() {
           ContextProvider.setContext( serviceContext );
           Fixture.fakeResponseWriter();

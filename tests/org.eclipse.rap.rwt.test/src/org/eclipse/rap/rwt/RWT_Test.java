@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public class RWT_Test {
   @Test
   public void testRequestThreadExecFromBackgroundThread() throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         RWT.requestThreadExec( new NoOpRunnable() );
       }
@@ -71,21 +72,25 @@ public class RWT_Test {
 
   @Test
   public void testRequestThreadExec() {
-    final Thread[] requestThread = { null };
+    final AtomicReference<Thread> requestThread = new AtomicReference<>();
     Display display = new Display();
     // use asyncExec to run code during executeLifeCycleFromServerThread
     display.asyncExec( new Runnable() {
+      @Override
       public void run() {
         RWT.requestThreadExec( new Runnable() {
+          @Override
           public void run() {
-            requestThread[ 0 ] = Thread.currentThread();
+            requestThread.set( Thread.currentThread() );
           }
         } );
       }
     } );
+
     Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
-    assertNotNull( requestThread[ 0 ] );
+
+    assertNotNull( requestThread.get() );
   }
 
   @Test
@@ -140,6 +145,7 @@ public class RWT_Test {
   @Test
   public void testGetRequestFromBackgroundThread() throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         RWT.getRequest();
       }
@@ -156,6 +162,7 @@ public class RWT_Test {
   @Test
   public void testGetResponseFromBackgroundThread() throws Throwable {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         RWT.getResponse();
       }
@@ -191,6 +198,7 @@ public class RWT_Test {
   public void testGetApplicationContext_failsInBackgroundThread() throws Throwable {
     try {
       runInThread( new Runnable() {
+        @Override
         public void run() {
           RWT.getApplicationContext();
         }
@@ -208,6 +216,7 @@ public class RWT_Test {
     final UISession currentUISession = RWT.getUISession();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         Fixture.createServiceContext();
         ContextProvider.getContext().setUISession( currentUISession );
@@ -229,6 +238,7 @@ public class RWT_Test {
   public void testGetUISession_failsInBackgroundThread() throws Throwable {
     try {
       runInThread( new Runnable() {
+        @Override
         public void run() {
           RWT.getUISession();
         }
@@ -245,6 +255,7 @@ public class RWT_Test {
     final UISession currentUISession = RWT.getUISession();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         Fixture.createServiceContext();
         ContextProvider.getContext().setUISession( currentUISession );
@@ -280,6 +291,7 @@ public class RWT_Test {
     final Display display = new Display();
 
     runInThread( new Runnable() {
+      @Override
       public void run() {
         result.set( RWT.getUISession( display ) );
       }
