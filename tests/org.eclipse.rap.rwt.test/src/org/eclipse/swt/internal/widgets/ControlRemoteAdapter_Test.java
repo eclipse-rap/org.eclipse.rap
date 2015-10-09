@@ -59,16 +59,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveChildren() {
-    Control[] children = { mock( Control.class ) };
-
-    adapter.preserveChildren( children );
-
-    assertTrue( adapter.hasPreservedChildren() );
-    assertSame( children, adapter.getPreservedChildren() );
-  }
-
-  @Test
   public void testPreserveTabIndex() {
     adapter.preserveTabIndex( 3 );
 
@@ -196,6 +186,8 @@ public class ControlRemoteAdapter_Test {
     assertSame( keys, adapter.getPreservedCancelKeys() );
   }
 
+  // TODO: renderChildren is tested by ControlLCAUtil
+
   @Test
   public void testRenderBounds_initial() {
     adapter.renderBounds( mockControlAdapterWithBounds( new Rectangle( 0, 0, 0, 0 ) ) );
@@ -308,8 +300,6 @@ public class ControlRemoteAdapter_Test {
     assertFalse( adapter.hasPreserved( 1 ) );
     assertFalse( adapter.hasPreservedParent() );
     assertNull( adapter.getPreservedParent() );
-    assertFalse( adapter.hasPreservedChildren() );
-    assertNull( adapter.getPreservedChildren() );
     assertFalse( adapter.hasPreservedTabIndex() );
     assertEquals( 0, adapter.getPreservedTabIndex() );
     assertFalse( adapter.hasPreservedToolTipText() );

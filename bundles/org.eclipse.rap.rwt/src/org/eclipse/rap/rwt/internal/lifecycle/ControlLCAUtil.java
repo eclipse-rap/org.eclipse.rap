@@ -17,7 +17,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenK
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
@@ -26,7 +25,6 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 
 import java.lang.reflect.Field;
 
-import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -47,7 +45,6 @@ import org.eclipse.swt.widgets.Shell;
 public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
-  private static final String PROP_CHILDREN = "children";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
   private static final String PROP_MENU = "menu";
@@ -79,8 +76,11 @@ public class ControlLCAUtil {
 
   public static void renderChanges( Control control ) {
     renderParent( control );
-    renderChildren( control );
-    getRemoteAdapter( control ).renderBounds( getControlAdapter( control ) );
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    if( control instanceof Composite ) {
+      remoteAdapter.renderChildren( ( Composite )control );
+    }
+    remoteAdapter.renderBounds( getControlAdapter( control ) );
     renderTabIndex( control );
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
@@ -119,25 +119,6 @@ public class ControlLCAUtil {
       Composite preserved = remoteAdapter.getPreservedParent();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_PARENT, getId( actual ) );
-      }
-    }
-  }
-
-  public static void preserveChildren( Composite composite, Control[] children ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( composite );
-    if( !remoteAdapter.hasPreservedChildren() ) {
-      remoteAdapter.preserveChildren( children );
-    }
-  }
-
-  private static void renderChildren( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( control instanceof Composite && remoteAdapter.hasPreservedChildren() ) {
-      Composite composite = ( Composite )control;
-      Control[] actual = composite.getChildren();
-      Control[] preserved = remoteAdapter.getPreservedChildren();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_CHILDREN, getIdsAsJson( actual ) );
       }
     }
   }
@@ -429,15 +410,6 @@ public class ControlLCAUtil {
       }
     }
     return result;
-  }
-
-  private static JsonValue getIdsAsJson( Control[] controls ) {
-    String[] controlIds = new String[ controls.length ];
-    for( int i = 0; i < controls.length; i++ ) {
-      controlIds[ i ] = getId( controls[ i ] );
-    }
-    // TODO [rst] Can we also render an empty array instead of null?
-    return controlIds.length == 0 ? JsonValue.NULL : createJsonArray( controlIds );
   }
 
   private static String getQxCursor( Cursor newValue ) {

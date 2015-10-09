@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,22 @@ public class JsonMapping {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
     return JsonValue.valueOf( WidgetUtil.getId( widget ) );
+  }
+
+  /**
+   * Returns the JSON representation for the given array of widgets. The array must not contain
+   * disposed widgets, as those cannot be mapped to JSON.
+   *
+   * @param widgets the array of widgets to encode, must not be <code>null</code>
+   * @return a JSON value that represents the given widget array
+   * @since 3.1
+   */
+  public static JsonValue toJson( Widget[] widgets ) {
+    JsonArray widgetIds = new JsonArray();
+    for( Widget widget : widgets ) {
+      widgetIds.add( toJson( widget ) );
+    }
+    return widgetIds;
   }
 
   /**

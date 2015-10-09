@@ -14,14 +14,15 @@ package org.eclipse.swt.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
 import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 
@@ -845,24 +846,24 @@ public class Composite extends Scrollable {
   }
 
   void addChild( Control control ) {
-    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
+    getRemoteAdapter().preserveChildren( children.toArray( new Control[ 0 ] ) );
     children.add( control );
   }
 
   void removeChild( Control control ) {
-    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
+    getRemoteAdapter().preserveChildren( children.toArray( new Control[ 0 ] ) );
     children.remove( control );
   }
 
   void moveAbove( Control control1, Control control2 ) {
-    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
+    getRemoteAdapter().preserveChildren( children.toArray( new Control[ 0 ] ) );
     children.remove( control1 );
     int index = control2 != null ? children.indexOf( control2 ) : 0;
     children.add( index, control1 );
   }
 
   void moveBelow( Control control1, Control control2 ) {
-    ControlLCAUtil.preserveChildren( this, children.toArray( new Control[ 0 ] ) );
+    getRemoteAdapter().preserveChildren( children.toArray( new Control[ 0 ] ) );
     children.remove( control1 );
     int index = control2 != null ? children.indexOf( control2 ) + 1 : children.size();
     children.add( index, control1 );
@@ -898,6 +899,10 @@ public class Composite extends Scrollable {
         child.reskin( flags );
       }
     }
+  }
+
+  private ControlRemoteAdapter getRemoteAdapter() {
+    return ( ControlRemoteAdapter )getAdapter( RemoteAdapter.class );
   }
 
   private final class CompositeAdapter implements ICompositeAdapter, SerializableCompatibility {
