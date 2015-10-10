@@ -38,7 +38,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.ItemProvider;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
@@ -101,7 +102,6 @@ public class Grid extends Composite {
   private int bottomIndex = -1;
   private boolean bottomIndexShownCompletely;
   private final IGridAdapter gridAdapter;
-  private transient CompositeItemHolder itemHolder;
   boolean hasDifferingHeights;
   LayoutCache layoutCache;
 
@@ -2241,16 +2241,13 @@ public class Grid extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    if( adapter == IItemHolderAdapter.class ) {
-      if( itemHolder == null ) {
-        itemHolder = new CompositeItemHolder();
-      }
-      return ( T )itemHolder;
-    } else if( adapter == IGridAdapter.class ) {
+    if(   adapter == ItemProvider.class
+       || adapter == IGridAdapter.class
+       || adapter == ICellToolTipAdapter.class )
+    {
       return ( T )gridAdapter;
-    } else if( adapter == ICellToolTipAdapter.class ) {
-      return ( T )gridAdapter;
-    } else if( adapter == WidgetLCA.class ) {
+    }
+    if( adapter == WidgetLCA.class ) {
       return ( T )GridLCA.INSTANCE;
     }
     return super.getAdapter( adapter );
@@ -2500,19 +2497,6 @@ public class Grid extends Composite {
       }
     }
     updateScrollBars();
-  }
-
-  private GridItem[] getResolvedItems() {
-    if( isVirtual() ) {
-      List<GridItem> resolvedItems = new ArrayList<GridItem>();
-      for( GridItem item : items ) {
-        if( item.isResolved() ) {
-          resolvedItems.add( item );
-        }
-      }
-      return resolvedItems.toArray( new GridItem[ 0 ] );
-    }
-    return getItems();
   }
 
   boolean isVirtual() {
@@ -3106,37 +3090,8 @@ public class Grid extends Composite {
     public int height;
   }
 
-  private final class CompositeItemHolder implements IItemHolderAdapter<Item> {
-    @Override
-    public void add( Item item ) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void insert( Item item, int index ) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void remove( Item item ) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Item[] getItems() {
-      GridItem[] items = getResolvedItems();
-      GridColumn[] columns = getColumns();
-      GridColumnGroup[] groups = getColumnGroups();
-      Item[] result = new Item[ columns.length + items.length + groups.length ];
-      System.arraycopy( groups, 0, result, 0, groups.length );
-      System.arraycopy( columns, 0, result, groups.length, columns.length );
-      System.arraycopy( items, 0, result, groups.length + columns.length, items.length );
-      return result;
-    }
-  }
-
   private final class GridAdapter
-    implements IGridAdapter, ICellToolTipAdapter, SerializableCompatibility
+    implements IGridAdapter, ICellToolTipAdapter, ItemProvider, SerializableCompatibility
   {
     private String toolTipText;
     private ICellToolTipProvider provider;
@@ -3226,6 +3181,26 @@ public class Grid extends Composite {
       Grid.this.doRedraw();
     }
 
+    @Override
+    public void provideItems( WidgetTreeVisitor visitor ) {
+      for( GridColumnGroup columnGroup : columnGroups ) {
+        visitor.visit( columnGroup );
+      }
+      for( GridColumn column : columns ) {
+        visitor.visit( column );
+      }
+      if( isVirtual() ) {
+        for( GridItem item : items ) {
+          if( item.isResolved() ) {
+            visitor.visit( item );
+          }
+        }
+      } else {
+        for( GridItem item : items ) {
+          visitor.visit( item );
+        }
+      }
+    }
   }
 
   private final class CellToolTipProvider

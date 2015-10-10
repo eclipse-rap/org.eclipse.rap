@@ -115,10 +115,15 @@ public class WidgetTreeVisitor {
   }
 
   private static void handleItems( Widget root, WidgetTreeVisitor visitor ) {
-    IItemHolderAdapter<Item> itemHolder = root.getAdapter( IItemHolderAdapter.class );
-    if( itemHolder != null ) {
-      for( Item item : itemHolder.getItems() ) {
-        accept( item, visitor );
+    ItemProvider itemProvider = root.getAdapter( ItemProvider.class );
+    if( itemProvider != null ) {
+      itemProvider.provideItems( visitor );
+    } else {
+      IItemHolderAdapter<Item> itemHolder = root.getAdapter( IItemHolderAdapter.class );
+      if( itemHolder != null ) {
+        for( Item item : itemHolder.getItems() ) {
+          accept( item, visitor );
+        }
       }
     }
   }
