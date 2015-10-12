@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ class DateTimeTab extends ExampleTab {
     createStyleButton( group2, "LONG", SWT.LONG, SWT.RADIO, false );
     createStyleButton( "DROP_DOWN", SWT.DROP_DOWN, false );
     createStyleButton( "BORDER", SWT.BORDER, true );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
@@ -86,6 +87,7 @@ class DateTimeTab extends ExampleTab {
     if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
       dateTime.addSelectionListener( new SelectionListener() {
 
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           String message = "DateTime WidgetSelected! Selected date: "
                          + dateTime.getDay()
@@ -97,6 +99,7 @@ class DateTimeTab extends ExampleTab {
           log( message );
         }
 
+        @Override
         public void widgetDefaultSelected( SelectionEvent event ) {
           log( "DateTime WidgetDefaultSelected!" );
         }

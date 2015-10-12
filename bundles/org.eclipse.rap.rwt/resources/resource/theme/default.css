@@ -2067,6 +2067,38 @@ DateTime-Calendar-NextYearButton:hover {
   background-image: url( resource/widget/rap/calendar/nextYear-hover.png );
 }
 
+DateTime-Calendar-PreviousMonthButton[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/calendar/nextMonth.png );
+}
+
+DateTime-Calendar-PreviousMonthButton[RIGHT_TO_LEFT]:hover {
+  background-image: url( resource/widget/rap/calendar/nextMonth-hover.png );
+}
+
+DateTime-Calendar-NextMonthButton[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/calendar/lastMonth.png );
+}
+
+DateTime-Calendar-NextMonthButton[RIGHT_TO_LEFT]:hover {
+  background-image: url( resource/widget/rap/calendar/lastMonth-hover.png );
+}
+
+DateTime-Calendar-PreviousYearButton[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/calendar/nextYear.png );
+}
+
+DateTime-Calendar-PreviousYearButton[RIGHT_TO_LEFT]:hover {
+  background-image: url( resource/widget/rap/calendar/nextYear-hover.png );
+}
+
+DateTime-Calendar-NextYearButton[RIGHT_TO_LEFT] {
+  background-image: url( resource/widget/rap/calendar/lastYear.png );
+}
+
+DateTime-Calendar-NextYearButton[RIGHT_TO_LEFT]:hover {
+  background-image: url( resource/widget/rap/calendar/lastYear-hover.png );
+}
+
 DateTime-UpButton {
   background-color: #f0f0f0;
   background-image: gradient(

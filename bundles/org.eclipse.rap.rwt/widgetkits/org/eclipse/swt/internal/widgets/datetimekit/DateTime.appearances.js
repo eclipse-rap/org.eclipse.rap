@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,9 +88,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      var border = tv.getCssBorder( "DateTime-UpButton", "border" );
-      var borderLeft = tv.getCssBorder( "DateTime-UpButton", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
       result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
       result.icon = tv.getCssSizedImage( "DateTime-UpButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
@@ -109,9 +107,7 @@ var appearances = {
     style : function( states ) {
       var result = {};
       var tv = new rwt.theme.ThemeValues( states );
-      var border = tv.getCssBorder( "DateTime-DownButton", "border" );
-      var borderLeft = tv.getCssBorder( "DateTime-DownButton", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
       result.icon = tv.getCssSizedImage( "DateTime-DownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
@@ -130,9 +126,7 @@ var appearances = {
     style : function( states ) {
       var tv = new rwt.theme.ThemeValues( states );
       var result = {};
-      var border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
-      var borderLeft = tv.getCssBorder( "DateTime-DropDownButton", "border-left" );
-      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
       result.icon = tv.getCssSizedImage( "DateTime-DropDownButton-Icon", "background-image" );
       if( result.icon === rwt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssSizedImage( "DateTime-DropDownButton", "background-image" );
@@ -263,16 +257,16 @@ var appearances = {
 
   "calendar-week" : {
     style : function( states ) {
-      var border;
+      var borderWidths;
       if( states.header ) {
-        border = new rwt.html.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+        borderWidths = states.rwt_RIGHT_TO_LEFT ? [ 0, 0, 1, 1 ] : [ 0, 1, 1, 0 ];
       } else {
-        border = new rwt.html.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+        borderWidths = states.rwt_RIGHT_TO_LEFT ? [ 0, 0, 0, 1 ] : [ 0, 1, 0, 0 ];
       }
       return {
         textAlign : "center",
         verticalAlign : "middle",
-        border : border
+        border : new rwt.html.Border( borderWidths, "solid", "gray" )
       };
     }
   },

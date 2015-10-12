@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,6 +107,76 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       TestUtil.flush();
 
       TestUtil.press( dateTime, "Right" );
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 11, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testDateChange_withKeyboard_right : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Right" );
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 11, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testDateChange_withKeyboard_left : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Left" );
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 9, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testDateChange_withKeyboard_right_RTL : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDirection( "rtl" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Right" );
+      rwt.remote.Connection.getInstance().send();
+
+      var message = TestUtil.getMessageObject();
+      assertEquals( 9, message.findSetProperty( "w3", "day" ) );
+      assertEquals( 10, message.findSetProperty( "w3", "month" ) );
+      assertEquals( 2010, message.findSetProperty( "w3", "year" ) );
+      dateTime.destroy();
+    },
+
+    testDateChange_withKeyboard_left_RTL : function() {
+      var dateTime = this._createDefaultDateTimeByProtocol( "w3", "w2" );
+      dateTime.setDirection( "rtl" );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      TestUtil.flush();
+
+      TestUtil.press( dateTime, "Left" );
       rwt.remote.Connection.getInstance().send();
 
       var message = TestUtil.getMessageObject();
@@ -250,6 +320,22 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
       calendar.destroy();
       TestUtil.flush();
       assertTrue( calendar.isDisposed() );
+    },
+
+    testSetDirection : function() {
+      var dateTime = new rwt.widgets.DateTimeCalendar( "medium", monthNames, weekdayShortNames );
+
+      dateTime.setDirection( "rtl" );
+      TestUtil.flush();
+
+      assertEquals( "rtl", dateTime._calendar.getDirection() );
+      assertEquals( "right", dateTime._calendar._navBar.getHorizontalChildrenAlign() );
+      assertTrue( dateTime._calendar._navBar.getReverseChildrenOrder() );
+      assertEquals( "rtl", dateTime._calendar._lastYearBt.getDirection() );
+      assertEquals( "rtl", dateTime._calendar._lastMonthBt.getDirection() );
+      assertEquals( "rtl", dateTime._calendar._nextMonthBt.getDirection() );
+      assertEquals( "rtl", dateTime._calendar._nextYearBt.getDirection() );
+      dateTime.destroy();
     },
 
     //////////

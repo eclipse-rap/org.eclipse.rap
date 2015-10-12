@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@
  * @state selected {calendar-day}
  */
 rwt.qx.Class.define("rwt.widgets.base.Calendar", {
+
   extend : rwt.widgets.base.BoxLayout,
 
   /*
@@ -49,7 +50,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
 
     // Create the navigation bar
     var navBar = new rwt.widgets.base.BoxLayout();
-    navBar.setAppearance("calendar-navBar");
+    navBar.setAppearance( "calendar-navBar" );
 
     navBar.set( {
       height  : "auto",
@@ -126,7 +127,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
 
     this._weekdayLabelArr = [];
 
-    for( var i=1; i<8; i++ ) {
+    for( var i=1; i < 8; i++ ) {
       var label = new rwt.widgets.base.Label();
       label.setAppearance( "calendar-weekday" );
       label.setSelectable( false );
@@ -164,7 +165,7 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       this._weekLabelArr.push( label );
 
       // Add the day labels
-      for (var x=1; x<8; x++) {
+      for (var x=1; x < 8; x++) {
         var label = new rwt.widgets.base.Label();
         label.setAppearance( "calendar-day" );
         label.setSelectable( false );
@@ -199,6 +200,9 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
     // Add the main widgets
     this.add( navBar );
     this.add( datePane );
+
+    this._navBar = navBar;
+    this._datePane = datePane;
 
     // Initialize dimensions
     this.initWidth();
@@ -285,6 +289,21 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       var result = [ this._monthYearLabel ];
       result.concat( this._weekdayLabelArr, this._dayLabelArr, this._weekLabelArr );
       return result;
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      var rtl = value === "rtl";
+      this._lastYearBt.setDirection( value );
+      this._lastMonthBt.setDirection( value );
+      this._nextMonthBt.setDirection( value );
+      this._nextYearBt.setDirection( value );
+      this._navBar.setReverseChildrenOrder( rtl );
+      this._navBar.setHorizontalChildrenAlign( rtl ? "right" : "left" );
+      this._datePane.getLayoutImpl().setMirror( rtl );
+      this._datePane.forEachChild( function() {
+        this.setDirection( value );
+      } );
     },
 
     // property checker
@@ -421,16 +440,17 @@ rwt.qx.Class.define("rwt.widgets.base.Calendar", {
       var dayIncrement = null;
       var monthIncrement = null;
       var yearIncrement = null;
+      var rtl = this.getDirection() === "rtl";
       if( evt.getModifiers() === 0 ) {
         switch( evt.getKeyIdentifier() ) {
           case "Left":
-            dayIncrement = -1;
+            dayIncrement = rtl ? 1 : -1;
             evt.preventDefault();
             evt.stopPropagation();
             break;
 
           case "Right":
-            dayIncrement = 1;
+            dayIncrement = rtl ? -1 : 1;
             evt.preventDefault();
             evt.stopPropagation();
             break;
