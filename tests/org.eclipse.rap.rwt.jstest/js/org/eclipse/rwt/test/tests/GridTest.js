@@ -4069,30 +4069,92 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       item1.setItemCount( 2 );
       var item2 = this._createItem( item1, 0 );
       TestUtil.flush();
+
       TestUtil.clickDOM( tree._rowContainer.getRow( 0 ).$el.get( 0 ) );
+
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertFalse( item0.isExpanded() );
+
       TestUtil.press( tree, "Right" );
+
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertTrue( item0.isExpanded() );
+
       TestUtil.press( tree, "Right" );
+
       assertTrue( tree.isItemSelected( item1 ) );
       assertTrue( tree.isFocusItem( item1 ) );
       assertFalse( item1.isExpanded() );
+
       TestUtil.press( tree, "Right" );
+
       assertTrue( tree.isItemSelected( item1 ) );
       assertTrue( tree.isFocusItem( item1 ) );
       assertTrue( item1.isExpanded() );
+
       TestUtil.press( tree, "Right" );
+
       assertTrue( tree.isItemSelected( item2 ) );
       assertTrue( tree.isFocusItem( item2 ) );
       assertFalse( item2.isExpanded() );
+
       TestUtil.press( tree, "Right" );
+
       assertTrue( tree.isItemSelected( item2 ) );
       assertTrue( tree.isFocusItem( item2 ) );
       assertFalse( item2.isExpanded() );
+      tree.destroy();
+    },
+
+    testKeyboardNavigationRight_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setItemCount( 1 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      item0.setItemCount( 1 );
+      var item1 = this._createItem( item0, 0 );
+      item1.setItemCount( 1 );
+      var item2 = this._createItem( item1, 0 );
+      item0.setExpanded( true );
+      item1.setExpanded( true );
+      TestUtil.flush();
+
+      TestUtil.clickDOM( tree._rowContainer.getRow( 2 ).$el.get( 0 ) );
+
+      assertTrue( tree.isItemSelected( item2 ) );
+      assertTrue( tree.isFocusItem( item2 ) );
+
+      TestUtil.press( tree, "Right" );
+
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertTrue( tree.isFocusItem( item1 ) );
+      assertTrue( item1.isExpanded() );
+
+      TestUtil.press( tree, "Right" );
+
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertTrue( tree.isFocusItem( item1 ) );
+      assertFalse( item1.isExpanded() );
+
+      TestUtil.press( tree, "Right" );
+
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      assertTrue( item0.isExpanded() );
+
+      TestUtil.press( tree, "Right" );
+
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      assertFalse( item0.isExpanded() );
+
+      TestUtil.press( tree, "Right" );
+
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      assertFalse( item0.isExpanded() );
       tree.destroy();
     },
 
@@ -4148,29 +4210,90 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       item0.setExpanded( true );
       item1.setExpanded( true );
       TestUtil.flush();
+
       TestUtil.clickDOM( tree._rowContainer.getRow( 2 ).$el.get( 0 ) );
+
       assertTrue( tree.isItemSelected( item2 ) );
       assertTrue( tree.isFocusItem( item2 ) );
+
       TestUtil.press( tree, "Left" );
+
       assertTrue( tree.isItemSelected( item1 ) );
       assertTrue( tree.isFocusItem( item1 ) );
       assertTrue( item1.isExpanded() );
+
       TestUtil.press( tree, "Left" );
+
       assertTrue( tree.isItemSelected( item1 ) );
       assertTrue( tree.isFocusItem( item1 ) );
       assertFalse( item1.isExpanded() );
+
       TestUtil.press( tree, "Left" );
+
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertTrue( item0.isExpanded() );
+
       TestUtil.press( tree, "Left" );
+
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertFalse( item0.isExpanded() );
+
       TestUtil.press( tree, "Left" );
+
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       assertFalse( item0.isExpanded() );
+      tree.destroy();
+    },
+
+    testKeyboardNavigationLeft_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+      tree.setItemCount( 2 );
+      var item0 = this._createItem( tree.getRootItem(), 0 );
+      item0.setItemCount( 2 );
+      var item1 = this._createItem( item0, 0 );
+      item1.setItemCount( 2 );
+      var item2 = this._createItem( item1, 0 );
+      TestUtil.flush();
+
+      TestUtil.clickDOM( tree._rowContainer.getRow( 0 ).$el.get( 0 ) );
+
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      assertFalse( item0.isExpanded() );
+
+      TestUtil.press( tree, "Left" );
+
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      assertTrue( item0.isExpanded() );
+
+      TestUtil.press( tree, "Left" );
+
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertTrue( tree.isFocusItem( item1 ) );
+      assertFalse( item1.isExpanded() );
+
+      TestUtil.press( tree, "Left" );
+
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertTrue( tree.isFocusItem( item1 ) );
+      assertTrue( item1.isExpanded() );
+
+      TestUtil.press( tree, "Left" );
+
+      assertTrue( tree.isItemSelected( item2 ) );
+      assertTrue( tree.isFocusItem( item2 ) );
+      assertFalse( item2.isExpanded() );
+
+      TestUtil.press( tree, "Left" );
+
+      assertTrue( tree.isItemSelected( item2 ) );
+      assertTrue( tree.isFocusItem( item2 ) );
+      assertFalse( item2.isExpanded() );
       tree.destroy();
     },
 

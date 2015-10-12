@@ -639,6 +639,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     },
 
     _onKeyPress : function( event ) {
+      var rtl = this.getDirection() === "rtl";
       if( this._focusItem != null ) {
         switch( event.getKeyIdentifier() ) {
           case "Enter":
@@ -666,10 +667,18 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
             this._handleKeyEnd( event );
           break;
           case "Left":
-            this._handleKeyLeft( event );
+            if( rtl ) {
+              this._handleKeyRight( event );
+            } else {
+              this._handleKeyLeft( event );
+            }
           break;
           case "Right":
-            this._handleKeyRight( event );
+            if( rtl ) {
+              this._handleKeyLeft( event );
+            } else {
+              this._handleKeyRight( event );
+            }
           break;
         }
       }
