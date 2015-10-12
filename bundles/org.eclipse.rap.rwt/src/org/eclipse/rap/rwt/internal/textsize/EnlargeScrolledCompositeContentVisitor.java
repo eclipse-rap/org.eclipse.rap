@@ -13,15 +13,15 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
-class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
+class EnlargeScrolledCompositeContentVisitor implements WidgetTreeVisitor {
 
   @Override
-  public boolean doVisit( Widget widget ) {
+  public boolean visit( Widget widget ) {
     if( widget instanceof ScrolledComposite && hasContentControl( widget ) ) {
       enlargeContentControl( widget );
     }

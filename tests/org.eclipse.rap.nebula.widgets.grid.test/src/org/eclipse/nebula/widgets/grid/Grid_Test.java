@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.nebula.widgets.grid.internal.IGridAdapter;
 import org.eclipse.nebula.widgets.grid.internal.NullScrollBarProxy;
 import org.eclipse.nebula.widgets.grid.internal.ScrollBarProxyAdapter;
@@ -2991,7 +2992,7 @@ public class Grid_Test {
       @Override
       public boolean visit( Widget widget ) {
         items.add( ( Item )widget );
-        return super.visit( widget );
+        return true;
       }
     });
     return items;

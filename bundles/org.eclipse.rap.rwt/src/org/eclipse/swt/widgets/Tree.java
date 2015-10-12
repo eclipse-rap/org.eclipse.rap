@@ -44,8 +44,8 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.MarkupValidator;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
@@ -816,9 +816,9 @@ public class Tree extends Composite {
     checkWidget();
     if( ( style & SWT.MULTI ) != 0 ) {
       final java.util.List<TreeItem> allItems = new ArrayList<>();
-      WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
+      WidgetTreeUtil.accept( this, new WidgetTreeVisitor() {
         @Override
-        public boolean doVisit( Widget widget ) {
+        public boolean visit( Widget widget ) {
           if( widget instanceof TreeItem ) {
             allItems.add( ( TreeItem )widget );
           }

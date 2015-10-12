@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -58,6 +58,7 @@ public class WidgetsEntryPoint implements EntryPoint {
 
   private Shell shell;
 
+  @Override
   public int createUI() {
     Display display = new Display();
     shell = new Shell( display );
@@ -93,7 +94,8 @@ public class WidgetsEntryPoint implements EntryPoint {
   }
 
   private void obtainAccessibles() {
-    AllWidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
+    WidgetTreeUtil.accept( shell, new WidgetTreeVisitor() {
+      @Override
       public boolean visit( Widget widget ) {
         if( widget instanceof Control ) {
           Control control = ( Control )widget;
@@ -200,7 +202,7 @@ public class WidgetsEntryPoint implements EntryPoint {
   private void createCCombo() {
     new CCombo( shell, SWT.NONE );
   }
-  
+
   private void createCLabel() {
     new CLabel( shell, SWT.NONE );
   }

@@ -26,8 +26,8 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -39,8 +39,8 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -71,9 +71,9 @@ public class DisplayLCA {
     ActiveKeysUtil.preserveMnemonicActivator( display );
     if( adapter.isInitialized() ) {
       for( Shell shell : getShells( display ) ) {
-        WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+        WidgetTreeUtil.accept( shell, new WidgetTreeVisitor() {
           @Override
-          public boolean doVisit( Widget widget ) {
+          public boolean visit( Widget widget ) {
             getLCA( widget ).preserveValues( widget );
             return true;
           }
@@ -103,9 +103,9 @@ public class DisplayLCA {
   public void clearPreserved( Display display ) {
     ( ( WidgetRemoteAdapter )getAdapter( display ) ).clearPreserved();
     for( Shell shell : getShells( display ) ) {
-      WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      WidgetTreeUtil.accept( shell, new WidgetTreeVisitor() {
         @Override
-        public boolean doVisit( Widget widget ) {
+        public boolean visit( Widget widget ) {
           ( ( WidgetRemoteAdapter )getAdapter( widget ) ).clearPreserved();
           return true;
         }
@@ -125,22 +125,22 @@ public class DisplayLCA {
   }
 
   private static void visitWidgets( Display display ) {
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+    WidgetTreeVisitor visitor = new WidgetTreeVisitor() {
       @Override
-      public boolean doVisit( Widget widget ) {
+      public boolean visit( Widget widget ) {
         getLCA( widget ).readData( widget );
         return true;
       }
     };
     for( Shell shell : getShells( display ) ) {
-      WidgetTreeVisitor.accept( shell, visitor );
+      WidgetTreeUtil.accept( shell, visitor );
     }
   }
 
   private static void renderShells( Display display ) throws IOException {
     RenderVisitor visitor = new RenderVisitor();
     for( Shell shell : getShells( display ) ) {
-      WidgetTreeVisitor.accept( shell, visitor );
+      WidgetTreeUtil.accept( shell, visitor );
       visitor.reThrowProblem();
     }
   }
@@ -242,22 +242,21 @@ public class DisplayLCA {
     return getDisplayAdapter( display ).getShells();
   }
 
-  private static final class RenderVisitor extends AllWidgetTreeVisitor {
+  private static final class RenderVisitor implements WidgetTreeVisitor {
 
     private IOException ioProblem;
 
     @Override
-    public boolean doVisit( Widget widget ) {
+    public boolean visit( Widget widget ) {
       ioProblem = null;
-      boolean result = true;
       try {
         render( widget );
         runRenderRunnables( widget );
       } catch( IOException ioe ) {
         ioProblem = ioe;
-        result = false;
+        return false;
       }
-      return result;
+      return true;
     }
 
     private void reThrowProblem() throws IOException {

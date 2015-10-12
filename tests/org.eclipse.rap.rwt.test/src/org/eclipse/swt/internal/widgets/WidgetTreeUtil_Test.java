@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -45,12 +44,12 @@ import org.junit.Rule;
 import org.junit.Test;
 
 
-public class WidgetTreeVisitor_Test {
+public class WidgetTreeUtil_Test {
 
   private Display display;
   private Shell shell;
   private List<Widget> visited;
-  private AllWidgetTreeVisitor loggingVisitor;
+  private WidgetTreeVisitor loggingVisitor;
 
   @Rule
   public TestContext context = new TestContext();
@@ -60,9 +59,9 @@ public class WidgetTreeVisitor_Test {
     display = new Display();
     shell = new Shell( display , SWT.NONE );
     visited = new ArrayList<>();
-    loggingVisitor = new AllWidgetTreeVisitor() {
+    loggingVisitor = new WidgetTreeVisitor() {
       @Override
-      public boolean doVisit( Widget widget ) {
+      public boolean visit( Widget widget ) {
         visited.add( widget );
         return true;
       }
@@ -83,7 +82,7 @@ public class WidgetTreeVisitor_Test {
     ScrollBar hScroll = tree.getHorizontalBar();
     ScrollBar vScroll = tree.getVerticalBar();
 
-    WidgetTreeVisitor.accept( shell, loggingVisitor );
+    WidgetTreeUtil.accept( shell, loggingVisitor );
 
     assertEquals( asList( shell,
                           control1,
@@ -111,7 +110,7 @@ public class WidgetTreeVisitor_Test {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     Control child = new Button( table, SWT.PUSH );
 
-    WidgetTreeVisitor.accept( table, loggingVisitor );
+    WidgetTreeUtil.accept( table, loggingVisitor );
 
     ScrollBar hScroll = table.getHorizontalBar();
     ScrollBar vScroll = table.getVerticalBar();
@@ -124,7 +123,7 @@ public class WidgetTreeVisitor_Test {
     org.eclipse.swt.widgets.List list
       = new org.eclipse.swt.widgets.List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
 
-    WidgetTreeVisitor.accept( list, loggingVisitor );
+    WidgetTreeUtil.accept( list, loggingVisitor );
 
     ScrollBar hScroll = list.getHorizontalBar();
     ScrollBar vScroll = list.getVerticalBar();
@@ -136,7 +135,7 @@ public class WidgetTreeVisitor_Test {
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ToolItem toolItem = new ToolItem( toolBar, SWT.NONE );
 
-    WidgetTreeVisitor.accept( toolBar, loggingVisitor );
+    WidgetTreeUtil.accept( toolBar, loggingVisitor );
 
     assertEquals( asList( toolBar, toolItem ), visited );
   }
@@ -149,7 +148,7 @@ public class WidgetTreeVisitor_Test {
     Text text = new Text( shell, SWT.NONE );
     Menu textMenu = new Menu( text );
 
-    WidgetTreeVisitor.accept( shell, loggingVisitor );
+    WidgetTreeUtil.accept( shell, loggingVisitor );
 
     assertEquals( asList( shell, menuBar, shellMenu, textMenu, text ), visited );
   }
@@ -162,7 +161,7 @@ public class WidgetTreeVisitor_Test {
     Control control2 = new Button( composite, SWT.PUSH );
     Decorator decoration2 = new Decorator( control2, SWT.RIGHT );
 
-    WidgetTreeVisitor.accept( shell, loggingVisitor );
+    WidgetTreeUtil.accept( shell, loggingVisitor );
 
     assertEquals( asList( shell, control1, decoration1, composite, control2, decoration2 ),
                   visited );
@@ -174,7 +173,7 @@ public class WidgetTreeVisitor_Test {
     Text text = new Text( shell, SWT.NONE );
     DragSource controlDragSource = new DragSource( text, SWT.NONE );
 
-    WidgetTreeVisitor.accept( shell, loggingVisitor );
+    WidgetTreeUtil.accept( shell, loggingVisitor );
 
     assertEquals( asList( shell, compositeDragSource, text, controlDragSource ), visited );
   }
@@ -184,7 +183,7 @@ public class WidgetTreeVisitor_Test {
     Control control = new Label( shell, SWT.NONE );
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
 
-    WidgetTreeVisitor.accept( shell, loggingVisitor );
+    WidgetTreeUtil.accept( shell, loggingVisitor );
 
     assertEquals( asList( shell, control, toolTip ), visited );
   }
@@ -200,37 +199,9 @@ public class WidgetTreeVisitor_Test {
     };
     Control innerLabel = new Label( customWidget, SWT.NONE );
 
-    WidgetTreeVisitor.accept( customWidget, loggingVisitor );
+    WidgetTreeUtil.accept( customWidget, loggingVisitor );
 
     assertEquals( asList( customWidget, innerLabel ), visited );
-  }
-
-  @Test
-  public void testAccept_visitWidget_notCalledForComposites() {
-    Composite composite = new Composite( shell, SWT.NONE );
-    Control button = new Button( composite, SWT.PUSH );
-    Tree tree = new Tree( composite, SWT.NONE );
-    TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    ScrollBar hScroll = tree.getHorizontalBar();
-    ScrollBar vScroll = tree.getVerticalBar();
-    final List<Widget> visitedComposites = new ArrayList<>();
-
-    WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
-      @Override
-      public boolean visit( Widget widget ) {
-        visited.add( widget );
-        return true;
-      }
-      @Override
-      public boolean visit( Composite composite ) {
-        visitedComposites.add( composite );
-        return true;
-      }
-    } );
-
-    assertEquals( asList( button, treeColumn, treeItem, hScroll, vScroll ), visited );
-    assertEquals( asList( shell, composite, tree ), visitedComposites );
   }
 
   @Test
@@ -240,9 +211,9 @@ public class WidgetTreeVisitor_Test {
     new TableColumn( table, SWT.NONE );
     new Button( table, SWT.PUSH );
 
-    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+    WidgetTreeUtil.accept( shell, new WidgetTreeVisitor() {
       @Override
-      public boolean doVisit( Widget widget ) {
+      public boolean visit( Widget widget ) {
         visited.add( widget );
         return widget != table;
       }
@@ -260,9 +231,9 @@ public class WidgetTreeVisitor_Test {
     TreeItem item2a = new TreeItem( item2, SWT.NONE );
     Button child = new Button( tree, SWT.PUSH );
 
-    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+    WidgetTreeUtil.accept( shell, new WidgetTreeVisitor() {
       @Override
-      public boolean doVisit( Widget widget ) {
+      public boolean visit( Widget widget ) {
         visited.add( widget );
         return widget != item1;
       }

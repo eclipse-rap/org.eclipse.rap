@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -53,27 +53,27 @@ class TextSizeRecalculation {
   }
 
   private static void rePack( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new RePackVisitor() );
+    WidgetTreeUtil.accept( shell, new RePackVisitor() );
   }
 
   private static void clearLayoutBuffers( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new ClearLayoutBuffersVisitor() );
+    WidgetTreeUtil.accept( shell, new ClearLayoutBuffersVisitor() );
   }
 
   private static void markLayoutNeeded( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new MarkLayoutNeededVisitor() );
+    WidgetTreeUtil.accept( shell, new MarkLayoutNeededVisitor() );
   }
 
   private static void bufferScrolledCompositeOrigins( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new BufferScrolledCompositeOriginsVisitor() );
+    WidgetTreeUtil.accept( shell, new BufferScrolledCompositeOriginsVisitor() );
   }
 
   private static void enlargeScrolledCompositeContent( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new EnlargeScrolledCompositeContentVisitor() );
+    WidgetTreeUtil.accept( shell, new EnlargeScrolledCompositeContentVisitor() );
   }
 
   private static void restoreScrolledCompositeOrigins( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new RestoreScrolledCompositeOriginsVisitor() );
+    WidgetTreeUtil.accept( shell, new RestoreScrolledCompositeOriginsVisitor() );
   }
 
   private static void restoreShellSize( Shell shell, Rectangle bufferedBounds, boolean isPacked ) {

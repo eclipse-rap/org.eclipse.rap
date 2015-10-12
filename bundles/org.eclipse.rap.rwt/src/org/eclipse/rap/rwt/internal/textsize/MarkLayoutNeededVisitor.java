@@ -11,15 +11,15 @@
 package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
 
-class MarkLayoutNeededVisitor extends AllWidgetTreeVisitor {
+class MarkLayoutNeededVisitor implements WidgetTreeVisitor {
 
   @Override
-  public boolean doVisit( Widget widget ) {
+  public boolean visit( Widget widget ) {
     if( widget instanceof Composite ) {
       Composite composite = ( Composite )widget;
       getAdapter( composite ).markLayoutNeeded();

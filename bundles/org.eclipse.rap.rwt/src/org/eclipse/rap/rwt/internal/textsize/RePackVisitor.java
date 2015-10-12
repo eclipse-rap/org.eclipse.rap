@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
@@ -21,10 +21,10 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class RePackVisitor extends AllWidgetTreeVisitor {
+public class RePackVisitor implements WidgetTreeVisitor {
 
   @Override
-  public boolean doVisit( Widget widget ) {
+  public boolean visit( Widget widget ) {
     if( widget instanceof Control ) {
       Control control = ( Control )widget;
       if( ControlUtil.getControlAdapter( control ).isPacked() ) {

@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.lifecycle;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
@@ -52,9 +52,9 @@ public final class WidgetUtil {
   public static Widget find( Composite root, final String id ) {
     final Widget[] result = { null };
     if( id != null ) {
-      WidgetTreeVisitor.accept( root, new AllWidgetTreeVisitor() {
+      WidgetTreeUtil.accept( root, new WidgetTreeVisitor() {
         @Override
-        public boolean doVisit( Widget widget ) {
+        public boolean visit( Widget widget ) {
           if( getId( widget ).equals( id ) ) {
             result[ 0 ] = widget;
           }

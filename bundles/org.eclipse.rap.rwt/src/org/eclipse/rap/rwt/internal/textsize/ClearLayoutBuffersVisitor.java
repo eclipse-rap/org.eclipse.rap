@@ -11,14 +11,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
 
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
-class ClearLayoutBuffersVisitor extends AllWidgetTreeVisitor {
+
+class ClearLayoutBuffersVisitor implements WidgetTreeVisitor {
 
   @Override
-  public boolean doVisit( Widget widget ) {
+  public boolean visit( Widget widget ) {
     if( widget instanceof Composite ) {
       Composite composite = ( Composite )widget;
       composite.changed( composite.getChildren() );

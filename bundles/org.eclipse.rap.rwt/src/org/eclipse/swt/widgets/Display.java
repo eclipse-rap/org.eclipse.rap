@@ -65,8 +65,8 @@ import org.eclipse.swt.internal.events.EventUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IdGenerator;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
+import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 
 /**
@@ -2357,14 +2357,13 @@ public class Display extends Device implements Adaptable {
     private void find() {
       Shell[] shells = display.getShells();
       for( int i = 0; control == null && i < shells.length; i++ ) {
-        WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+        WidgetTreeUtil.accept( shells[ i ], new WidgetTreeVisitor() {
           @Override
-          public boolean doVisit( Widget widget ) {
-            boolean result = true;
+          public boolean visit( Widget widget ) {
             if( widget instanceof Control ) {
-              result = visitControl( ( Control )widget );
+              return visitControl( ( Control )widget );
             }
-            return result;
+            return true;
           }
         } );
       }
