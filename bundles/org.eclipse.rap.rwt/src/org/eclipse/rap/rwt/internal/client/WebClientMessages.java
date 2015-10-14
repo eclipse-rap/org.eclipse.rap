@@ -49,7 +49,7 @@ public class WebClientMessages implements ClientMessages {
   public void update( Locale locale ) {
     JsonObject messagesObject = new JsonObject();
     for( int i = 0; i < MESSAGE_IDS.length; i++ ) {
-      String newMessage = getMessage( MESSAGE_IDS[ i ] );
+      String newMessage = getMessage( MESSAGE_IDS[ i ], locale );
       if( !newMessage.equals( messages[ i ] ) ) {
         messages[ i ] = newMessage;
         messagesObject.add( MESSAGE_IDS[ i ], newMessage );
@@ -60,8 +60,8 @@ public class WebClientMessages implements ClientMessages {
     }
   }
 
-  String getMessage( String messageId ) {
-    return RWTMessages.getMessage( messageId );
+  String getMessage( String messageId, Locale locale ) {
+    return RWTMessages.getMessage( messageId, locale );
   }
 
 }

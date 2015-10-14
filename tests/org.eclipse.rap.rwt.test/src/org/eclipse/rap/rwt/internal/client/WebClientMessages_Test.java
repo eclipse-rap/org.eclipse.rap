@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,8 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.internal.remote.ConnectionImpl;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.testfixture.internal.Fixture;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.rap.rwt.testfixture.TestContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -36,16 +35,8 @@ public class WebClientMessages_Test {
 
   private static final String REMOTE_ID = "rwt.client.ClientMessages";
 
-  @Before
-  public void setUp() {
-    Fixture.setUp();
-    Fixture.fakeNewRequest();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
-  }
+  @Rule
+  public TestContext context = new TestContext();
 
   @Test
   public void testCreatesRemoteObjectWithCorrectId() {
@@ -88,17 +79,17 @@ public class WebClientMessages_Test {
     messages.update( Locale.CANADA );
     reset( remoteObject );
 
-    when( messages.getMessage( RWTMessages.SERVER_ERROR ) ).thenReturn( "foo" );
+    when( messages.getMessage( RWTMessages.SERVER_ERROR, Locale.FRANCE ) ).thenReturn( "foo" );
     messages.update( Locale.FRANCE );
 
     JsonObject expected = new JsonObject().add( RWTMessages.SERVER_ERROR, "foo" );
     verify( remoteObject ).set( eq( "messages" ), eq( expected ) );
   }
 
-  private static ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
+  private ConnectionImpl fakeConnection( RemoteObject remoteObject ) {
     ConnectionImpl connection = mock( ConnectionImpl.class );
     when( connection.createServiceObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeConnection( connection );
+    context.replaceConnection( connection );
     return connection;
   }
 
