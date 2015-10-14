@@ -320,13 +320,16 @@
       </property>
 
       <property name="cursor"
-        description="DateTime Date/Time up button cursor." />
+          description="DateTime Date/Time up button cursor." />
 
       <property name="width">
         <description>
           The width of the DateTime Date/Time up button.
         </description>
       </property>
+
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the DateTime is oriented right to left." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />
@@ -394,7 +397,7 @@
       </property>
 
       <property name="cursor"
-        description="DateTime Date/Time down button cursor." />
+          description="DateTime Date/Time down button cursor." />
 
       <property name="width">
         <description>
@@ -402,8 +405,11 @@
         </description>
       </property>
 
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the DateTime is oriented right to left." />
+
       <state name="hover"
-        description="Applies while the user hovers over the button." />
+          description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
@@ -471,13 +477,16 @@
       </property>
 
       <property name="cursor"
-        description="DateTime Date drop-down button cursor." />
+          description="DateTime Date drop-down button cursor." />
 
       <property name="width">
         <description>
           The width of the DateTime Date drop-down button.
         </description>
       </property>
+
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the DateTime is oriented right to left." />
 
       <state name="hover"
           description="Applies while the user hovers over the button." />

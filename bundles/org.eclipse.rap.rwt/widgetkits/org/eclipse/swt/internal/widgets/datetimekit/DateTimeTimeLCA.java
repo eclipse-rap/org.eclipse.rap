@@ -31,7 +31,6 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
 
   @Override
   void preserveValues( DateTime dateTime ) {
-    DateTimeLCAUtil.preserveValues( dateTime );
     preserveProperty( dateTime, PROP_HOURS, dateTime.getHours() );
     preserveProperty( dateTime, PROP_MINUTES, dateTime.getMinutes() );
     preserveProperty( dateTime, PROP_SECONDS, dateTime.getSeconds() );

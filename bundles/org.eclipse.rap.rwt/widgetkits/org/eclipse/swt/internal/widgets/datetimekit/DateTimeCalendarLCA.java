@@ -30,7 +30,6 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
 
   @Override
   void preserveValues( DateTime dateTime ) {
-    DateTimeLCAUtil.preserveValues( dateTime );
     preserveProperty( dateTime, PROP_YEAR, dateTime.getYear() );
     preserveProperty( dateTime, PROP_MONTH, dateTime.getMonth() );
     preserveProperty( dateTime, PROP_DAY, dateTime.getDay() );

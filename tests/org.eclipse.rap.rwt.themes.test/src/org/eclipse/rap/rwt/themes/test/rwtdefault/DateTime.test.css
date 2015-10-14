@@ -191,6 +191,11 @@ DateTime-UpButton {
   cursor: default;
 }
 
+DateTime-UpButton[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
+}
+
 DateTime-DownButton-Icon {
   background-image: url( resource/widget/rap/datetime/down.png );
 }
@@ -215,6 +220,11 @@ DateTime-DownButton {
   cursor: default;
 }
 
+DateTime-DownButton[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
+}
+
 DateTime-DropDownButton {
   cursor: default;
   background-color: #f0f0f0;
@@ -229,6 +239,11 @@ DateTime-DropDownButton {
     to( #e4e4e4 )
   );
   width: 30px;
+}
+
+DateTime-DropDownButton[RIGHT_TO_LEFT] {
+  border: none;
+  border-right: 1px solid #bdbdbd;
 }
 
 DateTime-DropDownButton:disabled,
@@ -247,5 +262,5 @@ DateTime-DropDownButton-Icon:hover {
 }
 
 DateTime-DropDownCalendar {
-  border: 1px #a7a6aa;
+  border: 1px #a7a6aa solid;
 }

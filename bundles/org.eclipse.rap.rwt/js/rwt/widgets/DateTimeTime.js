@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( style ) {
@@ -24,27 +25,31 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
+    this._timePane = new rwt.widgets.base.Parent();
+    this._timePane.setLeft( 0 );
+    this._timePane.setHeight( "100%" );
+    this.add( this._timePane );
     // Hours
     this._hoursTextField = new rwt.widgets.base.Label( "00" );
     this._hoursTextField.setAppearance( "datetime-field" );
     this._hoursTextField.setUserData( "maxLength", 2 );
     this._hoursTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this.add(this._hoursTextField);
+    this._timePane.add(this._hoursTextField);
     // Separator
     this._separator3 = new rwt.widgets.base.Label( ":" );
     this._separator3.setAppearance( "datetime-separator" );
-    this.add(this._separator3);
+    this._timePane.add(this._separator3);
     // Minutes
     this._minutesTextField = new rwt.widgets.base.Label( "00" );
     this._minutesTextField.setAppearance( "datetime-field" );
     this._minutesTextField.setUserData( "maxLength", 2 );
     this._minutesTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this.add(this._minutesTextField);
+    this._timePane.add(this._minutesTextField);
     // Separator
     this._separator4 = new rwt.widgets.base.Label( ":" );
     this._separator4.setAppearance( "datetime-separator" );
     if( this._medium || this._long ) {
-      this.add(this._separator4);
+      this._timePane.add(this._separator4);
     }
     // Seconds
     this._secondsTextField = new rwt.widgets.base.Label( "00" );
@@ -52,7 +57,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
     this._secondsTextField.setUserData( "maxLength", 2 );
     this._secondsTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     if( this._medium || this._long ) {
-      this.add(this._secondsTextField);
+      this._timePane.add(this._secondsTextField);
     }
     // Spinner
     this._spinner = this._createSpinner();
@@ -64,7 +69,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
   },
 
   destruct : function() {
-    this._disposeObjects( "_hoursTextField",
+    this._disposeObjects( "_timePane",
+                          "_hoursTextField",
                           "_minutesTextField",
                           "_secondsTextField",
                           "_focusedTextField",
@@ -82,6 +88,17 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
                this._spinner,
                this._separator3,
                this._separator4 ];
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.getLayoutImpl().setMirror( value === "rtl" );
+      this._spinner._upbutton.setDirection( value );
+      this._spinner._downbutton.setDirection( value );
+    },
+
+    _layoutX : function() {
+      this._timePane.setWidth( this.getWidth() - this._spinner.getWidth() );
     },
 
     _createSpinner : function() {

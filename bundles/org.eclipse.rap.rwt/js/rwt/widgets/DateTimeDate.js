@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( style,
@@ -35,17 +36,21 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
+    this._datePane = new rwt.widgets.base.Parent();
+    this._datePane.setLeft( 0 );
+    this._datePane.setHeight( "100%" );
+    this.add( this._datePane );
     // Weekday
     this._weekdayTextField = new rwt.widgets.base.Label();
     this._weekdayTextField.setAppearance( "datetime-field" );
     if( this._long ) {
-      this.add( this._weekdayTextField );
+      this._datePane.add( this._weekdayTextField );
     }
     // Separator
     this._separator0 = new rwt.widgets.base.Label(",");
     this._separator0.setAppearance( "datetime-separator" );
     if( this._long ) {
-      this.add(this._separator0);
+      this._datePane.add(this._separator0);
     }
     // Month
     this._monthTextField = new rwt.widgets.base.Label();
@@ -59,12 +64,12 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       this._monthTextField.setText( this._monthname[ this._monthInt - 1 ] );
     }
     this._monthTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this.add( this._monthTextField );
+    this._datePane.add( this._monthTextField );
     // Separator
     this._separator1 = new rwt.widgets.base.Label( dateSeparator );
     this._separator1.setAppearance( "datetime-separator" );
     if( this._medium ) {
-      this.add(this._separator1);
+      this._datePane.add(this._separator1);
     }
     // Date
     this._dayTextField = new rwt.widgets.base.Label( "1" );
@@ -73,7 +78,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     this._dayTextField.setTextAlign( "right" );
     this._dayTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     if( !this._short ) {
-      this.add( this._dayTextField );
+      this._datePane.add( this._dayTextField );
     }
     // Separator
     this._separator2 = new rwt.widgets.base.Label( "," );
@@ -81,7 +86,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     if( this._medium ) {
       this._separator2.setText( dateSeparator );
     }
-    this.add(this._separator2);
+    this._datePane.add(this._separator2);
     // Year
     this._yearTextField = new rwt.widgets.base.Label( "1970" );
     this._yearTextField.setAppearance( "datetime-field" );
@@ -90,7 +95,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
     // Last valid year
     this._lastValidYear = 1970;
     this._yearTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
-    this.add( this._yearTextField );
+    this._datePane.add( this._yearTextField );
     // Spinner
     this._spinner = this._createSpinner();
     this._spinner.setDisplay( !this._drop_down );
@@ -139,7 +144,8 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
   },
 
   destruct : function() {
-    this._disposeObjects( "_weekdayTextField",
+    this._disposeObjects( "_datePane",
+                          "_weekdayTextField",
                           "_monthTextField",
                           "_dayTextField",
                           "_yearTextField",
@@ -176,6 +182,21 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
         result.push( this._dropDownButton, this._calendar );
       }
       return result;
+    },
+
+    _applyDirection : function( value ) {
+      this.base( arguments, value );
+      this.getLayoutImpl().setMirror( value === "rtl" );
+      this._spinner._upbutton.setDirection( value );
+      this._spinner._downbutton.setDirection( value );
+      if( this._drop_down ) {
+        this._dropDownButton.setDirection( value );
+        this._calendar.setDirection( value );
+      }
+    },
+
+    _layoutX : function() {
+      this._datePane.setWidth( this.getWidth() - this._spinner.getWidth() );
     },
 
     _createSpinner : function() {

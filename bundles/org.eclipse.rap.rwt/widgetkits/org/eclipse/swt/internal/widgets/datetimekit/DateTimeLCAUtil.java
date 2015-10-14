@@ -20,6 +20,7 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
@@ -48,9 +49,6 @@ final class DateTimeLCAUtil {
 
   private DateTimeLCAUtil() {
     // prevent instantiation
-  }
-
-  static void preserveValues( DateTime dateTime ) {
   }
 
   static void renderInitialization( DateTime dateTime ) {
