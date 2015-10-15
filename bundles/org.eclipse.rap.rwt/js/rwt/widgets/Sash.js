@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,9 +74,12 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
         if( this.getEnabled() ) {
           this._commonMouseDown();
           this._dragOffset = evt.getPageX();
-          this._minMove = - this.getLeft() - this._frameOffset;
-          this._maxMove = this.getParent().getWidth() - this.getLeft()
-                              - this.getWidth() - this._frameOffset;
+          var rtl = this.getDirection() === "rtl";
+          var leftLimit = - this.getLeft() - this._frameOffset;
+          var rightLimit = this.getParent().getWidth() - this.getLeft()
+                         - this.getWidth() - this._frameOffset;
+          this._minMove = rtl ? - rightLimit : leftLimit;
+          this._maxMove = rtl ? - leftLimit : rightLimit;
         }
       }
     },
@@ -88,7 +91,7 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
           this._dragOffset = evt.getPageY();
           this._minMove = - this.getTop() - this._frameOffset;
           this._maxMove = this.getParent().getHeight() - this.getTop()
-                              - this.getHeight() - this._frameOffset;
+                        - this.getHeight() - this._frameOffset;
         }
       }
     },
@@ -147,9 +150,9 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
         if( this.getTopLevelWidget().getGlobalCursor() != this.getCursor() ) {
           this.getTopLevelWidget().setGlobalCursor( this.getCursor() );
         }
-        var toMove = evt.getPageX() - this._dragOffset;
-        this._slider.setLeft( this._normalizeMove( toMove ) );
-        this._sliderHandle.setLeft( this._normalizeMove( toMove ) );
+        var toMove = this._limitMove( evt.getPageX() - this._dragOffset );
+        this._slider.setLeft( toMove );
+        this._sliderHandle.setLeft( toMove );
       }
     },
 
@@ -159,21 +162,19 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
         if( this.getTopLevelWidget().getGlobalCursor() != this.getCursor() ) {
           this.getTopLevelWidget().setGlobalCursor( this.getCursor() );
         }
-        var toMove = evt.getPageY() - this._dragOffset;
-        this._slider.setTop( this._normalizeMove( toMove ) );
-        this._sliderHandle.setTop( this._normalizeMove( toMove ) );
+        var toMove = this._limitMove( evt.getPageY() - this._dragOffset );
+        this._slider.setTop( toMove );
+        this._sliderHandle.setTop( toMove );
       }
     },
 
-    _normalizeMove : function( toMove ) {
-      var result = toMove;
-      if( result < this._minMove ) {
-        result = this._minMove;
+    _limitMove : function( toMove ) {
+      if( toMove < this._minMove ) {
+        return this._minMove;
+      } else if( toMove > this._maxMove ) {
+        return this._maxMove;
       }
-      if( result > this._maxMove ) {
-        result = this._maxMove;
-      }
-      return result;
+      return toMove;
     },
 
     _applyOrientation : function( value, old ) {
@@ -219,6 +220,9 @@ rwt.qx.Class.define( "rwt.widgets.Sash", {
 
     _sendWidgetSelected : function() {
       var leftOffset = this._slider.getLeft() + this._frameOffset;
+      if( this.getDirection() === "rtl" ) {
+        leftOffset = -leftOffset;
+      }
       var topOffset = this._slider.getTop() + this._frameOffset;
       rwt.remote.EventUtil.notifySelected(
         this,

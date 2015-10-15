@@ -30,16 +30,33 @@ public class SashForm_Test {
 
   private Display display;
   private Shell shell;
+  private SashForm sashForm;
 
   @Before
   public void setUp() {
     display = new Display();
     shell = new Shell( display );
+    sashForm = new SashForm( shell, SWT.HORIZONTAL );
+  }
+
+  @Test
+  public void testSetOrientation_initial() {
+    sashForm = new SashForm( shell, SWT.RIGHT_TO_LEFT );
+
+    int actual = sashForm.getStyle() & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
+    assertEquals( SWT.RIGHT_TO_LEFT, actual );
+  }
+
+  @Test
+  public void testSetOrientation() {
+    sashForm.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    int actual = sashForm.getStyle() & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
+    assertEquals( SWT.RIGHT_TO_LEFT, actual );
   }
 
   @Test
   public void testIsSerializable() throws Exception {
-    SashForm sashForm = new SashForm( shell, SWT.HORIZONTAL );
     new Label( sashForm, SWT.NONE );
     new Label( sashForm, SWT.NONE );
     sashForm.setWeights( new int[]{ 30, 70 } );
