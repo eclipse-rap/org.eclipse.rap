@@ -352,7 +352,7 @@ public class ControlLCAUtil {
       int actual = control.getStyle() & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
       int preserved = remoteAdapter.getPreservedOrientation();
       if( changed( control, actual, preserved, SWT.LEFT_TO_RIGHT ) ) {
-        String orientation = control.getOrientation() == SWT.RIGHT_TO_LEFT ? "rtl" : "ltr";
+        String orientation = actual == SWT.RIGHT_TO_LEFT ? "rtl" : "ltr";
         getRemoteObject( control ).set( PROP_ORIENTATION, orientation );
       }
     }
