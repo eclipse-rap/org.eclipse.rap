@@ -347,7 +347,9 @@ public class ControlLCAUtil {
   private static void renderOrientation( Control control ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( !remoteAdapter.isInitialized() || remoteAdapter.hasPreservedOrientation() ) {
-      int actual = control.getOrientation();
+      // [if] Don't use control.getOrientation() as some controls (like SashForm) override this
+      // method to return vertical/horizontal orientation only
+      int actual = control.getStyle() & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
       int preserved = remoteAdapter.getPreservedOrientation();
       if( changed( control, actual, preserved, SWT.LEFT_TO_RIGHT ) ) {
         String orientation = control.getOrientation() == SWT.RIGHT_TO_LEFT ? "rtl" : "ltr";
