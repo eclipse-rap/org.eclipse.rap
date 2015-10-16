@@ -57,6 +57,7 @@ public class ToolBarTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
     createStyleButton( "NO_RADIO_GROUP", SWT.NO_RADIO_GROUP );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();
@@ -153,6 +154,7 @@ public class ToolBarTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         if( event.detail == SWT.ARROW ) {
           Point point = toolBar.toDisplay( event.x, event.y );
+          dropDownMenu.setOrientation( toolBar.getOrientation() );
           dropDownMenu.setLocation( point );
           dropDownMenu.setVisible( true );
         }
@@ -175,6 +177,7 @@ public class ToolBarTab extends ExampleTab {
     new Label( composite, SWT.NONE ).setText( "Badge:" );
     final Text text = new Text( composite, SWT.BORDER );
     Listener setBadgeListener = new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pushItem1.setData( RWT.BADGE, text.getText() );
         pushItem2.setData( RWT.BADGE, text.getText() );

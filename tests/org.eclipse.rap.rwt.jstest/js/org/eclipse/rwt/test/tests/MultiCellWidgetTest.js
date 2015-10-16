@@ -632,6 +632,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
 
+    testCellsPosition_vertical_LTR : function() {
+      var widget = this.createDefaultWidget();
+      widget.setVertical( true );
+      widget.setDirection( "ltr" );
+      this.initWidget( widget, true );
+
+      var firstChild = widget._getTargetNode().firstChild;
+      var lastChild = widget._getTargetNode().lastChild;
+      assertEquals( 17, TestUtil.getElementBounds( firstChild ).left );
+      assertEquals( 0, TestUtil.getElementBounds( lastChild ).left );
+      this.disposeWidget( widget );
+    },
+
+    testCellsPosition_vertical_RTL : function() {
+      var widget = this.createDefaultWidget();
+      widget.setVertical( true );
+      widget.setDirection( "rtl" );
+      this.initWidget( widget, true );
+
+      var firstChild = widget._getTargetNode().firstChild;
+      var lastChild = widget._getTargetNode().lastChild;
+      assertEquals( 17, TestUtil.getElementBounds( firstChild ).right );
+      assertEquals( 0, TestUtil.getElementBounds( lastChild ).right );
+      this.disposeWidget( widget );
+    },
+
     /* ------------------------ helper ------------------------------- */
 
     createDefaultWidget : function() {

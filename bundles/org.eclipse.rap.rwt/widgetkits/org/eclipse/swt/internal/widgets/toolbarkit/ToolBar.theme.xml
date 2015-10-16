@@ -123,6 +123,9 @@
       <property name="text-shadow"
           description="Shadow for text." />
 
+      <style name="RIGHT_TO_LEFT"
+          description="Indicates that the tool bar is oriented right to left." />
+
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent ToolBar." />
 

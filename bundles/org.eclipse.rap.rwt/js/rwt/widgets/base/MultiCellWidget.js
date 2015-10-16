@@ -627,8 +627,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget", {
         if( this.cellIsDisplayable( i ) ) {
           var size = vertical ? this.getCellHeight( i ) : this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
-            var prop = this.getDirection() === "rtl" ? "right" : "left";
-            this.$cells[ i ].css( vertical ? "top" : prop, offset );
+            if( this.getDirection() === "rtl" ) {
+              this.$cells[ i ].css( vertical ? "top" : "right", offset );
+            } else {
+              this.$cells[ i ].css( vertical ? "top" : "left", offset );
+            }
             this.$cells[ i ].css( vertical ? "height" : "width", Math.max( 0, size ) );
           }
           offset += ( size + space );
@@ -682,7 +685,11 @@ rwt.qx.Class.define( "rwt.widgets.base.MultiCellWidget", {
           offset = pad[ 0 ] + inner - cellSize;
         break;
       }
-      this.$cells[ cell ].css( vertical ? "left" : "top", offset );
+      if( this.getDirection() === "rtl" ) {
+        this.$cells[ cell ].css( vertical ? "right" : "top", offset );
+      } else {
+        this.$cells[ cell ].css( vertical ? "left" : "top", offset );
+      }
       this.$cells[ cell ].css( vertical ? "width" : "height", cellSize );
     },
 

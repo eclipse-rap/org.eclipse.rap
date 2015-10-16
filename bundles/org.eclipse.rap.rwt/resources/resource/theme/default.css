@@ -1428,10 +1428,9 @@ ToolItem {
   opacity: 1;
   animation: none;
   text-shadow: 1px 1px 1px #ccc;
+  border: none;
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  border-top: none;
-  border-bottom: none;
 }
 
 ToolItem[FLAT] {
@@ -1439,17 +1438,16 @@ ToolItem[FLAT] {
 }
 
 ToolItem[VERTICAL] {
-  border-left: none;
-  border-right: none;
+  border: none;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
 }
 
-ToolItem:first {
+ToolItem:first, ToolItem[RIGHT_TO_LEFT]:last {
   border-radius: 3px 0px 0px 3px;
 }
 
-ToolItem:last {
+ToolItem:last, ToolItem[RIGHT_TO_LEFT]:first {
   border-radius: 0px 3px 3px 0px;
 }
 
@@ -1462,12 +1460,14 @@ ToolItem[VERTICAL]:last {
 }
 
 ToolItem:first:last, ToolItem[VERTICAL]:first:last {
+  border: none;
   border-radius: 3px 3px 3px 3px;
 }
 
 ToolItem:hover,
 ToolItem:pressed,
 ToolItem:selected {
+  border: none;
   border-left: 1px solid #bdbdbd;
   border-right: 1px solid #bdbdbd;
 }
@@ -1475,8 +1475,7 @@ ToolItem:selected {
 ToolItem[VERTICAL]:hover,
 ToolItem[VERTICAL]:pressed,
 ToolItem[VERTICAL]:selected {
-  border-left: none;
-  border-right: none;
+  border: none;
   border-top: 1px solid #bdbdbd;
   border-bottom: 1px solid #bdbdbd;
 }
@@ -1526,32 +1525,42 @@ ToolItem[VERTICAL]:pressed, ToolItem[VERTICAL]:selected {
   );
 }
 
-ToolItem:first,
 ToolItem:first:hover,
 ToolItem:first:selected,
-ToolItem:first:pressed {
-  border-left: none;
+ToolItem:first:pressed,
+ToolItem[RIGHT_TO_LEFT]:last:hover,
+ToolItem[RIGHT_TO_LEFT]:last:selected,
+ToolItem[RIGHT_TO_LEFT]:last:pressed {
+  border: none;
+  border-left: 1px solid transparent;
+  border-right: 1px solid #bdbdbd;
 }
 
-ToolItem:last,
 ToolItem:last:hover,
 ToolItem:last:selected,
-ToolItem:last:pressed {
-  border-right: none;
+ToolItem:last:pressed,
+ToolItem[RIGHT_TO_LEFT]:first:hover,
+ToolItem[RIGHT_TO_LEFT]:first:selected,
+ToolItem[RIGHT_TO_LEFT]:first:pressed {
+  border: none;
+  border-left: 1px solid #bdbdbd;
+  border-right: 1px solid transparent;
 }
 
-ToolItem[VERTICAL]:first,
 ToolItem[VERTICAL]:first:hover,
 ToolItem[VERTICAL]:first:selected,
 ToolItem[VERTICAL]:first:pressed {
-  border-top: none;
+  border: none;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid #bdbdbd;
 }
 
-ToolItem[VERTICAL]:last,
 ToolItem[VERTICAL]:last:hover,
 ToolItem[VERTICAL]:last:selected,
 ToolItem[VERTICAL]:last:pressed {
-  border-bottom: none;
+  border: none;
+  border-top: 1px solid #bdbdbd;
+  border-bottom: 1px solid transparent;
 }
 
 ToolItem[FLAT],

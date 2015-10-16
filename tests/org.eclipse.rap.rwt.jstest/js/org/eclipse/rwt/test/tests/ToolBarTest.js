@@ -517,6 +517,25 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
     },
 
+    testDropDownArrowLayout_RTL : function() {
+      var item = new rwt.widgets.ToolItem( "dropDown" );
+      item.setDirection( "rtl" );
+      item.setPadding( 10, 5, 1, 5 );
+      item.setHeight( 80 );
+      item.setText( "foo" );
+      item.setDropDownArrow( [ "bar.jpg", 13, 13 ] );
+      item.addToDocument();
+      TestUtil.flush();
+
+      var bounds = TestUtil.getElementBounds( item.$dropDownArrow.get( 0 ) );
+      assertEquals( 38, bounds.top );
+      assertEquals( 29, bounds.bottom );
+      assertEquals( 13, bounds.right );
+      assertEquals( 13, bounds.width );
+      assertEquals( 13, bounds.height );
+      item.destroy();
+    },
+
     testDropDownArrowImage : function() {
       var item = new rwt.widgets.ToolItem( "dropDown" );
       item.setText( "foo" );
@@ -872,6 +891,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( item3.hasState( "first" ) );
       assertFalse( item3.hasState( "last" ) );
       shell.destroy();
+    },
+
+    testSetDirection : function() {
+      this.createDefaultToolBar();
+
+      this.toolBar.setDirection( "rtl" );
+
+      assertEquals( "rtl", this.toolBar.getDirection() );
+      assertEquals( "rtl", this.toolItem1.getDirection() );
+      assertEquals( "rtl", this.separator.getDirection() );
+      this.disposeToolBar();
     },
 
     /////////

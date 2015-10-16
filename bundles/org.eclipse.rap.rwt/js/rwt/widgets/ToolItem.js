@@ -144,11 +144,13 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
     },
 
     _isDropDownClick : function( event ) {
-      var result = false;
       if( this.$separator ) {
-        result = event.getClientX() > this.$separator.offset().left;
+        if( this.getDirection() === "rtl" ) {
+          return event.getClientX() < this.$separator.offset().left;
+        }
+        return event.getClientX() > this.$separator.offset().left;
       }
-      return result;
+      return false;
     },
 
     _onDropDownClick : function() {
@@ -160,6 +162,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
 
     _applyDropDownArrow : function( value ) {
       if( this._isDropDown ) {
+        var rtl = this.getDirection() === "rtl";
         var url = value ? value[ 0 ] : null;
         var width = value ? value[ 1 ] : 0;
         var height = value ? value[ 2 ] : 0;
@@ -167,9 +170,14 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
           backgroundImage: url,
           width: width,
           height: height,
-          right: this.getSpacing()
+          right: rtl ? "" : this.getSpacing(),
+          left: rtl ? this.getSpacing() : ""
         });
-        this.$separator.css("right", width + this.getSpacing() * 2 );
+        var separatorPos = width + this.getSpacing() * 2;
+        this.$separator.css({
+          right: rtl ? "" : separatorPos,
+          left: rtl ? separatorPos : ""
+        });
       }
     },
 
@@ -224,6 +232,7 @@ rwt.qx.Class.define( "rwt.widgets.ToolItem", {
         this._toggleFirstLastState( newParent );
       }
       if( newParent ) {
+        this.setDirection( newParent.getDirection() );
         this.toggleState( "rwt_RIGHT", newParent.hasState( "rwt_RIGHT" ) );
         this.toggleState( "rwt_FLAT", newParent.hasState( "rwt_FLAT" ) );
       }
