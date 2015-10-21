@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -269,6 +269,57 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
       assertEquals( 1, TestUtil.getRequestsSend() );
       var message = TestUtil.getLastMessage();
       assertEquals( 20, message.findCallProperty( "w3", "move", "left") );
+      bar.destroy();
+    },
+
+    testMove_RTL : function() {
+      var bar = this._createCoolBar();
+      bar.setDirection( "rtl" );
+      var processor = rwt.remote.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [ ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 10 ]
+        }
+      } );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
+      TestUtil.flush();
+
+      TestUtil.fakeMouseEvent( item._handle, "mousedown", 120, 0 );
+      TestUtil.fakeMouseEvent( item._handle, "mousemove", 100, 0 );
+      TestUtil.fakeMouseEvent( item._handle, "mouseup", 100, 0 );
+
+      assertEquals( 20, item.getLeft() );
+      assertEquals( 1, TestUtil.getRequestsSend() );
+      var message = TestUtil.getLastMessage();
+      assertEquals( 20, message.findCallProperty( "w3", "move", "left") );
+      bar.destroy();
+    },
+
+    testSetDirection : function() {
+      var bar = this._createCoolBar();
+      var processor = rwt.remote.MessageProcessor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [ ],
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 100, 10 ]
+        }
+      } );
+      var item = rwt.remote.ObjectRegistry.getObject( "w3" );
+      TestUtil.flush();
+
+      bar.setDirection( "rtl" );
+
+      assertEquals( "rtl", bar.getDirection() );
+      assertEquals( "rtl", item.getDirection() );
       bar.destroy();
     },
 

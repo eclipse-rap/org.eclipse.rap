@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
  * Note that updateHandleBounds must be called after each size manipulation.
  */
 rwt.qx.Class.define( "rwt.widgets.CoolItem", {
+
   extend : rwt.widgets.base.Parent,
 
   construct : function( orientation ) {
@@ -82,14 +83,15 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       this.base( arguments, value, oldValue );
       if( value != null ) {
         this.setLocked( value.getLocked() );
+        this.setDirection( value.getDirection() );
       }
     },
 
     _onHandleMouseDown : function( evt ) {
       this._handle.setCapture( true );
       this.getTopLevelWidget().setGlobalCursor( rwt.widgets.CoolItem.DRAG_CURSOR );
-      this._offsetX = evt.getPageX() - this.getLeft();
-      this._offsetY = evt.getPageY() - this.getTop();
+      this._initialLeft = this.getLeft();
+      this._offsetX = evt.getPageX();
       this._bufferedZIndex = this.getZIndex();
       this.setZIndex( 1e7 - 1 );
       if( this._control != null ) {
@@ -120,7 +122,7 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
 
     _onHandleMouseMove : function( evt ) {
       if( this._handle.getCapture() ) {
-        this.setLeft( evt.getPageX() - this._offsetX );
+        this.setLeft( this._initialLeft + this._getMouseOffset( evt ) );
       }
     },
 
@@ -140,6 +142,13 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       }
     },
 
+    _getMouseOffset : function( mouseEvent ) {
+      if( this.getDirection() === "rtl" ) {
+        return this._offsetX - mouseEvent.getPageX();
+      }
+      return mouseEvent.getPageX() - this._offsetX;
+    },
+
     _findBackground : function() {
       var hasParent = true;
       var result = null;
@@ -157,4 +166,5 @@ rwt.qx.Class.define( "rwt.widgets.CoolItem", {
       return result;
     }
   }
+
 });

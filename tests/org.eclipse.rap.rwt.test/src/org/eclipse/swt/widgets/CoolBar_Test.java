@@ -273,6 +273,18 @@ public class CoolBar_Test {
     assertSame( coolBar.getAdapter( WidgetLCA.class ), coolBar.getAdapter( WidgetLCA.class ) );
   }
 
+  @Test
+  public void testSetDirection() {
+    CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
+    ToolBar control = new ToolBar( coolBar, SWT.NONE );
+    coolItem.setControl( control );
+
+    coolBar.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    assertEquals( SWT.RIGHT_TO_LEFT, coolBar.getOrientation() );
+    assertEquals( SWT.RIGHT_TO_LEFT, control.getOrientation() );
+  }
+
   private static CoolItem createItem( CoolBar coolBar ) {
     ToolBar toolBar = new ToolBar( coolBar, SWT.FLAT );
     for( int i = 0; i < 3; i++ ) {

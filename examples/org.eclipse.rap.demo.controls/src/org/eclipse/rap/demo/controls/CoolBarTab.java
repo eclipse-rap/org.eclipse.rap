@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class CoolBarTab extends ExampleTab {
 //  createStyleButton( "VERTICAL", SWT.VERTICAL );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
+    createOrientationButton();
     createVisibilityButton();
     createEnablementButton();
     createLockedButton( parent );
@@ -56,15 +57,12 @@ public class CoolBarTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
     coolBar = new CoolBar( parent, style );
-
     createItem( coolBar, 1 );
     createItem( coolBar, 2 );
     createItem( coolBar, 3 );
     coolBar.setLocation( 5, 5 );
     coolBar.setSize( coolBar.computeSize( parent.getSize().x - 10, SWT.DEFAULT ) );
-
     registerControl( coolBar );
-
     final ControlAdapter controlListener = new ControlAdapter() {
       @Override
       public void controlResized( final ControlEvent e ) {
@@ -73,6 +71,7 @@ public class CoolBarTab extends ExampleTab {
     };
     parent.addControlListener( controlListener );
     coolBar.addDisposeListener( new DisposeListener() {
+      @Override
       public void widgetDisposed( final DisposeEvent event ) {
         parent.removeControlListener( controlListener );
       }
@@ -120,4 +119,5 @@ public class CoolBarTab extends ExampleTab {
       }
     } );
   }
+
 }
