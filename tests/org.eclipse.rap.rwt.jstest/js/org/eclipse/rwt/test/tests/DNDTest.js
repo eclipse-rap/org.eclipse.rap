@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1048,10 +1048,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       TestUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertIdentical( tree._rowContainer.getRow( 1 ), dndSupport._getCurrentFeedbackTarget() );
       dndSupport.setFeedback( tree, [ "FEEDBACK_SCROLL" ] );
-      TestUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
       TestUtil.flush();
 
-      assertEquals( 0, tree._topItemIndex );
+      assertNull( dndSupport._dropFeedbackRenderer._scrollTimer );
 
       TestUtil.fakeMouseEventDOM( treeNode, "mouseup", leftButton );
     },

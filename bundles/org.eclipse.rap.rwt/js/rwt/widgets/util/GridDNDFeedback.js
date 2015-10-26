@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2015 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,8 @@ rwt.qx.Class.define( "rwt.widgets.util.GridDNDFeedback", {
     // Internals
 
     _renderFeedback : function( row, value ) {
-      if( this._feedback != null && row != null ) {
+      var item = this._tree._rowContainer.findItemByRow( row );
+      if( this._feedback != null && row != null && item != null ) {
         if( this._feedback[ "FEEDBACK_SELECT" ] ) {
           this._renderFeedbackSelect( row, value );
         } else if( this._feedback[ "FEEDBACK_INSERT_BEFORE" ] ) {
