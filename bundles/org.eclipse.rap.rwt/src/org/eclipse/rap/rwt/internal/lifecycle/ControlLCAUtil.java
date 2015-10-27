@@ -37,6 +37,7 @@ import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
@@ -73,6 +74,9 @@ public class ControlLCAUtil {
   }
 
   public static void renderChanges( Control control ) {
+    if( control instanceof Shell ) {
+      recalculateTabIndex( ( Shell ) control );
+    }
     renderParent( control );
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( control instanceof Composite ) {
@@ -119,6 +123,34 @@ public class ControlLCAUtil {
         getRemoteObject( control ).set( PROP_PARENT, getId( actual ) );
       }
     }
+  }
+
+  private static void recalculateTabIndex( Shell shell ) {
+    resetTabIndices( shell );
+    // tabIndex must be a positive value
+    computeTabIndices( shell, 1 );
+  }
+
+  private static void resetTabIndices( Composite composite ) {
+    for( Control control : composite.getChildren() ) {
+      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
+      if( control instanceof Composite ) {
+        resetTabIndices( ( Composite )control );
+      }
+    }
+  }
+
+  private static int computeTabIndices( Composite composite, int startIndex ) {
+    int result = startIndex;
+    for( Control control : composite.getTabList() ) {
+      ControlUtil.getControlAdapter( control ).setTabIndex( result );
+      // for Links, leave a range out to be assigned to hrefs on the client
+      result += control instanceof Link ? 300 : 1;
+      if( control instanceof Composite ) {
+        result = computeTabIndices( ( Composite )control, result );
+      }
+    }
+    return result;
   }
 
   public static void preserveToolTipText( Control control, String toolTipText ) {
