@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.textsize;
 
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IColumnAdapter;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -27,26 +28,31 @@ public class RePackVisitor implements WidgetTreeVisitor {
   public boolean visit( Widget widget ) {
     if( widget instanceof Control ) {
       Control control = ( Control )widget;
-      if( ControlUtil.getControlAdapter( control ).isPacked() ) {
+      IControlAdapter adapter = ControlUtil.getControlAdapter( control );
+      if( adapter.isPacked() ) {
         control.pack();
+        adapter.clearPacked();
       }
     } else if( widget instanceof TableColumn ) {
       TableColumn column = ( TableColumn )widget;
-      if( getAdapter( column ).isPacked() ) {
+      IColumnAdapter adapter = getAdapter( column );
+      if( adapter.isPacked() ) {
         column.pack();
+        adapter.clearPacked();
       }
     } else if( widget instanceof TreeColumn ) {
       TreeColumn column = ( TreeColumn )widget;
-      if( getAdapter( column ).isPacked() ) {
+      IColumnAdapter adapter = getAdapter( column );
+      if( adapter.isPacked() ) {
         column.pack();
+        adapter.clearPacked();
       }
     }
     return true;
   }
 
   private static IColumnAdapter getAdapter( Item column ) {
-    Object adapter = column.getAdapter( IColumnAdapter.class );
-    return ( IColumnAdapter )adapter;
+    return column.getAdapter( IColumnAdapter.class );
   }
 
 }

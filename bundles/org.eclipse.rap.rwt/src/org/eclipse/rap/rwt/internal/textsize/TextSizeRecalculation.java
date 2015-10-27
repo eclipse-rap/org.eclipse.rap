@@ -79,6 +79,7 @@ class TextSizeRecalculation {
   private static void restoreShellSize( Shell shell, Rectangle bufferedBounds, boolean isPacked ) {
     if( isPacked ) {
       shell.pack();
+      ControlUtil.getControlAdapter( shell ).clearPacked();
     } else {
       setShellSize( shell, bufferedBounds );
     }

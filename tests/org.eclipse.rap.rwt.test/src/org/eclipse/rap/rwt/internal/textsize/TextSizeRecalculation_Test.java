@@ -14,7 +14,8 @@ package org.eclipse.rap.rwt.internal.textsize;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -27,6 +28,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ControlUtil;
+import org.eclipse.swt.internal.widgets.IColumnAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -93,6 +95,7 @@ public class TextSizeRecalculation_Test {
     fakeMeasurementResults();
     final Rectangle scrolledCompositeContentBounds = new Rectangle( 0, 0, 0, 0 );
     shell.addListener( SWT.Resize, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         Rectangle size = scrolledCompositeContent.getBounds();
         scrolledCompositeContentBounds.x = size.x;
@@ -108,26 +111,42 @@ public class TextSizeRecalculation_Test {
   }
 
   @Test
-  public void testIControlAdapterIsPacked() {
-    Shell control = new Shell( display );
-    assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
-
-    control.pack();
-    assertTrue( ControlUtil.getControlAdapter( control ).isPacked() );
-
-    control.setBounds( new Rectangle( 1, 1, 2, 2 ) );
-    assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
-  }
-
-  @Test
-  public void testShellRePackTookPlace() {
+  public void testShellRePack() {
+    final AtomicInteger counter = new AtomicInteger( 0 );
+    shell = new Shell( display ) {
+      @Override
+      public void pack() {
+        super.pack();
+        counter.incrementAndGet();
+      }
+    };
     shell.pack();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
 
     TextSizeRecalculation.execute();
 
-    assertTrue( ControlUtil.getControlAdapter( shell ).isPacked() );
+    assertEquals( 2, counter.get() );
+  }
+
+  @Test
+  public void testShellRePack_olnyOnce() {
+    final AtomicInteger counter = new AtomicInteger( 0 );
+    shell = new Shell( display ) {
+      @Override
+      public void pack() {
+        super.pack();
+        counter.incrementAndGet();
+      }
+    };
+    shell.pack();
+    turnOnImmediateResizeEventHandling();
+    fakeMeasurementResults();
+
+    TextSizeRecalculation.execute();
+    TextSizeRecalculation.execute();
+
+    assertEquals( 2, counter.get() );
   }
 
   @Test
@@ -162,6 +181,9 @@ public class TextSizeRecalculation_Test {
     assertEquals( new Point( 100, 22 ), packedControl.getSize() );
     assertEquals( 107, packedTableColumn.getWidth() );
     assertEquals( 117, packedTreeColumn.getWidth() );
+    assertFalse( ControlUtil.getControlAdapter( packedControl ).isPacked() );
+    assertFalse( packedTableColumn.getAdapter( IColumnAdapter.class ) .isPacked() );
+    assertFalse( packedTreeColumn.getAdapter( IColumnAdapter.class ) .isPacked() );
   }
 
   private Rectangle getInitialShellBounds() {
@@ -251,12 +273,14 @@ public class TextSizeRecalculation_Test {
     private int resizeCount;
     private final StringBuilder resizeLog = new StringBuilder();
 
+    @Override
     public void controlResized( ControlEvent e ) {
       resizeCount++;
       resizeLog.append( TextSizeUtil.isTemporaryResize() );
       resizeLog.append( "|" );
     }
 
+    @Override
     public void controlMoved( ControlEvent e ) {
     }
 

@@ -613,7 +613,12 @@ public class TableColumn extends Item {
 
     @Override
     public boolean isPacked() {
-      return TableColumn.this.packed;
+      return packed;
+    }
+
+    @Override
+    public void clearPacked() {
+      packed = false;
     }
 
   }

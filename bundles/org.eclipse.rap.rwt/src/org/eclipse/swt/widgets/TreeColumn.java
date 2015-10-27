@@ -628,5 +628,11 @@ public class TreeColumn extends Item {
       return packed;
     }
 
+    @Override
+    public void clearPacked() {
+      packed = false;
+    }
+
   }
+
 }

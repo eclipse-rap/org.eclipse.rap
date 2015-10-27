@@ -128,6 +128,11 @@ public abstract class Control extends Widget implements Drawable {
     }
 
     @Override
+    public void clearPacked() {
+      packed = false;
+    }
+
+    @Override
     /* provides direct access to the internal property in order to speed up preserving */
     public Rectangle getBounds() {
       return bounds;

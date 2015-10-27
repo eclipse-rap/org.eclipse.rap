@@ -33,6 +33,7 @@ public interface IControlAdapter {
   boolean getBackgroundTransparency();
 
   boolean isPacked();
+  void clearPacked();
 
   Rectangle getBounds();
 
