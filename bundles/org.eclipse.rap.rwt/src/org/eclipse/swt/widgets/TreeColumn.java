@@ -268,19 +268,6 @@ public class TreeColumn extends Item {
     return checkBits( style, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
   }
 
-  @Override
-  public void dispose() {
-    if( !isDisposed() ) {
-      dispose( true );
-    }
-  }
-
-  void dispose( boolean notifyParent ) {
-    super.dispose(); /* super is intentional here */
-    // if (notifyParent) parent.destroyItem (this);
-    parent = null;
-  }
-
   /**
    * Returns a value which describes the position of the text or image in the
    * receiver. The value will be one of <code>LEFT</code>, <code>RIGHT</code> or
