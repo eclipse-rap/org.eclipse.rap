@@ -85,7 +85,7 @@ public abstract class Control extends Widget implements Drawable {
     @Override
     public void setTabIndex( int index ) {
       if( takesFocus() ) {
-        ControlLCAUtil.preserveTabIndex( Control.this, tabIndex );
+        getRemoteAdapter().preserveTabIndex( tabIndex );
         tabIndex = index;
       }
     }

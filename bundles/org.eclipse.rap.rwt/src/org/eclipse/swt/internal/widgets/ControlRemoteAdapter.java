@@ -23,7 +23,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class ControlRemoteAdapter extends WidgetRemoteAdapter {
@@ -47,6 +49,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
 
   private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_CHILDREN = "children";
+  private static final String PROP_TAB_INDEX = "tabIndex";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -116,16 +119,46 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveTabIndex( int tabIndex ) {
-    markPreserved( TAB_INDEX );
-    this.tabIndex = tabIndex;
+    if( !hasPreserved( TAB_INDEX ) ) {
+      markPreserved( TAB_INDEX );
+      this.tabIndex = tabIndex;
+    }
   }
 
-  public boolean hasPreservedTabIndex() {
-    return hasPreserved( TAB_INDEX );
+  public void renderTabIndex( Control control ) {
+    if( control instanceof Shell ) {
+      resetTabIndices( ( Shell )control );
+      // tabIndex must be a positive value
+      computeTabIndices( ( Shell )control, 1 );
+    }
+    if( hasPreserved( TAB_INDEX ) ) {
+      int actual = ControlUtil.getControlAdapter( control ).getTabIndex();
+      if( !isInitialized() || actual != tabIndex ) {
+        getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
+      }
+    }
   }
 
-  public int getPreservedTabIndex() {
-    return tabIndex;
+  private static void resetTabIndices( Composite composite ) {
+    for( Control control : composite.getChildren() ) {
+      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
+      if( control instanceof Composite ) {
+        resetTabIndices( ( Composite )control );
+      }
+    }
+  }
+
+  private static int computeTabIndices( Composite composite, int startIndex ) {
+    int result = startIndex;
+    for( Control control : composite.getTabList() ) {
+      ControlUtil.getControlAdapter( control ).setTabIndex( result );
+      // for Links, leave a range out to be assigned to hrefs on the client
+      result += control instanceof Link ? 300 : 1;
+      if( control instanceof Composite ) {
+        result = computeTabIndices( ( Composite )control, result );
+      }
+    }
+    return result;
   }
 
   public void preserveToolTipText( String toolTipText ) {

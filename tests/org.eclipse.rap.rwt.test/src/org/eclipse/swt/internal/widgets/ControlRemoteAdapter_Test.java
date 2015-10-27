@@ -59,14 +59,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveTabIndex() {
-    adapter.preserveTabIndex( 3 );
-
-    assertTrue( adapter.hasPreservedTabIndex() );
-    assertEquals( 3, adapter.getPreservedTabIndex() );
-  }
-
-  @Test
   public void testPreserveToolTipText() {
     adapter.preserveToolTipText( "foo" );
 
@@ -300,8 +292,6 @@ public class ControlRemoteAdapter_Test {
     assertFalse( adapter.hasPreserved( 1 ) );
     assertFalse( adapter.hasPreservedParent() );
     assertNull( adapter.getPreservedParent() );
-    assertFalse( adapter.hasPreservedTabIndex() );
-    assertEquals( 0, adapter.getPreservedTabIndex() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
     assertFalse( adapter.hasPreservedMenu() );

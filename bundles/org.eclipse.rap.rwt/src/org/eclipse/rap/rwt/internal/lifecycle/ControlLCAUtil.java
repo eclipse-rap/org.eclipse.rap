@@ -37,7 +37,6 @@ import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
@@ -45,7 +44,6 @@ import org.eclipse.swt.widgets.Shell;
 public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
-  private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
   private static final String PROP_MENU = "menu";
   private static final String PROP_VISIBLE = "visibility";
@@ -81,7 +79,7 @@ public class ControlLCAUtil {
       remoteAdapter.renderChildren( ( Composite )control );
     }
     remoteAdapter.renderBounds( getControlAdapter( control ) );
-    renderTabIndex( control );
+    remoteAdapter.renderTabIndex( control );
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
     renderMenu( control );
@@ -119,29 +117,6 @@ public class ControlLCAUtil {
       Composite preserved = remoteAdapter.getPreservedParent();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_PARENT, getId( actual ) );
-      }
-    }
-  }
-
-  public static void preserveTabIndex( Control control, int tabIndex ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedTabIndex() ) {
-      remoteAdapter.preserveTabIndex( tabIndex );
-    }
-  }
-
-  private static void renderTabIndex( Control control ) {
-    if( control instanceof Shell ) {
-      resetTabIndices( ( Shell )control );
-      // tabIndex must be a positive value
-      computeTabIndices( ( Shell )control, 1 );
-    }
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedTabIndex() ) {
-      int actual = ControlUtil.getControlAdapter( control ).getTabIndex();
-      int preserved = remoteAdapter.getPreservedTabIndex();
-      if( !remoteAdapter.isInitialized() || actual != preserved ) {
-        getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
       }
     }
   }
@@ -389,29 +364,6 @@ public class ControlLCAUtil {
 
   private static void renderListenHelp( Control control ) {
     renderListener( control, SWT.Help, PROP_HELP_LISTENER );
-  }
-
-  private static void resetTabIndices( Composite composite ) {
-    for( Control control : composite.getChildren() ) {
-      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
-      if( control instanceof Composite ) {
-        resetTabIndices( ( Composite )control );
-      }
-    }
-  }
-
-  private static int computeTabIndices( Composite composite, int startIndex ) {
-    int result = startIndex;
-    for( Control control : composite.getTabList() ) {
-      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-      controlAdapter.setTabIndex( result );
-      // for Links, leave a range out to be assigned to hrefs on the client
-      result += control instanceof Link ? 300 : 1;
-      if( control instanceof Composite ) {
-        result = computeTabIndices( ( Composite )control, result );
-      }
-    }
-    return result;
   }
 
   private static String getQxCursor( Cursor newValue ) {
