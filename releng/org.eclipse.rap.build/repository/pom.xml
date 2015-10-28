@@ -35,6 +35,11 @@
       <layout>p2</layout>
       <url>${orbit-repo.url}</url>
     </repository>
+    <repository>
+      <id>jetty-repo</id>
+      <layout>p2</layout>
+      <url>${jetty-repo.url}</url>
+    </repository>
   </repositories>
 
   <build>
