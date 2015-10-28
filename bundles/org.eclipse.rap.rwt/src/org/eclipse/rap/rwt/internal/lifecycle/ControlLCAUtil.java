@@ -27,11 +27,9 @@ import java.lang.reflect.Field;
 
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -45,8 +43,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_FOREGROUND = "foreground";
-  private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_FONT = "font";
   private static final String PROP_CURSOR = "cursor";
@@ -70,6 +66,7 @@ public class ControlLCAUtil {
 
   public static void renderChanges( Control control ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
+    IControlAdapter controlAdapter = getControlAdapter( control );
     if( control instanceof Shell ) {
       recalculateTabIndex( ( Shell ) control );
     }
@@ -77,7 +74,7 @@ public class ControlLCAUtil {
     if( control instanceof Composite ) {
       remoteAdapter.renderChildren( ( Composite )control );
     }
-    remoteAdapter.renderBounds( getControlAdapter( control ) );
+    remoteAdapter.renderBounds( controlAdapter );
     remoteAdapter.renderTabIndex( control );
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
@@ -85,8 +82,8 @@ public class ControlLCAUtil {
     remoteAdapter.renderVisible( control );
     remoteAdapter.renderEnabled( control );
     remoteAdapter.renderOrientation( control );
-    renderForeground( control );
-    renderBackground( control );
+    remoteAdapter.renderForeground( controlAdapter );
+    remoteAdapter.renderBackground( controlAdapter );
     renderBackgroundImage( control );
     renderFont( control );
     renderCursor( control );
@@ -166,61 +163,6 @@ public class ControlLCAUtil {
           text = removeAmpersandControlCharacters( text );
         }
         getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
-      }
-    }
-  }
-
-  public static void preserveForeground( Control control, Color foreground ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedForeground() ) {
-      remoteAdapter.preserveForeground( foreground );
-    }
-  }
-
-  private static void renderForeground( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedForeground() ) {
-      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-      Color actual = controlAdapter.getUserForeground();
-      Color preserved = remoteAdapter.getPreservedForeground();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_FOREGROUND, toJson( actual ) );
-      }
-    }
-  }
-
-  public static void preserveBackground( Control control, Color background, boolean transparency ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedBackground() ) {
-      remoteAdapter.preserveBackground( background );
-      remoteAdapter.preserveBackgroundTransparency( transparency );
-    }
-  }
-
-  private static void renderBackground( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedBackground() ) {
-      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-      Color actualBackground = controlAdapter.getUserBackground();
-      boolean actualTransparency = controlAdapter.getBackgroundTransparency();
-      boolean colorChanged = changed( control,
-                                      actualBackground,
-                                      remoteAdapter.getPreservedBackground(),
-                                      null );
-      boolean transparencyChanged = changed( control,
-                                             actualTransparency,
-                                             remoteAdapter.getPreservedBackgroundTransparency(),
-                                             false );
-      if( transparencyChanged || colorChanged ) {
-        RGB rgb = null;
-        int alpha = 0;
-        if( actualBackground != null ) {
-          rgb = actualBackground.getRGB();
-          alpha = actualTransparency ? 0 : actualBackground.getAlpha();
-        } else if( actualTransparency ) {
-          rgb = new RGB( 0, 0, 0 );
-        }
-        getRemoteObject( control ).set( PROP_BACKGROUND, toJson( rgb, alpha ) );
       }
     }
   }

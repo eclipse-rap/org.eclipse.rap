@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -53,6 +54,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_VISIBLE = "visibility";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_ORIENTATION = "direction";
+  private static final String PROP_FOREGROUND = "foreground";
+  private static final String PROP_BACKGROUND = "background";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -219,38 +222,47 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveForeground( Color foreground ) {
-    markPreserved( FOREGROUND );
-    this.foreground = foreground;
+    if( !hasPreserved( FOREGROUND ) ) {
+      markPreserved( FOREGROUND );
+      this.foreground = foreground;
+    }
   }
 
-  public boolean hasPreservedForeground() {
-    return hasPreserved( FOREGROUND );
+  public void renderForeground( IControlAdapter controlAdapter ) {
+    if( hasPreserved( FOREGROUND ) ) {
+      Color actual = controlAdapter.getUserForeground();
+      if( changed( actual, foreground, null ) ) {
+        getRemoteObject( getId() ).set( PROP_FOREGROUND, toJson( actual ) );
+      }
+    }
   }
 
-  public Color getPreservedForeground() {
-    return foreground;
+  public void preserveBackground( Color background, boolean transparency ) {
+    if( !hasPreserved( BACKGROUND ) ) {
+      markPreserved( BACKGROUND );
+      this.background = background;
+      backgroundTransparency = transparency;
+    }
   }
 
-  public void preserveBackground( Color background ) {
-    markPreserved( BACKGROUND );
-    this.background = background;
-  }
-
-  public boolean hasPreservedBackground() {
-    return hasPreserved( BACKGROUND );
-  }
-
-  public Color getPreservedBackground() {
-    return background;
-  }
-
-  public void preserveBackgroundTransparency( boolean transparency ) {
-    markPreserved( BACKGROUND );
-    backgroundTransparency = transparency;
-  }
-
-  public boolean getPreservedBackgroundTransparency() {
-    return backgroundTransparency;
+  public void renderBackground( IControlAdapter controlAdapter ) {
+    if( hasPreserved( BACKGROUND ) ) {
+      Color actualBackground = controlAdapter.getUserBackground();
+      boolean actualTransparency = controlAdapter.getBackgroundTransparency();
+      boolean colorChanged = changed( actualBackground, background, null );
+      boolean transparencyChanged = changed( actualTransparency, backgroundTransparency, false );
+      if( transparencyChanged || colorChanged ) {
+        RGB rgb = null;
+        int alpha = 0;
+        if( actualBackground != null ) {
+          rgb = actualBackground.getRGB();
+          alpha = actualTransparency ? 0 : actualBackground.getAlpha();
+        } else if( actualTransparency ) {
+          rgb = new RGB( 0, 0, 0 );
+        }
+        getRemoteObject( getId() ).set( PROP_BACKGROUND, toJson( rgb, alpha ) );
+      }
+    }
   }
 
   public void preserveBackgroundImage( Image backgroundImage ) {

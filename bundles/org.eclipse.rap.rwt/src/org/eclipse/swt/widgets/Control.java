@@ -465,7 +465,7 @@ public abstract class Control extends Widget implements Drawable {
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    ControlLCAUtil.preserveBackground( this, background, backgroundTransparency );
+    getRemoteAdapter().preserveBackground( background, backgroundTransparency );
     background = color;
     updateBackground();
   }
@@ -578,7 +578,7 @@ public abstract class Control extends Widget implements Drawable {
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    ControlLCAUtil.preserveForeground( this, foreground );
+    getRemoteAdapter().preserveForeground( foreground );
     foreground = color;
   }
 
@@ -652,7 +652,7 @@ public abstract class Control extends Widget implements Drawable {
    * Applies the background according to PARENT_BACKGROUND state.
    */
   private void updateBackground() {
-    ControlLCAUtil.preserveBackground( this, background, backgroundTransparency );
+    getRemoteAdapter().preserveBackground( background, backgroundTransparency );
     backgroundTransparency =    background == null
                              && backgroundImage == null
                              && hasState( PARENT_BACKGROUND );

@@ -66,34 +66,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveForeground() {
-    Color color = mock( Color.class );
-
-    adapter.preserveForeground( color );
-
-    assertTrue( adapter.hasPreservedForeground() );
-    assertSame( color, adapter.getPreservedForeground() );
-  }
-
-  @Test
-  public void testPreserveBackground() {
-    Color color = mock( Color.class );
-
-    adapter.preserveBackground( color );
-
-    assertTrue( adapter.hasPreservedBackground() );
-    assertSame( color, adapter.getPreservedBackground() );
-  }
-
-  @Test
-  public void testPreserveBackgroundTransparency() {
-    adapter.preserveBackgroundTransparency( true );
-
-    assertTrue( adapter.hasPreservedBackground() );
-    assertTrue( adapter.getPreservedBackgroundTransparency() );
-  }
-
-  @Test
   public void testPreserveBackgroundImage() {
     Image image = mock( Image.class );
 
@@ -244,8 +216,7 @@ public class ControlRemoteAdapter_Test {
     adapter.preserveVisible( true );
     adapter.preserveEnabled( true );
     adapter.preserveForeground( mock( Color.class ) );
-    adapter.preserveBackground( mock( Color.class ) );
-    adapter.preserveBackgroundTransparency( true );
+    adapter.preserveBackground( mock( Color.class ), true );
     adapter.preserveBackgroundImage( mock( Image.class ) );
     adapter.preserveFont( mock( Font.class ) );
     adapter.preserveCursor( mock( Cursor.class ) );
@@ -259,11 +230,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedForeground() );
-    assertNull( adapter.getPreservedForeground() );
-    assertFalse( adapter.hasPreservedBackground() );
-    assertNull( adapter.getPreservedBackground() );
-    assertFalse( adapter.getPreservedBackgroundTransparency() );
     assertFalse( adapter.hasPreservedBackgroundImage() );
     assertNull( adapter.getPreservedBackgroundImage() );
     assertFalse( adapter.hasPreservedFont() );
