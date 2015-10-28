@@ -52,6 +52,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_MENU = "menu";
   private static final String PROP_VISIBLE = "visibility";
   private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_ORIENTATION = "direction";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -200,16 +201,21 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveOrientation( int orientation ) {
-    markPreserved( ORIENTATION );
-    this.rtl = orientation == SWT.RIGHT_TO_LEFT;
+    if( !hasPreserved( ORIENTATION ) ) {
+      markPreserved( ORIENTATION );
+      rtl = orientation == SWT.RIGHT_TO_LEFT;
+    }
   }
 
-  public boolean hasPreservedOrientation() {
-    return hasPreserved( ORIENTATION );
-  }
-
-  public int getPreservedOrientation() {
-    return rtl ? SWT.RIGHT_TO_LEFT : SWT.LEFT_TO_RIGHT;
+  public void renderOrientation( Control control ) {
+    if( !isInitialized() || hasPreserved( ORIENTATION ) ) {
+      // [if] Don't use control.getOrientation() as some controls (like SashForm) override this
+      // method to return vertical/horizontal orientation only
+      boolean actual = ( control.getStyle() & SWT.RIGHT_TO_LEFT ) == SWT.RIGHT_TO_LEFT;
+      if( changed( actual, rtl, false ) ) {
+        getRemoteObject( control ).set( PROP_ORIENTATION, actual ? "rtl" : "ltr" );
+      }
+    }
   }
 
   public void preserveForeground( Color foreground ) {

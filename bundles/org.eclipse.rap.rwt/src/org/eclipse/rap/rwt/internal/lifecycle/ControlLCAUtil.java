@@ -45,7 +45,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_ORIENTATION = "direction";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
@@ -85,7 +84,7 @@ public class ControlLCAUtil {
     remoteAdapter.renderMenu( control );
     remoteAdapter.renderVisible( control );
     remoteAdapter.renderEnabled( control );
-    renderOrientation( control );
+    remoteAdapter.renderOrientation( control );
     renderForeground( control );
     renderBackground( control );
     renderBackgroundImage( control );
@@ -278,27 +277,6 @@ public class ControlLCAUtil {
       Cursor preserved = remoteAdapter.getPreservedCursor();
       if( changed( control, actual, preserved, null ) ) {
         getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
-      }
-    }
-  }
-
-  public static void preserveOrientation( Control control, int orientation ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedOrientation() ) {
-      remoteAdapter.preserveOrientation( orientation );
-    }
-  }
-
-  private static void renderOrientation( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.isInitialized() || remoteAdapter.hasPreservedOrientation() ) {
-      // [if] Don't use control.getOrientation() as some controls (like SashForm) override this
-      // method to return vertical/horizontal orientation only
-      int actual = control.getStyle() & ( SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT );
-      int preserved = remoteAdapter.getPreservedOrientation();
-      if( changed( control, actual, preserved, SWT.LEFT_TO_RIGHT ) ) {
-        String orientation = actual == SWT.RIGHT_TO_LEFT ? "rtl" : "ltr";
-        getRemoteObject( control ).set( PROP_ORIENTATION, orientation );
       }
     }
   }

@@ -2222,7 +2222,7 @@ public abstract class Control extends Widget implements Drawable {
     if( ( orientation & flags ) == 0 || ( orientation & flags ) == flags ) {
       return;
     }
-    ControlLCAUtil.preserveOrientation( this, ( style & flags ) );
+    getRemoteAdapter().preserveOrientation( style & flags );
     style &= ~SWT.MIRRORED;
     style &= ~flags;
     style |= orientation & flags;

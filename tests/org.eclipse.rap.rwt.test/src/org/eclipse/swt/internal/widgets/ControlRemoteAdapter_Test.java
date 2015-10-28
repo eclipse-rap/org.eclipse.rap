@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.testfixture.TestContext;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -64,14 +63,6 @@ public class ControlRemoteAdapter_Test {
 
     assertTrue( adapter.hasPreservedToolTipText() );
     assertEquals( "foo", adapter.getPreservedToolTipText() );
-  }
-
-  @Test
-  public void testPreserveOrientation() {
-    adapter.preserveOrientation( SWT.RIGHT_TO_LEFT );
-
-    assertTrue( adapter.hasPreservedOrientation() );
-    assertEquals( SWT.RIGHT_TO_LEFT, adapter.getPreservedOrientation() );
   }
 
   @Test
@@ -268,8 +259,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedOrientation() );
-    assertEquals( SWT.LEFT_TO_RIGHT, adapter.getPreservedOrientation() );
     assertFalse( adapter.hasPreservedForeground() );
     assertNull( adapter.getPreservedForeground() );
     assertFalse( adapter.hasPreservedBackground() );
