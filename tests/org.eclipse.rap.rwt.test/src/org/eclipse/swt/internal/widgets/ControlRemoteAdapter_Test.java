@@ -67,16 +67,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveMenu() {
-    Menu menu = mock( Menu.class );
-
-    adapter.preserveMenu( menu );
-
-    assertTrue( adapter.hasPreservedMenu() );
-    assertSame( menu, adapter.getPreservedMenu() );
-  }
-
-  @Test
   public void testPreserveVisible() {
     adapter.preserveVisible( true );
 
@@ -294,8 +284,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedMenu() );
-    assertNull( adapter.getPreservedMenu() );
     assertFalse( adapter.hasPreservedVisible() );
     assertFalse( adapter.getPreservedVisible() );
     assertFalse( adapter.hasPreservedEnabled() );

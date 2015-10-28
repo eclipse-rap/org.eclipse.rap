@@ -38,7 +38,6 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 
@@ -46,7 +45,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_MENU = "menu";
   private static final String PROP_VISIBLE = "visibility";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_ORIENTATION = "direction";
@@ -86,7 +84,7 @@ public class ControlLCAUtil {
     remoteAdapter.renderTabIndex( control );
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
-    renderMenu( control );
+    remoteAdapter.renderMenu( control );
     renderVisible( control );
     renderEnabled( control );
     renderOrientation( control );
@@ -171,25 +169,6 @@ public class ControlLCAUtil {
           text = removeAmpersandControlCharacters( text );
         }
         getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
-      }
-    }
-  }
-
-  public static void preserveMenu( Control control, Menu menu ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedMenu() ) {
-      remoteAdapter.preserveMenu( menu );
-    }
-  }
-
-  private static void renderMenu( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedMenu() ) {
-      Menu actual = control.getMenu();
-      Menu preserved = remoteAdapter.getPreservedMenu();
-      if( changed( control, actual, preserved, null ) ) {
-        String actualMenuId = actual == null ? null : getId( actual );
-        getRemoteObject( control ).set( PROP_MENU, actualMenuId );
       }
     }
   }

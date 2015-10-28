@@ -2525,7 +2525,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   private void _setMenu( Menu menu ) {
-    ControlLCAUtil.preserveMenu( this, this.menu );
+    getRemoteAdapter().preserveMenu( this.menu );
     this.menu = menu;
   }
 

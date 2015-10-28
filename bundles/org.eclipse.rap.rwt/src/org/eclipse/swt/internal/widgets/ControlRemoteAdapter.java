@@ -48,6 +48,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_CHILDREN = "children";
   private static final String PROP_TAB_INDEX = "tabIndex";
+  private static final String PROP_MENU = "menu";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -146,16 +147,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveMenu( Menu menu ) {
-    markPreserved( MENU );
-    this.menu = menu;
+    if( !hasPreserved( MENU ) ) {
+      markPreserved( MENU );
+      this.menu = menu;
+    }
   }
 
-  public boolean hasPreservedMenu() {
-    return hasPreserved( MENU );
-  }
-
-  public Menu getPreservedMenu() {
-    return menu;
+  public void renderMenu( Control control ) {
+    if( hasPreserved( MENU )  ) {
+      Menu actual = control.getMenu();
+      if( changed( actual, menu, null ) ) {
+        getRemoteObject( control ).set( PROP_MENU, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveVisible( boolean visible ) {
