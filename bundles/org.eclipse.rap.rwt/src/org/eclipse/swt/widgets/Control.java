@@ -2662,10 +2662,10 @@ public abstract class Control extends Widget implements Drawable {
 
   private void preserveState( int flag ) {
     if( ( flag & DISABLED ) != 0 ) {
-      ControlLCAUtil.preserveEnabled( this, !hasState( DISABLED ) );
+      getRemoteAdapter().preserveEnabled( !hasState( DISABLED ) );
     }
     if( ( flag & HIDDEN ) != 0 ) {
-      ControlLCAUtil.preserveVisible( this, !hasState( HIDDEN ) );
+      getRemoteAdapter().preserveVisible( !hasState( HIDDEN ) );
     }
   }
 

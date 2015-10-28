@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class ControlRemoteAdapter extends WidgetRemoteAdapter {
@@ -49,6 +50,8 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_CHILDREN = "children";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_MENU = "menu";
+  private static final String PROP_VISIBLE = "visibility";
+  private static final String PROP_ENABLED = "enabled";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -163,29 +166,37 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveVisible( boolean visible ) {
-    markPreserved( VISIBLE );
-    this.visible = visible;
+    if( !hasPreserved( VISIBLE ) ) {
+      markPreserved( VISIBLE );
+      this.visible = visible;
+    }
   }
 
-  public boolean hasPreservedVisible() {
-    return hasPreserved( VISIBLE );
-  }
-
-  public boolean getPreservedVisible() {
-    return visible;
+  public void renderVisible( Control control ) {
+    if( hasPreserved( VISIBLE ) ) {
+      boolean actual = control.getVisible();
+      if( changed( actual, visible, control instanceof Shell ? false : true ) ) {
+        getRemoteObject( control ).set( PROP_VISIBLE, actual );
+      }
+    }
   }
 
   public void preserveEnabled( boolean enabled ) {
-    markPreserved( ENABLED );
-    this.enabled = enabled;
+    if( !hasPreserved( ENABLED ) ) {
+      markPreserved( ENABLED );
+      this.enabled = enabled;
+    }
   }
 
-  public boolean hasPreservedEnabled() {
-    return hasPreserved( ENABLED );
-  }
-
-  public boolean getPreservedEnabled() {
-    return enabled;
+  public void renderEnabled( Control control ) {
+    // Using isEnabled() would result in unnecessarily updating child widgets of
+    // enabled/disabled controls.
+    if( hasPreserved( ENABLED ) ) {
+      boolean actual = control.getEnabled();
+      if( changed( actual, enabled, true ) ) {
+        getRemoteObject( control ).set( PROP_ENABLED, actual );
+      }
+    }
   }
 
   public void preserveOrientation( int orientation ) {
@@ -326,6 +337,10 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private Object readResolve() {
     initialize();
     return this;
+  }
+
+  private boolean changed( boolean actualValue, boolean preservedValue, boolean defaultValue ) {
+    return actualValue != ( isInitialized() ? preservedValue : defaultValue );
   }
 
   private boolean changed( Object actualValue, Object preservedValue, Object defaultValue ) {

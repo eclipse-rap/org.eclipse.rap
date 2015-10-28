@@ -67,22 +67,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveVisible() {
-    adapter.preserveVisible( true );
-
-    assertTrue( adapter.hasPreservedVisible() );
-    assertTrue( adapter.getPreservedVisible() );
-  }
-
-  @Test
-  public void testPreserveEnabled() {
-    adapter.preserveEnabled( true );
-
-    assertTrue( adapter.hasPreservedEnabled() );
-    assertTrue( adapter.getPreservedEnabled() );
-  }
-
-  @Test
   public void testPreserveOrientation() {
     adapter.preserveOrientation( SWT.RIGHT_TO_LEFT );
 
@@ -284,10 +268,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedVisible() );
-    assertFalse( adapter.getPreservedVisible() );
-    assertFalse( adapter.hasPreservedEnabled() );
-    assertFalse( adapter.getPreservedEnabled() );
     assertFalse( adapter.hasPreservedOrientation() );
     assertEquals( SWT.LEFT_TO_RIGHT, adapter.getPreservedOrientation() );
     assertFalse( adapter.hasPreservedForeground() );
@@ -309,7 +289,7 @@ public class ControlRemoteAdapter_Test {
 
   private static IControlAdapter mockControlAdapterWithBounds( Rectangle value ) {
     IControlAdapter controlAdapter = mock( IControlAdapter.class );
-    when(controlAdapter.getBounds()).thenReturn( value );
+    when( controlAdapter.getBounds() ).thenReturn( value );
     return controlAdapter;
   }
 

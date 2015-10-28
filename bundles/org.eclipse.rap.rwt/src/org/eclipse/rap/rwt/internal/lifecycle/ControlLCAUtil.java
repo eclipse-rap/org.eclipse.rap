@@ -45,8 +45,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_VISIBLE = "visibility";
-  private static final String PROP_ENABLED = "enabled";
   private static final String PROP_ORIENTATION = "direction";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
@@ -72,11 +70,11 @@ public class ControlLCAUtil {
   }
 
   public static void renderChanges( Control control ) {
+    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( control instanceof Shell ) {
       recalculateTabIndex( ( Shell ) control );
     }
     renderParent( control );
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     if( control instanceof Composite ) {
       remoteAdapter.renderChildren( ( Composite )control );
     }
@@ -85,8 +83,8 @@ public class ControlLCAUtil {
     renderToolTipMarkupEnabled( control );
     renderToolTipText( control );
     remoteAdapter.renderMenu( control );
-    renderVisible( control );
-    renderEnabled( control );
+    remoteAdapter.renderVisible( control );
+    remoteAdapter.renderEnabled( control );
     renderOrientation( control );
     renderForeground( control );
     renderBackground( control );
@@ -169,45 +167,6 @@ public class ControlLCAUtil {
           text = removeAmpersandControlCharacters( text );
         }
         getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
-      }
-    }
-  }
-
-  public static void preserveVisible( Control control, boolean visible ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedVisible() ) {
-      remoteAdapter.preserveVisible( visible );
-    }
-  }
-
-  private static void renderVisible( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedVisible() ) {
-      boolean actual = control.getVisible();
-      boolean preserved = remoteAdapter.getPreservedVisible();
-      boolean defaultValue = control instanceof Shell ? false : true;
-      if( changed( control, actual, preserved, defaultValue ) ) {
-        getRemoteObject( control ).set( PROP_VISIBLE, actual );
-      }
-    }
-  }
-
-  public static void preserveEnabled( Control control, boolean enabled ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedEnabled() ) {
-      remoteAdapter.preserveEnabled( enabled );
-    }
-  }
-
-  private static void renderEnabled( Control control ) {
-    // Using isEnabled() would result in unnecessarily updating child widgets of
-    // enabled/disabled controls.
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedEnabled() ) {
-      boolean actual = control.getEnabled();
-      boolean preserved = remoteAdapter.getPreservedEnabled();
-      if( changed( control, actual, preserved, true ) ) {
-        getRemoteObject( control ).set( PROP_ENABLED, actual );
       }
     }
   }
