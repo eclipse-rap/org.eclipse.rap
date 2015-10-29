@@ -47,6 +47,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final int TAB_INDEX = 25;
   private static final int ORIENTATION = 26;
 
+  private static final String PROP_PARENT = "parent";
   private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_CHILDREN = "children";
   private static final String PROP_TAB_INDEX = "tabIndex";
@@ -82,16 +83,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveParent( Composite parent ) {
-    markPreserved( PARENT );
-    this.parent = parent;
+    if( !hasPreserved( PARENT ) ) {
+      markPreserved( PARENT );
+      this.parent = parent;
+    }
   }
 
-  public boolean hasPreservedParent() {
-    return hasPreserved( PARENT );
-  }
-
-  public Composite getPreservedParent() {
-    return parent;
+  public void renderParent( Control control ) {
+    if( isInitialized() && hasPreserved( PARENT )  ) {
+      Composite actual = control.getParent();
+      if( changed( actual, parent, null ) ) {
+        getRemoteObject( control ).set( PROP_PARENT, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveChildren( Control[] children ) {

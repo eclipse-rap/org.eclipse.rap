@@ -2178,7 +2178,7 @@ public abstract class Control extends Widget implements Drawable {
       if( oldShell != newShell || oldDecorations != newDecorations ) {
         fixChildren( newShell, oldShell, newDecorations, oldDecorations );
       }
-      ControlLCAUtil.preserveParent( this, this.parent );
+      getRemoteAdapter().preserveParent( this.parent );
       this.parent = parent;
       parent.addChild( this );
     }

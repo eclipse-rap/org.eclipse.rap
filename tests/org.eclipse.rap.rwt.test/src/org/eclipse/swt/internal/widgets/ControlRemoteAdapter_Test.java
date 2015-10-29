@@ -48,16 +48,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveParent() {
-    Composite parent = mock( Composite.class );
-
-    adapter.preserveParent( parent );
-
-    assertTrue( adapter.hasPreservedParent() );
-    assertSame( parent, adapter.getPreservedParent() );
-  }
-
-  @Test
   public void testPreserveToolTipText() {
     adapter.preserveToolTipText( "foo" );
 
@@ -206,8 +196,6 @@ public class ControlRemoteAdapter_Test {
 
   private void checkDefaults() {
     assertFalse( adapter.hasPreserved( 1 ) );
-    assertFalse( adapter.hasPreservedParent() );
-    assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
     assertFalse( adapter.hasPreservedCursor() );

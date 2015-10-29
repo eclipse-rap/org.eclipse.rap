@@ -16,7 +16,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
@@ -38,7 +37,6 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ControlLCAUtil {
 
-  private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_ACTIVATE_LISTENER = "Activate";
@@ -65,7 +63,7 @@ public class ControlLCAUtil {
     if( control instanceof Shell ) {
       recalculateTabIndex( ( Shell ) control );
     }
-    renderParent( control );
+    remoteAdapter.renderParent( control );
     if( control instanceof Composite ) {
       remoteAdapter.renderChildren( ( Composite )control );
     }
@@ -92,24 +90,6 @@ public class ControlLCAUtil {
     renderListenTraverse( control );
     renderListenMenuDetect( control );
     renderListenHelp( control );
-  }
-
-  public static void preserveParent( Control control, Composite parent ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedParent() ) {
-      remoteAdapter.preserveParent( parent );
-    }
-  }
-
-  private static void renderParent( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.isInitialized() && remoteAdapter.hasPreservedParent() ) {
-      Composite actual = control.getParent();
-      Composite preserved = remoteAdapter.getPreservedParent();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_PARENT, getId( actual ) );
-      }
-    }
   }
 
   private static void recalculateTabIndex( Shell shell ) {
