@@ -48,14 +48,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveToolTipText() {
-    adapter.preserveToolTipText( "foo" );
-
-    assertTrue( adapter.hasPreservedToolTipText() );
-    assertEquals( "foo", adapter.getPreservedToolTipText() );
-  }
-
-  @Test
   public void testPreserveCursor() {
     Cursor cursor = mock( Cursor.class );
 
@@ -196,8 +188,6 @@ public class ControlRemoteAdapter_Test {
 
   private void checkDefaults() {
     assertFalse( adapter.hasPreserved( 1 ) );
-    assertFalse( adapter.hasPreservedToolTipText() );
-    assertNull( adapter.getPreservedToolTipText() );
     assertFalse( adapter.hasPreservedCursor() );
     assertNull( adapter.getPreservedCursor() );
     assertFalse( adapter.hasPreservedActiveKeys() );

@@ -11,7 +11,9 @@
 package org.eclipse.swt.internal.widgets;
 
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
 import java.util.Arrays;
 
@@ -51,6 +53,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_BOUNDS = "bounds";
   private static final String PROP_CHILDREN = "children";
   private static final String PROP_TAB_INDEX = "tabIndex";
+  private static final String PROP_TOOLTIP_TEXT = "toolTip";
   private static final String PROP_MENU = "menu";
   private static final String PROP_VISIBLE = "visibility";
   private static final String PROP_ENABLED = "enabled";
@@ -147,16 +150,23 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveToolTipText( String toolTipText ) {
-    markPreserved( TOOL_TIP_TEXT );
-    this.toolTipText = toolTipText;
+    if( !hasPreserved( TOOL_TIP_TEXT ) ) {
+      markPreserved( TOOL_TIP_TEXT );
+      this.toolTipText = toolTipText;
+    }
   }
 
-  public boolean hasPreservedToolTipText() {
-    return hasPreserved( TOOL_TIP_TEXT );
-  }
-
-  public String getPreservedToolTipText() {
-    return toolTipText;
+  public void renderToolTipText( Control control ) {
+    if( hasPreserved( TOOL_TIP_TEXT ) ) {
+      String actual = control.getToolTipText();
+      if( changed( actual, toolTipText, null ) ) {
+        String text = actual == null ? "" : actual;
+        if( !isToolTipMarkupEnabledFor( control ) ) {
+          text = removeAmpersandControlCharacters( text );
+        }
+        getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
+      }
+    }
   }
 
   public void preserveMenu( Menu menu ) {
