@@ -66,16 +66,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveFont() {
-    Font font = mock( Font.class );
-
-    adapter.preserveFont( font );
-
-    assertTrue( adapter.hasPreservedFont() );
-    assertSame( font, adapter.getPreservedFont() );
-  }
-
-  @Test
   public void testPreserveCursor() {
     Cursor cursor = mock( Cursor.class );
 
@@ -220,8 +210,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedFont() );
-    assertNull( adapter.getPreservedFont() );
     assertFalse( adapter.hasPreservedCursor() );
     assertNull( adapter.getPreservedCursor() );
     assertFalse( adapter.hasPreservedActiveKeys() );

@@ -697,7 +697,7 @@ public abstract class Control extends Widget implements Drawable {
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    ControlLCAUtil.preserveFont( this, this.font );
+    getRemoteAdapter().preserveFont( this.font );
     this.font = font;
   }
 

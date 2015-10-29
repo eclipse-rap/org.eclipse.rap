@@ -57,6 +57,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
+  private static final String PROP_FONT = "font";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -283,16 +284,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveFont( Font font ) {
-    markPreserved( FONT );
-    this.font = font;
+    if( !hasPreserved( FONT ) ) {
+      markPreserved( FONT );
+      this.font = font;
+    }
   }
 
-  public boolean hasPreservedFont() {
-    return hasPreserved( FONT );
-  }
-
-  public Font getPreservedFont() {
-    return font;
+  public void renderFont( IControlAdapter controlAdapter ) {
+    if( hasPreserved( FONT ) ) {
+      Font actual = controlAdapter.getUserFont();
+      if( changed( actual, font, null ) ) {
+        getRemoteObject( getId() ).set( PROP_FONT, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveCursor( Cursor cursor ) {

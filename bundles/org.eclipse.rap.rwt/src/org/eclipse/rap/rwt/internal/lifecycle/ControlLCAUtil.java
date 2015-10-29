@@ -19,7 +19,6 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTip
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
-import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
 
@@ -28,7 +27,6 @@ import java.lang.reflect.Field;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -42,7 +40,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_FONT = "font";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_ACTIVATE_LISTENER = "Activate";
   private static final String PROP_DEACTIVATE_LISTENER = "Deactivate";
@@ -83,7 +80,7 @@ public class ControlLCAUtil {
     remoteAdapter.renderForeground( controlAdapter );
     remoteAdapter.renderBackground( controlAdapter );
     remoteAdapter.renderBackgroundImage( controlAdapter );
-    renderFont( control );
+    remoteAdapter.renderFont( controlAdapter );
     renderCursor( control );
     renderData( control );
     ActiveKeysUtil.renderActiveKeys( control );
@@ -161,25 +158,6 @@ public class ControlLCAUtil {
           text = removeAmpersandControlCharacters( text );
         }
         getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
-      }
-    }
-  }
-
-  public static void preserveFont( Control control, Font font ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedFont() ) {
-      remoteAdapter.preserveFont( font );
-    }
-  }
-
-  private static void renderFont( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedFont() ) {
-      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-      Font actual = controlAdapter.getUserFont();
-      Font preserved = remoteAdapter.getPreservedFont();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_FONT, toJson( actual ) );
       }
     }
   }
