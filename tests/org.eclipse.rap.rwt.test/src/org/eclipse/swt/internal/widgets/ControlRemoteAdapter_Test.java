@@ -66,16 +66,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveBackgroundImage() {
-    Image image = mock( Image.class );
-
-    adapter.preserveBackgroundImage( image );
-
-    assertTrue( adapter.hasPreservedBackgroundImage() );
-    assertSame( image, adapter.getPreservedBackgroundImage() );
-  }
-
-  @Test
   public void testPreserveFont() {
     Font font = mock( Font.class );
 
@@ -230,8 +220,6 @@ public class ControlRemoteAdapter_Test {
     assertNull( adapter.getPreservedParent() );
     assertFalse( adapter.hasPreservedToolTipText() );
     assertNull( adapter.getPreservedToolTipText() );
-    assertFalse( adapter.hasPreservedBackgroundImage() );
-    assertNull( adapter.getPreservedBackgroundImage() );
     assertFalse( adapter.hasPreservedFont() );
     assertNull( adapter.getPreservedFont() );
     assertFalse( adapter.hasPreservedCursor() );

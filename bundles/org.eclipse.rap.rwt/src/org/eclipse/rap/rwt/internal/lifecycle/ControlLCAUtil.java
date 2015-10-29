@@ -29,7 +29,6 @@ import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -43,7 +42,6 @@ public class ControlLCAUtil {
 
   private static final String PROP_PARENT = "parent";
   private static final String PROP_TOOLTIP_TEXT = "toolTip";
-  private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_FONT = "font";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_ACTIVATE_LISTENER = "Activate";
@@ -84,7 +82,7 @@ public class ControlLCAUtil {
     remoteAdapter.renderOrientation( control );
     remoteAdapter.renderForeground( controlAdapter );
     remoteAdapter.renderBackground( controlAdapter );
-    renderBackgroundImage( control );
+    remoteAdapter.renderBackgroundImage( controlAdapter );
     renderFont( control );
     renderCursor( control );
     renderData( control );
@@ -163,25 +161,6 @@ public class ControlLCAUtil {
           text = removeAmpersandControlCharacters( text );
         }
         getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
-      }
-    }
-  }
-
-  public static void preserveBackgroundImage( Control control, Image image ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedBackgroundImage() ) {
-      remoteAdapter.preserveBackgroundImage( image );
-    }
-  }
-
-  private static void renderBackgroundImage( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedBackgroundImage() ) {
-      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-      Image actual = controlAdapter.getUserBackgroundImage();
-      Image preserved = remoteAdapter.getPreservedBackgroundImage();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
       }
     }
   }

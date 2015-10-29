@@ -56,6 +56,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_ORIENTATION = "direction";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
+  private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -266,16 +267,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveBackgroundImage( Image backgroundImage ) {
-    markPreserved( BACKGROUND_IMAGE );
-    this.backgroundImage = backgroundImage;
+    if( !hasPreserved( BACKGROUND_IMAGE ) ) {
+      markPreserved( BACKGROUND_IMAGE );
+      this.backgroundImage = backgroundImage;
+    }
   }
 
-  public boolean hasPreservedBackgroundImage() {
-    return hasPreserved( BACKGROUND_IMAGE );
-  }
-
-  public Image getPreservedBackgroundImage() {
-    return backgroundImage;
+  public void renderBackgroundImage( IControlAdapter controlAdapter ) {
+    if( hasPreserved( BACKGROUND_IMAGE ) ) {
+      Image actual = controlAdapter.getUserBackgroundImage();
+      if( changed( actual, backgroundImage, null ) ) {
+        getRemoteObject( getId() ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveFont( Font font ) {

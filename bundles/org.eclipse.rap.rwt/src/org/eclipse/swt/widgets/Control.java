@@ -532,7 +532,7 @@ public abstract class Control extends Widget implements Drawable {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     if( backgroundImage != image ) {
-      ControlLCAUtil.preserveBackgroundImage( this, backgroundImage );
+      getRemoteAdapter().preserveBackgroundImage( backgroundImage );
       backgroundImage = image;
     }
   }
