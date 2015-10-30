@@ -37,6 +37,9 @@ rwt.scripting.EventBinding = {
     var nativeSource = this._getNativeEventSource( widget, eventType );
     var wrappedListener = wrapperList.pop();
     nativeSource.removeEventListener( nativeType, wrappedListener, window );
+    if( wrapperList.length === 0 ) {
+      delete wrapperRegistry[ wrapperKey ];
+    }
   },
 
   _wrapListener : function( widget, eventType, targetFunction ) {
