@@ -67,7 +67,11 @@ rwt.qx.Class.define( "rwt.widgets.ToolBar", {
 
     _onFocus : function() {
       if( this._hoverItem == null ) {
-        this._hoverItem = this.getFirstChild();
+        var child = this.getFirstChild();
+        while( child != null && !this._isToolItem( child ) ) {
+          child = child.getNextSibling();
+        }
+        this._hoverItem = child;
       }
       if( this._hoverItem != null ) {
         this._hoverItem.addState( "over" );

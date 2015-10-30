@@ -624,6 +624,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       this.disposeToolBar();
     },
 
+    testKeyboardControlActivate_withSeparatorAsFirstItem : function() {
+      this.createDefaultToolBar();
+      var separator = new rwt.widgets.ToolItemSeparator( "push" );
+      this.toolBar.addAt( separator, 0 );
+      TestUtil.flush();
+
+      this.toolBar.focus();
+
+      assertTrue( this.toolBar.isFocused() );
+      assertTrue( this.toolItem1.hasState( "over" ) );
+      assertFalse( separator.hasState( "over" ) );
+      separator.dispose();
+      this.disposeToolBar();
+    },
+
     testKeyboardControlActivateOnHover : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolItem3.hasState( "over" ) );
