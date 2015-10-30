@@ -64,7 +64,7 @@ rwt.scripting.WidgetProxyFactory = {
     this._attachMethods( wrapper, originalWidget );
     this._attach$el( wrapper, originalWidget );
     if( originalWidget instanceof rwt.qx.Object ) {
-      originalWidget.addEventListener( "destroy", function() {
+      originalWidget.addEventListener( "dispose", function() {
         rwt.scripting.WidgetProxyFactory._disposeWidgetProxy( originalWidget );
       } );
     }

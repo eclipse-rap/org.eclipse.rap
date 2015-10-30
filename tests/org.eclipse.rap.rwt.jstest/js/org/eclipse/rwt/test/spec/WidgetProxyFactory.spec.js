@@ -62,10 +62,12 @@ describe( "WidgetProxyFactory", function() {
   } );
 
   afterEach( function() {
-    Processor.processOperation( {
-      "target" : "w2",
-      "action" : "destroy"
-    } );
+    if( ObjectManager.getObject( "w2" ) ) {
+      Processor.processOperation( {
+        "target" : "w2",
+        "action" : "destroy"
+      } );
+    }
     widget = null;
     rwt.remote.HandlerRegistry.remove( "rwt.widgets.AnyWidget" );
     org.eclipse.rwt.test.fixture.Fixture.reset();
@@ -98,6 +100,18 @@ describe( "WidgetProxyFactory", function() {
       var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
 
       widget.destroy();
+      TestUtil.flush();
+
+      expect( TestUtil.hasNoObjects( widgetProxy ) ).toBeTruthy();
+    } );
+
+    it( "is disposed with parent", function() {
+      var widgetProxy = WidgetProxyFactory.getWidgetProxy( widget );
+
+      Processor.processOperation( {
+        "target" : "w2",
+        "action" : "destroy"
+      } );
       TestUtil.flush();
 
       expect( TestUtil.hasNoObjects( widgetProxy ) ).toBeTruthy();

@@ -76,6 +76,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ClientAPITest", {
       assertIdentical( wrapper, rwt.scripting.WidgetProxyFactory._wrapperMap[ hash ] );
 
       MessageProcessor.processOperationArray( [ "destroy", "w2"] );
+      TestUtil.flush();
       shell = null;
 
       assertEquals( undefined, rwt.scripting.WidgetProxyFactory._wrapperMap[ hash ] );
