@@ -22,16 +22,16 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    <tycho.version>0.23.0</tycho.version>
+    <tycho.version>0.24.0</tycho.version>
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <!-- disabled due to bug 393977
-    <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.0/</tycho-baseline-repo.url>
+    <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.1/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
     <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.9.v20150224/</jetty-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/</orbit-repo.url>
-    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.6milestones/S-4.6M2-201509162000/</platform-repo.url>
+    <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.6milestones/S-4.6M3-201510291100/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies/</rap-extra-repo.url>
     <license-repo.url>http://download.eclipse.org/cbi/updates/license/</license-repo.url>
     <!-- The build type, N for nighty builds, S for stable builds. S-builds will be signed. -->
