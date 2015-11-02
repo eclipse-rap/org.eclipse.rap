@@ -62,6 +62,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
   private static final String PROP_FONT = "font";
+  private static final String PROP_CURSOR = "cursor";
 
   private transient Composite parent;
   private transient Control[] children;
@@ -314,16 +315,19 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
   }
 
   public void preserveCursor( Cursor cursor ) {
-    markPreserved( CURSOR );
-    this.cursor = cursor;
+    if( !hasPreserved( CURSOR ) ) {
+      markPreserved( CURSOR );
+      this.cursor = cursor;
+    }
   }
 
-  public boolean hasPreservedCursor() {
-    return hasPreserved( CURSOR );
-  }
-
-  public Cursor getPreservedCursor() {
-    return cursor;
+  public void renderCursor( Control control ) {
+    if( hasPreserved( CURSOR ) ) {
+      Cursor actual = control.getCursor();
+      if( changed( actual, cursor, null ) ) {
+        getRemoteObject( control ).set( PROP_CURSOR, toJson( actual ) );
+      }
+    }
   }
 
   public void preserveActiveKeys( String[] activeKeys ) {

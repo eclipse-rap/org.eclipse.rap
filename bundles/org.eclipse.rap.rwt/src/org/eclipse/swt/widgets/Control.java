@@ -15,7 +15,6 @@ import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabled
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
@@ -749,7 +748,7 @@ public abstract class Control extends Widget implements Drawable {
     if( cursor != null && cursor.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    ControlLCAUtil.preserveCursor( this, this.cursor );
+    getRemoteAdapter().preserveCursor( this.cursor );
     this.cursor = cursor;
   }
 

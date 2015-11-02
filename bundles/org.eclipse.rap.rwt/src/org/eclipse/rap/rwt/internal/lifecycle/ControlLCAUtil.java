@@ -11,19 +11,14 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.changed;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderData;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListenKey;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderListener;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderToolTipMarkupEnabled;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.swt.internal.widgets.ControlUtil.getControlAdapter;
-
-import java.lang.reflect.Field;
 
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -35,7 +30,6 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ControlLCAUtil {
 
-  private static final String PROP_CURSOR = "cursor";
   private static final String PROP_ACTIVATE_LISTENER = "Activate";
   private static final String PROP_DEACTIVATE_LISTENER = "Deactivate";
   private static final String PROP_FOCUS_IN_LISTENER = "FocusIn";
@@ -46,9 +40,6 @@ public class ControlLCAUtil {
   private static final String PROP_TRAVERSE_LISTENER = "Traverse";
   private static final String PROP_MENU_DETECT_LISTENER = "MenuDetect";
   private static final String PROP_HELP_LISTENER = "Help";
-
-  private static final String CURSOR_UPARROW
-    = "rwt-resources/resource/widget/rap/cursors/up_arrow.cur";
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -76,7 +67,7 @@ public class ControlLCAUtil {
     remoteAdapter.renderBackground( controlAdapter );
     remoteAdapter.renderBackgroundImage( controlAdapter );
     remoteAdapter.renderFont( controlAdapter );
-    renderCursor( control );
+    remoteAdapter.renderCursor( control );
     renderData( control );
     ActiveKeysUtil.renderActiveKeys( control );
     ActiveKeysUtil.renderCancelKeys( control );
@@ -117,24 +108,6 @@ public class ControlLCAUtil {
     return result;
   }
 
-  public static void preserveCursor( Control control, Cursor cursor ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( !remoteAdapter.hasPreservedCursor() ) {
-      remoteAdapter.preserveCursor( cursor );
-    }
-  }
-
-  private static void renderCursor( Control control ) {
-    ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
-    if( remoteAdapter.hasPreservedCursor() ) {
-      Cursor actual = control.getCursor();
-      Cursor preserved = remoteAdapter.getPreservedCursor();
-      if( changed( control, actual, preserved, null ) ) {
-        getRemoteObject( control ).set( PROP_CURSOR, getQxCursor( actual ) );
-      }
-    }
-  }
-
   private static void renderListenActivate( Control control ) {
     // Note: Shell "Activate" event is handled by ShellLCA
     if( !( control instanceof Shell ) ) {
@@ -166,68 +139,6 @@ public class ControlLCAUtil {
 
   private static void renderListenHelp( Control control ) {
     renderListener( control, SWT.Help, PROP_HELP_LISTENER );
-  }
-
-  private static String getQxCursor( Cursor newValue ) {
-    if( newValue != null ) {
-      // TODO [rst] Find a better way of obtaining the Cursor value
-      // TODO [tb] adjust strings to match name of constants
-      int value = 0;
-      try {
-        Field field = Cursor.class.getDeclaredField( "value" );
-        field.setAccessible( true );
-        value = field.getInt( newValue );
-      } catch( Exception e ) {
-        throw new RuntimeException( e );
-      }
-      switch( value ) {
-        case SWT.CURSOR_ARROW:
-          return "default";
-        case SWT.CURSOR_WAIT:
-          return "wait";
-        case SWT.CURSOR_APPSTARTING:
-          return "progress";
-        case SWT.CURSOR_CROSS:
-          return "crosshair";
-        case SWT.CURSOR_HELP:
-          return "help";
-        case SWT.CURSOR_SIZEALL:
-          return "move";
-        case SWT.CURSOR_SIZENS:
-          return "row-resize";
-        case SWT.CURSOR_SIZEWE:
-          return "col-resize";
-        case SWT.CURSOR_SIZEN:
-          return "n-resize";
-        case SWT.CURSOR_SIZES:
-          return "s-resize";
-        case SWT.CURSOR_SIZEE:
-          return "e-resize";
-        case SWT.CURSOR_SIZEW:
-          return "w-resize";
-        case SWT.CURSOR_SIZENE:
-        case SWT.CURSOR_SIZENESW:
-          return "ne-resize";
-        case SWT.CURSOR_SIZESE:
-          return "se-resize";
-        case SWT.CURSOR_SIZESW:
-          return "sw-resize";
-        case SWT.CURSOR_SIZENW:
-        case SWT.CURSOR_SIZENWSE:
-          return "nw-resize";
-        case SWT.CURSOR_IBEAM:
-          return "text";
-        case SWT.CURSOR_HAND:
-          return "pointer";
-        case SWT.CURSOR_NO:
-          return "not-allowed";
-        case SWT.CURSOR_UPARROW:
-          return CURSOR_UPARROW;
-        default:
-          break;
-      }
-    }
-    return null;
   }
 
   private static ControlRemoteAdapter getRemoteAdapter( Control control ) {

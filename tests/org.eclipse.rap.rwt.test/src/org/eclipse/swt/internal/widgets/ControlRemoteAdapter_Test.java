@@ -48,16 +48,6 @@ public class ControlRemoteAdapter_Test {
   }
 
   @Test
-  public void testPreserveCursor() {
-    Cursor cursor = mock( Cursor.class );
-
-    adapter.preserveCursor( cursor );
-
-    assertTrue( adapter.hasPreservedCursor() );
-    assertSame( cursor, adapter.getPreservedCursor() );
-  }
-
-  @Test
   public void testPreserveActiveKeys() {
     String[] keys = new String[] { "foo" };
 
@@ -188,8 +178,6 @@ public class ControlRemoteAdapter_Test {
 
   private void checkDefaults() {
     assertFalse( adapter.hasPreserved( 1 ) );
-    assertFalse( adapter.hasPreservedCursor() );
-    assertNull( adapter.getPreservedCursor() );
     assertFalse( adapter.hasPreservedActiveKeys() );
     assertNull( adapter.getPreservedActiveKeys() );
     assertFalse( adapter.hasPreservedCancelKeys() );

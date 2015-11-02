@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.remote;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.parseFontName;
 import static org.eclipse.swt.internal.graphics.FontUtil.getData;
 
+import java.lang.reflect.Field;
+
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
@@ -20,6 +22,7 @@ import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -38,6 +41,9 @@ import org.eclipse.swt.widgets.Widget;
  * @since 2.3
  */
 public class JsonMapping {
+
+  private static final String CURSOR_UPARROW
+    = "rwt-resources/resource/widget/rap/cursors/up_arrow.cur";
 
   private JsonMapping() {
     // prevent instantiation
@@ -216,6 +222,77 @@ public class JsonMapping {
       .add( fontData.getHeight() )
       .add( ( fontData.getStyle() & SWT.BOLD ) != 0 )
       .add( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
+  }
+
+  /**
+   * Returns the JSON representation for the given Cursor. This method accepts <code>null</code>,
+   * which will be mapped to <code>JsonValue.NULL</code>.
+   *
+   * @param cursor the Cursor to encode or <code>null</code>
+   * @return a JSON value that represents the given cursor
+   *
+   * @since 3.1
+   */
+  public static JsonValue toJson( Cursor cursor ) {
+    if( cursor == null ) {
+      return JsonValue.NULL;
+    }
+    // TODO [rst] Find a better way of obtaining the Cursor value
+    // TODO [tb] adjust strings to match name of constants
+    int value = 0;
+    try {
+      Field field = Cursor.class.getDeclaredField( "value" );
+      field.setAccessible( true );
+      value = field.getInt( cursor );
+    } catch( Exception e ) {
+      throw new RuntimeException( e );
+    }
+    switch( value ) {
+      case SWT.CURSOR_ARROW:
+        return JsonValue.valueOf( "default" );
+      case SWT.CURSOR_WAIT:
+        return JsonValue.valueOf( "wait" );
+      case SWT.CURSOR_APPSTARTING:
+        return JsonValue.valueOf( "progress" );
+      case SWT.CURSOR_CROSS:
+        return JsonValue.valueOf( "crosshair" );
+      case SWT.CURSOR_HELP:
+        return JsonValue.valueOf( "help" );
+      case SWT.CURSOR_SIZEALL:
+        return JsonValue.valueOf( "move" );
+      case SWT.CURSOR_SIZENS:
+        return JsonValue.valueOf( "row-resize" );
+      case SWT.CURSOR_SIZEWE:
+        return JsonValue.valueOf( "col-resize" );
+      case SWT.CURSOR_SIZEN:
+        return JsonValue.valueOf( "n-resize" );
+      case SWT.CURSOR_SIZES:
+        return JsonValue.valueOf( "s-resize" );
+      case SWT.CURSOR_SIZEE:
+        return JsonValue.valueOf( "e-resize" );
+      case SWT.CURSOR_SIZEW:
+        return JsonValue.valueOf( "w-resize" );
+      case SWT.CURSOR_SIZENE:
+      case SWT.CURSOR_SIZENESW:
+        return JsonValue.valueOf( "ne-resize" );
+      case SWT.CURSOR_SIZESE:
+        return JsonValue.valueOf( "se-resize" );
+      case SWT.CURSOR_SIZESW:
+        return JsonValue.valueOf( "sw-resize" );
+      case SWT.CURSOR_SIZENW:
+      case SWT.CURSOR_SIZENWSE:
+        return JsonValue.valueOf( "nw-resize" );
+      case SWT.CURSOR_IBEAM:
+        return JsonValue.valueOf( "text" );
+      case SWT.CURSOR_HAND:
+        return JsonValue.valueOf( "pointer" );
+      case SWT.CURSOR_NO:
+        return JsonValue.valueOf( "not-allowed" );
+      case SWT.CURSOR_UPARROW:
+        return JsonValue.valueOf( CURSOR_UPARROW );
+      default:
+        return JsonValue.NULL;
+    }
   }
 
   /**
