@@ -160,12 +160,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 10, 50, 12, 13, 30, 8 );
-      assertEquals( 10, row._getItemLeft( item, 0, tree._config) );
-      assertEquals( 50, row._getItemWidth( item, 0, tree._config ) );
-      assertEquals( 28, row._getItemImageLeft( item, 0, tree._config ) );
-      assertEquals( 13, row._getItemImageWidth( item, 0, tree._config ) );
-      assertEquals( 46, row._getItemTextLeft( item, 0, tree._config ) );
-      assertEquals( 8, row._getItemTextWidth( item, 0, tree._config ) );
+      assertEquals( 10, row._getItemLeft( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 50, row._getItemWidth( { item: item, gridConfig: tree._config }, 0  ) );
+      assertEquals( 28, row._getItemImageLeft( { item: item, gridConfig: tree._config }, 0  ) );
+      assertEquals( 13, row._getItemImageWidth( { item: item, gridConfig: tree._config }, 0  ) );
+      assertEquals( 46, row._getItemTextLeft( { item: item, gridConfig: tree._config }, 0  ) );
+      assertEquals( 8, row._getItemTextWidth( { item: item, gridConfig: tree._config }, 0  ) );
     },
 
     testFirstColumnMetricsImageOverflow : function() {
@@ -176,8 +176,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 0, 15, 0, 10, 10, 40 );
-      assertEquals( 5, row._getItemImageWidth( item, 0, tree._config ) );
-      assertEquals( 0, row._getItemTextWidth( item, 0, tree._config ) );
+      assertEquals( 5, row._getItemImageWidth( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 0, row._getItemTextWidth( { item: item, gridConfig: tree._config }, 0 ) );
     },
 
     testSecondColumnAsTreeColumn : function() {
@@ -191,19 +191,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setItemMetrics( 1, 34, 40, 36, 13, 49, 8 );
       tree.setTreeColumn( 1 );
       // first column is unchanged:
-      assertEquals( 64, row._getItemLeft( item, 0, tree._config ) );
-      assertEquals( 40, row._getItemWidth( item, 0, tree._config) );
-      assertEquals( 66, row._getItemImageLeft( item, 0, tree._config ) );
-      assertEquals( 13, row._getItemImageWidth( item, 0, tree._config ) );
-      assertEquals( 69, row._getItemTextLeft( item, 0, tree._config ) );
-      assertEquals( 8,  row._getItemTextWidth( item, 0, tree._config ) );
+      assertEquals( 64, row._getItemLeft( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 40, row._getItemWidth( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 66, row._getItemImageLeft( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 13, row._getItemImageWidth( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 69, row._getItemTextLeft( { item: item, gridConfig: tree._config }, 0 ) );
+      assertEquals( 8,  row._getItemTextWidth( { item: item, gridConfig: tree._config }, 0 ) );
       // second column
-      assertEquals( 34, row._getItemLeft( item, 1, tree._config ) );
-      assertEquals( 40, row._getItemWidth( item, 1, tree._config ) );
-      assertEquals( 52, row._getItemImageLeft( item, 1, tree._config ) );
-      assertEquals( 13, row._getItemImageWidth( item, 1, tree._config ) );
-      assertEquals( 65, row._getItemTextLeft( item, 1, tree._config ) );
-      assertEquals( 8,  row._getItemTextWidth( item, 1, tree._config ) );
+      assertEquals( 34, row._getItemLeft( { item: item, gridConfig: tree._config }, 1 ) );
+      assertEquals( 40, row._getItemWidth( { item: item, gridConfig: tree._config }, 1 ) );
+      assertEquals( 52, row._getItemImageLeft( { item: item, gridConfig: tree._config }, 1 ) );
+      assertEquals( 13, row._getItemImageWidth( { item: item, gridConfig: tree._config }, 1 ) );
+      assertEquals( 65, row._getItemTextLeft( { item: item, gridConfig: tree._config }, 1 ) );
+      assertEquals( 8,  row._getItemTextWidth( { item: item, gridConfig: tree._config }, 1 ) );
     },
 
     testGetCheckBoxMetrics : function() {
@@ -214,8 +214,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         "indentionWidth" : 16
       } );
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
-      assertEquals( 21, row._getCheckBoxLeft( item, tree._config ) );
-      assertEquals( 20, row._getCheckBoxWidth( item, tree._config ) );
+      assertEquals( 21, row._getCheckBoxLeft( { item: item, gridConfig: tree._config } ) );
+      assertEquals( 20, row._getCheckBoxWidth( { item: item, gridConfig: tree._config } ) );
     },
 
     testSetCheckBoxMetricsOverflow : function() {
@@ -227,8 +227,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       } );
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       tree.setItemMetrics( 0, 0, 25, 0, 10, 10, 40 );
-      assertEquals( 15, row._getCheckBoxLeft( item, tree._config ) );
-      assertEquals( 10, row._getCheckBoxWidth( item, tree._config ) );
+      assertEquals( 15, row._getCheckBoxLeft( { item: item, gridConfig: tree._config } ) );
+      assertEquals( 10, row._getCheckBoxWidth( { item: item, gridConfig: tree._config } ) );
     },
 
     testRenderHeight : function() {
@@ -2559,7 +2559,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var overlay = this._getOverlayElement( row );
       var color = overlay.style.backgroundColor;
       assertEquals( "blue", color );
-      var textWidth = row._getVisualTextWidth( item, 0, tree._config );
+      var textWidth = row._getVisualTextWidth( { item: item, gridConfig: tree._config }, 0 );
       var selectionWidth = parseInt( overlay.style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
     },
