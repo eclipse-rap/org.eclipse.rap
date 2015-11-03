@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,9 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.ImageLoaderEvent;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 
-@SuppressWarnings("all")
 final class LZWCodec {
 	int bitsPerPixel, blockSize, blockIndex, currentByte, bitsLeft,
 		codeSize, clearCode, endCode, newCodes, topSlot, currentSlot,

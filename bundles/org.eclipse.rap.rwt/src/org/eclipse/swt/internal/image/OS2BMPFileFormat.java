@@ -11,21 +11,16 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import java.io.*;
 
 public final class OS2BMPFileFormat extends FileFormat {
 	static final int BMPFileHeaderSize = 14;
 	static final int BMPHeaderFixedSize = 12;
 	int width, height, bitCount;
 
+@Override
 boolean isFileFormat(LEDataInputStream stream) {
 	try {
 		byte[] header = new byte[18];
@@ -70,6 +65,7 @@ int[] loadFileHeader() {
 		SWT.error(SWT.ERROR_INVALID_IMAGE);
 	return header;
 }
+@Override
 ImageData[] loadFromByteStream() {
 	int[] fileHeader = loadFileHeader();
 	byte[] infoHeader = new byte[BMPHeaderFixedSize];
@@ -207,6 +203,7 @@ int unloadData(ImageData image, OutputStream out) {
  * Unload a DeviceIndependentImage using Windows .BMP format into the given
  * byte stream.
  */
+@Override
 void unloadIntoByteStream(ImageLoader loader) {
 	ImageData image = loader.data[0];
 	byte[] rgbs;

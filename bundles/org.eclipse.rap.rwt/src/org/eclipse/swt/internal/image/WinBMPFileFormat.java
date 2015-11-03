@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,10 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import java.io.*;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
-
-@SuppressWarnings("all")
 public final class WinBMPFileFormat extends FileFormat {
 	static final int BMPFileHeaderSize = 14;
 	static final int BMPHeaderFixedSize = 40;
@@ -414,6 +406,7 @@ int decompressRLE8Data(byte[] src, int numBytes, int stride, byte[] dest, int de
 	}
 	return 1;
 }
+@Override
 boolean isFileFormat(LEDataInputStream stream) {
 	try {
 		byte[] header = new byte[18];
@@ -491,6 +484,7 @@ int[] loadFileHeader() {
 		SWT.error(SWT.ERROR_INVALID_IMAGE);
 	return header;
 }
+@Override
 ImageData[] loadFromByteStream() {
 	int[] fileHeader = loadFileHeader();
 	byte[] infoHeader = new byte[BMPHeaderFixedSize];
@@ -698,6 +692,7 @@ int unloadDataNoCompression(ImageData image, byte[] data, OutputStream out) {
  * Unload a DeviceIndependentImage using Windows .BMP format into the given
  * byte stream.
  */
+@Override
 void unloadIntoByteStream(ImageLoader loader) {
 	ImageData image = loader.data[0];
 	byte[] rgbs;

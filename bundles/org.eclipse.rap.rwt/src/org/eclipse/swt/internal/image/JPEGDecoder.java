@@ -1,26 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * This source file is based in part on the work of the Independent JPEG Group (IJG)
+ * and is made available under the terms contained in the about_files/IJG_README
+ * file accompanying this program.
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.ImageLoaderEvent;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 
-@SuppressWarnings("all")
 public class JPEGDecoder {
 	
 	static final int DCTSIZE = 8;
@@ -395,10 +393,12 @@ public class JPEGDecoder {
 		boolean[] dc_needed = new boolean[D_MAX_BLOCKS_IN_MCU];
 		boolean[] ac_needed = new boolean[D_MAX_BLOCKS_IN_MCU];
 		
+		@Override
 		void start_pass (jpeg_decompress_struct cinfo) {
 			start_pass_huff_decoder(cinfo);
 		}
 
+		@Override
 		boolean decode_mcu (jpeg_decompress_struct cinfo, short[][] MCU_data) {
 			huff_entropy_decoder entropy = this;
 			int blkn;
@@ -767,10 +767,12 @@ public class JPEGDecoder {
 		
 		int[] newnz_pos = new int[DCTSIZE2];
 			
+		@Override
 		void start_pass (jpeg_decompress_struct cinfo) {
 			start_pass_phuff_decoder(cinfo);
 		}
 			
+		@Override
 		boolean decode_mcu (jpeg_decompress_struct cinfo, short[][] MCU_data) {
 			boolean is_DC_band = (cinfo.Ss == 0);
 			if (cinfo.Ah == 0) {

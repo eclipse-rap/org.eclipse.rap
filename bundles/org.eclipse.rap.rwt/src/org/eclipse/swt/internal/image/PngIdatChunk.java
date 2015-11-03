@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 
 class PngIdatChunk extends PngChunk {
 
@@ -35,6 +35,7 @@ PngIdatChunk(byte[] reference) {
 	super(reference);
 }
 
+@Override
 int getChunkType() {
 	return CHUNK_IDAT;
 }
@@ -42,6 +43,7 @@ int getChunkType() {
 /**
  * Answer whether the chunk is a valid IDAT chunk.
  */
+@Override
 void validate(PngFileReadState readState, PngIhdrChunk headerChunk) {
 	if (!readState.readIHDR
 		|| (headerChunk.getMustHavePalette() && !readState.readPLTE)

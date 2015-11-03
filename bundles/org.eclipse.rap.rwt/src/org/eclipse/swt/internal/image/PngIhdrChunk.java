@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,8 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 
 class PngIhdrChunk extends PngChunk {
 	static final int IHDR_DATA_LENGTH = 13;
@@ -76,6 +75,7 @@ PngIhdrChunk(byte[] reference) {
 	interlaceMethod = reference[INTERLACE_METHOD_OFFSET];
 }
 
+@Override
 int getChunkType() {
 	return CHUNK_IHDR;
 }
@@ -212,6 +212,7 @@ void setInterlaceMethod(byte value) {
 /**
  * Answer whether the chunk is a valid IHDR chunk.
  */
+@Override
 void validate(PngFileReadState readState, PngIhdrChunk headerChunk) {
 	// An IHDR chunk is invalid if any other chunk has
 	// been read.
@@ -295,6 +296,7 @@ String getInterlaceMethodString() {
 	}
 }
 
+@Override
 void contributeToString(StringBuffer buffer) {
 	buffer.append("\n\tWidth: ");
 	buffer.append(width);

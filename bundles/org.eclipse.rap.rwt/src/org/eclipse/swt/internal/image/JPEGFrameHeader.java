@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 
 final class JPEGFrameHeader extends JPEGVariableSizeSegment {
 	int maxVFactor;
@@ -192,6 +192,7 @@ final class JPEGFrameHeader extends JPEGVariableSizeSegment {
 	 *	SOF_14 - Differential progressive, arithmetic coding
 	 *	SOF_15 - Differential lossless, arithmetic coding
 	 */
+	@Override
 	public boolean verify() {
 		int marker = getSegmentMarker();
 		return (marker >= JPEGFileFormat.SOF0 && marker <= JPEGFileFormat.SOF3) ||

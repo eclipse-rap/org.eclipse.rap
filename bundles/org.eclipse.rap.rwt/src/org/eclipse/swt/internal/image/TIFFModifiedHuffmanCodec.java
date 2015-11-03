@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 
 /*
 * Decoder for 

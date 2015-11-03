@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,8 @@
 package org.eclipse.swt.internal.image;
 
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 
 class PngPlteChunk extends PngChunk {
 	
@@ -32,6 +31,7 @@ PngPlteChunk(byte[] reference){
 	paletteSize = length / 3;
 }
 
+@Override
 int getChunkType() {
 	return CHUNK_PLTE;
 }
@@ -80,6 +80,7 @@ void setPaletteData(PaletteData palette) {
 /**
  * Answer whether the chunk is a valid PLTE chunk.
  */
+@Override
 void validate(PngFileReadState readState, PngIhdrChunk headerChunk) {
 	// A PLTE chunk is invalid if no IHDR has been read or if any PLTE,
 	// IDAT, or IEND chunk has been read.
@@ -116,6 +117,7 @@ void validate(PngFileReadState readState, PngIhdrChunk headerChunk) {
 	if (256 < paletteSize) SWT.error(SWT.ERROR_INVALID_IMAGE);
 }
 
+@Override
 void contributeToString(StringBuffer buffer) {
 	buffer.append("\n\tPalette size:");
 	buffer.append(paletteSize);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,11 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.*;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.ImageLoaderEvent;
-import org.eclipse.swt.graphics.PaletteData;
-import org.eclipse.swt.internal.Compatibility;
-
-@SuppressWarnings("all")
 public final class PNGFileFormat extends FileFormat {
 	static final int SIGNATURE_LENGTH = 8;
 	static final int PRIME = 65521;
@@ -45,6 +39,7 @@ void readSignature() throws IOException {
 /**
  * Load the PNG image from the byte stream.
  */
+@Override
 ImageData[] loadFromByteStream() {
 	try {
 		readSignature();
@@ -147,10 +142,12 @@ void readNextChunk(PngChunkReader chunkReader) throws IOException {
 			}
 	}
 }
+@Override
 void unloadIntoByteStream(ImageLoader loader) {
 	PngEncoder encoder = new PngEncoder(loader);
 	encoder.encode(outputStream);
 }
+@Override
 boolean isFileFormat(LEDataInputStream stream) {
 	try {
 		byte[] signature = new byte[SIGNATURE_LENGTH];

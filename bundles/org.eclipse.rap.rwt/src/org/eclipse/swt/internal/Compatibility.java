@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,13 @@
 package org.eclipse.swt.internal;
 
  
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.zip.DeflaterOutputStream;
+import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
 
 import org.eclipse.swt.SWT;
 
@@ -106,6 +102,17 @@ public static int ceil(int p, int q) {
 }
 
 /**
+ * Answers whether the indicated file exists or not.
+ * 
+ * @param parent the file's parent directory
+ * @param child the file's name
+ * @return true if the file exists
+ */
+public static boolean fileExists(String parent, String child) {
+	return new File (parent, child).exists();
+}
+
+/**
  * Answers the most positive (i.e. closest to positive infinity)
  * integer value which is less than the number obtained by dividing
  * the first argument p by the second argument q.
@@ -155,7 +162,7 @@ public static int pow2(int n) {
 }
 
 /**
- * Create an DeflaterOutputStream if such things are supported.
+ * Create a DeflaterOutputStream if such things are supported.
  * 
  * @param stream the output stream
  * @return a deflater stream or <code>null</code>
@@ -163,8 +170,8 @@ public static int pow2(int n) {
  * 
  * @since 1.4
  */
-public static OutputStream newDeflaterOutputStream(OutputStream stream) throws IOException {
-	return new DeflaterOutputStream(stream);
+public static OutputStream newDeflaterOutputStream(OutputStream stream, int level) throws IOException {
+	return new DeflaterOutputStream(stream, new Deflater(level));
 }
 
 /**
@@ -243,24 +250,6 @@ public static boolean isWhitespace(char c) {
 }
 
 /**
- * Execute a program in a separate platform process if the
- * underlying platform support this.
- * <p>
- * The new process inherits the environment of the caller.
- * </p>
- *
- * @param prog the name of the program to execute
- *
- * @exception IOException
- *  if the program cannot be executed
- * @exception SecurityException
- *  if the current SecurityManager disallows program execution
- */
-public static void exec(String prog) throws java.io.IOException {
-	Runtime.getRuntime().exec(prog);
-}
-
-/**
  * Execute progArray[0] in a separate platform process if the
  * underlying platform support this.
  * <p>
@@ -276,6 +265,30 @@ public static void exec(String prog) throws java.io.IOException {
  */
 public static void exec(String[] progArray) throws java.io.IOException{
 	Runtime.getRuntime().exec(progArray);
+}
+
+/**
+ * Execute prog[0] in a separate platform process if the
+ * underlying platform supports this.
+ * <p>
+ * The new process inherits the environment of the caller.
+ * <p>
+ *
+ * @param prog array containing the program to execute and its arguments
+ * @param envp
+ *            array of strings, each element of which has environment
+ *            variable settings in the format name=value
+ * @param workingDir
+ *            the working directory of the new process, or null if the new
+ *            process should inherit the working directory of the caller
+ *
+ * @exception IOException
+ *  if the program cannot be executed
+ * @exception	SecurityException
+ *  if the current SecurityManager disallows program execution
+ */
+public static void exec(String[] prog, String[] envp, String workingDir) throws java.io.IOException{
+	Runtime.getRuntime().exec(prog, null, workingDir != null ? new File(workingDir) : null);
 }
 
 private static ResourceBundle msgs = null;

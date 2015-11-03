@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.IOException;
+import java.io.*;
 
 final class TIFFRandomFileAccess {
 

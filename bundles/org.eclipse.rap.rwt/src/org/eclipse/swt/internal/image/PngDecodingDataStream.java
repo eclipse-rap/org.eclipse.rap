@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,9 @@
 package org.eclipse.swt.internal.image;
 
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 
 public class PngDecodingDataStream extends InputStream {
 	InputStream stream;
@@ -48,6 +47,7 @@ void assertImageDataAtEnd() throws IOException {
 	lzBlockReader.assertCompressedDataAtEnd();
 }
 
+@Override
 public void close() throws IOException {
 	assertImageDataAtEnd();
 	checkAdler();
@@ -84,12 +84,14 @@ void updateAdler(byte value) {
 	adlerValue = (high << 16) | low;
 }
 
+@Override
 public int read() throws IOException {
 	byte nextDecodedByte = lzBlockReader.getNextByte();
 	updateAdler(nextDecodedByte);
 	return nextDecodedByte & 0xFF;
 }
 
+@Override
 public int read(byte[] buffer, int off, int len) throws IOException {
 	for (int i = 0; i < len; i++) {
 		int b = read();
