@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.util.MnemonicUtil.removeAmpersandControlCharacters;
 import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isToolTipMarkupEnabledFor;
@@ -97,7 +96,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( isInitialized() && hasPreserved( PARENT )  ) {
       Composite actual = control.getParent();
       if( changed( actual, parent, null ) ) {
-        getRemoteObject( control ).set( PROP_PARENT, toJson( actual ) );
+        getRemoteObject().set( PROP_PARENT, toJson( actual ) );
       }
     }
   }
@@ -113,7 +112,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( !isInitialized() || hasPreserved( CHILDREN ) ) {
       Control[] actual = composite.getChildren();
       if( changed( actual, children, null ) ) {
-        getRemoteObject( getId() ).set( PROP_CHILDREN, toJson( actual ) );
+        getRemoteObject().set( PROP_CHILDREN, toJson( actual ) );
       }
     }
   }
@@ -129,7 +128,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( !isInitialized() || hasPreserved( BOUNDS ) ) {
       Rectangle actual = controlAdapter.getBounds();
       if( changed( actual, bounds, null ) ) {
-        getRemoteObject( getId() ).set( PROP_BOUNDS, toJson( actual ) );
+        getRemoteObject().set( PROP_BOUNDS, toJson( actual ) );
       }
     }
   }
@@ -145,7 +144,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( TAB_INDEX ) ) {
       int actual = ControlUtil.getControlAdapter( control ).getTabIndex();
       if( !isInitialized() || actual != tabIndex ) {
-        getRemoteObject( control ).set( PROP_TAB_INDEX, actual );
+        getRemoteObject().set( PROP_TAB_INDEX, actual );
       }
     }
   }
@@ -165,7 +164,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
         if( !isToolTipMarkupEnabledFor( control ) ) {
           text = removeAmpersandControlCharacters( text );
         }
-        getRemoteObject( control ).set( PROP_TOOLTIP_TEXT, text );
+        getRemoteObject().set( PROP_TOOLTIP_TEXT, text );
       }
     }
   }
@@ -181,7 +180,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( MENU )  ) {
       Menu actual = control.getMenu();
       if( changed( actual, menu, null ) ) {
-        getRemoteObject( control ).set( PROP_MENU, toJson( actual ) );
+        getRemoteObject().set( PROP_MENU, toJson( actual ) );
       }
     }
   }
@@ -197,7 +196,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( VISIBLE ) ) {
       boolean actual = control.getVisible();
       if( changed( actual, visible, control instanceof Shell ? false : true ) ) {
-        getRemoteObject( control ).set( PROP_VISIBLE, actual );
+        getRemoteObject().set( PROP_VISIBLE, actual );
       }
     }
   }
@@ -215,7 +214,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( ENABLED ) ) {
       boolean actual = control.getEnabled();
       if( changed( actual, enabled, true ) ) {
-        getRemoteObject( control ).set( PROP_ENABLED, actual );
+        getRemoteObject().set( PROP_ENABLED, actual );
       }
     }
   }
@@ -233,7 +232,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
       // method to return vertical/horizontal orientation only
       boolean actual = ( control.getStyle() & SWT.RIGHT_TO_LEFT ) == SWT.RIGHT_TO_LEFT;
       if( changed( actual, rtl, false ) ) {
-        getRemoteObject( control ).set( PROP_ORIENTATION, actual ? "rtl" : "ltr" );
+        getRemoteObject().set( PROP_ORIENTATION, actual ? "rtl" : "ltr" );
       }
     }
   }
@@ -249,7 +248,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( FOREGROUND ) ) {
       Color actual = controlAdapter.getUserForeground();
       if( changed( actual, foreground, null ) ) {
-        getRemoteObject( getId() ).set( PROP_FOREGROUND, toJson( actual ) );
+        getRemoteObject().set( PROP_FOREGROUND, toJson( actual ) );
       }
     }
   }
@@ -277,7 +276,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
         } else if( actualTransparency ) {
           rgb = new RGB( 0, 0, 0 );
         }
-        getRemoteObject( getId() ).set( PROP_BACKGROUND, toJson( rgb, alpha ) );
+        getRemoteObject().set( PROP_BACKGROUND, toJson( rgb, alpha ) );
       }
     }
   }
@@ -293,7 +292,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( BACKGROUND_IMAGE ) ) {
       Image actual = controlAdapter.getUserBackgroundImage();
       if( changed( actual, backgroundImage, null ) ) {
-        getRemoteObject( getId() ).set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
+        getRemoteObject().set( PROP_BACKGROUND_IMAGE, toJson( actual ) );
       }
     }
   }
@@ -309,7 +308,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( FONT ) ) {
       Font actual = controlAdapter.getUserFont();
       if( changed( actual, font, null ) ) {
-        getRemoteObject( getId() ).set( PROP_FONT, toJson( actual ) );
+        getRemoteObject().set( PROP_FONT, toJson( actual ) );
       }
     }
   }
@@ -325,7 +324,7 @@ public class ControlRemoteAdapter extends WidgetRemoteAdapter {
     if( hasPreserved( CURSOR ) ) {
       Cursor actual = control.getCursor();
       if( changed( actual, cursor, null ) ) {
-        getRemoteObject( control ).set( PROP_CURSOR, toJson( actual ) );
+        getRemoteObject().set( PROP_CURSOR, toJson( actual ) );
       }
     }
   }

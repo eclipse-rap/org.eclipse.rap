@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
@@ -132,6 +134,10 @@ public class WidgetRemoteAdapter implements RemoteAdapter, SerializableCompatibi
 
   protected boolean hasPreserved( int index ) {
     return ( preserved & ( 1 << index ) ) != 0;
+  }
+
+  protected RemoteObject getRemoteObject() {
+    return RemoteObjectFactory.getRemoteObject( getId() );
   }
 
   public void addRenderRunnable( Runnable renderRunnable ) {
