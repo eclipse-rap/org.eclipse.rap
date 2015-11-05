@@ -509,7 +509,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       shell.destroy();
     },
 
-    /////////
+    testDisposeShell : function() {
+      var shell = new rwt.widgets.Shell( {} );
+      var timer = shell._sendBoundsTimer;
+
+      shell.destroy();
+      TestUtil.flush();
+
+      assertTrue( shell.isDisposed() );
+      assertTrue( timer.isDisposed() );
+    },
+      /////////
     // Helper
 
     _createDefaultShell : function( styles, noFlush ) {

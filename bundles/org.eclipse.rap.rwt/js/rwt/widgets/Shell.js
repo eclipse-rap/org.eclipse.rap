@@ -167,6 +167,7 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
     if( this.isCreated() ) {
       this.getElement().removeEventListener( "mousedown", this.__onwindowmousedown, false );
     }
+    this._disposeObjects( "_sendBoundsTimer" );
   },
 
   members : {
