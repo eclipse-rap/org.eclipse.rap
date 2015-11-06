@@ -29,7 +29,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       "overflow" : "hidden",
       "userSelect" : "none",
       "height" : 16,
-      "position" : "relative"
+      "position" : "relative",
+      "borderWidth" : "0px",
+      "borderStyle" : "solid"
     });
     this.$el.prop( "row", this );
     this._styleMap = {};
@@ -50,6 +52,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     this._usedIdentIcons = 0;
     this._cellsRendered = 0;
     this._templateRenderer = null;
+    this._mirror = false;
   },
 
   destruct : function() {
@@ -66,6 +69,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
   },
 
   members : {
+
+    _gridLines : { horizontal : null, vertical : null },
 
     renderItem : function( item, gridConfig, selected, hoverTarget, scrolling ) {
       var renderArgs = {
@@ -167,11 +172,37 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       return this.__states && this.__states[ state ] ? true : false;
     },
 
+    setGridLines : function( lines ) {
+      this._gridLines = lines;
+      this.$el.css( {
+        "borderBottomColor" : lines.horizontal || "",
+        "borderBottomWidth" : lines.horizontal ? "1px" : "0px"
+      } );
+      for( var cell = 0; cell < this.$cellBackgrounds.length; cell++ ) {
+        this._renderVericalGridLine( cell );
+      }
+    },
+
+    getGridLines : function() {
+      return this._gridLines;
+    },
+
+    setMirror : function( mirror ) {
+      this._mirror = mirror;
+      for( var cell = 0; cell < this.$cellBackgrounds.length; cell++ ) {
+        this._renderVericalGridLine( cell );
+      }
+    },
+
+    getMirror : function() {
+      return this._mirror;
+    },
+
     ///////////////////////
     // First-level Renderer
 
     _renderStates : function( renderArgs ) {
-      if (renderArgs.item) {
+      if( renderArgs.item ) {
         this.setState( "rowtemplate", renderArgs.gridConfig.rowTemplate != null );
         this.setState( "checked", renderArgs.item.isChecked() );
         this.setState( "grayed", renderArgs.item.isGrayed() );
@@ -371,8 +402,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( background !== "undefined" && background != this._styleMap.backgroundColor ) {
         renderBounds = !renderArgs.scrolling || !this.$cellBackgrounds[ cell ];
         this._getCellBackgroundElement( cell ).css( "backgroundColor", background );
-      } else if( this.$cellBackgrounds[ cell ] ) {
-        this.$cellBackgrounds[ cell ].css( "backgroundColor", "" );
+      } else if( this.$cellBackgrounds[ cell ] || this._gridLines.vertical ) {
+        this._getCellBackgroundElement( cell ).css( "backgroundColor", "" );
         renderBounds = !renderArgs.scrolling;
       }
       if( renderBounds ) {
@@ -423,7 +454,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         element = this._getCellLabelElement( cell );
         this._renderCellLabelContent( renderArgs, cell, element );
         if( renderBounds ) {
-          var treeColumnAlignment = renderArgs.gridConfig.rtl ? "right" : "left";
+          var treeColumnAlignment = this._mirror ? "right" : "left";
           var columnAlignment = this._getAlignment( cell, renderArgs.gridConfig );
           element.css( "textAlign", isTreeColumn ? treeColumnAlignment : columnAlignment );
         }
@@ -537,8 +568,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       var left = this._getCheckBoxLeft( renderArgs );
       var width = this._getCheckBoxWidth( renderArgs );
       this.$checkBox.css( {
-        "left" : renderArgs.gridConfig.rtl ? "" : left,
-        "right" : renderArgs.gridConfig.rtl ? left : "",
+        "left" : this._mirror ? "" : left,
+        "right" : this._mirror ? left : "",
         "top" : 0,
         "width" : width,
         "height" : "100%"
@@ -551,8 +582,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var left = this._getItemLeft( renderArgs, cell );
         var width = this._getItemWidth( renderArgs, cell );
         element.css( {
-          "left" : renderArgs.gridConfig.rtl ? "" : left,
-          "right" : renderArgs.gridConfig.rtl ? left : "",
+          "left" : this._mirror ? "" : left,
+          "right" : this._mirror ? left : "",
           "top" : 0,
           "width" : width,
           "height" : "100%"
@@ -566,8 +597,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var left = this._getCellCheckLeft( renderArgs, cell );
         var width = this._getCellCheckWidth( renderArgs, cell );
         element.css( {
-          "left" : renderArgs.gridConfig.rtl ? "" : left,
-          "right" : renderArgs.gridConfig.rtl ? left : "",
+          "left" : this._mirror ? "" : left,
+          "right" : this._mirror ? left : "",
           "top" : 0,
           "width" : width,
           "height" : "100%"
@@ -581,8 +612,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var left = this._getItemImageLeft( renderArgs, cell );
         var width = this._getItemImageWidth( renderArgs, cell );
         element.css( {
-          "left" : renderArgs.gridConfig.rtl ? "" : left,
-          "right" : renderArgs.gridConfig.rtl ? left : "",
+          "left" : this._mirror ? "" : left,
+          "right" : this._mirror ? left : "",
           "top" : 0,
           "width" : width,
           "height" : "100%"
@@ -599,8 +630,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         // TODO : for vertical center rendering line-height should also be set,
         //        but not otherwise. Also not sure about bottom alignment.
         element.css( {
-          "left" : renderArgs.gridConfig.rtl ? "" : left,
-          "right" : renderArgs.gridConfig.rtl ? left : "",
+          "left" : this._mirror ? "" : left,
+          "right" : this._mirror ? left : "",
           "top" : top,
           "width" : width,
           "height" : "auto"
@@ -620,8 +651,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
         this._getOverlayElement().css( {
-          "left" : renderArgs.gridConfig.rtl ? "" : left,
-          "right" : renderArgs.gridConfig.rtl ? left : "",
+          "left" : this._mirror ? "" : left,
+          "right" : this._mirror ? left : "",
           "width" : width
         } );
       }
@@ -810,7 +841,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( renderArgs.hoverTarget && renderArgs.hoverTarget[ 0 ] === "expandIcon" ) {
         states.over = true;
       }
-      if( renderArgs.gridConfig.rtl ) {
+      if( this._mirror ) {
         states.rwt_RIGHT_TO_LEFT = true;
       }
       return this._getImageFromAppearance( "indent", states );
@@ -819,7 +850,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getLineSymbol : function( renderArgs ) {
       var states = this._getParentStates( renderArgs.gridConfig );
       states.line = true;
-      if( renderArgs.gridConfig.rtl ) {
+      if( this._mirror ) {
         states.rwt_RIGHT_TO_LEFT = true;
       }
       return this._getImageFromAppearance( "indent", states );
@@ -843,8 +874,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         var element = this._getIndentImageElement().css( {
           "opacity" : gridConfig.enabled ? 1 : FADED,
           "backgroundImage" : source,
-          "left" : gridConfig.rtl ? "" : offset,
-          "right" : gridConfig.rtl ? offset : "",
+          "left" : this._mirror ? "" : offset,
+          "right" : this._mirror ? offset : "",
           "top" : 0,
           "width" : width,
           "height" : "100%"
@@ -912,10 +943,22 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _getCellBackgroundElement : function( cell ) {
       var result = this.$cellBackgrounds[ cell ];
       if( !result ) {
-        result = this._createElement( 1 );
+        result = this._createElement( 1 ).css( {
+          "borderWidth" : "0px",
+          "borderStyle" : "solid"
+        } );
         this.$cellBackgrounds[ cell ] = result;
+        this._renderVericalGridLine( cell );
       }
       return result;
+    },
+
+    _renderVericalGridLine : function( cell ) {
+      this.$cellBackgrounds[ cell ].css( {
+        "borderRightWidth" : !this._mirror && this._gridLines.vertical ? "1px" : "0px",
+        "borderLeftWidth" : this._mirror && this._gridLines.vertical ? "1px" : "0px",
+        "borderColor" : this._gridLines.vertical || ""
+      } );
     },
 
     _getIndentImageElement : function() {
@@ -1065,7 +1108,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
 
     _getAlignment : function( column, gridConfig ) {
       var alignment = gridConfig.alignment[ column ] ? gridConfig.alignment[ column ] : "left";
-      if( gridConfig.rtl ) {
+      if( this._mirror ) {
         if( alignment === "left" ) {
           return "right";
         } else if( alignment === "right" ) {

@@ -285,14 +285,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.destroy();
     },
 
-    testZIndex : function() {
-      var tree = this._createDefaultTree( true );
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      assertEquals( 1, parseInt( tree._rowContainer._vertGridLines[ 0 ].style.zIndex, 10 ) );
-      tree.destroy();
-    },
-
     testGridLinesStateOnNewRows : function() {
       var tree = this._createDefaultTree( true );
       TestUtil.flush();
@@ -305,31 +297,35 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.destroy();
     },
 
-    testGridLinesHorizontal : function() {
+    testGridLinesHorizontalDisabled : function() {
       var tree = this._createDefaultTree();
       var row = tree._rowContainer.getRow( 0 );
-      assertFalse( TestUtil.hasCssBorder( row.$el.get( 0 ) ) );
-      tree.setLinesVisible( true );
       TestUtil.flush();
-      var border = tree._rowContainer._getHorizontalGridBorder();
-      // NOTE: FF has some weired behavior here, using computed css it returns 0.8px instead of 1px
-      var element = row.$el.get( 0 );
-      assertEquals( border.getWidthBottom(), parseInt( element.style.borderBottomWidth, 10 ) );
-      assertEquals( border.getWidthTop(), parseInt( element.style.borderTopWidth, 10 ) );
+
+      assertEquals( { horizontal: null, vertical: null }, row.getGridLines() );
+
       tree.destroy();
     },
 
-    testInitialGridLinesHorizontal : function() {
+    testGridLinesHorizontal : function() {
+      var tree = this._createDefaultTree();
+      tree.setLinesVisible( true );
+      TestUtil.flush();
+
+      var row = tree._rowContainer.getRow( 0 );
+      assertEquals( { horizontal: "transparent", vertical: "#dedede" }, row.getGridLines() );
+      tree.destroy();
+    },
+
+    testGridLinesHorizontalOnNewRows : function() {
       var tree = this._createDefaultTree( true );
       tree.setHeight( 0 );
       tree.setLinesVisible( true );
       tree.setHeight( 100 );
       TestUtil.flush();
-      var border = tree._rowContainer._getHorizontalGridBorder();
+
       var row = tree._rowContainer.getRow( 0 );
-      var element = row.$el.get( 0 );
-      assertEquals( border.getWidthBottom(), parseInt( element.style.borderBottomWidth, 10 ) );
-      assertEquals( border.getWidthTop(), parseInt( element.style.borderTopWidth, 10 ) );
+      assertEquals( { horizontal: "transparent", vertical: "#dedede" }, row.getGridLines() );
       tree.destroy();
     },
 

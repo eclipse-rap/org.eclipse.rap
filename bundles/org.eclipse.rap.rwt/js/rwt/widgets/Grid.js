@@ -346,7 +346,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     setLinesVisible : function( value ) {
       this._config.linesVisible = value;
       this.toggleState( "linesvisible", value );
-      this._rowContainer.updateRowLines();
+      this._rowContainer.updateGridLines();
       this._scheduleUpdate();
     },
 

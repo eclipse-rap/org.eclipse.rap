@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011, 2015 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
@@ -440,45 +441,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
           column.setFixed( true );
         }
       }
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      var border = tree._rowContainer.getSubContainer( 0 )._getHorizontalGridBorder();
-      var element = tree._rowContainer.getSubContainer( 0 ).getRow( 0 ).$el.get( 0 );
-      assertTrue( tree.hasState( "linesvisible" ) );
-      assertEquals( border.getWidthBottom(), parseInt( element.style.borderBottomWidth, 10 ) );
-      assertEquals( border.getWidthTop(), parseInt( element.style.borderTopWidth, 10 ) );
-      tree.destroy();
-    },
 
-    testVerticalGridLayoutOnSplitTree : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createSplitTree();
       tree.setLinesVisible( true );
       TestUtil.flush();
-      var cont1 = tree.getRowContainer().getSubContainer( 0 ).$el.get( 0 );
-      var cont2 = tree.getRowContainer().getSubContainer( 1 ).$el.get( 0 )
-      assertEquals( 3, cont1.childNodes.length );
-      assertEquals( 4, cont2.childNodes.length );
-      assertEquals( 49, parseInt( cont1.childNodes[ 1 ].style.left, 10 ) );
-      assertEquals( 21, parseInt( cont1.childNodes[ 2 ].style.left, 10 )  );
-      assertEquals( 20, parseInt( cont2.childNodes[ 1 ].style.left, 10 )  );
-      assertEquals( 52, parseInt( cont2.childNodes[ 2 ].style.left, 10 )  );
-      assertEquals( 52, parseInt( cont2.childNodes[ 3 ].style.left, 10 )  );
-      tree.destroy();
-    },
 
-    testVerticalGridLayoutOnChangeFixedColumns : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createSplitTree();
-      TestUtil.flush();
-      var cont1 = tree.getRowContainer().getSubContainer( 0 ).$el.get( 0 );
-      var cont2 = tree.getRowContainer().getSubContainer( 1 ).$el.get( 0 );
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      rwt.widgets.util.GridUtil.setFixedColumns( tree, 0 );
-      TestUtil.flush();
-      assertEquals( 1, cont1.childNodes.length );
-      assertEquals( 6, cont2.childNodes.length );
+      var row = tree._rowContainer.getSubContainer( 0 ).getRow( 0 );
+      assertEquals( { horizontal: "transparent", vertical: "#dedede" }, row.getGridLines() );
       tree.destroy();
     },
 

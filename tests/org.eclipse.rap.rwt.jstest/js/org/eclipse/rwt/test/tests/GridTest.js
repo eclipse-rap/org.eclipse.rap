@@ -2991,6 +2991,23 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
+    testSetDirectionMirrorsRows_LRT : function() {
+      var tree = this._createDefaultTree();
+
+      var row = tree._rowContainer.getRow( 1 );
+      assertFalse( row.getMirror() );
+      tree.destroy();
+    },
+
+    testSetDirectionMirrorsRows_RTL : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+
+      var row = tree._rowContainer.getRow( 1 );
+      assertTrue( row.getMirror() );
+      tree.destroy();
+    },
+
     testScrollHorizontal : function() {
       var tree = this._createDefaultTree();
       tree.setItemMetrics( 2, 500, 600, 0, 0, 0, 500 );
@@ -3794,125 +3811,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setLinesVisible( true );
       TestUtil.flush();
-      var border = tree._rowContainer._getHorizontalGridBorder();
-      assertIdentical( border, tree._rowContainer._rowBorder );
-      tree.destroy();
-    },
 
-    testCreateGridLinesVertical : function() {
-      var tree = this._createDefaultTree();
-      tree.setColumnCount( 3 );
-      TestUtil.flush();
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      assertEquals( 3, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.destroy();
-    },
-
-    testGridLinesVerticalDefaultProperties : function() {
-      var tree = this._createDefaultTree();
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      var line = tree._rowContainer.$el.prop( "childNodes" )[ 2 ];
-      assertEquals( 1, parseInt( line.style.zIndex, 10 ) );
-      assertEquals( "0px", line.style.width );
-      assertTrue( line.style.border !== "" || line.style.borderRight !== "" );
-      tree.destroy();
-    },
-
-    testAddGridLinesVertical : function() {
-      var tree = this._createDefaultTree();
-      tree.setLinesVisible( true );
-      tree.setColumnCount( 1 );
-      TestUtil.flush();
-      assertEquals( 1, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.setColumnCount( 3 );
-      TestUtil.flush();
-      assertEquals( 3  , tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.destroy();
-    },
-
-    testRemoveGridLinesVertical : function() {
-      var tree = this._createDefaultTree();
-      tree.setLinesVisible( true );
-      tree.setColumnCount( 3 );
-      TestUtil.flush();
-      assertEquals( 3, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.setColumnCount( 1 );
-      TestUtil.flush();
-      assertEquals( 1, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.destroy();
-    },
-
-    testDisableGridLinesVertical : function() {
-      var tree = this._createDefaultTree();
-      tree.setLinesVisible( true );
-      tree.setColumnCount( 3 );
-      TestUtil.flush();
-      assertEquals( 3, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.setLinesVisible( false );
-      TestUtil.flush();
-      assertEquals( 0, tree._rowContainer.$el.prop( "childNodes" ).length - 1 );
-      tree.destroy();
-    },
-
-    testGridLinesVerticalLayoutY : function() {
-      var tree = this._createDefaultTree();
-      tree.setWidth( 1000 );
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      TestUtil.flush();
-      var line = tree._rowContainer.$el.prop( "childNodes" )[ 1 ];
-      assertEquals( "0px", line.style.top );
-      assertEquals( "500px", line.style.height );
-      tree.setHeaderHeight( 20 );
-      tree.setHeaderVisible( true );
-      TestUtil.flush();
-      assertEquals( "0px", line.style.top );
-      assertEquals( "480px", line.style.height );
-      if( !TestUtil.isMobileWebkit() ) {
-        tree.setScrollBarsVisible( true, true );
-        assertEquals( "0px", line.style.top );
-        assertTrue( parseInt( line.style.top, 10 ) < 480 );
-      }
-      tree.destroy();
-    },
-
-    testGridLinesVerticalPositionX : function() {
-      var tree = this._createDefaultTree();
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
-      tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
-      tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
-      TestUtil.flush();
-
-      var line1 = tree._rowContainer.$el.prop( "childNodes" )[ 1 ];
-      var line2 = tree._rowContainer.$el.prop( "childNodes" )[ 2 ];
-      var line3 = tree._rowContainer.$el.prop( "childNodes" )[ 3 ];
-      assertEquals( 201, parseInt( line1.style.left, 10 ) );
-      assertEquals( 304, parseInt( line2.style.left, 10 ) );
-      assertEquals( 359, parseInt( line3.style.left, 10 ) );
-      tree.destroy();
-    },
-
-    testGridLinesVerticalPositionX_RTL : function() {
-      var tree = this._createDefaultTree();
-      tree.setDirection( "rtl" );
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
-      tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
-      tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
-      TestUtil.flush();
-
-      var line1 = tree._rowContainer.$el.prop( "childNodes" )[ 1 ];
-      var line2 = tree._rowContainer.$el.prop( "childNodes" )[ 2 ];
-      var line3 = tree._rowContainer.$el.prop( "childNodes" )[ 3 ];
-      assertEquals( 201, parseInt( line1.style.right, 10 ) );
-      assertEquals( 304, parseInt( line2.style.right, 10 ) );
-      assertEquals( 359, parseInt( line3.style.right, 10 ) );
+      var sample = tree._rowContainer.getRow( 10 ).$el.get( 0 );
+      assertTrue( TestUtil.hasCssBorder( sample ) );
       tree.destroy();
     },
 

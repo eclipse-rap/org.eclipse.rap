@@ -129,12 +129,10 @@ org.eclipse.rwt.test.fixture.TestUtil = {
     for( var i=0; i < 4; i++ ) {
       if( !result ) {
         var width = parseInt( node.style[ "border" + edge[ i ] + "Width" ], 10 );
-        var color = node.style[ "border" + edge[ i ] + "Color" ];
         var style = node.style[ "border" + edge[ i ] + "Style" ];
         var hasWidth = !isNaN( width ) && width > 0;
-        var hasColor = color !== "transparent";
         var hasStyle = style !== "" && style !== "none";
-        result = hasWidth && hasColor && hasStyle;
+        result = hasWidth && hasStyle;
       }
     }
     return result;

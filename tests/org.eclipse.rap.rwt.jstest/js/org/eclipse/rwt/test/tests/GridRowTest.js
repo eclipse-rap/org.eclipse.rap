@@ -260,7 +260,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testLabelBoundsTree_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
 
@@ -290,7 +290,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testLabelBoundsTable_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       tree.setTreeColumn( -1 );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
@@ -712,7 +712,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testIndentSymbolsPosition_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       var parent1 = this._createItem( tree, false, true );
       var parent2 = this._createItem( parent1, false, false );
       var parent3 = this._createItem( parent2, false, true );
@@ -1022,7 +1022,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testRenderCellBackgroundBounds_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       row.setHeight( 15 );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
@@ -1054,6 +1054,106 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 15, bounds.height );
       assertEquals( 66, bounds.width );
       assertEquals( 0, bounds.top );
+    },
+
+    testGridLinesHorizontalDisabled : function() {
+      assertFalse( TestUtil.hasCssBorder( row.$el.get( 0 ) ) );
+    },
+
+    testGridLinesHorizontalEnabled : function() {
+      row.setGridLines( { vertical: null, horizontal: "#010203" } );
+      TestUtil.flush();
+
+      var element = row.$el.get( 0 );
+      assertEquals( 0, parseInt( element.style.borderLeftWidth || 0, 10 ) );
+      assertEquals( 0, parseInt( element.style.borderRightWidth || 0, 10 ) );
+      assertEquals( 0, parseInt( element.style.borderTopWidth || 0, 10 ) );
+      assertEquals( 1, parseInt( element.style.borderBottomWidth || 0, 10 ) );
+      assertEquals( "solid", element.style.borderBottomStyle );
+      var color = element.style.borderBottomColor;
+      assertTrue( color === "#010203" || color === "rgb(1, 2, 3)" );
+    },
+
+    testGridLinesVerticalEnabled : function() {
+      var item = this._createItem( tree );
+
+      row.setGridLines( { horizontal: null, vertical: "#010203" } );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var color = node.style.borderRightColor;
+      var bounds = getElementBounds( node );
+      assertEquals( "", node.style.backgroundColor );
+      assertEquals( 4, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+      assertEquals( "solid", node.style.borderRightStyle );
+      assertEquals( 0, parseInt( node.style.borderLeftWidth || 0 ) );
+      assertEquals( 1, parseInt( node.style.borderRightWidth || 0 ) );
+      assertTrue( color === "#010203" || color === "rgb(1, 2, 3)" );
+    },
+
+    testGridLinesVerticalEnabledWithCellBackground : function() {
+      var item = this._createItem( tree );
+      item.setCellBackgrounds( [ "red" ] );
+
+      row.setGridLines( { horizontal: null, vertical: "#010203" } );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var color = node.style.borderRightColor;
+      var bounds = getElementBounds( node );
+      assertEquals( "red", node.style.backgroundColor );
+      assertEquals( 4, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+      assertEquals( "solid", node.style.borderRightStyle );
+      assertEquals( 0, parseInt( node.style.borderLeftWidth || 0 ) );
+      assertEquals( 1, parseInt( node.style.borderRightWidth || 0 ) );
+      assertTrue( color === "#010203" || color === "rgb(1, 2, 3)" );
+    },
+
+    testGridLinesVerticalEnabled_RTL : function() {
+      var item = this._createItem( tree );
+      row.setMirror( true );
+      row.setGridLines( { horizontal: null, vertical: "#010203" } );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var color = node.style.borderRightColor;
+      var bounds = getElementBounds( node );
+      assertEquals( "", node.style.backgroundColor );
+      assertEquals( 330, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+      assertEquals( "solid", node.style.borderLeftStyle );
+      assertEquals( 0, parseInt( node.style.borderRightWidth || 0 ) );
+      assertEquals( 1, parseInt( node.style.borderLeftWidth || 0 ) );
+      assertTrue( color === "#010203" || color === "rgb(1, 2, 3)" );
+    },
+
+    testGridLinesVerticalEnabled_SetRTLAfterFirstRender : function() {
+      var item = this._createItem( tree );
+      row.setGridLines( { horizontal: null, vertical: "#010203" } );
+      row.renderItem( item, tree._config, false, null );
+      row.setMirror( true );
+      row.renderItem( item, tree._config, false, null );
+
+      var node = row.$el.get( 0 ).childNodes[ 1 ];
+      var color = node.style.borderRightColor;
+      var bounds = getElementBounds( node );
+      assertEquals( "", node.style.backgroundColor );
+      assertEquals( 330, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+      assertEquals( "solid", node.style.borderLeftStyle );
+      assertEquals( 0, parseInt( node.style.borderRightWidth || 0 ) );
+      assertEquals( 1, parseInt( node.style.borderLeftWidth || 0 ) );
+      assertTrue( color === "#010203" || color === "rgb(1, 2, 3)" );
     },
 
     testRenderImagesOnly : function() {
@@ -1110,7 +1210,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testImageBounds_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       row.setHeight( 15 );
       var item = this._createItem( tree );
       item.setTexts( [ "" ] );
@@ -1670,7 +1770,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testRenderCellCheckBoxBounds_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       tree.setColumnCount( 3 );
       tree.setItemMetrics( 0, 0, 30, 20, 0, 20, 10, 2, 8 );
       tree.setItemMetrics( 1, 30, 10, 30, 0, 30, 10, -1, -1 );
@@ -2506,7 +2606,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
     },
 
     testRenderLabelAlignment_RTL : function() {
-      tree.setDirection( "rtl" );
+      row.setMirror( true );
       tree.setTreeColumn( 1 );
       var item = this._createItem( tree );
       item.setTexts( [ "Test", "Test" ] );

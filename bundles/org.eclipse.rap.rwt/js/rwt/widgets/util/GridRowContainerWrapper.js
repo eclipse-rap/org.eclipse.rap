@@ -146,11 +146,11 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     return result;
   },
 
-  updateRowLines : function() {
+  updateGridLines : function() {
     this._container[ 0 ].getRenderConfig().linesVisible = this._config.linesVisible;
-    this._container[ 0 ].updateRowLines();
+    this._container[ 0 ].updateGridLines();
     this._container[ 1 ].getRenderConfig().linesVisible = this._config.linesVisible;
-    this._container[ 1 ].updateRowLines();
+    this._container[ 1 ].updateGridLines();
   },
 
   renderAll : function() {
