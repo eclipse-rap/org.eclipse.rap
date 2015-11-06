@@ -585,7 +585,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       shell.destroy();
     },
 
-    testSetScrollBarVisibilityInProtocol : function() {
+    testSetScrollBarVisibilityInProtocol_vertical : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var scrollable = this._createScrollable();
 
@@ -604,7 +604,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       shell.destroy();
     },
 
-    testSetScrollBarVisibilityInProtocolHorizontal : function() {
+    testSetScrollBarVisibilityInProtocol_horizontal : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var scrollable = this._createScrollable();
 
@@ -620,6 +620,24 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       } );
 
       assertFalse( scrollable.isVerticalBarVisible() );
+      shell.destroy();
+    },
+
+    testSetScrollBarVisibilityInProtocol_withNonScrollableParent : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+
+      MessageProcessor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrollBar",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "HORIZONTAL" ],
+          "visibility" : false
+        }
+      } );
+
+      assertFalse( rwt.remote.ObjectRegistry.getObject( "w5" ).getDisplay() );
       shell.destroy();
     },
 

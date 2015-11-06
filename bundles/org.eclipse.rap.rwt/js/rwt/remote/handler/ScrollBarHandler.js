@@ -21,12 +21,14 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ScrollBar", {
         result = parent.getHorizontalBar();
       } else {
         result = new rwt.widgets.base.ScrollBar( true );
+        rwt.remote.HandlerUtil.setParent( result, properties.parent );
       }
     } else {
       if( parent.getVerticalBar ) {
         result = parent.getVerticalBar();
       } else {
         result = new rwt.widgets.base.ScrollBar( false );
+        rwt.remote.HandlerUtil.setParent( result, properties.parent );
       }
     }
     rwt.remote.HandlerUtil.addDestroyableChild( parent, result );
@@ -48,12 +50,16 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.ScrollBar", {
   propertyHandler : {
     "visibility" : function( widget, value ) {
       var parent = widget.getParent();
-      // NOTE : use parent.getXXXBarVisible because "visibility" or "display" my be used
-      // TODO [tb] : alwas use display
-      if( widget.isHorizontal() ) {
-        parent.setScrollBarsVisible( value, parent.isVerticalBarVisible() );
+      // NOTE : use parent.setScrollBarsVisible because "visibility" or "display" my be used
+      // TODO [tb] : always use display
+      if( parent.setScrollBarsVisible ) {
+        if( widget.isHorizontal() ) {
+          parent.setScrollBarsVisible( value, parent.isVerticalBarVisible() );
+        } else {
+          parent.setScrollBarsVisible( parent.isHorizontalBarVisible(), value );
+        }
       } else {
-        parent.setScrollBarsVisible( parent.isHorizontalBarVisible(), value );
+        widget.setDisplay( value );
       }
     }
   },
