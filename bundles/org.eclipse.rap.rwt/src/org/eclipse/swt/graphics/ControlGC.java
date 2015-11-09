@@ -28,7 +28,6 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Control;
 
 
@@ -254,7 +253,7 @@ class ControlGC extends GCDelegate {
   }
 
   GCAdapter getGCAdapter() {
-    return ( GCAdapter )control.getAdapter( IGCAdapter.class );
+    return control.getAdapter( GCAdapter.class );
   }
 
   private void addGCOperation( GCOperation operation ) {

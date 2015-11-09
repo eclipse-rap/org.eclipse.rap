@@ -31,8 +31,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -687,8 +687,8 @@ public class GCOperationWriter_Test {
     operationWriter.render();
   }
 
-  private static IGCAdapter getGCAdapter( Canvas canvas ) {
-    return canvas.getAdapter( IGCAdapter.class );
+  private static GCAdapter getGCAdapter( Canvas canvas ) {
+    return canvas.getAdapter( GCAdapter.class );
   }
 
 }

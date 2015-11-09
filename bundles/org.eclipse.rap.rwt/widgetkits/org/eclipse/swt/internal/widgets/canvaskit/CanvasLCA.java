@@ -10,23 +10,23 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.getStyles;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderClientListeners;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
+import static org.eclipse.rap.rwt.internal.protocol.JsonUtil.createJsonArray;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.createRemoteObject;
 import static org.eclipse.swt.internal.widgets.canvaskit.GCOperationWriter.getGcId;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
+import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Canvas;
 
 
@@ -68,7 +68,7 @@ public final class CanvasLCA extends WidgetLCA<Canvas> {
   }
 
   private static void writeGCOperations( Canvas canvas ) {
-    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
     GCOperation[] operations = adapter.getTrimmedGCOperations();
     if( operations.length > 0 || adapter.getForceRedraw() ) {
       GCOperationWriter operationWriter = new GCOperationWriter( canvas );

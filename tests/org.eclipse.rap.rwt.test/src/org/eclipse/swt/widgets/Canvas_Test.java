@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.internal.events.EventList;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA;
 import org.junit.Before;
 import org.junit.Rule;
@@ -95,7 +95,7 @@ public class Canvas_Test {
     canvas.redraw();
     canvas.redraw();
     assertEquals( 2, paintEventLog.size() );
-    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
     assertEquals( 1, adapter.getGCOperations().length );
   }
 

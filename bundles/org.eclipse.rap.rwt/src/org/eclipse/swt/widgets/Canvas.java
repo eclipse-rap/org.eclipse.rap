@@ -18,7 +18,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.GCAdapter;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA;
 
 
@@ -87,7 +86,7 @@ public class Canvas extends Composite {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
-    if( adapter == IGCAdapter.class ) {
+    if( adapter == GCAdapter.class ) {
       if( gcAdapter == null ) {
         gcAdapter = new GCAdapter();
       }

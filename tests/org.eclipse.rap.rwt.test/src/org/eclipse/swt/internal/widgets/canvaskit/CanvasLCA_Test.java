@@ -42,7 +42,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -128,7 +127,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
-    GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
 
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     lca.renderChanges( canvas );
@@ -153,7 +152,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
-    GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
 
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
@@ -194,7 +193,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
-    GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
@@ -216,7 +215,7 @@ public class CanvasLCA_Test {
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
-    GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
+    GCAdapter adapter = canvas.getAdapter( GCAdapter.class );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
 
     adapter.addGCOperation( new SetProperty( font.getFontData()[ 0 ] ) );
@@ -308,7 +307,7 @@ public class CanvasLCA_Test {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
-    canvas.getAdapter( IGCAdapter.class );
+    canvas.getAdapter( GCAdapter.class );
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();

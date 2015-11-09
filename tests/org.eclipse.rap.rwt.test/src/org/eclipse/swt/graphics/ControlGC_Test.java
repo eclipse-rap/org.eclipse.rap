@@ -37,7 +37,6 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Control;
@@ -97,7 +96,7 @@ public class ControlGC_Test {
   public void testSetFontWithSameFont() {
     Font font = createFont();
     gc.setFont( font );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     adapter.clearGCOperations();
     gc.setFont( font );
     GCOperation[] gcOperations = getGCOperations( gc );
@@ -128,9 +127,9 @@ public class ControlGC_Test {
 
   @Test
   public void testGetGCAdapterForCanvasWidget() {
-    IGCAdapter adapter1 = getGCAdapter( gc );
+    GCAdapter adapter1 = getGCAdapter( gc );
     assertNotNull( adapter1 );
-    IGCAdapter adapter2 = getGCAdapter( gc );
+    GCAdapter adapter2 = getGCAdapter( gc );
     assertSame( adapter2, adapter1 );
   }
 
@@ -324,7 +323,7 @@ public class ControlGC_Test {
   @Test
   public void testDrawRoundRectangle() {
     gc.drawRoundRectangle( 1, 2, 3, 4, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawRoundRectangle operation = ( DrawRoundRectangle )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
@@ -401,7 +400,7 @@ public class ControlGC_Test {
   @Test
   public void testDrawArc() {
     gc.drawArc( 1, 2, 3, 4, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
@@ -437,7 +436,7 @@ public class ControlGC_Test {
   @Test
   public void testFillArc() {
     gc.fillArc( 1, 2, 3, 4, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
@@ -451,7 +450,7 @@ public class ControlGC_Test {
   @Test
   public void testFillArcWithNegativeWidthAndHeight() {
     gc.fillArc( 1, 2, -3, -4, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( -2, operation.x );
@@ -466,7 +465,7 @@ public class ControlGC_Test {
   @Test
   public void testFillArcWithZeroWidth() {
     gc.fillArc( 1, 2, 0, 4, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     assertEquals( 0, gcOperations.length );
   }
@@ -474,7 +473,7 @@ public class ControlGC_Test {
   @Test
   public void testFillArcWithZeroHeight() {
     gc.fillArc( 1, 2, 3, 0, 5, 6 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     assertEquals( 0, gcOperations.length );
   }
@@ -482,7 +481,7 @@ public class ControlGC_Test {
   @Test
   public void testFillArcWithZeroArcAngle() {
     gc.fillArc( 1, 2, 3, 4, 5, 0 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     assertEquals( 0, gcOperations.length );
   }
@@ -516,7 +515,7 @@ public class ControlGC_Test {
   @Test
   public void testDrawOval() {
     gc.drawOval( 1, 2, 3, 4 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
@@ -531,7 +530,7 @@ public class ControlGC_Test {
   @Test
   public void testDrawOvalWithZeroWidthAndHeight() {
     gc.drawOval( 1, 2, 0, 0 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     assertEquals( 0, gcOperations.length );
   }
@@ -539,7 +538,7 @@ public class ControlGC_Test {
   @Test
   public void testFillOval() {
     gc.fillOval( 1, 2, 3, 4 );
-    IGCAdapter adapter = getGCAdapter( gc );
+    GCAdapter adapter = getGCAdapter( gc );
     GCOperation[] gcOperations = adapter.getGCOperations();
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
