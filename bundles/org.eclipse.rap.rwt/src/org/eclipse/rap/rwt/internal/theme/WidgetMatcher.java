@@ -11,9 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.theme;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.theme.css.ConditionalValue;
@@ -32,7 +31,7 @@ public final class WidgetMatcher implements ValueSelector {
     // This map is accessed by all UI sessions simultaneously. However, We don't need to
     // synchronize get and put since constraints are deterministic, i.e. in case of concurrent
     // insertions one constraint overwriting the other is not critical.
-    constraintMap = Collections.synchronizedMap( new HashMap<String, Constraint>() );
+    constraintMap = new ConcurrentHashMap<>();
   }
 
   public void addStyle( String string, int style ) {
