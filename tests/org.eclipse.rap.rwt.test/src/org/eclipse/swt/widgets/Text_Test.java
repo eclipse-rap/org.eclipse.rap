@@ -15,6 +15,7 @@ import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.ser
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -662,8 +663,6 @@ public class Text_Test {
 
   @Test
   public void testAddSelectionListener() {
-    Text text = new Text( shell, SWT.NONE );
-
     text.addSelectionListener( mock( SelectionListener.class ) );
 
     assertTrue( text.isListening( SWT.Selection ) );
@@ -672,7 +671,6 @@ public class Text_Test {
 
   @Test
   public void testRemoveSelectionListener() {
-    Text text = new Text( shell, SWT.NONE );
     SelectionListener listener = mock( SelectionListener.class );
     text.addSelectionListener( listener );
 
@@ -686,6 +684,14 @@ public class Text_Test {
   public void testGetAdapter_LCA() {
     assertTrue( text.getAdapter( WidgetLCA.class ) instanceof TextLCA );
     assertSame( text.getAdapter( WidgetLCA.class ), text.getAdapter( WidgetLCA.class ) );
+  }
+
+  @Test
+  public void testScrollBarsNotAvaiableOnMulti() {
+    text = new Text( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+
+    assertNull( text.getHorizontalBar() );
+    assertNull( text.getVerticalBar() );
   }
 
 }

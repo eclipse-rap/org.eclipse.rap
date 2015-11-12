@@ -1048,6 +1048,22 @@ public class Text extends Scrollable {
   }
 
   @Override
+  public ScrollBar getHorizontalBar() {
+    checkWidget();
+    // [if] Client-side multi Text widget is based on HTML textarea and doesn't have separate,
+    // server managed scrollbars
+    return null;
+  }
+
+  @Override
+  public ScrollBar getVerticalBar() {
+    checkWidget();
+    // [if] Client-side multi Text widget is based on HTML textarea and doesn't have separate,
+    // server managed scrollbars
+    return null;
+  }
+
+  @Override
   boolean isTabGroup() {
     return true;
   }
