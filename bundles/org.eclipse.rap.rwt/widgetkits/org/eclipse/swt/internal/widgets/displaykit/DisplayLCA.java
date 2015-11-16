@@ -25,10 +25,12 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.eclipse.rap.rwt.internal.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
@@ -87,10 +89,11 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
 
   @Override
   public void render( Display display ) throws IOException {
+    renderReparentControls();
+    renderDisposeWidgets();
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
-    disposeWidgets();
     renderFocus( display );
     renderBeep( display );
     renderResizeListener( display );
@@ -167,7 +170,13 @@ public class DisplayLCA implements DisplayLifeCycleAdapter {
     return exitConfirmation == null ? null : exitConfirmation.getMessage();
   }
 
-  private static void disposeWidgets() throws IOException {
+  private static void renderReparentControls() {
+    for( Control control : ReparentedControls.getAll() ) {
+      ControlLCAUtil.renderParent( control );
+    }
+  }
+
+  private static void renderDisposeWidgets() throws IOException {
     for( Widget widget : DisposedWidgets.getAll() ) {
       getLCA( widget ).renderDispose( widget );
     }

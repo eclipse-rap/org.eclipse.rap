@@ -47,11 +47,12 @@ import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -279,6 +280,43 @@ public class DisplayLCA_Test {
   }
 
   @Test
+  public void testRenderReparentedControls_changed() throws IOException {
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    displayLCA.preserveValues( display );
+    child.setParent( parent2 );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( getId( parent2 ), message.findSetProperty( child, "parent" ).asString() );
+  }
+
+  @Test
+  public void testRenderReparentedControls_unchanged() throws IOException {
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    displayLCA.preserveValues( display );
+    child.setParent( parent2 );
+    child.setParent( parent1 );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( child, "parent" ) );
+  }
+
+  @Test
   public void testRenderDisposedWidget() throws IOException {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
@@ -305,7 +343,7 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testRenderDisposedWidget_afterSettingProperties() throws IOException {
+  public void testRenderDisposedWidget_afterSettingParent() throws IOException {
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=472298
     Shell parent1 = new Shell( display );
     Shell parent2 = new Shell( display );
@@ -323,6 +361,24 @@ public class DisplayLCA_Test {
     SetOperation setParentOperation = message.findSetOperation( child, "parent" );
     List<Operation> operations = message.getOperations();
     assertTrue( operations.indexOf( setParentOperation ) < operations.indexOf( destroyOperation ) );
+  }
+
+  @Test
+  public void testRenderDisposedWidget_beforeCreateWidgets() throws IOException {
+    Shell parent = new Shell( display );
+    Composite child1 = new Composite( parent, SWT.NONE );
+    Fixture.markInitialized( parent );
+    Fixture.markInitialized( child1 );
+
+    child1.dispose();
+    Composite child2 = new Composite( parent, SWT.NONE );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    DestroyOperation destroyOperation = message.findDestroyOperation( child1 );
+    CreateOperation createOperation = message.findCreateOperation( child2 );
+    List<Operation> operations = message.getOperations();
+    assertTrue( operations.indexOf( destroyOperation ) < operations.indexOf( createOperation ) );
   }
 
   @Test

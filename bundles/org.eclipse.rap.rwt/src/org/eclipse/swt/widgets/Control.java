@@ -16,6 +16,7 @@ import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisab
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.rap.rwt.theme.ControlThemeAdapter;
@@ -2151,6 +2152,7 @@ public abstract class Control extends Widget implements Drawable {
       if( oldShell != newShell || oldDecorations != newDecorations ) {
         fixChildren( newShell, oldShell, newDecorations, oldDecorations );
       }
+      ReparentedControls.add( this );
       this.parent = parent;
       ControlHolder.addControl( parent, this );
     }

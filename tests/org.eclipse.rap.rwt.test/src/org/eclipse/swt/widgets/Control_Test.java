@@ -12,7 +12,14 @@
 package org.eclipse.swt.widgets;
 
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -28,6 +35,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
@@ -1563,6 +1571,18 @@ public class Control_Test {
     control.setParent( parent );
 
     assertNull( shell.getSavedFocus() );
+  }
+
+  @Test
+  public void testSetParent_addsControlToReparentedList() {
+    Control control = new Button( shell, SWT.NONE );
+    shell.open();
+    control.setFocus();
+    Shell parent = new Shell( display );
+
+    control.setParent( parent );
+
+    assertSame( control, ReparentedControls.getAll().get( 0 ) );
   }
 
   @Test

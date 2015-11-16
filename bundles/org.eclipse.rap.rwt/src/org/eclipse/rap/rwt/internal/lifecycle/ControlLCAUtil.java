@@ -106,7 +106,6 @@ public class ControlLCAUtil {
   }
 
   public static void renderChanges( Control control ) {
-    renderParent( control );
     renderChildren( control );
     renderBounds( control );
     renderTabIndex( control );
@@ -138,7 +137,7 @@ public class ControlLCAUtil {
     }
   }
 
-  private static void renderParent( Control control ) {
+  public static void renderParent( Control control ) {
     ControlRemoteAdapter remoteAdapter = getRemoteAdapter( control );
     Composite actual = control.getParent();
     if( remoteAdapter.isInitialized() && actual != null ) {
