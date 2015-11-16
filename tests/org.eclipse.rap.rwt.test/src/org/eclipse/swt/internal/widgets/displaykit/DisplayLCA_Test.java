@@ -51,6 +51,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.DestroyOperation;
 import org.eclipse.rap.rwt.internal.protocol.Operation.SetOperation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolMessageWriter;
@@ -123,7 +124,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRender() throws IOException {
-    WidgetLCA lca = mock( WidgetLCA.class );
+    WidgetLCA<Widget> lca = mock( TestWidgetLCA.class );
     Shell shell1 = new CustomLCAShell( display, lca );
     Widget button1 = new CustomLCAWidget( shell1, lca );
     Shell shell2 = new CustomLCAShell( display, lca );
@@ -157,7 +158,7 @@ public class DisplayLCA_Test {
 
   @Test
   public void testReadData() {
-    WidgetLCA lca = mock( WidgetLCA.class );
+    WidgetLCA<Widget> lca = mock( TestWidgetLCA.class );
     Composite shell = new CustomLCAShell( display, lca );
     Widget button = new CustomLCAWidget( shell, lca );
     Widget text = new CustomLCAWidget( shell, lca );
@@ -223,7 +224,7 @@ public class DisplayLCA_Test {
   @Test
   public void testRenderWithChangedAndDisposedWidget() throws IOException {
     Shell shell = new Shell( display, SWT.NONE );
-    WidgetLCA lca = mock( WidgetLCA.class );
+    WidgetLCA<Widget> lca = mock( TestWidgetLCA.class );
     Composite composite = new CustomLCAWidget( shell, lca );
     Fixture.markInitialized( composite );
     Fixture.preserveWidgets();
@@ -279,6 +280,39 @@ public class DisplayLCA_Test {
   }
 
   @Test
+  public void testRenderReparentedControls_changed() throws IOException {
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    child.setParent( parent2 );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    assertEquals( getId( parent2 ), message.findSetProperty( child, "parent" ).asString() );
+  }
+
+  @Test
+  public void testRenderReparentedControls_unchanged() throws IOException {
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    child.setParent( parent2 );
+    child.setParent( parent1 );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( child, "parent" ) );
+  }
+
+  @Test
   public void testRenderDisposedWidget() throws IOException {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
@@ -305,7 +339,7 @@ public class DisplayLCA_Test {
   }
 
   @Test
-  public void testRenderDisposedWidget_afterSettingProperties() throws IOException {
+  public void testRenderDisposedWidget_afterSettingParent() throws IOException {
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=472298
     Shell parent1 = new Shell( display );
     Shell parent2 = new Shell( display );
@@ -323,6 +357,24 @@ public class DisplayLCA_Test {
     SetOperation setParentOperation = message.findSetOperation( child, "parent" );
     List<Operation> operations = message.getOperations();
     assertTrue( operations.indexOf( setParentOperation ) < operations.indexOf( destroyOperation ) );
+  }
+
+  @Test
+  public void testRenderDisposedWidget_beforeCreateWidgets() throws IOException {
+    Shell parent = new Shell( display );
+    Composite child1 = new Composite( parent, SWT.NONE );
+    Fixture.markInitialized( parent );
+    Fixture.markInitialized( child1 );
+
+    child1.dispose();
+    Composite child2 = new Composite( parent, SWT.NONE );
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    DestroyOperation destroyOperation = message.findDestroyOperation( child1 );
+    CreateOperation createOperation = message.findCreateOperation( child2 );
+    List<Operation> operations = message.getOperations();
+    assertTrue( operations.indexOf( destroyOperation ) < operations.indexOf( createOperation ) );
   }
 
   @Test
@@ -526,7 +578,7 @@ public class DisplayLCA_Test {
     }
   }
 
-  private static class TestWidgetLCA extends WidgetLCA {
+  private static class TestWidgetLCA extends WidgetLCA<Widget> {
     @Override
     public void readData( Widget widget ) {
     }
@@ -547,9 +599,9 @@ public class DisplayLCA_Test {
   private static class CustomLCAWidget extends Composite {
     private static final long serialVersionUID = 1L;
 
-    private final WidgetLCA widgetLCA;
+    private final WidgetLCA<Widget> widgetLCA;
 
-    CustomLCAWidget( Composite parent, WidgetLCA widgetLCA ) {
+    CustomLCAWidget( Composite parent, WidgetLCA<Widget> widgetLCA ) {
       super( parent, 0 );
       this.widgetLCA = widgetLCA;
     }
@@ -570,9 +622,9 @@ public class DisplayLCA_Test {
   private static class CustomLCAShell extends Shell {
     private static final long serialVersionUID = 1L;
 
-    private final WidgetLCA widgetLCA;
+    private final WidgetLCA<Widget> widgetLCA;
 
-    CustomLCAShell( Display display, WidgetLCA widgetLCA ) {
+    CustomLCAShell( Display display, WidgetLCA<Widget> widgetLCA ) {
       super( display );
       this.widgetLCA = widgetLCA;
     }

@@ -51,7 +51,6 @@ public class ControlLCAUtil {
     if( control instanceof Shell ) {
       recalculateTabIndex( ( Shell ) control );
     }
-    remoteAdapter.renderParent( control );
     if( control instanceof Composite ) {
       remoteAdapter.renderChildren( ( Composite )control );
     }

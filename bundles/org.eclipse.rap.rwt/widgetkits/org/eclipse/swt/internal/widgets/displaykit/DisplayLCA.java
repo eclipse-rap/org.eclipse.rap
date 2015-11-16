@@ -27,6 +27,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rap.rwt.internal.protocol.ClientMessage;
 import org.eclipse.rap.rwt.internal.protocol.Operation;
@@ -37,6 +38,7 @@ import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.ControlRemoteAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetRemoteAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeUtil;
@@ -83,10 +85,11 @@ public class DisplayLCA {
   }
 
   public void render( Display display ) throws IOException {
+    renderReparentControls();
+    renderDisposeWidgets();
     renderExitConfirmation( display );
     renderEnableUiTests( display );
     renderShells( display );
-    disposeWidgets();
     renderFocus( display );
     renderBeep( display );
     renderResizeListener( display );
@@ -162,7 +165,17 @@ public class DisplayLCA {
     return exitConfirmation == null ? null : exitConfirmation.getMessage();
   }
 
-  private static void disposeWidgets() throws IOException {
+  private static void renderReparentControls() {
+    for( Control control : ReparentedControls.getAll() ) {
+      getRemoteAdapter( control ).renderParent( control );
+    }
+  }
+
+  private static ControlRemoteAdapter getRemoteAdapter( Control control ) {
+    return ( ControlRemoteAdapter )control.getAdapter( RemoteAdapter.class );
+  }
+
+  private static void renderDisposeWidgets() throws IOException {
     for( Widget widget : DisposedWidgets.getAll() ) {
       getLCA( widget ).renderDispose( widget );
     }

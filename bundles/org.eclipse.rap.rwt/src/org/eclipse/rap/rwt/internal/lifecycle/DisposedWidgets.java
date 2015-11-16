@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.lifecycle;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +23,7 @@ import org.eclipse.swt.widgets.Widget;
 // TODO [rh] consider to maintain the list of disposed widget in IDisplayAdapter
 public final class DisposedWidgets {
 
-  private static final String DISPOSAL_LIST
-    = DisposedWidgets.class.getName() + "#disposalList";
+  private static final String DISPOSAL_LIST = DisposedWidgets.class.getName() + "#disposalList";
 
   @SuppressWarnings("unchecked")
   public static void add( Widget widget ) {
@@ -37,17 +37,10 @@ public final class DisposedWidgets {
   }
 
   @SuppressWarnings("unchecked")
-  public static Widget[] getAll() {
-    Widget[] result;
+  public static List<Widget> getAll() {
     ServiceStore serviceStore = ContextProvider.getServiceStore();
     List<Widget> disposalList = ( List<Widget> )serviceStore.getAttribute( DISPOSAL_LIST );
-    if( disposalList == null ) {
-      result = new Widget[ 0 ];
-    } else {
-      result = new Widget[ disposalList.size() ];
-      disposalList.toArray( result );
-    }
-    return result;
+    return disposalList == null ? Collections.EMPTY_LIST : disposalList;
   }
 
   private DisposedWidgets() {

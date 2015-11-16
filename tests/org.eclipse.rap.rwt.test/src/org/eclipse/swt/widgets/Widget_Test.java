@@ -405,7 +405,7 @@ public class Widget_Test {
     }
 
     assertFalse( widget.isDisposed() );
-    assertEquals( 0, DisposedWidgets.getAll().length );
+    assertEquals( 0, DisposedWidgets.getAll().size() );
   }
 
   @Test
@@ -455,9 +455,8 @@ public class Widget_Test {
     } );
     widget.dispose();
     int counter = 0;
-    Widget[] disposedWidgets = DisposedWidgets.getAll();
-    for( int i = 0; i < disposedWidgets.length; i++ ) {
-      if( disposedWidgets[ i ] == widget ) {
+    for( Widget disposedWidget : DisposedWidgets.getAll() ) {
+      if( disposedWidget == widget ) {
         counter++;
       }
     }

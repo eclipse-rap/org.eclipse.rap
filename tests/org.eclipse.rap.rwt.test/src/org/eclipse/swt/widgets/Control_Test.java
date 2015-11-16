@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.theme.ThemeAdapter;
 import org.eclipse.rap.rwt.internal.theme.ThemeTestUtil;
@@ -1669,6 +1670,18 @@ public class Control_Test {
     control.setParent( parent );
 
     assertNull( shell.getSavedFocus() );
+  }
+
+  @Test
+  public void testSetParent_addsControlToReparentedList() {
+    Control control = new Button( shell, SWT.NONE );
+    shell.open();
+    control.setFocus();
+    Shell parent = new Shell( display );
+
+    control.setParent( parent );
+
+    assertSame( control, ReparentedControls.getAll().get( 0 ) );
   }
 
   @Test

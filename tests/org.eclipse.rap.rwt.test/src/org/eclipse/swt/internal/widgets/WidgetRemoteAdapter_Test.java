@@ -169,7 +169,7 @@ public class WidgetRemoteAdapter_Test {
     Widget widget = new Shell( display );
     widget.dispose();
     assertTrue( widget.isDisposed() );
-    assertEquals( 0, DisposedWidgets.getAll().length );
+    assertEquals( 0, DisposedWidgets.getAll().size() );
 
     // dispose initialized widget: must be present in list of disposed widgets
     widget = new Shell( display );
@@ -178,7 +178,7 @@ public class WidgetRemoteAdapter_Test {
     widget.dispose();
 
     assertTrue( widget.isDisposed() );
-    assertEquals( 1, DisposedWidgets.getAll().length );
+    assertEquals( 1, DisposedWidgets.getAll().size() );
   }
 
   @Test

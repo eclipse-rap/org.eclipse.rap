@@ -52,7 +52,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.shellkit.ShellOperationHandler;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -74,7 +73,6 @@ public class ControlLCAUtil_Test {
 
   private Display display;
   private Shell shell;
-  private Composite anotherParent;
   private Control control;
   private Color red;
   private Color redAlpha;
@@ -86,7 +84,6 @@ public class ControlLCAUtil_Test {
     red = display.getSystemColor( SWT.COLOR_RED );
     redAlpha = new Color( display, 255, 0, 0, 128 );
     shell = new Shell( display );
-    anotherParent = new Shell( display );
     getRemoteObject( shell ).setHandler( new ShellOperationHandler( shell ) );
     control = new Button( shell, SWT.PUSH );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -96,34 +93,6 @@ public class ControlLCAUtil_Test {
   public void tearDown() {
     display.dispose();
     Fixture.tearDown();
-  }
-
-  @Test
-  public void testRenderParent_initial() {
-    ControlLCAUtil.renderChanges( control );
-
-    assertNull( getProtocolMessage().findSetOperation( control, "parent" ) );
-  }
-
-  @Test
-  public void testRenderParent_unchanged() {
-    Fixture.markInitialized( control );
-
-    ControlLCAUtil.renderChanges( control );
-
-    assertNull( getProtocolMessage().findSetOperation( control, "parent" ) );
-  }
-
-  @Test
-  public void testRenderParent_changed() {
-    Fixture.markInitialized( control );
-    Fixture.clearPreserved();
-
-    control.setParent( anotherParent );
-    ControlLCAUtil.renderChanges( control );
-
-    String actual = getProtocolMessage().findSetProperty( control, "parent" ).asString();
-    assertEquals( getId( control.getParent() ), actual );
   }
 
   @Test
