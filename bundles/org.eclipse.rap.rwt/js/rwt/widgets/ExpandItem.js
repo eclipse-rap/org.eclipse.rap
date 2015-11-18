@@ -64,6 +64,7 @@ rwt.qx.Class.define( "rwt.widgets.ExpandItem", {
     _applyDirection : function( value ) {
       this.base( arguments, value );
       this._header.setDirection( value );
+      this._header.setHorizontalChildrenAlign( value === "rtl" ? "right" : "left" );
     },
 
     setExpanded : function( expanded ) {

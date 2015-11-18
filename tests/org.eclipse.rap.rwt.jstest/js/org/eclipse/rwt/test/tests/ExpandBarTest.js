@@ -239,6 +239,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ExpandBarTest", {
 
       assertEquals( "rtl", item.getDirection() );
       assertEquals( "rtl", item._header.getDirection() );
+      assertEquals( "right", item._header.getHorizontalChildrenAlign() );
     },
 
     /////////
