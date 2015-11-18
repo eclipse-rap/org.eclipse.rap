@@ -88,9 +88,6 @@ rwt.remote.Request.prototype = {
     },
 
     _configRequest : function() {
-      if( !( Client.isWebkit() || Client.isBlink() ) ) {
-        this._request.setRequestHeader( "Referer", window.location.href );
-      }
       var contentType = "application/json; charset=UTF-8";
       this._request.setRequestHeader( "Content-Type", contentType );
       if( this._shouldUseStateListener() ) {
