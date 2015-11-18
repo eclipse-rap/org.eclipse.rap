@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,36 @@
 namespace( "rwt.util" );
 
 (function() {
+
+/*
+ * Basic color keywords as defined in CSS 3
+ * See http://www.w3.org/TR/css3-color/#html4
+ */
+var NAMED = {
+  black : [0, 0, 0],
+  silver : [192, 192, 192],
+  gray : [128, 128, 128],
+  white : [255, 255, 255],
+  maroon : [128, 0, 0],
+  red : [255, 0, 0],
+  purple : [128, 0, 128],
+  fuchsia : [255, 0, 255],
+  green : [0, 128, 0],
+  lime : [0, 255, 0],
+  olive : [128, 128, 0],
+  yellow : [255, 255, 0],
+  navy : [0, 0, 128],
+  blue : [0, 0, 255],
+  teal : [0, 128, 128],
+  aqua : [0, 255, 255],
+  transparent : [-1, -1, -1]
+};
+
+var REGEXP = {
+  hex3 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+  hex6 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+  rgb : /^rgb\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/
+};
 
 /**
  * Methods to convert colors between different color spaces.
@@ -59,76 +89,46 @@ rwt.util.Colors = {
 
 };
 
-var hexstr = function( number ) {
+function hexstr( number ) {
   var hexstr = number.toString( 16 ).toLowerCase();
   return hexstr.length == 1 ? "0" + hexstr : hexstr;
-};
+}
 
-var REGEXP = {
-  hex3 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  hex6 : /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  rgb : /^rgb\(\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*,\s*([0-9]{1,3}\.{0,1}[0-9]*)\s*\)$/
-};
-
-/*
- * Basic color keywords as defined in CSS 3
- * See http://www.w3.org/TR/css3-color/#html4
- */
-var NAMED = {
-  black : [0, 0, 0],
-  silver : [192, 192, 192],
-  gray : [128, 128, 128],
-  white : [255, 255, 255],
-  maroon : [128, 0, 0],
-  red : [255, 0, 0],
-  purple : [128, 0, 128],
-  fuchsia : [255, 0, 255],
-  green : [0, 128, 0],
-  lime : [0, 255, 0],
-  olive : [128, 128, 0],
-  yellow : [255, 255, 0],
-  navy : [0, 0, 128],
-  blue : [0, 0, 255],
-  teal : [0, 128, 128],
-  aqua : [0, 255, 255],
-  transparent : [-1, -1, -1]
-};
-
-var isNamedColor = function( value ) {
+function isNamedColor( value ) {
   return NAMED[value] !== undefined;
-};
+}
 
-var isHex3String = function( str ) {
+function isHex3String( str ) {
   return REGEXP.hex3.test( str );
-};
+}
 
-var isHex6String = function( str ) {
+function isHex6String( str ) {
   return REGEXP.hex6.test( str );
-};
+}
 
-var isRgbString = function( str ) {
+function isRgbString( str ) {
   return REGEXP.rgb.test( str );
-};
+}
 
-var hex3StringToRgb = function() {
+function hex3StringToRgb() {
   var r = parseInt( RegExp.$1, 16 ) * 17;
   var g = parseInt( RegExp.$2, 16 ) * 17;
   var b = parseInt( RegExp.$3, 16 ) * 17;
   return [r, g, b];
-};
+}
 
-var hex6StringToRgb = function() {
+function hex6StringToRgb() {
   var r = (parseInt( RegExp.$1, 16 ) * 16) + parseInt( RegExp.$2, 16 );
   var g = (parseInt( RegExp.$3, 16 ) * 16) + parseInt( RegExp.$4, 16 );
   var b = (parseInt( RegExp.$5, 16 ) * 16) + parseInt( RegExp.$6, 16 );
   return [r, g, b];
-};
+}
 
-var rgbStringToRgb = function() {
+function rgbStringToRgb() {
   var r = parseInt( RegExp.$1, 10 );
   var g = parseInt( RegExp.$2, 10 );
   var b = parseInt( RegExp.$3, 10 );
   return [r, g, b];
-};
+}
 
 })();

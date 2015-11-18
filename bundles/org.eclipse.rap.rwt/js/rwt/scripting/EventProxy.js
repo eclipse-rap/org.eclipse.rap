@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,12 +187,14 @@ rwt.scripting.EventProxy.disposeEventProxy = function( eventProxy ) {
   eventProxy.widget = null;
 };
 
+var WrapperHelper = function() {};
+
 rwt.scripting.EventProxy.wrapAsProto = function( object ) {
-    WrapperHelper.prototype = object;
-    var result = new WrapperHelper();
-    WrapperHelper.prototype = null;
-    return result;
-  };
+  WrapperHelper.prototype = object;
+  var result = new WrapperHelper();
+  WrapperHelper.prototype = null;
+  return result;
+};
 
 rwt.scripting.EventProxy.postProcessEvent = function( event, wrappedEvent, originalEvent ) {
   switch( event.type ) {
@@ -209,7 +211,7 @@ rwt.scripting.EventProxy.postProcessEvent = function( event, wrappedEvent, origi
   }
 };
 
-var initKeyEvent = function( event, originalEvent ) {
+function initKeyEvent( event, originalEvent ) {
   var charCode = originalEvent.getCharCode();
   if( charCode !== 0 ) {
     event.character = String.fromCharCode( charCode );
@@ -236,9 +238,9 @@ var initKeyEvent = function( event, originalEvent ) {
     }
   }
   setStateMask( event, originalEvent );
-};
+}
 
-var initMouseEvent = function( event, originalEvent ) {
+function initMouseEvent( event, originalEvent ) {
   var target = originalEvent.getTarget()._getTargetNode();
   var offset = rwt.html.Location.get( target, "scroll" );
   event.x = originalEvent.getPageX() - offset.left;
@@ -251,14 +253,14 @@ var initMouseEvent = function( event, originalEvent ) {
     event.button = 2;
   }
   setStateMask( event, originalEvent );
-};
+}
 
-var initPaintEvent = function( event, target ) {
+function initPaintEvent( event, target ) {
   var gc = rwt.widgets.util.WidgetUtil.getGC( target );
   event.gc = gc.getNativeContext();
-};
+}
 
-var initVerifyEvent = function( event, originalEvent ) {
+function initVerifyEvent( event, originalEvent ) {
   var text = originalEvent.getTarget();
   if( text instanceof rwt.widgets.base.BasicText ) {
     var keyCode = getLastKeyCode();
@@ -277,15 +279,15 @@ var initVerifyEvent = function( event, originalEvent ) {
     event.start = diff[ 1 ];
     event.end = diff[ 2 ];
   }
-};
+}
 
-var getLastKeyCode = function() {
+function getLastKeyCode() {
   // NOTE : While this is a private field, this mechanism must be integrated with
   // KeyEventSupport anyway to support the doit flag better.
   return rwt.remote.KeyEventSupport.getInstance()._currentKeyCode;
-};
+}
 
-var getDiff = function( newValue, oldValue, oldSel, keyCode ) {
+function getDiff( newValue, oldValue, oldSel, keyCode ) {
   var start;
   var end;
   var text;
@@ -307,16 +309,16 @@ var getDiff = function( newValue, oldValue, oldSel, keyCode ) {
     }
   }
   return [ text, start, end ];
-};
+}
 
-var setStateMask = function( event, originalEvent ) {
+function setStateMask( event, originalEvent ) {
   event.stateMask |= originalEvent.isShiftPressed() ? SWT.SHIFT : 0;
   event.stateMask |= originalEvent.isCtrlPressed() ? SWT.CTRL : 0;
   event.stateMask |= originalEvent.isAltPressed() ? SWT.ALT : 0;
   event.stateMask |= originalEvent.isMetaPressed() ? SWT.COMMAND : 0;
-};
+}
 
-var postProcessVerifyEvent = function( event, wrappedEvent, originalEvent ) {
+function postProcessVerifyEvent( event, wrappedEvent, originalEvent ) {
   var widget = originalEvent.getTarget();
   if( wrappedEvent.doit !== false ) {
     if( event.text !== wrappedEvent.text && event.text !== "" ) {
@@ -335,20 +337,18 @@ var postProcessVerifyEvent = function( event, wrappedEvent, originalEvent ) {
     widget._renderValue();
     widget._renderSelection();
   }
-};
+}
 
-var postProcessKeyEvent = function( event, wrappedEvent, originalEvent ) {
+function postProcessKeyEvent( event, wrappedEvent, originalEvent ) {
   if( wrappedEvent.doit === false ) {
     originalEvent.preventDefault();
   }
-};
+}
 
-var postProcessMouseWheelEvent = function( event, wrappedEvent, originalEvent ) {
+function postProcessMouseWheelEvent( event, wrappedEvent, originalEvent ) {
   if( wrappedEvent.doit === false ) {
     originalEvent.preventDefault();
   }
-};
-
-var WrapperHelper = function(){};
+}
 
 }());

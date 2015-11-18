@@ -326,7 +326,7 @@
   ////////////
   // Internals
 
-  var addParentListeners = function() {
+  function addParentListeners() {
     this._.parent.addEventListener( "appear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "disappear", onParentVisibilityChange, this );
     this._.parent.addEventListener( "flush", onParentFlush, this );
@@ -336,26 +336,26 @@
     this._.parent.addEventListener( "changeTextColor", inheritParentStyling, this );
     this._.parent.addEventListener( "changeBackgroundColor", inheritParentStyling, this );
     this._.parent.addEventListener( "changeCursor", inheritParentStyling, this );
-  };
+  }
 
-  var addGridListeners = function() {
+  function addGridListeners() {
     this._.grid.addEventListener( "create", onCreate, this );
     this._.grid.addEventListener( "selectionChanged", onSelection, this );
     this._.grid.addEventListener( "keypress", onKeyEvent, this );
     this._.grid.addEventListener( "mousedown", onMouseDown, this );
     this._.grid.addEventListener( "mouseup", onMouseUp, this );
-  };
+  }
 
-  var setPopUpVisible = function( visible ) {
+  function setPopUpVisible( visible ) {
     if( visible ) {
       this._.popup.show();
     } else {
       this._.popup.setVisibility( false ); // makes it disappear immediately
       this._.popup.setDisplay( false ); // forces the popup to appear after all parents are layouted
     }
-  };
+  }
 
-  var renderLayout = function() {
+  function renderLayout() {
     var font = this._.grid.getFont();
     // NOTE: Guessing the lineheight to be 1.3
     var padding = getStyleMap.call( this ).padding;
@@ -369,17 +369,17 @@
     this._.popup.setHeight( gridHeight + frameWidth );
     this._.grid.setDimension( gridWidth, gridHeight );
     renderItemMetrics.apply( this, [ itemHeight, gridWidth, padding ] );
-  };
+  }
 
-  var renderPosition = function() {
+  function renderPosition() {
     this._.popup.positionRelativeTo( this._.parent, 0, this._.parent.getHeight() );
     var docHeight = rwt.widgets.base.ClientDocument.getInstance().getInnerHeight();
     if( this._.popup.getTop() + this._.popup.getHeight() > docHeight ) {
       this._.popup.positionRelativeTo( this._.parent, 0, -1 * this._.popup.getHeight() );
     }
-  };
+  }
 
-  var calcGridWidth = function() {
+  function calcGridWidth() {
     var frameWidth = getStyleMap.call( this ).border.getWidthLeft() * 2;
     var result = this._.parent.getWidth() - frameWidth;
     if( this._.minWidth > 0 ) {
@@ -401,9 +401,9 @@
       }
     }
     return result;
-  };
+  }
 
-  var renderItemMetrics = function( itemHeight, itemWidth, padding ) {
+  function renderItemMetrics( itemHeight, itemWidth, padding ) {
     this._.grid.setItemHeight( itemHeight );
     if( this._.columns != null ) {
       var left = 0;
@@ -435,9 +435,9 @@
         0 // checkWith
       );
     }
-  };
+  }
 
-  var renderGridItems = function() {
+  function renderGridItems() {
     var rootItem = this._.grid.getRootItem();
     var items = this._.items;
     rootItem.setItemCount( 0 );
@@ -451,9 +451,9 @@
         gridItem.setTexts( [ items[ i ] ] );
       }
     }
-  };
+  }
 
-  var onParentVisibilityChange = function() {
+  function onParentVisibilityChange() {
     if( this._.visibility ) {
       if( this._.parent.isSeeable() ) {
         this.show(); // makes popup visible if items are present and handles layout
@@ -461,17 +461,17 @@
         setPopUpVisible.call( this, false );
       }
     }
-  };
+  }
 
-  var onParentKeyDownEvent = function( event ) {
+  function onParentKeyDownEvent( event ) {
     // NOTE: This prevents the underlying Shell from closing. Shell is listening for keydown.
     var key = event.getKeyIdentifier();
     if( this._.visibility && ( key === "Enter" || key === "Escape" ) ) {
       event.stopPropagation();
     }
-  };
+  }
 
-  var onParentKeyPressEvent = function( event ) {
+  function onParentKeyPressEvent( event ) {
     var key = event.getKeyIdentifier();
     if( this._.visibility && forwardedKeys[ key ] && !event.isAltPressed() ) {
       event.preventDefault();
@@ -481,9 +481,9 @@
         selectWithoutWrapping.call( this, event );
       }
     }
-  };
+  }
 
-  var selectWithWrapping = function( event ) {
+  function selectWithWrapping( event ) {
     var key = event.getKeyIdentifier();
     if( key === "Down" && this.getSelectionIndex() === -1 && this.getItemCount() > 0 ) {
       this.setSelectionIndex( 0 );
@@ -496,9 +496,9 @@
     } else {
       this._.grid.dispatchEvent( event );
     }
-  };
+  }
 
-  var selectWithoutWrapping = function( event ) {
+  function selectWithoutWrapping( event ) {
     var key = event.getKeyIdentifier();
     var allowSelection = this.getSelectionIndex() === -1 && this.getItemCount() > 0;
     if( ( key === "Down" || key === "PageDown" ) && allowSelection ) {
@@ -508,17 +508,17 @@
     } else {
       this._.grid.dispatchEvent( event );
     }
-  };
+  }
 
-  var onParentFlush = function( event ) {
+  function onParentFlush( event ) {
     var changes = event.getData();
     var layouted = changes.top || changes.left || changes.width || changes.height;
     if( layouted && this._.parent.isInDom() && this._.visibility ) {
       renderLayout.call( this );
     }
-  };
+  }
 
-  var onKeyEvent = function( event ) {
+  function onKeyEvent( event ) {
     switch( event.getKeyIdentifier() ) {
       case "Enter":
         rwt.client.Timer.once( function() {
@@ -533,48 +533,48 @@
         this.hide();
       break;
     }
-  };
+  }
 
-  var onSelection = function( event ) {
+  function onSelection( event ) {
     if( event.type === "selection" ) {
       fireEvent.call( this, "Selection" );
     }
-  };
+  }
 
-  var onMouseDown = function( event ) {
+  function onMouseDown( event ) {
     if( event.getOriginalTarget() instanceof rwt.widgets.base.GridRowContainer ) {
       this._.inMouseSelection = true;
     }
-  };
+  }
 
-  var onMouseUp = function( event ) {
+  function onMouseUp( event ) {
     if(    this._.inMouseSelection
         && event.getOriginalTarget() instanceof rwt.widgets.base.GridRowContainer )
     {
       this._.inMouseSelection = false;
       fireEvent.call( this, "DefaultSelection" );
     }
-  };
+  }
 
-  var onCreate = function() {
+  function onCreate() {
     var selectedItem = this._.grid.getSelection()[ 0 ];
     if( selectedItem ) {
       this._.grid.scrollItemIntoView( selectedItem );
     }
-  };
+  }
 
-  var onAppear = function() {
+  function onAppear() {
     // NOTE: widget absolute position can change without changing it's relative postion, therefore:
     renderPosition.call( this );
-  };
+  }
 
-  var onFocusChange = function() {
+  function onFocusChange() {
     // NOTE : There is no secure way to get the newly focused widget at this point because
     //        it may have another focus root. Therefore we use this timeout and check afterwards:
     this._.hideTimer.start();
-  };
+  }
 
-  var fireEvent = function( type ) {
+  function fireEvent( type ) {
     var event = {
       "text" : "",
       "index" : -1
@@ -594,22 +594,22 @@
     } else {
       notify.apply( this, [ type, event ] );
     }
-  };
+  }
 
-  var checkFocus = function() {
+  function checkFocus() {
     this._.hideTimer.stop();
     if( !hasFocus( this._.parent ) && this._.visibility ) {
       this.hide();
     }
-  };
+  }
 
-  var updateScrollBars = function() {
+  function updateScrollBars() {
     var scrollable = this._.visibleItemCount < this.getItemCount();
     // TODO [tb] : Horizontal scrolling would require measuring all items preferred width
     this._.grid.setScrollBarsVisible( false, scrollable );
-  };
+  }
 
-  var notify = function( type, event ) {
+  function notify( type, event ) {
     var listeners = this._.events[ type ];
     var eventProxy = rwt.util.Objects.mergeWith( {
       "widget" : this,
@@ -618,9 +618,9 @@
     for( var i = 0; i < listeners.length; i++ ) {
       listeners[ i ]( eventProxy );
     }
-  };
+  }
 
-  var createPopup = function( appearance ) {
+  function createPopup( appearance ) {
     var result = new rwt.widgets.base.Popup();
     result.addToDocument();
     result.setBackgroundColor( "#ffffff" );
@@ -629,9 +629,9 @@
     result.setAutoHide( false );
     result.setAppearance( appearance + "-popup" );
     return result;
-  };
+  }
 
-  var createGrid = function( parent, markupEnabled, appearance ) {
+  function createGrid( parent, markupEnabled, appearance ) {
     var result = new rwt.widgets.Grid( {
       "fullSelection" : true,
       "appearance" : appearance,
@@ -646,41 +646,41 @@
       result.getRenderConfig().focused = true;
     } );
     return result;
-  };
+  }
 
-  var inheritParentStyling = function() {
+  function inheritParentStyling() {
     this._.grid.setFont( this._.parent.getFont() );
     this._.grid.setTextColor( this._.parent.getTextColor() );
     this._.grid.setBackgroundColor( this._.parent.getBackgroundColor() );
     // [if] "default" fallback is needed to suppress ibeam cursor shown in Chrome and IE, when no
     // cursor (null) is set - bug 434311
     this._.grid.setCursor( this._.parent.getCursor() || "default" );
-  };
+  }
 
-  var checkDisposed = function( dropdown ) {
+  function checkDisposed( dropdown ) {
     if( dropdown.isDisposed() ) {
       throw new Error( "DropDown is disposed" );
     }
-  };
+  }
 
-  var createEventsMap = function() {
+  function createEventsMap() {
     var result = {};
     for( var key in eventTypes ) {
       result[ key ] = [];
     }
     return result;
-  };
+  }
 
-  var hasFocus = function( control ) {
+  function hasFocus( control ) {
     var root = control.getFocusRoot();
     if( root ) {
       return    control.getFocused()
              || ( control.contains && control.contains( root.getFocusedChild() ) );
     }
     return false;
-  };
+  }
 
-  var filterArray = function( arr, func, limit ) {
+  function filterArray( arr, func, limit ) {
     var result = [];
     if( typeof arr.filter === "function" && limit === 0 ) {
       result = arr.filter( func );
@@ -695,9 +695,9 @@
       }
     }
     return result;
-  };
+  }
 
-  var getStyleMap = function() {
+  function getStyleMap() {
     if( this._.styleMap == null ) {
       var manager = rwt.theme.AppearanceManager.getInstance();
       var states = {};
@@ -710,20 +710,20 @@
       };
     }
     return this._.styleMap;
-  };
+  }
 
-  var addMouseWheelEventFilter = function() {
+  function addMouseWheelEventFilter() {
     rwt.event.EventHandler.setMouseEventFilter( filterMouseEvent, this );
-  };
+  }
 
-  var removeMouseWheelEventFilter = function() {
+  function removeMouseWheelEventFilter() {
     var currentFilter = rwt.event.EventHandler.getMouseEventFilter();
     if( currentFilter && currentFilter[ 0 ] === filterMouseEvent && currentFilter[ 1 ] === this ) {
       rwt.event.EventHandler.setMouseEventFilter( null );
     }
-  };
+  }
 
-  var filterMouseEvent = function( event ) {
+  function filterMouseEvent( event ) {
     if( event.getType() === "mousedown" ) {
       var target = event.getTarget();
       if(    target !== this._.popup && !this._.popup.contains( target )
@@ -737,6 +737,6 @@
       return false;
     }
     return true;
-  };
+  }
 
 }() );
