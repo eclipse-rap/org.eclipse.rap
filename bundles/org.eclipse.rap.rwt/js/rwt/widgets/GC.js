@@ -85,6 +85,7 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
             case "strokeText":
             case "ellipse":
             case "drawImage":
+            case "setTransform":
               this[ "_" + op ]( operations[ i ] );
             break;
             default:
@@ -228,6 +229,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
           context.restore();
         };
       }
+    },
+
+    _setTransform : function( operation ) {
+      this._context.setTransform.apply( this._context, operation.slice( 1 ) );
     },
 
     _createLinearGradient : function( operation ) {

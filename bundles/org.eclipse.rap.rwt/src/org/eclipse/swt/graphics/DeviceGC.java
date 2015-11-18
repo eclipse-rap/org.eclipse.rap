@@ -25,6 +25,7 @@ class DeviceGC extends GCDelegate {
   private int lineCap;
   private int lineJoin;
   private Rectangle clippingRect;
+  private float[] transform = { 1, 0, 0, 1, 0, 0 };
 
   DeviceGC( Device device ) {
     this.device = device;
@@ -128,6 +129,16 @@ class DeviceGC extends GCDelegate {
       return device.getBounds();
     }
     return new Rectangle( clippingRect.x, clippingRect.y, clippingRect.width, clippingRect.height );
+  }
+
+  @Override
+  void setTransform( float[] elements ) {
+    transform = elements;
+  }
+
+  @Override
+  float[] getTransform() {
+    return transform;
   }
 
   @Override

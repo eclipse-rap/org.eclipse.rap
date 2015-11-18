@@ -35,6 +35,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.SetClipping;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
+import org.eclipse.swt.internal.graphics.GCOperation.SetTransform;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -97,6 +98,8 @@ final class GCOperationWriter {
       setProperty( ( SetProperty )operation );
     } else if( operation instanceof SetClipping ) {
       setClipping( ( SetClipping )operation );
+    } else if( operation instanceof SetTransform ) {
+      setTransform( ( SetTransform )operation );
     } else {
       String name = operation.getClass().getName();
       throw new IllegalArgumentException( "Unsupported GCOperation: " + name );
@@ -374,6 +377,10 @@ final class GCOperationWriter {
       }
       addClientOperation( "clip" );
     }
+  }
+
+  private void setTransform( SetTransform operation ) {
+    addClientOperation( "setTransform", operation.elements );
   }
 
   private void renderPath( byte[] types, float[] points ) {

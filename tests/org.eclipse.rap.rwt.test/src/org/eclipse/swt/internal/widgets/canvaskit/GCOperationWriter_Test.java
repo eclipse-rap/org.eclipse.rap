@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -659,6 +660,14 @@ public class GCOperationWriter_Test {
     String gcId = GCOperationWriter.getGcId( canvas );
 
     assertEquals( WidgetUtil.getId( canvas ) + ".gc", gcId );
+  }
+
+  @Test
+  public void testSetTransform() {
+    gc.setTransform( new Transform( display, 1, 2, 3, 4, 5, 6 ) );
+
+    JsonArray ops = getGCOperations( canvas );
+    assertEquals( "[\"setTransform\",1,2,3,4,5,6]", getOperation( 0, ops ) );
   }
 
   private static JsonArray getGCOperations( Canvas canvas ) {

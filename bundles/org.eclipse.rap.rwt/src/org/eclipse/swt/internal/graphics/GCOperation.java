@@ -237,4 +237,14 @@ public abstract class GCOperation {
 
   }
 
+  public static final class SetTransform extends GCOperation {
+
+    public final float[] elements;
+
+    public SetTransform( float[] elements ) {
+      this.elements = elements;
+    }
+
+  }
+
 }

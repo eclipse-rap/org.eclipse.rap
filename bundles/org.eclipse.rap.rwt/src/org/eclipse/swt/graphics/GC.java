@@ -686,17 +686,17 @@ public class GC extends Resource {
    *
    * @see #setAlpha
    * @see #setAntialias
+   * @see #setClipping(Path)
    * @see #setLineAttributes
    * @see #setTextAntialias
+   * @see #setTransform
    * @see #getAdvanced
    *
    * @since 1.4
    */
-//  * @see #setClipping(Path)
 //  * @see #setInterpolation
 //  * @see #setForegroundPattern
 //  * @see #setBackgroundPattern
-//  * @see #setTransform
   public void setAdvanced( boolean advanced ) {
     checkDisposed();
     this.advanced = advanced;
@@ -847,6 +847,81 @@ public class GC extends Resource {
   public boolean getAdvanced() {
     checkDisposed();
     return advanced;
+  }
+
+  /**
+   * Sets the transform that is currently being used by the receiver. If
+   * the argument is <code>null</code>, the current transform is set to
+   * the identity transform.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   *
+   * @param transform the transform to set
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   *
+   * @see Transform
+   * @see #getAdvanced
+   * @see #setAdvanced
+   *
+   * @since 3.1
+   */
+  public void setTransform( Transform transform ) {
+    checkDisposed();
+    if( transform != null && transform.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    float[] elements = new float[] { 1, 0, 0, 1, 0, 0 };
+    if( transform == null ) {
+      delegate.setTransform( elements );
+    } else {
+      transform.getElements( elements );
+      delegate.setTransform( elements );
+    }
+  }
+
+  /**
+   * Sets the parameter to the transform that is currently being
+   * used by the receiver.
+   *
+   * @param transform the destination to copy the transform into
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parameter is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see Transform
+   *
+   * @since 3.1
+   */
+  public void getTransform( Transform transform ) {
+    checkDisposed();
+    if( transform == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( transform.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    float[] elements = delegate.getTransform();
+    transform.setElements( elements[ 0 ],
+                           elements[ 1 ],
+                           elements[ 2 ],
+                           elements[ 3 ],
+                           elements[ 4 ],
+                           elements[ 5 ] );
   }
 
   /**
@@ -1684,6 +1759,7 @@ public class GC extends Resource {
     return result;
   }
 
+  @SuppressWarnings( "unused" )
   void writeObject( ObjectOutputStream stream ) throws IOException {
     throw new NotSerializableException( getClass().getName() );
   }

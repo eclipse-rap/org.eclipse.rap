@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.swt.graphics;
 
 import static org.eclipse.rap.rwt.testfixture.internal.SerializationTestUtil.serialize;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -842,6 +843,71 @@ public class GC_Test {
     gc.dispose();
 
     gc.setClipping( new Path( display ) );
+  }
+
+  @Test
+  public void testSetTransform_onDevice() {
+    gc.setTransform( new Transform( display, 1, 2, 3, 4, 5, 6 ) );
+
+    Transform transform = new Transform( display );
+    gc.getTransform( transform );
+
+    float[] elements = new float[ 6 ];
+    transform.getElements( elements );
+    assertArrayEquals( new float[] { 1, 2, 3, 4, 5, 6 }, elements, 0 );
+  }
+
+  @Test
+  public void testSetTransform_onControl() {
+    gc = new GC( new Shell( display ) );
+    gc.setTransform( new Transform( display, 1, 2, 3, 4, 5, 6 ) );
+
+    Transform transform = new Transform( display );
+    gc.getTransform( transform );
+
+    float[] elements = new float[ 6 ];
+    transform.getElements( elements );
+    assertArrayEquals( new float[] { 1, 2, 3, 4, 5, 6 }, elements, 0 );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testSetTransform_withDisposedGC() {
+    gc.dispose();
+
+    gc.setTransform( new Transform( display ) );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testGetTransform_withDisposedGC() {
+    gc.dispose();
+
+    gc.getTransform( new Transform( display ) );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testGetTransform_withNullTransform() {
+    gc.dispose();
+
+    gc.getTransform( null );
+  }
+
+  @Test(expected = SWTException.class)
+  public void testGetTransform_withDisposedTransform() {
+    gc.dispose();
+    Transform transform = new Transform( display );
+    transform.dispose();
+
+    gc.getTransform( transform );
+  }
+
+  @Test
+  public void testGetTransform_initiallyReturnsIdentityTransform() {
+    Transform transform = new Transform( display );
+    gc.getTransform( transform );
+
+    float[] elements = new float[ 6 ];
+    transform.getElements( elements );
+    assertArrayEquals( new float[] { 1, 0, 0, 1, 0, 0 }, elements, 0 );
   }
 
   private Image createImage() throws IOException {

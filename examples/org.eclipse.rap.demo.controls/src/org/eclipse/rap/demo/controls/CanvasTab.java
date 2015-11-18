@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Path;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,6 +50,7 @@ public final class CanvasTab extends ExampleTab {
     final Canvas canvas = new Canvas( parent, getStyle() );
     canvas.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     canvas.addPaintListener(  new PaintListener() {
+      @Override
       public void paintControl( final PaintEvent event ) {
         event.gc.drawPoint( 230, 100 );
         paintLines( event.display, event.gc );
@@ -59,6 +61,7 @@ public final class CanvasTab extends ExampleTab {
         paintPolylines( event.display, event.gc );
         paintWithClipping( event.display, event.gc );
         paintPath( event.display, event.gc );
+        paintTransform( event.display, event.gc );
       }
     } );
     canvas.redraw();
@@ -214,6 +217,28 @@ public final class CanvasTab extends ExampleTab {
     gc.setBackground( display.getSystemColor( SWT.COLOR_YELLOW ) );
     gc.fillRectangle( 20, 520, 500, 50 );
     gc.setClipping( ( Path )null );
+  }
+
+  private void paintTransform( Display display, GC gc ) {
+    Transform transform = new Transform( display );
+    transform.translate( 350, 430 );
+    gc.setTransform( transform );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_BLACK ) );
+    gc.fillRectangle( 0, 0, 100, 50 );
+
+    transform.rotate( 10 );
+    gc.setTransform( transform );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+    gc.fillRectangle( 0, 0, 100, 50 );
+
+    transform.rotate( 10 );
+    gc.setTransform( transform );
+    gc.setBackground( display.getSystemColor( SWT.COLOR_YELLOW ) );
+    gc.fillRectangle( 0, 0, 100, 50 );
+
+    transform.identity();
+    gc.setTransform( transform );
+    transform.dispose();
   }
 
 }

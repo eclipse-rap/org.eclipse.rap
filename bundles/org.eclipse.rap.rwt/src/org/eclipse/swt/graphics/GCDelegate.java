@@ -57,6 +57,9 @@ abstract class GCDelegate {
 
   abstract void drawPath( Path path, boolean fill );
 
+  abstract void setTransform( float[] elements );
+  abstract float[] getTransform();
+
   protected Rectangle getClippingRectangle( Path path ) {
     if( path != null ) {
       int minX = Integer.MAX_VALUE;
