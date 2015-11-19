@@ -211,6 +211,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
       spinner.setMax( 12 );
       spinner.setValue( this._monthInt );
       spinner.addEventListener( "change",  this._onSpinnerChange, this );
+      spinner.addEventListener( "changeWidth", this._layoutX, this );
       spinner._textfield.setTabIndex( null );
       // Hack to prevent the spinner text field to request the focus
       spinner._textfield.setFocused = rwt.util.Functions.returnTrue;

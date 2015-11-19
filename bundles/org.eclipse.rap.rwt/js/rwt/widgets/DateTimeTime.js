@@ -113,6 +113,7 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeTime", {
       spinner.setMax( 23 );
       spinner.setValue( 0 );
       spinner.addEventListener( "change",  this._onSpinnerChange, this );
+      spinner.addEventListener( "changeWidth", this._layoutX, this );
       spinner._textfield.setTabIndex( null );
       // Hack to prevent the spinner text field to request the focus
       spinner._textfield.setFocused = rwt.util.Functions.returnTrue;

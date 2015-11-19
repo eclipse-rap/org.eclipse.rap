@@ -297,6 +297,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       dateTime.destroy();
     },
 
+    testLayout_onSpinnerWidthChange : function() {
+      var dateTime = this._createDefaultDateTimeTime();
+
+      dateTime._spinner.setWidth( 30 );
+
+      assertEquals( 85, dateTime._timePane.getWidth() );
+      dateTime.destroy();
+    },
+
     //////////
     // Helpers
 
