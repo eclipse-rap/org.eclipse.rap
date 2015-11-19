@@ -860,6 +860,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
 
+    testMouseWheelEvent_ignoreUndefinedDelta : function() {
+      var logger = TestUtil.getLogger();
+      var widget = this.createDefaultWidget();
+      widget.addEventListener( "mousewheel", function( event ) {
+        logger.log(event.getWheelDelta());
+      });
+
+      TestUtil.fakeWheel( widget, undefined );
+
+      assertEquals( 0, logger.getLog().length );
+      widget.destroy();
+    },
+
     testSettingCapturingWidgetCancelsDomKeyEvents : function() {
       var widget1 = new rwt.widgets.base.Terminator();
       widget1.setCapture( true );
