@@ -217,6 +217,7 @@ public class Slider extends Control {
 
   @Override
   void createWidget() {
+    super.createWidget();
     increment = 1;
     pageIncrement = 10;
     maximum = 100;

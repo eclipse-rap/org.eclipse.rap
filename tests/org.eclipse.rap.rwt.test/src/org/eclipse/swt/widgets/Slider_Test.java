@@ -193,4 +193,13 @@ public class Slider_Test {
     assertSame( slider.getAdapter( WidgetLCA.class ), slider.getAdapter( WidgetLCA.class ) );
   }
 
+  @Test
+  public void testOrientation_inheritedFromParent() {
+    shell.setOrientation( SWT.RIGHT_TO_LEFT );
+
+    slider = new Slider( shell, SWT.NONE );
+
+    assertEquals( SWT.RIGHT_TO_LEFT, slider.getOrientation() );
+  }
+
 }
