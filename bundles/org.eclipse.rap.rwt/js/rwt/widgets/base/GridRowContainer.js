@@ -297,6 +297,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this.getRowCount() < rowsNeeded ) {
         var row = new rwt.widgets.base.GridRow();
+        row.setMirror( this.getDirection() === "rtl" );
         row.setAppearance( this._getRowAppearance() );
         row.setGridLines( this._gridLines );
         row.$el.css( {

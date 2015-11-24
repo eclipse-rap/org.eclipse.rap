@@ -2991,11 +2991,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       tree.destroy();
     },
 
-    testSetDirectionMirrorsRows_LRT : function() {
+    testSetDirectionMirrorsRows_LTR : function() {
       var tree = this._createDefaultTree();
 
-      var row = tree._rowContainer.getRow( 1 );
-      assertFalse( row.getMirror() );
+      assertEquals( "ltr", tree.getRowContainer().getDirection() );
       tree.destroy();
     },
 
@@ -3003,8 +3002,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       var tree = this._createDefaultTree();
       tree.setDirection( "rtl" );
 
-      var row = tree._rowContainer.getRow( 1 );
-      assertTrue( row.getMirror() );
+      assertEquals( "rtl", tree.getRowContainer().getDirection() );
       tree.destroy();
     },
 

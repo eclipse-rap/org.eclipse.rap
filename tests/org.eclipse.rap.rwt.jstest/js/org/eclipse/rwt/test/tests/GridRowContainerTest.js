@@ -329,6 +329,26 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       tree.destroy();
     },
 
+    testSetDirectionMirrorsRows : function() {
+      var tree = this._createDefaultTree();
+      tree.setDirection( "rtl" );
+
+      var row = tree._rowContainer.getRow( 1 );
+      assertTrue( row.getMirror() );
+      tree.destroy();
+    },
+
+    testSetDirectionMirrorsNewRows : function() {
+      var tree = this._createDefaultTree();
+      tree.setHeight( 0 );
+      tree.setDirection( "rtl" );
+      tree.setHeight( 100 );
+
+      var row = tree._rowContainer.getRow( 1 );
+      assertTrue( row.getMirror() );
+      tree.destroy();
+    },
+
     testGetConfig : function() {
       var cont = this._createContainer();
       var config = cont.getRenderConfig();
