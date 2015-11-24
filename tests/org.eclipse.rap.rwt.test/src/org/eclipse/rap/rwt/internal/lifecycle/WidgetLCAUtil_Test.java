@@ -727,8 +727,9 @@ public class WidgetLCAUtil_Test {
 
     WidgetLCAUtil.renderData( widget );
 
-    JsonObject expected = new JsonObject().add( "foo", "string" ).add( "bar", 1 );
-    assertEquals( expected, getProtocolMessage().findSetProperty( widget, "data" ) );
+    JsonObject actual = ( JsonObject )getProtocolMessage().findSetProperty( widget, "data" );
+    assertEquals( "string", actual.get( "foo" ).asString() );
+    assertEquals( 1, actual.get( "bar" ).asInt() );
   }
 
   @Test
