@@ -85,7 +85,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
         "itemTextWidth" : [],
         "itemCellCheck" : [],
         "itemCellCheckLeft" : [],
-        "itemCellCheckWidth" : []
+        "itemCellCheckWidth" : [],
+        "vBarWidth" : 0
       };
     }
 

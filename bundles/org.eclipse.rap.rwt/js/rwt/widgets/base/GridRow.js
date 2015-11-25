@@ -343,8 +343,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
                          && typeof renderArgs.gridConfig.treeColumn === "number"
                          && renderArgs.gridConfig.treeColumn > -1;
       var xOffset = hasIndention ? this._indent( renderArgs, 0 ) : 0;
+      var yOffset = 0;
+      var width = this.getWidth() - xOffset - renderArgs.gridConfig.vBarWidth;
+      var height = this.getHeight();
       var renderer = this._getTemplateRenderer( renderArgs.gridConfig );
-      renderer.targetBounds = [ xOffset, 0, this.getWidth() - xOffset, this.getHeight() ];
+      renderer.targetBounds = [ xOffset, yOffset, width, height ];
       renderer.markupEnabled = renderArgs.gridConfig.markupEnabled;
       renderer.targetIsEnabled = renderArgs.gridConfig.enabled;
       renderer.targetIsSeeable = renderArgs.gridConfig.seeable;

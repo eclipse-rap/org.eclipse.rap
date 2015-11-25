@@ -303,6 +303,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     setScrollBarsVisible : function( horzVisible, vertVisible ) {
       this._horzScrollBar.setVisibility( horzVisible );
       this._vertScrollBar.setVisibility( vertVisible );
+      this._config.vBarWidth = this._getVerticalBarWidth();
       this._layoutX();
       this._layoutY();
     },
@@ -1322,7 +1323,8 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getRowWidth : function() {
       var width = this._rowContainer.getWidth();
-      return Math.max( this._getItemWidth() + this._getVerticalBarWidth(), width );
+      var bar = this._getVerticalBarWidth();
+      return Math.max( this._getItemWidth() + ( this.isHorizontalBarVisible() ? bar : 0 ), width );
     },
 
     /////////
