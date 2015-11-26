@@ -110,6 +110,7 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
       EventBinding.addListener( text, "MouseWheel", listener );
       var domEvent = TestUtil.fakeMouseEventDOM( text.getElement(), "mousewheel", 1, 0, 0 );
+      domEvent.wheelDelta = 1;
       TestUtil.fireFakeDomEvent( domEvent );
 
       // SWT doesnt support preventing native selection behavior (e.g. Text widget)
