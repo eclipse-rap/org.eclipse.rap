@@ -21,58 +21,93 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
 
   members : {
 
-    testSetStylePropertyOnWidget : function() {
+    testSetStyleProperty_onWidget : function() {
       var red = "red";
       var widget = this._createWidget();
+
       Style.setStyleProperty( widget, "backgroundColor", red);
+
       assertEquals( red, TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
 
-    testSetStylePropertyOnElement : function() {
+    testSetStyleProperty_onElement : function() {
       var red = "red";
       var element = document.createElement( "div" );
+
       Style.setStyleProperty( element, "backgroundColor", red );
+
       assertEquals( red, element.style.backgroundColor );
     },
 
-    testRemoveStylePropertyOnWidget : function() {
+    testGetStyleProperty_inlineStyleWithoutParent : function() {
+      var element = document.createElement( "div" );
+      Style.setStyleProperty( element, "backgroundColor", "#ff0000" );
+
+      var result = Style.getStyleProperty( element, "backgroundColor" );
+
+      assertEquals( [255, 0, 0], rwt.util.Colors.stringToRgb( result ) );
+    },
+
+    testGetStyleProperty_inheritedStyle : function() {
+      var element = document.createElement( "div" );
+      var child = document.createElement( "div" );
+      Style.setStyleProperty( element, "backgroundColor", "#ff0000" );
+      document.body.appendChild( element );
+      element.appendChild( child );
+
+      Style.setStyleProperty( child, "backgroundColor", "inherit" );
+      var result = Style.getStyleProperty( child, "backgroundColor" );
+
+      assertEquals( [255, 0, 0], rwt.util.Colors.stringToRgb( result ) );
+      document.body.removeChild( element );
+    },
+
+    testRemoveStyleProperty_onWidget : function() {
       var red = "red";
       var widget = this._createWidget();
       Style.setStyleProperty( widget, "backgroundColor", red );
+
       Style.removeStyleProperty( widget, "backgroundColor" );
+
       assertNull( TestUtil.getCssBackgroundColor( widget ) );
       widget.destroy();
     },
 
-    testRemoveStylePropertyOnElement : function() {
+    testRemoveStyleProperty_onElement : function() {
       var red = "red";
       var element = document.createElement( "div" );
       Style.setStyleProperty( element, "backgroundColor", red );
+
       Style.removeStyleProperty( element, "backgroundColor" );
+
       assertEquals( "", element.style.backgroundColor );
     },
 
-    testSetStylePropertyOnWidgetBeforeCreate : function() {
+    testSetStyleProperty_onWidgetBeforeCreate : function() {
       var widget = this._createWidget( true );
       var red = "red";
+
       Style.setStyleProperty( widget, "foo", red );
       TestUtil.flush();
+
       assertEquals( red, widget._style.foo );
       widget.destroy();
     },
 
-    testRemoveStylePropertyOnWidgetBeforeCreate : function() {
+    testRemoveStyleProperty_onWidgetBeforeCreate : function() {
       var red = "red";
       var widget = this._createWidget( true );
       Style.setStyleProperty( widget, "foo", red );
+
       Style.removeStyleProperty( widget, "foo" );
       TestUtil.flush();
+
       assertEquals( undefined, widget._style.foo );
       widget.destroy();
     },
 
-    testSetRemoveTextShadow : function() {
+    testSetTextShadow_toNull : function() {
       var widget = this._createWidget( true );
       var shadow = [ false, 1, 1, 0, 0, "#ff0000", 0.5 ];
       widget.setTextShadow( shadow );
@@ -84,8 +119,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.StyleTest", {
       } else {
         assertTrue( css.indexOf( "text-shadow:" ) !== -1 );
       }
+
       widget.setTextShadow( null );
       TestUtil.flush();
+
       css = element.style.cssText.toLowerCase();
       assertTrue( css.indexOf( "text-shadow:" ) === -1 );
       widget.destroy();

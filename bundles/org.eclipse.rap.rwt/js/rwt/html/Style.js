@@ -55,64 +55,40 @@ rwt.qx.Class.define( "rwt.html.Style", {
       "default" : ""
     } ),
 
-    /**
-     * Gets the value of a style property.
-     *
-     * *Computed*
-     *
-     * Returns the computed value of a style property. Compared to the cascaded style,
-     * this one also interprets the values e.g. translates <code>em</code> units to
-     * <code>px</code>.
-     *
-     * *Cascaded*
-     *
-     * Returns the cascaded value of a style property.
-     *
-     * *Local*
-     *
-     * Ignores inheritance cascade. Does not interpret values.
-     *
-     * @type static
-     * @signature function(element, name)
-     * @param element {Element} The DOM element to modify
-     * @param name {String} Name of the style attribute (js variant e.g. marginTop, wordSpacing)
-     * @return {var} The value of the property
-     */
-    get : function( element, name ) {
-      // Opera, Mozilla and Safari 3+ also have a global getComputedStyle which is identical
-      // to the one found under document.defaultView.
-
-      // The problem with this is however that this does not work correctly
-      // when working with frames and access an element of another frame.
-      // Then we must use the <code>getComputedStyle</code> of the document
-      // where the element is defined.
-      var doc = rwt.html.Nodes.getDocument(element);
-      var computed = doc.defaultView.getComputedStyle(element, null);
-
-      // All relevant browsers expose the configured style properties to
-      // the CSSStyleDeclaration objects
-      return computed ? computed[name] : null;
+    getStyleProperty : function( element, name ) {
+      try {
+        var doc = rwt.html.Nodes.getDocument( element );
+        var computed = doc.defaultView.getComputedStyle( element, null );
+        var result = computed ? computed[ name ] : null;
+        return result ? result : element.style[ name ];
+      } catch( ex ) {
+        throw new Error("Could not evaluate computed style: " + element + "[" + name + "]: " + ex);
+      }
     },
 
-    /**
-     * Gets the computed (CSS) style property of a given DOM element.
-     */
-    // TODO: check if all supported browser have document.defaultView.getComputedStyle
-    getStyleProperty : ( document.defaultView && document.defaultView.getComputedStyle )
-      ? function( el, prop ) {
-        try {
-          return el.ownerDocument.defaultView.getComputedStyle(el, "")[prop];
-        } catch(ex) {
-          throw new Error("Could not evaluate computed style: " + el + "[" + prop + "]: " + ex);
-        }
+    setStyleProperty : function( target, property, value ) {
+      if( target.setStyleProperty ) {
+        target.setStyleProperty( property, value );
+      } else {
+        target.style[ property ] = value;
       }
-      : function( el, prop ) {
-        try {
-          return el.style[prop];
-        } catch( ex ) {
-          throw new Error( "Could not evaluate computed style: " + el + "[" + prop + "]" );
-        }
-      },
+    },
+
+    removeStyleProperty : function( target, property ) {
+      if( target instanceof rwt.widgets.base.Widget ) {
+        target.removeStyleProperty( property );
+      } else {
+        target.style[ property ] = "";
+      }
+    },
+
+    getOwnProperty : function( target, property ) {
+      if( target.getStyleProperty ) {
+        target.getStyleProperty( property );
+      } else {
+        return target.style[ property ];
+      }
+    },
 
     /**
      * Get a (CSS) style property of a given DOM element and interpret the property as integer value
@@ -450,30 +426,6 @@ rwt.qx.Class.define( "rwt.html.Style", {
         }
       }
       this.setStyleProperty( target, this._transitionProperty, value );
-    },
-
-    setStyleProperty : function( target, property, value ) {
-      if( target.setStyleProperty ) {
-        target.setStyleProperty( property, value );
-      } else {
-        target.style[ property ] = value;
-      }
-    },
-
-    removeStyleProperty : function( target, property ) {
-      if( target instanceof rwt.widgets.base.Widget ) {
-        target.removeStyleProperty( property );
-      } else {
-        target.style[ property ] = "";
-      }
-    },
-
-    getOwnProperty : function( target, property ) {
-      if( target.getStyleProperty ) {
-        target.getStyleProperty( property );
-      } else {
-        return target.style[ property ];
-      }
     },
 
     //////////

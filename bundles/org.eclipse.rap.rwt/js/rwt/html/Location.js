@@ -50,7 +50,7 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {String} Value of given style property
      */
     __style : function( elem, style ) {
-      return rwt.html.Style.get( elem, style );
+      return rwt.html.Style.getStyleProperty( elem, style );
     },
 
     /**
@@ -62,7 +62,7 @@ rwt.qx.Class.define("rwt.html.Location",
      * @return {Integer} Value of given style property
      */
     __num : function(elem, style) {
-      var value = rwt.html.Style.get( elem, style );
+      var value = rwt.html.Style.getStyleProperty( elem, style );
       var result = Math.round( parseFloat( value ,10 ) );
       return result || 0;
     },

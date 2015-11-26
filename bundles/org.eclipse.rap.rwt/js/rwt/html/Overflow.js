@@ -59,7 +59,7 @@ rwt.qx.Class.define("rwt.html.Overflow",
       // it's also more safe to translate hidden to -moz-scrollbars-none
       // because of issues in older geckos
       function( element ) {
-        var overflow = rwt.html.Style.get( element, "overflow" );
+        var overflow = rwt.html.Style.getStyleProperty( element, "overflow" );
 
         if (overflow === "-moz-scrollbars-none") {
           overflow = "hidden";
@@ -70,12 +70,12 @@ rwt.qx.Class.define("rwt.html.Overflow",
 
       // gecko >= 1.8 supports overflowX, too
       function( element ) {
-        return rwt.html.Style.get( element, "overflowX" );
+        return rwt.html.Style.getStyleProperty( element, "overflowX" );
       },
 
       // use native overflowX property
       "default" : function( element ) {
-        return rwt.html.Style.get( element, "overflowX" );
+        return rwt.html.Style.getStyleProperty( element, "overflowX" );
       }
     }),
 
@@ -103,7 +103,7 @@ rwt.qx.Class.define("rwt.html.Overflow",
       // because of issues in older geckos
       function(element, mode)
       {
-        var overflow = rwt.html.Style.get(element, "overflow", mode, false);
+        var overflow = rwt.html.Style.getStyleProperty(element, "overflow", mode, false);
 
         if (overflow === "-moz-scrollbars-none") {
           overflow = "hidden";
@@ -114,12 +114,12 @@ rwt.qx.Class.define("rwt.html.Overflow",
 
       // gecko >= 1.8 supports overflowY, too
       function( element ) {
-        return rwt.html.Style.get(element, "overflowY" );
+        return rwt.html.Style.getStyleProperty(element, "overflowY" );
       },
 
       // use native overflowY property
       "default" : function( element ) {
-        return rwt.html.Style.get(element, "overflowY" );
+        return rwt.html.Style.getStyleProperty(element, "overflowY" );
       }
     })
 

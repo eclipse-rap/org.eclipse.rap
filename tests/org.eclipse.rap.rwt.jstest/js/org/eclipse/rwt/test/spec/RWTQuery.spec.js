@@ -468,10 +468,10 @@ describe( "RWTQuery", function() {
     describe( "css", function() {
 
       it( "returns existing property using rwt.html.Style", function() {
-        spyOn( Style, "get" ).andReturn( "bar" );
+        spyOn( Style, "getStyleProperty" ).andReturn( "bar" );
 
         expect( $( element ).css( "foo" ) ).toBe( "bar" );
-        expect( Style.get ).toHaveBeenCalledWith( same( element ), "foo" );
+        expect( Style.getStyleProperty ).toHaveBeenCalledWith( same( element ), "foo" );
       } );
 
       it( "sets single property", function() {

@@ -394,7 +394,7 @@ var css_element = unwrapSetterArgsFor( function( element, args ) {
     if( hook && hook.get ) {
       return hook.get( element );
     }
-    return Style.get( element, args[ 0 ] );
+    return Style.getStyleProperty( element, args[ 0 ] );
   }
   if( hook && hook.set ) {
     hook.set( element, args[ 1 ] );
