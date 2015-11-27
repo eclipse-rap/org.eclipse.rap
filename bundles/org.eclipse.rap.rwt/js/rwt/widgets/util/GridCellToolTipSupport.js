@@ -25,12 +25,12 @@ rwt.widgets.util.GridCellToolTipSupport = {
     }
   },
 
+  // Called by server via Grid.js in response to _onRender -> _setCell
   showToolTip : function( text ) {
     if( this._isValidToolTip( text ) ) {
       var grid = this._cell[ 0 ];
       var item = rwt.remote.ObjectRegistry.getObject( this._cell[ 1 ] );
-      var row = grid.getRowContainer().findRowByItem( item, this._cell[ 2 ] );
-      if( row ) {
+      if( grid.getRowContainer().getHoverItem() === item ) {
         grid.getRowContainer().setToolTipText( text );
         rwt.widgets.base.WidgetToolTip.getInstance().updateText();
         grid.getRowContainer().setToolTipText( "" );

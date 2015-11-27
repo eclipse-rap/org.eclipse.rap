@@ -160,6 +160,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     setCellToolTipsEnabled : function( value ) {
       this._cellToolTipsEnabled = value;
       if( value ) {
+       // an empty string allows ToolTipManager to bind WidgetToolTip to GridRowContainer, but instead
+       // of actually appearing WidgetToolTip will call requestToolTipText
         this.setToolTipText( "" );
       } else {
         this.resetToolTipText();
@@ -171,6 +173,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
     },
 
     requestToolTipText : function() {
+      // This event is handled by GridCellToolTipSupport:
       this.dispatchSimpleEvent( "renderCellToolTip", this._hoverRow, true );
     },
 

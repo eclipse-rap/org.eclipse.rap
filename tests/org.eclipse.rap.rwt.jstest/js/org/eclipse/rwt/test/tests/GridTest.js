@@ -644,6 +644,28 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       shell.destroy();
     },
 
+    testSetCellToolTipTextByProtocol_NoRowHovered : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setLocation( 0, 0 );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setLocation( 0, 0 );
+      TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      this._fillTree( widget, 1 );
+      TestUtil.flush();
+      var row1 = widget.getRowContainer().getRow( 0 );
+      var row2 = widget.getRowContainer().getRow( 0 );
+      TestUtil.fakeMouseEvent( row1, "mouseover", 10, 10 );
+      TestUtil.fakeMouseEvent( row1, "mousemove", 10, 10 );
+      TestUtil.forceInterval( rwt.widgets.base.WidgetToolTip.getInstance()._showTimer );
+
+      // Keeping the mouse in the container (otherwise the tooltip is unbound)
+      TestUtil.hoverFromTo( row1, widget.getRowContainer().getElement() );
+      TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
+
+      assertFalse( rwt.widgets.base.WidgetToolTip.getInstance().isSeeable() );
+      shell.destroy();
+    },
+
     testSetCellToolTipTextByProtocol_PositionIsColumnAligned : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       shell.setLocation( 1, 0 );
