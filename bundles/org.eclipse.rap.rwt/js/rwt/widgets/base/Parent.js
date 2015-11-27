@@ -900,6 +900,14 @@ rwt.qx.Class.define("rwt.widgets.base.Parent",
       }
     },
 
+    // overridden
+    _fireBeforeDispose : function() {
+      this.base( arguments );
+      if( this.forEachChild ) {
+        this.forEachChild( arguments.callee );
+      }
+    },
+
     /*
     ---------------------------------------------------------------------------
       APPEAR/DISAPPEAR MESSAGES FOR CHILDREN

@@ -555,7 +555,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       menu.destroy();
     },
 
-
     testDisposeChildrenWithParent : function() {
       var widget = new rwt.widgets.base.Terminator();
       var composite = new rwt.widgets.Composite();
@@ -571,6 +570,49 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertTrue( composite.isDisposed() );
       assertTrue( widget.isDisposed() );
       assertTrue( node.parentNode !== parentNode );
+    },
+
+    testDispose_firesBeforeDispose_onWidget : function() {
+      var composite = new rwt.widgets.Composite();
+      composite.addToDocument();
+      TestUtil.flush();
+      var logger = TestUtil.getLogger();
+      composite.addEventListener( "beforeDispose", logger.log );
+
+      composite.destroy();
+      TestUtil.flush();
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testDispose_firesBeforeDispose_onChildren : function() {
+      var child = new rwt.widgets.base.Terminator();
+      var composite = new rwt.widgets.Composite();
+      composite.addToDocument();
+      child.setParent( composite );
+      TestUtil.flush();
+      var logger = TestUtil.getLogger();
+      child.addEventListener( "beforeDispose", logger.log );
+
+      composite.destroy();
+      TestUtil.flush();
+
+      assertEquals( 1, logger.getLog().length );
+    },
+
+    testDispose_firesBeforeDispose_withValidParent : function() {
+      var composite = new rwt.widgets.Composite();
+      composite.addToDocument();
+      TestUtil.flush();
+      var parent = null;
+      composite.addEventListener( "beforeDispose", function() {
+        parent = composite.getParent();
+      });
+
+      composite.destroy();
+      TestUtil.flush();
+
+      assertNotNull( parent );
     },
 
     testBoxWidthZero : function() {

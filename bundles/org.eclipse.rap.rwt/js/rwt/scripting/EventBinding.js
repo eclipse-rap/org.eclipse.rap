@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,7 +213,16 @@ rwt.scripting.EventBinding = {
        * @param {Event} event
        * @see SWT.Hide
        */
-      "Hide" : "disappear"
+      "Hide" : "disappear",
+      /**
+       * @event
+       * @description Sent when the widget is disposed. The event is fired before widget is
+       * detached from the widget hierarchy and removed from DOM
+       * @name Control#Dispose
+       * @param {Event} event
+       * @see SWT.Dispose
+       */
+      "Dispose" : "beforeDispose"
     },
     "rwt.widgets.Scale" : {
       /**

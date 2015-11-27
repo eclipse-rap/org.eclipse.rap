@@ -1797,6 +1797,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
     destroy : function () {
       if( this.getParent() === null || !this.getParent()._isInGlobalDisposeQueue ) {
         if( this.dispatchSimpleEvent( "destroy" ) ) {
+          this._fireBeforeDispose();
           this.setParent( null );
           rwt.widgets.base.Widget.addToGlobalDisposeQueue( this );
         }
@@ -1805,6 +1806,10 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
 
     _markInDispose : function() {
       this._isInGlobalDisposeQueue = true;
+    },
+
+    _fireBeforeDispose : function() {
+      this.dispatchSimpleEvent( "beforeDispose" );
     },
 
     ///////////////////////
