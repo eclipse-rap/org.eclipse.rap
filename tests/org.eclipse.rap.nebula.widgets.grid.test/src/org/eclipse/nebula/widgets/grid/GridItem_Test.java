@@ -965,6 +965,27 @@ public class GridItem_Test {
   }
 
   @Test
+  public void testGetColumnSpan_initial() {
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem item = new GridItem( grid, SWT.NONE );
+
+    assertEquals( 0, item.getColumnSpan( 0 ) );
+    assertEquals( 0, item.getColumnSpan( 1 ) );
+    assertEquals( 0, item.getColumnSpan( 2 ) );
+  }
+
+  @Test
+  public void testGetColumnSpan() {
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem item = new GridItem( grid, SWT.NONE );
+    item.setColumnSpan( 0, 1 );
+
+    assertEquals( 1, item.getColumnSpan( 0 ) );
+    assertEquals( 0, item.getColumnSpan( 1 ) );
+    assertEquals( 0, item.getColumnSpan( 2 ) );
+  }
+
+  @Test
   public void testGetHeight_Initial() {
     GridItem item = new GridItem( grid, SWT.NONE );
 
@@ -1152,6 +1173,16 @@ public class GridItem_Test {
 
     Rectangle expected = new Rectangle( -1000, -1000, 0, 0 );
     assertEquals( expected, grid.getItem( 8 ).getBounds( 0 ) );
+  }
+
+  @Test
+  public void testGetBounds_withColumnSpan() {
+    createGridColumns( grid, 3, SWT.NONE );
+    GridItem item = new GridItem( grid, SWT.NONE );
+    item.setColumnSpan( 0, 2 );
+
+    Rectangle expected = new Rectangle( 0, 0, 120, 27 );
+    assertEquals( expected, item.getBounds( 0 ) );
   }
 
   @Test

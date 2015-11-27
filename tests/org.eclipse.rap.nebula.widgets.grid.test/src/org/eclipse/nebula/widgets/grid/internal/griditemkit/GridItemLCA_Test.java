@@ -64,7 +64,6 @@ public class GridItemLCA_Test {
     grid = new Grid( shell, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL );
     item = new GridItem( grid, SWT.NONE );
     lca = new GridItemLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -735,6 +734,43 @@ public class GridItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "cellCheckable" ) );
+  }
+
+  @Test
+  public void testRenderInitialColumnSpans() throws IOException {
+    createGridColumns( grid, 3, SWT.NONE );
+
+    lca.render( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getProperties().names().indexOf( "columnSpans" ) == -1 );
+  }
+
+  @Test
+  public void testRenderColumnSpans() throws IOException {
+    createGridColumns( grid, 3, SWT.NONE );
+
+    item.setColumnSpan( 1, 1 );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    JsonArray expected = JsonArray.readFrom( "[0, 1, 0]" );
+    assertEquals( expected, message.findSetProperty( item, "columnSpans" ) );
+  }
+
+  @Test
+  public void testRenderColumnSpansUnchanged() throws IOException {
+    createGridColumns( grid, 3, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setColumnSpan( 1, 1 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "columnSpans" ) );
   }
 
   @Test

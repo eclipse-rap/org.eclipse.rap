@@ -285,6 +285,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemCount( 1 );
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item.setTexts( [ "c0", "c1", "c2", "c3", "c4" ] );
+      tree.setColumnCount( 5 );
+      tree.getRenderConfig().cellOrder = [ 0, 1, 2, 3, 4 ];
       TestUtil.flush();
       var rowLeft = tree._rowContainer.getSubContainer( 0 ).getRow( 0 );
       var rowRight = tree._rowContainer.getSubContainer( 1 ).getRow( 0 );
@@ -473,6 +475,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       config.itemImageWidth = [ 4, 5, 6, 7, 8 ];
       config.itemTextLeft = [ 33, 64, 5, 96, 127];
       config.itemTextWidth = [ 3, 4, 5, 6, 7 ];
+      config.baseAppearance = "table";
       TestUtil.getDocument().add( result );
       TestUtil.flush();
       result.renderAll();

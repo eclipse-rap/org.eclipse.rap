@@ -601,11 +601,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertEquals( "red", item.getBackground() );
     },
 
-    testCellBackgrounds: function() {
+    testCellBackgrounds : function() {
       var item = new rwt.widgets.GridItem();
       item.setCellBackgrounds( [ "red", "green" ] );
       assertEquals( "red", item.getCellBackground( 0 ) );
       assertEquals( "green", item.getCellBackground( 1 ) );
+    },
+
+    testColumnSpan : function() {
+      var item = new rwt.widgets.GridItem();
+      item.setColumnSpans( [ 0, 1, 2 ] );
+      assertEquals( 0, item.getColumnSpan( 0 ) );
+      assertEquals( 1, item.getColumnSpan( 1 ) );
+      assertEquals( 2, item.getColumnSpan( 2 ) );
     },
 
     testSomeCellBackgroundsSet : function() {
@@ -628,9 +636,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       var item = new rwt.widgets.GridItem();
       item.setImages( [ [ "test1.jpg", 10, 10 ], [ "test2.jpg", 10, 10 ] ] );
       item.setTexts( [ "bla", "blubg" ] );
-      item.setCellFonts( "arial", "windings" ) ;
-      item.setCellForegrounds( "red", "blue" );
-      item.setCellBackgrounds( "red", "blue" );
+      item.setCellFonts( [ "arial", "windings" ] ) ;
+      item.setCellForegrounds( [ "red", "blue" ] );
+      item.setCellBackgrounds( [ "red", "blue" ] );
+      item.setColumnSpans( [ 1, 2 ] );
       item.setFont( "arial" );
       item.setForeground( "green" );
       item.setBackground( "yellow" );
@@ -645,6 +654,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridItemTest", {
       assertEquals( null, item.getImage( 0 ) );
       assertEquals( null, item.getImage( 1 ) );
       assertEquals( null, item.getVariant() );
+      assertEquals( 0, item.getColumnSpan( 0 ) );
+      assertEquals( 0, item.getColumnSpan( 1 ) );
     },
 
     testParent : function() {

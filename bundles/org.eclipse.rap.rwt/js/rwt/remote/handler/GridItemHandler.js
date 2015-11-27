@@ -50,6 +50,7 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
     "customVariant",
     "height",
     "index",
+    "columnSpans",
     "data"
   ],
 

@@ -74,6 +74,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRowContainer", {
         "checkBoxLeft" : null,
         "checkBoxWidth" : null,
         "columnCount" : 0,
+        "cellOrder" : [ 0 ],
         "treeColumn" : 0,
         "alignment" : [],
         "wordWrap" : [],

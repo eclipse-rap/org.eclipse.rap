@@ -56,6 +56,7 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
   private static final String PROP_CELL_GRAYED = "cellGrayed";
   private static final String PROP_CELL_CHECKABLE = "cellCheckable";
   private static final String PROP_CACHED = "cached";
+  private static final String PROP_COLUMN_SPANS = "columnSpans";
 
   private static final int ZERO = 0;
 
@@ -85,6 +86,7 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
       preserveProperty( item, PROP_CELL_CHECKED, getCellChecked( item ) );
       preserveProperty( item, PROP_CELL_GRAYED, getCellGrayed( item ) );
       preserveProperty( item, PROP_CELL_CHECKABLE, getCellCheckable( item ) );
+      preserveProperty( item, PROP_COLUMN_SPANS, getColumnSpans( item ) );
     }
   }
 
@@ -113,40 +115,45 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
   }
 
   private static void renderProperties( GridItem item ) {
+    int columnCount = getColumnCount( item );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
     renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), ZERO );
     renderProperty( item, PROP_HEIGHT, item.getHeight(), item.getParent().getItemHeight() );
     renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
-    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ columnCount ] );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
     WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
     WidgetLCAUtil.renderFont( item, getUserFont( item ) );
     renderProperty( item,
                     PROP_CELL_BACKGROUNDS,
                     getCellBackgrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
+                    new Color[ columnCount ] );
     renderProperty( item,
                     PROP_CELL_FOREGROUNDS,
                     getCellForegrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
+                    new Color[ columnCount ] );
     renderProperty( item,
                     PROP_CELL_FONTS,
                     getCellFonts( item ),
-                    new Font[ getColumnCount( item ) ] );
+                    new Font[ columnCount ] );
     renderProperty( item, PROP_EXPANDED, item.isExpanded(), false );
     renderProperty( item,
                     PROP_CELL_CHECKED,
                     getCellChecked( item ),
-                    new boolean[ getColumnCount( item ) ] );
+                    new boolean[ columnCount ] );
     renderProperty( item,
                     PROP_CELL_GRAYED,
                     getCellGrayed( item ),
-                    new boolean[ getColumnCount( item ) ] );
+                    new boolean[ columnCount ] );
     renderProperty( item,
                     PROP_CELL_CHECKABLE,
                     getCellCheckable( item ),
                     getDefaultCellCheckable( item ) );
+    renderProperty( item,
+                    PROP_COLUMN_SPANS,
+                    getColumnSpans( item ),
+                    new int[ columnCount ] );
   }
 
   @Override
@@ -275,6 +282,10 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
       result[ i ] = true;
     }
     return result;
+  }
+
+  private static int[] getColumnSpans( GridItem item ) {
+    return getGridItemAdapter( item ).getColumnSpans();
   }
 
   private static int getColumnCount( GridItem item ) {

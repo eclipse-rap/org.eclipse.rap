@@ -1221,6 +1221,50 @@ public class GridItem extends Item {
   }
 
   /**
+   * Sets the column spanning for the column at the given index to span the
+   * given number of subsequent columns.
+   *
+   * @param index
+   *            column index that should span
+   * @param span
+   *            number of subsequent columns to span
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.1
+   */
+  public void setColumnSpan( int index, int span ) {
+    checkWidget();
+    getCellData( index ).columnSpan = span;
+  }
+
+  /**
+   * Returns the column span for the given column index in the receiver.
+   *
+   * @param index
+   *            the column index
+   * @return the number of columns spanned (0 equals no columns spanned)
+   * @throws org.eclipse.swt.SWTException
+   *             <ul>
+   *             <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
+   *             </li>
+   *             <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *             thread that created the receiver</li>
+   *             </ul>
+   *
+   * @since 3.1
+   */
+  public int getColumnSpan( int index ) {
+    checkWidget();
+    return getCellData( index ).columnSpan;
+  }
+
+  /**
    * Sets the height of this <code>GridItem</code>.
    *
    * @param height
@@ -1292,14 +1336,13 @@ public class GridItem extends Item {
    */
   public Rectangle getBounds( int columnIndex ) {
     checkWidget();
-    // [if] -1000 is used in the original implementation
-    Rectangle result = new Rectangle( -1000, -1000, 0, 0 );
     if( isVisible() && parent.isShown( this ) ) {
       Point origin = parent.getOrigin( parent.getColumn( columnIndex ), this );
       Point cellSize = getCellSize( columnIndex );
-      result = new Rectangle( origin.x, origin.y, cellSize.x, cellSize.y );
+      return new Rectangle( origin.x, origin.y, cellSize.x, cellSize.y );
     }
-    return result;
+    // [if] -1000 is used in the original implementation
+    return new Rectangle( -1000, -1000, 0, 0 );
   }
 
   @Override
@@ -1476,7 +1519,7 @@ public class GridItem extends Item {
 
   protected Point getCellSize( int index ) {
     int width = 0;
-    int span = 0; // getColumnSpan( index );
+    int span = getColumnSpan( index );
     for( int i = 0; i <= span && i < parent.getColumnCount() - index; i++ ) {
       width += parent.getColumn( index + i ).getWidth();
     }
@@ -1629,6 +1672,16 @@ public class GridItem extends Item {
       Font[] result = new Font[ columnCount ];
       for( int i = 0; i < columnCount; i++ ) {
         result[ i ] = getCellData( i ).font;
+      }
+      return result;
+    }
+
+    @Override
+    public int[] getColumnSpans() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      int[] result = new int[ columnCount ];
+      for( int i = 0; i < columnCount; i++ ) {
+        result[ i ] = getCellData( i ).columnSpan;
       }
       return result;
     }

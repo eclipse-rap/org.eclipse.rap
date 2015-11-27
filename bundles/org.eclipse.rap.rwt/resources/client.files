@@ -119,6 +119,7 @@ rwt/widgets/util/CellRendererRegistry.js
 rwt/widgets/base/GridRowContainer.js
 rwt/widgets/util/GridRowContainerWrapper.js
 rwt/widgets/util/GridUtil.js
+rwt/widgets/util/GridRowLayout.js
 rwt/widgets/util/GridSynchronizer.js
 rwt/widgets/base/GridRow.js
 rwt/widgets/Menu.js

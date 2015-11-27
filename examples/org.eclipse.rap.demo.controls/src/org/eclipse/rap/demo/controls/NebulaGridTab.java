@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ public class NebulaGridTab extends ExampleTab {
     createShowItemGroup( parent );
     createShowColumnGroup( parent );
     createSetFooterSpanGroup( parent );
+    createSetColumnSpanGroup( parent );
     createShowHeaderButton( parent );
     createShowFooterButton( parent );
     createAutoHeightButton( parent );
@@ -101,18 +102,22 @@ public class NebulaGridTab extends ExampleTab {
 
   private void addGridListeners() {
     grid.addTreeListener( new TreeListener() {
+      @Override
       public void treeExpanded( TreeEvent event ) {
         log( "grid treeExpanded: " + event );
       }
+      @Override
       public void treeCollapsed( TreeEvent event ) {
         log( "grid treeExpanded: " + event );
       }
     } );
     grid.addSelectionListener( new SelectionListener() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log( "grid widgetSelected: " + event );
       }
 
+      @Override
       public void widgetDefaultSelected( SelectionEvent event ) {
         log( "grid widgetDefaultSelected: " + event );
       }
@@ -139,10 +144,12 @@ public class NebulaGridTab extends ExampleTab {
       column.setMoveable( true );
       column.addSelectionListener( new SelectionListener() {
 
+        @Override
         public void widgetSelected( SelectionEvent event ) {
           log( "column widgetSelected: " + event );
         }
 
+        @Override
         public void widgetDefaultSelected( SelectionEvent event ) {
           log( "column widgetDefaultSelected: " + event );
         }
@@ -346,8 +353,41 @@ public class NebulaGridTab extends ExampleTab {
           span = Integer.parseInt( spanText.getText() );
         } catch( NumberFormatException e ) {
         }
-        if( index >= 0 && index < grid.getColumnCount() && span > 0) {
+        if( index >= 0 && index < grid.getColumnCount() && span > 0 ) {
           grid.getColumn( index ).setData( "footerSpan", Integer.valueOf( span ) );
+        }
+      }
+    } );
+  }
+
+  private void createSetColumnSpanGroup( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setLayoutData( new GridData( SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1 ) );
+    label.setText( "Column span on selected item" );
+    final Text columnText = new Text( composite, SWT.BORDER );
+    columnText.setLayoutData( new GridData( 80, SWT.DEFAULT ) );
+    columnText.setMessage( "column" );
+    final Text spanText = new Text( composite, SWT.BORDER );
+    spanText.setLayoutData( new GridData( 90, SWT.DEFAULT ) );
+    spanText.setMessage( "columnSpan" );
+    final Button set = new Button( composite, SWT.PUSH );
+    set.setText( "Set" );
+    set.setLayoutData( new GridData( 67, SWT.DEFAULT ) );
+    set.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetSelected( SelectionEvent event ) {
+        int index = -1;
+        int span = -1;
+        try {
+          index = Integer.parseInt( columnText.getText() );
+          span = Integer.parseInt( spanText.getText() );
+        } catch( NumberFormatException e ) {
+        }
+        GridItem[] selection = grid.getSelection();
+        if( selection.length > 0 && index >= 0 && index < grid.getColumnCount() && span >= 0 ) {
+          selection[ 0 ].setColumnSpan( index, span );
         }
       }
     } );

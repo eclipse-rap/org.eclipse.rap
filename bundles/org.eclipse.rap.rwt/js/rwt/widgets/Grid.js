@@ -421,6 +421,13 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     setColumnOrder : function( columnOrder ) {
       this._columnOrder = columnOrder;
+      if( columnOrder && columnOrder.length > 0 ) {
+        this._config.cellOrder = columnOrder.map( function( column ) {
+          return column.getIndex();
+        } );
+      } else {
+        this._config.cellOrder = [ 0 ];
+      }
     },
 
     getColumnOrder : function() {
@@ -854,6 +861,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
     // render content
 
     _updateColumns : function() {
+      this.setColumnOrder( this._columnOrder );
       this._updateScrollWidth();
       if( this._header != null ) {
         this._header.renderColumns( this._columns );

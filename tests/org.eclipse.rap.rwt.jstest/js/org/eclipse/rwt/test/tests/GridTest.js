@@ -343,7 +343,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
     testSetColumnOrderByProtocol : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var grid = this._createDefaultTreeByProtocol( "w3", "w2", [] );
-      var columns = [ {}, {} ];
+      var columns = [
+        { getIndex: function() { return 1; } },
+        { getIndex: function() { return 0; } }
+      ];
       ObjectRegistry.add( "w4", columns[ 0 ] );
       ObjectRegistry.add( "w5", columns[ 1 ] );
 
@@ -351,6 +354,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       expect( grid.getColumnOrder()[ 0 ] ).toBe( columns[ 0 ] );
       expect( grid.getColumnOrder()[ 1 ] ).toBe( columns[ 1 ] );
+      expect( grid.getRenderConfig().cellOrder ).toEqual( [ 1, 0 ] );
       shell.destroy();
       grid.destroy();
     },
@@ -2444,7 +2448,10 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.flush();
       var nodes = tree._rowContainer.getRow( 0 ).$el.prop( "childNodes" );
       assertEquals( 1, nodes.length );
+
       tree.setColumnCount( 3 );
+      tree.getRenderConfig().cellOrder = [ 0, 1, 2 ];
+
       TestUtil.flush();
       assertEquals( 3, tree.getRenderConfig().columnCount );
       assertEquals( 3, nodes.length );

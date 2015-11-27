@@ -42,6 +42,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._cellChecked = [];
     this._cellGrayed = [];
     this._cellCheckable = [];
+    this._columnSpans = [];
     this._variant = null;
     if( this._parent != null ) {
       this._level = this._parent.getLevel() + 1;
@@ -79,6 +80,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._cellGrayed = null;
     this._cellCheckable = null;
     this._rootItem = null;
+    this._columnSpans = null;
   },
 
   statics : {
@@ -139,6 +141,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
       this._cellBackgrounds = [];
       this._cellForegrounds = [];
       this._cellFonts = [];
+      this._columnSpans = [];
       this._variant = null;
     },
 
@@ -211,6 +214,15 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     setCellBackgrounds : function( colors ) {
       this._cellBackgrounds = colors;
       this._update( "content" );
+    },
+
+    setColumnSpans : function( spans ) {
+      this._columnSpans = spans;
+      this._update( "content" );
+    },
+
+    getColumnSpan : function( column ) {
+      return this._columnSpans[ column ] || 0;
     },
 
     setImages : function( images ) {

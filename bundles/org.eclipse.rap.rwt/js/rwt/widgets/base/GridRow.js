@@ -78,7 +78,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         gridConfig: gridConfig,
         selected: this._renderAsSelected( gridConfig, selected ),
         hoverTarget: hoverTarget,
-        scrolling: scrolling
+        scrolling: scrolling,
+        layout: new rwt.widgets.util.GridRowLayout( gridConfig, item )
       };
       this._renderStates( renderArgs );
       this._renderItemBackground( renderArgs );
@@ -339,10 +340,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     // Content Renderer
 
     _renderTemplate : function( renderArgs ) {
-      var hasIndention =    renderArgs.item
-                         && typeof renderArgs.gridConfig.treeColumn === "number"
-                         && renderArgs.gridConfig.treeColumn > -1;
-      var xOffset = hasIndention ? this._indent( renderArgs, 0 ) : 0;
+      var xOffset = renderArgs.layout.indention;
       var yOffset = 0;
       var width = this.getWidth() - xOffset - renderArgs.gridConfig.vBarWidth;
       var height = this.getHeight();
@@ -384,7 +382,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         this._removeCells( columns, this._cellsRendered );
       }
       for( var cell = 0; cell < columns; cell++ ) {
-        if( this._getItemWidth( renderArgs, cell ) > 0 ) {
+        if( renderArgs.layout.cellWidth[ cell ] > 0 ) {
           this._renderCellBackground( renderArgs, cell );
           this._renderCellCheckBox( renderArgs, cell );
           this._renderCellImage( renderArgs, cell );
@@ -568,8 +566,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     // Layout Renderer
 
     _renderCheckBoxBounds : function( renderArgs ) {
-      var left = this._getCheckBoxLeft( renderArgs );
-      var width = this._getCheckBoxWidth( renderArgs );
+      var left = renderArgs.layout.checkBoxLeft;
+      var width = renderArgs.layout.checkBoxWidth;
       this.$checkBox.css( {
         "left" : this._mirror ? "" : left,
         "right" : this._mirror ? left : "",
@@ -582,13 +580,12 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellBackgroundBounds : function( renderArgs, cell ) {
       var element = this.$cellBackgrounds[ cell ];
       if( element ) {
-        var left = this._getItemLeft( renderArgs, cell );
-        var width = this._getItemWidth( renderArgs, cell );
+        var left = renderArgs.layout.cellLeft[ cell ];
         element.css( {
           "left" : this._mirror ? "" : left,
           "right" : this._mirror ? left : "",
           "top" : 0,
-          "width" : width,
+          "width" : renderArgs.layout.cellWidth[ cell ],
           "height" : "100%"
         } );
       }
@@ -597,8 +594,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellCheckBounds : function( renderArgs, cell ) {
       var element = this.$cellCheckBoxes[ cell ];
       if( element ) {
-        var left = this._getCellCheckLeft( renderArgs, cell );
-        var width = this._getCellCheckWidth( renderArgs, cell );
+        var left = renderArgs.layout.cellCheckLeft[ cell ];
+        var width = renderArgs.layout.cellCheckWidth[ cell ];
         element.css( {
           "left" : this._mirror ? "" : left,
           "right" : this._mirror ? left : "",
@@ -612,8 +609,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellImageBounds : function( renderArgs, cell ) {
       var element = this.$cellImages[ cell ];
       if( element ) {
-        var left = this._getItemImageLeft( renderArgs, cell );
-        var width = this._getItemImageWidth( renderArgs, cell );
+        var left = renderArgs.layout.cellImageLeft[ cell ];
+        var width = renderArgs.layout.cellImageWidth[ cell ];
         element.css( {
           "left" : this._mirror ? "" : left,
           "right" : this._mirror ? left : "",
@@ -627,9 +624,9 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
     _renderCellLabelBounds : function( renderArgs, cell ) {
       var element = this.$cellLabels[ cell ];
       if( element ) {
-        var left = this._getItemTextLeft( renderArgs, cell );
-        var width = this._getItemTextWidth( renderArgs, cell );
-        var top = this._getCellPadding( renderArgs )[ 0 ];
+        var left = renderArgs.layout.cellTextLeft[ cell ];
+        var width = renderArgs.layout.cellTextWidth[ cell ];
+        var top = renderArgs.layout.cellPadding[ 0 ];
         // TODO : for vertical center rendering line-height should also be set,
         //        but not otherwise. Also not sure about bottom alignment.
         element.css( {
@@ -646,11 +643,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       if( !renderArgs.gridConfig.fullSelection ) {
         var cell = renderArgs.gridConfig.treeColumn;
         var padding = renderArgs.gridConfig.selectionPadding;
-        var left = this._getItemTextLeft( renderArgs, cell );
+        var left = renderArgs.layout.cellTextLeft[ cell ];
         left -= padding[ 0 ];
-        var width = this._getItemTextWidth( renderArgs, cell );
+        var width = renderArgs.layout.cellTextWidth[ cell ];
         width += width > 0 ? padding[ 0 ] : 0;
-        var visualWidth  = this._getVisualTextWidth( renderArgs, cell );
+        var visualWidth  = this._computeVisualTextWidth( renderArgs, cell );
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
         this._getOverlayElement().css( {
@@ -661,8 +658,8 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
       }
     },
 
-    ////////////////
-    // Layout Getter
+    //////////////
+    // Measurement
 
     _computeAutoHeight : function( renderArgs ) {
       var maxHeight = 0;
@@ -671,104 +668,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
           maxHeight = Math.max( maxHeight, Math.ceil( this.$cellLabels[ i ].outerHeight() ) );
         }
       }
-      var padding = this._getCellPadding( renderArgs );
+      var padding = this._getCellPadding( renderArgs.gridConfig );
       return maxHeight + padding[ 0 ] + padding[ 2 ];
     },
 
-    _getCheckBoxLeft : function( renderArgs ) {
-      return this._indent( renderArgs, renderArgs.gridConfig.checkBoxLeft );
-    },
-
-    _getCheckBoxWidth : function( renderArgs ) {
-      var result = renderArgs.gridConfig.checkBoxWidth;
-      var offset = this._getCheckBoxLeft( renderArgs );
-      return this._limitWidth( renderArgs, 0, offset, result );
-    },
-
-    _getItemLeft : function( renderArgs, cell ) {
-      return renderArgs.gridConfig.itemLeft[ cell ];
-    },
-
-    _getItemWidth : function( renderArgs, cell ) {
-      return renderArgs.gridConfig.itemWidth[ cell ];
-    },
-
-    _getItemImageLeft : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemImageLeft[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        result = this._indent( renderArgs, result );
-      }
-      return result;
-    },
-
-    _getItemImageWidth : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemImageWidth[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        var offset = this._getItemImageLeft( renderArgs, cell );
-        result = this._limitWidth( renderArgs, cell, offset, result );
-      }
-      return result;
-    },
-
-    _getCellCheckLeft : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemCellCheckLeft[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        result = this._indent( renderArgs, result );
-      }
-      return result;
-    },
-
-    _getCellCheckWidth : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemCellCheckWidth[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        var offset = this._getCellCheckLeft( renderArgs, cell );
-        result = this._limitWidth( renderArgs, cell, offset, result );
-      }
-      return result;
-    },
-
-    _getItemTextLeft : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemTextLeft[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        result = this._indent( renderArgs, result );
-      }
-      return result;
-    },
-
-    _getItemTextWidth : function( renderArgs, cell ) {
-      var result = renderArgs.gridConfig.itemTextWidth[ cell ];
-      if( this._isTreeColumn( renderArgs, cell ) ) {
-        var offset = this._getItemTextLeft( renderArgs, cell );
-        result = this._limitWidth( renderArgs, cell, offset, result );
-      }
-      return result;
-    },
-
-    _getCellPadding : function( renderArgs ) {
-      var manager = rwt.theme.AppearanceManager.getInstance();
-      return manager.styleFrom( renderArgs.gridConfig.baseAppearance + "-cell", {} ).padding;
-    },
-
-    _limitWidth : function( renderArgs, cell, offset, width ) {
-      var result = width;
-      var columnEnd =   renderArgs.gridConfig.itemLeft[ cell ]
-                      + renderArgs.gridConfig.itemWidth[ cell ];
-      var elementEnd = offset + result;
-      if( elementEnd > columnEnd ) {
-        result = Math.max( 0, columnEnd - offset );
-      }
-      return result;
-    },
-
-    _indent : function( renderArgs, offset ) {
-      var result = offset;
-      if( renderArgs.item ) {
-        result += this._getIndentionOffset( renderArgs.item.getLevel() + 1, renderArgs.gridConfig );
-      }
-      return result;
-    },
-
-    _getVisualTextWidth : function( renderArgs, cell ) {
+    _computeVisualTextWidth : function( renderArgs, cell ) {
       var calc = rwt.widgets.util.FontSizeCalculation;
       var result = 0;
       if( this.$cellLabels[ cell ] ) {
@@ -799,6 +703,11 @@ rwt.qx.Class.define( "rwt.widgets.base.GridRow", {
         fontObject.dispose();
       }
       return result;
+    },
+
+    _getCellPadding : function( gridConfig ) {
+      var manager = rwt.theme.AppearanceManager.getInstance();
+      return manager.styleFrom( gridConfig.baseAppearance + "-cell", {} ).padding;
     },
 
     /////////////////////
