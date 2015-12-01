@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -57,6 +58,7 @@ public class FileDialog_Test {
   private FileDialog dialog;
   private DialogCallback callback;
   private ThreadPoolExecutor singleThreadExecutor;
+  private String[] completedFileNames;
 
   @Rule public TestContext context = new TestContext();
 
@@ -65,6 +67,7 @@ public class FileDialog_Test {
     display = new Display();
     shell = new Shell( display );
     singleThreadExecutor = mock( ThreadPoolExecutor.class );
+    completedFileNames = new String[ 0 ];
     dialog = new TestFileDialog( shell, SWT.MULTI );
     callback = mock( DialogCallback.class );
     DialogUtil.open( dialog, callback );
@@ -168,17 +171,60 @@ public class FileDialog_Test {
   }
 
   @Test
-  public void testGetFileName_returnEmptyString() {
+  public void testGetFileName_returnsEmptyStringWhenCanceled() {
     dialog.shell.close();
 
     assertEquals( "", dialog.getFileName() );
   }
 
   @Test
-  public void testGetFileNames_returnEmptyArray() {
+  public void testGetFileName_returnsEmptyArrayWhenCanceled() {
     dialog.shell.close();
 
     assertEquals( 0, dialog.getFileNames().length );
+  }
+
+  @Test
+  public void testGetFileNames_returnsAllCompletedFileNames_forMulti() {
+    completedFileNames = new String[] { "foo.gif", "bar.doc", "baz.txt" };
+
+    getOKButton().notifyListeners( SWT.Selection, null );
+
+    String[] fileNames = dialog.getFileNames();
+    assertArrayEquals( new String[] { "foo.gif", "bar.doc", "baz.txt" }, fileNames );
+  }
+
+  @Test
+  public void testGetFileNames_returnsLastCompletedFileName_forSingle() {
+    dialog = new TestFileDialog( shell, SWT.SINGLE );
+    DialogUtil.open( dialog, callback );
+    completedFileNames = new String[] { "foo.gif", "bar.doc", "baz.txt" };
+
+    getOKButton().notifyListeners( SWT.Selection, null );
+
+    String[] fileNames = dialog.getFileNames();
+    assertArrayEquals( new String[] { "baz.txt" }, fileNames );
+  }
+
+  @Test
+  public void testGetFileNames_withoutCompletedFiles_forMulti() {
+    completedFileNames = new String[ 0 ];
+
+    getOKButton().notifyListeners( SWT.Selection, null );
+
+    assertEquals( 0, dialog.getFileNames().length );
+  }
+
+  @Test
+  public void testGetFileNames_withoutCompletedFiles_forSingle() {
+    dialog = new TestFileDialog( shell, SWT.SINGLE );
+    DialogUtil.open( dialog, callback );
+    completedFileNames = new String[ 0 ];
+
+    getOKButton().notifyListeners( SWT.Selection, null );
+
+    String[] fileNames = dialog.getFileNames();
+    assertArrayEquals( new String[ 0 ], fileNames );
   }
 
   @Test
@@ -208,37 +254,26 @@ public class FileDialog_Test {
   }
 
   @Test
-  public void testFileUploadSelection_doesNotHideCurrentFileUpload_forSingle() {
+  public void testFileUploadSelection_hidesCurrentFileUpload_forSingle() {
     dialog = new TestFileDialog( shell );
     DialogUtil.open( dialog, callback );
     FileUpload fileUpload = getFileUpload();
 
     fileUpload.notifyListeners( SWT.Selection, null );
 
-    assertTrue( fileUpload.isVisible() );
-    assertFalse( ( ( GridData )fileUpload.getLayoutData() ).exclude );
+    assertFalse( fileUpload.isVisible() );
+    assertTrue( ( ( GridData )fileUpload.getLayoutData() ).exclude );
   }
 
   @Test
-  public void testFileUploadSelection_disablesCurrentFileUpload_forSingle() {
+  public void testFileUploadSelection_createsNewFileUpload_forSingle() {
     dialog = new TestFileDialog( shell );
     DialogUtil.open( dialog, callback );
     FileUpload fileUpload = getFileUpload();
 
     fileUpload.notifyListeners( SWT.Selection, null );
 
-    assertFalse( fileUpload.isEnabled() );
-  }
-
-  @Test
-  public void testFileUploadSelection_doesNotCreateNewFileUpload_forSingle() {
-    dialog = new TestFileDialog( shell );
-    DialogUtil.open( dialog, callback );
-    FileUpload fileUpload = getFileUpload();
-
-    fileUpload.notifyListeners( SWT.Selection, null );
-
-    assertSame( fileUpload, getFileUpload() );
+    assertNotSame( fileUpload, getFileUpload() );
   }
 
   @Test
@@ -368,6 +403,11 @@ public class FileDialog_Test {
 
     public TestFileDialog( Shell parent, int style ) {
       super( parent, style );
+    }
+
+    @Override
+    String[] getCompletedFileNames() {
+      return completedFileNames;
     }
 
     @Override

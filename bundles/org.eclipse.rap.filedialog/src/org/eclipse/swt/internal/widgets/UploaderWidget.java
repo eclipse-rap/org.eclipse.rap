@@ -11,7 +11,6 @@
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.rap.rwt.widgets.FileUpload;
-import org.eclipse.swt.SWT;
 
 
 public class UploaderWidget implements Uploader {
@@ -29,7 +28,7 @@ public class UploaderWidget implements Uploader {
 
   @Override
   public void dispose() {
-    if( !fileUpload.isDisposed() && ( fileUpload.getStyle() & SWT.MULTI ) != 0 ) {
+    if( !fileUpload.isDisposed() ) {
       fileUpload.dispose();
     }
   }

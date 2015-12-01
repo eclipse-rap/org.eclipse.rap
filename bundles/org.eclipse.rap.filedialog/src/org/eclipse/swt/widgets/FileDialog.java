@@ -83,6 +83,8 @@ import org.eclipse.swt.layout.GridLayout;
 @SuppressWarnings( "restriction" )
 public class FileDialog extends Dialog {
 
+  private static final String[] EMPTY_ARRAY = new String[ 0 ];
+
   private final ServerPushSession pushSession;
   private ThreadPoolExecutor singleThreadExecutor;
   private Display display;
@@ -160,7 +162,14 @@ public class FileDialog extends Dialog {
    * @return the relative paths of the files
    */
   public String[] getFileNames() {
-    return returnCode == SWT.OK ? progressCollector.getCompletedFileNames() : new String[ 0 ];
+    if( returnCode == SWT.OK ) {
+      String[] completedFileNames = getCompletedFileNames();
+      if( isMulti() || completedFileNames.length == 0 ) {
+        return completedFileNames;
+      }
+      return new String[] { completedFileNames[ completedFileNames.length - 1 ] };
+    }
+    return EMPTY_ARRAY;
   }
 
   /**
@@ -290,6 +299,9 @@ public class FileDialog extends Dialog {
 
   private void handleFileDrop( ClientFile[] clientFiles ) {
     placeHolder.dispose();
+    if( !isMulti() ) {
+      clearUploadArea();
+    }
     ClientFile[] files = isMulti() ? clientFiles : new ClientFile[] { clientFiles[ 0 ] };
     UploadPanel uploadPanel = createUploadPanel( getFileNames( files ) );
     updateScrolledComposite();
@@ -363,6 +375,9 @@ public class FileDialog extends Dialog {
 
   private void handleFileUploadSelection( FileUpload fileUpload ) {
     placeHolder.dispose();
+    if( !isMulti() ) {
+      clearUploadArea();
+    }
     UploadPanel uploadPanel = createUploadPanel( fileUpload.getFileNames() );
     updateScrolledComposite();
     updateButtonsArea( fileUpload );
@@ -387,14 +402,11 @@ public class FileDialog extends Dialog {
   }
 
   private void updateButtonsArea( FileUpload fileUpload ) {
-    if( isMulti() ) {
-      Composite buttonsArea = fileUpload.getParent();
-      hideFileUpload( fileUpload );
-      createFileUpload( buttonsArea, SWT.getMessage( "SWT_Add" ) );
-      buttonsArea.layout();
-    } else {
-      fileUpload.setEnabled( false );
-    }
+    Composite buttonsArea = fileUpload.getParent();
+    hideControl( fileUpload );
+    String text = isMulti() ? SWT.getMessage( "SWT_Add" ) : SWT.getMessage( "SWT_Browse" );
+    createFileUpload( buttonsArea, text );
+    buttonsArea.layout();
   }
 
   private UploadPanel createUploadPanel( String[] fileNames ) {
@@ -404,11 +416,19 @@ public class FileDialog extends Dialog {
     return uploadPanel;
   }
 
-  private static void hideFileUpload( FileUpload fileUpload ) {
-    GridData layoutData = createButtonLayoutData( fileUpload );
-    layoutData.exclude = true;
-    fileUpload.setLayoutData( layoutData );
-    fileUpload.setVisible( false );
+  private void clearUploadArea() {
+    Composite parent = ( Composite )uploadsScroller.getContent();
+    for( Control child : parent.getChildren() ) {
+      child.dispose();
+    }
+  }
+
+  private static void hideControl( Control control ) {
+    if( control != null ) {
+      GridData layoutData = ( GridData )control.getLayoutData();
+      layoutData.exclude = true;
+      control.setVisible( false );
+    }
   }
 
   private void setButtonEnabled( final boolean enabled ) {
@@ -485,6 +505,10 @@ public class FileDialog extends Dialog {
     result |= SWT.TITLE | SWT.BORDER;
     result &= ~SWT.MIN;
     return result;
+  }
+
+  String[] getCompletedFileNames() {
+    return progressCollector.getCompletedFileNames();
   }
 
   ThreadPoolExecutor createSingleThreadExecutor() {

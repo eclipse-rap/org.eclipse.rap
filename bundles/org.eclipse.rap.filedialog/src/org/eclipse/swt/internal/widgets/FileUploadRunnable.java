@@ -80,6 +80,7 @@ public class FileUploadRunnable implements Runnable {
     uploadPanel.addDisposeListener( new DisposeListener() {
       @Override
       public void widgetDisposed( DisposeEvent event ) {
+        doNotify();
         handler.removeUploadListener( listener );
         handler.dispose();
       }
