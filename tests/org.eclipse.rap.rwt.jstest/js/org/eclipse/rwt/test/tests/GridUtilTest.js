@@ -285,8 +285,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemCount( 1 );
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       item.setTexts( [ "c0", "c1", "c2", "c3", "c4" ] );
-      tree.setColumnCount( 5 );
-      tree.getRenderConfig().cellOrder = [ 0, 1, 2, 3, 4 ];
       TestUtil.flush();
       var rowLeft = tree._rowContainer.getSubContainer( 0 ).getRow( 0 );
       var rowRight = tree._rowContainer.getSubContainer( 1 ).getRow( 0 );
@@ -371,6 +369,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 );
       tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
       tree.setItemCount( 1 );
+      this._setCellOrder( tree, [ 0, 1, 2, 3, 4, 5 ] );
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
       TestUtil.flush();
@@ -407,6 +406,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setItemMetrics( 3, 25, 10, 0, 0, 0, 50 );
       tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 );
       tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
+      this._setCellOrder( tree, [ 0, 1, 2, 3, 4, 5 ] );
       tree.setItemCount( 1 );
       var item = new rwt.widgets.GridItem( tree.getRootItem(), 0 );
       widgetManager.add( item, "w45", true );
@@ -467,6 +467,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       result.setHeight( 200 );
       var config = result.getRenderConfig();
       config.columnCount = 5;
+      config.cellOrder = [ 2, 0, 1, 3, 4 ];
       config.treeColumn = 2;
       config.alignment = [ "left", "left", "right", "right", "left" ];
       config.itemLeft = [ 30, 60, 0, 90, 120 ];
@@ -506,6 +507,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
       tree.setWidth( 500 );
       tree.setHeight( 500 );
       tree.setColumnCount( 5 );
+      this._setCellOrder( tree, [ 2, 0, 1, 3, 4, 5 ] );
       tree.setItemMetrics( 0, 30, 20, 32, 4, 33, 3 );
       tree.setItemMetrics( 1, 60, 21, 63, 5, 64, 4 );
       tree.setItemMetrics( 2, 0, 22, 4, 6, 5, 5 );
@@ -545,6 +547,12 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridUtilTest", {
         }
         i++;
       }
+    },
+
+    _setCellOrder : function( tree, cellOrder ) {
+      tree.setColumnOrder( cellOrder.map( function( index ) {
+        return { getIndex: function() { return index; } };
+      } ) );
     }
 
   }

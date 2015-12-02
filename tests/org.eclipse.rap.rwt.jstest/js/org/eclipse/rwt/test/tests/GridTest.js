@@ -680,6 +680,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
       this._fillTree( widget, 10 );
       widget.setColumnCount( 2 );
+      widget.getRenderConfig().cellOrder = [ 0, 1 ];
       widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
       widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
       TestUtil.flush();
@@ -702,6 +703,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
       this._fillTree( widget, 10 );
       widget.setColumnCount( 2 );
+      widget.getRenderConfig().cellOrder = [ 0, 1 ];
       widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
       widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
       TestUtil.flush();
@@ -715,7 +717,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "w3", { "cellToolTipText" : "foo" } );
 
       var left = rwt.widgets.base.WidgetToolTip.getInstance().getLeft();
-      assertEquals( 2 + 4, left );
+      assertEquals( 26, left );
       widget.destroy();
     },
 
@@ -727,6 +729,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       TestUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
       this._fillTree( widget, 10 );
       widget.setColumnCount( 2 );
+      widget.getRenderConfig().cellOrder = [ 0, 1 ];
       widget.setItemMetrics( 0, 0, 20, 0, 0, 0, 20, 0, 10 );
       widget.setItemMetrics( 1, 20, 20, 0, 0, 20, 20, 0, 10 );
       TestUtil.flush();
@@ -1954,6 +1957,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       this._fakeCheckBoxAppearance();
       tree.setItemCount( 1 );
       tree.setColumnCount( 4 );
+      tree.getRenderConfig().cellOrder = [ 0, 1, 2, 3 ];
       var item = this._createItem( tree.getRootItem(), 0 );
       rwt.remote.ObjectRegistry.add( "w2", item, itemHandler );
       TestUtil.flush();
@@ -4959,6 +4963,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
       widgetManager.add( tree, "w3", true );
       tree.setEnableCellToolTip( true );
       tree.setColumnCount( 6 );
+      tree.getRenderConfig().cellOrder = [ 0, 1, 2, 3, 4, 5 ];
       tree.setItemMetrics( 0, 0, 5, 0, 0, 0, 50 );
       tree.setItemMetrics( 1, 5, 10, 0, 0, 0, 50 );
       tree.setItemMetrics( 2, 15, 10, 0, 0, 0, 50 );

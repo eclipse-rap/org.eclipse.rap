@@ -178,10 +178,10 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     configLeft.containerNumber = 0;
     configRight.containerNumber = 1;
     configRight.hasCheckBoxes = false;
-    var columnOrder = this._getColumnOrder();
-    var rightColumnsOffset = this._computeRightColumnsOffset( columnOrder );
-    for( var i = 0; i < columnOrder.length; i++ ) {
-      var column = columnOrder[ i ];
+    var cellOrder = this._config.cellOrder;
+    var rightColumnsOffset = this._computeRightColumnsOffset( cellOrder );
+    for( var i = 0; i < cellOrder.length; i++ ) {
+      var column = cellOrder[ i ];
       if( i < this._fixedColumns ) {
         configRight.itemWidth[ column ] = 0;
       } else {
@@ -209,10 +209,10 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     }
   },
 
-  _computeRightColumnsOffset : function( columnOrder ) {
+  _computeRightColumnsOffset : function( cellOrder ) {
     var rightColumnsOffset = 0;
-    if( columnOrder.length > this._fixedColumns ) {
-      rightColumnsOffset = this._config.itemLeft[ columnOrder[ this._fixedColumns ] ];
+    if( cellOrder.length > this._fixedColumns ) {
+      rightColumnsOffset = this._config.itemLeft[ cellOrder[ this._fixedColumns ] ];
     } else {
       rightColumnsOffset = this._width;
     }
@@ -226,18 +226,6 @@ rwt.widgets.util.GridRowContainerWrapper.prototype = {
     this._container[ 1 ].setLeft( leftWidth );
     this._container[ 1 ].setWidth( this._width - leftWidth );
     this._container[ 1 ].setRowWidth( this._rowWidth - leftWidth );
-  },
-
-  _getColumnOrder : function() {
-    var result = [];
-    var offsets = this._config.itemLeft.concat();
-    var sorted = offsets.concat().sort( function( a, b ){ return a - b; } );
-    for( var i = 0; i < sorted.length; i++ ) {
-      var pos = offsets.indexOf( sorted[ i ] );
-      result[ i ] = pos;
-      offsets[ pos ] = null; // TODO [tb] : test
-    }
-    return result;
   },
 
   _onHoverItem : function( item ) {
