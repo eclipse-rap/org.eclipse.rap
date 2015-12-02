@@ -160,13 +160,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 10, 50, 12, 13, 30, 8 );
-      var renderArgs = this._createRenderArgs( item, tree, row );
-      assertEquals( 10, renderArgs.layout.cellLeft[ 0 ] );
-      assertEquals( 50, renderArgs.layout.cellWidth[ 0 ] );
-      assertEquals( 28, renderArgs.layout.cellImageLeft[ 0 ] );
-      assertEquals( 13, renderArgs.layout.cellImageWidth[ 0 ] );
-      assertEquals( 46, renderArgs.layout.cellTextLeft[ 0 ] );
-      assertEquals( 8, renderArgs.layout.cellTextWidth[ 0 ] );
+      var layout = this._getRowLayout( tree, item );
+      assertEquals( 10, layout.cellLeft[ 0 ] );
+      assertEquals( 50, layout.cellWidth[ 0 ] );
+      assertEquals( 28, layout.cellImageLeft[ 0 ] );
+      assertEquals( 13, layout.cellImageWidth[ 0 ] );
+      assertEquals( 46, layout.cellTextLeft[ 0 ] );
+      assertEquals( 8, layout.cellTextWidth[ 0 ] );
     },
 
     testFirstColumnMetricsImageOverflow : function() {
@@ -177,9 +177,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );
       tree.setItemMetrics( 0, 0, 15, 0, 10, 10, 40 );
-      var renderArgs = this._createRenderArgs( item, tree, row );
-      assertEquals( 5, renderArgs.layout.cellImageWidth[ 0 ] );
-      assertEquals( 0, renderArgs.layout.cellTextWidth[ 0 ] );
+      var layout = this._getRowLayout( tree, item );
+      assertEquals( 5, layout.cellImageWidth[ 0 ] );
+      assertEquals( 0, layout.cellTextWidth[ 0 ] );
     },
 
     testSecondColumnAsTreeColumn : function() {
@@ -194,21 +194,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       tree.setColumnCount( 2 );
       tree.getRenderConfig().cellOrder = [ 1, 0 ];
       tree.setTreeColumn( 1 );
-      var renderArgs = this._createRenderArgs( item, tree, row );
+      var layout = this._getRowLayout( tree, item );
       // first column is unchanged:
-      assertEquals( 64, renderArgs.layout.cellLeft[ 0 ] );
-      assertEquals( 40, renderArgs.layout.cellWidth[ 0 ] );
-      assertEquals( 66, renderArgs.layout.cellImageLeft[ 0 ] );
-      assertEquals( 13, renderArgs.layout.cellImageWidth[ 0 ] );
-      assertEquals( 69, renderArgs.layout.cellTextLeft[ 0 ] );
-      assertEquals( 8,  renderArgs.layout.cellTextWidth[ 0 ] );
+      assertEquals( 64, layout.cellLeft[ 0 ] );
+      assertEquals( 40, layout.cellWidth[ 0 ] );
+      assertEquals( 66, layout.cellImageLeft[ 0 ] );
+      assertEquals( 13, layout.cellImageWidth[ 0 ] );
+      assertEquals( 69, layout.cellTextLeft[ 0 ] );
+      assertEquals( 8,  layout.cellTextWidth[ 0 ] );
       // second column
-      assertEquals( 34, renderArgs.layout.cellLeft[ 1 ] );
-      assertEquals( 40, renderArgs.layout.cellWidth[ 1 ] );
-      assertEquals( 52, renderArgs.layout.cellImageLeft[ 1 ] );
-      assertEquals( 13, renderArgs.layout.cellImageWidth[ 1 ] );
-      assertEquals( 65, renderArgs.layout.cellTextLeft[ 1 ] );
-      assertEquals( 8,  renderArgs.layout.cellTextWidth[ 1 ] );
+      assertEquals( 34, layout.cellLeft[ 1 ] );
+      assertEquals( 40, layout.cellWidth[ 1 ] );
+      assertEquals( 52, layout.cellImageLeft[ 1 ] );
+      assertEquals( 13, layout.cellImageWidth[ 1 ] );
+      assertEquals( 65, layout.cellTextLeft[ 1 ] );
+      assertEquals( 8,  layout.cellTextWidth[ 1 ] );
     },
 
     testGetCheckBoxMetrics : function() {
@@ -219,9 +219,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
         "indentionWidth" : 16
       } );
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
-      var renderArgs = this._createRenderArgs( item, tree, row );
-      assertEquals( 21, renderArgs.layout.checkBoxLeft );
-      assertEquals( 20, renderArgs.layout.checkBoxWidth );
+      var layout = this._getRowLayout( tree, item );
+      assertEquals( 21, layout.checkBoxLeft );
+      assertEquals( 20, layout.checkBoxWidth );
     },
 
     testSetCheckBoxMetricsOverflow : function() {
@@ -233,9 +233,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       } );
       var item = new rwt.widgets.GridItem( tree.getRootItem() );
       tree.setItemMetrics( 0, 0, 25, 0, 10, 10, 40 );
-      var renderArgs = this._createRenderArgs( item, tree, row );
-      assertEquals( 15, renderArgs.layout.checkBoxLeft );
-      assertEquals( 10, renderArgs.layout.checkBoxWidth );
+      var layout = this._getRowLayout( tree, item );
+      assertEquals( 15, layout.checkBoxLeft );
+      assertEquals( 10, layout.checkBoxWidth );
     },
 
     testRenderHeight : function() {
@@ -2741,7 +2741,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       var overlay = this._getOverlayElement( row );
       var color = overlay.style.backgroundColor;
       assertEquals( "blue", color );
-      var textWidth = row._computeVisualTextWidth( this._createRenderArgs( item, tree, row ), 0 );
+      var textWidth = row._computeVisualTextWidth( 0 );
       var selectionWidth = parseInt( overlay.style.width, 10 );
       assertEquals( textWidth + selectionPadding, selectionWidth );
     },
@@ -3643,12 +3643,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       return row.$overlay.get( 0 );
     },
 
-    _createRenderArgs : function( item, tree, row ) {
-      return {
-        item : item,
-        gridConfig : tree._config,
-        layout : new rwt.widgets.util.GridRowLayout( tree.getRenderConfig(), item )
-      };
+    _getRowLayout : function( tree, item ) {
+      return new rwt.widgets.util.GridRowLayout( tree.getRenderConfig(), item );
     }
 
   }
