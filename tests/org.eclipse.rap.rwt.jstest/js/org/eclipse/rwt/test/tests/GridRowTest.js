@@ -1087,6 +1087,32 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowTest", {
       assertEquals( 3, nodes.length );
     },
 
+    testRenderCellBackgroundBounds_withColSpanOverflow : function() {
+      row.setHeight( 15 );
+      var item = this._createItem( tree );
+      item.setCellBackgrounds( [ "red", "green", "blue", "yellow" ] );
+      tree.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
+      tree.setItemMetrics( 2, 80, 20, 24, 10, 5, 45 );
+      tree.setItemMetrics( 1, 110, 20, 24, 10, 5, 45 );
+      tree.setItemMetrics( 3, 140, 20, 24, 10, 5, 45 );
+      tree.setItemHeight( 15 );
+      tree.getRenderConfig().cellOrder = [ 0, 2, 1, 3 ];
+      tree.setColumnCount( 4 );
+      row.renderItem( item, tree._config, false, null );
+      var nodes = row.$el.get( 0 ).childNodes;
+      assertEquals( 5, nodes.length );
+      item.setColumnSpans( [ 0, 2, 0, 0 ] );
+
+      row.renderItem( item, tree._config, false, null );
+
+      var bounds = getElementBounds( nodes[ 2 ] );
+      assertEquals( 110, bounds.left );
+      assertEquals( 15, bounds.height );
+      assertEquals( 50, bounds.width );
+      assertEquals( 0, bounds.top );
+      assertEquals( 4, nodes.length );
+    },
+
     testRenderCellBackgroundBounds_RTL : function() {
       row.setMirror( true );
       row.setHeight( 15 );

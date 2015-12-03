@@ -82,9 +82,10 @@ rwt.widgets.util.GridRowLayout.prototype._computeCell = function( cellPos, span 
 };
 
 rwt.widgets.util.GridRowLayout.prototype._expandCell = function( cellPos, span ) {
+  var maxCell = this._gridConfig.cellOrder.length - 1;
   var cell = this._gridConfig.cellOrder[ cellPos ];
   var firstCell = this._gridConfig.cellOrder[ cellPos ];
-  var lastCell = this._gridConfig.cellOrder[ cellPos + span ];
+  var lastCell = this._gridConfig.cellOrder[ Math.min( cellPos + span, maxCell ) ];
   var lastCellEnd = this._gridConfig.itemLeft[ lastCell ] + this._gridConfig.itemWidth[ lastCell ];
   this.cellWidth[ cell ] = lastCellEnd - this._gridConfig.itemLeft[ firstCell ];
   this.cellTextWidth[ cell ] =   lastCellEnd
