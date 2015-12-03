@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,22 +28,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._visibleChildrenCount = 0;
     this._expandedItems = {};
     this._customHeightItems = {};
-    this._texts = placeholder ? [ "..." ] : [];
-    this._images = [];
-    this._cached = !placeholder;
-    this._font = null;
-    this._cellFonts = [];
-    this._foreground = null;
-    this._cellForegrounds = [];
-    this._background = null;
-    this._cellBackgrounds = [];
-    this._checked = false;
-    this._grayed = false;
-    this._cellChecked = [];
-    this._cellGrayed = [];
-    this._cellCheckable = [];
-    this._columnSpans = [];
-    this._variant = null;
+    if( placeholder ) {
+      this._texts = [ "..." ];
+    } else {
+      this._cached = true;
+    }
     if( this._parent != null ) {
       this._level = this._parent.getLevel() + 1;
       this._parent._add( this, index );
@@ -68,19 +57,19 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     this._indexCache = null;
     this._expandedItems = null;
     this._customHeightItems = null;
-    this._texts = null;
-    this._images = null;
-    this._font = null;
-    this._cellFonts = null;
-    this._foreground = null;
-    this._cellForegrounds = null;
-    this._background = null;
-    this._cellBackgrounds = null;
-    this._cellChecked = null;
-    this._cellGrayed = null;
-    this._cellCheckable = null;
+    delete this._texts;
+    delete this._images;
+    delete this._font;
+    delete this._cellFonts;
+    delete this._foreground;
+    delete this._cellForegrounds;
+    delete this._background;
+    delete this._cellBackgrounds;
+    delete this._cellChecked;
+    delete this._cellGrayed;
+    delete this._cellCheckable;
     this._rootItem = null;
-    this._columnSpans = null;
+    delete this._columnSpans;
   },
 
   statics : {
@@ -130,28 +119,28 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
 
     clear : function() {
       // TODO [tb] : children?
-      this._cached = false;
-      this._checked = false;
-      this._grayed = false;
+      delete this._cached;
+      delete this._checked;
+      delete this._grayed;
       this._texts = [ "..." ];
-      this._images = [];
-      this._background = null;
-      this._foreground = null;
-      this._font = null;
-      this._cellBackgrounds = [];
-      this._cellForegrounds = [];
-      this._cellFonts = [];
-      this._columnSpans = [];
-      this._variant = null;
+      delete this._images;
+      delete this._background;
+      delete this._foreground;
+      delete this._font;
+      delete this._cellBackgrounds;
+      delete this._cellForegrounds;
+      delete this._cellFonts;
+      delete this._columnSpans;
+      delete this._variant;
     },
 
     isCached : function() {
-      return this._cached;
+      return this._cached || false;
     },
 
     markCached : function() {
       this._cached = true;
-      this._texts = [];
+      delete this._texts;
     },
 
     setTexts : function( texts ) {
@@ -160,11 +149,11 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getText : function( column ) {
-      return this._texts[ column ] || "";
+      return ( this._texts ? this._texts[ column ] : undefined ) || "";
     },
 
     hasText : function( column ) {
-      return !!this._texts[ column ];
+      return !!( this._texts ? this._texts[ column ] : undefined );
     },
 
     setFont : function( font ) {
@@ -173,8 +162,12 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getCellFont : function( column ) {
-      var result = this._cellFonts[ column ];
-      return typeof result === "string" && result !== "" ? result : this._font;
+      var result = this._cellFonts ? this._cellFonts[ column ] : null;
+      return typeof result === "string" && result !== "" ? result : this._getFont();
+    },
+
+    _getFont : function() {
+      return this._font || null;
     },
 
     setCellFonts : function( fonts ) {
@@ -188,8 +181,12 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getCellForeground : function( column ) {
-      var result = this._cellForegrounds[ column ];
-      return typeof result === "string" ? result : this._foreground;
+      var result = this._cellForegrounds ? this._cellForegrounds[ column ] : null;
+      return typeof result === "string" ? result : this._getForeground();
+    },
+
+    _getForeground : function() {
+      return this._foreground || null;
     },
 
     setCellForegrounds : function( colors ) {
@@ -203,12 +200,12 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getCellBackground : function( column ) {
-      var result = this._cellBackgrounds[ column ];
+      var result = this._cellBackgrounds ? this._cellBackgrounds[ column ] : null;
       return typeof result === "string" ? result : null;
     },
 
     getBackground : function() {
-      return this._background;
+      return this._background || null;
     },
 
     setCellBackgrounds : function( colors ) {
@@ -222,7 +219,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getColumnSpan : function( column ) {
-      return this._columnSpans[ column ] || 0;
+      return ( this._columnSpans ? this._columnSpans[ column ] : undefined ) || 0;
     },
 
     setImages : function( images ) {
@@ -231,7 +228,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getImage : function( column ) {
-      var result = this._images[ column ];
+      var result = this._images ? this._images[ column ] : null;
       return result || null;
     },
 
@@ -241,7 +238,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     isChecked : function() {
-      return this._checked;
+      return this._checked || false;
     },
 
     setGrayed : function( value ) {
@@ -250,7 +247,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     isGrayed : function() {
-      return this._grayed;
+      return this._grayed || false;
     },
 
     setCellChecked : function( value ) {
@@ -259,16 +256,19 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     toggleCellChecked : function( cell ) {
+      if( !this._cellChecked ) {
+        this._cellChecked = [];
+      }
       this._cellChecked[ cell ] = !this._cellChecked[ cell ];
       this._update( "check" );
     },
 
     getCellChecked : function() {
-      return this._cellChecked;
+      return this._cellChecked || [];
     },
 
     isCellChecked : function( column ) {
-      return this._cellChecked[ column ];
+      return this._cellChecked ? this._cellChecked[ column ] : false;
     },
 
     setCellGrayed : function( value ) {
@@ -277,7 +277,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     isCellGrayed : function( column ) {
-      return this._cellGrayed[ column ];
+      return this._cellGrayed ? this._cellGrayed[ column ] : false;
     },
 
     setCellCheckable : function( value ) {
@@ -286,7 +286,10 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     isCellCheckable : function( column ) {
-      return this._cellCheckable[ column ] === undefined ? true : this._cellCheckable[ column ];
+      if( !this._cellCheckable || this._cellCheckable[ column ] === undefined ) {
+        return true;
+      }
+      return this._cellCheckable[ column ];
     },
 
     setVariant : function( variant ) {
@@ -294,7 +297,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     getVariant : function() {
-      return this._variant;
+      return this._variant || null;
     },
 
     setDefaultHeight : function( value ) {
@@ -775,7 +778,7 @@ rwt.qx.Class.define( "rwt.widgets.GridItem", {
     },
 
     toString : function() {
-      return "TreeItem " + this._texts.join();
+      return "TreeItem " + ( this._texts ? this._texts.join() : "" );
     }
 
   }

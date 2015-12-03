@@ -1905,7 +1905,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridTest", {
 
       TestUtil.clickDOM( checkNode );
 
-      assertTrue( item.isCellChecked( 0 ) === undefined );
+      assertFalse( item.isCellChecked( 0 ) );
       tree.destroy();
     },
 
