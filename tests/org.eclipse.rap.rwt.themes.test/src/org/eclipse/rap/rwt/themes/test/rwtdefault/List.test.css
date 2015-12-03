@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,68 +34,49 @@ List-Item {
 }
 
 List-Item:hover {
-  color: #4a4a4a;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  color: inherit;
+  background-color: #f0f0f0;
+  background-image: none;
   background-repeat: repeat;
   background-position: left top;
 }
 
 List-Item:selected {
-  color: #ffffff;
-  background-color: #00589f;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  color: #4a4a4a;
+  background-color: #c5dbef;
+  background-image: none;
   background-repeat: repeat;
   background-position: left top;
 }
 
 List-Item:selected:unfocused {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  color: #4a4a4a;
+  background-color: #dfe6ee;
+  background-image: none;
 }
 
 List-Item:even {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
   background-repeat: repeat;
   background-position: left top;
 }
 
 List-Item:even:hover {
-  color: #4a4a4a;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  color: inherit;
+  background-color: #e8e8e8;
+  background-image: none;
 }
 
 List-Item:even:selected {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  color: #4a4a4a;
+  background-color: #bdd3e7;
+  background-image: none;
 }
 
 List-Item:even:selected:unfocused {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  color: #4a4a4a;
+  background-color: #dadee6;
+  background-image: none;
 }
 
 List-GridLine {

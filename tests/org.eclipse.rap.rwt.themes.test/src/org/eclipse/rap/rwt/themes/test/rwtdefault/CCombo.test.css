@@ -90,13 +90,9 @@ CCombo-List-Item {
 }
 
 CCombo-List-Item:hover, CCombo-List-Item:even:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  color: inherit;
+  background-color: #f0f0f0;
+  background-image: none;
   text-decoration: none;
   text-shadow: none;
   padding: 6px 10px 6px 10px;
@@ -109,13 +105,9 @@ Combo-List-Item:even {
 CCombo-List-Item:selected,
 CCombo-List-Item:selected:hover,
 CCombo-List-Item:selected:even {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  color: inherit;
+  background-color: #c5dbef;
+  background-image: none;
   text-decoration: none;
   text-shadow: none;
   padding: 6px 10px 6px 10px;

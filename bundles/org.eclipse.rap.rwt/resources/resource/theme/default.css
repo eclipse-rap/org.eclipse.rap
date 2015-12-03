@@ -393,23 +393,11 @@ Combo-List-Item {
 }
 
 Combo-List-Item:hover, Combo-List-Item:even:hover  {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: #f0f0f0;
 }
 
 Combo-List-Item:selected, Combo-List-Item:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: #c5dbef;
 }
 
 Combo-Field {
@@ -441,23 +429,11 @@ DropDown-Item {
 }
 
 DropDown-Item:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: #f0f0f0;
 }
 
 DropDown-Item:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: #c5dbef;
 }
 
 /* CoolBar default theme */
@@ -634,64 +610,34 @@ List-Item {
 }
 
 List-Item:hover {
-  color: #4a4a4a;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
-}
-
-List-Item:selected {
-  color: #ffffff;
-  /* background-color property is used on the server to compute system color with id
-     SWT.COLOR_LIST_SELECTION (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=434191) */
-  background-color: #00589f;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
-}
-
-List-Item:selected:unfocused {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
-}
-
-List-Item:even {
   background-color: #f0f0f0;
 }
 
-List-Item:even:hover {
+List-Item:selected {
   color: #4a4a4a;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  /* background-color property is used on the server to compute system color with id
+     SWT.COLOR_LIST_SELECTION (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=434191) */
+  background-color: #c5dbef;
+}
+
+List-Item:selected:unfocused {
+  background-color:#dfe6ee;
+}
+
+List-Item:even {
+  background-color: #f5f5f5;
+}
+
+List-Item:even:hover {
+  background-color: #e8e8e8;
 }
 
 List-Item:even:selected {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: #bdd3e7;
 }
 
 List-Item:even:selected:unfocused {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  background-color: #dadee6;
 }
 
 List-GridLine {
@@ -2408,23 +2354,11 @@ CCombo-List-Item {
 }
 
 CCombo-List-Item:hover, CCombo-List-Item:even:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  background-color: #f0f0f0;
 }
 
 CCombo-List-Item:selected, CCombo-List-Item:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  background-color: #c5dbef;
 }
 
 CCombo-Field {
