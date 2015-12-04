@@ -43,7 +43,7 @@ rwt.event.EventHandlerUtil = {
           // is forbidden and causes an error.
         }
         // NOTE: See also Bug 321372
-        if( event.button === 0 && tagName != null && tagName != "INPUT" ) {
+        if( event.button === 0 && tagName != null && tagName != "INPUT" && tagName != "SELECT" ) {
           event.preventDefault();
         }
       };
