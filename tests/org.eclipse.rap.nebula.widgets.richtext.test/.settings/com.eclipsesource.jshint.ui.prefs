@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+globals=rwt\:true, rap\:true, CKEDITOR\:true,describe\:false,afterEach\:false,beforeEach\:false,it\:false,expect\:false,spyOn\:false,jasmine\:false,RapMock\:true\r\n
+included=js/*.js\:js/specs/*.js
+options=curly\: true, immed\: true, newcap\: true, eqnull\: true, shadow\: true, funcscope\: true, undef\: true, browser\: true, laxbreak\: true, evil\:true, onecase\:true, sub\:true
+projectSpecificOptions=true

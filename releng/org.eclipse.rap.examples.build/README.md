@@ -20,17 +20,8 @@ the .war file manually.
 * d3 Chart
   https://github.com/ralfstx/rap-d3charts
 
-* Nebula Grid
-  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.nebula-grid.git/
-
-* FileUpload
-  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.fileupload.git/
-
 * AutoSuggest
   http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.dropdown.git/
-
-* CkEditor
-  http://git.eclipse.org/c/rap/incubator/org.eclipse.rap.incubator.richtext.git/
 
 
 Changing the default p2 repositories

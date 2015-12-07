@@ -29,6 +29,7 @@
     <module>bundles/org.eclipse.rap.jface</module>
     <module>bundles/org.eclipse.rap.nebula.jface.gridviewer</module>
     <module>bundles/org.eclipse.rap.nebula.widgets.grid</module>
+    <module>bundles/org.eclipse.rap.nebula.widgets.richtext</module>
     <module>bundles/org.eclipse.rap.rwt</module>
     <module>bundles/org.eclipse.rap.rwt.osgi</module>
     <module>bundles/org.eclipse.rap.ui.cheatsheets</module>
@@ -45,10 +46,12 @@
     <module>examples/org.eclipse.rap.examples.pages</module>
     <module>examples/org.eclipse.rap.filedialog.demo.examples</module>
     <module>examples/org.eclipse.rap.nebula.widgets.grid.demo.examples</module>
+    <module>examples/org.eclipse.rap.nebula.widgets.richtext.demo.examples</module>
     <!-- Test projects -->
     <module>tests/org.eclipse.rap.filedialog.test</module>
     <module>tests/org.eclipse.rap.fileupload.test</module>
     <module>tests/org.eclipse.rap.nebula.widgets.grid.test</module>
+    <module>tests/org.eclipse.rap.nebula.widgets.richtext.test</module>
     <module>tests/org.eclipse.rap.rwt.cluster.testfixture</module>
     <module>tests/org.eclipse.rap.rwt.cluster.testfixture.test</module>
     <module>tests/org.eclipse.rap.rwt.cluster.test</module>

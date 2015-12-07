@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 import org.eclipse.rap.rwt.RWT;
@@ -34,7 +33,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 
-public class ControlsDemo extends AbstractEntryPoint implements Serializable {
+public class ControlsDemo extends AbstractEntryPoint {
 
   private Composite header;
   private Tree tree;
@@ -72,6 +71,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       exampleMap.put( tab.getId(), tab );
     }
     tree.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         ExampleTab tab = ( ExampleTab )event.item.getData();
         selectTab( tab );
@@ -79,6 +79,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       }
     } );
     navigation.addBrowserNavigationListener( new BrowserNavigationListener() {
+      @Override
       public void navigated( BrowserNavigationEvent event ) {
         ExampleTab tab = exampleMap.get( event.getState() );
         if( tab != null ) {
@@ -150,6 +151,7 @@ public class ControlsDemo extends AbstractEntryPoint implements Serializable {
       new ListTab(),
       new LinkTab(),
       new NebulaGridTab(),
+      new NebulaRichTextTab(),
       new ProgressBarTab(),
 //      new RequestTab(),
       new SashTab(),

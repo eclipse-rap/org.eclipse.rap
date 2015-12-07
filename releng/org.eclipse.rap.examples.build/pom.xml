@@ -19,10 +19,7 @@
   <name>RAP demo examples build</name>
 
   <modules>
-  <!-- 
-    <module>../../../org.eclipse.rap.incubator.clientscripting/bundles/org.eclipse.rap.demo.clientscripting</module>
-    <module>../../../rap-ckeditor/com.eclipsesource.widgets.ckeditor</module>
-    <module>../../../rap-ckeditor/org.eclipse.rap.demo.ckeditor</module>
+  <!--
     <module>../../../rap-gmap/com.eclipsesource.widgets.gmaps</module>
     <module>../../../rap-gmap/org.eclipse.rap.demo.gmaps</module>
     <module>../../../rap-demo-additions/org.eclipse.rap.demo.enrondata</module>
