@@ -12,13 +12,19 @@ package org.eclipse.nebula.widgets.grid.internal;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 
 
 public interface IGridItemAdapter {
 
+  String[] getTexts();
+  Image[] getImages();
   Color[] getCellBackgrounds();
   Color[] getCellForegrounds();
   Font[] getCellFonts();
+  boolean[] getCellChecked();
+  boolean[] getCellGrayed();
+  boolean[] getCellCheckable();
   int[] getColumnSpans();
   boolean isParentDisposed();
   boolean isCached();

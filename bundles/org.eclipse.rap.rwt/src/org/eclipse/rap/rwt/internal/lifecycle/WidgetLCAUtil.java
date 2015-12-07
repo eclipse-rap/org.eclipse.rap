@@ -431,11 +431,8 @@ public final class WidgetLCAUtil {
                                      Image[] defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      JsonArray images = new JsonArray();
-      for( int i = 0; i < newValue.length; i++ ) {
-        images.add( toJson( newValue[ i ] ) );
-      }
-      getRemoteObject( widget ).set( property, images );
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
     }
   }
 
@@ -455,11 +452,8 @@ public final class WidgetLCAUtil {
                                      Color[] defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      JsonArray colors = new JsonArray();
-      for( int i = 0; i < newValue.length; i++ ) {
-        colors.add( toJson( newValue[ i ] ) );
-      }
-      getRemoteObject( widget ).set( property, colors );
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
     }
   }
 
@@ -469,11 +463,8 @@ public final class WidgetLCAUtil {
                                      Font[] defaultValue )
   {
     if( hasChanged( widget, property, newValue, defaultValue ) ) {
-      JsonArray fonts = new JsonArray();
-      for( int i = 0; i < newValue.length; i++ ) {
-        fonts.add( toJson( newValue[ i ] ) );
-      }
-      getRemoteObject( widget ).set( property, fonts );
+      JsonValue value = newValue == null ? JsonValue.NULL : createJsonArray( newValue );
+      getRemoteObject( widget ).set( property, value );
     }
   }
 

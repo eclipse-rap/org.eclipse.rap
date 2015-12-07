@@ -14,6 +14,7 @@ import static org.eclipse.rap.rwt.internal.textsize.TextSizeUtil.stringExtent;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.nebula.widgets.grid.internal.GridItemData;
@@ -1647,11 +1648,50 @@ public class GridItem extends Item {
     }
 
     @Override
+    public String[] getTexts() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      String[] result = null;
+      for( int i = 0; i < columnCount; i++ ) {
+        String text = getCellData( i ).text;
+        if( !"".equals( text ) ) {
+          if( result == null ) {
+            result = new String[ columnCount ];
+            Arrays.fill( result, "" );
+          }
+          result[ i ] = text;
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Image[] getImages() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Image[] result = null;
+      for( int i = 0; i < columnCount; i++ ) {
+        Image image = getCellData( i ).image;
+        if( image != null ) {
+          if( result == null ) {
+            result = new Image[ columnCount ];
+          }
+          result[ i ] = image;
+        }
+      }
+      return result;
+    }
+
+    @Override
     public Color[] getCellBackgrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
+      Color[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        result[ i ] = getCellData( i ).background;
+        Color background = getCellData( i ).background;
+        if( background != null ) {
+          if( result == null ) {
+            result = new Color[ columnCount ];
+          }
+          result[ i ] = background;
+        }
       }
       return result;
     }
@@ -1659,9 +1699,15 @@ public class GridItem extends Item {
     @Override
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
+      Color[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        result[ i ] = getCellData( i ).foreground;
+        Color foreground = getCellData( i ).foreground;
+        if( foreground != null ) {
+          if( result == null ) {
+            result = new Color[ columnCount ];
+          }
+          result[ i ] = foreground;
+        }
       }
       return result;
     }
@@ -1669,9 +1715,64 @@ public class GridItem extends Item {
     @Override
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Font[] result = new Font[ columnCount ];
+      Font[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        result[ i ] = getCellData( i ).font;
+        Font font = getCellData( i ).font;
+        if( font != null ) {
+          if( result == null ) {
+            result = new Font[ columnCount ];
+          }
+          result[ i ] = font;
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public boolean[] getCellChecked() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      boolean[] result = null;
+      for( int i = 0; i < columnCount; i++ ) {
+        boolean checked = getCellData( i ).checked;
+        if( checked ) {
+          if( result == null ) {
+            result = new boolean[ columnCount ];
+          }
+          result[ i ] = checked;
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public boolean[] getCellGrayed() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      boolean[] result = null;
+      for( int i = 0; i < columnCount; i++ ) {
+        boolean grayed = getCellData( i ).grayed;
+        if( grayed ) {
+          if( result == null ) {
+            result = new boolean[ columnCount ];
+          }
+          result[ i ] = grayed;
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public boolean[] getCellCheckable() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      boolean[] result = null;
+      for( int i = 0; i < columnCount; i++ ) {
+        boolean checkable = getCellData( i ).checkable;
+        if( !checkable ) {
+          if( result == null ) {
+            result = new boolean[ columnCount ];
+            Arrays.fill( result, true );
+          }
+          result[ i ] = checkable;
+        }
       }
       return result;
     }
@@ -1679,9 +1780,15 @@ public class GridItem extends Item {
     @Override
     public int[] getColumnSpans() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      int[] result = new int[ columnCount ];
+      int[] result = null;
       for( int i = 0; i < columnCount; i++ ) {
-        result[ i ] = getCellData( i ).columnSpan;
+        int span = getCellData( i ).columnSpan;
+        if( span != 0 ) {
+          if( result == null ) {
+            result = new int[ columnCount ];
+          }
+          result[ i ] = span;
+        }
       }
       return result;
     }

@@ -115,45 +115,23 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
   }
 
   private static void renderProperties( GridItem item ) {
-    int columnCount = getColumnCount( item );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
     renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), ZERO );
     renderProperty( item, PROP_HEIGHT, item.getHeight(), item.getParent().getItemHeight() );
-    renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
-    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ columnCount ] );
+    renderProperty( item, PROP_TEXTS, getTexts( item ), null );
+    renderProperty( item, PROP_IMAGES, getImages( item ), null );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
     WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
     WidgetLCAUtil.renderFont( item, getUserFont( item ) );
-    renderProperty( item,
-                    PROP_CELL_BACKGROUNDS,
-                    getCellBackgrounds( item ),
-                    new Color[ columnCount ] );
-    renderProperty( item,
-                    PROP_CELL_FOREGROUNDS,
-                    getCellForegrounds( item ),
-                    new Color[ columnCount ] );
-    renderProperty( item,
-                    PROP_CELL_FONTS,
-                    getCellFonts( item ),
-                    new Font[ columnCount ] );
+    renderProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ), null );
+    renderProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ), null );
+    renderProperty( item, PROP_CELL_FONTS, getCellFonts( item ), null );
     renderProperty( item, PROP_EXPANDED, item.isExpanded(), false );
-    renderProperty( item,
-                    PROP_CELL_CHECKED,
-                    getCellChecked( item ),
-                    new boolean[ columnCount ] );
-    renderProperty( item,
-                    PROP_CELL_GRAYED,
-                    getCellGrayed( item ),
-                    new boolean[ columnCount ] );
-    renderProperty( item,
-                    PROP_CELL_CHECKABLE,
-                    getCellCheckable( item ),
-                    getDefaultCellCheckable( item ) );
-    renderProperty( item,
-                    PROP_COLUMN_SPANS,
-                    getColumnSpans( item ),
-                    new int[ columnCount ] );
+    renderProperty( item, PROP_CELL_CHECKED, getCellChecked( item ), null );
+    renderProperty( item, PROP_CELL_GRAYED, getCellGrayed( item ), null );
+    renderProperty( item, PROP_CELL_CHECKABLE, getCellCheckable( item ), null );
+    renderProperty( item, PROP_COLUMN_SPANS, getColumnSpans( item ), null );
   }
 
   @Override
@@ -205,27 +183,11 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
   }
 
   private static String[] getTexts( GridItem item ) {
-    String[] result = new String[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getText( i );
-    }
-    return result;
-  }
-
-  private static String[] getDefaultTexts( GridItem item ) {
-    String[] result = new String[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = "";
-    }
-    return result;
+    return getGridItemAdapter( item ).getTexts();
   }
 
   private static Image[] getImages( GridItem item ) {
-    Image[] result = new Image[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getImage( i );
-    }
-    return result;
+    return getGridItemAdapter( item ).getImages();
   }
 
   private static Color getUserBackground( GridItem item ) {
@@ -253,43 +215,19 @@ public class GridItemLCA extends WidgetLCA<GridItem> {
   }
 
   private static boolean[] getCellChecked( GridItem item ) {
-    boolean[] result = new boolean[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getChecked( i );
-    }
-    return result;
+    return getGridItemAdapter( item ).getCellChecked();
   }
 
   private static boolean[] getCellGrayed( GridItem item ) {
-    boolean[] result = new boolean[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getGrayed( i );
-    }
-    return result;
+    return getGridItemAdapter( item ).getCellGrayed();
   }
 
   private static boolean[] getCellCheckable( GridItem item ) {
-    boolean[] result = new boolean[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getCheckable( i );
-    }
-    return result;
-  }
-
-  private static boolean[] getDefaultCellCheckable( GridItem item ) {
-    boolean[] result = new boolean[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = true;
-    }
-    return result;
+    return getGridItemAdapter( item ).getCellCheckable();
   }
 
   private static int[] getColumnSpans( GridItem item ) {
     return getGridItemAdapter( item ).getColumnSpans();
-  }
-
-  private static int getColumnCount( GridItem item ) {
-    return Math.max( 1, item.getParent().getColumnCount() );
   }
 
   private static IGridAdapter getGridAdapter( Grid grid ) {
