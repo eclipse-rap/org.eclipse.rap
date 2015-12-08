@@ -72,10 +72,6 @@ rwt.qx.Class.define( "rwt.theme.ThemeValues", {
       return this._store.getBoxDimensions( element, this._states, key );
     },
 
-    getCssBoolean : function( element, key ) {
-      return this._store.getBoolean( element, this._states, key );
-    },
-
     getCssFloat : function( element, key ) {
       return this._store.getFloat( element, this._states, key );
     },

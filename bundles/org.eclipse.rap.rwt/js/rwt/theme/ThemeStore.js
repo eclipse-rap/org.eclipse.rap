@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,10 +176,6 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
       return this._values.boxdims[ key ];
     },
 
-    getBoolean : function( element, states, property, theme ) {
-      return this._getCssValue( element, states, property, theme );
-    },
-
     getFloat : function( element, states, property, theme ) {
       return parseFloat( this._getCssValue( element, states, property, theme ) );
     },
@@ -354,11 +350,10 @@ rwt.qx.Class.define( "rwt.theme.ThemeStore", {
           && this._cssValues[ theme ][ element ][ property ] !== undefined )
       {
         var values = this._cssValues[ theme ][ element ][ property ];
-        var found = false;
-        for( var i = 0; i < values.length && !found; i++ ) {
+        for( var i = 0; i < values.length; i++ ) {
           if( this._matches( states, element, values[ i ][ 0 ] ) ) {
             result = values[ i ][ 1 ];
-            found = true;
+            break;
           }
         }
       }

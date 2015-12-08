@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.theme.BoxDimensions;
 
 public final class ThemePropertyAdapterRegistry {
 
-  public static interface ThemePropertyAdapter {
+  static interface ThemePropertyAdapter {
 
     /**
      * The slot in the client's theme store to write the value into or <code>null</code> if no value
@@ -47,7 +47,7 @@ public final class ThemePropertyAdapterRegistry {
     JsonValue getValue( CssValue value );
   }
 
-  public static class DirectPropertyAdapter implements ThemePropertyAdapter {
+  static class DirectPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -65,7 +65,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class DimensionPropertyAdapter implements ThemePropertyAdapter {
+  static class DimensionPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -83,7 +83,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class BoxDimensionsPropertyAdapter implements ThemePropertyAdapter {
+  static class BoxDimensionsPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -107,7 +107,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class FontPropertyAdapter implements ThemePropertyAdapter {
+  static class FontPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -131,7 +131,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class ImagePropertyAdapter implements ThemePropertyAdapter {
+  static class ImagePropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -183,7 +183,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class ColorPropertyAdapter implements ThemePropertyAdapter {
+  static class ColorPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -213,7 +213,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class BorderPropertyAdapter implements ThemePropertyAdapter {
+  static class BorderPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -236,7 +236,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class CursorPropertyAdapter implements ThemePropertyAdapter {
+  static class CursorPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -273,7 +273,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class AnimationPropertyAdapter implements ThemePropertyAdapter {
+  static class AnimationPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -301,7 +301,7 @@ public final class ThemePropertyAdapterRegistry {
     }
   }
 
-  public static class ShadowPropertyAdapter implements ThemePropertyAdapter {
+  static class ShadowPropertyAdapter implements ThemePropertyAdapter {
 
     @Override
     public String getKey( CssValue value ) {
@@ -356,7 +356,6 @@ public final class ThemePropertyAdapterRegistry {
   private ThemePropertyAdapterRegistry() {
     map = new HashMap<>();
     map.put( CssAnimation.class, new AnimationPropertyAdapter() );
-    map.put( CssBoolean.class, new DirectPropertyAdapter() );
     map.put( CssBorder.class, new BorderPropertyAdapter() );
     map.put( CssBoxDimensions.class, new BoxDimensionsPropertyAdapter() );
     map.put( CssColor.class, new ColorPropertyAdapter() );
@@ -369,7 +368,7 @@ public final class ThemePropertyAdapterRegistry {
     map.put( CssShadow.class, new ShadowPropertyAdapter() );
   }
 
-  public ThemePropertyAdapter getPropertyAdapter( Class<?> key ) {
+  ThemePropertyAdapter getPropertyAdapter( Class<?> key ) {
     return map.get( key );
   }
 
