@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
@@ -108,9 +107,9 @@ public class TreeItemLCA_Test {
     Font[] fonts = ( Font[] )adapter.getPreserved( "font" );
     assertNull( fonts );
     Color[] backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
-    assertTrue( Arrays.equals( new Color[ 3 ], backgrounds ) );
+    assertNull( backgrounds );
     Color[] foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
-    assertTrue( Arrays.equals( new Color[ 3 ], foregrounds ) );
+    assertNull( foregrounds );
     Fixture.clearPreserved();
     item.setText( 0, "item11" );
     item.setText( 1, "item12" );
@@ -442,6 +441,22 @@ public class TreeItemLCA_Test {
   }
 
   @Test
+  public void testRenderTextsReset() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setText( 1, "item 0.1" );
+    Fixture.preserveWidgets();
+
+    item.setText( 1, "" );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "texts" ) );
+  }
+
+  @Test
   public void testRenderInitialImages() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
@@ -483,6 +498,23 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "images" ) );
+  }
+
+  @Test
+  public void testRenderImagesReset() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    item.setImage( 1, image );
+    Fixture.preserveWidgets();
+
+    item.setImage( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "images" ) );
   }
 
   @Test
@@ -624,6 +656,22 @@ public class TreeItemLCA_Test {
   }
 
   @Test
+  public void testRenderCellBackgroundsReset() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+
+    item.setBackground( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellBackgrounds" ) );
+  }
+
+  @Test
   public void testRenderInitialCellForegrounds() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
@@ -664,6 +712,22 @@ public class TreeItemLCA_Test {
   }
 
   @Test
+  public void testRenderCellForegroundsReset() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+
+    item.setForeground( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellForegrounds" ) );
+  }
+
+  @Test
   public void testRenderInitialCellFonts() throws IOException {
     new TreeColumn( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
@@ -701,6 +765,22 @@ public class TreeItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "cellFonts" ) );
+  }
+
+  @Test
+  public void testRenderCellFontsReset() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+
+    item.setFont( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellFonts" ) );
   }
 
   @Test

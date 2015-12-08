@@ -18,8 +18,8 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
@@ -110,25 +110,16 @@ public final class TreeItemLCA extends WidgetLCA<TreeItem> {
 
   private static void renderProperties( TreeItem item ) {
     renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), DEFAULT_ITEM_COUNT );
-    renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
-    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_TEXTS, getTexts( item ), null );
+    renderProperty( item, PROP_IMAGES, getImages( item ), null );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
     WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
     WidgetLCAUtil.renderFont( item, getUserFont( item ) );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
-    renderProperty( item,
-                    PROP_CELL_BACKGROUNDS,
-                    getCellBackgrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
-    renderProperty( item,
-                    PROP_CELL_FOREGROUNDS,
-                    getCellForegrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
-    renderProperty( item,
-                    PROP_CELL_FONTS,
-                    getCellFonts( item ),
-                    new Font[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ), null );
+    renderProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ), null );
+    renderProperty( item, PROP_CELL_FONTS, getCellFonts( item ), null );
     renderProperty( item, PROP_EXPANDED, item.getExpanded(), false );
     renderProperty( item, PROP_CHECKED, item.getChecked(), false );
     renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
@@ -136,18 +127,14 @@ public final class TreeItemLCA extends WidgetLCA<TreeItem> {
 
   @Override
   public void renderDispose( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     RemoteObject remoteObject = getRemoteObject( item );
     // The parent by the clients logic is the parent-item, not the tree (except for root layer)
-    if( !itemAdapter.isParentDisposed() ) {
+    if( !getTreeItemAdapter( item ).isParentDisposed() ) {
       remoteObject.destroy();
     } else {
       ( ( RemoteObjectImpl )remoteObject ).markDestroyed();
     }
   }
-
-  //////////////////
-  // Helping methods
 
   private static int getIndex( TreeItem item ) {
     int result;
@@ -176,63 +163,39 @@ public final class TreeItemLCA extends WidgetLCA<TreeItem> {
   }
 
   private static String[] getTexts( TreeItem item ) {
-    int columnCount = getColumnCount( item );
-    String[] texts = new String[ columnCount ];
-    for( int i = 0; i < columnCount; i++ ) {
-      texts[ i ] = item.getText( i );
-    }
-    return texts;
-  }
-
-  private static String[] getDefaultTexts( TreeItem item ) {
-    String[] result = new String[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = "";
-    }
-    return result;
+    return getTreeItemAdapter( item ).getTexts();
   }
 
   private static Image[] getImages( TreeItem item ) {
-    int columnCount = getColumnCount( item );
-    Image[] images = new Image[ columnCount ];
-    for( int i = 0; i < columnCount; i++ ) {
-      images[ i ] = item.getImage( i );
-    }
-    return images;
+    return getTreeItemAdapter( item ).getImages();
   }
 
   private static Color getUserBackground( TreeItem item ) {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserBackground();
+    return item.getAdapter( IWidgetColorAdapter.class ).getUserBackground();
   }
 
   private static Color getUserForeground( TreeItem item ) {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserForeground();
+    return item.getAdapter( IWidgetColorAdapter.class ).getUserForeground();
   }
 
   private static Font getUserFont( TreeItem item ) {
-    IWidgetFontAdapter fontAdapter = item.getAdapter( IWidgetFontAdapter.class );
-    return fontAdapter.getUserFont();
+    return item.getAdapter( IWidgetFontAdapter.class ).getUserFont();
   }
 
   private static Color[] getCellBackgrounds( TreeItem item ) {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    return itemAdapter.getCellBackgrounds();
+    return getTreeItemAdapter( item ).getCellBackgrounds();
   }
 
   private static Color[] getCellForegrounds( TreeItem item ) {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    return itemAdapter.getCellForegrounds();
+    return getTreeItemAdapter( item ).getCellForegrounds();
   }
 
   private static Font[] getCellFonts( TreeItem item ) {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    return itemAdapter.getCellFonts();
+    return getTreeItemAdapter( item ).getCellFonts();
   }
 
-  private static int getColumnCount( TreeItem item ) {
-    return Math.max( 1, item.getParent().getColumnCount() );
+  private static ITreeItemAdapter getTreeItemAdapter( TreeItem item ) {
+    return item.getAdapter( ITreeItemAdapter.class );
   }
 
   private static void preservingInitialized( TreeItem item, Runnable runnable ) {

@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
@@ -893,9 +892,9 @@ public class TreeItem_Test {
     createColumns( tree, columnCount );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     ITreeItemAdapter adapter = item.getAdapter( ITreeItemAdapter.class );
-    assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellBackgrounds() ) );
-    assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellForegrounds() ) );
-    assertTrue( Arrays.equals( new Font[ 3 ], adapter.getCellFonts() ) );
+    assertNull( adapter.getCellBackgrounds() );
+    assertNull( adapter.getCellForegrounds() );
+    assertNull( adapter.getCellFonts() );
     Color bgColor = display.getSystemColor( SWT.COLOR_YELLOW );
     Color fgColor = display.getSystemColor( SWT.COLOR_BLUE );
     Font font = new Font( display, "Helvetica", 12, SWT.NORMAL );

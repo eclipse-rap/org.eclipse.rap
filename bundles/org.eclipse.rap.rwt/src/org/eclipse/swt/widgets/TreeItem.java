@@ -1669,13 +1669,54 @@ public class TreeItem extends Item {
     }
 
     @Override
-    public Color[] getCellBackgrounds() {
+    public String[] getTexts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
+      String[] result = null;
       if( data != null ) {
         for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].background;
+          String text = data[ i ] == null ? "" : data[ i ].text;
+          if( !"".equals( text ) ) {
+            if( result == null ) {
+              result = new String[ columnCount ];
+              Arrays.fill( result, "" );
+            }
+            result[ i ] = text;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Image[] getImages() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Image[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Image image = data[ i ] == null ? null : data[ i ].image;
+          if( image != null ) {
+            if( result == null ) {
+              result = new Image[ columnCount ];
+            }
+            result[ i ] = image;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Color[] getCellBackgrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Color background = data[ i ] == null ? null : data[ i ].background;
+          if( background != null ) {
+            if( result == null ) {
+              result = new Color[ columnCount ];
+            }
+            result[ i ] = background;
           }
         }
       }
@@ -1685,11 +1726,15 @@ public class TreeItem extends Item {
     @Override
     public Color[] getCellForegrounds() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
+      Color[] result = null;
       if( data != null ) {
         for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].foreground;
+          Color foreground = data[ i ] == null ? null : data[ i ].foreground;
+          if( foreground != null ) {
+            if( result == null ) {
+              result = new Color[ columnCount ];
+            }
+            result[ i ] = foreground;
           }
         }
       }
@@ -1699,11 +1744,15 @@ public class TreeItem extends Item {
     @Override
     public Font[] getCellFonts() {
       int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Font[] result = new Font[ columnCount ];
+      Font[] result = null;
       if( data != null ) {
         for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].font;
+          Font font = data[ i ] == null ? null : data[ i ].font;
+          if( font != null ) {
+            if( result == null ) {
+              result = new Font[ columnCount ];
+            }
+            result[ i ] = font;
           }
         }
       }
