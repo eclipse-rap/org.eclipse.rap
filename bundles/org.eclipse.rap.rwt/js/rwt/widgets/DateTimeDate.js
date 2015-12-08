@@ -558,9 +558,9 @@ rwt.qx.Class.define( "rwt.widgets.DateTimeDate", {
 
     _setWeekday : function() {
       var tmpDate = new Date();
-      tmpDate.setDate( parseInt( this._dayTextField.getText(), 10 ) );
-      tmpDate.setMonth( this._monthInt - 1 );
       tmpDate.setFullYear( parseInt( this._yearTextField.getText(), 10 ) );
+      tmpDate.setMonth( this._monthInt - 1 );
+      tmpDate.setDate( parseInt( this._dayTextField.getText(), 10 ) );
       this._weekdayTextField.setText( this._weekday[ tmpDate.getDay() + 1 ] );
     },
 

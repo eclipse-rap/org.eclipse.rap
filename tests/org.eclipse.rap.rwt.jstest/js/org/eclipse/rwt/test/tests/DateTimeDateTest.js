@@ -305,6 +305,18 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       dateTime.destroy();
     },
 
+    // See bug: 483833: Weekday on 29th February of leapyears shown wrong
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=483833
+    testWeekday_onLeapYear : function() {
+      var dateTime = this._createDefaultDateTime();
+      dateTime.setYear( 2016 );
+      dateTime.setMonth( 1 );
+      dateTime.setDay( 29 );
+
+      assertEquals( "Monday", dateTime._weekdayTextField.getText() );
+      dateTime.destroy();
+    },
+
     //////////
     // Helpers
 
