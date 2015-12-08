@@ -14,6 +14,8 @@ package org.eclipse.swt.widgets;
 import static org.eclipse.swt.internal.widgets.MarkupUtil.isMarkupEnabledFor;
 import static org.eclipse.swt.internal.widgets.MarkupValidator.isValidationDisabledFor;
 
+import java.util.Arrays;
+
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.theme.BoxDimensions;
 import org.eclipse.swt.SWT;
@@ -46,78 +48,6 @@ import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA;
  * @since 1.0
  */
 public class TableItem extends Item {
-
-  private class TableItemAdapter
-    implements ITableItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
-  {
-
-    @Override
-    public Color getUserBackground() {
-      return background;
-    }
-
-    @Override
-    public Color getUserForeground() {
-      return foreground;
-    }
-
-    @Override
-    public Font getUserFont() {
-      return font;
-    }
-
-    @Override
-    public Color[] getCellBackgrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].background;
-          }
-        }
-      }
-      return result;
-    }
-
-    @Override
-    public Color[] getCellForegrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].foreground;
-          }
-        }
-      }
-      return result;
-    }
-
-    @Override
-    public Font[] getCellFonts() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Font[] result = new Font[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].font;
-          }
-        }
-      }
-      return result;
-    }
-  }
-
-  private static final class Data implements SerializableCompatibility {
-    static final int UNKNOWN_WIDTH = -1;
-    String text = "";
-    int textWidth = UNKNOWN_WIDTH;
-    Image image;
-    Font font;
-    Color background;
-    Color foreground;
-  }
 
   private transient TableItemAdapter tableItemAdapter;
   final Table parent;
@@ -1223,4 +1153,127 @@ public class TableItem extends Item {
     }
     return table;
   }
+
+  private class TableItemAdapter
+    implements ITableItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
+  {
+
+    @Override
+    public Color getUserBackground() {
+      return background;
+    }
+
+    @Override
+    public Color getUserForeground() {
+      return foreground;
+    }
+
+    @Override
+    public Font getUserFont() {
+      return font;
+    }
+
+    @Override
+    public String[] getTexts() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      String[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          String text = data[ i ] == null ? "" : data[ i ].text;
+          if( !"".equals( text ) ) {
+            if( result == null ) {
+              result = new String[ columnCount ];
+              Arrays.fill( result, "" );
+            }
+            result[ i ] = text;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Image[] getImages() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Image[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Image image = data[ i ] == null ? null : data[ i ].image;
+          if( image != null ) {
+            if( result == null ) {
+              result = new Image[ columnCount ];
+            }
+            result[ i ] = image;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Color[] getCellBackgrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Color background = data[ i ] == null ? null : data[ i ].background;
+          if( background != null ) {
+            if( result == null ) {
+              result = new Color[ columnCount ];
+            }
+            result[ i ] = background;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Color[] getCellForegrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Color foreground = data[ i ] == null ? null : data[ i ].foreground;
+          if( foreground != null ) {
+            if( result == null ) {
+              result = new Color[ columnCount ];
+            }
+            result[ i ] = foreground;
+          }
+        }
+      }
+      return result;
+    }
+
+    @Override
+    public Font[] getCellFonts() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Font[] result = null;
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          Font font = data[ i ] == null ? null : data[ i ].font;
+          if( font != null ) {
+            if( result == null ) {
+              result = new Font[ columnCount ];
+            }
+            result[ i ] = font;
+          }
+        }
+      }
+      return result;
+    }
+
+  }
+
+  private static final class Data implements SerializableCompatibility {
+    static final int UNKNOWN_WIDTH = -1;
+    String text = "";
+    int textWidth = UNKNOWN_WIDTH;
+    Image image;
+    Font font;
+    Color background;
+    Color foreground;
+  }
+
 }

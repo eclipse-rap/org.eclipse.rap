@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
-import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getId;
 import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.registerDataKeys;
+import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
 import static org.eclipse.rap.rwt.testfixture.internal.TestMessage.getParent;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
@@ -28,15 +28,15 @@ import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.ClientMessageConst;
+import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectRegistry;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.TestMessage;
-import org.eclipse.rap.rwt.internal.protocol.Operation.CreateOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -88,28 +88,19 @@ public class TableItemLCA_Test {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     RemoteAdapter adapter = WidgetUtil.getAdapter( item );
-    Image[] images1 = TableItemLCA.getImages( item );
-    Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
-    assertEquals( images1[ 0 ], images2[ 0 ] );
-    assertEquals( images1[ 1 ], images2[ 1 ] );
-    assertEquals( images1[ 2 ], images2[ 2 ] );
+    Image[] images = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
+    assertNull( images );
     assertNull( adapter.getPreserved( "background" ) );
     assertNull( adapter.getPreserved( "foreground" ) );
     assertNull( adapter.getPreserved( "font" ) );
     Color[] preservedCellBackgrounds
       = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_BACKGROUNDS );
-    assertNull( preservedCellBackgrounds[ 0 ] );
-    assertNull( preservedCellBackgrounds[ 1 ] );
-    assertNull( preservedCellBackgrounds[ 2 ] );
+    assertNull( preservedCellBackgrounds );
     Color[] preservedCellForegrounds
       = ( Color[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FOREGROUNDS );
-    assertNull( preservedCellForegrounds[ 0 ] );
-    assertNull( preservedCellForegrounds[ 1 ] );
-    assertNull( preservedCellForegrounds[ 2 ] );
+    assertNull( preservedCellForegrounds );
     Font[] preservedCellFonts = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
-    assertNull( preservedCellFonts[ 0 ] );
-    assertNull( preservedCellFonts[ 1 ] );
-    assertNull( preservedCellFonts[ 2 ] );
+    assertNull( preservedCellFonts );
     Fixture.clearPreserved();
     item.setText( 0, "item11" );
     item.setText( 1, "item12" );
@@ -123,7 +114,7 @@ public class TableItemLCA_Test {
     Image image1 = createImage( display, Fixture.IMAGE1 );
     Image image2 = createImage( display, Fixture.IMAGE2 );
     Image image3 = createImage( display, Fixture.IMAGE3 );
-    item.setImage( new Image[]{
+    item.setImage( new Image[] {
       image1, image2, image3
     } );
     Color background1 =new Color( display, 234, 230, 54 );
@@ -143,10 +134,10 @@ public class TableItemLCA_Test {
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
-    images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
-    assertEquals( image1, images2[ 0 ] );
-    assertEquals( image2, images2[ 1 ] );
-    assertEquals( image3, images2[ 2 ] );
+    images = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
+    assertEquals( image1, images[ 0 ] );
+    assertEquals( image2, images[ 1 ] );
+    assertEquals( image3, images[ 2 ] );
     preservedCellFonts = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
     assertEquals( font1, preservedCellFonts[ 0 ] );
     assertEquals( font2, preservedCellFonts[ 1 ] );
@@ -415,6 +406,22 @@ public class TableItemLCA_Test {
   }
 
   @Test
+  public void testRenderTextsReset() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setText( 1, "item 0.1" );
+    Fixture.preserveWidgets();
+
+    item.setText( 1, "" );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "texts" ) );
+  }
+
+  @Test
   public void testRenderInitialImages() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -456,6 +463,23 @@ public class TableItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "images" ) );
+  }
+
+  @Test
+  public void testRenderImagesReset() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Image image = createImage( display, Fixture.IMAGE1 );
+    item.setImage( 1, image );
+    Fixture.preserveWidgets();
+
+    item.setImage( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "images" ) );
   }
 
   @Test
@@ -598,6 +622,22 @@ public class TableItemLCA_Test {
   }
 
   @Test
+  public void testRenderCellBackgroundsReset() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+
+    item.setBackground( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellBackgrounds" ) );
+  }
+
+  @Test
   public void testRenderInitialCellForegrounds() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -638,6 +678,22 @@ public class TableItemLCA_Test {
   }
 
   @Test
+  public void testRenderCellForegroundsReset() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+
+    item.setForeground( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellForegrounds" ) );
+  }
+
+  @Test
   public void testRenderInitialCellFonts() throws IOException {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -675,6 +731,22 @@ public class TableItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( item, "cellFonts" ) );
+  }
+
+  @Test
+  public void testRenderCellFontsReset() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    item.setFont( 1, new Font( display, "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+
+    item.setFont( 1, null );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( JsonValue.NULL, message.findSetProperty( item, "cellFonts" ) );
   }
 
   @Test

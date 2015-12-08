@@ -795,15 +795,15 @@ public class TableItem_Test {
     ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
     // simple case: no explicit colors at all
     Color[] backgrounds = tableItemAdapter.getCellBackgrounds();
-    assertNull( backgrounds[ 0 ] );
+    assertNull( backgrounds );
     // set background on table but not on item
     table.setBackground( tableColor );
     backgrounds = tableItemAdapter.getCellBackgrounds();
-    assertNull( backgrounds[ 0 ] );
+    assertNull( backgrounds );
     // set background on item
     item.setBackground( itemColor );
     backgrounds = tableItemAdapter.getCellBackgrounds();
-    assertNull( backgrounds[ 0 ] );
+    assertNull( backgrounds );
     // set a cell color
     item.setBackground( 0, cellColor );
     backgrounds = tableItemAdapter.getCellBackgrounds();
@@ -819,15 +819,15 @@ public class TableItem_Test {
     ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
     // simple case: no explicit colors at all
     Color[] foregrounds = tableItemAdapter.getCellForegrounds();
-    assertNull( foregrounds[ 0 ] );
+    assertNull( foregrounds );
     // set foreground on table but not on item
     table.setForeground( tableColor );
     foregrounds = tableItemAdapter.getCellForegrounds();
-    assertNull( foregrounds[ 0 ] );
+    assertNull( foregrounds );
     // set foreground on item
     item.setForeground( itemColor );
     foregrounds = tableItemAdapter.getCellForegrounds();
-    assertNull( foregrounds[ 0 ] );
+    assertNull( foregrounds );
     // set foreground on cell
     item.setForeground( 0, cellColor );
     foregrounds = tableItemAdapter.getCellForegrounds();
@@ -843,15 +843,15 @@ public class TableItem_Test {
     ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
     // simple case: no explicit fonts at all
     Font[] fonts = tableItemAdapter.getCellFonts();
-    assertNull( fonts[ 0 ] );
+    assertNull( fonts );
     // set font on table but not on item
     table.setFont( tableFont );
     fonts = tableItemAdapter.getCellFonts();
-    assertNull( fonts[ 0 ] );
+    assertNull( fonts );
     // set font on item
     item.setFont( itemFont );
     fonts = tableItemAdapter.getCellFonts();
-    assertNull( fonts[ 0 ] );
+    assertNull( fonts );
     // set a cell font
     item.setFont( 0, cellFont );
     fonts = tableItemAdapter.getCellFonts();

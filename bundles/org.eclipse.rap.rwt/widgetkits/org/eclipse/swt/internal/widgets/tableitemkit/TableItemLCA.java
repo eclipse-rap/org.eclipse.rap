@@ -18,8 +18,8 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
+import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -103,29 +103,17 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
     }
   }
 
-  ///////////////////////
-  // RenderChanges helper
-
   private static void renderProperties( TableItem item ) {
-    renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
-    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_TEXTS, getTexts( item ), null );
+    renderProperty( item, PROP_IMAGES, getImages( item ), null );
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
     WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
     WidgetLCAUtil.renderFont( item, getUserFont( item ) );
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderData( item );
-    renderProperty( item,
-                    PROP_CELL_BACKGROUNDS,
-                    getCellBackgrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
-    renderProperty( item,
-                    PROP_CELL_FOREGROUNDS,
-                    getCellForegrounds( item ),
-                    new Color[ getColumnCount( item ) ] );
-    renderProperty( item,
-                    PROP_CELL_FONTS,
-                    getCellFonts( item ),
-                    new Font[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ), null );
+    renderProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ), null );
+    renderProperty( item, PROP_CELL_FONTS, getCellFonts( item ), null );
     renderProperty( item, PROP_CHECKED, item.getChecked(), false );
     renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
   }
@@ -133,9 +121,6 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
   private static void renderClear( TableItem item ) {
     getRemoteObject( item ).call( "clear", null );
   }
-
-  //////////////////
-  // Helping methods
 
   private static int getIndex( TableItem item ) {
     return item.getParent().indexOf( item );
@@ -148,63 +133,35 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
   }
 
   static String[] getTexts( TableItem item ) {
-    int columnCount = getColumnCount( item );
-    String[] result = new String[ columnCount ];
-    for( int i = 0; i < columnCount; i++ ) {
-      result[ i ] = item.getText( i );
-    }
-    return result;
-  }
-
-  private static String[] getDefaultTexts( TableItem item ) {
-    String[] result = new String[ getColumnCount( item ) ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = "";
-    }
-    return result;
+    return getTableItemAdapter( item ).getTexts();
   }
 
   static Image[] getImages( TableItem item ) {
-    int columnCount = getColumnCount( item );
-    Image[] result = new Image[ columnCount ];
-    for( int i = 0; i < columnCount; i++ ) {
-      result[ i ] = item.getImage( i );
-    }
-    return result;
+    return getTableItemAdapter( item ).getImages();
   }
 
   private static Color getUserBackground( TableItem item ) {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserBackground();
+    return item.getAdapter( IWidgetColorAdapter.class ).getUserBackground();
   }
 
   private static Color getUserForeground( TableItem item ) {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserForeground();
+    return item.getAdapter( IWidgetColorAdapter.class ).getUserForeground();
   }
 
   private static Font getUserFont( TableItem item ) {
-    IWidgetFontAdapter fontAdapter = item.getAdapter( IWidgetFontAdapter.class );
-    return fontAdapter.getUserFont();
+    return item.getAdapter( IWidgetFontAdapter.class ).getUserFont();
   }
 
   private static Color[] getCellBackgrounds( TableItem item ) {
-    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
-    return itemAdapter.getCellBackgrounds();
+    return getTableItemAdapter( item ).getCellBackgrounds();
   }
 
   private static Color[] getCellForegrounds( TableItem item ) {
-    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
-    return itemAdapter.getCellForegrounds();
+    return getTableItemAdapter( item ).getCellForegrounds();
   }
 
   private static Font[] getCellFonts( TableItem item ) {
-    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
-    return itemAdapter.getCellFonts();
-  }
-
-  private static int getColumnCount( TableItem item ) {
-    return Math.max( 1, item.getParent().getColumnCount() );
+    return getTableItemAdapter( item ).getCellFonts();
   }
 
   private static boolean wasCleared( TableItem item ) {
@@ -223,6 +180,10 @@ public final class TableItemLCA extends WidgetLCA<TableItem> {
       wasCached = true;
     }
     return wasCached;
+  }
+
+  private static ITableItemAdapter getTableItemAdapter( TableItem item ) {
+    return item.getAdapter( ITableItemAdapter.class );
   }
 
   private static void preservingInitialized( TableItem item, IRenderRunnable runnable )
