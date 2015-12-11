@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class ThemeManager_Test {
     ThemeableWidget[] allThemeableWidgets = manager.getAllThemeableWidgets();
 
     assertTrue( allThemeableWidgets.length > 1 );
-    assertEquals( Widget.class, allThemeableWidgets[ 0 ].widget );
+    assertEquals( Widget.class.getName(), allThemeableWidgets[ 0 ].className );
   }
 
   @Test
@@ -92,7 +92,7 @@ public class ThemeManager_Test {
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
     assertNotNull( themeableWidget );
     assertNotNull( themeableWidget.loader );
-    assertEquals( Button.class, themeableWidget.widget );
+    assertEquals( Button.class.getName(), themeableWidget.className );
     assertNotNull( themeableWidget.elements );
     assertTrue( themeableWidget.elements.length > 0 );
   }

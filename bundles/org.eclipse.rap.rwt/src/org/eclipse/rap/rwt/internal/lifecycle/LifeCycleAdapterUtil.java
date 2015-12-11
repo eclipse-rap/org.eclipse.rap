@@ -20,14 +20,24 @@ public final class LifeCycleAdapterUtil {
     // prevent instatiation
   }
 
-  public static String[] getKitPackageVariants( Class<?> clazz ) {
-    String className = clazz.getSimpleName().toLowerCase( Locale.ENGLISH );
-    String[] pkgSegments = clazz.getPackage().getName().split( "\\." );
+  public static String[] getKitPackageVariants( String className ) {
+    String simpleClassName = getSimpleClassName( className ).toLowerCase( Locale.ENGLISH );
+    String[] pkgSegments = getPackageName( className ).split( "\\." );
     String[] result = new String[ pkgSegments.length ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = createInternalPackage( pkgSegments, className, i );
+      result[ i ] = createInternalPackage( pkgSegments, simpleClassName, i );
     }
     return result;
+  }
+
+  public static String getSimpleClassName( String className ) {
+    int index = className.lastIndexOf( '.' );
+    return index == -1 ? className : className.substring( index + 1 );
+  }
+
+  public static String getPackageName( String className ) {
+    int index = className.lastIndexOf( '.' );
+    return index == -1 ? "" : className.substring( 0, index );
   }
 
   private static String createInternalPackage( String[] pkgSegments, String className, int index ) {

@@ -94,7 +94,7 @@ public class ThemeAdapter_Test {
       }
     };
     // create theme adapter
-    ThemeableWidget widget = new ThemeableWidget( CustomWidget.class, null );
+    ThemeableWidget widget = new ThemeableWidget( CustomWidget.class.getName(), null );
     CssElement element = new CssElementImpl( "CustomWidget" );
     widget.elements = new CssElement[] { element };
     // check default values

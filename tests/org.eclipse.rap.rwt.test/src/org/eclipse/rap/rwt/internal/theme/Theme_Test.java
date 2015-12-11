@@ -146,7 +146,7 @@ public class Theme_Test {
   }
 
   private static ThemeableWidget createSimpleButtonWidget() {
-    ThemeableWidget buttonWidget = new ThemeableWidget( Button.class, null );
+    ThemeableWidget buttonWidget = new ThemeableWidget( Button.class.getName(), null );
     CssElement buttonElement = new CssElementImpl( "Button" )
       .addProperty( "color" )
       .addProperty( "cursor" )

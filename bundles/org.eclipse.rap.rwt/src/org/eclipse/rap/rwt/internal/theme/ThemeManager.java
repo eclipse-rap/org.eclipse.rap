@@ -51,40 +51,40 @@ public class ThemeManager {
     }
   };
 
-  private static final Class<?>[] THEMEABLE_WIDGETS = {
-    org.eclipse.swt.widgets.Widget.class,
-    org.eclipse.swt.widgets.Control.class,
-    org.eclipse.swt.widgets.Composite.class,
-    org.eclipse.swt.widgets.Button.class,
-    org.eclipse.swt.widgets.Combo.class,
-    org.eclipse.swt.widgets.CoolBar.class,
-    org.eclipse.swt.custom.CTabFolder.class,
-    org.eclipse.swt.widgets.Group.class,
-    org.eclipse.swt.widgets.Label.class,
-    org.eclipse.swt.widgets.Link.class,
-    org.eclipse.swt.widgets.List.class,
-    org.eclipse.swt.widgets.Menu.class,
-    org.eclipse.swt.widgets.ProgressBar.class,
-    org.eclipse.swt.widgets.Shell.class,
-    org.eclipse.swt.widgets.Spinner.class,
-    org.eclipse.swt.widgets.TabFolder.class,
-    org.eclipse.swt.widgets.Table.class,
-    org.eclipse.swt.widgets.Text.class,
-    org.eclipse.swt.widgets.ToolBar.class,
-    org.eclipse.swt.widgets.Tree.class,
-    org.eclipse.swt.widgets.Scale.class,
-    org.eclipse.swt.widgets.DateTime.class,
-    org.eclipse.swt.widgets.ExpandBar.class,
-    org.eclipse.swt.widgets.Sash.class,
-    org.eclipse.swt.widgets.Slider.class,
-    org.eclipse.swt.widgets.ToolTip.class,
-    org.eclipse.swt.custom.CCombo.class,
-    org.eclipse.swt.custom.CLabel.class,
-    org.eclipse.swt.browser.Browser.class,
-    org.eclipse.swt.custom.ScrolledComposite.class,
-    org.eclipse.swt.widgets.ScrollBar.class,
-    org.eclipse.rap.rwt.widgets.FileUpload.class,
-    org.eclipse.rap.rwt.widgets.DropDown.class
+  private static final String[] THEMEABLE_WIDGETS = {
+    org.eclipse.swt.widgets.Widget.class.getName(),
+    org.eclipse.swt.widgets.Control.class.getName(),
+    org.eclipse.swt.widgets.Composite.class.getName(),
+    org.eclipse.swt.widgets.Button.class.getName(),
+    org.eclipse.swt.widgets.Combo.class.getName(),
+    org.eclipse.swt.widgets.CoolBar.class.getName(),
+    org.eclipse.swt.custom.CTabFolder.class.getName(),
+    org.eclipse.swt.widgets.Group.class.getName(),
+    org.eclipse.swt.widgets.Label.class.getName(),
+    org.eclipse.swt.widgets.Link.class.getName(),
+    org.eclipse.swt.widgets.List.class.getName(),
+    org.eclipse.swt.widgets.Menu.class.getName(),
+    org.eclipse.swt.widgets.ProgressBar.class.getName(),
+    org.eclipse.swt.widgets.Shell.class.getName(),
+    org.eclipse.swt.widgets.Spinner.class.getName(),
+    org.eclipse.swt.widgets.TabFolder.class.getName(),
+    org.eclipse.swt.widgets.Table.class.getName(),
+    org.eclipse.swt.widgets.Text.class.getName(),
+    org.eclipse.swt.widgets.ToolBar.class.getName(),
+    org.eclipse.swt.widgets.Tree.class.getName(),
+    org.eclipse.swt.widgets.Scale.class.getName(),
+    org.eclipse.swt.widgets.DateTime.class.getName(),
+    org.eclipse.swt.widgets.ExpandBar.class.getName(),
+    org.eclipse.swt.widgets.Sash.class.getName(),
+    org.eclipse.swt.widgets.Slider.class.getName(),
+    org.eclipse.swt.widgets.ToolTip.class.getName(),
+    org.eclipse.swt.custom.CCombo.class.getName(),
+    org.eclipse.swt.custom.CLabel.class.getName(),
+    org.eclipse.swt.browser.Browser.class.getName(),
+    org.eclipse.swt.custom.ScrolledComposite.class.getName(),
+    org.eclipse.swt.widgets.ScrollBar.class.getName(),
+    org.eclipse.rap.rwt.widgets.FileUpload.class.getName(),
+    org.eclipse.rap.rwt.widgets.DropDown.class.getName()
   };
 
   private final Map<String, Theme> themes;
@@ -141,7 +141,7 @@ public class ThemeManager {
    * Adds a custom widget to the list of themeable widgets. Note that this
    * method must be called before <code>initialize</code>.
    *
-   * @param widget the themeable widget to add, must not be <code>null</code>
+   * @param className the themeable widget to add, must not be <code>null</code>
    * @param loader the resource loader used to load theme resources like theme
    *          definitions etc. The resources to load follow a naming convention
    *          and must be resolved by the class loader. This argument must not
@@ -151,15 +151,11 @@ public class ThemeManager {
    * @throws IllegalArgumentException if the given widget is not a subtype of
    *           {@link Widget}
    */
-  public void addThemeableWidget( Class<? extends Widget> widget, ResourceLoader loader ) {
+  public void addThemeableWidget( String className, ResourceLoader loader ) {
     checkNotInitialized();
-    ParamCheck.notNull( widget, "widget" );
+    ParamCheck.notNull( className, "widget" );
     ParamCheck.notNull( loader, "loader" );
-    if( !Widget.class.isAssignableFrom( widget ) ) {
-      String message = "Themeable widget is not a subtype of Widget: " + widget.getName();
-      throw new IllegalArgumentException( message );
-    }
-    themeableWidgets.add( new ThemeableWidget( widget, loader ) );
+    themeableWidgets.add( new ThemeableWidget( className, loader ) );
   }
 
   public ThemeAdapterManager getThemeAdapterManager() {
@@ -224,7 +220,7 @@ public class ThemeManager {
   }
 
   public ThemeableWidget getThemeableWidget( Class<? extends Widget> widget ) {
-    return themeableWidgets.get( widget );
+    return themeableWidgets.get( widget.getName() );
   }
 
   public List<String> getAppearances() {
@@ -253,16 +249,15 @@ public class ThemeManager {
     }
   }
 
-  @SuppressWarnings( "unchecked" )
   private void addDefaultThemableWidgets() {
-    for( Class<?> widget : THEMEABLE_WIDGETS ) {
-      addThemeableWidget( (Class<? extends Widget>)widget, STANDARD_RESOURCE_LOADER );
+    for( String className : THEMEABLE_WIDGETS ) {
+      addThemeableWidget( className, STANDARD_RESOURCE_LOADER );
     }
   }
 
   private void loadThemeableWidgetResources( ThemeableWidget themeWidget ) {
-    String className = themeWidget.widget.getSimpleName();
-    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
+    String className = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.className );
+    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.className );
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
@@ -274,7 +269,7 @@ public class ThemeManager {
         fallbackTheme.addStyleSheet( themeWidget.defaultStyleSheet );
       }
     } catch( IOException e ) {
-      String msg = "Failed to initialize themeable widget: " + themeWidget.widget.getName();
+      String msg = "Failed to initialize themeable widget: " + themeWidget.className;
       throw new ThemeManagerException( msg, e );
     }
   }

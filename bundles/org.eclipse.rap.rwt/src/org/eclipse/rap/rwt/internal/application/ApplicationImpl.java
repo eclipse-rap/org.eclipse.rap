@@ -146,7 +146,7 @@ public class ApplicationImpl implements Application {
     ParamCheck.notNull( widget, "widget" );
     ParamCheck.notNull( resourceLoader, "resourceLoader" );
 
-    applicationContext.getThemeManager().addThemeableWidget( widget, resourceLoader );
+    applicationContext.getThemeManager().addThemeableWidget( widget.getName(), resourceLoader );
   }
 
   public void addClientProvider( ClientProvider clientProvider ) {

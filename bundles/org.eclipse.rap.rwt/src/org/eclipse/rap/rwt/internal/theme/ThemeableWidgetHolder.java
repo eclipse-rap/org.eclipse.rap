@@ -18,18 +18,18 @@ import java.util.Map;
 
 class ThemeableWidgetHolder {
 
-  private final Map<Class<?>, ThemeableWidget> themeableWidgets;
+  private final Map<String, ThemeableWidget> themeableWidgets;
 
   ThemeableWidgetHolder() {
     themeableWidgets = new LinkedHashMap<>();
   }
 
   void add( ThemeableWidget widget ) {
-    themeableWidgets.put( widget.widget, widget );
+    themeableWidgets.put( widget.className, widget );
   }
 
-  ThemeableWidget get( Class<?> widget ) {
-    return themeableWidgets.get( widget );
+  ThemeableWidget get( String className ) {
+    return themeableWidgets.get( className );
   }
 
   ThemeableWidget[] getAll() {

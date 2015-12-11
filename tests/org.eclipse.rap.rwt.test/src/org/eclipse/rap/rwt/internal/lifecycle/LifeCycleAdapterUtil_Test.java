@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.internal.lifecycle;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Locale;
 
 import org.eclipse.swt.widgets.Button;
@@ -22,7 +24,7 @@ public class LifeCycleAdapterUtil_Test {
 
   @Test
   public void testGetKitPackageVariants_withPackage() {
-    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( Button.class );
+    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( Button.class.getName() );
 
     String[] expected = {
       "org.internal.eclipse.swt.widgets.buttonkit",
@@ -42,6 +44,24 @@ public class LifeCycleAdapterUtil_Test {
     } finally {
       Locale.setDefault( originalLocale );
     }
+  }
+
+  @Test
+  public void testGetSimpleClassName_withoutPackage() {
+    String className = LifeCycleAdapterUtil.getSimpleClassName( "Button" );
+    assertEquals( "Button", className );
+  }
+
+  @Test
+  public void testGetPackageName() {
+    String packageName = LifeCycleAdapterUtil.getPackageName( "org.eclipse.swt.widgets.Button" );
+    assertEquals( "org.eclipse.swt.widgets", packageName );
+  }
+
+  @Test
+  public void testGetPackageName_withoutPackage() {
+    String packageName = LifeCycleAdapterUtil.getPackageName( "Button" );
+    assertEquals( "", packageName );
   }
 
 }
