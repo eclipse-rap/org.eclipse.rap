@@ -1,0 +1,193 @@
+/*******************************************************************************
+ * Copyright (c) 2015 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+
+/* Grid */
+
+Grid {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  border: none;
+  color: #4a4a4a;
+}
+
+Grid[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
+GridItem {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+GridItem:hover {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+GridItem:selected {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+Grid-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Grid-RowOverlay:hover {
+  background-color: #e9f3d2;
+}
+
+Grid-RowOverlay:selected {
+  background-color: #abe033;
+  color: #ffffff;
+  background-image: none;
+}
+
+Grid-RowOverlay:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+  background-image: none;
+}
+
+GridColumn {
+  background-image: url( "theme/fancy/icons/table-column.png" );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+  padding: 1px 2px;
+  text-overflow: clip;
+}
+
+GridColumn:hover {
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-image: url( "theme/fancy/icons/table-column-hover.png" );
+  border-bottom: none;
+  text-overflow: clip;
+}
+
+GridColumn-SortIndicator {
+  background-image: none;
+}
+
+GridColumn-SortIndicator:up {
+  background-image: url( theme/fancy/icons/sort-indicator-up.png );
+}
+
+GridColumn-SortIndicator:down {
+  background-image: url( theme/fancy/icons/sort-indicator-down.png );
+}
+
+Grid-Cell {
+  spacing: 3px;
+  padding: 2px 3px 3px 3px;
+}
+
+Grid-GridLine {
+  color: #d0d0d0;
+}
+
+Grid-GridLine:header {
+  color: #d0d0d0;
+}
+
+Grid-Indent {
+  width: 16px;
+  background-image: none;
+}
+
+Grid-Indent:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Grid-Indent:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Grid-Indent:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Grid-Indent:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Grid-Indent:line {
+  background-image: none;
+}
+
+Grid-Indent:first {
+  background-image: none;
+}
+
+Grid-Indent:first:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Grid-Indent:first:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Grid-Indent:first:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Grid-Indent:first:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Grid-Indent:last {
+  background-image: none;
+}
+
+Grid-Indent:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Grid-Indent:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Grid-Indent:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Grid-Indent:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Grid-Indent:first:last {
+  background-image: none;
+}
+
+Grid-Indent:first:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Grid-Indent:first:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Grid-Indent:first:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Grid-Indent:first:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}

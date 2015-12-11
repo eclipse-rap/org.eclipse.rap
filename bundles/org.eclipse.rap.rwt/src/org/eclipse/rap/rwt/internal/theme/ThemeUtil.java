@@ -138,10 +138,10 @@ public final class ThemeUtil {
   }
 
   public static CssValue getCssValue( String themeId,
-                                     String cssElement,
-                                     String cssProperty,
-                                     ValueSelector selector,
-                                     Widget widget )
+                                      String cssElement,
+                                      String cssProperty,
+                                      ValueSelector selector,
+                                      Widget widget )
   {
     Theme theme =  getApplicationContext().getThemeManager().getTheme( themeId );
     CssValuesMap valuesMap = theme.getValuesMap();

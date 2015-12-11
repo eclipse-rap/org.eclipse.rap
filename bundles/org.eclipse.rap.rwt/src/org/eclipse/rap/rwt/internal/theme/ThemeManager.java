@@ -84,7 +84,8 @@ public class ThemeManager {
     org.eclipse.swt.custom.ScrolledComposite.class.getName(),
     org.eclipse.swt.widgets.ScrollBar.class.getName(),
     org.eclipse.rap.rwt.widgets.FileUpload.class.getName(),
-    org.eclipse.rap.rwt.widgets.DropDown.class.getName()
+    org.eclipse.rap.rwt.widgets.DropDown.class.getName(),
+    "org.eclipse.nebula.widgets.grid.Grid"
   };
 
   private final Map<String, Theme> themes;

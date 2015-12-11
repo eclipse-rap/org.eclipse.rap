@@ -94,7 +94,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     remoteObject.setHandler( new GridOperationHandler( grid ) );
     remoteObject.set( "parent", getId( grid.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( grid, ALLOWED_STYLES ) ) );
-    remoteObject.set( "appearance", "tree" );
+    remoteObject.set( "appearance", "grid" );
     IGridAdapter adapter = getGridAdapter( grid );
     remoteObject.set( "indentionWidth", adapter.getIndentationWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );

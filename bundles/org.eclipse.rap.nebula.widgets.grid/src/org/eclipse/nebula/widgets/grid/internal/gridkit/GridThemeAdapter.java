@@ -22,35 +22,35 @@ public class GridThemeAdapter extends ControlThemeAdapterImpl {
 
   @Override
   public Font getFont( Control control ) {
-    return getCssFont( "Tree", "font", control );
+    return getCssFont( "Grid", "font", control );
   }
 
   public BoxDimensions getCheckBoxMargin( Control control ) {
-    return getCssBoxDimensions( "Tree-Checkbox", "margin", control ).dimensions;
+    return getCssBoxDimensions( "Grid-Checkbox", "margin", control ).dimensions;
   }
 
   public Size getCheckBoxImageSize( Control control ) {
-    return getCssImageSize( "Tree-Checkbox", "background-image", control );
+    return getCssImageSize( "Grid-Checkbox", "background-image", control );
   }
 
   public BoxDimensions getCellPadding( Control control ) {
-    return getCssBoxDimensions( "Tree-Cell", "padding", control ).dimensions;
+    return getCssBoxDimensions( "Grid-Cell", "padding", control ).dimensions;
   }
 
   public int getCellSpacing( Control control ) {
-    return Math.max( 0, getCssDimension( "Tree-Cell", "spacing", control ) );
+    return Math.max( 0, getCssDimension( "Grid-Cell", "spacing", control ) );
   }
 
   public BoxDimensions getHeaderPadding( Control control ) {
-    return getCssBoxDimensions( "TreeColumn", "padding", control ).dimensions;
+    return getCssBoxDimensions( "GridColumn", "padding", control ).dimensions;
   }
 
   public int getHeaderBorderBottomWidth( Control control ) {
-    return getCssBorderWidth( "TreeColumn", "border-bottom", control );
+    return getCssBorderWidth( "GridColumn", "border-bottom", control );
   }
 
   public int getIndentationWidth( Control control ) {
-    return getCssDimension( "Tree-Indent", "width", control );
+    return getCssDimension( "Grid-Indent", "width", control );
   }
 
 }

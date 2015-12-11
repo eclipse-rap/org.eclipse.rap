@@ -90,7 +90,7 @@ public class GridLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( grid );
     assertEquals( "rwt.widgets.Grid", operation.getType() );
-    assertEquals( "tree", operation.getProperties().get( "appearance" ).asString() );
+    assertEquals( "grid", operation.getProperties().get( "appearance" ).asString() );
     assertEquals( 16, operation.getProperties().get( "indentionWidth" ).asInt() );
     assertFalse( operation.getProperties().names().contains( "checkBoxMetrics" ) );
     assertTrue( getStyles( operation ).contains( "FULL_SELECTION" ) );

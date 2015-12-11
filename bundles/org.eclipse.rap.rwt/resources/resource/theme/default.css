@@ -1618,21 +1618,21 @@ ToolItem-Separator {
   width: 10px;
 }
 
-/* Tree default theme */
+/* Tree/Grid default theme */
 
-Tree {
+Tree, Grid {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   border: none;
   color: #4a4a4a;
 }
 
-Tree[BORDER] {
+Tree[BORDER], Grid[BORDER] {
   border: 1px solid #bdbdbd;
 }
 
-TreeItem,
-TreeItem:linesvisible:even:rowtemplate {
+TreeItem, GridItem,
+TreeItem:linesvisible:even:rowtemplate, GridItem:linesvisible:even:rowtemplate {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
@@ -1641,19 +1641,19 @@ TreeItem:linesvisible:even:rowtemplate {
   text-overflow: ellipsis;
 }
 
-TreeItem:linesvisible:even {
+TreeItem:linesvisible:even, GridItem:linesvisible:even {
   background-color: #f0f0f0;
   color: inherit;
   border: none;
 }
 
-Tree-RowOverlay {
+Tree-RowOverlay, Grid-RowOverlay {
   background-color: transparent;
   color: inherit;
   background-image: none;
 }
 
-Tree-RowOverlay:hover {
+Tree-RowOverlay:hover, Grid-RowOverlay:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1663,7 +1663,7 @@ Tree-RowOverlay:hover {
   );
 }
 
-Tree-RowOverlay:selected {
+Tree-RowOverlay:selected, Grid-RowOverlay:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1673,7 +1673,7 @@ Tree-RowOverlay:selected {
   );
 }
 
-Tree-RowOverlay:selected:unfocused {
+Tree-RowOverlay:selected:unfocused, Grid-RowOverlay:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1683,7 +1683,7 @@ Tree-RowOverlay:selected:unfocused {
   );
 }
 
-Tree-RowOverlay:linesvisible:even:hover {
+Tree-RowOverlay:linesvisible:even:hover, Grid-RowOverlay:linesvisible:even:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1693,7 +1693,7 @@ Tree-RowOverlay:linesvisible:even:hover {
   );
 }
 
-Tree-RowOverlay:linesvisible:even:selected {
+Tree-RowOverlay:linesvisible:even:selected, Grid-RowOverlay:linesvisible:even:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1703,7 +1703,8 @@ Tree-RowOverlay:linesvisible:even:selected {
   );
 }
 
-Tree-RowOverlay:linesvisible:even:selected:unfocused {
+Tree-RowOverlay:linesvisible:even:selected:unfocused,
+Grid-RowOverlay:linesvisible:even:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1713,7 +1714,7 @@ Tree-RowOverlay:linesvisible:even:selected:unfocused {
   );
 }
 
-TreeColumn {
+TreeColumn, GridColumn {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: inherit;
   background-color: #f0f0f0;
@@ -1728,7 +1729,7 @@ TreeColumn {
   text-overflow: ellipsis;
 }
 
-TreeColumn:hover {
+TreeColumn:hover, GridColumn:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e4e4e4 ),
@@ -1736,205 +1737,207 @@ TreeColumn:hover {
   );
 }
 
-TreeColumn-SortIndicator {
+TreeColumn-SortIndicator, GridColumn-SortIndicator {
   background-image: none;
 }
 
-TreeColumn-SortIndicator:up {
+TreeColumn-SortIndicator:up, GridColumn-SortIndicator:up {
   background-image: url( resource/widget/rap/column/sort-indicator-up.png );
 }
 
-TreeColumn-SortIndicator:down {
+TreeColumn-SortIndicator:down, GridColumn-SortIndicator:down {
   background-image: url( resource/widget/rap/column/sort-indicator-down.png );
 }
 
-Tree-Cell {
+Tree-Cell, Grid-Cell {
   spacing: 3px;
   padding: 5px 3px 5px 3px;
 }
 
-Tree-GridLine,
-Tree-GridLine:vertical:rowtemplate {
+Tree-GridLine, Grid-GridLine,
+Tree-GridLine:vertical:rowtemplate, Grid-GridLine:vertical:rowtemplate {
   color: transparent;
 }
 
-Tree-GridLine:vertical,
-Tree-GridLine:header,
-Tree-GridLine:horizontal:rowtemplate {
+Tree-GridLine:vertical, Grid-GridLine:vertical,
+Tree-GridLine:header, Grid-GridLine:header,
+Tree-GridLine:horizontal:rowtemplate, Grid-GridLine:horizontal:rowtemplate {
   color: #d0d0d0;
 }
 
-Tree-Checkbox {
+Tree-Checkbox, Grid-Checkbox {
   margin: 0px 2px 0px 0px;
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 
-Tree-Checkbox:hover {
+Tree-Checkbox:hover, Grid-Checkbox:hover {
   background-image: url( resource/widget/rap/button/check-unselected-hover.png );
 }
 
-Tree-Checkbox:checked {
+Tree-Checkbox:checked, Grid-Checkbox:checked {
   background-image: url( resource/widget/rap/button/check-selected.png );
 }
 
-Tree-Checkbox:checked:hover {
+Tree-Checkbox:checked:hover, Grid-Checkbox:checked:hover {
   background-image: url( resource/widget/rap/button/check-selected-hover.png );
 }
 
-Tree-Checkbox:checked:grayed {
+Tree-Checkbox:checked:grayed, Grid-Checkbox:checked:grayed {
   background-image: url( resource/widget/rap/button/check-grayed.png );
 }
 
-Tree-Checkbox:checked:grayed:hover {
+Tree-Checkbox:checked:grayed:hover, Grid-Checkbox:checked:grayed:hover {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }
 
-Tree-Indent {
+Tree-Indent, Grid-Indent {
   width: 16px;
   background-image: none;
 }
 
-Tree-Indent:collapsed {
+Tree-Indent:collapsed, Grid-Indent:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:collapsed:hover {
+Tree-Indent:collapsed:hover, Grid-Indent:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
-Tree-Indent:expanded {
+Tree-Indent:expanded, Grid-Indent:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
 }
 
-Tree-Indent:expanded:hover {
+Tree-Indent:expanded:hover, Grid-Indent:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
-Tree-Indent:line {
+Tree-Indent:line, Grid-Indent:line {
   background-image: none;
 }
 
-Tree-Indent:first {
+Tree-Indent:first, Grid-Indent:first {
   background-image: none;
 }
 
-Tree-Indent:first:collapsed {
+Tree-Indent:first:collapsed, Grid-Indent:first:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:first:collapsed:hover {
+Tree-Indent:first:collapsed:hover, Grid-Indent:first:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
-Tree-Indent:first:expanded {
+Tree-Indent:first:expanded, Grid-Indent:first:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
 }
 
-Tree-Indent:first:expanded:hover {
+Tree-Indent:first:expanded:hover, Grid-Indent:first:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
-Tree-Indent:last {
+Tree-Indent:last, Grid-Indent:last {
   background-image: none;
 }
 
-Tree-Indent:last:collapsed {
+Tree-Indent:last:collapsed, Grid-Indent:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:last:collapsed:hover {
+Tree-Indent:last:collapsed:hover, Grid-Indent:last:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
-Tree-Indent:last:expanded {
+Tree-Indent:last:expanded, Grid-Indent:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
 }
 
-Tree-Indent:last:expanded:hover {
+Tree-Indent:last:expanded:hover, Grid-Indent:last:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
-Tree-Indent:first:last {
+Tree-Indent:first:last, Grid-Indent:first:last {
   background-image: none;
 }
 
-Tree-Indent:first:last:collapsed {
+Tree-Indent:first:last:collapsed, Grid-Indent:first:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:first:last:collapsed:hover {
+Tree-Indent:first:last:collapsed:hover, Grid-Indent:first:last:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
-Tree-Indent:first:last:expanded {
+Tree-Indent:first:last:expanded, Grid-Indent:first:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
 }
 
-Tree-Indent:first:last:expanded:hover {
+Tree-Indent:first:last:expanded:hover, Grid-Indent:first:last:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:collapsed {
+Tree-Indent[RIGHT_TO_LEFT]:collapsed, Grid-Indent[RIGHT_TO_LEFT]:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:collapsed:hover {
+Tree-Indent[RIGHT_TO_LEFT]:collapsed:hover, Grid-Indent[RIGHT_TO_LEFT]:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:expanded {
+Tree-Indent[RIGHT_TO_LEFT]:expanded, Grid-Indent[RIGHT_TO_LEFT]:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:expanded:hover {
+Tree-Indent[RIGHT_TO_LEFT]:expanded:hover, Grid-Indent[RIGHT_TO_LEFT]:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:collapsed {
+Tree-Indent[RIGHT_TO_LEFT]:first:collapsed, Grid-Indent[RIGHT_TO_LEFT]:first:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:collapsed:hover {
+Tree-Indent[RIGHT_TO_LEFT]:first:collapsed:hover, Grid-Indent[RIGHT_TO_LEFT]:first:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:expanded {
+Tree-Indent[RIGHT_TO_LEFT]:first:expanded, Grid-Indent[RIGHT_TO_LEFT]:first:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:expanded:hover {
+Tree-Indent[RIGHT_TO_LEFT]:first:expanded:hover, Grid-Indent[RIGHT_TO_LEFT]:first:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:last:collapsed {
+Tree-Indent[RIGHT_TO_LEFT]:last:collapsed, Grid-Indent[RIGHT_TO_LEFT]:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:last:collapsed:hover {
+Tree-Indent[RIGHT_TO_LEFT]:last:collapsed:hover, Grid-Indent[RIGHT_TO_LEFT]:last:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:last:expanded {
+Tree-Indent[RIGHT_TO_LEFT]:last:expanded, Grid-Indent[RIGHT_TO_LEFT]:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:last:expanded:hover {
+Tree-Indent[RIGHT_TO_LEFT]:last:expanded:hover, Grid-Indent[RIGHT_TO_LEFT]:last:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed {
+Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed, Grid-Indent[RIGHT_TO_LEFT]:first:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed:hover {
+Tree-Indent[RIGHT_TO_LEFT]:first:last:collapsed:hover,
+Grid-Indent[RIGHT_TO_LEFT]:first:last:collapsed:hover {
   background-image: url( resource/widget/rap/tree/tree-collapsed-hover-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded {
+Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded, Grid-Indent[RIGHT_TO_LEFT]:first:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded-left.png );
 }
 
-Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded:hover {
+Tree-Indent[RIGHT_TO_LEFT]:first:last:expanded:hover,
+Grid-Indent[RIGHT_TO_LEFT]:first:last:expanded:hover {
   background-image: url( resource/widget/rap/tree/tree-expanded-hover-left.png );
 }
 

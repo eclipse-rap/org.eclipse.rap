@@ -1,0 +1,140 @@
+/*******************************************************************************
+ * Copyright (c) 2015 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+
+/* Grid */
+
+Grid {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  border: none;
+  color: #4a4a4a;
+}
+
+GridItem {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+GridItem:hover {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+GridItem:selected {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+  text-overflow: clip;
+}
+
+Grid-RowOverlay {
+  background-color: transparent;
+  color: inherit;
+  background-image: none;
+}
+
+Grid-RowOverlay:hover {
+  background-color: #dae9f7;
+}
+
+Grid-RowOverlay:selected {
+  background-color: #00589f;
+  color: #ffffff;
+  background-image: none;
+}
+
+Grid-RowOverlay:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+  background-image: none;
+}
+
+GridColumn {
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+  padding: 1px 2px;
+  text-overflow: clip;
+}
+
+GridColumn:hover {
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom: none;
+  text-overflow: clip;
+}
+
+GridColumn-SortIndicator {
+  background-image: none;
+}
+
+Grid-Cell {
+  spacing: 3px;
+  padding: 2px 3px 3px 3px;
+}
+
+Grid-GridLine {
+  color: #d0d0d0;
+}
+
+Grid-GridLine:header {
+  color: #d0d0d0;
+}
+
+Grid-Checkbox {
+  margin: 0px 2px 0px 0px;
+}
+
+Grid-Indent {
+  width: 16px;
+  background-image: none;
+}
+
+Grid-Indent:line {
+  background-image: none;
+}
+
+Grid-Indent:first {
+  background-image: none;
+}
+
+Grid-Indent:last {
+  background-image: none;
+}
+
+Grid-Indent:first:last {
+  background-image: none;
+}
+
+Grid-Indent {
+  width: 16px;
+  background-image: none;
+}
+
+Grid-Indent:line {
+  background-image: none;
+}
+
+Grid-Indent:first {
+  background-image: none;
+}
+
+Grid-Indent:last {
+  background-image: none;
+}
+
+Grid-Indent:first:last {
+  background-image: none;
+}
