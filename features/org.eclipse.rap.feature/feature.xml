@@ -19,10 +19,6 @@
       %license
    </license>
 
-   <url>
-      <update label="RAP 3.0 Repository" url="http://download.eclipse.org/rt/rap/3.0/"/>
-   </url>
-
    <plugin
          id="org.eclipse.rap.rwt"
          download-size="0"
