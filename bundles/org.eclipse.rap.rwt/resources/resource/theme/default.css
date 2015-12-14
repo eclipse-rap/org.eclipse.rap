@@ -1191,7 +1191,7 @@ TableItem:linesvisible:even:rowtemplate {
 }
 
 TableItem:linesvisible:even {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
   color: inherit;
 }
 
@@ -1202,63 +1202,21 @@ Table-RowOverlay {
 }
 
 Table-RowOverlay:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  color: inherit;
+  background-color: rgba( 181, 181, 181, 0.2 );
+  background-image: none;
 }
 
 Table-RowOverlay:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  color: inherit;
+  background-color: rgba(20, 110, 190, 0.25);
+  background-image: none;
 }
 
 Table-RowOverlay:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
-}
-
-Table-RowOverlay:linesvisible:even:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
-}
-
-Table-RowOverlay:linesvisible:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
-}
-
-Table-RowOverlay:linesvisible:even:selected:unfocused {
-  background-color: #959595;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
-  color: #ffffff;
+  background-color: rgba( 98, 130, 171, 0.2 );
+  background-image: none;
+  color: inherit;
 }
 
 TableColumn-SortIndicator {
@@ -1642,7 +1600,7 @@ TreeItem:linesvisible:even:rowtemplate {
 }
 
 TreeItem:linesvisible:even {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
   color: inherit;
   border: none;
 }
@@ -1654,63 +1612,21 @@ Tree-RowOverlay, Grid-RowOverlay {
 }
 
 Tree-RowOverlay:hover, Grid-RowOverlay:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
+  color: inherit;
+  background-color: rgba( 181, 181, 181, 0.2 );
+  background-image: none;
 }
 
 Tree-RowOverlay:selected, Grid-RowOverlay:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
+  color: inherit;
+  background-color: rgba( 20, 110, 190, 0.25 );
+  background-image: none;
 }
 
 Tree-RowOverlay:selected:unfocused, Grid-RowOverlay:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
-}
-
-Tree-RowOverlay:linesvisible:even:hover {
-  color: #4a4a4a;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
-}
-
-Tree-RowOverlay:linesvisible:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
-}
-
-Tree-RowOverlay:linesvisible:even:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
+  background-color: rgba( 98, 130, 171, 0.2 );
+  background-image: none;
+  color: inherit;
 }
 
 TreeColumn, GridColumn {
@@ -1758,9 +1674,13 @@ Tree-GridLine:vertical:rowtemplate, Grid-GridLine:vertical:rowtemplate {
   color: transparent;
 }
 
-Tree-GridLine:vertical, Grid-GridLine,
+Tree-GridLine:vertical,
 Tree-GridLine:header,
 Tree-GridLine:horizontal:rowtemplate {
+  color: #dedede;
+}
+
+Grid-GridLine {
   color: #d0d0d0;
 }
 
