@@ -589,10 +589,11 @@ public abstract class RegistryPersistence implements IDisposable,
 	 * change listener is created.
 	 */
 	protected RegistryPersistence() {
+		final Display display = Display.getDefault();
 		registryChangeListener = new IRegistryChangeListener() {
 			public final void registryChanged(final IRegistryChangeEvent event) {
 				if (isChangeImportant(event)) {
-					Display.getDefault().asyncExec(new Runnable() {
+					display.asyncExec(new Runnable() {
 						public final void run() {
 							read();
 						}

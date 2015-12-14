@@ -83,6 +83,8 @@ public class PopupMenuExtender implements IMenuListener2,
 	private ArrayList actionContributionCache = new ArrayList();
 	private ArrayList managerContributionCache = new ArrayList();
 	private boolean cleanupNeeded = false;
+	
+	private Display defaultDisplay ;
 
     /**
      * Construct a new menu extender.
@@ -133,6 +135,7 @@ public class PopupMenuExtender implements IMenuListener2,
 		}
 		readStaticActionsFor(id);
 				
+		defaultDisplay = Display.getDefault();
 		Platform.getExtensionRegistry().addRegistryChangeListener(this);
 	}
 
@@ -509,10 +512,6 @@ public class PopupMenuExtender implements IMenuListener2,
 	 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 	 */
 	public void registryChanged(final IRegistryChangeEvent event) {
-		Display display = Display.getDefault();
-		if (part != null) {
-			display = part.getSite().getPage().getWorkbenchWindow().getWorkbench().getDisplay();
-		}
 		//check the delta to see if there are any viewer contribution changes.  if so, null our builder to cause reparsing on the next menu show
 		IExtensionDelta [] deltas = event.getExtensionDeltas();
 		for (int i = 0; i < deltas.length; i++) {
@@ -535,7 +534,7 @@ public class PopupMenuExtender implements IMenuListener2,
 				}
 										
 				if (clearPopups) {
-					display.syncExec(new Runnable() {
+					defaultDisplay.syncExec(new Runnable() {
 						public void run() {
 							clearStaticActions();
 						}
