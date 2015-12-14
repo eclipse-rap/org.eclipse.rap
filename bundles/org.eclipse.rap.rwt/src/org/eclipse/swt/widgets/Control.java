@@ -2022,6 +2022,25 @@ public abstract class Control extends Widget implements Drawable {
     removeListener( SWT.MenuDetect, listener );
   }
 
+  /**
+   * Requests that this control and all of its ancestors be repositioned
+   * their layouts at the earliest opportunity. This should be invoked after
+   * modifying the control in order to inform any dependent layouts of
+   * the change.
+   * <p>
+   * The control will not be repositioned synchronously. This method is
+   * fast-running and only marks the control for future participation in
+   * a deferred layout.
+   * <p>
+   * Invoking this method multiple times before the layout occurs is an
+   * inexpensive no-op.
+   *
+   * @since 3.1
+   */
+  public void requestLayout() {
+    getShell().layout( new Control[] { this }, SWT.DEFER );
+  }
+
   ////////////////
   // drawing (Note that we can't really force a redraw. This is just a
   // fake for event notifications that come on OS systems with redraws)
