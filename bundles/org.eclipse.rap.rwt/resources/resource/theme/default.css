@@ -1632,7 +1632,7 @@ Tree[BORDER], Grid[BORDER] {
 }
 
 TreeItem, GridItem,
-TreeItem:linesvisible:even:rowtemplate, GridItem:linesvisible:even:rowtemplate {
+TreeItem:linesvisible:even:rowtemplate {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
@@ -1641,7 +1641,7 @@ TreeItem:linesvisible:even:rowtemplate, GridItem:linesvisible:even:rowtemplate {
   text-overflow: ellipsis;
 }
 
-TreeItem:linesvisible:even, GridItem:linesvisible:even {
+TreeItem:linesvisible:even {
   background-color: #f0f0f0;
   color: inherit;
   border: none;
@@ -1683,7 +1683,7 @@ Tree-RowOverlay:selected:unfocused, Grid-RowOverlay:selected:unfocused {
   );
 }
 
-Tree-RowOverlay:linesvisible:even:hover, Grid-RowOverlay:linesvisible:even:hover {
+Tree-RowOverlay:linesvisible:even:hover {
   color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1693,7 +1693,7 @@ Tree-RowOverlay:linesvisible:even:hover, Grid-RowOverlay:linesvisible:even:hover
   );
 }
 
-Tree-RowOverlay:linesvisible:even:selected, Grid-RowOverlay:linesvisible:even:selected {
+Tree-RowOverlay:linesvisible:even:selected {
   color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
@@ -1703,8 +1703,7 @@ Tree-RowOverlay:linesvisible:even:selected, Grid-RowOverlay:linesvisible:even:se
   );
 }
 
-Tree-RowOverlay:linesvisible:even:selected:unfocused,
-Grid-RowOverlay:linesvisible:even:selected:unfocused {
+Tree-RowOverlay:linesvisible:even:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
   background-image: gradient(
@@ -1754,14 +1753,14 @@ Tree-Cell, Grid-Cell {
   padding: 5px 3px 5px 3px;
 }
 
-Tree-GridLine, Grid-GridLine,
+Tree-GridLine,
 Tree-GridLine:vertical:rowtemplate, Grid-GridLine:vertical:rowtemplate {
   color: transparent;
 }
 
-Tree-GridLine:vertical, Grid-GridLine:vertical,
-Tree-GridLine:header, Grid-GridLine:header,
-Tree-GridLine:horizontal:rowtemplate, Grid-GridLine:horizontal:rowtemplate {
+Tree-GridLine:vertical, Grid-GridLine,
+Tree-GridLine:header,
+Tree-GridLine:horizontal:rowtemplate {
   color: #d0d0d0;
 }
 
