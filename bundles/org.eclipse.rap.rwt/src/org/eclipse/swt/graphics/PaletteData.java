@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,7 @@ public final class PaletteData implements SerializableCompatibility {
  *    <li>ERROR_NULL_ARGUMENT - if the argument is null</li>
  * </ul>
  */
-public PaletteData(RGB[] colors) {
+public PaletteData(RGB... colors) {
     if (colors == null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     this.colors = colors;
     this.isDirect = false;
