@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,57 +57,43 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GridItem", {
   propertyHandler : {
     "data" : rwt.remote.HandlerUtil.getControlPropertyHandler( "data" ),
     "background" : function( widget, value ) {
-      if( value === null ) {
-        widget.setBackground( null );
-      } else {
-        widget.setBackground( rwt.util.Colors.rgbToRgbString( value ) );
-      }
+      var background = value == null ? null : rwt.util.Colors.rgbToRgbString( value );
+      widget.setBackground( background );
     },
     "foreground" : function( widget, value ) {
-      if( value === null ) {
-        widget.setForeground( null );
-      } else {
-        widget.setForeground( rwt.util.Colors.rgbToRgbString( value ) );
-      }
+      var foreground = value == null ? null : rwt.util.Colors.rgbToRgbString( value );
+      widget.setForeground( foreground );
     },
     "font" : function( widget, value ) {
-      if( value === null ) {
-        widget.setFont( null );
-      } else {
-        var font = rwt.html.Font.fromArray( value ).toCss();
-        widget.setFont( font );
-      }
+      var font = value == null ? null : rwt.html.Font.fromArray( value ).toCss();
+      widget.setFont( font );
     },
     "cellBackgrounds" : function( widget, value ) {
       var backgrounds = [];
-      for( var i = 0; i < value.length; i++ ) {
-        if( value[ i ] === null ) {
-          backgrounds[ i ] = null;
-        } else {
-          backgrounds[ i ] = rwt.util.Colors.rgbToRgbString( value[ i ] );
+      if( value ) {
+        for( var i = 0; i < value.length; i++ ) {
+          var background = value[ i ] === null ? null : rwt.util.Colors.rgbToRgbString( value[ i ] );
+          backgrounds[ i ] = background;
         }
       }
       widget.setCellBackgrounds( backgrounds );
     },
     "cellForegrounds" : function( widget, value ) {
       var foregrounds = [];
-      for( var i = 0; i < value.length; i++ ) {
-        if( value[ i ] === null ) {
-          foregrounds[ i ] = null;
-        } else {
-          foregrounds[ i ] = rwt.util.Colors.rgbToRgbString( value[ i ] );
+      if( value ) {
+        for( var i = 0; i < value.length; i++ ) {
+          var foreground = value[ i ] === null ? null : rwt.util.Colors.rgbToRgbString( value[ i ] );
+          foregrounds[ i ] = foreground;
         }
       }
       widget.setCellForegrounds( foregrounds );
     },
     "cellFonts" : function( widget, value ) {
       var fonts = [];
-      for( var i = 0; i < value.length; i++ ) {
-        if( value[ i ] === null ) {
-          fonts[ i ] = "";
-        } else {
-          var font = rwt.html.Font.fromArray( value[ i ] );
-          fonts[ i ] = font.toCss();
+      if( value ) {
+        for( var i = 0; i < value.length; i++ ) {
+          var font = value[ i ] === null ? "" : rwt.html.Font.fromArray( value[ i ] ).toCss();
+          fonts[ i ] = font;
         }
       }
       widget.setCellFonts( fonts );
