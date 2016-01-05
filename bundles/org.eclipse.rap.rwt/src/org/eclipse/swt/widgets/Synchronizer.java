@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,9 @@ public Synchronizer (Display display) {
 void addLast (RunnableLock lock) {
 	boolean wake = false;
 	synchronized (messageLock) {
-		if (messages == null) messages = new RunnableLock [GROW_SIZE];
+		if (messages == null) {
+      messages = new RunnableLock [GROW_SIZE];
+    }
 		if (messageCount == messages.length) {
 			RunnableLock[] newMessages = new RunnableLock [messageCount + GROW_SIZE];
 			System.arraycopy (messages, 0, newMessages, 0, messageCount);
@@ -80,7 +82,8 @@ void addLast (RunnableLock lock) {
 // RAP [rst] Notify server push mechanism when runnable was added to empty queue
 		if( messageCount == 1 ) {
 		  RWT.getUISession( display ).exec( new Runnable() {
-		    public void run() {
+		    @Override
+        public void run() {
 		      ServerPushManager.getInstance().setHasRunnables( true );
 		    }
 		  } );
@@ -89,9 +92,12 @@ void addLast (RunnableLock lock) {
 // END RAP
 		wake = messageCount == 1;
 	}
-	if (wake) display.wakeThread ();
+	if (wake) {
+    display.wakeThread ();
+  }
 }
 
+@SuppressWarnings( "unused" )
 protected void runnableAdded( Runnable runnable ) {
 }
 
@@ -144,17 +150,22 @@ void releaseSynchronizer () {
 
 RunnableLock removeFirst () {
 	synchronized (messageLock) {
-		if (messageCount == 0) return null;
+		if (messageCount == 0) {
+      return null;
+    }
 		RunnableLock lock = messages [0];
 		System.arraycopy (messages, 1, messages, 0, --messageCount);
 		messages [messageCount] = null;
 		if (messageCount == 0) {
-			if (messages.length > MESSAGE_LIMIT) messages = null;
+			if (messages.length > MESSAGE_LIMIT) {
+        messages = null;
+      }
 		}
 // RAP [rst] Notify server push mechanism when last runnable has been removed
 		if( messageCount == 0 ) {
 		  RWT.getUISession( display ).exec( new Runnable() {
-		    public void run() {
+		    @Override
+        public void run() {
 		      ServerPushManager.getInstance().setHasRunnables( false );
 		    }
 		  } );
@@ -172,7 +183,9 @@ boolean runAsyncMessages (boolean all) {
 	boolean run = false;
 	do {
 		RunnableLock lock = removeFirst ();
-		if (lock == null) return run;
+		if (lock == null) {
+      return run;
+    }
 		run = true;
 		synchronized (lock) {
 			syncThread = lock.thread;
@@ -212,7 +225,9 @@ protected void syncExec (Runnable runnable) {
 // RAP [rh] replaced by deviceLock, see Device#deviceLock for more information
 //	synchronized (Device.class) {
 	synchronized (display.getDeviceLock()) {
-	  if (display == null || display.isDisposed ()) SWT.error (SWT.ERROR_DEVICE_DISPOSED);
+	  if (display == null || display.isDisposed ()) {
+      SWT.error (SWT.ERROR_DEVICE_DISPOSED);
+    }
 		if (!display.isValidThread ()) {
 			if (runnable == null) {
 				display.wake ();
@@ -227,7 +242,9 @@ protected void syncExec (Runnable runnable) {
 		}
 	}
 	if (lock == null) {
-		if (runnable != null) runnable.run ();
+		if (runnable != null) {
+      runnable.run ();
+    }
 		return;
 	}
 	synchronized (lock) {
@@ -235,7 +252,7 @@ protected void syncExec (Runnable runnable) {
 		while (!lock.done ()) {
 			try {
 				lock.wait ();
-			} catch (InterruptedException e) {
+			} catch (@SuppressWarnings( "unused" ) InterruptedException e) {
 				interrupted = true;
 			}
 		}

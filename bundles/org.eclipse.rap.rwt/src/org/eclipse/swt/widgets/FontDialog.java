@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -372,6 +372,7 @@ public class FontDialog extends Dialog {
     final ColorDialog dialog = new ColorDialog( shell );
     dialog.setRGB( rgb );
     DialogUtil.open( dialog, new DialogCallback() {
+      @Override
       public void dialogClosed( int returnCode ) {
         RGB selected = dialog.getRGB();
         if( selected != null ) {
@@ -393,6 +394,7 @@ public class FontDialog extends Dialog {
     cbBold.addSelectionListener( selectionListener );
     cbItalic.addSelectionListener( selectionListener );
     txtFontFamily.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         String text = txtFontFamily.getText();
         selectFontFamilyInList( text );
@@ -456,7 +458,7 @@ public class FontDialog extends Dialog {
   }
 
   private void fillAvailableFonts() {
-    Collection<String> fontFamilies = new HashSet<String>();
+    Collection<String> fontFamilies = new HashSet<>();
     FontData[] fontList = getDisplay().getFontList( null, true );
     if( fontList != null ) {
       for( int i = 0; i < fontList.length; i++ ) {

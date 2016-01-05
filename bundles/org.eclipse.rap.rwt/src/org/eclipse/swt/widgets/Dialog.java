@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 
   private class DialogAdapter implements IDialogAdapter, SerializableCompatibility {
+    @Override
     public void openNonBlocking( final DialogCallback dialogCallback ) {
       prepareOpen();
       returnCode = SWT.CANCEL;
@@ -216,6 +217,7 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    * from application code.
    * </p>
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
@@ -279,10 +281,11 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
     return result;
   }
 
-  private void checkParent( Shell parent ) {
+  private static void checkParent( Shell parent ) {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     parent.checkWidget();
   }
+
 }

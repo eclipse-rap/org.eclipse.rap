@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ class AcceleratorBinding implements Listener {
     this.menuItem = menuItem;
   }
 
+  @Override
   public void handleEvent( Event event ) {
     if( isRelevantEvent( event ) && menuItem.isEnabled() ) {
       menuItem.handleAcceleratorActivation();
@@ -88,7 +89,7 @@ class AcceleratorBinding implements Listener {
     if( oldActiveKeys == null ) {
       oldActiveKeys = new String[ 0 ];
     }
-    ArrayList<String> activeKeys = new ArrayList<String>( Arrays.asList( oldActiveKeys ) );
+    ArrayList<String> activeKeys = new ArrayList<>( Arrays.asList( oldActiveKeys ) );
     if( oldAccelerator != 0 ) {
       activeKeys.remove( acceleratorAsString( oldAccelerator ) );
     }
