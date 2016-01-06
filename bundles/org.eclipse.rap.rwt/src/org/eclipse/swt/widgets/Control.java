@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2129,11 +2129,16 @@ public abstract class Control extends Widget implements Drawable {
   public void redraw( int x, int y, int width, int height, boolean all ) {
     checkWidget();
     if( width > 0 && height > 0 ) {
-      internalSetRedraw( true );
+      internalSetRedraw( true, x, y, width, height );
     }
   }
 
   void internalSetRedraw( boolean redraw ) {
+    display.redrawControl( this, redraw );
+  }
+
+  @SuppressWarnings( "unused" )
+  void internalSetRedraw( boolean redraw, int x, int y, int width, int height ) {
     display.redrawControl( this, redraw );
   }
 

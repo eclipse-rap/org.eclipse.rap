@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,24 +16,19 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     // NOTE: drawImage can not be tested
 
-    testInit : function() {
+    testCanvasDimensions : function() {
       var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new rwt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      gc.init( 300, 300,
-               [ [ "Arial" ], 10, false, false ],
-               [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
-      gc.draw( [ [ "beginPath" ], [ "moveTo", 10, 10 ], [ "lineTo", 20, 10 ], [ "stroke" ] ] );
-      gc.init( 400, 500,
-               [ [ "Arial" ], 10, false, false ],
-               [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
-      assertEquals( 400, parseInt( gc._canvas.width, 10 ) );
-      assertEquals( 400, parseInt( gc._canvas.style.width, 10 ) );
-      assertEquals( 500, parseInt( gc._canvas.height, 10 ) );
-      assertEquals( 500, parseInt( gc._canvas.style.height, 10 ) );
+
+      canvas.setDimension( 300, 400 );
+
+      assertEquals( 300, parseInt( gc._canvas.width, 10 ) );
+      assertEquals( 300, parseInt( gc._canvas.style.width, 10 ) );
+      assertEquals( 400, parseInt( gc._canvas.height, 10 ) );
+      assertEquals( 400, parseInt( gc._canvas.style.height, 10 ) );
       canvas.destroy();
       TestUtil.flush();
     },
@@ -52,7 +47,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      gc.init( 300, 300,
+      gc.init( 0, 0, 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
       gc.draw( [
@@ -80,7 +75,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       canvas.addToDocument();
       TestUtil.flush();
       var gc = new rwt.widgets.GC( canvas );
-      gc.init( 300, 300,
+      gc.init( 0, 0, 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 0, 0, 255 ], [ 0, 0, 255, 255 ] );
 

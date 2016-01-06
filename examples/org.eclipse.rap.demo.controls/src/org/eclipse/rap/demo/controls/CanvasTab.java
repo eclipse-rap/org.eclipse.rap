@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,15 +19,21 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 
 
 public final class CanvasTab extends ExampleTab {
+
+  private Canvas canvas;
 
   public CanvasTab() {
     super( "Canvas" );
@@ -42,26 +48,53 @@ public final class CanvasTab extends ExampleTab {
     createBgColorButton();
     createBgGradientButton();
     createBgImageButton();
+    createRedrawButtons( parent );
+  }
+
+  private void createRedrawButtons( Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Redraw" );
+    group.setLayout( new GridLayout( 2, false ) );
+    Button redrawAllButton = new Button( group, SWT.PUSH );
+    redrawAllButton.setText( "All" );
+    redrawAllButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        canvas.redraw();
+      }
+    } );
+    Button redrawRectButton = new Button( group, SWT.PUSH );
+    redrawRectButton.setText( "Rectangle ( 50, 200, 200, 200 )" );
+    redrawRectButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        canvas.redraw( 50, 200, 200, 200, false );
+      }
+    } );
   }
 
   @Override
   protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
-    final Canvas canvas = new Canvas( parent, getStyle() );
+    canvas = new Canvas( parent, getStyle() );
     canvas.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     canvas.addPaintListener(  new PaintListener() {
       @Override
-      public void paintControl( final PaintEvent event ) {
-        event.gc.drawPoint( 230, 100 );
-        paintLines( event.display, event.gc );
-        paintRectangles( event.display, event.gc );
-        paintArcs( event.display, event.gc );
-        paintImages( event.display, event.gc );
-        paintTexts( event.display, event.gc );
-        paintPolylines( event.display, event.gc );
-        paintWithClipping( event.display, event.gc );
-        paintPath( event.display, event.gc );
-        paintTransform( event.display, event.gc );
+      public void paintControl( PaintEvent event ) {
+        if( event.width > 250 ) {
+          event.gc.drawPoint( 230, 100 );
+          paintLines( event.display, event.gc );
+          paintRectangles( event.display, event.gc );
+          paintArcs( event.display, event.gc );
+          paintImages( event.display, event.gc );
+          paintTexts( event.display, event.gc );
+          paintPolylines( event.display, event.gc );
+          paintWithClipping( event.display, event.gc );
+          paintPath( event.display, event.gc );
+          paintTransform( event.display, event.gc );
+        } else {
+          event.gc.drawRectangle( event.x, event.y, event.width - 1, event.height - 1 );
+        }
       }
     } );
     canvas.redraw();

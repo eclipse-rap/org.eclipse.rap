@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,7 +151,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
         assertTrue(    gc._context.font === "italic bold 16px Arial"
                     || gc._context.font === "bold italic 16px Arial" );
       }
-      gc.init( 300, 300,
+      gc.init( 0, 0, 300, 300,
                [ [ "Arial" ], 10, false, false ],
                [ 255, 255, 255, 255 ], [ 0, 0, 0, 255 ] );
       assertEquals( [ 0, 0, 0 ], rwt.util.Colors.stringToRgb( gc._context.strokeStyle ) );

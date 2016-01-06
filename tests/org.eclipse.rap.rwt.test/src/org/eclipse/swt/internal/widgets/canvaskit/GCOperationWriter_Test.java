@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.protocol.Operation.CallOperation;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
@@ -55,12 +56,34 @@ public class GCOperationWriter_Test {
     display = new Display();
     Shell control = new Shell( display );
     canvas = new Canvas( control, SWT.NONE );
+    canvas.setSize( 100, 200 );
     gc = new GC( canvas );
   }
 
   @After
   public void tearDown() {
     Fixture.tearDown();
+  }
+
+  @Test
+  public void testInit() {
+    canvas.setForeground( new Color( display, 1, 2, 3 ) );
+    canvas.setBackground( new Color( display, 4, 5, 6 ) );
+    canvas.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
+
+    GCOperationWriter operationWriter = new GCOperationWriter( canvas );
+    operationWriter.initialize();
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CallOperation init = message.findCallOperation( getGcId( canvas ), "init" );
+    JsonObject parameters = init.getParameters();
+    assertEquals( 0, parameters.get( "x" ).asInt() );
+    assertEquals( 0, parameters.get( "y" ).asInt() );
+    assertEquals( 100, parameters.get( "width" ).asInt() );
+    assertEquals( 200, parameters.get( "height" ).asInt() );
+    assertEquals( "[[\"Arial\"],12,true,false]", parameters.get( "font" ).asArray().toString() );
+    assertEquals( "[1,2,3,255]", parameters.get( "strokeStyle" ).asArray().toString() );
+    assertEquals( "[4,5,6,255]", parameters.get( "fillStyle" ).asArray().toString() );
   }
 
   @Test

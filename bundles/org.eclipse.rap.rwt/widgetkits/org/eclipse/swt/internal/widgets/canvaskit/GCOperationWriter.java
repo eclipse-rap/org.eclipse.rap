@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
@@ -56,13 +57,15 @@ final class GCOperationWriter {
 
   void initialize() {
     if( !initialized ) {
-      Point size = control.getSize();
       lineWidth = 1;
       foreground = control.getForeground().getRGB();
       background = control.getBackground().getRGB();
+      Rectangle paintRect = getPaintRect();
       JsonObject parameters = new JsonObject()
-        .add( "width", size.x )
-        .add( "height", size.y )
+        .add( "x", paintRect.x )
+        .add( "y", paintRect.y )
+        .add( "width", paintRect.width )
+        .add( "height", paintRect.height )
         .add( "font", toJson( control.getFont() ) )
         .add( "fillStyle", toJson( background ) )
         .add( "strokeStyle", toJson( foreground ) );
@@ -442,6 +445,15 @@ final class GCOperationWriter {
       result = ( float )0.5;
     }
     return result;
+  }
+
+  private Rectangle getPaintRect() {
+    Rectangle paintRect = control.getAdapter( GCAdapter.class ).getPaintRect();
+    if( paintRect == null ) {
+      Point size = control.getSize();
+      paintRect = new Rectangle( 0, 0, size.x, size.y );
+    }
+    return paintRect;
   }
 
   static float round( double value, int decimals ) {

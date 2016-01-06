@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ rwt.remote.HandlerRegistry.add( "rwt.widgets.GC", {
   methodHandler : {
     "init" : function( gc, properties ) {
       gc.init(
+        properties.x,
+        properties.y,
         properties.width,
         properties.height,
         properties.font,

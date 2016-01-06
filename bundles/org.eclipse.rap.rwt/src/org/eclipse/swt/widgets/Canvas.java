@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA;
 
@@ -160,7 +161,7 @@ public class Canvas extends Composite {
   void notifyResize( Point oldSize ) {
     super.notifyResize( oldSize );
     if( !oldSize.equals( getSize() ) ) {
-      repaint();
+      repaint( getClientArea() );
     }
   }
 
@@ -168,11 +169,19 @@ public class Canvas extends Composite {
   void internalSetRedraw( boolean redraw ) {
     super.internalSetRedraw( redraw );
     if( redraw ) {
-      repaint();
+      repaint( getClientArea() );
     }
   }
 
-  private void repaint() {
+  @Override
+  void internalSetRedraw( boolean redraw, int x, int y, int width, int height ) {
+    super.internalSetRedraw( redraw, x, y, width, height );
+    if( redraw ) {
+      repaint( new Rectangle( x, y, width, height ) );
+    }
+  }
+
+  private void repaint( Rectangle paintRect ) {
     if( gcAdapter != null ) {
       gcAdapter.clearGCOperations();
       gcAdapter.setForceRedraw( true );
@@ -180,8 +189,12 @@ public class Canvas extends Composite {
     GC gc = new GC( this );
     Event paintEvent = new Event();
     paintEvent.gc = gc;
-    paintEvent.setBounds( getClientArea() );
+    paintEvent.setBounds( paintRect );
     notifyListeners( SWT.Paint, paintEvent );
     gc.dispose();
+    if( gcAdapter != null ) {
+      gcAdapter.setPaintRect( paintRect );
+    }
   }
+
 }

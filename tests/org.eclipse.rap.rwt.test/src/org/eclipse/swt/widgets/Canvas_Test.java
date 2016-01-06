@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,10 +48,11 @@ public class Canvas_Test {
     display = new Display();
     Shell shell = new Shell( display );
     canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 100, 200 );
   }
 
   @Test
-  public void testPaintEvent() {
+  public void testPaintEvent_afterRedraw() {
     canvas.addPaintListener( new PaintListener() {
       @Override
       public void paintControl( PaintEvent event ) {
@@ -65,10 +66,31 @@ public class Canvas_Test {
     PaintEvent event = paintEventLog.get( 0 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
-    assertEquals( event.x, canvas.getClientArea().x );
-    assertEquals( event.y, canvas.getClientArea().y );
-    assertEquals( event.width, canvas.getClientArea().width );
-    assertEquals( event.height, canvas.getClientArea().height );
+    assertEquals( event.x, 0 );
+    assertEquals( event.y, 0 );
+    assertEquals( event.width, 100 );
+    assertEquals( event.height, 200 );
+  }
+
+  @Test
+  public void testPaintEvent_afterPartialRedraw() {
+    canvas.addPaintListener( new PaintListener() {
+      @Override
+      public void paintControl( PaintEvent event ) {
+        paintEventLog.add( event );
+      }
+    } );
+
+    canvas.redraw( 1, 2, 3, 4, true );
+
+    assertEquals( 1, paintEventLog.size() );
+    PaintEvent event = paintEventLog.get( 0 );
+    assertSame( canvas, event.widget );
+    assertTrue( event.gc.isDisposed() );
+    assertEquals( event.x, 1 );
+    assertEquals( event.y, 2 );
+    assertEquals( event.width, 3 );
+    assertEquals( event.height, 4 );
   }
 
   @Test

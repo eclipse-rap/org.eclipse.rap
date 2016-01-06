@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
     this.base( arguments );
     this._control = control;
     this._control.addEventListener( "create", this._onControlCreate, this );
+    this._control.addEventListener( "changeWidth", this._onControlChangeWidth, this );
+    this._control.addEventListener( "changeHeight", this._onControlChangeHeight, this );
     this._canvas = null;
     this._context = null;
     this._createCanvas();
@@ -29,6 +31,8 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
   destruct : function() {
     this._control.removeEventListener( "create", this._onControlCreate, this );
+    this._control.removeEventListener( "changeWidth", this._onControlChangeWidth, this );
+    this._control.removeEventListener( "changeHeight", this._onControlChangeHeight, this );
     if( this._control.isCreated() && !this._control.isDisposed() ) {
       this._removeCanvasFromDOM();
     }
@@ -43,12 +47,8 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
   members : {
 
-    init : function( width, height, font, background, foreground  ) {
-      this._canvas.width = width;
-      this._canvas.style.width = width + "px";
-      this._canvas.height = height;
-      this._canvas.style.height = height + "px";
-      this._context.clearRect( 0, 0, width, height );
+    init : function( x, y, width, height, font, background, foreground  ) {
+      this._initClipping( x, y, width, height );
       this._initFields( font, background, foreground );
       this._control.dispatchSimpleEvent( "paint" ); // client-side painting on server-side redraw
     },
@@ -127,6 +127,25 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
 
     _removeCanvasFromDOM : function() {
       this._canvas.parentNode.removeChild( this._canvas );
+    },
+
+    _onControlChangeWidth : function( event ) {
+      var width = event.getValue();
+      this._canvas.width = width;
+      this._canvas.style.width = width + "px";
+    },
+
+    _onControlChangeHeight : function( event ) {
+      var height = event.getValue();
+      this._canvas.height = height;
+      this._canvas.style.height = height + "px";
+    },
+
+    _initClipping : function( x, y, width, height ) {
+      this._context.clearRect( x, y, width, height );
+      this._context.beginPath();
+      this._context.rect( x, y, width, height );
+      this._context.clip();
     },
 
     _initFields : function( font, background, foreground ) {
