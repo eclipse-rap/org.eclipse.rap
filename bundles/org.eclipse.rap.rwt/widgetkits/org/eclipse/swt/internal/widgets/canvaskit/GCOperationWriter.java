@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -371,6 +371,7 @@ final class GCOperationWriter {
       addClientOperation( "save" );
       if( operation.isRectangular() ) {
         Rectangle rect = operation.rectangle;
+        addClientOperation( "beginPath" );
         addClientOperation( "rect", rect.x, rect.y, rect.width, rect.height );
       } else {
         renderPath( operation.types, operation.points );

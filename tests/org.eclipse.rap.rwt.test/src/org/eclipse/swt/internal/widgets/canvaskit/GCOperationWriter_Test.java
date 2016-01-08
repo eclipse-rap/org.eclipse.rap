@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -620,8 +620,9 @@ public class GCOperationWriter_Test {
 
     JsonArray ops = getGCOperations( canvas );
     assertEquals( "[\"save\"]", getOperation( 0, ops ) );
-    assertEquals( "[\"rect\",1,2,3,4]", getOperation( 1, ops ) );
-    assertEquals( "[\"clip\"]", getOperation( 2, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"rect\",1,2,3,4]", getOperation( 2, ops ) );
+    assertEquals( "[\"clip\"]", getOperation( 3, ops ) );
   }
 
   @Test
