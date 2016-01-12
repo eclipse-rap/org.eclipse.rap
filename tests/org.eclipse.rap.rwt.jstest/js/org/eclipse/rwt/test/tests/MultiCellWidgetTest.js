@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -498,6 +498,15 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( "center", widget.getStyleProperty( "textAlign" ) );
       widget.setHorizontalChildrenAlign( "right" );
       assertEquals( "right", widget.getStyleProperty( "textAlign" ) );
+      widget.destroy();
+    },
+
+    testTextDecoration_initialValue : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+
+      var style = widget._getTargetNode().lastChild.style;
+      assertEquals( "inherit", style.textDecoration );
       widget.destroy();
     },
 
