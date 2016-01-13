@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.rap.test.all
 Bundle-Version: 3.1.0.qualifier
 Export-Package: org.eclipse.rap.test;version="3.1.0"
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin
 Import-Package: org.eclipse.rap.rwt.testfixture.internal;version="[3.1.0,4.0.0)",
  org.junit;version="4.8.2",
