@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -477,6 +477,37 @@ public class CTabItemLCA_Test {
 
     TestMessage message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
+  }
+
+  @Test
+  public void testRenderInitialBadge() throws IOException {
+    lca.render( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertFalse( operation.getProperties().names().contains( "badge" ) );
+  }
+
+  @Test
+  public void testRenderBadge() throws IOException {
+    item.setData( RWT.BADGE, "foo" );
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( item, "badge" ).asString() );
+  }
+
+  @Test
+  public void testRenderBadgeUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setData( RWT.BADGE, "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "badge" ) );
   }
 
 }

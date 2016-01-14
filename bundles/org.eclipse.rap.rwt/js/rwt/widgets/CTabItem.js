@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -157,6 +157,10 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
       this.updateCloseButton( false );
     },
 
+    computeBadgePosition : function() {
+      return [ 0, 0, "auto", "auto" ];
+    },
+
     updateForeground : function() {
       var color = this.isSelected()
                 ? this._parent.getSelectionForeground()
@@ -254,5 +258,7 @@ rwt.qx.Class.define( "rwt.widgets.CTabItem", {
     _onChangeLeft : function() {
       this.toggleState( "firstItem", this.getLeft() === 0 );
     }
+
   }
+
 } );

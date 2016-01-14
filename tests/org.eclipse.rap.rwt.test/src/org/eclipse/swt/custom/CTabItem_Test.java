@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.custom;
 import static org.eclipse.rap.rwt.testfixture.internal.TestUtil.createImage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -310,6 +311,27 @@ public class CTabItem_Test {
   public void testGetAdapter_LCA() {
     assertTrue( item.getAdapter( WidgetLCA.class ) instanceof CTabItemLCA );
     assertSame( item.getAdapter( WidgetLCA.class ), item.getAdapter( WidgetLCA.class ) );
+  }
+
+  @Test
+  public void testBadge() {
+    item.setData( RWT.BADGE, "123" );
+
+    assertEquals( "123", item.getData( RWT.BADGE ) );
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testBadge_nonStringArgument() {
+    item.setData( RWT.BADGE, Integer.valueOf( 3 ) );
+  }
+
+  @Test
+  public void testBadge_resetWithNull() {
+    item.setData( RWT.BADGE, "123" );
+
+    item.setData( RWT.BADGE, null );
+
+    assertNull( item.getData( RWT.BADGE ) );
   }
 
 }

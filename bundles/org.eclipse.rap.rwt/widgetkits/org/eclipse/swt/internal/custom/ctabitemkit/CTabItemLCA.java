@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemot
 
 import java.io.IOException;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.internal.util.MnemonicUtil;
@@ -46,6 +47,7 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
   private static final String PROP_IMAGE = "image";
   private static final String PROP_SHOWING = "showing";
   private static final String PROP_SHOW_CLOSE = "showClose";
+  private static final String PROP_BADGE = "badge";
 
   @Override
   public void preserveValues( CTabItem item ) {
@@ -56,6 +58,7 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
     preserveProperty( item, PROP_IMAGE, getImage( item ) );
     preserveProperty( item, PROP_SHOWING, item.isShowing() );
     preserveProperty( item, PROP_SHOW_CLOSE, item.getShowClose() );
+    preserveProperty( item, PROP_BADGE, getBadge( item ) );
   }
 
   @Override
@@ -83,6 +86,7 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
     renderProperty( item, PROP_IMAGE, getImage( item ), null );
     renderProperty( item, PROP_SHOWING, item.isShowing(), true );
     renderProperty( item, PROP_SHOW_CLOSE, item.getShowClose(), false );
+    renderProperty( item, PROP_BADGE, getBadge( item ), null );
   }
 
   private static void renderText( CTabItem item ) {
@@ -113,6 +117,10 @@ public final class CTabItemLCA extends WidgetLCA<CTabItem> {
 
   private static Font getFont( CTabItem item ) {
     return item.getAdapter( IWidgetFontAdapter.class ).getUserFont();
+  }
+
+  private static String getBadge( CTabItem item ) {
+    return ( String )item.getData( RWT.BADGE );
   }
 
   private static ICTabFolderAdapter getCTabFolderAdapter( CTabItem item ) {
