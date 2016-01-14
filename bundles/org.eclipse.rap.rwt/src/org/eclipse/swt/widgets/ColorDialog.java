@@ -11,6 +11,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rap.rwt.internal.RWTMessages;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyEvent;
@@ -187,8 +188,8 @@ public class ColorDialog extends Dialog {
    * Makes the receiver visible and brings it to the front of the display.
    *
    * <!-- Begin RAP specific -->
-   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
-   * Use DialogUtil#open instead.</p>
+   * <p><strong>RAP Note:</strong> This method is not supported when running the application in
+   * JEE_COMPATIBILITY mode. Use <code>Dialog#open(DialogCallback)</code> instead.</p>
    * <!-- End RAP specific -->
    *
    * @return the selected color, or null if the dialog was cancelled, no color
@@ -201,6 +202,7 @@ public class ColorDialog extends Dialog {
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @see #open(DialogCallback)
    */
   public RGB open() {
     checkOperationMode();

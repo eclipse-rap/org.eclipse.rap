@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2016 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,8 @@ import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.SettingStore;
 import org.eclipse.rap.rwt.service.SettingStoreFactory;
-import org.eclipse.rap.rwt.widgets.DialogUtil;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -57,8 +58,12 @@ public interface Application {
      * As its only limitation, it does not support the SWT main loop (more
      * specifically, the method {@link Display#sleep()} is not implemented). As
      * a consequence, blocking dialogs aren't possible with this operation mode.
-     * Instead of blocking dialogs, the class {@link DialogUtil} allows to
-     * attach a callback to react on the closing of a dialog.
+     * As an alternative to blocking dialogs, the class {@link Dialog} provides
+     * a non-blocking <code>open</code> method that accepts a callback to react
+     * on the closing of a dialog.
+     * Moreover, the blocking {@link Browser} methods <code>execute</code> and
+     * <code>evaluate</code> are not supported in this mode. A non-blocking
+     * <code>evaluate</code> method exists that also accepts a callback.
      * </p>
      * <p>
      * Unless there is a need for blocking dialogs (e.g. when using the Eclipse

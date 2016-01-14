@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,7 @@ package org.eclipse.swt.widgets;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -31,18 +29,14 @@ import org.eclipse.rap.rwt.client.ClientFile;
 import org.eclipse.rap.rwt.dnd.ClientFileTransfer;
 import org.eclipse.rap.rwt.internal.client.ClientFileImpl;
 import org.eclipse.rap.rwt.internal.serverpush.ServerPushManager;
-import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
-import org.eclipse.rap.rwt.widgets.DialogUtil;
-import org.eclipse.rap.rwt.widgets.FileDialogUtil;
 import org.eclipse.rap.rwt.widgets.FileUpload;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.internal.dnd.DNDEvent;
-import org.eclipse.swt.internal.widgets.FileDialogAdapter;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable;
 import org.eclipse.swt.layout.GridData;
 import org.junit.Before;
@@ -70,7 +64,7 @@ public class FileDialog_Test {
     completedFileNames = new String[ 0 ];
     dialog = new TestFileDialog( shell, SWT.MULTI );
     callback = mock( DialogCallback.class );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
   }
 
   @Test
@@ -143,7 +137,7 @@ public class FileDialog_Test {
   @Test
   public void testClose_deletesUploadedFiles() {
     dialog = spy( new TestFileDialog( shell ) );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
 
     dialog.shell.close();
 
@@ -153,7 +147,7 @@ public class FileDialog_Test {
   @Test
   public void testCancel_deletesUploadedFiles() {
     dialog = spy( new TestFileDialog( shell ) );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
 
     getCancelButton().notifyListeners( SWT.Selection, null );
 
@@ -163,7 +157,7 @@ public class FileDialog_Test {
   @Test
   public void testOK_doesNotDeleteUploadedFiles() {
     dialog = spy( new TestFileDialog( shell ) );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
 
     getOKButton().notifyListeners( SWT.Selection, null );
 
@@ -197,7 +191,7 @@ public class FileDialog_Test {
   @Test
   public void testGetFileNames_returnsLastCompletedFileName_forSingle() {
     dialog = new TestFileDialog( shell, SWT.SINGLE );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
     completedFileNames = new String[] { "foo.gif", "bar.doc", "baz.txt" };
 
     getOKButton().notifyListeners( SWT.Selection, null );
@@ -218,7 +212,7 @@ public class FileDialog_Test {
   @Test
   public void testGetFileNames_withoutCompletedFiles_forSingle() {
     dialog = new TestFileDialog( shell, SWT.SINGLE );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
     completedFileNames = new String[ 0 ];
 
     getOKButton().notifyListeners( SWT.Selection, null );
@@ -256,7 +250,7 @@ public class FileDialog_Test {
   @Test
   public void testFileUploadSelection_hidesCurrentFileUpload_forSingle() {
     dialog = new TestFileDialog( shell );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
     FileUpload fileUpload = getFileUpload();
 
     fileUpload.notifyListeners( SWT.Selection, null );
@@ -268,7 +262,7 @@ public class FileDialog_Test {
   @Test
   public void testFileUploadSelection_createsNewFileUpload_forSingle() {
     dialog = new TestFileDialog( shell );
-    DialogUtil.open( dialog, callback );
+    dialog.open( callback );
     FileUpload fileUpload = getFileUpload();
 
     fileUpload.notifyListeners( SWT.Selection, null );
@@ -321,8 +315,8 @@ public class FileDialog_Test {
   public void testSetClientFiles() {
     ClientFile[] files = { mock( ClientFile.class ) };
 
-    dialog.getAdapter( FileDialogAdapter.class ).setClientFiles( files );
-    DialogUtil.open( dialog, callback );
+    dialog.setClientFiles( files );
+    dialog.open( callback );
 
     verify( singleThreadExecutor ).execute( any( FileUploadRunnable.class ) );
   }
@@ -331,8 +325,8 @@ public class FileDialog_Test {
   public void testSetClientFiles_handlesEmptyArray() {
     dialog = new TestFileDialog( shell );
 
-    dialog.getAdapter( FileDialogAdapter.class ).setClientFiles( new ClientFile[ 0 ] );
-    DialogUtil.open( dialog, callback );
+    dialog.setClientFiles( new ClientFile[ 0 ] );
+    dialog.open( callback );
 
     verify( singleThreadExecutor, never() ).execute( any( FileUploadRunnable.class ) );
   }
@@ -340,39 +334,23 @@ public class FileDialog_Test {
   @Test
   public void testSetClientFiles_canBeResetToNull() {
     ClientFile[] files = { mock( ClientFile.class ) };
-    dialog.getAdapter( FileDialogAdapter.class ).setClientFiles( files );
+    dialog.setClientFiles( files );
 
-    dialog.getAdapter( FileDialogAdapter.class ).setClientFiles( null );
-    DialogUtil.open( dialog, callback );
+    dialog.setClientFiles( null );
+    dialog.open( callback );
 
     verify( singleThreadExecutor, never() ).execute( any( FileUploadRunnable.class ) );
-  }
-
-  @Test
-  public void testGetAdapter_returnsFileDialogAdapter() {
-    assertNotNull( dialog.getAdapter( FileDialogAdapter.class ) );
-  }
-
-  @Test
-  public void testGetAdapter_returnsSameFileDialogAdapterInstance() {
-    assertSame( dialog.getAdapter( FileDialogAdapter.class ),
-                dialog.getAdapter( FileDialogAdapter.class ) );
-  }
-
-  @Test
-  public void testGetAdapter_returnsDialogAdapter() {
-    assertNotNull( dialog.getAdapter( IDialogAdapter.class ) );
   }
 
   @Test
   public void testOpen_twice_withClientFiles() {
     // expected not to fail
     dialog = new FileDialog( shell );
-    FileDialogUtil.setClientFiles( dialog, new ClientFile[] { mock( ClientFile.class ) } );
-    DialogUtil.open( dialog, callback );
+    dialog.setClientFiles( new ClientFile[] { mock( ClientFile.class ) } );
+    dialog.open( callback );
     dialog.shell.close();
-    FileDialogUtil.setClientFiles( dialog, new ClientFile[] { mock( ClientFile.class ) } );
-    DialogUtil.open( dialog, callback );
+    dialog.setClientFiles( new ClientFile[] { mock( ClientFile.class ) } );
+    dialog.open( callback );
   }
 
   private DropTarget getDropTarget() {

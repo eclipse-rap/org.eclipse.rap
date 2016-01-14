@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.WidgetLCA;
 import org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.service.ServiceStore;
+import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.widgets.BrowserCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -216,14 +217,14 @@ public class Browser extends Composite {
    * current document.</p>
    *
    * <!-- Begin RAP specific -->
-   * <p><strong>Note:</strong> Care should be taken when using this method.
+   * <p><strong>RAP Note:</strong> Care should be taken when using this method.
    * The given <code>script</code> is executed in an <code>IFRAME</code>
    * inside the document that represents the client-side application.
    * Since the execution context of an <code>IFRAME</code> is not fully
    * isolated from the surrounding document it may break the client-side
    * application.</p>
    * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
-   * Use BrowserUtil#evaluate instead.</p>
+   * Use <code>evaluate(String, BrowserCallBack)</code> instead.</p>
    * <p>This method will throw an IllegalStateException if called while another script is still
    * pending or executed. This can happen if called within a BrowserFunction, or if an SWT event
    * is pending to be executed. (E.g. clicking a Button twice very fast.)
@@ -298,14 +299,14 @@ public class Browser extends Composite {
    * error to be thrown.
    *
    * <!-- Begin RAP specific -->
-   * <p><strong>Note:</strong> Care should be taken when using this method.
+   * <p><strong>RAP Note:</strong> Care should be taken when using this method.
    * The given <code>script</code> is executed in an <code>IFRAME</code>
    * inside the document that represents the client-side application.
    * Since the execution context of an <code>IFRAME</code> is not fully
    * isolated from the surrounding document it may break the client-side
    * application.</p>
    * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
-   * Use BrowserUtil#evaluate instead.</p>
+   * Use <code>evaluate(String, BrowserCallback)</code> instead.</p>
    * <p>This method will throw an IllegalStateException if called while another script is still
    * pending or executed. This can happen if called within a BrowserFunction, or if an SWT
    * event is pending to be executed. (E.g. clicking a Button twice very fast.)
@@ -345,6 +346,36 @@ public class Browser extends Composite {
       throw createException();
     }
     return evaluateResult;
+  }
+
+  /**
+   * Executes the given script in a non-blocking way. The <code>browserCallback</code> is notified
+   * when the result from the operation is available.
+   * <p>
+   * Use this method instead of the <code>execute()</code> or <code>evaluate()</code> methods when
+   * running in <em>JEE_COMPATIBILITY</em> mode.
+   * </p>
+   *
+   * <p>
+   * This method will throw an IllegalStateException if called while another script is
+   * still pending to be executed.
+   * </p>
+
+   * @param script the script to execute, must not be <code>null</code>.
+   * @param browserCallback the callback to be notified when the result from the script execution is
+   * available, must not be <code>null</code>.
+   *
+   * @exception IllegalStateException when another script is already being executed.
+   *
+   * @see BrowserCallback
+   * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @rwtextension This method is not available in SWT.
+   * @since 3.1
+   */
+  public void evaluate( String script, BrowserCallback browserCallback ) {
+    ParamCheck.notNull( script, "script" );
+    ParamCheck.notNull( browserCallback, "browserCallback" );
+    evaluateNonBlocking( script, browserCallback );
   }
 
   /**
@@ -658,11 +689,6 @@ public class Browser extends Composite {
     @Override
     public void resetUrlChanged() {
       urlChanged = false;
-    }
-
-    @Override
-    public void evaluateNonBlocking( String script, BrowserCallback browserCallback ) {
-      Browser.this.evaluateNonBlocking( script, browserCallback );
     }
 
   }

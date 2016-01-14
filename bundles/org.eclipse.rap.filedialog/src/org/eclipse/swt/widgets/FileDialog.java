@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.FileDialogAdapter;
 import org.eclipse.swt.internal.widgets.FileUploadRunnable;
 import org.eclipse.swt.internal.widgets.ProgressCollector;
 import org.eclipse.swt.internal.widgets.UploadPanel;
@@ -94,7 +93,6 @@ public class FileDialog extends Dialog {
   private UploadPanel placeHolder;
   private ProgressCollector progressCollector;
   private ClientFile[] clientFiles;
-  private FileDialogAdapterImpl fileDialogAdapter;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -173,8 +171,32 @@ public class FileDialog extends Dialog {
   }
 
   /**
+   * Sets initial client files to be uploaded. The upload of these files will start immediately
+   * after opening the dialog. Hence, this method must be called before opening the dialog.
+   * <p>
+   * A user can drag and drop files from the client operating system on any control with a drop
+   * listener attached. In this case, the client files can be obtained from the
+   * {@link ClientFileTransfer} object. This FileDialog can then be used to handle the upload and
+   * display upload progress.
+   * </p>
+   *
+   * @param files an array of client files to be added to the dialog
+   *
+   * @rwtextension This method is not available in SWT.
+   * @since 3.1
+   */
+  public void setClientFiles( ClientFile[] files ) {
+    clientFiles = files;
+  }
+
+  /**
    * Makes the dialog visible and brings it to the front
    * of the display.
+   *
+   * <!-- Begin RAP specific -->
+   * <p><strong>RAP Note:</strong> This method is not supported when running the application in
+   * JEE_COMPATIBILITY mode. Use <code>Dialog#open(DialogCallback)</code> instead.</p>
+   * <!-- End RAP specific -->
    *
    * @return a string describing the absolute path of the first selected file,
    *         or null if the dialog was cancelled or an error occurred
@@ -533,27 +555,6 @@ public class FileDialog extends Dialog {
       }
     }
 
-  }
-
-  private class FileDialogAdapterImpl implements FileDialogAdapter{
-
-    @Override
-    public void setClientFiles( ClientFile[] files ) {
-      clientFiles = files;
-    }
-
-  }
-
-  @Override
-  @SuppressWarnings( "unchecked" )
-  public <T> T getAdapter( Class<T> adapter ) {
-    if( adapter == FileDialogAdapter.class ) {
-      if( fileDialogAdapter == null ) {
-        fileDialogAdapter = new FileDialogAdapterImpl();
-      }
-      return ( T )fileDialogAdapter;
-    }
-    return super.getAdapter( adapter );
   }
 
 }

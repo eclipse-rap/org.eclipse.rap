@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2013 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.util.StringTokenizer;
 
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -136,8 +137,8 @@ public class MessageBox extends Dialog {
    * of the display.
    *
    * <!-- Begin RAP specific -->
-   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
-   * Use DialogUtil#open instead.</p>
+   * <p><strong>RAP Note:</strong> This method is not supported when running the application in
+   * JEE_COMPATIBILITY mode. Use <code>Dialog#open(DialogCallback)</code> instead.</p>
    * <!-- End RAP specific -->
    *
    * @return the ID of the button that was selected to dismiss the
@@ -150,6 +151,7 @@ public class MessageBox extends Dialog {
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @see #open(DialogCallback)
    */
   public int open() {
     checkOperationMode();

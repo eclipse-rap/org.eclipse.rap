@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,16 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.internal.widgets.IBrowserAdapter;
+
 
 /**
  * Utility class to work with non-blocking browser script execution.
  *
  * @see Browser
  * @since 2.0
+ * @deprecated Use the methods on <code>Browser</code> instead
  */
+@Deprecated
 public final class BrowserUtil {
 
   /**
@@ -27,8 +29,7 @@ public final class BrowserUtil {
    * when the result from the operation is available.
    * <p>
    * Use this method instead of the <code>execute()</code> or <code>evaluate()</code> methods from
-   * the respective <code>Browser</code> widget when running a <em>life cycle</em> without a
-   * dedicated UI thread where <code>evaluate()</code> does not block the program execution flow.
+   * the respective <code>Browser</code> widget when running in <em>JEE_COMPATIBILITY</em> mode.
    * </p>
    *
    * <p>
@@ -46,16 +47,16 @@ public final class BrowserUtil {
    * @see Browser
    * @see BrowserCallback
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @deprecated Use <code>Browser.evaluate( BrowserCallback )</code> instead
    */
+  @Deprecated
   public static void evaluate( Browser browser, String script, BrowserCallback browserCallback ) {
     ParamCheck.notNull( browser, "browser" );
-    ParamCheck.notNull( script, "script" );
-    ParamCheck.notNull( browserCallback, "browserCallback" );
-    IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
-    adapter.evaluateNonBlocking( script, browserCallback );
+    browser.evaluate( script, browserCallback );
   }
 
   private BrowserUtil() {
     // prevent instantiation
   }
+
 }

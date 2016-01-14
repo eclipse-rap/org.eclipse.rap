@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
-import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.swt.widgets.Dialog;
 
 
@@ -20,7 +19,9 @@ import org.eclipse.swt.widgets.Dialog;
  *
  * @see Dialog
  * @since 2.0
+ * @deprecated Use the methods on <code>Dialog</code> instead
  */
+@Deprecated
 public final class DialogUtil {
 
   /**
@@ -28,8 +29,7 @@ public final class DialogUtil {
    * display. If given, the <code>dialogCallback</code> is notified when the dialog is closed.
    * <p>
    * Use this method instead of the <code>open()</code> method from the respective
-   * <code>Dialog</code> implementation when running a <em>life cycle</em> without a dedicated UI
-   * thread where <code>open()</code> does not block the program execution flow.
+   * <code>Dialog</code> implementation when running in <em>JEE_COMPATIBILITY</em> mode.
    * </p>
    *
    * @param dialog the dialog to open, must not be <code>null</code>.
@@ -39,14 +39,16 @@ public final class DialogUtil {
    * @see Dialog
    * @see DialogCallback
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @deprecated Use <code>Dialog.open( DialogCallback )</code> instead
    */
+  @Deprecated
   public static void open( Dialog dialog, DialogCallback dialogCallback ) {
     ParamCheck.notNull( dialog, "dialog" );
-    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
-    adapter.openNonBlocking( dialogCallback );
+    dialog.open( dialogCallback );
   }
 
   private DialogUtil() {
     // prevent instantiation
   }
+
 }

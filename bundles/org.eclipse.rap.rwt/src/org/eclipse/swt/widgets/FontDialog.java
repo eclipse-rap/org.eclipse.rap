@@ -18,7 +18,6 @@ import java.util.Locale;
 
 import org.eclipse.rap.rwt.internal.RWTMessages;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
-import org.eclipse.rap.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyEvent;
@@ -174,8 +173,8 @@ public class FontDialog extends Dialog {
    * Makes the dialog visible and brings it to the front of the display.
    *
    * <!-- Begin RAP specific -->
-   * <p>This method is not supported when running the application in JEE_COMPATIBILITY mode.
-   * Use DialogUtil#open instead.</p>
+   * <p><strong>RAP Note:</strong> This method is not supported when running the application in
+   * JEE_COMPATIBILITY mode. Use <code>Dialog#open(DialogCallback)</code> instead.</p>
    * <!-- End RAP specific -->
    *
    * @return a FontData object describing the font that was selected, or null if
@@ -188,6 +187,7 @@ public class FontDialog extends Dialog {
    * @exception UnsupportedOperationException when running the application in JEE_COMPATIBILITY mode
    *
    * @see org.eclipse.rap.rwt.application.Application.OperationMode
+   * @see #open(DialogCallback)
    */
   public FontData open() {
     checkOperationMode();
@@ -371,7 +371,7 @@ public class FontDialog extends Dialog {
   private void openColorDialog() {
     final ColorDialog dialog = new ColorDialog( shell );
     dialog.setRGB( rgb );
-    DialogUtil.open( dialog, new DialogCallback() {
+    open( new DialogCallback() {
       @Override
       public void dialogClosed( int returnCode ) {
         RGB selected = dialog.getRGB();

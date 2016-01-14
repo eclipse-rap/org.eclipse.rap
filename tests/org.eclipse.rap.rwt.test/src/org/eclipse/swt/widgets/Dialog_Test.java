@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.eclipse.rap.rwt.internal.lifecycle.PhaseId;
-import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
@@ -122,8 +121,7 @@ public class Dialog_Test {
     String text = "text";
     TestDialog dialog = new TestDialog( shell );
     dialog.setText( text );
-    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
-    adapter.openNonBlocking( mock( DialogCallback.class ) );
+    dialog.open( mock( DialogCallback.class ) );
 
     TestDialog deserializedDialog = serializeAndDeserialize( dialog );
 
@@ -131,21 +129,11 @@ public class Dialog_Test {
   }
 
   @Test
-  public void testGetAdapter() {
-    Dialog dialog = new TestDialog( shell );
-
-    Object adapter = dialog.getAdapter( IDialogAdapter.class );
-
-    assertTrue( adapter instanceof IDialogAdapter );
-  }
-
-  @Test
   public void testNonBlockingDialogWithDefaultReturnCode() {
     Dialog dialog = new TestDialog( shell );
-    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     DialogCallback dialogCallback = mock( DialogCallback.class );
 
-    adapter.openNonBlocking( dialogCallback );
+    dialog.open( dialogCallback );
     dialog.shell.close();
 
     verify( dialogCallback ).dialogClosed( SWT.CANCEL );
@@ -154,10 +142,9 @@ public class Dialog_Test {
   @Test
   public void testNonBlockingDialogWithCustomReturnCode() {
     Dialog dialog = new TestDialog( shell );
-    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     DialogCallback dialogCallback = mock( DialogCallback.class );
 
-    adapter.openNonBlocking( dialogCallback );
+    dialog.open( dialogCallback );
     dialog.returnCode = SWT.OK;
     dialog.shell.close();
 

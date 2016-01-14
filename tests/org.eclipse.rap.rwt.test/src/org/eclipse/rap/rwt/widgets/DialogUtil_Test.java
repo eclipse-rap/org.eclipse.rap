@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import org.eclipse.rap.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.swt.widgets.Dialog;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +23,10 @@ import org.junit.Test;
 public class DialogUtil_Test {
 
   private Dialog dialog;
-  private IDialogAdapter dialogAdapter;
 
   @Before
   public void setUp() {
     dialog = mock( Dialog.class );
-    dialogAdapter = mock( IDialogAdapter.class );
-    when( dialog.getAdapter( IDialogAdapter.class ) ).thenReturn( dialogAdapter );
   }
 
   @Test
@@ -48,7 +43,7 @@ public class DialogUtil_Test {
   public void testOpenWithNullDialogCallback() {
     DialogUtil.open( dialog, null );
 
-    verify( dialogAdapter ).openNonBlocking( same( ( DialogCallback )null ) );
+    verify( dialog ).open( same( ( DialogCallback )null ) );
   }
 
   @Test
@@ -57,7 +52,7 @@ public class DialogUtil_Test {
 
     DialogUtil.open( dialog, dialogCallback );
 
-    verify( dialogAdapter ).openNonBlocking( dialogCallback );
+    verify( dialog ).open( dialogCallback );
   }
 
 }
