@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
+import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.client.service.ClientFileUploader;
 import org.eclipse.rap.rwt.client.service.ClientInfo;
 import org.eclipse.rap.rwt.client.service.ClientService;
@@ -26,6 +27,7 @@ import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.internal.client.BrowserNavigationImpl;
+import org.eclipse.rap.rwt.internal.client.ClientFileLoaderImpl;
 import org.eclipse.rap.rwt.internal.client.ClientFileUploaderImpl;
 import org.eclipse.rap.rwt.internal.client.ClientInfoImpl;
 import org.eclipse.rap.rwt.internal.client.ClientMessages;
@@ -140,7 +142,13 @@ public class WebClient_Test {
   }
 
   @Test
-  public void testGetFileUploaderService() {
+  public void testGetClientFileLoaderService() {
+    ClientService service = client.getService( ClientFileLoader.class );
+    assertTrue( service instanceof ClientFileLoaderImpl );
+  }
+
+  @Test
+  public void testGetClientFileUploaderService() {
     ClientService service = client.getService( ClientFileUploader.class );
     assertTrue( service instanceof ClientFileUploaderImpl );
   }
