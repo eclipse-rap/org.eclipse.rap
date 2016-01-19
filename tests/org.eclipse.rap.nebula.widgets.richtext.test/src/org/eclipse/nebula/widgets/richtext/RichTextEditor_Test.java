@@ -23,7 +23,7 @@ import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.WebClient;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -81,15 +81,15 @@ public class RichTextEditor_Test {
 
   @Test
   public void testContructor_loadsJavaScriptFiles() {
-    JavaScriptLoader loader = mockJavaScriptLoader();
+    ClientFileLoader loader = mockClientFiletLoader();
     ResourceManager resourceManager = RWT.getResourceManager();
 
     new RichTextEditor( shell, SWT.BORDER );
 
-    verify( loader ).require( resourceManager.getLocation( "ckeditor/ckeditor.js" ) );
-    verify( loader ).require( resourceManager.getLocation( "ckeditor/config.js" ) );
-    verify( loader ).require( resourceManager.getLocation( "ckeditor/RichTextEditor.js" ) );
-    verify( loader ).require( resourceManager.getLocation( "ckeditor/RichTextEditorHandler.js" ) );
+    verify( loader ).requireJs( resourceManager.getLocation( "ckeditor/ckeditor.js" ) );
+    verify( loader ).requireJs( resourceManager.getLocation( "ckeditor/config.js" ) );
+    verify( loader ).requireJs( resourceManager.getLocation( "ckeditor/RichTextEditor.js" ) );
+    verify( loader ).requireJs( resourceManager.getLocation( "ckeditor/RichTextEditorHandler.js" ) );
   }
 
   @Test
@@ -174,11 +174,11 @@ public class RichTextEditor_Test {
     assertSame( shell, editor.getParent() );
   }
 
-  private JavaScriptLoader mockJavaScriptLoader() {
+  private ClientFileLoader mockClientFiletLoader() {
     WebClient client = mock( WebClient.class );
     context.replaceClient( client );
-    JavaScriptLoader loader = mock( JavaScriptLoader.class );
-    when( client.getService( JavaScriptLoader.class ) ).thenReturn( loader );
+    ClientFileLoader loader = mock( ClientFileLoader.class );
+    when( client.getService( ClientFileLoader.class ) ).thenReturn( loader );
     return loader;
   }
 

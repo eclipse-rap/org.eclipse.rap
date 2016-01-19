@@ -16,7 +16,7 @@ import java.io.InputStream;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -142,12 +142,12 @@ public class RichTextEditor extends Composite {
   }
 
   private static void loadJavaScript() {
-    JavaScriptLoader jsLoader = RWT.getClient().getService( JavaScriptLoader.class );
+    ClientFileLoader loader = RWT.getClient().getService( ClientFileLoader.class );
     ResourceManager resourceManager = RWT.getResourceManager();
-    jsLoader.require( resourceManager.getLocation( REGISTER_PATH + "ckeditor.js" ) );
-    jsLoader.require( resourceManager.getLocation( REGISTER_PATH + "config.js" ) );
-    jsLoader.require( resourceManager.getLocation( REGISTER_PATH + "RichTextEditor.js" ) );
-    jsLoader.require( resourceManager.getLocation( REGISTER_PATH + "RichTextEditorHandler.js" ) );
+    loader.requireJs( resourceManager.getLocation( REGISTER_PATH + "ckeditor.js" ) );
+    loader.requireJs( resourceManager.getLocation( REGISTER_PATH + "config.js" ) );
+    loader.requireJs( resourceManager.getLocation( REGISTER_PATH + "RichTextEditor.js" ) );
+    loader.requireJs( resourceManager.getLocation( REGISTER_PATH + "RichTextEditorHandler.js" ) );
   }
 
   private static void register( ResourceManager resourceManager, String fileName ) throws IOException {
