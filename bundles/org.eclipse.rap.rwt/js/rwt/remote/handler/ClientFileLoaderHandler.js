@@ -12,7 +12,7 @@
 rwt.remote.HandlerRegistry.add( "rwt.client.ClientFileLoader", {
 
   factory : function() {
-    return rwt.client.JavaScriptLoader;
+    return rwt.client.ClientFileLoader;
   },
 
   service : true,
