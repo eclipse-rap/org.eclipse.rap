@@ -7,55 +7,6 @@ CKEDITOR.editorConfig = function( config ) {
   config.language = 'en';
 
   /**
-   * You can freely change the tool-items arrangement or remove them. You can not add new ones
-   * (from the full CKEditor version) without adapting config.removePlugins and
-   * building a new ckeditor.js. Take care: An incorrectly placed "," and the editor
-   * won't start in IE.
-   */
-  config.toolbar = [
-    {
-      name: 'basicstyles',
-      items : [
-        'Bold',
-        'Italic',
-        'Underline',
-        'Strike',
-        'Subscript',
-        'Superscript',
-        '-',
-        'RemoveFormat'
-      ]
-    },
-    {
-      name: 'paragraph',
-      items : [
-       'JustifyLeft',
-       'JustifyCenter',
-       'JustifyRight',
-       'JustifyBlock',
-       '-',
-       'Outdent',
-       'Indent',
-       '-',
-       'NumberedList',
-       'BulletedList'
-     ]
-    },
-    {
-      name: 'advanced',
-      items : [
-        'Format',
-        'Font',
-        'FontSize',
-        'TextColor',
-        'BGColor'
-      ]
-    }
-  ];
-
-  config.toolbarCanCollapse = false;
-
-  /**
    * Defines the colors to be displayed in the color selectors. This is a string
    * containing hexadecimal notation for HTML colors, without the "#" prefix.
    * A color name may optionally be defined by prefixing the entries with
@@ -198,7 +149,6 @@ CKEDITOR.editorConfig = function( config ) {
     "showblocks",
     "showborders",
     "sourcearea",
-    "stylescombo",
     "table",
     "tabletools",
     "specialchar",

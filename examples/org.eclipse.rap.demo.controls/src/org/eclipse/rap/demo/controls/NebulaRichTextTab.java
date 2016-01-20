@@ -11,6 +11,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.nebula.widgets.richtext.RichTextEditor;
+import org.eclipse.nebula.widgets.richtext.toolbar.ToolbarConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -27,6 +28,8 @@ public class NebulaRichTextTab extends ExampleTab {
 
   private RichTextEditor editor;
   private Button editableButton;
+  private boolean reorderToolbarGroups;
+  private boolean removeToolbarButtons;
 
   public NebulaRichTextTab() {
     super( "Nebula RichText" );
@@ -38,6 +41,8 @@ public class NebulaRichTextTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER, true );
     createVisibilityButton();
     createEditableButton( parent );
+    createReorderToolbarGroups( parent );
+    createRemoveToolbarButtons( parent );
     createBgColorButton();
     createFontChooser();
     createText( parent );
@@ -52,7 +57,25 @@ public class NebulaRichTextTab extends ExampleTab {
   }
 
   private void createRichTextEditor( Composite parent ) {
-    editor = new RichTextEditor( parent, getStyle() );
+    ToolbarConfiguration config = new ToolbarConfiguration() {
+      @Override
+      protected String getToolbarGroupConfiguration() {
+        if( reorderToolbarGroups ) {
+          StringBuilder builder = new StringBuilder( "CKEDITOR.config.toolbarGroups = [" );
+          builder.append( "{\"name\":\"styles\"}," );
+          builder.append( "{\"name\":\"colors\" }," );
+          builder.append( "{\"name\":\"basicstyles\",\"groups\":[\"basicstyles\",\"cleanup\"]}" );
+          builder.append( "];" );
+          return builder.toString();
+        }
+        return super.getToolbarGroupConfiguration();
+      }
+    };
+    if( removeToolbarButtons ) {
+      config.removeDefaultToolbarButton( "Subscript" );
+      config.removeDefaultToolbarButton( "Superscript" );
+    }
+    editor = new RichTextEditor( parent, config, getStyle() );
     editor.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     editor.setFont( new Font( parent.getDisplay(), "fantasy", 19, 0 ) );
     editor.setText( "Hello Fantasy Font" );
@@ -102,6 +125,30 @@ public class NebulaRichTextTab extends ExampleTab {
       @Override
       public void handleEvent( Event event ) {
         editor.dispose();
+      }
+    } );
+  }
+
+  private void createReorderToolbarGroups( Composite parent ) {
+    final Button reorderButton = new Button( parent, SWT.CHECK );
+    reorderButton.setText( "Remove and reorder toolbar groups" );
+    reorderButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        reorderToolbarGroups = reorderButton.getSelection();
+        createNew();
+      }
+    } );
+  }
+
+  private void createRemoveToolbarButtons( Composite parent ) {
+    final Button removeButton = new Button( parent, SWT.CHECK );
+    removeButton.setText( "Remove Subscript/Superscript toolbar buttons" );
+    removeButton.addListener( SWT.Selection, new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        removeToolbarButtons = removeButton.getSelection();
+        createNew();
       }
     } );
   }

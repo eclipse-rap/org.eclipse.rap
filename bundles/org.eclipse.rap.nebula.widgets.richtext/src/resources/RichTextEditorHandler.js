@@ -18,7 +18,7 @@
       return new rwt.widgets.RichTextEditor( properties );
     },
 
-    properties : [ "text", "editable", "font" ]
+    properties : [ "config", "text", "editable", "font" ]
 
   } );
 

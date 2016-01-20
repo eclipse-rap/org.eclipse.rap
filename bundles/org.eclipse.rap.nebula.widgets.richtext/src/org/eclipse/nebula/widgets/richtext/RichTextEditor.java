@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.nebula.widgets.richtext;
 
+import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
+
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.nebula.widgets.richtext.toolbar.ToolbarConfiguration;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
@@ -22,7 +25,6 @@ import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
-import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -90,41 +92,88 @@ public class RichTextEditor extends Composite {
    *
    * @param parent a composite control which will be the parent of the new instance (cannot be null)
    *
-   * @exception IllegalArgumentException <ul>
+   * @exception IllegalArgumentException
+   * <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
    * </ul>
-   * @exception SWTException <ul>
+   * @exception SWTException
+   * <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
   public RichTextEditor( Composite parent ) {
-    this( parent, SWT.NONE );
+    this( parent, null, SWT.NONE );
   }
 
   /**
-   * Constructs a new instance of this class given its parent
-   * and a style value describing its behavior and appearance.
+   * Constructs a new instance of this class given its parent.
    *
    * @param parent a composite control which will be the parent of the new instance (cannot be null)
-   * @param style the style of control to construct
+   * @param config the {@link ToolbarConfiguration} to use or <code>null</code> for using the
+   *          default {@link ToolbarConfiguration}
    *
-   * @exception IllegalArgumentException <ul>
+   * @exception IllegalArgumentException
+   * <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
    * </ul>
-   * @exception SWTException <ul>
+   * @exception SWTException
+   * <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   */
+  public RichTextEditor( Composite parent, ToolbarConfiguration config ) {
+    this( parent, config, SWT.NONE );
+  }
+
+  /**
+   * Constructs a new instance of this class given its parent.
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   *
+   * @exception IllegalArgumentException
+   * <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException
+   * <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
   public RichTextEditor( Composite parent, int style ) {
+    this( parent, null, style );
+  }
+
+  /**
+   * Constructs a new instance of this class given its parent, the given
+   * {@link ToolbarConfiguration} and a style value describing its behavior and appearance.
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param config the {@link ToolbarConfiguration} to use or <code>null</code> for using the
+   *          default {@link ToolbarConfiguration}
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException
+   * <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException
+   * <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   */
+  public RichTextEditor( Composite parent, ToolbarConfiguration config, int style ) {
     super( parent, style );
     registerResources();
     loadJavaScript();
     Connection connection = RWT.getUISession().getConnection();
     remoteObject = connection.createRemoteObject( REMOTE_TYPE );
     remoteObject.setHandler( operationHandler );
-    remoteObject.set( "parent", WidgetUtil.getId( this ) );
+    remoteObject.set( "parent", getId( this ) );
+    remoteObject.set( "config", getConfiguration( config ) );
   }
 
   private static void registerResources() {
@@ -157,6 +206,15 @@ public class RichTextEditor extends Composite {
       resourceManager.register( REGISTER_PATH + fileName, inputStream );
     } finally {
       inputStream.close();
+    }
+  }
+
+  private static JsonValue getConfiguration( ToolbarConfiguration config ) {
+    ToolbarConfiguration toolbarConfig = config == null ? new ToolbarConfiguration() : config;
+    try {
+      return JsonValue.readFrom( toolbarConfig.toString() );
+    } catch( Exception ex ) {
+      throw new IllegalArgumentException( "Invalid toolbar configuration", ex );
     }
   }
 

@@ -13,6 +13,7 @@ package org.eclipse.nebula.widgets.richtext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -77,6 +78,11 @@ public class RichTextEditor_Test {
   @Test
   public void testContructor_setsParent() {
     verify( remoteObject ).set( "parent", WidgetUtil.getId( editor ) );
+  }
+
+  @Test
+  public void testContructor_setsConfig() {
+    verify( remoteObject ).set( eq( "config" ), any( JsonObject.class ) );
   }
 
   @Test

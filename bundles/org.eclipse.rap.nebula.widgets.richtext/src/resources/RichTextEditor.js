@@ -63,6 +63,13 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
       }
     },
 
+    setConfig : function( config ) {
+      CKEDITOR.config.toolbarGroups = config.toolbarGroups;
+      CKEDITOR.config.removeButtons = config.removeButtons;
+      CKEDITOR.config.toolbarCanCollapse = config.toolbarCanCollapse;
+      CKEDITOR.config.toolbarStartupExpanded = config.toolbarStartupExpanded;
+    },
+
     setText : function( text ) {
       if( this.ready ) {
         this.editor.setData( text );
