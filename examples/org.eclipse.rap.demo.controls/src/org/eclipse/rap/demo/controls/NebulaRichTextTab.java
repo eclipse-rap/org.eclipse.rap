@@ -30,10 +30,12 @@ public class NebulaRichTextTab extends ExampleTab {
 
   public NebulaRichTextTab() {
     super( "Nebula RichText" );
+    setDefaultStyle( SWT.BORDER );
   }
 
   @Override
   protected void createStyleControls( Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER, true );
     createVisibilityButton();
     createEditableButton( parent );
     createBgColorButton();
@@ -50,7 +52,7 @@ public class NebulaRichTextTab extends ExampleTab {
   }
 
   private void createRichTextEditor( Composite parent ) {
-    editor = new RichTextEditor( parent, SWT.NONE );
+    editor = new RichTextEditor( parent, getStyle() );
     editor.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     editor.setFont( new Font( parent.getDisplay(), "fantasy", 19, 0 ) );
     editor.setText( "Hello Fantasy Font" );

@@ -40,7 +40,7 @@ public class NebulaRichTextExamplePage implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
-    final RichTextEditor richTextEditor = new RichTextEditor( composite, SWT.NONE );
+    final RichTextEditor richTextEditor = new RichTextEditor( composite, SWT.BORDER );
     richTextEditor.setText( "<b>Rich</b> <i>Text</i> <u>Editor</u>" );
     GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, true  );
     richTextEditor.setLayoutData( layoutData );
