@@ -8,13 +8,13 @@
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.examples.parent</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT</version>
     <relativePath>parent</relativePath>
   </parent>
 
   <artifactId>org.eclipse.rap.examples.build</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.2-SNAPSHOT</version>
 
   <name>RAP demo examples build</name>
 

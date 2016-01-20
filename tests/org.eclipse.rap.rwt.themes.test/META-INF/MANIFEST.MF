@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt.themes.test
-Bundle-Version: 3.0.1.qualifier
+Bundle-Version: 3.0.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.rap.design.example;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.rap.rwt;bundle-version="[3.0.0,4.0.0)"

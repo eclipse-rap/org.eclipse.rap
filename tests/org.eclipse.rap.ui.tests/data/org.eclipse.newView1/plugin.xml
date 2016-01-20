@@ -3,7 +3,7 @@
 <plugin
    id="newView1"
    name="New View One Plug-In"
-   version="3.0.1"
+   version="3.0.0"
    provider-name="">
 
    <runtime>
