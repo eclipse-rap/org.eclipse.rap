@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -3202,7 +3202,7 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
       // CSS 3 draft userFocus property
       this.setStyleProperty("userFocus", (value < 0 ? "ignore" : "normal"));
       // Legacy tabIndex property
-      this.setHtmlProperty("tabIndex", value < 0 ? -1 : 1);
+      this.setHtmlProperty("tabIndex", value < 0 ? -1 : value);
     },
 
     /////////////////////
