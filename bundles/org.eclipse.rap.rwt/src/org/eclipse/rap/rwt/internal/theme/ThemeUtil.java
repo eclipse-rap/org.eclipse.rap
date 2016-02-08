@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,16 +123,16 @@ public final class ThemeUtil {
   // Methods for accessing themed values
 
   public static CssValue getCssValue( String cssElement,
-                                     String cssProperty,
-                                     SimpleSelector selector )
+                                      String cssProperty,
+                                      SimpleSelector selector )
   {
     return getCssValue( cssElement, cssProperty, selector, null );
   }
 
   public static CssValue getCssValue( String cssElement,
-                                     String cssProperty,
-                                     ValueSelector selector,
-                                     Widget widget )
+                                      String cssProperty,
+                                      ValueSelector selector,
+                                      Widget widget )
   {
     return getCssValue( getCurrentThemeId(), cssElement, cssProperty, selector, widget );
   }
