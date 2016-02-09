@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 (function(){
 
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-var Client = rwt.client.Client;
 
 var request;
 
@@ -51,9 +50,6 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.RequestTest", {
       request.send();
 
       var contentType = "application/json; charset=UTF-8";
-      if( !( Client.isWebkit() || Client.isBlink() ) ) {
-        assertNotNull( findNativeCall( "setRequestHeader", [ "Referer", window.location.href ] ) );
-      }
       assertNotNull( findNativeCall( "setRequestHeader", [ "Content-Type", contentType ] ) );
       assertNull( findNativeCall( "setRequestHeader", [ "Pragma", "no-cache" ] ) );
       assertNull( findNativeCall( "setRequestHeader", [ "Cache-Control", "no-cache" ] ) );
