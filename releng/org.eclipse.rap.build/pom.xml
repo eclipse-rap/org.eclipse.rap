@@ -26,11 +26,11 @@
     <surefire-version>2.17</surefire-version>
     <!-- junit version used by maven-surefire, must correspond with junit in the target platform -->
     <junit-version>4.11</junit-version>
-    <base-platform-mars>4.5-M-builds/M-4.5.2RC3-201602031000/</base-platform-mars>
+    <base-platform-mars>4.5/R-4.5.2-201602121500/</base-platform-mars>
     <base-platform-mars-repository>http://download.eclipse.org/eclipse/updates/${base-platform-mars}</base-platform-mars-repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- usually disabled due to bug 393977 -->
-    <baseline-repository>http://download.eclipse.org/rt/rap/3.0/SR1a-20150908-1130/</baseline-repository>
+    <baseline-repository>http://download.eclipse.org/rt/rap/3.0/SR2-20160201-1220/</baseline-repository>
     <!-- -->
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/rap/org.eclipse.rap.git</tycho.scmUrl>
   </properties>
@@ -47,7 +47,7 @@
         TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
                     target platform, try target definitions instead.
         -->
-      <url>http://build.eclipse.org/rt/rap/base-platforms/3.0/SR2-RC3/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/3.0/SR2/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
