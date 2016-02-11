@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -225,8 +225,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MnemonicHandlerTest", {
       widget.focus();
       TestUtil.keyDown( widget, "B", DomEvent.CTRL_MASK );
 
-      var expected = rwt.client.Client.isGecko() ? [ "keypress" ] : [];
-      assertEquals( expected, keyLog );
+      assertEquals( [], keyLog );
     },
 
     testFireTrigger_successStopsActiveKey : function() {

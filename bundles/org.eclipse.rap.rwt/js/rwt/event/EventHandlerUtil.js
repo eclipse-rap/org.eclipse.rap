@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -248,42 +248,28 @@ rwt.event.EventHandlerUtil = {
     return this._lastUpDownType[ keyCode ] !== "keydown";
   },
 
-  getEventPseudoTypes : rwt.util.Variant.select( "qx.client", {
-    "default" : function( event, keyCode ) {
-      var result;
-      if( event.type === "keydown" ) {
-        var printable = !this.isNonPrintableKeyCode( keyCode );
-        if( this.isFirstKeyDown( keyCode ) ) {
-          // add a "keypress" for non-printable keys:
-          result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];
-        } else {
-          // convert non-printable "keydown" to "keypress", suppress other:
-          result = printable ? [] : [ "keypress" ];
-        }
+  getEventPseudoTypes : function( event, keyCode ) {
+    // There are two browser native key event sequences:
+    // - for printable keys: keydown, keypress, keydown, keypress, keyup
+    // - for non-printable keys: keydown, keydown, keyup
+    var result;
+    if( event.type === "keydown" ) {
+      // in Firefox ONLY modifier keys behave like non-printable
+      var asPrintable = rwt.client.Client.isGecko()
+                      ? !this.isModifier( keyCode )
+                      : !this.isNonPrintableKeyCode( keyCode );
+      if( this.isFirstKeyDown( keyCode ) ) {
+        // add a "keypress" for non-printable keys:
+        result = asPrintable ? [ "keydown" ] : [ "keydown", "keypress" ];
       } else {
-        result = [ event.type ];
+        // convert non-printable "keydown" to "keypress", suppress other:
+        result = asPrintable ? [] : [ "keypress" ];
       }
-      return result;
-    },
-    "gecko" : function( event, keyCode ) {
-      var result;
-      if( event.type === "keydown" && this.isModifier( keyCode ) ) {
-        if( this.isFirstKeyDown( keyCode ) ) {
-          result = [ "keydown", "keypress" ];
-        } else {
-          result = [ "keypress" ];
-        }
-      } else {
-        if( event.type === "keydown" && !this.isFirstKeyDown( keyCode ) ) {
-          // suppress unwanted "keydown":
-          result = [];
-        } else {
-          result = [ event.type ];
-        }
-      }
-      return result;
+    } else {
+      result = [ event.type ];
     }
-  } ),
+    return result;
+  },
 
   mustRestoreKeyup  : function( keyCode, pseudoTypes  ) {
     // For these keys it is assumed to be more likely that a keyup event was missed
@@ -297,19 +283,17 @@ rwt.event.EventHandlerUtil = {
     return result;
   },
 
-  mustRestoreKeypress  : rwt.util.Variant.select( "qx.client", {
-    "default" : function( event, pseudoTypes ) {
-      var result = false;
-      if( this.wasStopped( event ) ) {
-        result =    ( pseudoTypes.length === 1 && pseudoTypes[ 0 ] === "keydown" )
-                 || pseudoTypes.length === 0;
-      }
-      return result;
-    },
-    "gecko" : function() {
+  mustRestoreKeypress : function( event, pseudoTypes ) {
+    // "keypress" is still fired in Firefox < 25 when "keydown" event is stopped
+    if( rwt.client.Client.isGecko() && rwt.client.Client.getMajor() < 25 ) {
       return false;
     }
-  } ),
+    if( this.wasStopped( event ) ) {
+      return  ( pseudoTypes.length === 1 && pseudoTypes[ 0 ] === "keydown" )
+             || pseudoTypes.length === 0;
+    }
+    return false;
+  },
 
   saveData : function( event, keyCode ) {
     if( event.type !== "keypress" ) {

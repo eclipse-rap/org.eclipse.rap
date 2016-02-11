@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -394,17 +394,15 @@ org.eclipse.rwt.test.fixture.TestUtil = {
 
   _sendKeyDownOnHold : rwt.util.Functions.returnTrue,
 
-  _sendKeyPress : rwt.util.Variant.select("qx.client", {
-    "gecko" : function( key ) {
-      return !this._isModifier( key );
-    },
-    "default" : function( key, keyDownEvent ) {
-      var wasStopped =   keyDownEvent
-                       ? rwt.event.EventHandlerUtil.wasStopped( keyDownEvent )
-                       : false;
-      return this._isPrintable( key ) && !wasStopped;
+  _sendKeyPress : function( key, keyDownEvent ) {
+    var wasStopped =   keyDownEvent
+                     ? rwt.event.EventHandlerUtil.wasStopped( keyDownEvent )
+                     : false;
+    if( rwt.client.Client.isGecko() ) {
+      return !this._isModifier( key ) && !wasStopped;
     }
-  } ),
+    return this._isPrintable( key ) && !wasStopped;
+  },
 
   createFakeDomKeyEvent : function( target, type, stringOrKeyCode, mod ) {
     var domEvent = this._createFakeDomEvent( target, type, mod );
