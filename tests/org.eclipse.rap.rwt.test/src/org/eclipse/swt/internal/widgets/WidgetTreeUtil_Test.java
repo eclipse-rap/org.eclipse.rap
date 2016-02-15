@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -205,6 +206,22 @@ public class WidgetTreeUtil_Test {
   }
 
   @Test
+  public void testAccept_withCustomWidget_withDelegatedScrollbars() {
+    CustomWidgetWithDelegatedScrollbars customWidget
+      = new CustomWidgetWithDelegatedScrollbars( shell, SWT.NONE );
+    Canvas innerScrollable = customWidget.getInnerScrollable();
+
+    WidgetTreeUtil.accept( shell, loggingVisitor );
+
+    assertEquals( asList( shell,
+                          customWidget,
+                          innerScrollable,
+                          innerScrollable.getHorizontalBar(),
+                          innerScrollable.getVerticalBar() ),
+                  visited );
+  }
+
+  @Test
   public void testAccept_stopsAtTable() {
     final Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -240,6 +257,31 @@ public class WidgetTreeUtil_Test {
     } );
 
     assertEquals( asList( shell, tree, item1, item2, item2a, child ), visited );
+  }
+
+  private class CustomWidgetWithDelegatedScrollbars extends Composite {
+
+    private Canvas innerScrollable;
+
+    public CustomWidgetWithDelegatedScrollbars( Composite parent, int style ) {
+      super( parent, style );
+      innerScrollable = new Canvas( this, SWT.H_SCROLL | SWT.V_SCROLL );
+    }
+
+    public Canvas getInnerScrollable() {
+      return innerScrollable;
+    }
+
+    @Override
+    public ScrollBar getHorizontalBar() {
+      return innerScrollable.getHorizontalBar();
+    }
+
+    @Override
+    public ScrollBar getVerticalBar() {
+      return innerScrollable.getVerticalBar();
+    }
+
   }
 
 }

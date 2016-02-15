@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,11 +95,11 @@ public class WidgetTreeUtil {
     if( root instanceof Scrollable ) {
       Scrollable scrollable = ( Scrollable )root;
       ScrollBar horizontalBar = scrollable.getHorizontalBar();
-      if( horizontalBar != null ) {
+      if( horizontalBar != null && horizontalBar.getParent() == scrollable ) {
         accept( horizontalBar, visitor );
       }
       ScrollBar verticalBar = scrollable.getVerticalBar();
-      if( verticalBar != null ) {
+      if( verticalBar != null && verticalBar.getParent() == scrollable ) {
         accept( verticalBar, visitor );
       }
     }
