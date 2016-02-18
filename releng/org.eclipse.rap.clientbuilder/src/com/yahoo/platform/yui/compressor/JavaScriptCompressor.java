@@ -24,9 +24,11 @@ import java.util.regex.Pattern;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.IRFactory;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Token;
+import org.mozilla.javascript.ast.AstRoot;
 
 @SuppressWarnings( { "all"} )
 public class JavaScriptCompressor {
@@ -321,8 +323,9 @@ public class JavaScriptCompressor {
 
         CompilerEnvirons env = new CompilerEnvirons();
         Parser parser = new Parser(env, reporter);
-        parser.parse(in, null, 1);
-        String source = parser.getEncodedSource();
+        AstRoot astRoot = parser.parse(in, null, 1);
+        IRFactory irFactory = new IRFactory(env, reporter);
+        String source = irFactory.transformTree(astRoot).getEncodedSource();
 
         int offset = 0;
         int length = source.length();
