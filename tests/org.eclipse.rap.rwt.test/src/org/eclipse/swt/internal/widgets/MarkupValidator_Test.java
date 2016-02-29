@@ -42,6 +42,28 @@ public class MarkupValidator_Test {
   }
 
   @Test
+  public void testValidate_withClass() {
+    String markup = "<span class=\"foo\">bar</span>";
+
+    try {
+      validator.validate( markup );
+    } catch( Exception ex ) {
+      fail( ex.getMessage() );
+    }
+  }
+
+  @Test
+  public void testValidate_withId() {
+    String markup = "<span id=\"foo\">bar</span>";
+
+    try {
+      validator.validate( markup );
+    } catch( Exception ex ) {
+      fail( ex.getMessage() );
+    }
+  }
+
+  @Test
   public void testValidate_withNamedEntities() {
     String markup = "&nbsp; &lt;foo&gt; &amp; &lt;bar&gt;";
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,30 +94,31 @@ public class MarkupValidator {
   }
 
   private static Map<String, String[]> createSupportedElementsMap() {
-    Map<String, String[]> result = new HashMap<String, String[]>();
+    Map<String, String[]> result = new HashMap<>();
     result.put( "html", new String[ 0 ] );
     result.put( "br", new String[ 0 ] );
-    result.put( "b", new String[] { "style" } );
-    result.put( "strong", new String[] { "style" } );
-    result.put( "i", new String[] { "style" } );
-    result.put( "em", new String[] { "style" } );
-    result.put( "sub", new String[] { "style" } );
-    result.put( "sup", new String[] { "style" } );
-    result.put( "big", new String[] { "style" } );
-    result.put( "small", new String[] { "style" } );
-    result.put( "del", new String[] { "style" } );
-    result.put( "ins", new String[] { "style" } );
-    result.put( "code", new String[] { "style" } );
-    result.put( "samp", new String[] { "style" } );
-    result.put( "kbd", new String[] { "style" } );
-    result.put( "var", new String[] { "style" } );
-    result.put( "cite", new String[] { "style" } );
-    result.put( "dfn", new String[] { "style" } );
-    result.put( "q", new String[] { "style" } );
-    result.put( "abbr", new String[] { "style", "title" } );
-    result.put( "span", new String[] { "style" } );
-    result.put( "img", new String[] { "style", "src", "width", "height", "title", "alt" } );
-    result.put( "a", new String[] { "style", "href", "target", "title" } );
+    result.put( "b", new String[] { "style", "class", "id" } );
+    result.put( "strong", new String[] { "style", "class", "id" } );
+    result.put( "i", new String[] { "style", "class", "id" } );
+    result.put( "em", new String[] { "style", "class", "id" } );
+    result.put( "sub", new String[] { "style", "class", "id" } );
+    result.put( "sup", new String[] { "style", "class", "id" } );
+    result.put( "big", new String[] { "style", "class", "id" } );
+    result.put( "small", new String[] { "style", "class", "id" } );
+    result.put( "del", new String[] { "style", "class", "id" } );
+    result.put( "ins", new String[] { "style", "class", "id" } );
+    result.put( "code", new String[] { "style", "class", "id" } );
+    result.put( "samp", new String[] { "style", "class", "id" } );
+    result.put( "kbd", new String[] { "style", "class", "id" } );
+    result.put( "var", new String[] { "style", "class", "id" } );
+    result.put( "cite", new String[] { "style", "class", "id" } );
+    result.put( "dfn", new String[] { "style", "class", "id" } );
+    result.put( "q", new String[] { "style", "class", "id" } );
+    result.put( "abbr", new String[] { "style", "class", "id", "title" } );
+    result.put( "span", new String[] { "style", "class", "id" } );
+    result.put( "img",
+                new String[] { "style", "class", "id", "src", "width", "height", "title", "alt" } );
+    result.put( "a", new String[] { "style", "class", "id", "href", "target", "title" } );
     return result;
   }
 
@@ -125,12 +126,12 @@ public class MarkupValidator {
 
     @Override
     public void startElement( String uri, String localName, String name, Attributes attributes ) {
-      checkSupportedElements( name, attributes );
+      checkSupportedElements( name );
       checkSupportedAttributes( name, attributes );
       checkMandatoryAttributes( name, attributes );
     }
 
-    private static void checkSupportedElements( String elementName, Attributes attributes ) {
+    private static void checkSupportedElements( String elementName ) {
       if( !SUPPORTED_ELEMENTS.containsKey( elementName ) ) {
         throw new IllegalArgumentException( "Unsupported element in markup text: " + elementName );
       }
@@ -167,7 +168,7 @@ public class MarkupValidator {
         String attribute = attributes.getValue( checkedAttributeName );
         try {
           Integer.parseInt( attribute );
-        } catch( NumberFormatException exception ) {
+        } catch( @SuppressWarnings( "unused" ) NumberFormatException exception ) {
           String message
             = "Mandatory attribute \"{0}\" for element \"{1}\" is missing or not a valid integer";
           Object[] arguments = new Object[] { checkedAttributeName, checkedElementName };
