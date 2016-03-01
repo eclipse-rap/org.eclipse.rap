@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 EclipseSource and others.
+ * Copyright (c) 2014, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,16 +18,12 @@ rwt.qx.Mixin.define( "rwt.widgets.util.OverStateMixin", {
 
   members : {
 
-    _onMouseOver : function( event ) {
-      if( event.getTarget() === this ) {
-        this.addState( "over" );
-      }
+    _onMouseOver : function() {
+      this.addState( "over" );
     },
 
-    _onMouseOut : function( event ) {
-      if( event.getTarget() === this ) {
-        this.removeState( "over" );
-      }
+    _onMouseOut : function() {
+      this.removeState( "over" );
     }
 
   }
