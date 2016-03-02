@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
@@ -337,9 +338,12 @@ public abstract class ControlOperationHandler<T extends Control> extends WidgetO
     return event;
   }
 
-  @SuppressWarnings( "unused" )
   protected boolean allowMouseEvent( T control, int x, int y ) {
-    return x >= 0 && y >= 0;
+    Point size = control.getSize();
+    int borderWidth = control.getBorderWidth();
+    Rectangle outerBounds =  new Rectangle( - borderWidth, - borderWidth, size.x, size.y );
+    Rectangle innerBounds = new Rectangle( 0, 0, size.x - 2 * borderWidth, size.y - 2 * borderWidth );
+    return !outerBounds.contains( x, y ) || innerBounds.contains( x, y );
   }
 
   private static int determineCount( int eventType, Control control ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,23 +159,6 @@ public class ButtonOperationHandler_Test {
     assertEquals( 3, event.y );
     assertEquals( 4, event.time );
     assertEquals( 1, event.count );
-  }
-
-  @Test
-  public void testHandleNotifyMouseDown_negativeCoordinates() {
-    Button spyButton = spy( button );
-    handler = new ButtonOperationHandler( spyButton );
-    JsonObject properties = new JsonObject()
-      .add( "altKey", true )
-      .add( "shiftKey", true )
-      .add( "button", 1 )
-      .add( "x", -10 )
-      .add( "y", 3 )
-      .add( "time", 4 );
-
-    handler.handleNotify( EVENT_MOUSE_DOWN, properties );
-
-    verify( spyButton, times( 0 ) ).notifyListeners( eq( SWT.MouseDown ), any( Event.class ) );
   }
 
   @Test

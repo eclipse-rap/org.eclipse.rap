@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class ControlOperationHandler_Test {
     Fixture.setUp();
     Display display = new Display();
     shell = new Shell( display );
-    control = new Button( shell, SWT.NONE );
+    control = new Button( shell, SWT.BORDER );
     control.setBounds( 10, 10, 100, 20 );
     mockedControl = mock( Control.class );
     when( mockedControl.getDisplay() ).thenReturn( display );
@@ -269,12 +269,12 @@ public class ControlOperationHandler_Test {
   }
 
   @Test
-  public void testHandleNotify_processesMouseDown_onControl_invalid() {
+  public void testHandleNotify_processesMouseDown_onControl_onBorder() {
     Control spyControl = spy( control );
     JsonObject properties = new JsonObject()
       .add( "button", 1 )
-      .add( "x", -10 )
-      .add( "y", 3 )
+      .add( "x", 10 )
+      .add( "y", 13 )
       .add( "time", 4 );
 
     handler.handleNotifyMouseDown( spyControl, properties );
