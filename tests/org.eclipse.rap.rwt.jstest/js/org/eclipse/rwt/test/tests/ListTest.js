@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -430,8 +430,8 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       TestUtil.protocolListen( "w3", { "FocusIn" : true } );
       TestUtil.protocolListen( "w3", { "FocusOut" : true } );
       var widget = ObjectRegistry.getObject( "w3" );
-      assertTrue( widget.hasEventListeners( "focusin" ) );
-      assertTrue( widget.hasEventListeners( "focusout" ) );
+      assertTrue( widget.hasEventListeners( "focus" ) );
+      assertTrue( widget.hasEventListeners( "blur" ) );
       shell.destroy();
       widget.destroy();
     },

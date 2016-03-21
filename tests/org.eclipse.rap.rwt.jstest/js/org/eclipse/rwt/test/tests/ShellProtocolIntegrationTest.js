@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -505,21 +505,21 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", 
 
     testFocusInListener : function() {
       var shell = this._protocolCreateShell();
-      assertFalse( shell.hasEventListeners( "focusin" ) );
-      assertFalse( shell.hasEventListeners( "focusout" ) );
+      assertFalse( shell.hasEventListeners( "focus" ) );
+      assertFalse( shell.hasEventListeners( "blur" ) );
       this._protocolListen( { "FocusIn" : true } );
-      assertTrue( shell.hasEventListeners( "focusin" ) );
-      assertFalse( shell.hasEventListeners( "focusout" ) );
+      assertTrue( shell.hasEventListeners( "focus" ) );
+      assertFalse( shell.hasEventListeners( "blur" ) );
       this._disposeShell();
     },
 
     testFocusOutListener : function() {
       var shell = this._protocolCreateShell();
-      assertFalse( shell.hasEventListeners( "focusin" ) );
-      assertFalse( shell.hasEventListeners( "focusout" ) );
+      assertFalse( shell.hasEventListeners( "focus" ) );
+      assertFalse( shell.hasEventListeners( "blur" ) );
       this._protocolListen( { "FocusOut" : true } );
-      assertFalse( shell.hasEventListeners( "focusin" ) );
-      assertTrue( shell.hasEventListeners( "focusout" ) );
+      assertFalse( shell.hasEventListeners( "focus" ) );
+      assertTrue( shell.hasEventListeners( "blur" ) );
       this._disposeShell();
     },
 

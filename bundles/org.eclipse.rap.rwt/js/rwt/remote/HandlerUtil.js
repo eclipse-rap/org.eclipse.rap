@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,18 +265,18 @@ rwt.remote.HandlerUtil = {
       var context = rwt.remote.EventUtil;
       var focusGained = rwt.remote.EventUtil.focusGained;
       if( value ) {
-        widget.addEventListener( "focusin", focusGained, context );
+        widget.addEventListener( "focus", focusGained, context );
       } else {
-        widget.removeEventListener( "focusin", focusGained, context );
+        widget.removeEventListener( "focus", focusGained, context );
       }
     },
     "FocusOut" : function( widget, value ) {
       var context = rwt.remote.EventUtil;
       var focusLost = rwt.remote.EventUtil.focusLost;
       if( value ) {
-        widget.addEventListener( "focusout", focusLost, context );
+        widget.addEventListener( "blur", focusLost, context );
       } else {
-        widget.removeEventListener( "focusout", focusLost, context );
+        widget.removeEventListener( "blur", focusLost, context );
       }
     },
     "MouseDown" : function( widget, value ) {
