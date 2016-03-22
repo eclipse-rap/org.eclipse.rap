@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public class WebClientMessages implements ClientMessages {
     RWTMessages.SESSION_TIMEOUT,
     RWTMessages.SESSION_TIMEOUT_DESCRIPTION,
     RWTMessages.CLIENT_ERROR,
+    RWTMessages.CLIENT_ERROR_DESCRIPTION,
     RWTMessages.RETRY,
     RWTMessages.RESTART,
     RWTMessages.DETAILS

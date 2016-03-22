@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ public final class RWTMessages {
   public static final String SESSION_TIMEOUT = "SessionTimeout";
   public static final String SESSION_TIMEOUT_DESCRIPTION = "SessionTimeoutDescription";
   public static final String CLIENT_ERROR = "ClientError";
+  public static final String CLIENT_ERROR_DESCRIPTION = "ClientErrorDescription";
   public static final String RETRY = "Retry";
   public static final String RESTART = "Restart";
   public static final String DETAILS = "Details";
@@ -55,13 +56,13 @@ public final class RWTMessages {
     ResourceBundle bundle = null;
     try {
       bundle = getBundle( bundleName, locale );
-    } catch( MissingResourceException ex ) {
+    } catch( @SuppressWarnings( "unused" ) MissingResourceException ex ) {
       result = key + " (no resource bundle)";
     }
     if( bundle != null ) {
       try {
         result = bundle.getString( key );
-      } catch( MissingResourceException mre ) {
+      } catch( @SuppressWarnings( "unused" ) MissingResourceException mre ) {
       }
     }
     return result;

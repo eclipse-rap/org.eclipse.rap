@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ rwt.client.ServerPush.prototype = {
   _handleServerError : function( event ) {
     var text = event.responseText;
     if( text && text.length > 0 ) {
-      rwt.runtime.ErrorHandler.showErrorPage( text );
+      rwt.runtime.ErrorHandler.showErrorBox( "server error", true, text );
     } else {
       rwt.runtime.ErrorHandler.showErrorBox( "request failed" );
     }
