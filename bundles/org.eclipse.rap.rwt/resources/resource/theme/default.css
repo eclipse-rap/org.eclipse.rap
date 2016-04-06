@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,6 +88,16 @@ Display {
 SystemMessage-DisplayOverlay {
   background-color: rgba( 128, 128, 128, 0.2 );
   background-image: url( resource/widget/rap/display/loading.gif );
+}
+
+ErrorBox-Titlebar {
+  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: white;
+  background-color: #406796;
+}
+
+ErrorBox {
+  border: 1px solid #3B5998;
 }
 
 /* Default theme for all controls */

@@ -69,8 +69,10 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       }
       this._overlay = this._createOverlay();
       this._box = this._createErrorBoxArea( 450, 150 );
+      var themeStore = rwt.theme.ThemeStore.getInstance();
+      var border = themeStore.getBorder( "ErrorBox", {}, "border" );
+      border.renderElement( this._box );
       this._box.style.padding = "0px";
-      this._box.style.border = "1px solid #3B5998";
       this._box.style.overflow = "hidden";
       var errorBoxData = this._getErrorBoxData( errorType );
       this._title = this._createErrorBoxTitleArea( this._box );
@@ -221,6 +223,11 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
 
     _createErrorBoxTitleArea : function( parentElement ) {
       var element = document.createElement( "div" );
+      var themeStore = rwt.theme.ThemeStore.getInstance();
+      var cssElement = "ErrorBox-Titlebar";
+      var color = themeStore.getColor( cssElement, {}, "color" );
+      var font = themeStore.getFont( cssElement, {}, "font" );
+      var backgroundColor = themeStore.getColor( cssElement, {}, "background-color" );
       var style = element.style;
       style.position = "absolute";
       style.left = "0px";
@@ -229,10 +236,9 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.height = "40px";
       style.padding = "10px";
       style.textAlign = "left";
-      style.backgroundColor = "#406796";
-      style.color = "white";
-      style.fontSize = "14px";
-      style.fontWeight = "bold";
+      style.color = color;
+      style.font = font.toCss();
+      style.backgroundColor = backgroundColor;
       parentElement.appendChild( element );
       return element;
     },

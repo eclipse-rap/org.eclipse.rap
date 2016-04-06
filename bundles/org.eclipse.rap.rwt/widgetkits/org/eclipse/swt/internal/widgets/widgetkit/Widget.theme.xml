@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -283,5 +283,66 @@
 
   </element>
 
+  <element name="ErrorBox-Titlebar">
+
+    <property name="font">
+      <description>
+        Text font of the title.
+      </description>
+    </property>
+
+    <property name="color">
+      <description>
+        Text color of the title.
+      </description>
+    </property>
+
+    <property name="background-color">
+      <description>
+        Background color of the title bar.
+      </description>
+    </property>
+
+  </element>
+
+  <element name="ErrorBox">
+
+    <property name="border" shorthand="true">
+      <description>
+        The border of the ErrorBox.
+       </description>
+    </property>
+
+    <property name="border-top">
+      <description>
+        The top side border of the ErrorBox.
+      </description>
+    </property>
+
+    <property name="border-right">
+      <description>
+        The right side border of the ErrorBox.
+      </description>
+    </property>
+
+    <property name="border-bottom">
+      <description>
+        The bottom side border of the ErrorBox.
+      </description>
+    </property>
+
+    <property name="border-left">
+      <description>
+        The left side border of the ErrorBox.
+      </description>
+    </property>
+
+    <property name="border-radius">
+      <description>
+         Border radius of the ErrorBox.
+      </description>
+    </property>
+
+  </element>
 
 </theme>

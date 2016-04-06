@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,4 +73,14 @@ Display {
 SystemMessage-DisplayOverlay {
   background-color: transparent;
   background-image: none;
+}
+
+ErrorBox-Titlebar {
+  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: white;
+  background-color: #406796;
+}
+
+ErrorBox {
+  border: 1px solid #3B5998;
 }
