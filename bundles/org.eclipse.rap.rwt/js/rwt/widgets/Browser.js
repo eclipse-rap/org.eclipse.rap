@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.Browser", {
     this._browserFunctions = {};
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
+    this.setSelectable( true );
     this.setAppearance( "browser" );
     this.addEventListener( "create", this._onCreate, this );
   },
