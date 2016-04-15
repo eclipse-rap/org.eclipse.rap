@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource, and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -61,8 +61,9 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
       this.getElement().style.position = "absolute";
       this.setSelectable( true );
     }
-    this._document.documentElement.onscroll = this._resetScrollPosition;
-    this.getElement().onscroll = this._resetScrollPosition;
+    var resetScrollPosition = rwt.util.Functions.bind( this._resetScrollPosition, this );
+    this._document.documentElement.onscroll = resetScrollPosition;
+    this.getElement().onscroll = resetScrollPosition;
   },
 
   properties : {
@@ -133,6 +134,17 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
 
     _applyParent : rwt.util.Functions.returnTrue,
 
+    _applyOverflow : function( value ) {
+      var property = "overflow";
+      if( value === "scrollX" ) {
+        property = "overflowX";
+      } else if( value === "scrollY" ) {
+        property = "overflowY";
+      }
+      this._document.documentElement.style[ property ] = value === "hidden" ? value : "auto";
+      this.getElement().style[ property ] = value === "hidden" ? value : "auto";
+    },
+
     getTopLevelWidget : function() {
       return this;
     },
@@ -172,6 +184,7 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
       if( !this._blocker ) {
         // Create blocker instance
         this._blocker = new rwt.widgets.base.ClientDocumentBlocker();
+        this._blocker.setStyleProperty( "position", "fixed" );
         // Add blocker to client document
         this.add( this._blocker );
       }
@@ -206,10 +219,15 @@ rwt.qx.Class.define( "rwt.widgets.base.ClientDocument", {
     },
 
     _resetScrollPosition : function() {
-      document.documentElement.scrollTop = 0;
-      document.documentElement.scrollLeft = 0;
-      document.body.scrollTop = 0;
-      document.body.scrollLeft = 0;
+      var overflow = this.getOverflow();
+      if( overflow !== "scroll" && overflow !== "scrollX" ) {
+        document.documentElement.scrollLeft = 0;
+        document.body.scrollLeft = 0;
+      }
+      if( overflow !== "scroll" && overflow !== "scrollY" ) {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
     },
 
     // CSS API

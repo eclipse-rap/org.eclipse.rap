@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -246,6 +246,9 @@ rwt.qx.Class.define( "rwt.widgets.Shell", {
       this._appModal =    this.hasState( "rwt_APPLICATION_MODAL" )
                        || this.hasState( "rwt_PRIMARY_MODAL" )
                        || this.hasState( "rwt_SYSTEM_MODAL" );
+      if( this._appModal ) {
+        this.setStyleProperty( "position", "fixed" );
+      }
     },
 
     // TODO [rst] Find a generic solution for state inheritance

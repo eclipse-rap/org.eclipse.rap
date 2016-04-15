@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
   extend : rwt.qx.Object,
 
   members : {
+
+    setUp : function() {
+      display = rwt.widgets.Display.getCurrent();
+      var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
+      rwt.remote.ObjectRegistry.add( "w1", display, adapter );
+      display.setHasResizeListener( false );
+    },
 
     testSetFocusControlByProtocol : function() {
       var button = new rwt.widgets.Button( "push" );
@@ -165,11 +172,31 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertTrue( typeof message.findSetProperty( "w1", "colorDepth" ) === "number" );
     },
 
-    setUp : function() {
-      display = rwt.widgets.Display.getCurrent();
-      var adapter = rwt.remote.HandlerRegistry.getHandler( "rwt.widgets.Display" );
-      rwt.remote.ObjectRegistry.add( "w1", display, adapter );
-      display.setHasResizeListener( false );
+    testSetOverflow : function() {
+      display.setOverflow( "scroll" );
+
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
+      assertEquals( "auto", doc.getElement().style.overflow );
+      assertEquals( "auto", doc.getDocumentElement().documentElement.style.overflow );
+      rwt.widgets.base.ClientDocument.getInstance().setOverflow( "hidden" );
+    },
+
+    testSetOverflow_yOnly : function() {
+      display.setOverflow( "scrollY" );
+
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
+      assertEquals( "auto", doc.getElement().style.overflowY );
+      assertEquals( "auto", doc.getDocumentElement().documentElement.style.overflowY );
+      rwt.widgets.base.ClientDocument.getInstance().setOverflow( "hidden" );
+    },
+
+    testSetOverflow_xOnly : function() {
+      display.setOverflow( "scrollX" );
+
+      var doc = rwt.widgets.base.ClientDocument.getInstance();
+      assertEquals( "auto", doc.getElement().style.overflowX );
+      assertEquals( "auto", doc.getDocumentElement().documentElement.style.overflowX );
+      rwt.widgets.base.ClientDocument.getInstance().setOverflow( "hidden" );
     }
 
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,20 @@ import static org.eclipse.rap.rwt.internal.lifecycle.WidgetUtil.getLCA;
 import static org.eclipse.rap.rwt.internal.protocol.ClientMessageConst.EVENT_RESIZE;
 import static org.eclipse.rap.rwt.internal.protocol.ProtocolUtil.handleOperation;
 import static org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory.getRemoteObject;
+import static org.eclipse.rap.rwt.internal.service.ContextProvider.getRequest;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
+import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DisposedWidgets;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointRegistration;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.ReparentedControls;
 import org.eclipse.rap.rwt.internal.lifecycle.UITestUtil;
@@ -34,6 +41,7 @@ import org.eclipse.rap.rwt.internal.protocol.Operation;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.internal.protocol.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectLifeCycleAdapter;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rap.rwt.internal.util.ActiveKeysUtil;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -85,6 +93,7 @@ public class DisplayLCA {
   }
 
   public void render( Display display ) throws IOException {
+    renderOverflow( display );
     renderReparentControls();
     renderDisposeWidgets();
     renderExitConfirmation( display );
@@ -138,6 +147,26 @@ public class DisplayLCA {
     for( Shell shell : getShells( display ) ) {
       WidgetTreeUtil.accept( shell, visitor );
     }
+  }
+
+  private static void renderOverflow( Display display ) {
+    if( !getAdapter( display ).isInitialized() ) {
+      String overflow = getEntryPointProperties().get( WebClient.PAGE_OVERFLOW );
+      if( overflow != null ) {
+        RemoteObjectFactory.getRemoteObject( display ).set( "overflow", overflow );
+      }
+    }
+  }
+
+  private static Map<String, String> getEntryPointProperties() {
+    ApplicationContextImpl applicationContext = ContextProvider.getApplicationContext();
+    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
+    String servletPath = getRequest().getServletPath();
+    EntryPointRegistration registration = entryPointManager.getRegistrationByPath( servletPath );
+    if( registration != null ) {
+      return registration.getProperties();
+    }
+    return Collections.emptyMap();
   }
 
   private static void renderShells( Display display ) throws IOException {

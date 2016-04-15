@@ -109,6 +109,18 @@ public class WebClient implements Client {
   public static final String PAGE_TITLE = PREFIX + ".pageTitle";
 
   /**
+   * Entrypoint property name for the page overflow behavior. The value must be one of the
+   * "scroll", "scrollX", "scrollY". If this property is not set the page overflow is
+   * disabled.
+   *
+   * @see Application#addEntryPoint(String, Class, Map)
+   * @see Application#addEntryPoint(String, EntryPointFactory, Map)
+   *
+   * @since 3.1
+   */
+  public static final String PAGE_OVERFLOW = PREFIX + ".pageOverflow";
+
+  /**
    * Entrypoint property name for the website icon (a.k.a favicon or shortcut icon) that will be
    * displayed by the web browser. The value must contain a valid path where the image can be
    * accessed on the server.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,15 +35,19 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.internal.application.ApplicationContextImpl;
 import org.eclipse.rap.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.lifecycle.RemoteAdapter;
@@ -97,7 +101,6 @@ public class DisplayLCA_Test {
     display = new Display();
     displayId = DisplayUtil.getId( display );
     displayLCA = new DisplayLCA();
-    Fixture.fakeNewRequest();
   }
 
   @After
@@ -264,13 +267,11 @@ public class DisplayLCA_Test {
 
   @Test
   public void testRenderInitiallyDisposed() {
-    ApplicationContextImpl applicationContext = getApplicationContext();
-    applicationContext.getEntryPointManager().register( TestRequest.DEFAULT_SERVLET_PATH,
-                                                        TestRenderInitiallyDisposedEntryPoint.class,
-                                                        null );
+    registerDefaultEntryPoint( TestRenderInitiallyDisposedEntryPoint.class, null );
     RWTLifeCycle lifeCycle
       = ( RWTLifeCycle )getApplicationContext().getLifeCycleFactory().getLifeCycle();
     LifeCycleUtil.setSessionDisplay( null );
+
     // ensure that life cycle execution succeeds with disposed display
     try {
       lifeCycle.execute();
@@ -567,6 +568,41 @@ public class DisplayLCA_Test {
     assertEquals( getId( button ), focusControlId );
   }
 
+  @Test
+  public void testRenderPageOverflow_whenDisplayIsNotInitialize() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.PAGE_OVERFLOW, "scrollY" );
+    registerDefaultEntryPoint( TestEntryPoint.class, properties );
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( "scrollY", message.findSetProperty( displayId, "overflow" ).asString() );
+  }
+
+  @Test
+  public void testRenderPageOverflow_whenDisplayIsInitialize() throws IOException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put( WebClient.PAGE_OVERFLOW, "scrollY" );
+    registerDefaultEntryPoint( TestEntryPoint.class, properties );
+
+    Fixture.markInitialized( display );
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "overflow" ) );
+  }
+
+  @Test
+  public void testRenderPageOverflow_withoutProperties() throws IOException {
+    registerDefaultEntryPoint( TestEntryPoint.class, null );
+
+    displayLCA.render( display );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( displayId, "overflow" ) );
+  }
+
   private static void setEnableUiTests( boolean value ) {
     Field field;
     try {
@@ -576,6 +612,14 @@ public class DisplayLCA_Test {
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to set enabled field", e );
     }
+  }
+
+  private static void registerDefaultEntryPoint( Class< ? extends EntryPoint> entryPoint,
+                                                 Map<String, String> properties )
+  {
+    ApplicationContextImpl applicationContext = getApplicationContext();
+    EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
+    entryPointManager.register( TestRequest.DEFAULT_SERVLET_PATH, entryPoint, properties );
   }
 
   private static class TestWidgetLCA extends WidgetLCA<Widget> {
@@ -642,11 +686,18 @@ public class DisplayLCA_Test {
     }
   }
 
-  public static final class TestRenderInitiallyDisposedEntryPoint implements EntryPoint {
+  private static final class TestRenderInitiallyDisposedEntryPoint implements EntryPoint {
     @Override
     public int createUI() {
       Display display = new Display();
       display.dispose();
+      return 0;
+    }
+  }
+
+  private static final class TestEntryPoint implements EntryPoint {
+    @Override
+    public int createUI() {
       return 0;
     }
   }

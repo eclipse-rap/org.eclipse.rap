@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,12 @@ rwt.widgets.Display.prototype = {
 
   beep : function() {
     // do nothing for now, used by native clients
+  },
+
+  setOverflow : function( overflow ) {
+    if( overflow === "scroll" || overflow === "scrollX" || overflow === "scrollY" ) {
+      this._document.setOverflow( overflow );
+    }
   },
 
   /**

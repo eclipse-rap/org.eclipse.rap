@@ -174,7 +174,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       var color = themeStore.getColor( "SystemMessage-DisplayOverlay", {}, "background-color" );
       var alpha = themeStore.getAlpha( "SystemMessage-DisplayOverlay", {}, "background-color" );
       var style = element.style;
-      style.position = "absolute";
+      style.position = "fixed";
       style.width = "100%";
       style.height = "100%";
       style.backgroundColor = color === "undefined" ? "transparent" : color;
@@ -202,7 +202,7 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
     _createErrorBoxArea : function( width, height ) {
       var element = document.createElement( "div" );
       var style = element.style;
-      style.position = "absolute";
+      style.position = "fixed";
       style.width = width + "px";
       style.height = height + "px";
       var doc = rwt.widgets.base.ClientDocument.getInstance();
