@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -279,9 +279,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     _afterAppearLayout : function() {
       var targetBounds = this._getTargetBounds();
       this._fallbackMode = this._computeFallbackMode( targetBounds );
-      var docDimension = this._getDocumentDimension();
+      var viewportBounds = this._getViewportBounds();
       var selfDimension = this._getOwnDimension();
-      var newPosition = this._getPositionAfterAppear( targetBounds, docDimension, selfDimension );
+      var newPosition = this._getPositionAfterAppear( targetBounds, viewportBounds, selfDimension );
       this.setLeft( newPosition[ 0 ] );
       this.setTop( newPosition[ 1 ] );
       var selfInnerBounds = {
@@ -395,27 +395,31 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
     },
 
     _computeFallbackMode : function( target ) {
-      var doc = this._getDocumentDimension();
+      var viewport = this._getViewportBounds();
+      var left = target.left;
       var right = target.left + target.width;
+      var top = target.top;
       var bottom = target.top + target.height;
-      if( target.left < 0 || target.top < 0 || right > doc.width || bottom > doc.height ) {
+      if(    left < viewport.left
+          || top < viewport.top
+          || right > viewport.left + viewport.width
+          || bottom > viewport.top + viewport.height )
+      {
         return true;
       }
       var display = this.getElement().style.display;
       this.getElement().style.display = "none";
       var targetElements = [
-        document.elementFromPoint( target.left + target.width / 2 , target.top + 1 ),
-        document.elementFromPoint( right - 1, target.top + target.height / 2 ),
-        document.elementFromPoint( target.left + target.width / 2, bottom - 1 ),
-        document.elementFromPoint( target.left + 1, target.top + target.height / 2 )
+        document.elementFromPoint( left + target.width / 2 - viewport.left, top + 1 - viewport.top ),
+        document.elementFromPoint( right - 1 - viewport.left, top + target.height / 2 - viewport.top ),
+        document.elementFromPoint( left + target.width / 2 - viewport.left, bottom - 1 - viewport.top ),
+        document.elementFromPoint( left + 1 - viewport.left, top + target.height / 2 - viewport.top )
       ];
       this.getElement().style.display = display;
       var boundWidget = this.getBoundToWidget();
       for( var i = 0; i < 4; i++ ) {
         var widget = rwt.event.EventHandlerUtil.getOriginalTargetObject( targetElements[ i ] );
-        if(    widget == null
-            || !( boundWidget === widget || boundWidget.contains( widget ) ) )
-        {
+        if( widget == null || !( boundWidget === widget || boundWidget.contains( widget ) ) ) {
           return true;
         }
       }
@@ -426,28 +430,30 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return this._label.getCellContent( 0 );
     },
 
-    _getPositionAfterAppear : function( target, doc, self ) {
+    _getPositionAfterAppear : function( target, viewport, self ) {
       var result;
       if( !this._fallbackMode ) {
         switch( this._config.position ) {
           case "horizontal-center":
-            result = this._positionHorizontalCenter( target, doc, self );
+            result = this._positionHorizontalCenter( target, viewport, self );
           break;
           case "align-left":
-            result = this._positionAlignLeft( target, doc, self );
+            result = this._positionAlignLeft( target, viewport, self );
           break;
           case "vertical-center":
-            result = this._positionVerticalCenter( target, doc, self );
+            result = this._positionVerticalCenter( target, viewport, self );
           break;
           default:
-            result = this._positionMouseRelative( target, doc, self );
+            result = this._positionMouseRelative( target, viewport, self );
           break;
         }
       } else {
-        result = this._positionMouseRelative( target, doc, self );
+        result = this._positionMouseRelative( target, viewport, self );
       }
-      result[ 0 ] = Math.max( 0, Math.min( result[ 0 ], doc.width - self.width ) );
-      result[ 1 ] = Math.max( 0, Math.min( result[ 1 ], doc.height - self.height ) );
+      result[ 0 ] = Math.min( result[ 0 ], viewport.left + viewport.width - self.width );
+      result[ 1 ] = Math.min( result[ 1 ], viewport.top + viewport.height - self.height );
+      result[ 0 ] = Math.max( result[ 0 ], viewport.left );
+      result[ 1 ] = Math.max( result[ 1 ], viewport.top );
       return result;
     },
 
@@ -458,21 +464,21 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       ];
     },
 
-    _positionHorizontalCenter : function( target, doc, self ) {
-      var left = this._getHorizontalOffsetCentered( target, self, doc );
-      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
+    _positionHorizontalCenter : function( target, viewport, self ) {
+      var left = this._getHorizontalOffsetCentered( target, self, viewport );
+      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, viewport );
       return [ left, top ];
     },
 
-    _positionAlignLeft : function( target, doc, self ) {
-      var left = this._getHorizontalOffsetAlignLeft( target, self, doc );
-      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, doc );
+    _positionAlignLeft : function( target, viewport, self ) {
+      var left = this._getHorizontalOffsetAlignLeft( target, self, viewport );
+      var top = this._getVerticalOffsetAutoByAbsolutePosition( target, self, viewport );
       return [ left, top ];
     },
 
-    _positionVerticalCenter : function( target, doc, self ) {
-      var left = this._getHorizontalOffsetAuto( target, self, doc );
-      var top = this._getVerticalOffsetCentered( target, self, doc );
+    _positionVerticalCenter : function( target, viewport, self ) {
+      var left = this._getHorizontalOffsetAuto( target, self, viewport );
+      var top = this._getVerticalOffsetCentered( target, self, viewport );
       return [ left, top ];
     },
 
@@ -500,9 +506,9 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return target.left + this._targetDistance;
     },
 
-    _getHorizontalOffsetAuto : function( target, self, doc ) {
+    _getHorizontalOffsetAuto : function( target, self, viewport ) {
       var leftSpace = target.left;
-      var rightSpace = doc.width - leftSpace - target.width;
+      var rightSpace = viewport.width - leftSpace - target.width;
       if( leftSpace > rightSpace ) {
         return target.left - self.width - this._getTargetDistance( "right" );
       } else {
@@ -533,9 +539,14 @@ rwt.qx.Class.define( "rwt.widgets.base.WidgetToolTip", {
       return result;
     },
 
-    _getDocumentDimension : function() {
-      var doc = rwt.widgets.base.ClientDocument.getInstance();
-      return { "width" : doc.getClientWidth(), "height" : doc.getClientHeight() };
+    _getViewportBounds : function() {
+      var viewport = rwt.html.Viewport;
+      return {
+        "left" : viewport.getScrollLeft(),
+        "top" : viewport.getScrollTop(),
+        "width" : viewport.getWidth(),
+        "height" : viewport.getHeight()
+      };
     },
 
     _getOwnDimension : function() {
