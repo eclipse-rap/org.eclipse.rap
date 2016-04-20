@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -373,8 +373,9 @@
 
   function renderPosition() {
     this._.popup.positionRelativeTo( this._.parent, 0, this._.parent.getHeight() );
-    var docHeight = rwt.widgets.base.ClientDocument.getInstance().getInnerHeight();
-    if( this._.popup.getTop() + this._.popup.getHeight() > docHeight ) {
+    var viewportHeight = rwt.html.Viewport.getHeight();
+    var scrollTop = rwt.html.Viewport.getScrollTop();
+    if( this._.popup.getTop() + this._.popup.getHeight() > viewportHeight + scrollTop ) {
       this._.popup.positionRelativeTo( this._.parent, 0, -1 * this._.popup.getHeight() );
     }
   }
