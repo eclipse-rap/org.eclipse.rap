@@ -3116,7 +3116,12 @@ rwt.qx.Class.define( "rwt.widgets.base.Widget", {
         if (value) {
           vFocusRoot.setFocusedChild(this);
           this._visualizeFocus();
-          this.scrollIntoView();
+          if( this.getWidth() < rwt.html.Viewport.getWidth() ) {
+            this.scrollIntoViewX();
+          }
+          if( this.getHeight() < rwt.html.Viewport.getHeight() ) {
+            this.scrollIntoViewY();
+          }
         } else {
           if (vFocusRoot.getFocusedChild() == this) {
             vFocusRoot.setFocusedChild(null);
