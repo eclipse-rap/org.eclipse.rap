@@ -254,9 +254,9 @@ public class FontDialog extends Dialog {
     // leave some space in preview area for larger fonts
     prefSize.y += 50;
     shell.setSize( prefSize );
-    Rectangle parentSize = parent.getBounds();
-    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
-    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
+    Rectangle displaySize = parent.getDisplay().getBounds();
+    int locationX = ( displaySize.width - prefSize.x ) / 2 + displaySize.x;
+    int locationY = ( displaySize.height - prefSize.y ) / 2 + displaySize.y;
     shell.setLocation( locationX, locationY );
   }
 

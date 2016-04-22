@@ -325,11 +325,11 @@ public class ColorDialog extends Dialog {
 
   private void configureShell() {
     shell.setText( title );
-    Rectangle parentSize = parent.getBounds();
+    Rectangle displaySize = parent.getDisplay().getBounds();
     Point prefSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     shell.setSize( prefSize );
-    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
-    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
+    int locationX = ( displaySize.width - prefSize.x ) / 2 + displaySize.x;
+    int locationY = ( displaySize.height - prefSize.y ) / 2 + displaySize.y;
     shell.setLocation( new Point( locationX, locationY ) );
     shell.pack();
   }

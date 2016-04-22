@@ -244,9 +244,9 @@ public class FileDialog extends Dialog {
       prefSize.y += 165; // ensure space for five files
     }
     shell.setMinimumSize( prefSize );
-    Rectangle parentSize = getParent().getBounds();
-    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
-    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
+    Rectangle displaySize = getParent().getDisplay().getBounds();
+    int locationX = ( displaySize.width - prefSize.x ) / 2 + displaySize.x;
+    int locationY = ( displaySize.height - prefSize.y ) / 2 + displaySize.y;
     shell.setBounds( locationX, locationY, prefSize.x, prefSize.y );
     // set spacer real layout data after shell prefer size calculation
     spacer.setLayoutData( createHorizontalFillData() );

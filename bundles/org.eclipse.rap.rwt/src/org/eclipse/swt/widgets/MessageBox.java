@@ -192,9 +192,9 @@ public class MessageBox extends Dialog {
   private Rectangle computeShellBounds() {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     Point preferredSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    Rectangle parentSize = parent.getBounds();
-    result.x = ( parentSize.width - preferredSize.x ) / 2 + parentSize.x;
-    result.y = ( parentSize.height - preferredSize.y ) / 2 + parentSize.y;
+    Rectangle displaySize = parent.getDisplay().getBounds();
+    result.x = ( displaySize.width - preferredSize.x ) / 2 + displaySize.x;
+    result.y = ( displaySize.height - preferredSize.y ) / 2 + displaySize.y;
     result.width = Math.min( preferredSize.x, MAX_WIDTH );
     result.height = preferredSize.y;
     return result;
