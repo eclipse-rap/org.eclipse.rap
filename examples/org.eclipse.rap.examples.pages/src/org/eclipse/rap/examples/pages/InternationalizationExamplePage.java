@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class InternationalizationExamplePage implements IExamplePage {
   private Composite contentContainer;
   private final float EQUATOR = 40075.017F;
 
+  @Override
   public void createControl( Composite parent ) {
     initLanguages( parent.getDisplay() );
     parentContainer = parent;
@@ -76,7 +77,7 @@ public class InternationalizationExamplePage implements IExamplePage {
     clientLanguage.setText(   "Browser default language: "
                             + clientInfo.getLocale().getDisplayLanguage() );
     new Label( container, SWT.NONE ).setText( "Select language: " );
-    ToolBar toolBar = new ToolBar( container, SWT.NONE );
+    ToolBar toolBar = new ToolBar( container, SWT.RIGHT | SWT.FLAT );
     toolBar.setLayoutData( createToolBarGridData() );
     ToolItem dropDown = new ToolItem( toolBar, SWT.DROP_DOWN );
     dropDown.setText( languages[ 0 ].name );
@@ -186,6 +187,7 @@ public class InternationalizationExamplePage implements IExamplePage {
       this.dropDown = dropDown;
     }
 
+    @Override
     public void handleEvent( Event event ) {
       MenuItem item = ( MenuItem )event.widget;
       Language language = ( Language )item.getData();
@@ -205,6 +207,7 @@ public class InternationalizationExamplePage implements IExamplePage {
       this.menu = menu;
     }
 
+    @Override
     public void handleEvent( Event event ) {
       ToolItem dropDown = ( ToolItem )event.widget;
       if( event.detail == SWT.ARROW ) {
@@ -218,6 +221,7 @@ public class InternationalizationExamplePage implements IExamplePage {
 
   private final class LocaleResetListener implements Listener {
 
+    @Override
     public void handleEvent( Event event ) {
       RWT.setLocale( null );
     }

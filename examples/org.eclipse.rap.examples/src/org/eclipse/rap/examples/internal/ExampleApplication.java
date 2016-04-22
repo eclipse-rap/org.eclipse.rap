@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,14 @@ import org.eclipse.rap.rwt.service.ResourceLoader;
 
 public class ExampleApplication implements ApplicationConfiguration {
 
+  @Override
   public void configure( Application application ) {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.PAGE_TITLE, "RAP Examples" );
     properties.put( WebClient.BODY_HTML, readTextFromResource( "resources/body.html", "UTF-8" ) );
     properties.put( WebClient.HEAD_HTML, readTextFromResource( "resources/head.html", "UTF-8" ) );
     properties.put( WebClient.FAVICON, "icons/favicon.png" );
+    properties.put( WebClient.PAGE_OVERFLOW, "scrollY" );
     application.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     application.addEntryPoint( "/", MainUi.class, properties );
     application.addStyleSheet( RWT.DEFAULT_THEME_ID, "theme/theme.css" );
@@ -42,6 +44,7 @@ public class ExampleApplication implements ApplicationConfiguration {
 
   private static ResourceLoader createResourceLoader( final String resourceName ) {
     return new ResourceLoader() {
+      @Override
       public InputStream getResourceAsStream( String resourceName ) throws IOException {
         return getClass().getClassLoader().getResourceAsStream( resourceName );
       }

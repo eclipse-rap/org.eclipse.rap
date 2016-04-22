@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,9 +62,9 @@ public class MarkupExample implements IExamplePage {
   private String fuelImageLocation;
   private String gearImageLocation;
 
+  @Override
   public void createControl( Composite parent ) {
     registerImages();
-    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     parent.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
     parent.setLayoutData( ExampleUtil.createFillData() );
     createTable( parent );
@@ -86,6 +86,7 @@ public class MarkupExample implements IExamplePage {
     table.setData( RWT.CUSTOM_ITEM_HEIGHT, Integer.valueOf( 80 ) );
     GridData tableLayoutData = ExampleUtil.createFillData();
     tableLayoutData.verticalIndent = 10;
+    tableLayoutData.heightHint = 500;
     table.setLayoutData( tableLayoutData );
     table.setHeaderVisible( true );
     table.setLinesVisible( true );

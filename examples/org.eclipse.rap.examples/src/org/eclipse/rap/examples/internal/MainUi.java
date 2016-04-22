@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,11 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -34,7 +35,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
@@ -42,8 +45,9 @@ import org.osgi.framework.Version;
 
 public class MainUi extends AbstractEntryPoint {
 
+  private final static String SHELL_RESIZE_NEEDED = "shellResizeNeeded";
+
   private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
-  private static final int CONTENT_MIN_HEIGHT = 800;
   private static final int HEADER_HEIGHT = 140;
   private static final int CENTER_AREA_WIDTH = 998;
 
@@ -55,15 +59,37 @@ public class MainUi extends AbstractEntryPoint {
   protected Shell createShell( Display display ) {
     Shell shell = super.createShell( display );
     shell.setData( RWT.CUSTOM_VARIANT, "mainshell" );
+    Listener shellResizeListener = new Listener() {
+      @Override
+      public void handleEvent( Event event ) {
+        updateShellSize( shell );
+      }
+    };
+    display.addListener( SWT.Resize, shellResizeListener );
+    shell.addListener( SWT.Resize, shellResizeListener );
     return shell;
+  }
+
+  private static void updateShellSize( Shell shell ) {
+    if( !Boolean.TRUE.equals( shell.getData( SHELL_RESIZE_NEEDED ) ) ) {
+      shell.setData( SHELL_RESIZE_NEEDED, Boolean.TRUE );
+      Display display = shell.getDisplay();
+      display.asyncExec( new Runnable() {
+        @Override
+        public void run() {
+          Rectangle displayBounds = display.getBounds();
+          Point size = shell.computeSize( displayBounds.width, SWT.DEFAULT );
+          shell.setSize( size.x, Math.max( size.y, displayBounds.height ) );
+          shell.setData( SHELL_RESIZE_NEEDED, Boolean.FALSE );
+        }
+      } );
+    }
   }
 
   @Override
   protected void createContents( Composite parent ) {
     parent.setLayout( new FillLayout() );
-    ScrolledComposite scrolledArea = createScrolledArea( parent );
-    Composite content = createContent( scrolledArea );
-    scrolledArea.setContent( content );
+    createContent( parent );
     attachHistoryListener();
     selectInitialContribution();
     removeSplash();
@@ -73,6 +99,7 @@ public class MainUi extends AbstractEntryPoint {
     BrowserNavigation history = RWT.getClient().getService( BrowserNavigation.class );
     if( history != null ) {
       history.addBrowserNavigationListener( new BrowserNavigationListener() {
+        @Override
         public void navigated( BrowserNavigationEvent event ) {
           Examples examples = Examples.getInstance();
           IExampleContribution contribution = examples.getContribution( event.getState() );
@@ -98,17 +125,8 @@ public class MainUi extends AbstractEntryPoint {
     }
   }
 
-  private ScrolledComposite createScrolledArea( Composite parent ) {
-    ScrolledComposite scrolledComp = new ScrolledComposite( parent, SWT.V_SCROLL | SWT.H_SCROLL );
-    scrolledComp.setMinHeight( CONTENT_MIN_HEIGHT );
-    scrolledComp.setMinWidth( CENTER_AREA_WIDTH );
-    scrolledComp.setExpandVertical( true );
-    scrolledComp.setExpandHorizontal( true );
-    return scrolledComp;
-  }
-
-  private Composite createContent( ScrolledComposite scrolledArea ) {
-    Composite comp = new Composite( scrolledArea, SWT.NONE );
+  private Composite createContent( Composite parent ) {
+    Composite comp = new Composite( parent, SWT.NONE );
     comp.setLayout( new FormLayout() );
     Composite header = createHeader( comp );
     header.setLayoutData( createHeaderFormData() );
@@ -252,6 +270,7 @@ public class MainUi extends AbstractEntryPoint {
   private void selectContribution( IExampleContribution contribution ) {
     navigation.selectNavigationEntry( contribution );
     activate( contribution );
+    updateShellSize( getShell() );
   }
 
   private void activate( IExampleContribution contribution ) {

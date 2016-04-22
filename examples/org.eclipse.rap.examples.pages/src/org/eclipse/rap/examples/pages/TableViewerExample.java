@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,9 +78,9 @@ public class TableViewerExample implements IExamplePage {
     labelProvider = new ElementsLabelProvider();
   }
 
+  @Override
   public void createControl( Composite parent ) {
     initColors( parent.getDisplay() );
-    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
     parent.setLayout( ExampleUtil.createGridLayout( 1, true, true, true ) );
     parent.setLayoutData( ExampleUtil.createFillData() );
     createTextFilter( parent );
@@ -112,6 +112,7 @@ public class TableViewerExample implements IExamplePage {
     GridData gridData = ExampleUtil.createHorzFillData();
     txtFilter.setLayoutData( gridData );
     txtFilter.addModifyListener( new ModifyListener() {
+      @Override
       public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
@@ -134,6 +135,7 @@ public class TableViewerExample implements IExamplePage {
   private void createViewer( Composite parent ) {
     viewer = new TableViewer( parent, SWT.BORDER );
     GridData tableLayoutData = ExampleUtil.createFillData();
+    tableLayoutData.heightHint = 500;
     viewer.getTable().setLayoutData( tableLayoutData );
     elements = Elements.getElements();
     ColumnViewerToolTipSupport.enableFor( viewer );
@@ -151,6 +153,7 @@ public class TableViewerExample implements IExamplePage {
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
+      @Override
       public void selectionChanged( SelectionChangedEvent event ) {
         updateLabel();
       }
@@ -296,10 +299,12 @@ public class TableViewerExample implements IExamplePage {
 
   private static final class ElementsContentProvider implements IStructuredContentProvider {
     Object[] elements;
+    @Override
     public Object[] getElements( Object inputElement ) {
       return elements;
     }
 
+    @Override
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       if( newInput == null ) {
         elements = new Object[ 0 ];
@@ -309,6 +314,7 @@ public class TableViewerExample implements IExamplePage {
       }
     }
 
+    @Override
     public void dispose() {
       // do nothing
     }
@@ -373,6 +379,7 @@ public class TableViewerExample implements IExamplePage {
       return true;
     }
 
+    @Override
     public int compare( Object object1, Object object2 ) {
       Element element1 = ( Element )object1;
       Element element2 = ( Element )object2;
