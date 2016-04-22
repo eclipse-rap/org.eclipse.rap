@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -503,14 +503,14 @@ rwt.qx.Class.define( "rwt.widgets.DropDown_Test", {
     },
 
     testShow_LayoutsPopUpOnTopOfParentIfNotEnoughSpace : function() {
-      var doc = rwt.widgets.base.ClientDocument.getInstance();
-      doc.getInnerHeight = function() { return 100; };
+      var origGetHeight = rwt.html.Viewport.getHeight;
+      rwt.html.Viewport.getHeight = function() { return 100; };
 
       shell.setTop( 40 );
       showDropDown();
 
       assertEquals( 33, popup.getTop() );
-      delete doc.getInnerHeight;
+      rwt.html.Viewport.getHeight = origGetHeight;
     },
 
     testShow_SendsVisible : function() {
