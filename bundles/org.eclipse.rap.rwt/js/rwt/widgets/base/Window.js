@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1343,9 +1343,6 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
       e.stopPropagation();
     },
 
-
-
-
     /*
     ---------------------------------------------------------------------------
       EVENTS: CAPTIONBAR
@@ -1379,17 +1376,18 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
       // compute locations
       var paLoc = rwt.html.Location.get(pl, "scroll");
       var elLoc = rwt.html.Location.get(el);
+      var scrollX = rwt.html.Viewport.getScrollLeft();
+      var scrollY = rwt.html.Viewport.getScrollTop();
 
       this._dragSession =
       {
-        offsetX                   : e.getPageX() - elLoc.left + paLoc.left,
-        offsetY                   : e.getPageY() - elLoc.top + paLoc.top,
-        parentAvailableAreaLeft   : paLoc.left + 5,
-        parentAvailableAreaTop    : paLoc.top + 5,
-        parentAvailableAreaRight  : paLoc.right - 5,
-        parentAvailableAreaBottom : paLoc.bottom - 5
+        offsetX                   : e.getPageX() - elLoc.left + paLoc.left + scrollX,
+        offsetY                   : e.getPageY() - elLoc.top + paLoc.top + scrollY,
+        parentAvailableAreaLeft   : paLoc.left + scrollX + 5,
+        parentAvailableAreaTop    : paLoc.top + scrollY + 5,
+        parentAvailableAreaRight  : paLoc.right + scrollX - 5,
+        parentAvailableAreaBottom : paLoc.bottom + scrollY - 5
       };
-
       // handle frame and translucently
       switch(this.getMoveMethod())
       {
@@ -1485,16 +1483,19 @@ rwt.qx.Class.define("rwt.widgets.base.Window",
         return;
       }
 
+      var x = this._appModal ? e.getClientX() : e.getPageX();
+      var y = this._appModal ? e.getClientY() : e.getPageY();
+
       // pre check if we go out of the available area
-      if (!rwt.util.Numbers.isBetween(e.getPageX(), s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Numbers.isBetween(e.getPageY(), s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
+      if (!rwt.util.Numbers.isBetween(x, s.parentAvailableAreaLeft, s.parentAvailableAreaRight) || !rwt.util.Numbers.isBetween(y, s.parentAvailableAreaTop, s.parentAvailableAreaBottom)) {
         return;
       }
 
       // use the fast and direct dom methods
       var o = this.getMoveMethod() == "frame" ? this._frame : this;
 
-      o._renderRuntimeLeft(s.lastX = e.getPageX() - s.offsetX);
-      o._renderRuntimeTop(s.lastY = e.getPageY() - s.offsetY);
+      o._renderRuntimeLeft(s.lastX = x - s.offsetX);
+      o._renderRuntimeTop(s.lastY = y - s.offsetY);
     },
 
 
