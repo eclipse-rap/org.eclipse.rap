@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Geometry;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.window.SameShellProvider;
@@ -31,6 +32,7 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -38,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -1230,7 +1233,7 @@ public abstract class Dialog extends Window {
 	 * @see #getDialogBoundsStrategy()
 	 */
 	protected Point getInitialLocation(Point initialSize) {
-		Point result = super.getInitialLocation(initialSize);
+		Point result = getInitialDialogLocation(initialSize);
 		if ((getDialogBoundsStrategy() & DIALOG_PERSISTLOCATION)!= 0) {
 			IDialogSettings settings = getDialogBoundsSettings();
 			if (settings != null) {
@@ -1254,6 +1257,18 @@ public abstract class Dialog extends Window {
 		// constraining behavior in Window will be used.
 		return result;
 	}
+
+	// RAP [if] - always position JFace dialog in the middle of the display. When website-like 
+	// scrolling is enabled the parent shell could be bigger than the display
+	private Point getInitialDialogLocation( Point initialSize ) {
+	  Rectangle dispayBounds = getShell().getDisplay().getBounds();
+	  Point centerPoint = Geometry.centerPoint( dispayBounds );
+	  int x = centerPoint.x - ( initialSize.x / 2 );
+	  int y = Math.min( centerPoint.y - ( initialSize.y * 2 / 3 ),
+	                    dispayBounds.height - initialSize.y );
+      return new Point( x, Math.max( 0, y ) );
+    }
+	//RAPEND [if]
 	
 	/**
 	 * Returns a boolean indicating whether the dialog should be
