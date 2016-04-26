@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -359,8 +359,8 @@ rwt.qx.Class.define("rwt.html.Location",
     get : function(elem, mode)
     {
       var body = this.__computeBody(elem);
-
-      if (elem.tagName == "BODY")
+      var isBody = elem.tagName == "BODY";
+      if (isBody)
       {
         var left = body.left;
         var top = body.top;
@@ -401,10 +401,10 @@ rwt.qx.Class.define("rwt.html.Location",
           bottom -= this.__num(elem, "paddingBottom");
         }
         if( mode === "padding" || mode === "scroll" ) {
-          left -= elem.scrollLeft;
-          top -= elem.scrollTop;
-          right -= elem.scrollLeft;
-          bottom -= elem.scrollTop;
+          left -= isBody ? rwt.html.Viewport.getScrollLeft() :  elem.scrollLeft;
+          top -= isBody ? rwt.html.Viewport.getScrollTop() :  elem.scrollTop;
+          right -= isBody ? rwt.html.Viewport.getScrollLeft() :  elem.scrollLeft;
+          bottom -= isBody ? rwt.html.Viewport.getScrollTop() :  elem.scrollTop;
         }
         if( mode === "padding" || mode === "scroll" || mode === "border" ) {
           left += this.__num(elem, "borderLeftWidth");
