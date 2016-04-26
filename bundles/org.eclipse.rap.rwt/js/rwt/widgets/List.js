@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -19,6 +19,7 @@ rwt.qx.Class.define( "rwt.widgets.List", {
     this.base( arguments, new rwt.widgets.base.VerticalBoxLayout() );
     this.setAppearance( "list" );
     this.setScrollBarsVisible( false, false );
+    this.setEnableElementFocus( false );
     this._manager = new rwt.widgets.util.SelectionManager( this._clientArea );
     this._manager.setMultiSelection( multiSelection );
     this._manager.setDragSelection( false );

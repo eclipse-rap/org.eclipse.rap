@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright (c) 2004, 2016 1&1 Internet AG, Germany, http://www.1und1.de,
  *                          EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,7 @@ rwt.qx.Class.define("rwt.widgets.TabFolder", {
     this._bar = new rwt.widgets.base.TabFolderBar();
     this._pane = new rwt.widgets.base.TabFolderPane();
     this.add( this._bar, this._pane );
+    this.setEnableElementFocus( false );
   },
 
   properties : {

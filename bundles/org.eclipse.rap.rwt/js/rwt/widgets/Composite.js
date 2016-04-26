@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ rwt.qx.Class.define( "rwt.widgets.Composite", {
     this.setAppearance( "composite" );
     this.setOverflow( "hidden" );
     this.setHideFocus( true );
+    this.setEnableElementFocus( false );
     // Disable scrolling (see bug 345903)
     rwt.widgets.base.Widget.disableScrolling( this );
     this._clientArea = [ 0, 0, 0, 0 ];
