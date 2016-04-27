@@ -325,7 +325,7 @@ rwt.runtime.MobileWebkitSupport = {
     }
     if( this._isDraggableWidget( widgetTarget ) ) {
       result.drag = true;
-    } else if( this._isGridRow( widgetTarget ) ) {
+    } else if( this._isGridRowContainer( widgetTarget ) ) {
       result.virtualScroll = true;
       result.outerScroll = this._allowNativeScroll && this._isScrollableWidget( widgetTarget );
     } else if( this._allowNativeScroll && this._isScrollableWidget( widgetTarget ) ) {
@@ -341,8 +341,8 @@ rwt.runtime.MobileWebkitSupport = {
 
   _initVirtualScroll : function( widget ) {
     var scrollable;
-    if( widget instanceof rwt.widgets.base.GridRow ) {
-      scrollable = widget.getParent().getParent();
+    if( this._isGridRowContainer( widget ) ) {
+      scrollable = widget.getParent();
     } else {
       scrollable = this._findScrollable( widget );
     }
@@ -398,14 +398,14 @@ rwt.runtime.MobileWebkitSupport = {
     return this._findScrollable( widget ) !== null;
   },
 
-  _isGridRow : function( widgetTarget ) {
-    return widgetTarget instanceof rwt.widgets.base.GridRow;
+  _isGridRowContainer : function( widgetTarget ) {
+    return widgetTarget instanceof rwt.widgets.base.GridRowContainer;
   },
 
   _isSelectableWidget : function( widgetTarget ) {
     var result = false;
     if(    widgetTarget instanceof rwt.widgets.ListItem
-        || widgetTarget instanceof rwt.widgets.base.GridRow )
+        || this._isGridRowContainer( widgetTarget ) )
     {
       result = true;
     }
