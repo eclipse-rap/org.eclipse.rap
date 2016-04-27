@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2010, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -332,6 +332,8 @@ rwt.runtime.MobileWebkitSupport = {
       result.scroll = true;
     } else if( this._isFocusable( widgetTarget ) ) {
       result.focus = true;
+    } else if( this._allowNativeScroll && this._isClientDocumentScrollingEnabled() ) {
+      result.scroll = true;
     }
     return result;
   },
@@ -410,6 +412,12 @@ rwt.runtime.MobileWebkitSupport = {
       result = true;
     }
     return result;
+  },
+
+  _isClientDocumentScrollingEnabled : function() {
+    var doc = rwt.widgets.base.ClientDocument.getInstance();
+    var overflow = doc.getOverflow();
+    return overflow && overflow !== "hidden";
   },
 
   _findScrollable : function( widget ) {
