@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,8 +38,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.ItemProvider;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
@@ -2487,7 +2487,7 @@ public class Grid extends Composite {
   }
 
   private void doRedraw() {
-    if( isVirtual() ) {
+    if( isVirtual() && items.size() > 0 ) {
       for( int index = getTopIndex(); index <= getBottomIndex(); index++ ) {
         GridItem item = items.get( index );
         if( item.isVisible() ) {
