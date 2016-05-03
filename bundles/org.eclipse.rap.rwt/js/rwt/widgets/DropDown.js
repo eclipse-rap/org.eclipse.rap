@@ -232,6 +232,11 @@
     setColumns : function( columns ) {
       this._.columns = columns;
       this._.grid.setColumnCount( columns.length );
+      var config = this._.grid.getRenderConfig();
+      config.cellOrder = new Array( columns.length );
+      for( var i = 0; i < columns.length; i++ ) {
+        config.cellOrder[ i ] = i;
+      }
       renderGridItems.call( this );
       if( this._.grid.isSeeable() ) {
         renderLayout.call( this );
