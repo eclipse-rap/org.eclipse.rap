@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal;
 
-import static org.junit.Assert.*;
+import static org.eclipse.rap.rwt.internal.RWTProperties.SERVICE_HANDLER_BASE_URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +33,7 @@ public class RWTProperties_Test {
   @After
   public void tearDown() {
     System.getProperties().remove( TEST_PROPERTY );
+    System.getProperties().remove( SERVICE_HANDLER_BASE_URL );
   }
 
   @Test
@@ -64,6 +69,18 @@ public class RWTProperties_Test {
   public void testGetBooleanProperty_usesDefault() {
     assertTrue( RWTProperties.getBooleanProperty( TEST_PROPERTY, true ) );
     assertFalse( RWTProperties.getBooleanProperty( TEST_PROPERTY, false ) );
+  }
+
+  @Test
+  public void testGetServiceHandlerBaseUrl_returnsNullByDefault() {
+    assertNull( RWTProperties.getServiceHandlerBaseUrl() );
+  }
+
+  @Test
+  public void testGetServiceHandlerBaseUrl() {
+    System.setProperty( SERVICE_HANDLER_BASE_URL, "http://foo/bar" );
+
+    assertEquals( "http://foo/bar", RWTProperties.getServiceHandlerBaseUrl() );
   }
 
 }

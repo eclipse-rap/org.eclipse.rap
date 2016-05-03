@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rap.rwt.internal.RWTProperties;
 import org.eclipse.rap.rwt.internal.util.ParamCheck;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rap.rwt.service.ServiceManager;
@@ -61,7 +62,12 @@ public class ServiceManagerImpl implements ServiceManager {
   public String getServiceHandlerUrl( String id ) {
     ParamCheck.notNull( id, "id" );
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder url = new StringBuilder( request.getRequestURI() )
+    StringBuilder url = new StringBuilder();
+    String baseUrl = RWTProperties.getServiceHandlerBaseUrl();
+    if( baseUrl != null ) {
+      url.append( baseUrl );
+    }
+    url.append( request.getRequestURI() )
       .append( '?' )
       .append( REQUEST_PARAM )
       .append( '=' )
