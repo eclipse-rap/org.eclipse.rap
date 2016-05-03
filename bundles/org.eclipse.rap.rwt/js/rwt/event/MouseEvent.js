@@ -333,15 +333,13 @@ rwt.qx.Class.define("rwt.event.MouseEvent",
      * @return {var} TODOC
      * @signature function()
      */
-    _computeWheelDelta : rwt.util.Variant.select("qx.client",
-    {
-      "default" : function() {
-        return this.getDomEvent().wheelDelta / 120;
-      },
-
-      "gecko" : function() {
-        return -(this.getDomEvent().detail / 3);
+    _computeWheelDelta : function() {
+      var event = this.getDomEvent();
+      if ( "deltaY" in event ) {
+        return event.deltaY / -120;
       }
-    })
+      return event.wheelDelta / 120;
+    }
+
   }
 });

@@ -281,7 +281,7 @@ rwt.event.EventHandler = {
     var vDomTarget = EventHandlerUtil.getDomTarget( vDomEvent );
     var vType = vDomEvent.type;
     switch(vType) {
-      case "DOMMouseScroll":
+      case "wheel":
         vType = "mousewheel";
       break;
       case "click":
@@ -521,7 +521,7 @@ rwt.event.EventHandler = {
     "click",
     "dblclick",
     "contextmenu",
-    rwt.client.Client.isGecko() ? "DOMMouseScroll" : "mousewheel"
+    "onwheel" in document ? "wheel" : "mousewheel"
   ],
 
   _keyEventTypes : [ "keydown", "keypress", "keyup" ],

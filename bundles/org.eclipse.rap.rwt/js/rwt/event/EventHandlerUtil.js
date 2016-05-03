@@ -110,7 +110,7 @@ rwt.event.EventHandlerUtil = {
     "click",
     "dblclick",
     "contextmenu",
-    ( rwt.client.Client.isGecko() ? "DOMMouseScroll" : "mousewheel" ),
+    "onwheel" in document ? "wheel" : "mousewheel",
     "keydown",
     "keypress",
     "keyup"
@@ -124,9 +124,6 @@ rwt.event.EventHandlerUtil = {
     }
   },
 
-  // BUG: http://xscroll.mozdev.org/
-  // If your Mozilla was built with an option `--enable-default-toolkit=gtk2',
-  // it can not return the correct event target for DOMMouseScroll.
   getOriginalTargetObject : function( vNode ) {
     // Events on the HTML element, when using absolute locations which
     // are outside the HTML element. Opera does not seem to fire events

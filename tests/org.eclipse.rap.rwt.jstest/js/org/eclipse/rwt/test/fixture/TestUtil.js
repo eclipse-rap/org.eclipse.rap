@@ -300,6 +300,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       case "mouseout":
       case "contextmenu":
       case "mousewheel":
+      case "wheel":
       case "DOMMouseScroll":
       case "click":
       case "dblclick":
@@ -601,23 +602,15 @@ org.eclipse.rwt.test.fixture.TestUtil = {
       throw( "Error in TestUtil.fakeMouseEvent: widget is not created" );
     }
     var target = widget._getTargetNode();
-    var type =   rwt.util.Variant.isSet( "qx.client", "gecko" )
-               ? "DOMMouseScroll"
-               : "mousewheel";
     var domEvent =
-    this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
+      this._createFakeMouseEventDOM( target, "wheel", 0, 0, 0, 0 );
     this._addWheelDelta( domEvent, value );
     this.fireFakeDomEvent( domEvent );
   },
 
-  _addWheelDelta : rwt.util.Variant.select( "qx.client", {
-    "default" : function( event, value ) {
-      event.wheelDelta = value * 120;
-    },
-    "gecko" : function( event, value ) {
-      event.detail = value * -3;
-    }
-  } ),
+  _addWheelDelta : function( event, value ) {
+    event.deltaY = value * -120;
+  },
 
   fakeMouseEvent : function( target, type, left, top ) {
     var button = rwt.event.MouseEvent.buttons.left;

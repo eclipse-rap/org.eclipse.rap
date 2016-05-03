@@ -109,12 +109,8 @@ rwt.qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       };
 
       EventBinding.addListener( text, "MouseWheel", listener );
-      var domEvent = TestUtil.fakeMouseEventDOM( text.getElement(), "mousewheel", 1, 0, 0 );
-      if( rwt.client.Client.isGecko() ) {
-        domEvent.detail = 1;
-      } else {
-        domEvent.wheelDelta = 1;
-      }
+      var domEvent = TestUtil.fakeMouseEventDOM( text.getElement(), "wheel", 1, 0, 0 );
+      domEvent.deltaY = -1;
       TestUtil.fireFakeDomEvent( domEvent );
 
       assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
