@@ -371,7 +371,7 @@ public class FontDialog extends Dialog {
   private void openColorDialog() {
     final ColorDialog dialog = new ColorDialog( shell );
     dialog.setRGB( rgb );
-    open( new DialogCallback() {
+    dialog.open( new DialogCallback() {
       @Override
       public void dialogClosed( int returnCode ) {
         RGB selected = dialog.getRGB();
