@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 EclipseSource and others.
+ * Copyright (c) 2010, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -290,7 +290,9 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var counter = 0;
       widget.addEventListener( "mousewheel", function(){ counter++; } );
       var node = widget._getTargetNode();
-      TestUtil.fakeMouseEventDOM( node, "mousewheel", 1, 0, 0, 0, true );
+      var domEvent = TestUtil.fakeMouseEventDOM( node, "mousewheel", 1, 0, 0, 0, true );
+      domEvent.deltaY = -1;
+      TestUtil.fireFakeDomEvent( domEvent );
       assertEquals( 1, counter );
       widget.destroy();
       this.resetMobileWebkitSupport();
@@ -497,7 +499,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
-      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+      var node = grid.getRowContainer()._getTargetNode();
 
       log.push( "touchstart" );
       this.touchAt( node, "touchstart", 0, 500 );
@@ -552,7 +554,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
-      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+      var node = grid.getRowContainer()._getTargetNode();
 
       log.push( "touchstart" );
       this.touchAt( node, "touchstart", 0, 500 );
@@ -1012,13 +1014,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         new rwt.widgets.GridItem( grid.getRootItem(), i );
       }
       TestUtil.flush();
-      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+      var node = grid.getRowContainer()._getTargetNode();
 
       this.touchAt( node, "touchstart", 0, 500 );
       this.touchAt( node, "touchmove", 0, 450 );
       this.touchAt( node, "touchend", 0, 450 );
 
-      assertEquals( 3, grid._topItemIndex );
+      assertEquals( 2, grid._topItemIndex );
       grid.destroy();
     },
 
@@ -1035,17 +1037,17 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setTopItemIndex( 20 );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( false );
-      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+      var node = grid.getRowContainer()._getTargetNode();
 
       this.touchAt( node, "touchstart", 0, 500 );
       this.touchAt( node, "touchmove", 0, 150 );
       this.touchAt( node, "touchend", 0, 150 );
 
       assertEquals( 25, grid._topItemIndex );
-      assertEquals( 500, grid._vertScrollBar._idealValue );
+      assertEquals( 25, grid._vertScrollBar._idealValue );
+
       grid.destroy();
     },
-
 
     testScrollGridVerticalLimitAndBack : function() {
       rwt.remote.EventUtil.setSuspended( true );
@@ -1060,7 +1062,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setTopItemIndex( 20 );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( false );
-      var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+      var node = grid.getRowContainer()._getTargetNode();
 
       this.touchAt( node, "touchstart", 0, 500 );
       this.touchAt( node, "touchmove", 0, 150 );
@@ -1069,7 +1071,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touchAt( node, "touchend", 0, 600 );
 
       assertEquals( 15, grid._topItemIndex );
-      assertEquals( 300, grid._vertScrollBar._idealValue );
+      assertEquals( 15, grid._vertScrollBar._idealValue );
       grid.destroy();
     },
 
@@ -1088,7 +1090,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       grid.setScrollBarsVisible( true, true );
       TestUtil.flush();
       rwt.remote.EventUtil.setSuspended( false );
-      var node = grid._rowContainer._getTargetNode().childNodes[ 10 ];
+      var node = grid._rowContainer._getTargetNode();
 
       this.touchAt( node, "touchstart", 500, 0 );
       this.touchAt( node, "touchmove", 450, 0 );
@@ -1115,13 +1117,13 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
           new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
-        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+        var node = grid.getRowContainer()._getTargetNode();
 
         this.touchAt( node, "touchstart", 0, 500 );
         this.touchAt( node, "touchmove", 0, 450 );
         this.touchAt( node, "touchend", 0, 450 );
 
-        assertEquals( 3, grid._topItemIndex );
+        assertEquals( 2, grid._topItemIndex );
         assertEquals( [ true ], preventLog );
         grid.destroy();
       }
@@ -1146,7 +1148,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
           new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
-        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+        var node = grid.getRowContainer()._getTargetNode();
 
         this.touchAt( node, "touchstart", 0, 500 );
         this.touchAt( node, "touchmove", 0, 501 );
@@ -1176,7 +1178,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
           new rwt.widgets.GridItem( grid.getRootItem(), i );
         }
         TestUtil.flush();
-        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+        var node = grid.getRowContainer()._getTargetNode();
 
         this.touchAt( node, "touchstart", 0, 500 );
         this.touchAt( node, "touchmove", 0, 501 );
@@ -1209,7 +1211,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         }
         TestUtil.flush();
         grid.setTopItemIndex( 25 );
-        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+        var node = grid.getRowContainer()._getTargetNode();
 
         this.touchAt( node, "touchstart", 0, 500 );
         this.touchAt( node, "touchmove", 0, 499 );
@@ -1242,7 +1244,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         }
         TestUtil.flush();
         grid.setTopItemIndex( 25 );
-        var node = grid.getRowContainer()._getTargetNode().childNodes[ 10 ];
+        var node = grid.getRowContainer()._getTargetNode();
 
         this.touchAt( node, "touchstart", 0, 451 );
         this.touchAt( node, "touchmove", 0, 450 );
@@ -1251,7 +1253,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         this.touchAt( node, "touchmove", 0, 480 );
         this.touchAt( node, "touchend", 0, 480 );
 
-        assertEquals( 24, grid._topItemIndex );
+        assertEquals( 23, grid._topItemIndex );
         assertEquals( [ true ], preventLog );
         grid.destroy();
       }
