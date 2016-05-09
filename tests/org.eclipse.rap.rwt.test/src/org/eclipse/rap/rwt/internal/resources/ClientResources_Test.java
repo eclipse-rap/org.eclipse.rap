@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,12 +24,15 @@ import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.testfixture.internal.Fixture;
+import org.eclipse.swt.SWT;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class ClientResources_Test {
+
+  private static final String RAP_CLIENT_JS_PATH = SWT.getVersion() + "/rap-client.js";
 
   private ClientResources clientResources;
   private ResourceManager resourceManager;
@@ -55,7 +58,7 @@ public class ClientResources_Test {
     clientResources.registerResources();
 
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
-    assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
+    assertTrue( resourceManager.isRegistered( RAP_CLIENT_JS_PATH ) );
     Theme defaultTheme = themeManager.getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
   }
@@ -65,7 +68,7 @@ public class ClientResources_Test {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
 
-    assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
+    assertTrue( resourceManager.isRegistered( RAP_CLIENT_JS_PATH ) );
     assertFalse( resourceManager.isRegistered( "rwt/runtime/System.js" ) );
     Theme defaultTheme = themeManager.getTheme( RWT.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".json" ) );
@@ -76,7 +79,7 @@ public class ClientResources_Test {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
 
-    String content = getRegisteredContent( "rap-client.js" );
+    String content = getRegisteredContent( RAP_CLIENT_JS_PATH );
 
     assertTrue( content.contains( "qxvariants = {\n  \"qx.debug\" : \"on\"\n};" ) );
   }
@@ -85,7 +88,7 @@ public class ClientResources_Test {
   public void testRegisteredContent() throws IOException {
     System.getProperties().remove( RWTProperties.DEVELOPMEMT_MODE );
     clientResources.registerResources();
-    String clientJs = getRegisteredContent( "rap-client.js" );
+    String clientJs = getRegisteredContent( RAP_CLIENT_JS_PATH );
 
     assertTrue( clientJs.contains( "qx.Class.define(\"rwt.runtime.System\"" ) );
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );
@@ -97,7 +100,7 @@ public class ClientResources_Test {
   public void testRegisteredContentDebug() throws IOException {
     System.setProperty( RWTProperties.DEVELOPMEMT_MODE, "true" );
     clientResources.registerResources();
-    String clientJs = getRegisteredContent( "rap-client.js" );
+    String clientJs = getRegisteredContent( RAP_CLIENT_JS_PATH );
 
     assertTrue( clientJs.contains( "qx.Class.define( \"rwt.runtime.System\"" ) );
     assertTrue( clientJs.contains( "AppearanceManager.getInstance().setCurrentTheme( {" ) );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.internal.theme.Theme;
 import org.eclipse.rap.rwt.internal.theme.ThemeManager;
 import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.rap.rwt.service.ResourceManager;
+import org.eclipse.swt.SWT;
 
 
 public final class ClientResources {
@@ -91,7 +92,7 @@ public final class ClientResources {
       append( contentBuffer, CLIENT_JS );
     }
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
-    registerJavascriptResource( contentBuffer, "rap-client.js" );
+    registerJavascriptResource( contentBuffer, SWT.getVersion() + "/rap-client.js" );
   }
 
   private String createAppearanceCode() {

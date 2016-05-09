@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTMessages;
+import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.swt.graphics.Cursor;
 
 
@@ -3568,7 +3575,7 @@ public class SWT {
    */
   public static final int ID_QUIT = -6;
 
-  private static final int RWT_VERSION = getVersion( 1, 500 );
+  private static final int RWT_VERSION = readVersion();
 
   static {
     /*
@@ -3864,8 +3871,32 @@ public class SWT {
     return RWTMessages.getMessage( key, "org.eclipse.swt.internal.SWTMessages" );
   }
 
-  private static int getVersion( int major, int minor ) {
-      return major * 1000 + minor;
+  private static int readVersion() {
+    return Integer.parseInt( readBundleVersion().replaceAll( "\\.", "" ) );
+  }
+
+  private static String readBundleVersion() {
+    try {
+      InputStream stream = RWT.class.getClassLoader().getResourceAsStream( "META-INF/MANIFEST.MF" );
+      InputStreamReader streamReader = new InputStreamReader( stream, HTTP.CHARSET_UTF_8 );
+      BufferedReader reader = new BufferedReader( streamReader );
+      try {
+        String line = reader.readLine();
+        while( line != null ) {
+          if( line.trim().startsWith( "Bundle-Version" ) ) {
+            int beginIndex = line.indexOf( ":" ) + 1;
+            int endIndex = line.lastIndexOf( "." );
+            return line.substring( beginIndex, endIndex ).trim();
+          }
+          line = reader.readLine();
+        }
+      } finally {
+        reader.close();
+      }
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to read RWT bundle MANIFEST.MF", ioe );
+    }
+    return "0.0.0";
   }
 
 }
