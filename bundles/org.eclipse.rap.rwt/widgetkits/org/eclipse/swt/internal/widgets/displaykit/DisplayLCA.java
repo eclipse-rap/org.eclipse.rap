@@ -196,7 +196,9 @@ public class DisplayLCA {
 
   private static void renderReparentControls() {
     for( Control control : ReparentedControls.getAll() ) {
-      getRemoteAdapter( control ).renderParent( control );
+      if( !control.isDisposed() ) {
+        getRemoteAdapter( control ).renderParent( control );
+      }
     }
   }
 

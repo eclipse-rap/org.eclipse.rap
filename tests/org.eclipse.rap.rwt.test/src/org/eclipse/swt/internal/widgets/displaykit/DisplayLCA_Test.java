@@ -314,6 +314,23 @@ public class DisplayLCA_Test {
   }
 
   @Test
+  public void testRenderReparentedControls_withDisposedControl() throws IOException {
+    Shell parent1 = new Shell( display );
+    Shell parent2 = new Shell( display );
+    Composite child = new Composite( parent1, SWT.NONE );
+    Fixture.markInitialized( parent1 );
+    Fixture.markInitialized( parent2 );
+    Fixture.markInitialized( child );
+
+    child.setParent( parent2 );
+    child.dispose();
+    displayLCA.render( display );
+
+    TestMessage message = getProtocolMessage();
+    assertNull( message.findSetOperation( child, "parent" ) );
+  }
+
+  @Test
   public void testRenderDisposedWidget() throws IOException {
     Shell shell = new Shell( display );
     Fixture.markInitialized( display );
