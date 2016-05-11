@@ -245,6 +245,11 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
 
     _createErrorBoxDescriptionArea : function( parentElement ) {
       var element = document.createElement( "div" );
+      var themeStore = rwt.theme.ThemeStore.getInstance();
+      var cssElement = "ErrorBox";
+      var color = themeStore.getColor( cssElement, {}, "color" );
+      var font = themeStore.getFont( cssElement, {}, "font" );
+      var backgroundColor = themeStore.getColor( cssElement, {}, "background-color" );
       var style = element.style;
       style.position = "absolute";
       style.left = "0px";
@@ -254,9 +259,9 @@ rwt.qx.Class.define( "rwt.runtime.ErrorHandler", {
       style.padding = "10px";
       style.overflow = "auto";
       style.textAlign = "left";
-      style.backgroundColor = "white";
-      style.color = "#4a4a4a";
-      style.fontSize = "14px";
+      style.font = font.toCss();
+      style.color = color;
+      style.backgroundColor = backgroundColor;
       parentElement.appendChild( element );
       return element;
     },
