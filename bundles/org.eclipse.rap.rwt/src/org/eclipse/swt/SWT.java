@@ -11,14 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.RWTMessages;
-import org.eclipse.rap.rwt.internal.util.HTTP;
 import org.eclipse.swt.graphics.Cursor;
 
 
@@ -3877,21 +3878,21 @@ public class SWT {
 
   private static String readBundleVersion() {
     try {
-      InputStream stream = RWT.class.getClassLoader().getResourceAsStream( "META-INF/MANIFEST.MF" );
-      InputStreamReader streamReader = new InputStreamReader( stream, HTTP.CHARSET_UTF_8 );
-      BufferedReader reader = new BufferedReader( streamReader );
-      try {
-        String line = reader.readLine();
-        while( line != null ) {
-          if( line.trim().startsWith( "Bundle-Version" ) ) {
-            int beginIndex = line.indexOf( ":" ) + 1;
-            int endIndex = line.lastIndexOf( "." );
-            return line.substring( beginIndex, endIndex ).trim();
+      Enumeration<URL> manifests = RWT.class.getClassLoader().getResources( "META-INF/MANIFEST.MF" );
+      while( manifests.hasMoreElements() ) {
+        InputStream stream = manifests.nextElement().openStream();
+        try {
+          Manifest manifest = new Manifest( stream );
+          Attributes attributes = manifest.getMainAttributes();
+          if( "org.eclipse.rap.rwt".equals( attributes.getValue( "Bundle-SymbolicName" ) ) ) {
+            String version = attributes.getValue( "Bundle-Version" );
+            int beginIndex = version.indexOf( ":" ) + 1;
+            int endIndex = version.lastIndexOf( "." );
+            return version.substring( beginIndex, endIndex ).trim();
           }
-          line = reader.readLine();
+        } finally {
+          stream.close();
         }
-      } finally {
-        reader.close();
       }
     } catch( IOException ioe ) {
       throw new RuntimeException( "Failed to read RWT bundle MANIFEST.MF", ioe );
