@@ -110,10 +110,7 @@ public class Browser extends Composite {
    * @see org.eclipse.swt.widgets.Widget#getStyle
    */
   public Browser( Composite parent, int style ) {
-    super( parent, style );
-    if( ( style & ( SWT.MOZILLA | SWT.WEBKIT ) ) != 0 ) {
-      throw new SWTError( SWT.ERROR_NO_HANDLES, "Unsupported Browser type" );
-    }
+    super( parent, checkStyle( style ) );
     html = "";
     url = "";
     functions = new ArrayList<>();
@@ -512,6 +509,20 @@ public class Browser extends Composite {
   public Object getWebBrowser() {
     checkWidget();
     return null;
+  }
+
+  private static int checkStyle( int style ) {
+    int result = style;
+    if( ( style & ( SWT.MOZILLA | SWT.WEBKIT ) ) != 0 ) {
+      throw new SWTError( SWT.ERROR_NO_HANDLES, "Unsupported Browser type" );
+    }
+    if( ( result & SWT.H_SCROLL ) != 0 ) {
+      result &= ~SWT.H_SCROLL;
+    }
+    if( ( result & SWT.V_SCROLL ) != 0 ) {
+      result &= ~SWT.V_SCROLL;
+    }
+    return result;
   }
 
   //////////////////////////////////////////
