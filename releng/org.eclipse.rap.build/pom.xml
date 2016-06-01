@@ -29,7 +29,7 @@
     <tycho-baseline-repo.url>http://download.eclipse.org/rt/rap/3.1/</tycho-baseline-repo.url>
      -->
     <cbi-plugins.version>1.1.2</cbi-plugins.version>
-    <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.3.5.v20151012/</jetty-repo.url>
+    <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.3.9.v20160517/</jetty-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/</orbit-repo.url>
     <platform-repo.url>http://download.eclipse.org/eclipse/updates/4.6milestones/S-4.6RC3-201605252000/</platform-repo.url>
     <rap-extra-repo.url>http://build.eclipse.org/rt/rap/base-platforms/3.1/extra-dependencies/</rap-extra-repo.url>
