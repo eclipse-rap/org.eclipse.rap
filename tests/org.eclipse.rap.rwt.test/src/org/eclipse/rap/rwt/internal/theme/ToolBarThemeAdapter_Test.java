@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,11 +98,19 @@ public class ToolBarThemeAdapter_Test {
     assertEquals( new BoxDimensions( 3, 3, 3, 3 ), actual );
   }
 
+  @Test
+  public void testGetItemBorder_onDisabled() {
+    item.setEnabled( false );
+    BoxDimensions actual = getThemeAdapter( toolBar ).getItemBorder( item );
+    assertEquals( new BoxDimensions( 4, 4, 4, 4 ), actual );
+  }
+
   private static void setCustomTheme() throws Exception {
     StringBuilder css = new StringBuilder()
       .append( "ToolItem { padding: 1px; spacing: 1px; border: 1px solid black }" )
       .append( "ToolItem:first { padding: 2px; spacing: 2px; border: 2px solid black }" )
-      .append( "ToolItem:last { padding: 3px; spacing: 3px; border: 3px solid black }" );
+      .append( "ToolItem:last { padding: 3px; spacing: 3px; border: 3px solid black }" )
+      .append( "ToolItem:disabled { padding: 4px; spacing: 4px; border: 4px solid black }" );
     ThemeTestUtil.registerTheme( "custom", css.toString(), null );
     ThemeTestUtil.setCurrentThemeId( "custom" );
   }
