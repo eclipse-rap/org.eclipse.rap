@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
     matcher.addStyle( "FLAT", SWT.FLAT );
     matcher.addState( "first", createFirstItemMatcher() );
     matcher.addState( "last", createLastItemMatcher() );
+    matcher.addState( "disabled", createDisabledItemMatcher() );
   }
 
   public BoxDimensions getItemBorder( ToolItem item ) {
@@ -82,6 +83,18 @@ public class ToolBarThemeAdapter extends ControlThemeAdapterImpl {
           ToolItem item = ( ToolItem )widget;
           ToolBar toolBar = item.getParent();
           return toolBar.getItem( toolBar.getItemCount() - 1 ) == item;
+        }
+        return false;
+      }
+    };
+  }
+
+  private static Constraint createDisabledItemMatcher() {
+    return new Constraint() {
+      @Override
+      public boolean matches( Widget widget ) {
+        if( widget instanceof ToolItem ) {
+          return !( ( ToolItem )widget ).getEnabled();
         }
         return false;
       }

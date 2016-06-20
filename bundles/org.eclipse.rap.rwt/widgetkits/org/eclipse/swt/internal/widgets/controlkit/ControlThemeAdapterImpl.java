@@ -31,7 +31,10 @@ public class ControlThemeAdapterImpl extends ThemeAdapter implements ControlThem
     matcher.addState( "disabled", new Constraint() {
       @Override
       public boolean matches( Widget widget ) {
-        return !( ( Control )widget ).getEnabled();
+        if( widget instanceof Control ) {
+          return !( ( Control )widget ).getEnabled();
+        }
+        return false;
       }
     });
   }
