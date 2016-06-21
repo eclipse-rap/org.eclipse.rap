@@ -44,19 +44,19 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public class Synchronizer implements SerializableCompatibility {
 
   Display display;
-	int messageCount;
-	RunnableLock [] messages;
+  int messageCount;
+  RunnableLock [] messages;
 // RAP [rh] mesageLock must be serializable	(bug 345842)
 //	Object messageLock = new Object ();
-	Object messageLock = new SerializableLock();
-	Thread syncThread;
-	static final int GROW_SIZE = 4;
-	static final int MESSAGE_LIMIT = 64;
+  Object messageLock = new SerializableLock();
+  Thread syncThread;
+  static final int GROW_SIZE = 4;
+  static final int MESSAGE_LIMIT = 64;
 
-	//TEMPORARY CODE
-	static final boolean IS_CARBON = "carbon".equals (SWT.getPlatform ());
-	static final boolean IS_COCOA = "cocoa".equals (SWT.getPlatform ());
-	static final boolean IS_GTK = "gtk".equals (SWT.getPlatform ());
+  //TEMPORARY CODE
+  static final boolean IS_CARBON = "carbon".equals (SWT.getPlatform ());
+  static final boolean IS_COCOA = "cocoa".equals (SWT.getPlatform ());
+  static final boolean IS_GTK = "gtk".equals (SWT.getPlatform ());
 
 /**
  * Constructs a new instance of this class.
@@ -64,35 +64,35 @@ public class Synchronizer implements SerializableCompatibility {
  * @param display the display to create the synchronizer on
  */
 public Synchronizer (Display display) {
-	this.display = display;
+  this.display = display;
 }
 
 void addLast (RunnableLock lock) {
-	boolean wake = false;
-	synchronized (messageLock) {
-		if (messages == null) {
+  boolean wake = false;
+  synchronized (messageLock) {
+    if (messages == null) {
       messages = new RunnableLock [GROW_SIZE];
     }
-		if (messageCount == messages.length) {
-			RunnableLock[] newMessages = new RunnableLock [messageCount + GROW_SIZE];
-			System.arraycopy (messages, 0, newMessages, 0, messageCount);
-			messages = newMessages;
-		}
-		messages [messageCount++] = lock;
+    if (messageCount == messages.length) {
+      RunnableLock[] newMessages = new RunnableLock [messageCount + GROW_SIZE];
+      System.arraycopy (messages, 0, newMessages, 0, messageCount);
+      messages = newMessages;
+    }
+    messages [messageCount++] = lock;
 // RAP [rst] Notify server push mechanism when runnable was added to empty queue
-		if( messageCount == 1 ) {
-		  RWT.getUISession( display ).exec( new Runnable() {
-		    @Override
+    if( messageCount == 1 ) {
+      RWT.getUISession( display ).exec( new Runnable() {
+        @Override
         public void run() {
-		      ServerPushManager.getInstance().setHasRunnables( true );
-		    }
-		  } );
-		}
-		runnableAdded( lock.runnable );
+          ServerPushManager.getInstance().setHasRunnables( true );
+        }
+      } );
+    }
+    runnableAdded( lock.runnable );
 // END RAP
-		wake = messageCount == 1;
-	}
-	if (wake) {
+    wake = messageCount == 1;
+  }
+  if (wake) {
     display.wakeThread ();
   }
 }
@@ -113,20 +113,20 @@ protected void runnableAdded( Runnable runnable ) {
  * @see #syncExec
  */
 protected void asyncExec (Runnable runnable) {
-	if (runnable == null) {
-		//TEMPORARY CODE
-		if (!(IS_CARBON || IS_GTK || IS_COCOA)) {
-			display.wake ();
-			return;
-		}
-	}
-	addLast (new RunnableLock (runnable));
+  if (runnable == null) {
+    //TEMPORARY CODE
+    if (!(IS_CARBON || IS_GTK || IS_COCOA)) {
+      display.wake ();
+      return;
+    }
+  }
+  addLast (new RunnableLock (runnable));
 }
 
 int getMessageCount () {
-	synchronized (messageLock) {
-		return messageCount;
-	}
+  synchronized (messageLock) {
+    return messageCount;
+  }
 }
 
 void releaseSynchronizer () {
@@ -143,67 +143,68 @@ void releaseSynchronizer () {
   }
   // END RAP
 //	display = null;
-	messages = null;
-	messageLock = null;
-	syncThread = null;
+  messages = null;
+  messageLock = null;
+  syncThread = null;
 }
 
 RunnableLock removeFirst () {
-	synchronized (messageLock) {
-		if (messageCount == 0) {
+  synchronized (messageLock) {
+    if (messageCount == 0) {
       return null;
     }
-		RunnableLock lock = messages [0];
-		System.arraycopy (messages, 1, messages, 0, --messageCount);
-		messages [messageCount] = null;
-		if (messageCount == 0) {
-			if (messages.length > MESSAGE_LIMIT) {
+    RunnableLock lock = messages [0];
+    System.arraycopy (messages, 1, messages, 0, --messageCount);
+    messages [messageCount] = null;
+    if (messageCount == 0) {
+      if (messages.length > MESSAGE_LIMIT) {
         messages = null;
       }
-		}
+    }
 // RAP [rst] Notify server push mechanism when last runnable has been removed
-		if( messageCount == 0 ) {
-		  RWT.getUISession( display ).exec( new Runnable() {
-		    @Override
+    if( messageCount == 0 ) {
+      RWT.getUISession( display ).exec( new Runnable() {
+        @Override
         public void run() {
-		      ServerPushManager.getInstance().setHasRunnables( false );
-		    }
-		  } );
-		}
+          ServerPushManager.getInstance().setHasRunnables( false );
+        }
+      } );
+    }
 // END RAP
     return lock;
-	}
+  }
 }
 
 boolean runAsyncMessages () {
-	return runAsyncMessages (false);
+  return runAsyncMessages (false);
 }
 
 boolean runAsyncMessages (boolean all) {
-	boolean run = false;
-	do {
-		RunnableLock lock = removeFirst ();
-		if (lock == null) {
+  boolean run = false;
+  do {
+    RunnableLock lock = removeFirst ();
+    if (lock == null) {
       return run;
     }
-		run = true;
-		synchronized (lock) {
-			syncThread = lock.thread;
-			try {
-				lock.run ();
-			}	catch( ThreadDeath t ) {
+    run = true;
+    synchronized (lock) {
+      syncThread = lock.thread;
+      try {
+        lock.run ();
+      }	catch( ThreadDeath t ) {
+        lock.throwable = t;
         // Don't trap ThreadDeath, see bug 284202
         throw t;
-			} catch (Throwable t) {
-				lock.throwable = t;
-				SWT.error (SWT.ERROR_FAILED_EXEC, t);
-			} finally {
-				syncThread = null;
-				lock.notifyAll ();
-			}
-		}
-	} while (all);
-	return run;
+      } catch (Throwable t) {
+        lock.throwable = t;
+        SWT.error (SWT.ERROR_FAILED_EXEC, t);
+      } finally {
+        syncThread = null;
+        lock.notifyAll ();
+      }
+    }
+  } while (all);
+  return run;
 }
 
 /**
@@ -221,48 +222,48 @@ boolean runAsyncMessages (boolean all) {
  * @see #asyncExec
  */
 protected void syncExec (Runnable runnable) {
-	RunnableLock lock = null;
+  RunnableLock lock = null;
 // RAP [rh] replaced by deviceLock, see Device#deviceLock for more information
 //	synchronized (Device.class) {
-	synchronized (display.getDeviceLock()) {
-	  if (display == null || display.isDisposed ()) {
+  synchronized (display.getDeviceLock()) {
+    if (display == null || display.isDisposed ()) {
       SWT.error (SWT.ERROR_DEVICE_DISPOSED);
     }
-		if (!display.isValidThread ()) {
-			if (runnable == null) {
-				display.wake ();
-				return;
-			}
-			lock = new RunnableLock (runnable);
-			/*
-			 * Only remember the syncThread for syncExec.
-			 */
-			lock.thread = Thread.currentThread();
-			addLast (lock);
-		}
-	}
-	if (lock == null) {
-		if (runnable != null) {
+    if (!display.isValidThread ()) {
+      if (runnable == null) {
+        display.wake ();
+        return;
+      }
+      lock = new RunnableLock (runnable);
+      /*
+       * Only remember the syncThread for syncExec.
+       */
+      lock.thread = Thread.currentThread();
+      addLast (lock);
+    }
+  }
+  if (lock == null) {
+    if (runnable != null) {
       runnable.run ();
     }
-		return;
-	}
-	synchronized (lock) {
-		boolean interrupted = false;
-		while (!lock.done ()) {
-			try {
-				lock.wait ();
-			} catch (@SuppressWarnings( "unused" ) InterruptedException e) {
-				interrupted = true;
-			}
-		}
-		if (interrupted) {
-			Compatibility.interrupt();
-		}
-		if (lock.throwable != null) {
-			SWT.error (SWT.ERROR_FAILED_EXEC, lock.throwable);
-		}
-	}
+    return;
+  }
+  synchronized (lock) {
+    boolean interrupted = false;
+    while (!lock.done ()) {
+      try {
+        lock.wait ();
+      } catch (@SuppressWarnings( "unused" ) InterruptedException e) {
+        interrupted = true;
+      }
+    }
+    if (interrupted) {
+      Compatibility.interrupt();
+    }
+    if (lock.throwable != null) {
+      SWT.error (SWT.ERROR_FAILED_EXEC, lock.throwable);
+    }
+  }
 }
 
 }
