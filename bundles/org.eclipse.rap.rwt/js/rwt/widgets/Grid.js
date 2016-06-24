@@ -970,7 +970,7 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
 
     _getLastPageRowCount : function() {
       var availableHeight = this._getClientAreaHeight();
-      var item = this.getRootItem().getLastChild();
+      var item = this._getLastVisibleItem();
       var result = 0;
       while( item && availableHeight > 0 ) {
         availableHeight -= item.getOwnHeight();
@@ -980,6 +980,14 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
         }
       }
       return result;
+    },
+
+    _getLastVisibleItem : function() {
+      var item = this.getRootItem().getLastChild();
+      while( item && item.hasChildren() && item.isExpanded() ) {
+        item = item.getLastChild();
+      }
+      return item;
     },
 
     _updateScrollThumbHeight : function() {
