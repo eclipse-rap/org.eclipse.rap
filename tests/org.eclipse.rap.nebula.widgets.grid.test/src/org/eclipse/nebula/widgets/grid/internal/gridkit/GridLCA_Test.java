@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,6 @@ public class GridLCA_Test {
     CreateOperation operation = message.findCreateOperation( grid );
     assertEquals( "rwt.widgets.Grid", operation.getType() );
     assertEquals( "grid", operation.getProperties().get( "appearance" ).asString() );
-    assertEquals( 16, operation.getProperties().get( "indentionWidth" ).asInt() );
     assertFalse( operation.getProperties().names().contains( "checkBoxMetrics" ) );
     assertTrue( getStyles( operation ).contains( "FULL_SELECTION" ) );
   }
@@ -574,6 +573,52 @@ public class GridLCA_Test {
     TestMessage message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( grid, "autoHeight" ) );
   }
+
+  @Test
+  public void testRenderInitialIndentionWidth_gridAsTable() throws IOException {
+    createGridItems( grid, 3, 0 );
+
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( grid );
+    assertTrue( operation.getProperties().names().indexOf( "indentionWidth" ) == -1 );
+  }
+
+  @Test
+  public void testRenderInitialIndentionWidth_gridAsTree() throws IOException {
+    createGridItems( grid, 3, 3 );
+
+    lca.render( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 16, message.findSetProperty( grid, "indentionWidth" ).asInt() );
+  }
+
+  @Test
+  public void testRenderIndentionWidth() throws IOException {
+    Fixture.markInitialized( grid );
+
+    createGridItems( grid, 3, 3 );
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertEquals( 16, message.findSetProperty( grid, "indentionWidth" ).asInt() );
+  }
+
+  @Test
+  public void testRenderIndentionWidthUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( grid );
+
+    createGridItems( grid, 3, 3 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( grid );
+
+    TestMessage message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( grid, "indentionWidth" ) );
+  }
+
 
   @Test
   public void testRenderInitialTopItemIndex() throws IOException {

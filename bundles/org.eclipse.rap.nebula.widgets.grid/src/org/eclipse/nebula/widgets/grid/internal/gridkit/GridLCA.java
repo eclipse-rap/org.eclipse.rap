@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2012, 2015 EclipseSource and others.
+ * Copyright (c) 2012, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,6 +71,7 @@ public class GridLCA extends WidgetLCA<Grid> {
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_AUTO_HEIGHT = "autoHeight";
+  private static final String PROP_INDENTION_WIDTH = "indentionWidth";
   // TODO: [if] Sync sortDirection and sortColumn in GridColumnLCA when multiple sort columns are
   // possible on the client
   private static final String PROP_SORT_DIRECTION = "sortDirection";
@@ -95,8 +96,6 @@ public class GridLCA extends WidgetLCA<Grid> {
     remoteObject.set( "parent", getId( grid.getParent() ) );
     remoteObject.set( "style", createJsonArray( getStyles( grid, ALLOWED_STYLES ) ) );
     remoteObject.set( "appearance", "grid" );
-    IGridAdapter adapter = getGridAdapter( grid );
-    remoteObject.set( "indentionWidth", adapter.getIndentationWidth() );
     remoteObject.set( PROP_MARKUP_ENABLED, isMarkupEnabledFor( grid ) );
     TemplateLCAUtil.renderRowTemplate( grid );
     remoteObject.listen( PROP_SETDATA_LISTENER, isVirtual( grid ) );
@@ -124,6 +123,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     preserveProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ) );
     preserveProperty( grid, PROP_SELECTION, getSelection( grid ) );
     preserveProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight() );
+    preserveProperty( grid, PROP_INDENTION_WIDTH, getIndentationWidth( grid ) );
     preserveProperty( grid, PROP_SORT_DIRECTION, getSortDirection( grid ) );
     preserveProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ) );
     preserveProperty( grid, PROP_ENABLE_CELL_TOOLTIP, CellToolTipUtil.isEnabledFor( grid ) );
@@ -150,6 +150,7 @@ public class GridLCA extends WidgetLCA<Grid> {
     renderProperty( grid, PROP_SCROLL_LEFT, getScrollLeft( grid ), ZERO );
     renderProperty( grid, PROP_SELECTION, getSelection( grid ), DEFAULT_SELECTION );
     renderProperty( grid, PROP_AUTO_HEIGHT, grid.isAutoHeight(), false );
+    renderProperty( grid, PROP_INDENTION_WIDTH, getIndentationWidth( grid ), ZERO );
     renderProperty( grid, PROP_SORT_DIRECTION, getSortDirection( grid ), DEFAULT_SORT_DIRECTION );
     renderProperty( grid, PROP_SORT_COLUMN, getSortColumn( grid ), null );
     renderListenSelection( grid );
@@ -207,6 +208,10 @@ public class GridLCA extends WidgetLCA<Grid> {
       result[ i ] = getId( selection[ i ] );
     }
     return result;
+  }
+
+  private static int getIndentationWidth( Grid grid ) {
+    return getGridAdapter( grid ).getIndentationWidth();
   }
 
   private static String getSortDirection( Grid grid ) {

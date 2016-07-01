@@ -357,6 +357,11 @@ rwt.qx.Class.define( "rwt.widgets.Grid", {
       this._scheduleUpdate();
     },
 
+    setIndentionWidth : function( value ) {
+      this._config.indentionWidth = value;
+      this._scheduleUpdate();
+    },
+
     //////////////
     // Overwritten
 

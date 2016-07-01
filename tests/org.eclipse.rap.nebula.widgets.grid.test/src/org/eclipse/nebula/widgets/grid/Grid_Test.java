@@ -2987,6 +2987,25 @@ public class Grid_Test {
     }
   }
 
+  @Test
+  public void testGetIndentionWidth_asTable() {
+    createGridItems( grid, 3, 0 );
+
+    int indentationWidth = grid.getAdapter( IGridAdapter.class ).getIndentationWidth();
+
+    assertEquals( 0, indentationWidth );
+  }
+
+  @Test
+  public void testGetIndentionWidth_asTree() {
+    createGridItems( grid, 3, 3 );
+
+    int indentationWidth = grid.getAdapter( IGridAdapter.class ).getIndentationWidth();
+
+    assertEquals( 16, indentationWidth );
+
+  }
+
   private int countResolvedGridItems() {
     int counter = 0;
     for( Item item : getVisitedItems() ) {

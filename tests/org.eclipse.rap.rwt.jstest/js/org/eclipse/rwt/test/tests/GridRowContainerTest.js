@@ -370,7 +370,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.GridRowContainerTest", {
       assertEquals( [], config.itemImageWidth );
       assertEquals( [], config.itemTextLeft );
       assertEquals( [], config.itemTextWidth );
-      assertEquals( 16, config.indentionWidth );
+      assertEquals( 0, config.indentionWidth );
       assertEquals( 0, config.columnCount);
       assertEquals( 0, config.treeColumn );
       cont.destroy();

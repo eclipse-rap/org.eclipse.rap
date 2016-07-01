@@ -2945,6 +2945,9 @@ public class Grid extends Composite {
   }
 
   int getIndentationWidth() {
+    if( !isTree ) {
+      return 0;
+    }
     if( !layoutCache.hasIndentationWidth() ) {
       layoutCache.indentationWidth = getThemeAdapter().getIndentationWidth( this );
     }
