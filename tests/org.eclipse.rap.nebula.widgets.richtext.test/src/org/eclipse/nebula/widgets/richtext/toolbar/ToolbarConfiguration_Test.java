@@ -19,6 +19,7 @@ import org.eclipse.rap.json.JsonValue;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings( "deprecation" )
 public class ToolbarConfiguration_Test {
 
   private ToolbarConfiguration toolbarConfig;

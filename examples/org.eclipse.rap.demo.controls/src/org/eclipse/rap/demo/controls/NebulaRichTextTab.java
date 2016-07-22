@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import static org.eclipse.nebula.widgets.richtext.RichTextEditorConfiguration.TOOLBAR_GROUPS;
+
 import org.eclipse.nebula.widgets.richtext.RichTextEditor;
-import org.eclipse.nebula.widgets.richtext.toolbar.ToolbarConfiguration;
+import org.eclipse.nebula.widgets.richtext.RichTextEditorConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -57,23 +59,18 @@ public class NebulaRichTextTab extends ExampleTab {
   }
 
   private void createRichTextEditor( Composite parent ) {
-    ToolbarConfiguration config = new ToolbarConfiguration() {
-      @Override
-      protected String getToolbarGroupConfiguration() {
-        if( reorderToolbarGroups ) {
-          StringBuilder builder = new StringBuilder( "CKEDITOR.config.toolbarGroups = [" );
-          builder.append( "{\"name\":\"styles\"}," );
-          builder.append( "{\"name\":\"colors\" }," );
-          builder.append( "{\"name\":\"basicstyles\",\"groups\":[\"basicstyles\",\"cleanup\"]}" );
-          builder.append( "];" );
-          return builder.toString();
-        }
-        return super.getToolbarGroupConfiguration();
-      }
-    };
+    RichTextEditorConfiguration config = new RichTextEditorConfiguration();
     if( removeToolbarButtons ) {
       config.removeDefaultToolbarButton( "Subscript" );
       config.removeDefaultToolbarButton( "Superscript" );
+    }
+    if( reorderToolbarGroups ) {
+      StringBuilder builder = new StringBuilder( "[" );
+      builder.append( "{\"name\":\"styles\"}," );
+      builder.append( "{\"name\":\"colors\" }," );
+      builder.append( "{\"name\":\"basicstyles\",\"groups\":[\"basicstyles\",\"cleanup\"]}" );
+      builder.append( "]" );
+      config.setOption( TOOLBAR_GROUPS, builder.toString() );
     }
     editor = new RichTextEditor( parent, config, getStyle() );
     editor.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );

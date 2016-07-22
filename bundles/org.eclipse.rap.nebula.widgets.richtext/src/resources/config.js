@@ -1,12 +1,6 @@
 CKEDITOR.editorConfig = function( config ) {
 
   /**
-   * If you change the language, remember to also change CKEditor#RESOURCE_FILES to
-   * load the corresponding "/lang/xxx.js" file.
-   */
-  config.language = 'en';
-
-  /**
    * Defines the colors to be displayed in the color selectors. This is a string
    * containing hexadecimal notation for HTML colors, without the "#" prefix.
    * A color name may optionally be defined by prefixing the entries with

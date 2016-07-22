@@ -68,6 +68,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
       CKEDITOR.config.removeButtons = config.removeButtons;
       CKEDITOR.config.toolbarCanCollapse = config.toolbarCanCollapse;
       CKEDITOR.config.toolbarStartupExpanded = config.toolbarStartupExpanded;
+      CKEDITOR.config.language = config.language;
+      CKEDITOR.config.defaultlanguage = config.defaultLanguage;
     },
 
     setText : function( text ) {
