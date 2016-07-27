@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2011, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -138,7 +138,7 @@ rwt.qx.Class.define( "rwt.widgets.base.GridHeader", {
       label.setImage( column.getImage() );
       label.setToolTipText( column.getToolTipText() );
       label.setSortIndicator( column.getSortDirection() );
-      if( column.isGroup() ) {
+      if( column.isGroup() && column.getShowChevron() ) {
         label.setChevron( column.isExpanded() ? "expanded" : "collapsed" );
       }
       this._renderLabelY( label, column );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
     this._footerImage = null;
     this._footerSpan = 1;
     this._sortDirection = null;
+    this._showChevron = false;
     this._check = false;
     this._grid.addColumn( this );
   },
@@ -305,6 +306,14 @@ rwt.qx.Class.define( "rwt.widgets.GridColumn", {
 
     isGroup : function() {
       return this._isGroup;
+    },
+
+    setShowChevron : function( value ) {
+      this._showChevron = value;
+    },
+
+    getShowChevron : function() {
+      return this._showChevron;
     },
 
     _update : function() {
