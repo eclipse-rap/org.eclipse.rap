@@ -171,12 +171,10 @@ rwt.qx.Class.define( "rwt.widgets.GC", {
       var endAngle = operation[ 7 ];
       var dir = operation[ 8 ];
       if( rx > 0 && ry > 0 ) {
-        this._context.save();
         this._context.translate( cx, cy );
         // TODO [tb] : using scale here changes the stroke-width also, looks wrong
         this._context.scale( 1, ry / rx );
         this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
-        this._context.restore();
       }
     },
 

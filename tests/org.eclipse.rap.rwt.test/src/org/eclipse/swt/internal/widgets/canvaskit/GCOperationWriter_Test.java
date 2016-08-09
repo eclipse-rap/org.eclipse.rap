@@ -454,9 +454,11 @@ public class GCOperationWriter_Test {
     gc.drawArc( 10, 20, 100, 200, 50, 100 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
-    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true]", getOperation( 2, ops ) );
-    assertEquals( "[\"stroke\"]", getOperation( 3, ops ) );
+    assertEquals( "[\"save\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
+    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true]", getOperation( 3, ops ) );
+    assertEquals( "[\"stroke\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 5, ops ) );
   }
 
   @Test
@@ -465,9 +467,11 @@ public class GCOperationWriter_Test {
     gc.drawArc( 10, 20, 100, 200, 50, 100 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
-    assertEquals( "[\"ellipse\",60.5,120.5,50,100,0,-0.8727,-2.618,true]", getOperation( 2, ops ) );
-    assertEquals( "[\"stroke\"]", getOperation( 3, ops ) );
+    assertEquals( "[\"save\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
+    assertEquals( "[\"ellipse\",60.5,120.5,50,100,0,-0.8727,-2.618,true]", getOperation( 3, ops ) );
+    assertEquals( "[\"stroke\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 5, ops ) );
   }
 
   @Test
@@ -476,10 +480,12 @@ public class GCOperationWriter_Test {
     gc.fillArc( 10, 20, 100, 200, 50, 100 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
-    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true]", getOperation( 2, ops ) );
-    assertEquals( "[\"lineTo\",60,120]", getOperation( 3, ops ) );
-    assertEquals( "[\"fill\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"save\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
+    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,-2.618,true]", getOperation( 3, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"fill\"]", getOperation( 5, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 6, ops ) );
   }
 
   @Test
@@ -488,10 +494,12 @@ public class GCOperationWriter_Test {
     gc.fillArc( 10, 20, 100, 200, 50, -100 );
 
     JsonArray ops = getGCOperations( canvas );
-    assertEquals( "[\"beginPath\"]", getOperation( 1, ops ) );
-    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false]", getOperation( 2, ops ) );
-    assertEquals( "[\"lineTo\",60,120]", getOperation( 3, ops ) );
-    assertEquals( "[\"fill\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"save\"]", getOperation( 1, ops ) );
+    assertEquals( "[\"beginPath\"]", getOperation( 2, ops ) );
+    assertEquals( "[\"ellipse\",60,120,50,100,0,-0.8727,0.8726001,false]", getOperation( 3, ops ) );
+    assertEquals( "[\"closePath\"]", getOperation( 4, ops ) );
+    assertEquals( "[\"fill\"]", getOperation( 5, ops ) );
+    assertEquals( "[\"restore\"]", getOperation( 6, ops ) );
   }
 
   @Test

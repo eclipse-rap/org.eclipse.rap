@@ -223,6 +223,7 @@ final class GCOperationWriter {
     float cy = operation.y + ry + offset;
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
+    addClientOperation( "save" );
     addClientOperation( "beginPath" );
     operations.add( new JsonArray()
       .add( "ellipse" )
@@ -236,9 +237,10 @@ final class GCOperationWriter {
       .add( arcAngle < 0 )
     );
     if( operation.fill ) {
-      addClientOperation( "lineTo", cx, cy  );
+      addClientOperation( "closePath" );
     }
     addClientOperation( operation.fill ? "fill" : "stroke" );
+    addClientOperation( "restore" );
   }
 
   private void drawPolyline( DrawPolyline operation ) {
