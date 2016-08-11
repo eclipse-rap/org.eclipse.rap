@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.equinox.target.feature"
       label="RAP Basic Equinox Target"
-      version="3.1.0.qualifier"
+      version="3.2.0.qualifier"
       provider-name="Eclipse.org - RAP"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rap.feature" version="3.1.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rap.feature" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
