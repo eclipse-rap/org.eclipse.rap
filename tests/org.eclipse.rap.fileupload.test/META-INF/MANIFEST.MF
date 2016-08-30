@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.rap.fileupload.test
-Bundle-Version: 3.1.0.qualifier
-Fragment-Host: org.eclipse.rap.fileupload;bundle-version="[3.1.0,4.0.0)"
+Bundle-Version: 3.1.1.qualifier
+Fragment-Host: org.eclipse.rap.fileupload;bundle-version="[3.1.1,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
