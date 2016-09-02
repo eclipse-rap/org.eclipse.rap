@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 EclipseSource and others.
+ * Copyright (c) 2011, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -491,7 +491,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       this._disposeTextWidget( text );
     },
 
-    testNonActiveCharKeysNotSent : function() {
+    testActiveEmptyKeySent : function() {
       var text = this._createTextWidget();
       this._setActiveKeys( text, [] );
 
@@ -500,7 +500,7 @@ rwt.qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       TestUtil.press( text, "z", 0 );
       TestUtil.press( text, "Z", 0 );
 
-      assertEquals( 0, TestUtil.getRequestsSend() );
+      assertEquals( 4, TestUtil.getRequestsSend() );
       this._disposeTextWidget( text );
     },
 

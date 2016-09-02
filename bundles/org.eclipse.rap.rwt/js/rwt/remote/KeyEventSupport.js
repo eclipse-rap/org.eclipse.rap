@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       var result = false;
       if( this._hasKeyListener( control ) ) {
         var activeKeys = control.getUserData( "activeKeys" );
-        if( activeKeys ) {
+        if( activeKeys && !rwt.util.Objects.isEmpty( activeKeys ) ) {
           result = this._isActive( activeKeys, domEvent, keyCode, charCode );
         } else {
           result = true;
@@ -205,7 +205,7 @@ rwt.qx.Class.define( "rwt.remote.KeyEventSupport", {
       var result = this._isActive( this._cancelKeys, domEvent, keyCode, charCode );
       if( !result ) {
         var cancelKeys = control ? control.getUserData( "cancelKeys" ) : null;
-        if( cancelKeys ) {
+        if( cancelKeys && !rwt.util.Objects.isEmpty( cancelKeys ) ) {
           result = this._isActive( cancelKeys, domEvent, keyCode, charCode );
         }
       }
