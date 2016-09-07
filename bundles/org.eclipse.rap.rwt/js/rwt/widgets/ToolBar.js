@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 EclipseSource and others.
+ * Copyright (c) 2009, 2016 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,15 +25,6 @@ rwt.qx.Class.define( "rwt.widgets.ToolBar", {
     this.addEventListener( "keypress", this._onKeyPress );
     this.addEventListener( "keydown", this._onKeyDown );
     this.addEventListener( "keyup", this._onKeyUp );
-  },
-
-  properties : {
-
-    tabIndex : {
-      refine : true,
-      init : 1
-    }
-
   },
 
   members : {
