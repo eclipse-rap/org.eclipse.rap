@@ -16,6 +16,7 @@ public final class RWTProperties {
 
   public static final String SERVICE_HANDLER_BASE_URL = "org.eclipse.rap.rwt.serviceHandlerBaseURL";
   public static final String DEVELOPMEMT_MODE = "org.eclipse.rap.rwt.developmentMode";
+  public static final String TEXT_SIZE_STORE_SIZE = "org.eclipse.rap.rwt.textSizeStoreSize";
 
   /*
    * Used in conjunction with <code>WidgetUtil#CUSTOM_WIDGET_ID</code>,
@@ -35,9 +36,22 @@ public final class RWTProperties {
     return getBooleanProperty( DEVELOPMEMT_MODE, false );
   }
 
+  public static int getTextSizeStoreSize( int defaultValue ) {
+    return getIntProperty( TEXT_SIZE_STORE_SIZE, defaultValue );
+  }
+
   public static boolean getBooleanProperty( String name, boolean defaultValue ) {
     String value = System.getProperty( name );
     return value == null ? defaultValue : value.equalsIgnoreCase( "true" );
+  }
+
+  public static int getIntProperty( String name, int defaultValue ) {
+    String value = System.getProperty( name );
+    try {
+      return Integer.parseInt( value );
+    } catch ( @SuppressWarnings( "unused" ) NumberFormatException ex ) {
+      return defaultValue;
+    }
   }
 
 }

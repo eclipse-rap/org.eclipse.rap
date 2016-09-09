@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2016 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.rwt.internal.textsize;
+
+import static org.eclipse.rap.rwt.internal.RWTProperties.getTextSizeStoreSize;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ import org.eclipse.swt.graphics.Point;
 
 
 public final class TextSizeStorage {
+
   public static final int MIN_STORE_SIZE = 1000;
   public static final int DEFAULT_STORE_SIZE = 10000;
 
@@ -63,7 +66,7 @@ public final class TextSizeStorage {
     lock = new Object();
     data = new HashMap<>();
     fontDatas = new HashSet<>();
-    setMaximumStoreSize( DEFAULT_STORE_SIZE );
+    setMaximumStoreSize( getTextSizeStoreSize( DEFAULT_STORE_SIZE ) );
   }
 
   FontData[] getFontList() {

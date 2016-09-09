@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Frank Appel and others.
+ * Copyright (c) 2011, 2015 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ public class TextSizeStorage_Test {
   private static final Integer KEY_OVERFLOW = new Integer( Integer.MAX_VALUE );
   private static final Point SIZE_FIRST = new Point( 0, 0 );
   private static final Point SIZE_OVERFLOW = new Point( -1, -1 );
+  private static final String STORE_SIZE_SYSPROP = "org.eclipse.rap.rwt.textSizeStoreSize";
 
   private TextSizeStorage storage;
 
@@ -46,6 +47,7 @@ public class TextSizeStorage_Test {
 
   @After
   public void tearDown() {
+    System.getProperties().remove( STORE_SIZE_SYSPROP );
     Fixture.tearDown();
   }
 
@@ -100,6 +102,19 @@ public class TextSizeStorage_Test {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  @Test
+  public void testMaximumStoreSize_defaultValue() {
+    assertEquals( 10000, storage.getMaximumStoreSize() );
+  }
+
+  @Test
+  public void testMaximumStoreSize_fromSystemProperty() {
+    System.setProperty( STORE_SIZE_SYSPROP, "20000" );
+    storage = new TextSizeStorage();
+
+    assertEquals( 20000, storage.getMaximumStoreSize() );
   }
 
   private void populateUntilOverflowThresholdIsReached() {

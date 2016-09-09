@@ -72,6 +72,25 @@ public class RWTProperties_Test {
   }
 
   @Test
+  public void testGetIntProperty_withValidInt() {
+    System.setProperty( TEST_PROPERTY, "123" );
+
+    assertEquals( 123, RWTProperties.getIntProperty( TEST_PROPERTY, 456 ) );
+  }
+
+  @Test
+  public void testGetIntProperty_withInvalidInt() {
+    System.setProperty( TEST_PROPERTY, "abc" );
+
+    assertEquals( 456, RWTProperties.getIntProperty( TEST_PROPERTY, 456 ) );
+  }
+
+  @Test
+  public void testGetIntProperty_usesDefault() {
+    assertEquals( 456, RWTProperties.getIntProperty( TEST_PROPERTY, 456 ) );
+  }
+
+  @Test
   public void testGetServiceHandlerBaseUrl_returnsNullByDefault() {
     assertNull( RWTProperties.getServiceHandlerBaseUrl() );
   }
