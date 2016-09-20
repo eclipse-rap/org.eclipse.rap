@@ -138,6 +138,36 @@ public abstract class Control extends Widget implements Drawable {
       return bounds;
     }
 
+    @Override
+    public void setForeground( Color color ) {
+      foreground = color;
+    }
+
+    @Override
+    public void setBackground( Color color ) {
+      background = color;
+    }
+
+    @Override
+    public void setVisible( boolean visible ) {
+      internalSetVisible( visible );
+    }
+
+    @Override
+    public void setEnabled( boolean enabled ) {
+      internalSetEnabled( enabled );
+    }
+
+    @Override
+    public void setToolTipText( String toolTipText ) {
+      Control.this.toolTipText = toolTipText;
+    }
+
+    @Override
+    public void setCursor( Cursor cursor ) {
+      Control.this.cursor = cursor;
+    }
+
   }
 
   private transient IControlAdapter controlAdapter;
@@ -296,6 +326,13 @@ public abstract class Control extends Widget implements Drawable {
   public void setVisible( boolean visible ) {
     checkWidget();
     if( hasState( HIDDEN ) != !visible ) {
+      preserveState( HIDDEN );
+      internalSetVisible( visible );
+    }
+  }
+
+  private void internalSetVisible( boolean visible ) {
+    if( hasState( HIDDEN ) != !visible ) {
       if( visible ) {
         notifyListeners( SWT.Show, null );
       }
@@ -378,26 +415,35 @@ public abstract class Control extends Widget implements Drawable {
    */
   public void setEnabled( boolean enabled ) {
     checkWidget();
-    /*
-     * Feature in Windows.  If the receiver has focus, disabling
-     * the receiver causes no window to have focus.  The fix is
-     * to assign focus to the first ancestor window that takes
-     * focus.  If no window will take focus, set focus to the
-     * desktop.
-     */
-    Control control = null;
-    boolean fixFocus = false;
-    if( !enabled ) {
-      control = display.getFocusControl();
-      fixFocus = isFocusAncestor( control );
+    if( hasState( DISABLED ) != !enabled ) {
+      preserveState( DISABLED );
+      internalSetEnabled( enabled );
     }
-    if( enabled ) {
-      removeState( DISABLED );
-    } else {
-      addState( DISABLED );
-    }
-    if( fixFocus ) {
-      fixFocus( control );
+  }
+
+  private void internalSetEnabled( boolean enabled ) {
+    if( hasState( DISABLED ) != !enabled ) {
+      /*
+       * Feature in Windows.  If the receiver has focus, disabling
+       * the receiver causes no window to have focus.  The fix is
+       * to assign focus to the first ancestor window that takes
+       * focus.  If no window will take focus, set focus to the
+       * desktop.
+       */
+      Control control = null;
+      boolean fixFocus = false;
+      if( !enabled ) {
+        control = display.getFocusControl();
+        fixFocus = isFocusAncestor( control );
+      }
+      if( enabled ) {
+        removeState( DISABLED );
+      } else {
+        addState( DISABLED );
+      }
+      if( fixFocus ) {
+        fixFocus( control );
+      }
     }
   }
 
@@ -2671,18 +2717,6 @@ public abstract class Control extends Widget implements Drawable {
   {
     oldShell.fixShell( newShell, this );
     oldDecorations.fixDecorations( newDecorations, this );
-  }
-
-  @Override
-  void addState( int flag ) {
-    preserveState( flag );
-    super.addState( flag );
-  }
-
-  @Override
-  void removeState( int flag ) {
-    preserveState( flag );
-    super.removeState( flag );
   }
 
   private void preserveState( int flag ) {
